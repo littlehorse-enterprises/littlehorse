@@ -7,13 +7,22 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 @Setter
+@EqualsAndHashCode(callSuper = false)
 public class ReturnTypeModel extends LHSerializable<ReturnType> {
 
     private TypeDefinitionModel returnType;
+
+    public ReturnTypeModel() {}
+
+    public ReturnTypeModel(VariableType type) {
+        this.returnType = new TypeDefinitionModel(type);
+    }
 
     @Override
     public Class<ReturnType> getProtoBaseClass() {
@@ -34,16 +43,6 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
         ReturnType p = (ReturnType) proto;
         if (p.hasReturnType()) {
             this.returnType = LHSerializable.fromProto(p.getReturnType(), TypeDefinitionModel.class, ignored);
-        }
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof ReturnTypeModel) {
-            TypeDefinitionModel otherType = ((ReturnTypeModel) other).getOutputType().orElse(null);
-            return Objects.equals(otherType, returnType);
-        } else {
-            return false;
         }
     }
 

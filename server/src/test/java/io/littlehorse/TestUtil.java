@@ -17,6 +17,8 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRun
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
@@ -76,6 +78,7 @@ public class TestUtil {
     public static TaskDefModel taskDef(String name) {
         TaskDefModel taskDef = new TaskDefModel();
         taskDef.setId(new TaskDefIdModel(name));
+        taskDef.setReturnType(new ReturnTypeModel(VariableType.STR));
         return taskDef;
     }
 
@@ -259,7 +262,7 @@ public class TestUtil {
     public static VariableDefModel variableDef(String name, VariableType variableTypePb) {
         VariableDefModel variableDef = new VariableDefModel();
         variableDef.setName(name);
-        variableDef.setType(variableTypePb);
+        variableDef.setType(new TypeDefinitionModel(variableTypePb));
         return variableDef;
     }
 

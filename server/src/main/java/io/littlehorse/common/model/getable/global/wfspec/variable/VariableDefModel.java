@@ -48,7 +48,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
             this.type.setType(p.getDeprecatedType());
         } else {
             // This means the proto is up-to-date, so we're all good.
-            this.type = LHSerializable.fromProto(p.getType(), null, context);
+            this.type = LHSerializable.fromProto(p.getType(), TypeDefinitionModel.class, context);
         }
 
         name = p.getName();

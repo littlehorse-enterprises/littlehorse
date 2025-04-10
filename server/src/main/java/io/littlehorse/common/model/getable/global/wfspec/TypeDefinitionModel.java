@@ -6,15 +6,23 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = false)
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private boolean masked;
     private VariableType type;
+
+    public TypeDefinitionModel() {}
+
+    public TypeDefinitionModel(VariableType type) {
+        this.type = type;
+    }
 
     @Override
     public Class<TypeDefinition> getProtoBaseClass() {
@@ -33,16 +41,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
         this.type = p.getType();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof TypeDefinitionModel) {
-            TypeDefinitionModel o = (TypeDefinitionModel) other;
-            return masked == o.isMasked() && type == o.getType();
-        } else {
-            return false;
-        }
     }
 
     public boolean isPrimitive() {

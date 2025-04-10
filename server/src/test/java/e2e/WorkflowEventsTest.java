@@ -4,6 +4,8 @@ import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
+import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
@@ -71,7 +73,7 @@ public class WorkflowEventsTest {
 
     @LHWorkflowEvent
     public final PutWorkflowEventDefRequest eventDef = PutWorkflowEventDefRequest.newBuilder()
-            .setType(VariableType.STR)
+            .setContentType(ReturnType.newBuilder().setReturnType(TypeDefinition.newBuilder().setType(VariableType.STR)))
             .setName("user-created")
             .build();
 }

@@ -8,6 +8,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
@@ -41,7 +42,7 @@ public class WfSpecModelTest {
         childEntrypointThread = spy(new ThreadSpecModel());
         VariableDef variableDefProto = VariableDef.newBuilder()
                 .setName("my-var")
-                .setType(VariableType.BOOL)
+                .setType(TypeDefinition.newBuilder().setType(VariableType.BOOL))
                 .build();
         variableDef = LHSerializable.fromProto(variableDefProto, VariableDefModel.class, mockContext);
         ThreadVarDefModel inheritedVariable =
