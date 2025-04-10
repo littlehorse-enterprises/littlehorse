@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.List;
@@ -28,12 +29,12 @@ public class TaskDefBuilder {
         for (int i = 0; i < varNames.size(); i++) {
             out.addInputVars(VariableDef.newBuilder()
                     .setName(varNames.get(i))
-                    .setMaskedValue(maskedParams.get(i))
-                    .setType(varTypes.get(i)));
+                    .setType(
+                            TypeDefinition.newBuilder().setType(varTypes.get(i)).setMasked(maskedParams.get(i))));
         }
         out.setName(this.signature.taskDefName);
-        if (signature.getOutputSchema() != null) {
-            out.setOutputSchema(signature.getOutputSchema());
+        if (signature.getReturnType() != null) {
+            out.setReturnType(signature.getReturnType());
         }
 
         return out.build();

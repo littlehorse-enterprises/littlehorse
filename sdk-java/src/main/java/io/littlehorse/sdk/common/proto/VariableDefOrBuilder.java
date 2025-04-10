@@ -9,22 +9,43 @@ public interface VariableDefOrBuilder extends
 
   /**
    * <pre>
-   * The Type of the variable.
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+   * @return Whether the primitiveType field is set.
    */
-  int getTypeValue();
+  boolean hasPrimitiveType();
   /**
    * <pre>
-   * The Type of the variable.
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The type.
+   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+   * @return The enum numeric value on the wire for primitiveType.
    */
-  io.littlehorse.sdk.common.proto.VariableType getType();
+  int getPrimitiveTypeValue();
+  /**
+   * <pre>
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+   * @return The primitiveType.
+   */
+  io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
 
   /**
    * <pre>
@@ -81,11 +102,64 @@ public interface VariableDefOrBuilder extends
 
   /**
    * <pre>
-   * If true, the variable value will show as a masked string.
+   * DEPRECATED: If true, the variable value will show as a masked string.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>bool masked_value = 4;</code>
+   * <code>optional bool masked_value = 4;</code>
+   * @return Whether the maskedValue field is set.
+   */
+  boolean hasMaskedValue();
+  /**
+   * <pre>
+   * DEPRECATED: If true, the variable value will show as a masked string.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
+   * </pre>
+   *
+   * <code>optional bool masked_value = 4;</code>
    * @return The maskedValue.
    */
   boolean getMaskedValue();
+
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way after 
+   * the first 2026 release (no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+   * @return Whether the type field is set.
+   */
+  boolean hasType();
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way after 
+   * the first 2026 release (no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+   * @return The type.
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinition getType();
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way after 
+   * the first 2026 release (no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTypeOrBuilder();
 }

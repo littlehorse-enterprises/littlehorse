@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Declares a Variable.
+ * Declares a Variable; used in a ThreadSpec and a TaskDef.
  * </pre>
  *
  * Protobuf type {@code littlehorse.VariableDef}
@@ -20,7 +20,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private VariableDef() {
-    type_ = 0;
+    primitiveType_ = 0;
     name_ = "";
   }
 
@@ -45,29 +45,52 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int TYPE_FIELD_NUMBER = 1;
-  private int type_ = 0;
+  public static final int PRIMITIVE_TYPE_FIELD_NUMBER = 1;
+  private int primitiveType_ = 0;
   /**
    * <pre>
-   * The Type of the variable.
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+   * @return Whether the primitiveType field is set.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
+  @java.lang.Override public boolean hasPrimitiveType() {
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
-   * The Type of the variable.
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The type.
+   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+   * @return The enum numeric value on the wire for primitiveType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
+  @java.lang.Override public int getPrimitiveTypeValue() {
+    return primitiveType_;
+  }
+  /**
+   * <pre>
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+   * @return The primitiveType.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
+    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(primitiveType_);
     return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
   }
 
@@ -132,7 +155,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasDefaultValue() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <pre>
@@ -166,15 +189,82 @@ private static final long serialVersionUID = 0L;
   private boolean maskedValue_ = false;
   /**
    * <pre>
-   * If true, the variable value will show as a masked string.
+   * DEPRECATED: If true, the variable value will show as a masked string.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>bool masked_value = 4;</code>
+   * <code>optional bool masked_value = 4;</code>
+   * @return Whether the maskedValue field is set.
+   */
+  @java.lang.Override
+  public boolean hasMaskedValue() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <pre>
+   * DEPRECATED: If true, the variable value will show as a masked string.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in the first 2026 release.
+   * </pre>
+   *
+   * <code>optional bool masked_value = 4;</code>
    * @return The maskedValue.
    */
   @java.lang.Override
   public boolean getMaskedValue() {
     return maskedValue_;
+  }
+
+  public static final int TYPE_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.TypeDefinition type_;
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way after 
+   * the first 2026 release (no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+   * @return Whether the type field is set.
+   */
+  @java.lang.Override
+  public boolean hasType() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way after 
+   * the first 2026 release (no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+   * @return The type.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinition getType() {
+    return type_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : type_;
+  }
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way after 
+   * the first 2026 release (no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTypeOrBuilder() {
+    return type_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : type_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -191,17 +281,20 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
-      output.writeEnum(1, type_);
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeEnum(1, primitiveType_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(3, getDefaultValue());
     }
-    if (maskedValue_ != false) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       output.writeBool(4, maskedValue_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeMessage(5, getType());
     }
     getUnknownFields().writeTo(output);
   }
@@ -212,20 +305,24 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, type_);
+        .computeEnumSize(1, primitiveType_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getDefaultValue());
     }
-    if (maskedValue_ != false) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(4, maskedValue_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getType());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -242,7 +339,10 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.VariableDef other = (io.littlehorse.sdk.common.proto.VariableDef) obj;
 
-    if (type_ != other.type_) return false;
+    if (hasPrimitiveType() != other.hasPrimitiveType()) return false;
+    if (hasPrimitiveType()) {
+      if (primitiveType_ != other.primitiveType_) return false;
+    }
     if (!getName()
         .equals(other.getName())) return false;
     if (hasDefaultValue() != other.hasDefaultValue()) return false;
@@ -250,8 +350,16 @@ private static final long serialVersionUID = 0L;
       if (!getDefaultValue()
           .equals(other.getDefaultValue())) return false;
     }
-    if (getMaskedValue()
-        != other.getMaskedValue()) return false;
+    if (hasMaskedValue() != other.hasMaskedValue()) return false;
+    if (hasMaskedValue()) {
+      if (getMaskedValue()
+          != other.getMaskedValue()) return false;
+    }
+    if (hasType() != other.hasType()) return false;
+    if (hasType()) {
+      if (!getType()
+          .equals(other.getType())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -263,17 +371,25 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
+    if (hasPrimitiveType()) {
+      hash = (37 * hash) + PRIMITIVE_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + primitiveType_;
+    }
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
     if (hasDefaultValue()) {
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
     }
-    hash = (37 * hash) + MASKED_VALUE_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getMaskedValue());
+    if (hasMaskedValue()) {
+      hash = (37 * hash) + MASKED_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getMaskedValue());
+    }
+    if (hasType()) {
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -373,7 +489,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Declares a Variable.
+   * Declares a Variable; used in a ThreadSpec and a TaskDef.
    * </pre>
    *
    * Protobuf type {@code littlehorse.VariableDef}
@@ -409,13 +525,14 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
         getDefaultValueFieldBuilder();
+        getTypeFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      type_ = 0;
+      primitiveType_ = 0;
       name_ = "";
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
@@ -423,6 +540,11 @@ private static final long serialVersionUID = 0L;
         defaultValueBuilder_ = null;
       }
       maskedValue_ = false;
+      type_ = null;
+      if (typeBuilder_ != null) {
+        typeBuilder_.dispose();
+        typeBuilder_ = null;
+      }
       return this;
     }
 
@@ -456,21 +578,29 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableDef result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.type_ = type_;
+        result.primitiveType_ = primitiveType_;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.name_ = name_;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.defaultValue_ = defaultValueBuilder_ == null
             ? defaultValue_
             : defaultValueBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+        to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.maskedValue_ = maskedValue_;
+        to_bitField0_ |= 0x00000004;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.type_ = typeBuilder_ == null
+            ? type_
+            : typeBuilder_.build();
+        to_bitField0_ |= 0x00000008;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -519,8 +649,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableDef other) {
       if (other == io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance()) return this;
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
+      if (other.hasPrimitiveType()) {
+        setPrimitiveType(other.getPrimitiveType());
       }
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
@@ -530,8 +660,11 @@ private static final long serialVersionUID = 0L;
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
       }
-      if (other.getMaskedValue() != false) {
+      if (other.hasMaskedValue()) {
         setMaskedValue(other.getMaskedValue());
+      }
+      if (other.hasType()) {
+        mergeType(other.getType());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -560,7 +693,7 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              type_ = input.readEnum();
+              primitiveType_ = input.readEnum();
               bitField0_ |= 0x00000001;
               break;
             } // case 8
@@ -581,6 +714,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 42: {
+              input.readMessage(
+                  getTypeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -598,75 +738,110 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int type_ = 0;
+    private int primitiveType_ = 0;
     /**
      * <pre>
-     * The Type of the variable.
+     * DEPRECATED: The Type of the variable.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+     * @return Whether the primitiveType field is set.
      */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
+    @java.lang.Override public boolean hasPrimitiveType() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * DEPRECATED: The Type of the variable.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
+     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+     * @return The enum numeric value on the wire for primitiveType.
+     */
+    @java.lang.Override public int getPrimitiveTypeValue() {
+      return primitiveType_;
+    }
+    /**
+     * <pre>
+     * DEPRECATED: The Type of the variable.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+     * @param value The enum numeric value on the wire for primitiveType to set.
      * @return This builder for chaining.
      */
-    public Builder setTypeValue(int value) {
-      type_ = value;
+    public Builder setPrimitiveTypeValue(int value) {
+      primitiveType_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * DEPRECATED: The Type of the variable.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The type.
+     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+     * @return The primitiveType.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
+    public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
+      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(primitiveType_);
       return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * DEPRECATED: The Type of the variable.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The type to set.
+     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+     * @param value The primitiveType to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
+    public Builder setPrimitiveType(io.littlehorse.sdk.common.proto.VariableType value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000001;
-      type_ = value.getNumber();
+      primitiveType_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * DEPRECATED: The Type of the variable.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
+     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearType() {
+    public Builder clearPrimitiveType() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      type_ = 0;
+      primitiveType_ = 0;
       onChanged();
       return this;
     }
@@ -939,10 +1114,30 @@ private static final long serialVersionUID = 0L;
     private boolean maskedValue_ ;
     /**
      * <pre>
-     * If true, the variable value will show as a masked string.
+     * DEPRECATED: If true, the variable value will show as a masked string.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>bool masked_value = 4;</code>
+     * <code>optional bool masked_value = 4;</code>
+     * @return Whether the maskedValue field is set.
+     */
+    @java.lang.Override
+    public boolean hasMaskedValue() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * DEPRECATED: If true, the variable value will show as a masked string.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
+     * </pre>
+     *
+     * <code>optional bool masked_value = 4;</code>
      * @return The maskedValue.
      */
     @java.lang.Override
@@ -951,10 +1146,14 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If true, the variable value will show as a masked string.
+     * DEPRECATED: If true, the variable value will show as a masked string.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>bool masked_value = 4;</code>
+     * <code>optional bool masked_value = 4;</code>
      * @param value The maskedValue to set.
      * @return This builder for chaining.
      */
@@ -967,10 +1166,14 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If true, the variable value will show as a masked string.
+     * DEPRECATED: If true, the variable value will show as a masked string.
+     *
+     * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+     * We retain this field for compatibility purposes but clients should not use
+     * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>bool masked_value = 4;</code>
+     * <code>optional bool masked_value = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearMaskedValue() {
@@ -978,6 +1181,188 @@ private static final long serialVersionUID = 0L;
       maskedValue_ = false;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.TypeDefinition type_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> typeBuilder_;
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     * @return Whether the type field is set.
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     * @return The type.
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition getType() {
+      if (typeBuilder_ == null) {
+        return type_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : type_;
+      } else {
+        return typeBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     */
+    public Builder setType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (typeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        type_ = value;
+      } else {
+        typeBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     */
+    public Builder setType(
+        io.littlehorse.sdk.common.proto.TypeDefinition.Builder builderForValue) {
+      if (typeBuilder_ == null) {
+        type_ = builderForValue.build();
+      } else {
+        typeBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     */
+    public Builder mergeType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (typeBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          type_ != null &&
+          type_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
+          getTypeBuilder().mergeFrom(value);
+        } else {
+          type_ = value;
+        }
+      } else {
+        typeBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     */
+    public Builder clearType() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      type_ = null;
+      if (typeBuilder_ != null) {
+        typeBuilder_.dispose();
+        typeBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTypeBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return getTypeFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTypeOrBuilder() {
+      if (typeBuilder_ != null) {
+        return typeBuilder_.getMessageOrBuilder();
+      } else {
+        return type_ == null ?
+            io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : type_;
+      }
+    }
+    /**
+     * <pre>
+     * Type Information for this variable.
+     *
+     * This is the default as of 0.13.2 and will become the only supported way after 
+     * the first 2026 release (no longer `optional`).
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> 
+        getTypeFieldBuilder() {
+      if (typeBuilder_ == null) {
+        typeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder>(
+                getType(),
+                getParentForChildren(),
+                isClean());
+        type_ = null;
+      }
+      return typeBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

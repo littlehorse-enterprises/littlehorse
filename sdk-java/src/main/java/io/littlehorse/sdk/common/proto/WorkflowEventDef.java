@@ -20,7 +20,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private WorkflowEventDef() {
-    type_ = 0;
   }
 
   @java.lang.Override
@@ -119,30 +118,42 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
-  public static final int TYPE_FIELD_NUMBER = 3;
-  private int type_ = 0;
+  public static final int RETURN_TYPE_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.ReturnType returnType_;
   /**
    * <pre>
    * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 3;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   * @return Whether the returnType field is set.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
+  @java.lang.Override
+  public boolean hasReturnType() {
+    return returnType_ != null;
   }
   /**
    * <pre>
    * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 3;</code>
-   * @return The type.
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   * @return The returnType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ReturnType getReturnType() {
+    return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
+  }
+  /**
+   * <pre>
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+   * </pre>
+   *
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder() {
+    return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -165,8 +176,8 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(2, getCreatedAt());
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
-      output.writeEnum(3, type_);
+    if (returnType_ != null) {
+      output.writeMessage(3, getReturnType());
     }
     getUnknownFields().writeTo(output);
   }
@@ -185,9 +196,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCreatedAt());
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (returnType_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, type_);
+        .computeMessageSize(3, getReturnType());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -214,7 +225,11 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (type_ != other.type_) return false;
+    if (hasReturnType() != other.hasReturnType()) return false;
+    if (hasReturnType()) {
+      if (!getReturnType()
+          .equals(other.getReturnType())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -234,8 +249,10 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
+    if (hasReturnType()) {
+      hash = (37 * hash) + RETURN_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getReturnType().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -381,7 +398,11 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
-      type_ = 0;
+      returnType_ = null;
+      if (returnTypeBuilder_ != null) {
+        returnTypeBuilder_.dispose();
+        returnTypeBuilder_ = null;
+      }
       return this;
     }
 
@@ -426,7 +447,9 @@ private static final long serialVersionUID = 0L;
             : createdAtBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.type_ = type_;
+        result.returnType_ = returnTypeBuilder_ == null
+            ? returnType_
+            : returnTypeBuilder_.build();
       }
     }
 
@@ -480,8 +503,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
+      if (other.hasReturnType()) {
+        mergeReturnType(other.getReturnType());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -523,11 +546,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              type_ = input.readEnum();
+            case 26: {
+              input.readMessage(
+                  getReturnTypeFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000004;
               break;
-            } // case 24
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -855,61 +880,52 @@ private static final long serialVersionUID = 0L;
       return createdAtBuilder_;
     }
 
-    private int type_ = 0;
+    private io.littlehorse.sdk.common.proto.ReturnType returnType_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> returnTypeBuilder_;
     /**
      * <pre>
      * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 3;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     * @return Whether the returnType field is set.
      */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
+    public boolean hasReturnType() {
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <pre>
      * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 3;</code>
-     * @param value The enum numeric value on the wire for type to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     * @return The returnType.
      */
-    public Builder setTypeValue(int value) {
-      type_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
+    public io.littlehorse.sdk.common.proto.ReturnType getReturnType() {
+      if (returnTypeBuilder_ == null) {
+        return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
+      } else {
+        return returnTypeBuilder_.getMessage();
+      }
     }
     /**
      * <pre>
      * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 3;</code>
-     * @return The type.
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType type = 3;</code>
-     * @param value The type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
-      if (value == null) {
-        throw new NullPointerException();
+    public Builder setReturnType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (returnTypeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        returnType_ = value;
+      } else {
+        returnTypeBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000004;
-      type_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -918,14 +934,105 @@ private static final long serialVersionUID = 0L;
      * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 3;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      type_ = 0;
+    public Builder setReturnType(
+        io.littlehorse.sdk.common.proto.ReturnType.Builder builderForValue) {
+      if (returnTypeBuilder_ == null) {
+        returnType_ = builderForValue.build();
+      } else {
+        returnTypeBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
+    }
+    /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     */
+    public Builder mergeReturnType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (returnTypeBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          returnType_ != null &&
+          returnType_ != io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance()) {
+          getReturnTypeBuilder().mergeFrom(value);
+        } else {
+          returnType_ = value;
+        }
+      } else {
+        returnTypeBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     */
+    public Builder clearReturnType() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      returnType_ = null;
+      if (returnTypeBuilder_ != null) {
+        returnTypeBuilder_.dispose();
+        returnTypeBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ReturnType.Builder getReturnTypeBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getReturnTypeFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder() {
+      if (returnTypeBuilder_ != null) {
+        return returnTypeBuilder_.getMessageOrBuilder();
+      } else {
+        return returnType_ == null ?
+            io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
+      }
+    }
+    /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> 
+        getReturnTypeFieldBuilder() {
+      if (returnTypeBuilder_ == null) {
+        returnTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder>(
+                getReturnType(),
+                getParentForChildren(),
+                isClean());
+        returnType_ = null;
+      }
+      return returnTypeBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

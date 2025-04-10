@@ -41,7 +41,7 @@ message UserTaskField {
   string name = 1;
 
   // The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
-  PrimitiveType type = 2;
+  VariableType type = 2;
 
   // Optional description which can be displayed by the User Task UI application.
   // Does not affect WfRun execution.

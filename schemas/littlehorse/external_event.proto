@@ -62,7 +62,7 @@ message ExternalEventDef {
   // It is _optional_ for compatibility purposes: ExternalEventDef's that were created
   // before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
   // WfSpec's nor do we validate the 
-  optional PedroReturnType type_information = 4;
+  optional ReturnType type_information = 4;
 }
 
 // Policy to determine how long an ExternalEvent is retained after creation if it

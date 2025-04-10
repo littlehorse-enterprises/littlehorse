@@ -90,4 +90,43 @@ public interface ExternalEventDefOrBuilder extends
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
+
+  /**
+   * <pre>
+   * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+   *
+   * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+   * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+   * WfSpec's nor do we validate the 
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+   * @return Whether the typeInformation field is set.
+   */
+  boolean hasTypeInformation();
+  /**
+   * <pre>
+   * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+   *
+   * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+   * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+   * WfSpec's nor do we validate the 
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+   * @return The typeInformation.
+   */
+  io.littlehorse.sdk.common.proto.ReturnType getTypeInformation();
+  /**
+   * <pre>
+   * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+   *
+   * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+   * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+   * WfSpec's nor do we validate the 
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getTypeInformationOrBuilder();
 }

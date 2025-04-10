@@ -44,13 +44,13 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int INIT_VERSION_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.ServerVersion initVersion_;
+  private io.littlehorse.sdk.common.proto.LittleHorseVersion initVersion_;
   /**
    * <pre>
    * The version of the server when it is initialized.
    * </pre>
    *
-   * <code>.littlehorse.ServerVersion init_version = 1;</code>
+   * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
    * @return Whether the initVersion field is set.
    */
   @java.lang.Override
@@ -62,23 +62,23 @@ private static final long serialVersionUID = 0L;
    * The version of the server when it is initialized.
    * </pre>
    *
-   * <code>.littlehorse.ServerVersion init_version = 1;</code>
+   * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
    * @return The initVersion.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ServerVersion getInitVersion() {
-    return initVersion_ == null ? io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : initVersion_;
+  public io.littlehorse.sdk.common.proto.LittleHorseVersion getInitVersion() {
+    return initVersion_ == null ? io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance() : initVersion_;
   }
   /**
    * <pre>
    * The version of the server when it is initialized.
    * </pre>
    *
-   * <code>.littlehorse.ServerVersion init_version = 1;</code>
+   * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ServerVersionOrBuilder getInitVersionOrBuilder() {
-    return initVersion_ == null ? io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : initVersion_;
+  public io.littlehorse.sdk.common.proto.LittleHorseVersionOrBuilder getInitVersionOrBuilder() {
+    return initVersion_ == null ? io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance() : initVersion_;
   }
 
   public static final int INIT_TIME_FIELD_NUMBER = 2;
@@ -652,15 +652,15 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.ServerVersion initVersion_;
+    private io.littlehorse.sdk.common.proto.LittleHorseVersion initVersion_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ServerVersion, io.littlehorse.sdk.common.proto.ServerVersion.Builder, io.littlehorse.sdk.common.proto.ServerVersionOrBuilder> initVersionBuilder_;
+        io.littlehorse.sdk.common.proto.LittleHorseVersion, io.littlehorse.sdk.common.proto.LittleHorseVersion.Builder, io.littlehorse.sdk.common.proto.LittleHorseVersionOrBuilder> initVersionBuilder_;
     /**
      * <pre>
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      * @return Whether the initVersion field is set.
      */
     public boolean hasInitVersion() {
@@ -671,12 +671,12 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      * @return The initVersion.
      */
-    public io.littlehorse.sdk.common.proto.ServerVersion getInitVersion() {
+    public io.littlehorse.sdk.common.proto.LittleHorseVersion getInitVersion() {
       if (initVersionBuilder_ == null) {
-        return initVersion_ == null ? io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : initVersion_;
+        return initVersion_ == null ? io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance() : initVersion_;
       } else {
         return initVersionBuilder_.getMessage();
       }
@@ -686,9 +686,9 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      */
-    public Builder setInitVersion(io.littlehorse.sdk.common.proto.ServerVersion value) {
+    public Builder setInitVersion(io.littlehorse.sdk.common.proto.LittleHorseVersion value) {
       if (initVersionBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -706,10 +706,10 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      */
     public Builder setInitVersion(
-        io.littlehorse.sdk.common.proto.ServerVersion.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.LittleHorseVersion.Builder builderForValue) {
       if (initVersionBuilder_ == null) {
         initVersion_ = builderForValue.build();
       } else {
@@ -724,13 +724,13 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      */
-    public Builder mergeInitVersion(io.littlehorse.sdk.common.proto.ServerVersion value) {
+    public Builder mergeInitVersion(io.littlehorse.sdk.common.proto.LittleHorseVersion value) {
       if (initVersionBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           initVersion_ != null &&
-          initVersion_ != io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance()) {
+          initVersion_ != io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance()) {
           getInitVersionBuilder().mergeFrom(value);
         } else {
           initVersion_ = value;
@@ -747,7 +747,7 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      */
     public Builder clearInitVersion() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -764,9 +764,9 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.ServerVersion.Builder getInitVersionBuilder() {
+    public io.littlehorse.sdk.common.proto.LittleHorseVersion.Builder getInitVersionBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getInitVersionFieldBuilder().getBuilder();
@@ -776,14 +776,14 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.ServerVersionOrBuilder getInitVersionOrBuilder() {
+    public io.littlehorse.sdk.common.proto.LittleHorseVersionOrBuilder getInitVersionOrBuilder() {
       if (initVersionBuilder_ != null) {
         return initVersionBuilder_.getMessageOrBuilder();
       } else {
         return initVersion_ == null ?
-            io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : initVersion_;
+            io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance() : initVersion_;
       }
     }
     /**
@@ -791,14 +791,14 @@ private static final long serialVersionUID = 0L;
      * The version of the server when it is initialized.
      * </pre>
      *
-     * <code>.littlehorse.ServerVersion init_version = 1;</code>
+     * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ServerVersion, io.littlehorse.sdk.common.proto.ServerVersion.Builder, io.littlehorse.sdk.common.proto.ServerVersionOrBuilder> 
+        io.littlehorse.sdk.common.proto.LittleHorseVersion, io.littlehorse.sdk.common.proto.LittleHorseVersion.Builder, io.littlehorse.sdk.common.proto.LittleHorseVersionOrBuilder> 
         getInitVersionFieldBuilder() {
       if (initVersionBuilder_ == null) {
         initVersionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ServerVersion, io.littlehorse.sdk.common.proto.ServerVersion.Builder, io.littlehorse.sdk.common.proto.ServerVersionOrBuilder>(
+            io.littlehorse.sdk.common.proto.LittleHorseVersion, io.littlehorse.sdk.common.proto.LittleHorseVersion.Builder, io.littlehorse.sdk.common.proto.LittleHorseVersionOrBuilder>(
                 getInitVersion(),
                 getParentForChildren(),
                 isClean());

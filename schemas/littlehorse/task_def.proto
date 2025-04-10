@@ -27,5 +27,5 @@ message TaskDef {
   //
   // Versions after 0.13.2 require that typing information is provided when creating
   // TaskDef's.
-  optional PedroReturnType return_type = 4;
+  optional ReturnType return_type = 4;
 }

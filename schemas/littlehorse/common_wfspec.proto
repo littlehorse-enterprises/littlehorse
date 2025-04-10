@@ -139,7 +139,7 @@ message VariableDef {
   // After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
   // We retain this field for compatibility purposes but clients should not use
   // it going forward. To be removed in the first 2026 release.
-  optional PrimitiveType primitive_type = 1;
+  optional VariableType primitive_type = 1;
 
   // The name of the variable.
   string name = 2;
@@ -168,7 +168,7 @@ message VariableDef {
 message TypeDefinition {
   // The basic type of the value. Will become a `oneof` once StructDef's and Struct's
   // are implemented according to issue #880.
-  PrimitiveType type = 1;
+  VariableType type = 1;
 
   // For compatibility purposes.
   reserved 2, 3;
@@ -179,7 +179,7 @@ message TypeDefinition {
 
 // Utility used among metadata objects to define their output type. For example, used in
 // TaskDef and ExternalEventDef to represent the output.
-message PedroReturnType {
+message ReturnType {
   // The type of the output. If it is not present, it is interpred as the output type
   // being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
   optional TypeDefinition return_type = 1;
