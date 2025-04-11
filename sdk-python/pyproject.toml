@@ -8,7 +8,7 @@ version = "0.0.0"
 description = "LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications"
 authors = [{ name = "LittleHorse", email = "engineering@littlehorse.io" }]
 readme = "README.md"
-license = { text = "SSPL-1.0" }
+license = { text = "AGPLv3" }
 keywords = ["littlehorse"]
 classifiers = [
     "Programming Language :: Python :: 3.9",
