@@ -568,7 +568,6 @@ public class WorkflowThread
     public void Mutate(WfRunVariable lhs, VariableMutationType type, object rhs)
     {
         CheckIfWorkflowThreadIsActive();
-        
         var mutation = new VariableMutation
         {
             LhsName = lhs.Name,
