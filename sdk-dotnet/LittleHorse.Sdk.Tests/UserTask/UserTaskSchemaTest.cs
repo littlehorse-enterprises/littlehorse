@@ -9,7 +9,7 @@ namespace LittleHorse.Sdk.Tests.UserTask;
 public class UserTaskSchemaTest
 {
     [Fact]
-    public void UserTaskSchema_WithUTFieldsOfSupportedPrimitiveTypesInForm_ShouldCompile()
+    public void UserTaskSchema_WithUTFieldsOfSupportedVariableTypesInForm_ShouldCompile()
     {
         var userTaskDefName = "customer-data";
         var userTaskSchema = new UserTaskSchema(new CustomerForm(), userTaskDefName);

@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
@@ -107,6 +108,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return out;
     }
 
+    public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
+        // TODO: extend this to support Struct and StructDef when we implement that.
+        return canBeType(type.getType(), tspec);
+    }
+
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
@@ -116,7 +122,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
-                baseType = varDef.getType();
+
+                // This will need to be refactored once we introduce Structs and StructDefs.
+                baseType = varDef.getType().getType();
                 break;
             case LITERAL_VALUE:
                 baseType = rhsLiteralValue.getType();

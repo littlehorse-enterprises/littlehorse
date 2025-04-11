@@ -35,19 +35,19 @@ public final class WorkflowEventOuterClass {
     java.lang.String[] descriptorData = {
       "\n\024workflow_event.proto\022\013littlehorse\032\037goo" +
       "gle/protobuf/timestamp.proto\032\016variable.p" +
-      "roto\032\017object_id.proto\032\022common_enums.prot" +
-      "o\"\303\001\n\rWorkflowEvent\022(\n\002id\030\001 \001(\0132\034.little" +
-      "horse.WorkflowEventId\022+\n\007content\030\002 \001(\0132\032" +
-      ".littlehorse.VariableValue\022.\n\ncreated_at" +
-      "\030\003 \001(\0132\032.google.protobuf.Timestamp\022+\n\013no" +
-      "de_run_id\030\004 \001(\0132\026.littlehorse.NodeRunId\"" +
-      "\230\001\n\020WorkflowEventDef\022+\n\002id\030\001 \001(\0132\037.littl" +
-      "ehorse.WorkflowEventDefId\022.\n\ncreated_at\030" +
-      "\002 \001(\0132\032.google.protobuf.Timestamp\022\'\n\004typ" +
-      "e\030\003 \001(\0162\031.littlehorse.VariableTypeBM\n\037io" +
-      ".littlehorse.sdk.common.protoP\001Z\t.;lhpro" +
-      "to\252\002\034LittleHorse.Sdk.Common.Protob\006proto" +
-      "3"
+      "roto\032\017object_id.proto\032\023common_wfspec.pro" +
+      "to\"\303\001\n\rWorkflowEvent\022(\n\002id\030\001 \001(\0132\034.littl" +
+      "ehorse.WorkflowEventId\022+\n\007content\030\002 \001(\0132" +
+      "\032.littlehorse.VariableValue\022.\n\ncreated_a" +
+      "t\030\003 \001(\0132\032.google.protobuf.Timestamp\022+\n\013n" +
+      "ode_run_id\030\004 \001(\0132\026.littlehorse.NodeRunId" +
+      "\"\236\001\n\020WorkflowEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
+      "lehorse.WorkflowEventDefId\022.\n\ncreated_at" +
+      "\030\002 \001(\0132\032.google.protobuf.Timestamp\022-\n\014co" +
+      "ntent_type\030\003 \001(\0132\027.littlehorse.ReturnTyp" +
+      "eBM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
+      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -55,7 +55,7 @@ public final class WorkflowEventOuterClass {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
-          io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
+          io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor(),
         });
     internal_static_littlehorse_WorkflowEvent_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -68,11 +68,11 @@ public final class WorkflowEventOuterClass {
     internal_static_littlehorse_WorkflowEventDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WorkflowEventDef_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "Type", });
+        new java.lang.String[] { "Id", "CreatedAt", "ContentType", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
-    io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
+    io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

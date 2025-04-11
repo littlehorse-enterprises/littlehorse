@@ -9,7 +9,7 @@ public interface ExternalEventDefIdOrBuilder extends
 
   /**
    * <pre>
-   * ExternalEventDef's are uniquedly identified by their name.
+   * ExternalEventDef's are uniquedly identified by their name and version.
    * </pre>
    *
    * <code>string name = 1;</code>
@@ -18,7 +18,7 @@ public interface ExternalEventDefIdOrBuilder extends
   java.lang.String getName();
   /**
    * <pre>
-   * ExternalEventDef's are uniquedly identified by their name.
+   * ExternalEventDef's are uniquedly identified by their name and version.
    * </pre>
    *
    * <code>string name = 1;</code>
@@ -26,4 +26,14 @@ public interface ExternalEventDefIdOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNameBytes();
+
+  /**
+   * <pre>
+   * The version of this ExternalEventDef.
+   * </pre>
+   *
+   * <code>int32 version = 2;</code>
+   * @return The version.
+   */
+  int getVersion();
 }

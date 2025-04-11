@@ -276,8 +276,7 @@ func (MetricsWindowLength) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{3}
 }
 
-// Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
-// VariableValue.
+// Specifies a primitive type in LittleHorse.
 type VariableType int32
 
 const (

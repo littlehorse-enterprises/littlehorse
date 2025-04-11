@@ -42,6 +42,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ExternalEventDef.class, io.littlehorse.sdk.common.proto.ExternalEventDef.Builder.class);
   }
 
+  private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId id_;
   /**
@@ -159,6 +160,56 @@ private static final long serialVersionUID = 0L;
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
+  public static final int TYPE_INFORMATION_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.ReturnType typeInformation_;
+  /**
+   * <pre>
+   * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+   *
+   * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+   * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+   * WfSpec's nor do we validate the 
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+   * @return Whether the typeInformation field is set.
+   */
+  @java.lang.Override
+  public boolean hasTypeInformation() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+   *
+   * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+   * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+   * WfSpec's nor do we validate the 
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+   * @return The typeInformation.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ReturnType getTypeInformation() {
+    return typeInformation_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : typeInformation_;
+  }
+  /**
+   * <pre>
+   * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+   *
+   * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+   * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+   * WfSpec's nor do we validate the 
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getTypeInformationOrBuilder() {
+    return typeInformation_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : typeInformation_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -182,6 +233,9 @@ private static final long serialVersionUID = 0L;
     if (retentionPolicy_ != null) {
       output.writeMessage(3, getRetentionPolicy());
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(4, getTypeInformation());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -202,6 +256,10 @@ private static final long serialVersionUID = 0L;
     if (retentionPolicy_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getRetentionPolicy());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getTypeInformation());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -233,6 +291,11 @@ private static final long serialVersionUID = 0L;
       if (!getRetentionPolicy()
           .equals(other.getRetentionPolicy())) return false;
     }
+    if (hasTypeInformation() != other.hasTypeInformation()) return false;
+    if (hasTypeInformation()) {
+      if (!getTypeInformation()
+          .equals(other.getTypeInformation())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -255,6 +318,10 @@ private static final long serialVersionUID = 0L;
     if (hasRetentionPolicy()) {
       hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
       hash = (53 * hash) + getRetentionPolicy().hashCode();
+    }
+    if (hasTypeInformation()) {
+      hash = (37 * hash) + TYPE_INFORMATION_FIELD_NUMBER;
+      hash = (53 * hash) + getTypeInformation().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -379,13 +446,22 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.ExternalEventDef.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getIdFieldBuilder();
+        getCreatedAtFieldBuilder();
+        getRetentionPolicyFieldBuilder();
+        getTypeInformationFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -405,6 +481,11 @@ private static final long serialVersionUID = 0L;
       if (retentionPolicyBuilder_ != null) {
         retentionPolicyBuilder_.dispose();
         retentionPolicyBuilder_ = null;
+      }
+      typeInformation_ = null;
+      if (typeInformationBuilder_ != null) {
+        typeInformationBuilder_.dispose();
+        typeInformationBuilder_ = null;
       }
       return this;
     }
@@ -454,6 +535,14 @@ private static final long serialVersionUID = 0L;
             ? retentionPolicy_
             : retentionPolicyBuilder_.build();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.typeInformation_ = typeInformationBuilder_ == null
+            ? typeInformation_
+            : typeInformationBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -509,6 +598,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasRetentionPolicy()) {
         mergeRetentionPolicy(other.getRetentionPolicy());
       }
+      if (other.hasTypeInformation()) {
+        mergeTypeInformation(other.getTypeInformation());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -556,6 +648,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getTypeInformationFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1045,6 +1144,197 @@ private static final long serialVersionUID = 0L;
         retentionPolicy_ = null;
       }
       return retentionPolicyBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.ReturnType typeInformation_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> typeInformationBuilder_;
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     * @return Whether the typeInformation field is set.
+     */
+    public boolean hasTypeInformation() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     * @return The typeInformation.
+     */
+    public io.littlehorse.sdk.common.proto.ReturnType getTypeInformation() {
+      if (typeInformationBuilder_ == null) {
+        return typeInformation_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : typeInformation_;
+      } else {
+        return typeInformationBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     */
+    public Builder setTypeInformation(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (typeInformationBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        typeInformation_ = value;
+      } else {
+        typeInformationBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     */
+    public Builder setTypeInformation(
+        io.littlehorse.sdk.common.proto.ReturnType.Builder builderForValue) {
+      if (typeInformationBuilder_ == null) {
+        typeInformation_ = builderForValue.build();
+      } else {
+        typeInformationBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     */
+    public Builder mergeTypeInformation(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (typeInformationBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          typeInformation_ != null &&
+          typeInformation_ != io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance()) {
+          getTypeInformationBuilder().mergeFrom(value);
+        } else {
+          typeInformation_ = value;
+        }
+      } else {
+        typeInformationBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     */
+    public Builder clearTypeInformation() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      typeInformation_ = null;
+      if (typeInformationBuilder_ != null) {
+        typeInformationBuilder_.dispose();
+        typeInformationBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ReturnType.Builder getTypeInformationBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getTypeInformationFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getTypeInformationOrBuilder() {
+      if (typeInformationBuilder_ != null) {
+        return typeInformationBuilder_.getMessageOrBuilder();
+      } else {
+        return typeInformation_ == null ?
+            io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : typeInformation_;
+      }
+    }
+    /**
+     * <pre>
+     * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+     *
+     * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+     * before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+     * WfSpec's nor do we validate the 
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType type_information = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> 
+        getTypeInformationFieldBuilder() {
+      if (typeInformationBuilder_ == null) {
+        typeInformationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder>(
+                getTypeInformation(),
+                getParentForChildren(),
+                isClean());
+        typeInformation_ = null;
+      }
+      return typeInformationBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

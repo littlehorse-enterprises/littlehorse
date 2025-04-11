@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -232,9 +233,8 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public ThreadVarDef getSpec() {
         VariableDef.Builder varDef = VariableDef.newBuilder()
-                .setType(this.getType())
-                .setName(this.getName())
-                .setMaskedValue(masked);
+                .setType(TypeDefinition.newBuilder().setMasked(masked).setType(this.getType()))
+                .setName(this.getName());
 
         if (this.defaultValue != null) {
             varDef.setDefaultValue(defaultValue);

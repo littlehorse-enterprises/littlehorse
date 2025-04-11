@@ -30,13 +30,13 @@ public final class Init {
     java.lang.String[] descriptorData = {
       "\n\ninit.proto\022\013littlehorse\032\037google/protob" +
       "uf/timestamp.proto\032\rservice.proto\032\nacls." +
-      "proto\"\340\001\n\021InitializationLog\0220\n\014init_vers" +
-      "ion\030\001 \001(\0132\032.littlehorse.ServerVersion\022-\n" +
-      "\tinit_time\030\002 \001(\0132\032.google.protobuf.Times" +
-      "tamp\0228\n\030init_anonymous_principal\030\003 \001(\0132\026" +
-      ".littlehorse.Principal\0220\n\023init_default_t" +
-      "enant\030\004 \001(\0132\023.littlehorse.TenantB\037\n\033io.l" +
-      "ittlehorse.common.protoP\001b\006proto3"
+      "proto\"\345\001\n\021InitializationLog\0225\n\014init_vers" +
+      "ion\030\001 \001(\0132\037.littlehorse.LittleHorseVersi" +
+      "on\022-\n\tinit_time\030\002 \001(\0132\032.google.protobuf." +
+      "Timestamp\0228\n\030init_anonymous_principal\030\003 " +
+      "\001(\0132\026.littlehorse.Principal\0220\n\023init_defa" +
+      "ult_tenant\030\004 \001(\0132\023.littlehorse.TenantB\037\n" +
+      "\033io.littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

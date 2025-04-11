@@ -6,6 +6,7 @@ import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
@@ -125,8 +126,9 @@ public class SearchVariableRequestModel
         }
 
         // ONLY do this check if the Variable is a PRIMITIVE type.
-        if (LHUtil.isPrimitive(varDef.getVarDef().getType())
-                && !varDef.getVarDef().getType().equals(value.getType())) {
+        // TODO: Extend this when implementing Struct and StructDef.
+        TypeDefinitionModel varType = varDef.getVarDef().getType();
+        if (varType.isPrimitive() && !varType.isCompatibleWith(value)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "Specified Variable has type " + varDef.getVarDef().getType());
