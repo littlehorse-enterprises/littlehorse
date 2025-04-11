@@ -28,8 +28,8 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     private TaskRunIdModel taskRunId;
     private Date time;
     private TaskStatus status;
-    private VariableValueModel stdout;
-    private VariableValueModel stderr;
+    private VariableValueModel output;
+    private VariableValueModel logOutput;
     private int attemptNumber; // this is CRUCIAL to set properly.
     private LHTaskErrorModel error;
     private LHTaskExceptionModel exception;
@@ -64,8 +64,8 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
                 .setStatus(status)
                 .setAttemptNumber(attemptNumber);
 
-        if (stdout != null) b.setOutput(stdout.toProto());
-        if (stderr != null) b.setLogOutput(stderr.toProto());
+        if (output != null) b.setOutput(output.toProto());
+        if (logOutput != null) b.setLogOutput(logOutput.toProto());
         if (error != null) b.setError(error.toProto());
         if (exception != null) b.setException(exception.toProto());
 
@@ -81,11 +81,11 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         this.attemptNumber = p.getAttemptNumber();
 
         if (p.hasOutput()) {
-            this.stdout = VariableValueModel.fromProto(p.getOutput(), context);
+            this.output = VariableValueModel.fromProto(p.getOutput(), context);
         }
 
         if (p.hasLogOutput()) {
-            this.stderr = VariableValueModel.fromProto(p.getLogOutput(), context);
+            this.logOutput = VariableValueModel.fromProto(p.getLogOutput(), context);
         }
 
         if (p.hasError()) {

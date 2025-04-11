@@ -243,7 +243,7 @@ namespace LittleHorse.Sdk.Helper
                     return LHErrorType.TaskFailure;
                 case TaskStatus.TaskTimeout:
                     return LHErrorType.Timeout;
-                case TaskStatus.TaskOutputSerializingError:
+                case TaskStatus.TaskOutputSerdeError:
                     return LHErrorType.VarMutationError;
                 case TaskStatus.TaskInputVarSubError:
                     return LHErrorType.VarSubError;

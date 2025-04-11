@@ -177,7 +177,7 @@ private static final long serialVersionUID = 0L;
    * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
    *   the Task Function.
    *
-   * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+   * Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
    * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
    * </pre>
    *
@@ -1206,7 +1206,7 @@ private static final long serialVersionUID = 0L;
      * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
      *   the Task Function.
      *
-     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
      * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
@@ -1227,7 +1227,7 @@ private static final long serialVersionUID = 0L;
      * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
      *   the Task Function.
      *
-     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
      * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
@@ -1252,7 +1252,7 @@ private static final long serialVersionUID = 0L;
      * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
      *   the Task Function.
      *
-     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
      * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
