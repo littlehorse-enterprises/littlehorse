@@ -143,7 +143,15 @@ public class WfRunVariable
     /// </param>
     public void Assign(object rhs)
     {
-        _parent.Mutate(this, VariableMutationType.Assign, rhs);
+        WorkflowThread activeThread = _parent;
+        WorkflowThread lastThread = _parent.Parent.Threads.Peek();
+
+        if (lastThread.IsActive)
+        {
+            activeThread = lastThread;
+        }
+
+        activeThread.Mutate(this, VariableMutationType.Assign, rhs);
     }
     
     /// <summary>
