@@ -2,13 +2,14 @@ package littlehorse
 
 import (
 	"context"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"log"
 	"reflect"
 	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -28,18 +29,19 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 		return false
 	}
 	for i, arg := range tw.taskSig.Args {
+		tempType := ReflectTypeToVarType(arg.Type)
+		tempMasked := isMaskedField(i)
 		ptd.InputVars = append(ptd.InputVars, &lhproto.VariableDef{
 			Name:        strconv.Itoa(i) + "-" + arg.Name,
-			Type:        ReflectTypeToVarType(arg.Type),
-			MaskedValue: isMaskedField(i),
+			Type:        &tempType,
+			MaskedValue: &tempMasked,
 		})
 	}
 	if tw.taskSig.HasOutput {
-		ptd.OutputSchema = &lhproto.TaskDefOutputSchema{
-			ValueDef: &lhproto.VariableDef{
-				Name:        "output",
-				Type:        ReflectTypeToVarType(*tw.taskSig.OutputType),
-				MaskedValue: tw.maskedOutput,
+		ptd.ReturnType = &lhproto.ReturnType{
+			ReturnType: &lhproto.TypeDefinition{
+				Type:   ReflectTypeToVarType(*tw.taskSig.OutputType),
+				Masked: tw.maskedOutput,
 			},
 		}
 	}
