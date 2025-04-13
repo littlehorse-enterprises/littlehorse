@@ -13,39 +13,39 @@ public interface VariableDefOrBuilder extends
    *
    * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
    * We retain this field for compatibility purposes but clients should not use
-   * it going forward. To be removed in the first 2026 release.
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
-   * @return Whether the deprecatedType field is set.
+   * <code>optional .littlehorse.VariableType type = 1;</code>
+   * @return Whether the type field is set.
    */
-  boolean hasDeprecatedType();
+  boolean hasType();
   /**
    * <pre>
    * DEPRECATED: The Type of the variable.
    *
    * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
    * We retain this field for compatibility purposes but clients should not use
-   * it going forward. To be removed in the first 2026 release.
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
-   * @return The enum numeric value on the wire for deprecatedType.
+   * <code>optional .littlehorse.VariableType type = 1;</code>
+   * @return The enum numeric value on the wire for type.
    */
-  int getDeprecatedTypeValue();
+  int getTypeValue();
   /**
    * <pre>
    * DEPRECATED: The Type of the variable.
    *
    * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
    * We retain this field for compatibility purposes but clients should not use
-   * it going forward. To be removed in the first 2026 release.
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
-   * @return The deprecatedType.
+   * <code>optional .littlehorse.VariableType type = 1;</code>
+   * @return The type.
    */
-  io.littlehorse.sdk.common.proto.VariableType getDeprecatedType();
+  io.littlehorse.sdk.common.proto.VariableType getType();
 
   /**
    * <pre>
@@ -106,60 +106,60 @@ public interface VariableDefOrBuilder extends
    *
    * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
    * We retain this field for compatibility purposes but clients should not use
-   * it going forward. To be removed in the first 2026 release.
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>optional bool deprecated_masked_value = 4;</code>
-   * @return Whether the deprecatedMaskedValue field is set.
+   * <code>optional bool masked_value = 4;</code>
+   * @return Whether the maskedValue field is set.
    */
-  boolean hasDeprecatedMaskedValue();
+  boolean hasMaskedValue();
   /**
    * <pre>
    * DEPRECATED: If true, the variable value will show as a masked string.
    *
    * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
    * We retain this field for compatibility purposes but clients should not use
-   * it going forward. To be removed in the first 2026 release.
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>optional bool deprecated_masked_value = 4;</code>
-   * @return The deprecatedMaskedValue.
+   * <code>optional bool masked_value = 4;</code>
+   * @return The maskedValue.
    */
-  boolean getDeprecatedMaskedValue();
+  boolean getMaskedValue();
 
   /**
    * <pre>
    * Type Information for this variable.
    *
-   * This is the default as of 0.13.2 and will become the only supported way after 
-   * the first 2026 release (no longer `optional`).
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
-   * @return Whether the type field is set.
+   * <code>optional .littlehorse.TypeDefinition type_def = 5;</code>
+   * @return Whether the typeDef field is set.
    */
-  boolean hasType();
+  boolean hasTypeDef();
   /**
    * <pre>
    * Type Information for this variable.
    *
-   * This is the default as of 0.13.2 and will become the only supported way after 
-   * the first 2026 release (no longer `optional`).
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
-   * @return The type.
+   * <code>optional .littlehorse.TypeDefinition type_def = 5;</code>
+   * @return The typeDef.
    */
-  io.littlehorse.sdk.common.proto.TypeDefinition getType();
+  io.littlehorse.sdk.common.proto.TypeDefinition getTypeDef();
   /**
    * <pre>
    * Type Information for this variable.
    *
-   * This is the default as of 0.13.2 and will become the only supported way after 
-   * the first 2026 release (no longer `optional`).
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition type = 5;</code>
+   * <code>optional .littlehorse.TypeDefinition type_def = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTypeOrBuilder();
+  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTypeDefOrBuilder();
 }

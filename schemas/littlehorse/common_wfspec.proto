@@ -138,8 +138,8 @@ message VariableDef {
   //
   // After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
   // We retain this field for compatibility purposes but clients should not use
-  // it going forward. To be removed in the first 2026 release.
-  optional VariableType deprecated_type = 1;
+  // it going forward. To be removed in a future release.
+  optional VariableType type = 1;
 
   // The name of the variable.
   string name = 2;
@@ -153,14 +153,14 @@ message VariableDef {
   //
   // After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
   // We retain this field for compatibility purposes but clients should not use
-  // it going forward. To be removed in the first 2026 release.
-  optional bool deprecated_masked_value = 4;
+  // it going forward. To be removed in a future release.
+  optional bool masked_value = 4;
 
   // Type Information for this variable.
   //
-  // This is the default as of 0.13.2 and will become the only supported way after 
-  // the first 2026 release (no longer `optional`).
-  optional TypeDefinition type = 5;
+  // This is the default as of 0.13.2 and will become the only supported way
+  // (i.e. it will be no longer `optional`).
+  optional TypeDefinition type_def = 5;
 }
 
 // Defines the type of a value in LittleHorse. Can be used for Task Parameters,

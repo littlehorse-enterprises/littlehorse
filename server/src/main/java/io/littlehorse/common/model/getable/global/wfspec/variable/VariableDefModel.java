@@ -41,14 +41,14 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         // Note that this means that servers newer than `0.13.2` don't work with *dashboards*
         // older than `0.13.2`, but clients older than `0.13.1` will continue to work. If this
         // was post-1.0, we would not modify the stored proto.
-        if (p.hasDeprecatedType()) {
+        if (p.hasType()) {
             log.debug("Detected a `VariableDef` from before 0.13.2!");
             this.type = new TypeDefinitionModel();
-            this.type.setMasked(p.getDeprecatedMaskedValue());
-            this.type.setType(p.getDeprecatedType());
+            this.type.setMasked(p.getMaskedValue());
+            this.type.setType(p.getType());
         } else {
             // This means the proto is up-to-date, so we're all good.
-            this.type = LHSerializable.fromProto(p.getType(), TypeDefinitionModel.class, context);
+            this.type = LHSerializable.fromProto(p.getTypeDef(), TypeDefinitionModel.class, context);
         }
 
         name = p.getName();
@@ -59,7 +59,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
 
     public VariableDef.Builder toProto() {
         VariableDef.Builder out =
-                VariableDef.newBuilder().setType(type.toProto()).setName(name);
+                VariableDef.newBuilder().setTypeDef(type.toProto()).setName(name);
 
         if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
         return out;

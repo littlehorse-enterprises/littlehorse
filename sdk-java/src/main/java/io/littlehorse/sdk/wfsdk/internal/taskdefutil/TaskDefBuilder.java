@@ -29,7 +29,7 @@ public class TaskDefBuilder {
         for (int i = 0; i < varNames.size(); i++) {
             out.addInputVars(VariableDef.newBuilder()
                     .setName(varNames.get(i))
-                    .setType(
+                    .setTypeDef(
                             TypeDefinition.newBuilder().setType(varTypes.get(i)).setMasked(maskedParams.get(i))));
         }
         out.setName(this.signature.taskDefName);

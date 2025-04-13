@@ -311,9 +311,9 @@ export interface VariableDef {
    *
    * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
    * We retain this field for compatibility purposes but clients should not use
-   * it going forward. To be removed in the first 2026 release.
+   * it going forward. To be removed in a future release.
    */
-  deprecatedType?:
+  type?:
     | VariableType
     | undefined;
   /** The name of the variable. */
@@ -331,18 +331,18 @@ export interface VariableDef {
    *
    * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
    * We retain this field for compatibility purposes but clients should not use
-   * it going forward. To be removed in the first 2026 release.
+   * it going forward. To be removed in a future release.
    */
-  deprecatedMaskedValue?:
+  maskedValue?:
     | boolean
     | undefined;
   /**
    * Type Information for this variable.
    *
-   * This is the default as of 0.13.2 and will become the only supported way after
-   * the first 2026 release (no longer `optional`).
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
    */
-  type?: TypeDefinition | undefined;
+  typeDef?: TypeDefinition | undefined;
 }
 
 /**
@@ -982,19 +982,13 @@ export const VariableMutation_NodeOutputSource = {
 };
 
 function createBaseVariableDef(): VariableDef {
-  return {
-    deprecatedType: undefined,
-    name: "",
-    defaultValue: undefined,
-    deprecatedMaskedValue: undefined,
-    type: undefined,
-  };
+  return { type: undefined, name: "", defaultValue: undefined, maskedValue: undefined, typeDef: undefined };
 }
 
 export const VariableDef = {
   encode(message: VariableDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.deprecatedType !== undefined) {
-      writer.uint32(8).int32(variableTypeToNumber(message.deprecatedType));
+    if (message.type !== undefined) {
+      writer.uint32(8).int32(variableTypeToNumber(message.type));
     }
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
@@ -1002,11 +996,11 @@ export const VariableDef = {
     if (message.defaultValue !== undefined) {
       VariableValue.encode(message.defaultValue, writer.uint32(26).fork()).ldelim();
     }
-    if (message.deprecatedMaskedValue !== undefined) {
-      writer.uint32(32).bool(message.deprecatedMaskedValue);
+    if (message.maskedValue !== undefined) {
+      writer.uint32(32).bool(message.maskedValue);
     }
-    if (message.type !== undefined) {
-      TypeDefinition.encode(message.type, writer.uint32(42).fork()).ldelim();
+    if (message.typeDef !== undefined) {
+      TypeDefinition.encode(message.typeDef, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -1023,7 +1017,7 @@ export const VariableDef = {
             break;
           }
 
-          message.deprecatedType = variableTypeFromJSON(reader.int32());
+          message.type = variableTypeFromJSON(reader.int32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -1044,14 +1038,14 @@ export const VariableDef = {
             break;
           }
 
-          message.deprecatedMaskedValue = reader.bool();
+          message.maskedValue = reader.bool();
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.type = TypeDefinition.decode(reader, reader.uint32());
+          message.typeDef = TypeDefinition.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1067,14 +1061,14 @@ export const VariableDef = {
   },
   fromPartial(object: DeepPartial<VariableDef>): VariableDef {
     const message = createBaseVariableDef();
-    message.deprecatedType = object.deprecatedType ?? undefined;
+    message.type = object.type ?? undefined;
     message.name = object.name ?? "";
     message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
       ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
-    message.deprecatedMaskedValue = object.deprecatedMaskedValue ?? undefined;
-    message.type = (object.type !== undefined && object.type !== null)
-      ? TypeDefinition.fromPartial(object.type)
+    message.maskedValue = object.maskedValue ?? undefined;
+    message.typeDef = (object.typeDef !== undefined && object.typeDef !== null)
+      ? TypeDefinition.fromPartial(object.typeDef)
       : undefined;
     return message;
   },
