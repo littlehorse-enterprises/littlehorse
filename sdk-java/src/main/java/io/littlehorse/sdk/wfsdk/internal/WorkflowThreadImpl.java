@@ -183,15 +183,21 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public UserTaskOutputImpl assignUserTask(String userTaskDefName, Object userId, Object userGroup) {
         checkIfIsActive();
-        // guaranteed that exatly one of userId or userGroup is not null
+        // guaranteed that exactly one of userId or userGroup is not null
         UserTaskNode.Builder utNode = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
         if (userId != null) {
+            if (userId instanceof String && ((String) userId).isEmpty()) {
+                throw new IllegalArgumentException("User ID cannot be an empty string.");
+            }
             VariableAssignment userIdAssn = assignVariable(userId);
             utNode.setUserId(userIdAssn);
         }
-
+        
         if (userGroup != null) {
+            if (userGroup instanceof String && ((String) userGroup).isEmpty()) {
+                throw new IllegalArgumentException("User Group ID cannot be an empty string.");
+            }
             VariableAssignment userGroupAssn = assignVariable(userGroup);
             utNode.setUserGroup(userGroupAssn);
         }
