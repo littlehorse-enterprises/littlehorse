@@ -1,6 +1,6 @@
 # Developing LittleHorse
 
-The LittleHorse Server project is open-source according to the Server-Side Public License 1.0, and as such we appreciate any contributions to our codebase. Please note that all contributions will be subject to that license agreement, and that by contributing to LittleHorse you accept the terms of that license.
+We appreciate any contributions to our codebase. Please note that by contributing to LittleHorse you accept the terms of the AGPLv3 License.
 
 - [Developing LittleHorse](#developing-littlehorse)
   - [Repository Inventory](#repository-inventory)

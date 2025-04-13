@@ -46,3 +46,24 @@ export const formatJsonOrReturnOriginalValue = (value: string) => {
     return value
   }
 }
+
+export const getTypedContent = (contentType: string, contentValue: string) => {
+  switch (contentType) {
+    case 'STR':
+      return { str: contentValue }
+    case 'INT':
+      return { int: parseInt(contentValue) }
+    case 'DOUBLE':
+      return { double: parseFloat(contentValue) }
+    case 'BOOL':
+      return { bool: contentValue.toLowerCase() === 'true' }
+    case 'JSON_OBJ':
+      return { jsonObj: contentValue }
+    case 'JSON_ARR':
+      return { jsonArr: contentValue }
+    case 'BYTES':
+      return { bytes: Buffer.from(contentValue, 'utf8') }
+    default:
+      return { str: contentValue }
+  }
+}
