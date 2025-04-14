@@ -20,8 +20,6 @@ public class WorkflowThread
     /// The name of the last node in the thread.
     /// </value>
     public string LastNodeName { get; private set; }
-    
-    internal bool IsActive { get; }
 
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
@@ -30,11 +28,12 @@ public class WorkflowThread
     public const string HandlerInputVar = "INPUT";
     
     private readonly ThreadSpec _spec;
-    private readonly bool _isActive;
     private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     private ThreadRetentionPolicy? _retentionPolicy;
+    
+    internal bool IsActive { get; }
     
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
