@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.VariableType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public class VariableValueModelTest {
     }
 
     @Test
-    void asObjShouldReturnCopy() throws LHVarSubError, LHSerdeError {
+    void asObjShouldReturnCopy() throws LHVarSubError, LHSerdeException {
         ObjVarThing thing = new ObjVarThing("Hi There");
         VariableValueModel first = VariableValueModel.fromProto(LHLibUtil.objToVarVal(thing), mock());
 

@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.DeadlineReassignUserTask;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
@@ -52,7 +52,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         DeadlineReassignUserTask p = (DeadlineReassignUserTask) proto;
         if (p.hasNewUserId()) newUserId = VariableAssignmentModel.fromProto(p.getNewUserId(), context);
         if (p.hasNewUserGroup()) newUserGroup = VariableAssignmentModel.fromProto(p.getNewUserGroup(), context);

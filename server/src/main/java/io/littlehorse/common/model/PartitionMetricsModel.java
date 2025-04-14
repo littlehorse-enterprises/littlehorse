@@ -16,7 +16,7 @@ import io.littlehorse.common.proto.PartitionMetrics;
 import io.littlehorse.common.proto.StatusChanges;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
     private final Map<TaskMetricId, StatusChangesModel> taskMetrics = new HashMap<>();
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         PartitionMetrics p = (PartitionMetrics) proto;
         for (MetricsByTenant metricsByTenant : p.getMetricsByTenantList()) {
             TenantIdModel tenantId =

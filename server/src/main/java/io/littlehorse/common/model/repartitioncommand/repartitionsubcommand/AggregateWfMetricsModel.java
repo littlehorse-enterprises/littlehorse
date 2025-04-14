@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecM
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateWfMetrics;
 import io.littlehorse.common.proto.WfMetricUpdate;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -42,7 +42,7 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         AggregateWfMetrics p = (AggregateWfMetrics) proto;
         this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);

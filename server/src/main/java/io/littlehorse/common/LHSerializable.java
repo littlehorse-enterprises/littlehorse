@@ -5,7 +5,7 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.lang.reflect.InvocationTargetException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ public abstract class LHSerializable<T extends Message> {
 
     public abstract GeneratedMessageV3.Builder<?> toProto();
 
-    public abstract void initFrom(Message proto, ExecutionContext context) throws LHSerdeError;
+    public abstract void initFrom(Message proto, ExecutionContext context) throws LHSerdeException;
 
     // TODO: should this be:
     // public abstract Class<T> getProtoBaseClass(); ?
@@ -52,7 +52,7 @@ public abstract class LHSerializable<T extends Message> {
     // Probably don't want to use reflection for everything, but hey we gotta
     // get a prototype out the door.
     public static <T extends LHSerializable<?>> T fromBytes(byte[] b, Class<T> cls, ExecutionContext context)
-            throws LHSerdeError {
+            throws LHSerdeException {
         try {
             T out = load(cls);
             Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
@@ -63,12 +63,12 @@ public abstract class LHSerializable<T extends Message> {
             return out;
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
-            throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());
+            throw new LHSerdeException(exn, "unable to process bytes for " + cls.getName());
         }
     }
 
     public static <T extends LHSerializable<?>> T fromBytes(ByteString b, Class<T> cls, ExecutionContext context)
-            throws LHSerdeError {
+            throws LHSerdeException {
         try {
             T out = load(cls);
             Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
@@ -79,7 +79,7 @@ public abstract class LHSerializable<T extends Message> {
             return out;
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
-            throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());
+            throw new LHSerdeException(exn, "unable to process bytes for " + cls.getName());
         }
     }
 
@@ -93,7 +93,7 @@ public abstract class LHSerializable<T extends Message> {
             return proto;
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
-            throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());
+            throw new LHSerdeException(exn, "unable to process bytes for " + cls.getName());
         }
     }
 
@@ -103,7 +103,7 @@ public abstract class LHSerializable<T extends Message> {
     }
 
     public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls, ExecutionContext context)
-            throws LHSerdeError {
+            throws LHSerdeException {
         GeneratedMessageV3.Builder<?> builder;
         T out;
 
@@ -112,13 +112,13 @@ public abstract class LHSerializable<T extends Message> {
             builder = (GeneratedMessageV3.Builder<?>)
                     out.getProtoBaseClass().getMethod("newBuilder").invoke(null);
         } catch (Exception exn) {
-            throw new LHSerdeError(exn, "Failed to reflect the protobuilder");
+            throw new LHSerdeException(exn, "Failed to reflect the protobuilder");
         }
 
         try {
             JsonFormat.parser().merge(json, builder);
         } catch (InvalidProtocolBufferException exn) {
-            throw new LHSerdeError(exn, "bad protobuf for " + cls.getName());
+            throw new LHSerdeException(exn, "bad protobuf for " + cls.getName());
         }
 
         out.initFrom(builder.build(), context);

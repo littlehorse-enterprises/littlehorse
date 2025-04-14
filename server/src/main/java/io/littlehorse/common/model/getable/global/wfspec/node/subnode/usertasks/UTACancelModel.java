@@ -8,7 +8,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -25,7 +25,7 @@ public class UTACancelModel extends LHSerializable<UTActionTrigger.UTACancel> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {}
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {}
 
     @Override
     public Class<UTActionTrigger.UTACancel> getProtoBaseClass() {

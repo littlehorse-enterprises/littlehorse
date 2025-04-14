@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
@@ -29,7 +29,7 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     private ExecutionContext context;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ThrowEventNode p = (ThrowEventNode) proto;
         this.workflowEventDefId = LHSerializable.fromProto(p.getEventDefId(), WorkflowEventDefIdModel.class, context);
         this.content = LHSerializable.fromProto(p.getContent(), VariableAssignmentModel.class, context);

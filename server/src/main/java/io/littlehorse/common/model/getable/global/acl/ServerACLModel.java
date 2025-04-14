@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.acl;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ServerACL;
@@ -32,7 +32,7 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ServerACL serverACL = (ServerACL) proto;
         if (serverACL.hasName()) {
             this.name = Optional.of(serverACL.getName());
