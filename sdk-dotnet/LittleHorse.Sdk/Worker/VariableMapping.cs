@@ -6,14 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
 {
-    public class VariableMapping
+    internal class VariableMapping
     {
         private ILogger<VariableMapping>? _logger;
         private readonly string? _name;
         private Type _type;
         private int _position;
 
-        public VariableMapping(TaskDef taskDef, int position, Type type, string? paramName)
+        internal VariableMapping(TaskDef taskDef, int position, Type type, string? paramName)
         {
             _type = type;
             _name = paramName;
@@ -30,7 +30,7 @@ namespace LittleHorse.Sdk.Worker
             ValidateType(input.Type, _type, _name);
         }
 
-        public object? Assign(ScheduledTask taskInstance, LHWorkerContext workerContext)
+        internal object? Assign(ScheduledTask taskInstance, LHWorkerContext workerContext)
         {
             if (_type == typeof(LHWorkerContext))
             {

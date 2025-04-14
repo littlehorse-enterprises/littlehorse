@@ -6,10 +6,14 @@ using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Worker.Internal
 {
-    public class LHServerConnectionManager<T> : IDisposable
+    /// <summary>
+    /// Manages the connections to the LH servers for a specific task worker.
+    /// </summary>
+    /// <typeparam name="T">It is the custom task worker.</typeparam>
+    internal class LHServerConnectionManager<T> : IDisposable
     {
-        private const int BALANCER_SLEEP_TIME = 5000;
-        private const int GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30;
+        private const int BalancerSleepTime = 5000;
+        private const int GrpcUnaryCallTimeoutSeconds = 30;
 
         private readonly LHConfig _config;
         private readonly ILogger? _logger;
@@ -18,11 +22,11 @@ namespace LittleHorse.Sdk.Worker.Internal
         private readonly List<LHServerConnection<T>> _runningConnections;
         private readonly Thread _rebalanceThread;
         private readonly LHTask<T> _task;
+        
+        internal LHConfig Config => _config;
+        internal TaskDef TaskDef => _task.TaskDef!;
 
-        public LHConfig Config => _config;
-        public TaskDef TaskDef => _task.TaskDef!;
-
-        public LHServerConnectionManager(LHConfig config,
+        internal LHServerConnectionManager(LHConfig config,
                                          LHTask<T> task, LittleHorseClient bootstrapClient)
         {
             _config = config;
@@ -34,12 +38,18 @@ namespace LittleHorse.Sdk.Worker.Internal
             _rebalanceThread = new Thread(RebalanceWork);
         }
 
-        public void Start()
+        /// <summary>
+        /// Starts the connection manager.
+        /// </summary>
+        internal void Start()
         {
             _running = true;
             _rebalanceThread.Start();
         }
 
+        /// <summary>
+        /// Stops the connection manager and all connections.
+        /// </summary>
         public void Dispose()
         {
             _running = false;
@@ -50,7 +60,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             while (_running)
             {
                 DoHeartBeat();
-                Thread.Sleep(BALANCER_SLEEP_TIME);
+                Thread.Sleep(BalancerSleepTime);
             }
         }
 
@@ -64,7 +74,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                     TaskWorkerId = _config.WorkerId
                 };
                 var response = _bootstrapClient.RegisterTaskWorker(request: request,
-                    deadline: DateTime.UtcNow.AddSeconds(GRPC_UNARY_CALL_TIMEOUT_SECONDS));
+                    deadline: DateTime.UtcNow.AddSeconds(GrpcUnaryCallTimeoutSeconds));
                 
                 HandleRegisterTaskWorkerResponse(response);
             }
@@ -85,7 +95,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 }
 
                 CloseAllConnections();
-                Thread.Sleep(BALANCER_SLEEP_TIME);
+                Thread.Sleep(BalancerSleepTime);
             }
         }
 
