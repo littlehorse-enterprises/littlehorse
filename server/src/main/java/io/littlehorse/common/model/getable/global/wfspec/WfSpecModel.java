@@ -388,7 +388,9 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             if (currentVarDef != null) {
                 // We check that the current one is compatible with the old.
                 // TODO: validate jsonpath stuff.
-                if (!oldDef.getVarDef().getType().equals(currentVarDef.getVarDef().getType())) {
+                if (!oldDef.getVarDef()
+                        .getType()
+                        .equals(currentVarDef.getVarDef().getType())) {
                     throw new LHApiException(
                             Status.FAILED_PRECONDITION,
                             "Variable %s must be of type %s not %s as it was formerly declared a PUBLIC_VAR"
