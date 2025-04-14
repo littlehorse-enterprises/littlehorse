@@ -665,7 +665,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, nb.build());
     }
 
-    public void addTimeoutToExtEvtNode(WaitForEventNodeOutputImpl node, int timeoutSeconds) {
+    public void addTimeoutToExtEvtNode(ExternalEventNodeOutputImpl node, int timeoutSeconds) {
         checkIfIsActive();
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
 
@@ -744,7 +744,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public WaitForEventNodeOutputImpl waitForEvent(String externalEventDefName) {
+    public ExternalEventNodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
         ExternalEventNode waitNode = ExternalEventNode.newBuilder()
                 .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(externalEventDefName))
@@ -752,7 +752,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         parent.addExternalEventDefName(externalEventDefName);
 
-        return new WaitForEventNodeOutputImpl(addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode), this);
+        return new ExternalEventNodeOutputImpl(addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode), this);
     }
 
     @Override

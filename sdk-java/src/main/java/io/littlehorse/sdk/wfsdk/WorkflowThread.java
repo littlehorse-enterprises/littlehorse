@@ -299,7 +299,7 @@ public interface WorkflowThread {
      * @param externalEventDefName is the type of ExternalEvent to wait for.
      * @return a NodeOutput for this event.
      */
-    WaitForEventNodeOutput waitForEvent(String externalEventDefName);
+    ExternalEventNodeOutput waitForEvent(String externalEventDefName);
 
     /**
      * Adds a WAIT_FOR_CONDITION node which blocks until the provided boolean condition

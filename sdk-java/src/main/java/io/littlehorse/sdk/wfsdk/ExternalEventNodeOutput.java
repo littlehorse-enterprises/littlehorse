@@ -1,11 +1,11 @@
 package io.littlehorse.sdk.wfsdk;
 
-public interface WaitForEventNodeOutput extends NodeOutput {
+public interface ExternalEventNodeOutput extends NodeOutput {
     /**
      * Adds a timeout to an ExternalEventNode.
      *
      * @param timeoutSeconds the timeout length.
      * @return the TaskNodeOutput.
      */
-    public WaitForEventNodeOutput timeout(int timeoutSeconds);
+    public ExternalEventNodeOutput timeout(int timeoutSeconds);
 }
