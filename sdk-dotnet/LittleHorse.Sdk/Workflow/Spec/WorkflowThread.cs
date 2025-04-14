@@ -6,16 +6,20 @@ using static LittleHorse.Sdk.Common.Proto.UTActionTrigger.Types;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// This class is used to define the logic of a ThreadSpec in a ThreadFunc. 
+/// </summary>
 public class WorkflowThread
 {
+    /// <value>
+    /// The parent workflow of this thread.
+    /// </value>
     public Workflow Parent { get; private set; }
-    private readonly ThreadSpec _spec;
+    
+    /// <value>
+    /// The name of the last node in the thread.
+    /// </value>
     public string LastNodeName { get; private set; }
-    private readonly bool _isActive;
-    private readonly List<WfRunVariable> _wfRunVariables;
-    private EdgeCondition? _lastNodeCondition;
-    private readonly Queue<VariableMutation> _variableMutations;
-    private ThreadRetentionPolicy? _retentionPolicy;
     
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
@@ -23,7 +27,14 @@ public class WorkflowThread
     /// </summary>
     public const string HandlerInputVar = "INPUT";
     
-    public WorkflowThread(Workflow parent, Action<WorkflowThread> action)
+    private readonly ThreadSpec _spec;
+    private readonly bool _isActive;
+    private readonly List<WfRunVariable> _wfRunVariables;
+    private EdgeCondition? _lastNodeCondition;
+    private readonly Queue<VariableMutation> _variableMutations;
+    private ThreadRetentionPolicy? _retentionPolicy;
+    
+    internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
         Parent = parent;
         _spec = new ThreadSpec();
@@ -48,6 +59,10 @@ public class WorkflowThread
         _spec.RetentionPolicy = GetRetentionPolicy();
     }
 
+    /// <summary>
+    /// This is a compilation method for workflows
+    /// </summary>
+    /// <returns>A ThreadSpec.</returns>
     public ThreadSpec Compile()
     {
         if (_spec.VariableDefs.Count > 0)
@@ -344,7 +359,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareBool(string name) 
     {
         return AddVariable(name, VariableType.Bool);
@@ -356,7 +371,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareInt(string name) 
     {
         return AddVariable(name, VariableType.Int);
@@ -368,7 +383,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareStr(string name) 
     {
         return AddVariable(name, VariableType.Str);
@@ -380,7 +395,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareDouble(string name) 
     {
         return AddVariable(name, VariableType.Double);
@@ -392,7 +407,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareBytes(string name) 
     {
         return AddVariable(name, VariableType.Bytes);
@@ -404,7 +419,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareJsonArr(string name) 
     {
         return AddVariable(name, VariableType.JsonArr);
@@ -416,7 +431,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareJsonObj(string name) 
     {
         return AddVariable(name, VariableType.JsonObj);
@@ -546,7 +561,7 @@ public class WorkflowThread
     /// It is either a literal value (which the Library casts to a Variable Value) or a
     /// `WfRunVariable` representing the RHS of the expression.
     /// </param>
-    /// <returns>The value of <paramref name="WorkflowCondition" /> </returns>
+    /// <returns>The value of WorkflowCondition </returns>
     public WorkflowCondition Condition(object lhs, Comparator comparator, object rhs)
     {
         return new WorkflowCondition(AssignVariableHelper(lhs), 

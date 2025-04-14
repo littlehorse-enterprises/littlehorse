@@ -53,7 +53,7 @@ public class UserTaskSchemaTest
     
     class TestWithNoSupportedTypesForm1
     {
-        [field: UserTaskField(
+        [UserTaskField(
             DisplayName = "Any display name")]
         public JsonArray Field = new JsonArray();
     }
