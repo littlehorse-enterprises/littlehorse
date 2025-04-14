@@ -14,7 +14,7 @@ For documentation on how to use this library, please go to [the LittleHorse webs
 
 ## License
 
-All code in this repository is covered by the [Server Side Public License, Version 1](https://spdx.org/licenses/SSPL-1.0.html). All code is intellectual property of LittleHorse Enterprises LLC.
+All code in this directory is licensed under the [GNU Affero General Public License, Version 3](https://www.gnu.org/licenses/agpl-3.0.en.html) and is copyright of LittleHorse Enterprises LLC.
 
 ## Developing
 
