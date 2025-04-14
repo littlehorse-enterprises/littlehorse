@@ -75,15 +75,4 @@ public interface PartitionMetricOrBuilder extends
    * <code>.google.protobuf.Duration window_length = 4;</code>
    */
   com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
-
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
-   * @return The enum numeric value on the wire for aggregationType.
-   */
-  int getAggregationTypeValue();
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
-   * @return The aggregationType.
-   */
-  io.littlehorse.sdk.common.proto.AggregationType getAggregationType();
 }

@@ -8,9 +8,12 @@ import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -107,5 +110,9 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      */
     public Optional<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableId() {
         return Optional.empty();
+    }
+
+    public Set<MetricSpecIdModel> metricsToCollect() {
+        return Set.of();
     }
 }

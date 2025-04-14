@@ -52,18 +52,16 @@ class UserTaskRunStatusRange(_message.Message):
     def __init__(self, starts: _Optional[_Union[_common_enums_pb2.UserTaskRunStatus, str]] = ..., ends: _Optional[_Union[_common_enums_pb2.UserTaskRunStatus, str]] = ...) -> None: ...
 
 class PartitionMetric(_message.Message):
-    __slots__ = ["id", "created_at", "active_windows", "window_length", "aggregation_type"]
+    __slots__ = ["id", "created_at", "active_windows", "window_length"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     ACTIVE_WINDOWS_FIELD_NUMBER: _ClassVar[int]
     WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    AGGREGATION_TYPE_FIELD_NUMBER: _ClassVar[int]
     id: PartitionMetricId
     created_at: _timestamp_pb2.Timestamp
     active_windows: _containers.RepeatedCompositeFieldContainer[PartitionWindowedMetric]
     window_length: _duration_pb2.Duration
-    aggregation_type: _common_enums_pb2.AggregationType
-    def __init__(self, id: _Optional[_Union[PartitionMetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., active_windows: _Optional[_Iterable[_Union[PartitionWindowedMetric, _Mapping]]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ..., aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[PartitionMetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., active_windows: _Optional[_Iterable[_Union[PartitionWindowedMetric, _Mapping]]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class PartitionWindowedMetric(_message.Message):
     __slots__ = ["value", "window_start", "number_of_samples"]

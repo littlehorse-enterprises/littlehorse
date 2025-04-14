@@ -15,6 +15,7 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.TaskNodeRun;
@@ -24,6 +25,8 @@ import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -148,6 +151,11 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         // TODO as part of #606: a TaskRun should be interruptible between retries.
         // For now, we can't interrupt a TaskRun until it's fully done.
         return !processorContext.getableManager().get(getTaskRunId()).isStillRunning();
+    }
+
+    @Override
+    public Set<MetricSpecIdModel> metricsToCollect() {
+        return Set.of(new MetricSpecIdModel());
     }
 
     @Override

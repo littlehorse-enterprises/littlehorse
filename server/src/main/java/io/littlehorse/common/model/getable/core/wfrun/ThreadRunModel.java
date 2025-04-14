@@ -522,7 +522,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
 
             boolean canAdvance = currentNR.checkIfProcessingCompleted(processorContext);
-            currentNR.recordMetrics(processorContext);
+            currentNR.recordMetrics(processorContext, this);
 
             if (!canAdvance) {
                 // then we're still waiting on the NodeRun, nothing happened.

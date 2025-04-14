@@ -6,6 +6,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.NodeReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
+import java.util.Objects;
+
 public class NodeReferenceModel extends LHSerializable<NodeReference> {
 
     private ThreadSpecReferenceModel threadSpec;
@@ -29,10 +31,16 @@ public class NodeReferenceModel extends LHSerializable<NodeReference> {
         this.threadSpec = threadSpec;
     }
 
+    public NodeReferenceModel(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
     @Override
     public NodeReference.Builder toProto() {
         NodeReference.Builder out = NodeReference.newBuilder();
-        out.setThreadSpec(threadSpec.toProto());
+        if (Objects.nonNull(threadSpec)) {
+            out.setThreadSpec(threadSpec.toProto());
+        }
         if (nodeType != null) {
             out.setNodeType(nodeType);
         }
@@ -45,7 +53,7 @@ public class NodeReferenceModel extends LHSerializable<NodeReference> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         NodeReference p = (NodeReference) proto;
-        this.threadSpec = LHSerializable.fromProto(p.getThreadSpec(), ThreadSpecReferenceModel.class, context);
+        this.threadSpec = p.hasThreadSpec() ? LHSerializable.fromProto(p.getThreadSpec(), ThreadSpecReferenceModel.class, context) : null;
         this.nodeType = p.hasNodeType() ? p.getNodeType() : null;
         this.nodeRunPosition = p.hasNodePosition() ? p.getNodePosition() : null;
     }

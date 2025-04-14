@@ -12,7 +12,7 @@ public interface NodeReferenceOrBuilder extends
    * References to the ThreadSpec where the node belongs.
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+   * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return Whether the threadSpec field is set.
    */
   boolean hasThreadSpec();
@@ -21,7 +21,7 @@ public interface NodeReferenceOrBuilder extends
    * References to the ThreadSpec where the node belongs.
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+   * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return The threadSpec.
    */
   io.littlehorse.sdk.common.proto.ThreadSpecReference getThreadSpec();
@@ -30,7 +30,7 @@ public interface NodeReferenceOrBuilder extends
    * References to the ThreadSpec where the node belongs.
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+   * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder();
 

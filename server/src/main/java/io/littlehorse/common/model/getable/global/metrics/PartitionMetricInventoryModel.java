@@ -15,7 +15,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PartitionMetricInventoryModel extends Storeable<PartitionMetricInventory> {
 
     public static final String METRIC_INVENTORY_STORE_KEY = "metricInventory";
@@ -69,6 +71,7 @@ public class PartitionMetricInventoryModel extends Storeable<PartitionMetricInve
      * @return true if the metrics didn't exist before
      */
     public void addMetric(PartitionMetricIdModel metric) {
+        log.info("adding metric");
         metricAdded.set(metrics.add(metric));
     }
 

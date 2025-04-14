@@ -55,7 +55,6 @@ export interface PartitionMetric {
   createdAt: string | undefined;
   activeWindows: PartitionWindowedMetric[];
   windowLength: Duration | undefined;
-  aggregationType: AggregationType;
 }
 
 export interface PartitionWindowedMetric {
@@ -394,13 +393,7 @@ export const UserTaskRunStatusRange = {
 };
 
 function createBasePartitionMetric(): PartitionMetric {
-  return {
-    id: undefined,
-    createdAt: undefined,
-    activeWindows: [],
-    windowLength: undefined,
-    aggregationType: AggregationType.COUNT,
-  };
+  return { id: undefined, createdAt: undefined, activeWindows: [], windowLength: undefined };
 }
 
 export const PartitionMetric = {
@@ -416,9 +409,6 @@ export const PartitionMetric = {
     }
     if (message.windowLength !== undefined) {
       Duration.encode(message.windowLength, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.aggregationType !== AggregationType.COUNT) {
-      writer.uint32(40).int32(aggregationTypeToNumber(message.aggregationType));
     }
     return writer;
   },
@@ -458,13 +448,6 @@ export const PartitionMetric = {
 
           message.windowLength = Duration.decode(reader, reader.uint32());
           continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.aggregationType = aggregationTypeFromJSON(reader.int32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -485,7 +468,6 @@ export const PartitionMetric = {
     message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
       ? Duration.fromPartial(object.windowLength)
       : undefined;
-    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     return message;
   },
 };

@@ -171,9 +171,6 @@ class ThreadSpecReference(_message.Message):
 
 class MetricSpecId(_message.Message):
     __slots__ = ["object", "node", "wf_spec_id", "thread_spec"]
-    class StatusRange(_message.Message):
-        __slots__ = []
-        def __init__(self) -> None: ...
     OBJECT_FIELD_NUMBER: _ClassVar[int]
     NODE_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]

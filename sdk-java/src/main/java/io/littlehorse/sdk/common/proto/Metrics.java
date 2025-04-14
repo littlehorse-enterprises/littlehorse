@@ -88,30 +88,29 @@ public final class Metrics {
       "\002 \001(\0162\027.littlehorse.TaskStatus\"v\n\026UserTa" +
       "skRunStatusRange\022.\n\006starts\030\001 \001(\0162\036.littl" +
       "ehorse.UserTaskRunStatus\022,\n\004ends\030\002 \001(\0162\036" +
-      ".littlehorse.UserTaskRunStatus\"\225\002\n\017Parti" +
+      ".littlehorse.UserTaskRunStatus\"\335\001\n\017Parti" +
       "tionMetric\022*\n\002id\030\001 \001(\0132\036.littlehorse.Par" +
       "titionMetricId\022.\n\ncreated_at\030\002 \001(\0132\032.goo" +
       "gle.protobuf.Timestamp\022<\n\016active_windows" +
       "\030\003 \003(\0132$.littlehorse.PartitionWindowedMe" +
       "tric\0220\n\rwindow_length\030\004 \001(\0132\031.google.pro" +
-      "tobuf.Duration\0226\n\020aggregation_type\030\005 \001(\016" +
-      "2\034.littlehorse.AggregationType\"u\n\027Partit" +
-      "ionWindowedMetric\022\r\n\005value\030\001 \001(\001\0220\n\014wind" +
-      "ow_start\030\002 \001(\0132\032.google.protobuf.Timesta" +
-      "mp\022\031\n\021number_of_samples\030\003 \001(\003\"\234\001\n\021Partit" +
-      "ionMetricId\022%\n\002id\030\001 \001(\0132\031.littlehorse.Me" +
-      "tricSpecId\022(\n\ttenant_id\030\002 \001(\0132\025.littleho" +
-      "rse.TenantId\0226\n\020aggregation_type\030\003 \001(\0162\034" +
-      ".littlehorse.AggregationType\"\217\002\n\006Metric\022" +
-      "!\n\002id\030\001 \001(\0132\025.littlehorse.MetricId\022\017\n\005co" +
-      "unt\030\002 \001(\003H\000\022\025\n\013latency_avg\030\003 \001(\003H\000\022.\n\ncr" +
-      "eated_at\030\004 \001(\0132\032.google.protobuf.Timesta" +
-      "mp\022G\n\023value_per_partition\030\005 \003(\0132*.little" +
-      "horse.Metric.ValuePerPartitionEntry\0328\n\026V" +
-      "aluePerPartitionEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005va" +
-      "lue\030\002 \001(\001:\0028\001B\007\n\005valueBM\n\037io.littlehorse" +
-      ".sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleH" +
-      "orse.Sdk.Common.Protob\006proto3"
+      "tobuf.Duration\"u\n\027PartitionWindowedMetri" +
+      "c\022\r\n\005value\030\001 \001(\001\0220\n\014window_start\030\002 \001(\0132\032" +
+      ".google.protobuf.Timestamp\022\031\n\021number_of_" +
+      "samples\030\003 \001(\003\"\234\001\n\021PartitionMetricId\022%\n\002i" +
+      "d\030\001 \001(\0132\031.littlehorse.MetricSpecId\022(\n\tte" +
+      "nant_id\030\002 \001(\0132\025.littlehorse.TenantId\0226\n\020" +
+      "aggregation_type\030\003 \001(\0162\034.littlehorse.Agg" +
+      "regationType\"\217\002\n\006Metric\022!\n\002id\030\001 \001(\0132\025.li" +
+      "ttlehorse.MetricId\022\017\n\005count\030\002 \001(\003H\000\022\025\n\013l" +
+      "atency_avg\030\003 \001(\003H\000\022.\n\ncreated_at\030\004 \001(\0132\032" +
+      ".google.protobuf.Timestamp\022G\n\023value_per_" +
+      "partition\030\005 \003(\0132*.littlehorse.Metric.Val" +
+      "uePerPartitionEntry\0328\n\026ValuePerPartition" +
+      "Entry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\001:\0028\001B\007\n" +
+      "\005valueBM\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -150,7 +149,7 @@ public final class Metrics {
     internal_static_littlehorse_PartitionMetric_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PartitionMetric_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "ActiveWindows", "WindowLength", "AggregationType", });
+        new java.lang.String[] { "Id", "CreatedAt", "ActiveWindows", "WindowLength", });
     internal_static_littlehorse_PartitionWindowedMetric_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_PartitionWindowedMetric_fieldAccessorTable = new

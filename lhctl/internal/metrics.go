@@ -61,12 +61,11 @@ var listMetricRuns = &cobra.Command{
 	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		measurable := args[0]
-		object := args[1]
 		windowLength, _ := time.ParseDuration(args[2])
 
 		metricId := &lhproto.MetricSpecId{
 			Reference: &lhproto.MetricSpecId_Object{
-				Object: toMeasurable(object),
+				Object: toMeasurable(measurable),
 			},
 		}
 		metricId.Reference = &lhproto.MetricSpecId_Object{

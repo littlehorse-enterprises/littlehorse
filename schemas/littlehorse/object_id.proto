@@ -200,7 +200,7 @@ message ScheduledWfRunId {
 // Node type, or node position
 message NodeReference {
   // References to the ThreadSpec where the node belongs.
-  ThreadSpecReference thread_spec = 1;
+  optional ThreadSpecReference thread_spec = 1;
   // Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
   // any node type is implied
   optional string node_type = 2;

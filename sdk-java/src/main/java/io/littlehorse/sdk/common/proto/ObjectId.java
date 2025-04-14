@@ -120,11 +120,6 @@ public final class ObjectId {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_MetricSpecId_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MetricSpecId_StatusRange_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_MetricSpecId_StatusRange_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_MetricId_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -176,27 +171,28 @@ public final class ObjectId {
       "etricsWindowLength\022)\n\nwf_spec_id\030\003 \001(\0132\025" +
       ".littlehorse.WfSpecId\"\031\n\013PrincipalId\022\n\n\002" +
       "id\030\001 \001(\t\"\026\n\010TenantId\022\n\n\002id\030\001 \001(\t\"\036\n\020Sche" +
-      "duledWfRunId\022\n\n\002id\030\001 \001(\t\"\232\001\n\rNodeReferen" +
-      "ce\0225\n\013thread_spec\030\001 \001(\0132 .littlehorse.Th" +
-      "readSpecReference\022\026\n\tnode_type\030\002 \001(\tH\000\210\001" +
-      "\001\022\032\n\rnode_position\030\003 \001(\005H\001\210\001\001B\014\n\n_node_t" +
-      "ypeB\020\n\016_node_position\"n\n\023ThreadSpecRefer" +
-      "ence\022)\n\nwf_spec_id\030\001 \001(\0132\025.littlehorse.W" +
-      "fSpecId\022\032\n\rthread_number\030\002 \001(\005H\000\210\001\001B\020\n\016_" +
-      "thread_number\"\355\001\n\014MetricSpecId\022/\n\006object" +
-      "\030\001 \001(\0162\035.littlehorse.MeasurableObjectH\000\022" +
-      "*\n\004node\030\002 \001(\0132\032.littlehorse.NodeReferenc" +
-      "eH\000\022+\n\nwf_spec_id\030\003 \001(\0132\025.littlehorse.Wf" +
-      "SpecIdH\000\0227\n\013thread_spec\030\004 \001(\0132 .littleho" +
-      "rse.ThreadSpecReferenceH\000\032\r\n\013StatusRange" +
-      "B\013\n\treference\"\331\001\n\010MetricId\0221\n\016metric_spe" +
-      "c_id\030\001 \001(\0132\031.littlehorse.MetricSpecId\0220\n" +
-      "\rwindow_length\030\002 \001(\0132\031.google.protobuf.D" +
-      "uration\0220\n\014window_start\030\003 \001(\0132\032.google.p" +
-      "rotobuf.Timestamp\0226\n\020aggregation_type\030\004 " +
-      "\001(\0162\034.littlehorse.AggregationTypeBM\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
-      "o\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "duledWfRunId\022\n\n\002id\030\001 \001(\t\"\257\001\n\rNodeReferen" +
+      "ce\022:\n\013thread_spec\030\001 \001(\0132 .littlehorse.Th" +
+      "readSpecReferenceH\000\210\001\001\022\026\n\tnode_type\030\002 \001(" +
+      "\tH\001\210\001\001\022\032\n\rnode_position\030\003 \001(\005H\002\210\001\001B\016\n\014_t" +
+      "hread_specB\014\n\n_node_typeB\020\n\016_node_positi" +
+      "on\"n\n\023ThreadSpecReference\022)\n\nwf_spec_id\030" +
+      "\001 \001(\0132\025.littlehorse.WfSpecId\022\032\n\rthread_n" +
+      "umber\030\002 \001(\005H\000\210\001\001B\020\n\016_thread_number\"\336\001\n\014M" +
+      "etricSpecId\022/\n\006object\030\001 \001(\0162\035.littlehors" +
+      "e.MeasurableObjectH\000\022*\n\004node\030\002 \001(\0132\032.lit" +
+      "tlehorse.NodeReferenceH\000\022+\n\nwf_spec_id\030\003" +
+      " \001(\0132\025.littlehorse.WfSpecIdH\000\0227\n\013thread_" +
+      "spec\030\004 \001(\0132 .littlehorse.ThreadSpecRefer" +
+      "enceH\000B\013\n\treference\"\331\001\n\010MetricId\0221\n\016metr" +
+      "ic_spec_id\030\001 \001(\0132\031.littlehorse.MetricSpe" +
+      "cId\0220\n\rwindow_length\030\002 \001(\0132\031.google.prot" +
+      "obuf.Duration\0220\n\014window_start\030\003 \001(\0132\032.go" +
+      "ogle.protobuf.Timestamp\0226\n\020aggregation_t" +
+      "ype\030\004 \001(\0162\034.littlehorse.AggregationTypeB" +
+      "M\n\037io.littlehorse.sdk.common.protoP\001Z\t.;" +
+      "lhproto\252\002\034LittleHorse.Sdk.Common.Protob\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -318,7 +314,7 @@ public final class ObjectId {
     internal_static_littlehorse_NodeReference_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_NodeReference_descriptor,
-        new java.lang.String[] { "ThreadSpec", "NodeType", "NodePosition", "NodeType", "NodePosition", });
+        new java.lang.String[] { "ThreadSpec", "NodeType", "NodePosition", "ThreadSpec", "NodeType", "NodePosition", });
     internal_static_littlehorse_ThreadSpecReference_descriptor =
       getDescriptor().getMessageTypes().get(19);
     internal_static_littlehorse_ThreadSpecReference_fieldAccessorTable = new
@@ -331,12 +327,6 @@ public final class ObjectId {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_MetricSpecId_descriptor,
         new java.lang.String[] { "Object", "Node", "WfSpecId", "ThreadSpec", "Reference", });
-    internal_static_littlehorse_MetricSpecId_StatusRange_descriptor =
-      internal_static_littlehorse_MetricSpecId_descriptor.getNestedTypes().get(0);
-    internal_static_littlehorse_MetricSpecId_StatusRange_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_MetricSpecId_StatusRange_descriptor,
-        new java.lang.String[] { });
     internal_static_littlehorse_MetricId_descriptor =
       getDescriptor().getMessageTypes().get(21);
     internal_static_littlehorse_MetricId_fieldAccessorTable = new

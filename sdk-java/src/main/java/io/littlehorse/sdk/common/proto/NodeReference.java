@@ -53,19 +53,19 @@ private static final long serialVersionUID = 0L;
    * References to the ThreadSpec where the node belongs.
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+   * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return Whether the threadSpec field is set.
    */
   @java.lang.Override
   public boolean hasThreadSpec() {
-    return threadSpec_ != null;
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
    * References to the ThreadSpec where the node belongs.
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+   * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return The threadSpec.
    */
   @java.lang.Override
@@ -77,7 +77,7 @@ private static final long serialVersionUID = 0L;
    * References to the ThreadSpec where the node belongs.
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+   * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder() {
@@ -98,7 +98,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasNodeType() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <pre>
@@ -159,7 +159,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasNodePosition() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
    * <pre>
@@ -189,13 +189,13 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (threadSpec_ != null) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getThreadSpec());
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, nodeType_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       output.writeInt32(3, nodePosition_);
     }
     getUnknownFields().writeTo(output);
@@ -207,14 +207,14 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (threadSpec_ != null) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getThreadSpec());
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, nodeType_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, nodePosition_);
     }
@@ -396,13 +396,19 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.NodeReference.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getThreadSpecFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -448,19 +454,20 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.NodeReference result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.threadSpec_ = threadSpecBuilder_ == null
             ? threadSpec_
             : threadSpecBuilder_.build();
+        to_bitField0_ |= 0x00000001;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.nodeType_ = nodeType_;
-        to_bitField0_ |= 0x00000001;
+        to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.nodePosition_ = nodePosition_;
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -588,7 +595,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      * @return Whether the threadSpec field is set.
      */
     public boolean hasThreadSpec() {
@@ -599,7 +606,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      * @return The threadSpec.
      */
     public io.littlehorse.sdk.common.proto.ThreadSpecReference getThreadSpec() {
@@ -614,7 +621,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder setThreadSpec(io.littlehorse.sdk.common.proto.ThreadSpecReference value) {
       if (threadSpecBuilder_ == null) {
@@ -634,7 +641,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder setThreadSpec(
         io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder builderForValue) {
@@ -652,7 +659,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder mergeThreadSpec(io.littlehorse.sdk.common.proto.ThreadSpecReference value) {
       if (threadSpecBuilder_ == null) {
@@ -675,7 +682,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder clearThreadSpec() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -692,7 +699,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder getThreadSpecBuilder() {
       bitField0_ |= 0x00000001;
@@ -704,7 +711,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder() {
       if (threadSpecBuilder_ != null) {
@@ -719,7 +726,7 @@ private static final long serialVersionUID = 0L;
      * References to the ThreadSpec where the node belongs.
      * </pre>
      *
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
+     * <code>optional .littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ThreadSpecReference, io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder, io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder> 

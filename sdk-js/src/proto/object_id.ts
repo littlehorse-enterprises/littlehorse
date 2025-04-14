@@ -236,7 +236,7 @@ export interface ScheduledWfRunId {
  */
 export interface NodeReference {
   /** References to the ThreadSpec where the node belongs. */
-  threadSpec:
+  threadSpec?:
     | ThreadSpecReference
     | undefined;
   /**
@@ -271,9 +271,6 @@ export interface MetricSpecId {
   node?: NodeReference | undefined;
   wfSpecId?: WfSpecId | undefined;
   threadSpec?: ThreadSpecReference | undefined;
-}
-
-export interface MetricSpecId_StatusRange {
 }
 
 export interface MetricId {
@@ -1522,40 +1519,6 @@ export const MetricSpecId = {
     message.threadSpec = (object.threadSpec !== undefined && object.threadSpec !== null)
       ? ThreadSpecReference.fromPartial(object.threadSpec)
       : undefined;
-    return message;
-  },
-};
-
-function createBaseMetricSpecId_StatusRange(): MetricSpecId_StatusRange {
-  return {};
-}
-
-export const MetricSpecId_StatusRange = {
-  encode(_: MetricSpecId_StatusRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricSpecId_StatusRange {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricSpecId_StatusRange();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<MetricSpecId_StatusRange>): MetricSpecId_StatusRange {
-    return MetricSpecId_StatusRange.fromPartial(base ?? {});
-  },
-  fromPartial(_: DeepPartial<MetricSpecId_StatusRange>): MetricSpecId_StatusRange {
-    const message = createBaseMetricSpecId_StatusRange();
     return message;
   },
 };

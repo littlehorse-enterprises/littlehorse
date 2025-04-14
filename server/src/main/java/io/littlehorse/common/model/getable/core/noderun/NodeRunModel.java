@@ -34,6 +34,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -604,18 +605,18 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         throw new NodeFailureException(invalidWfSpecFailure);
     }
 
-    public void recordMetrics(ProcessorExecutionContext processorContext) {
+    public void recordMetrics(ProcessorExecutionContext processorContext, ThreadRunModel threadRun) {
         GetableStatusUpdate update;
         while ((update = processorContext.getableUpdates().getUpdatesForNodeRun(id).poll()) != null) {
-             sensor().record(update);
+             sensor(threadRun).record(update);
             processorContext.getableUpdates().append(id.getWfRunId(), getThreadRunNumber(), update);
         }
     }
 
-    private Sensor sensor() {
+    private Sensor sensor(ThreadRunModel threadRun) {
         if(sensor == null) {
-            MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new NodeReferenceModel());
-            return new Sensor(Set.of(wfSpecMetricId),  executionContext.castOnSupport(ProcessorExecutionContext.class));
+            MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new NodeReferenceModel("TASK"));
+            return new Sensor(Set.of(wfSpecMetricId, new MetricSpecIdModel(MeasurableObject.TASK)),  executionContext.castOnSupport(ProcessorExecutionContext.class));
         }
         return sensor;
     }

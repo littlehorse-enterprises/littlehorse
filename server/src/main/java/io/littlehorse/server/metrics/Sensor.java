@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class Sensor {
 
     private final Set<MetricSpecModel> metrics;
@@ -52,7 +54,10 @@ public class Sensor {
     }
 
     private MetricSpecModel getMetricSpec(MetricSpecIdModel metricSpecId) {
-        return processorContext.metadataManager().get(metricSpecId);
+        return Optional.ofNullable(processorContext.metadataManager().get(metricSpecId)).orElseGet(() -> {
+            log.info(metricSpecId + " not found");
+            return null;
+        });
     }
 
 
