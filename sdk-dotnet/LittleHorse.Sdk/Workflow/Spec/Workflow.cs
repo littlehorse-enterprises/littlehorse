@@ -8,6 +8,9 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
+/// <summary>
+/// The <c>Workflow</c> class represents a workflow definition in the LittleHorse system.
+/// </summary>
 public class Workflow
 {
     private readonly ILogger<Workflow>? _logger;
@@ -27,6 +30,11 @@ public class Workflow
     private WorkflowRetentionPolicy? _wfRetentionPolicy;
     internal readonly Stack<WorkflowThread> Threads;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Workflow"/> class.
+    /// </summary>
+    /// <param name="name">The name of the workflow.</param>
+    /// <param name="entryPoint">This is the main entrypoint for the workflow logic.</param>
     public Workflow(string name, Action<WorkflowThread> entryPoint)
     {
         _logger = LHLoggerFactoryProvider.GetLogger<Workflow>();
