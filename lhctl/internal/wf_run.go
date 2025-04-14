@@ -2,6 +2,7 @@ package internal
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -36,14 +37,15 @@ var getScheduledWfRun = &cobra.Command{
 }
 
 var searchWfRunCmd = &cobra.Command{
-	Use:   "wfRun <wfSpecName>",
+	Use:   "wfRun <wfSpecName> [<majorVersion>] [<revision>]",
 	Short: "Search for WfRuns",
 	Long: `
-Search for WfRuns. You may provide any of the following flag groups:
+Search for WfRuns. You may provide the optional arguments:
+- [<majorVersion>]
+- [<revision>]
 
-[majorVersion, revision, status]
-[majorVersion, revision]
-[status]
+And the optional flag:
+- status
 
   * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
     options with this group to put a time bound on WfRun's which are returned.
@@ -51,22 +53,32 @@ Search for WfRuns. You may provide any of the following flag groups:
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
-	Args: cobra.ExactArgs(1),
+	Args: cobra.MaximumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName := args[0]
 		statusRaw, _ := cmd.Flags().GetString("status")
-		majorVersionRaw, _ := cmd.Flags().GetInt32("majorVersion")
-		revisionRaw, _ := cmd.Flags().GetInt32("revision")
-
-		var majorVersion, revision *int32 = nil, nil
 		var status *lhproto.LHStatus
+		var majorVersion *int32 = nil
+		var revision *int32 = nil
 
-		if majorVersionRaw != -1 {
-			majorVersion = &majorVersionRaw
+		if len(args) > 1 {
+			majorVersionInt, err := strconv.Atoi(args[1])
+			if err != nil {
+				log.Fatal("Couldn't convert majorVersion to int:\n", err)
+			}
+			val := int32(majorVersionInt)
+			majorVersion = &val
 		}
-		if revisionRaw != -1 {
-			revision = &revisionRaw
+
+		if len(args) > 2 {
+			revisionInt, err := strconv.Atoi(args[2])
+			if err != nil {
+				log.Fatal("Couldn't convert revision to int:\n", err)
+			}
+			val := int32(revisionInt)
+			revision = &val
 		}
+
 		if statusRaw != "" {
 			statusTmp := lhproto.LHStatus(lhproto.LHStatus_value[statusRaw])
 			status = &statusTmp
@@ -93,9 +105,10 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			WfSpecRevision:     revision,
 		}
 
-		littlehorse.PrintResp(
-			getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
-		)
+		littlehorse.PrintProto(search)
+		// littlehorse.PrintResp(
+		// 	getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
+		// )
 	},
 }
 
