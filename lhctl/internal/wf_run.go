@@ -45,11 +45,11 @@ Search for WfRuns. You may provide the optional arguments:
 - [<revision>]
 
 And the optional flag:
-- status
+- [--status]
 
   * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-    options with this group to put a time bound on WfRun's which are returned.
-	The time bound applies to the time that the WfRun was created.
+          flags to put a time bound on WfRun's which are returned.
+          The time bound applies to the time that the WfRun was created.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
