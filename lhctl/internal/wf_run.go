@@ -105,10 +105,9 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			WfSpecRevision:     revision,
 		}
 
-		littlehorse.PrintProto(search)
-		// littlehorse.PrintResp(
-		// 	getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
-		// )
+		littlehorse.PrintResp(
+			getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
+		)
 	},
 }
 
@@ -329,13 +328,8 @@ func init() {
 	searchCmd.AddCommand(searchScheduledWfsCmd)
 
 	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
-	searchWfRunCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
-	searchWfRunCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
-	searchWfRunCmd.MarkFlagsRequiredTogether("revision", "majorVersion")
-	searchScheduledWfsCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
-	searchScheduledWfsCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
