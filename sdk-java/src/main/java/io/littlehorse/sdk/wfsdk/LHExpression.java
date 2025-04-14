@@ -53,9 +53,9 @@ public interface LHExpression extends Serializable {
      * by `other` removed.
      *
      * Valid only for JSON_ARR expressions.
-     * @param index the index at which to insert the `other`.
-     * @return an expression whose value is this expression with the `other` inserted
-     * at the specified `index`.
+     * @param index the index at which to remove the value.
+     * @return an expression whose value is this expression with the value at the
+     * specified `index` removed.
      */
     LHExpression removeIndex(int index);
 
@@ -76,8 +76,8 @@ public interface LHExpression extends Serializable {
      *
      * Valid only for JSON_OBJ expressions.
      * @param key the key to remove from this expression.
-     * @return an expression whose value is this expression with the key specified
-     * by `key` removed.
+     * @return an expression whose value is this expression with the value at the specified
+     * `key` removed.
      */
     LHExpression removeKey(Serializable key);
 }
