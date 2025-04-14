@@ -18,12 +18,4 @@ public interface NodeOutput extends LHExpression {
      * @return a NodeOutput.
      */
     public NodeOutput jsonPath(String path);
-
-    /**
-     * Adds a timeout to a Node. Valid on TaskRuns and ExternalEvents.
-     *
-     * @param timeoutSeconds the timeout length.
-     * @return the NodeOutput.
-     */
-    public NodeOutput timeout(int timeoutSeconds);
 }

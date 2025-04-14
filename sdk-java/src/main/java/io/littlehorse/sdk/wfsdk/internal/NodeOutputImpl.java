@@ -25,11 +25,6 @@ class NodeOutputImpl implements NodeOutput {
         return out;
     }
 
-    public NodeOutputImpl timeout(int timeoutSeconds) {
-        parent.addTimeoutToExtEvt(this, timeoutSeconds);
-        return this;
-    }
-
     @Override
     public LHExpression add(Serializable other) {
         return new LHExpressionImpl(this, VariableMutationType.ADD, other);
