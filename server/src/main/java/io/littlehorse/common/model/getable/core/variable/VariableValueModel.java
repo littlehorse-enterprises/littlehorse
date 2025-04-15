@@ -173,12 +173,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         VariableValue.Builder out = VariableValue.newBuilder();
         switch (type) {
             case JSON_ARR:
-                if (jsonArrVal != null) {
-                    if (this.deserializationError != null) {
-                        out.setJsonArr((this.jsonStr));
-                    } else {
-                        out.setJsonArr(LHUtil.objToString(jsonArrVal));
-                    }
+                if (this.deserializationError != null) {
+                    out.setJsonArr((this.jsonStr));
+                } else if (jsonArrVal != null) {
+                    out.setJsonArr(LHUtil.objToString(jsonArrVal));
                 }
                 break;
             case JSON_OBJ:
