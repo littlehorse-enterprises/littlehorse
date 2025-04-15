@@ -1,7 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
@@ -47,7 +47,7 @@ class BuilderUtil {
             try {
                 VariableValue defVal = LHLibUtil.objToVarVal(variable);
                 builder.setLiteralValue(defVal);
-            } catch (LHSerdeError exn) {
+            } catch (LHSerdeException exn) {
                 throw new RuntimeException(exn);
             }
         }

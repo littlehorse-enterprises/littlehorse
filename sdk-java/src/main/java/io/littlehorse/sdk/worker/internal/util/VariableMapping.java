@@ -1,7 +1,7 @@
 package io.littlehorse.sdk.worker.internal.util;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
+import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
@@ -73,7 +73,7 @@ public class VariableMapping {
         }
     }
 
-    public Object assign(ScheduledTask taskInstance, WorkerContext context) throws InputVarSubstitutionError {
+    public Object assign(ScheduledTask taskInstance, WorkerContext context) throws InputVarSubstitutionException {
         if (type.equals(WorkerContext.class)) {
             return context;
         }
@@ -117,7 +117,7 @@ public class VariableMapping {
         try {
             return LHLibUtil.deserializeFromjson(jsonStr, type);
         } catch (LHJsonProcessingException exn) {
-            throw new InputVarSubstitutionError(
+            throw new InputVarSubstitutionException(
                     "Failed deserializing the Java object for variable " + taskDefParamName, exn);
         }
     }

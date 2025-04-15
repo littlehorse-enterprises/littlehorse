@@ -3,7 +3,7 @@ package io.littlehorse.common.model;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.LHStatusChanged;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class LHStatusChangedModel extends LHSerializable<LHStatusChanged> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         LHStatusChanged p = (LHStatusChanged) proto;
         if (p.hasPreviousStatus()) {
             this.previousStatus = p.getPreviousStatus();

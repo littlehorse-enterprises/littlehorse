@@ -2,7 +2,7 @@ package io.littlehorse.test;
 
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -63,7 +63,7 @@ public class AbstractVerifier implements Verifier {
         for (Arg arg : args) {
             try {
                 req.putVariables(arg.name, LHLibUtil.objToVarVal(arg.value));
-            } catch (LHSerdeError exn) {
+            } catch (LHSerdeException exn) {
                 // This should NOT throw a StatusRuntimeException; rather, it should immediately fail the
                 // test because retries will cause the same error over and over.
                 throw new RuntimeException("Couldn't serialize workflow input: " + exn.getMessage(), exn);

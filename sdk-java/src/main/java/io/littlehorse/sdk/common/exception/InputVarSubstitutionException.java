@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.common.exception;
 
-public class InputVarSubstitutionError extends Exception {
+public class InputVarSubstitutionException extends Exception {
 
     private Exception parent;
     private String message;
@@ -25,7 +25,7 @@ public class InputVarSubstitutionError extends Exception {
         this.message = message;
     }
 
-    public InputVarSubstitutionError(String message, Exception parent) {
+    public InputVarSubstitutionException(String message, Exception parent) {
         this.message = message;
         this.parent = parent;
     }

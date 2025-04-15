@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.Principal;
@@ -38,7 +38,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     private boolean overwrite;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         PutPrincipalRequest p = (PutPrincipalRequest) proto;
         this.id = p.getId();
         this.globalAcls = LHSerializable.fromProto(p.getGlobalAcls(), ServerACLsModel.class, context);
