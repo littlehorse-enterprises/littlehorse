@@ -6,7 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -18,7 +18,7 @@ public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteSched
     private ScheduledWfRunIdModel id;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         DeleteScheduledWfRunRequest p = (DeleteScheduledWfRunRequest) proto;
         id = LHSerializable.fromProto(p.getId(), ScheduledWfRunIdModel.class, context);
     }

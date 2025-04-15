@@ -1,16 +1,16 @@
 package io.littlehorse.sdk.common.exception;
 
-public class LHSerdeError extends RuntimeException {
+public class LHSerdeException extends RuntimeException {
 
     private Throwable exn;
     private String message;
 
-    public LHSerdeError(Throwable exn, String message) {
+    public LHSerdeException(Throwable exn, String message) {
         this.exn = exn;
         this.message = message;
     }
 
-    public LHSerdeError(String message) {
+    public LHSerdeException(String message) {
         this.message = message;
     }
 

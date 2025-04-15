@@ -11,7 +11,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJob;
 import io.littlehorse.common.model.corecommand.subcommand.job.NoOpJobModel;
 import io.littlehorse.common.proto.BulkUpdateJob;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -30,7 +30,7 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
     private NoOpJobModel noOpJob;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         BulkUpdateJob p = (BulkUpdateJob) proto;
         this.partitionKey = p.getPartition();
         this.startKey = p.getStartKey();

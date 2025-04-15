@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ScheduledWfRun;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -21,7 +21,7 @@ public class ScheduledWfRunIdModel extends CoreObjectId<ScheduledWfRunId, Schedu
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ScheduledWfRunId p = (ScheduledWfRunId) proto;
         this.id = p.getId();
     }

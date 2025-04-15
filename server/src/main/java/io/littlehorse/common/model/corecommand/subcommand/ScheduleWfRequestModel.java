@@ -16,7 +16,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduledWfRun;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -39,7 +39,7 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     private String cronExpression;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ScheduleWfRequest p = (ScheduleWfRequest) proto;
         if (p.hasId()) id = p.getId();
         wfSpecName = p.getWfSpecName();

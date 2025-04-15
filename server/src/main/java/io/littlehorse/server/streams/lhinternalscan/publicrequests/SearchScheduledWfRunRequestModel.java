@@ -9,7 +9,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunIdList;
 import io.littlehorse.sdk.common.proto.SearchScheduledWfRunRequest;
@@ -51,7 +51,7 @@ public class SearchScheduledWfRunRequestModel
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         SearchScheduledWfRunRequest p = (SearchScheduledWfRunRequest) proto;
         wfSpecName = p.getWfSpecName();
         if (p.hasMajorVersion()) {
