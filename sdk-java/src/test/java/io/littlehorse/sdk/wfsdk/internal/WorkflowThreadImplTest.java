@@ -152,6 +152,25 @@ public class WorkflowThreadImplTest {
     }
 
     @Test
+    void canMutateAbueloVariablesViaAssign() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", abuelo -> {
+            WfRunVariable abueloVar = abuelo.declareStr("abuelo");
+            abuelo.spawnThread(
+                    hijo -> {
+                        abueloVar.assign("fdsa");
+                        hijo.spawnThread(
+                                nieto -> {
+                                    abueloVar.assign("foo");
+                                },
+                                "child-thread",
+                                null);
+                    },
+                    "grandchild",
+                    null);
+        });
+    }
+
+    @Test
     void noRetriesByDefault() {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.execute("asdf");

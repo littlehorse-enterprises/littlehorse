@@ -709,6 +709,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public void mutate(WfRunVariable lhsVar, VariableMutationType type, Object rhs) {
         checkIfIsActive();
+        mutateWithoutCheck(lhsVar, type, rhs);
+    }
+
+    public void mutateWithoutCheck(WfRunVariable lhsVar, VariableMutationType type, Object rhs) {
+        checkIfIsActive();
         WfRunVariableImpl lhs = (WfRunVariableImpl) lhsVar;
         VariableMutation.Builder mutation =
                 VariableMutation.newBuilder().setLhsName(lhs.name).setOperation(type);
