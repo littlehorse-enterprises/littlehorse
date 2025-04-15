@@ -288,7 +288,7 @@ public interface WorkflowThread {
      *
      * @param threadsToWaitFor set of SpawnedThread objects returned one or more calls to
      *     spawnThread.
-     * @return a NodeOutput that can be used for timeouts or exception handling.
+     * @return a WaitForThreadsNodeOutput that can be used for exception handling.
      */
     WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threadsToWaitFor);
 
@@ -297,15 +297,15 @@ public interface WorkflowThread {
      * arrives.
      *
      * @param externalEventDefName is the type of ExternalEvent to wait for.
-     * @return a NodeOutput for this event.
+     * @return an ExternalEventNodeOutput for this event.
      */
-    NodeOutput waitForEvent(String externalEventDefName);
+    ExternalEventNodeOutput waitForEvent(String externalEventDefName);
 
     /**
      * Adds a WAIT_FOR_CONDITION node which blocks until the provided boolean condition
      * evaluates to true.
      * @param condition is the condition to wait for.
-     * @return a handle to the NodeOutput, which may only be used for error handling since
+     * @return a handle to the WaitForConditionNodeOutput, which may only be used for error handling since
      * the output of this node is empty.
      */
     WaitForConditionNodeOutput waitForCondition(WorkflowCondition condition);
