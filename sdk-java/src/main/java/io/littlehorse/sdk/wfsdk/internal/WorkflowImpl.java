@@ -9,9 +9,7 @@ import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
-
 import java.util.*;
-
 import org.apache.commons.lang3.tuple.Pair;
 
 public class WorkflowImpl extends Workflow {
@@ -21,7 +19,7 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
     private Set<String> requiredWorkflowEventDefNames;
-    private Stack<WorkflowThreadImpl>  threads;
+    private Stack<WorkflowThreadImpl> threads;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
