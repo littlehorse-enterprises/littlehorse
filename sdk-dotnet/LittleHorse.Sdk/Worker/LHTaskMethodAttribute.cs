@@ -13,6 +13,10 @@
         /// </summary>
         public string Value;
 
+        /// <summary>
+        /// Constructor of the attribute.
+        /// </summary>
+        /// <param name="value">This is the name of the TaskDef.</param>
         public LHTaskMethodAttribute(string value)
         {
             Value = value;

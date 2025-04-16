@@ -33,12 +33,12 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className, variant }
           <Button
             variant="ghost"
             className={cn(
-              'flex h-full w-full items-center justify-between truncate p-1 font-normal hover:no-underline text-nowrap',
+              'flex h-full w-full items-center justify-between truncate text-nowrap p-1 font-normal hover:no-underline',
               className
             )}
           >
             <span className="truncate font-code">{formattedText}</span>
-            <div className="flex flex-shrink-0 items-center gap-1 text-xs text-muted-foreground text-nowrap">
+            <div className="flex flex-shrink-0 items-center gap-1 text-nowrap text-xs text-muted-foreground">
               View
               <ChevronRight className="h-4 w-4 opacity-50" />
             </div>
@@ -58,7 +58,7 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className, variant }
     )
   }
   return (
-    <div ref={textRef} className={cn(className, "flex items-center justify-center h-full font-code")}>
+    <div ref={textRef} className={cn(className, 'flex h-full items-center justify-center font-code')}>
       {formattedText}
     </div>
   )

@@ -20,7 +20,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label={nodeRun ? "UserTaskRun" : "UserTaskDef"}>
+        <DiagramDataGroup label={nodeRun ? 'UserTaskRun' : 'UserTaskDef'}>
           <div className="flex flex-col">
             <ExternalLinkButton href={`/userTaskDef/${userTask.userTaskDefName}`} label={userTask.userTaskDefName} />
             {nodeRun && (

@@ -665,7 +665,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, nb.build());
     }
 
-    public void addTimeoutToExtEvt(NodeOutputImpl node, int timeoutSeconds) {
+    public void addTimeoutToExtEvtNode(ExternalEventNodeOutputImpl node, int timeoutSeconds) {
         checkIfIsActive();
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
 
@@ -673,19 +673,20 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 .setLiteralValue(VariableValue.newBuilder().setInt(timeoutSeconds))
                 .build();
 
-        if (n.getNodeCase() == NodeCase.TASK) {
-            TaskNode.Builder task = n.getTaskBuilder();
-            task.setTimeoutSeconds(timeoutSeconds);
-            n.setTask(task);
+        ExternalEventNode.Builder evt = n.getExternalEventBuilder();
+        evt.setTimeoutSeconds(timeoutValue);
+        n.setExternalEvent(evt);
 
-        } else if (n.getNodeCase() == NodeCase.EXTERNAL_EVENT) {
+        spec.putNodes(node.nodeName, n.build());
+    }
 
-            ExternalEventNode.Builder evt = n.getExternalEventBuilder();
-            evt.setTimeoutSeconds(timeoutValue);
-            n.setExternalEvent(evt);
-        } else {
-            throw new RuntimeException("Timeouts are only supported on ExternalEvent and Task nodes.");
-        }
+    public void addTimeoutToTaskNode(TaskNodeOutputImpl node, int timeoutSeconds) {
+        checkIfIsActive();
+        Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
+
+        TaskNode.Builder task = n.getTaskBuilder();
+        task.setTimeoutSeconds(timeoutSeconds);
+        n.setTask(task);
 
         spec.putNodes(node.nodeName, n.build());
     }
@@ -743,7 +744,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public NodeOutputImpl waitForEvent(String externalEventDefName) {
+    public ExternalEventNodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
         ExternalEventNode waitNode = ExternalEventNode.newBuilder()
                 .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(externalEventDefName))
@@ -751,7 +752,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         parent.addExternalEventDefName(externalEventDefName);
 
-        return new NodeOutputImpl(addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode), this);
+        return new ExternalEventNodeOutputImpl(addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode), this);
     }
 
     @Override
