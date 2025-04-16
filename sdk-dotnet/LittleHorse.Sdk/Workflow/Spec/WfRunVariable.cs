@@ -43,7 +43,7 @@ public class WfRunVariable
     public WfRunVariable(string name, object typeOrDefaultVal, WorkflowThread parent)
     {
         Name = name;
-        _parent = parent;
+        _parent = parent ?? throw new ArgumentNullException(nameof(parent));
         _jsonIndexes = new List<JsonIndex>();
 
         _typeOrDefaultVal = typeOrDefaultVal ?? throw new InvalidOperationException(

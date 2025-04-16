@@ -14,7 +14,7 @@ public class WorkflowThread
     /// <value>
     /// The parent workflow of this thread.
     /// </value>
-    public Workflow Parent { get; private set; }
+    public Workflow Parent { get; init; }
     
     /// <value>
     /// The name of the last node in the thread.
@@ -37,7 +37,7 @@ public class WorkflowThread
     
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
-        Parent = parent;
+        Parent = parent ?? throw new ArgumentNullException(nameof(parent));
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
