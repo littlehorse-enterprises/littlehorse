@@ -43,6 +43,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.class, io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder.class);
   }
 
+  private int bitField0_;
   public static final int NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
@@ -156,19 +157,19 @@ private static final long serialVersionUID = 0L;
    * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
    * @return Whether the contentType field is set.
    */
   @java.lang.Override
   public boolean hasContentType() {
-    return contentType_ != null;
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
    * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
    * @return The contentType.
    */
   @java.lang.Override
@@ -180,7 +181,7 @@ private static final long serialVersionUID = 0L;
    * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder() {
@@ -207,7 +208,7 @@ private static final long serialVersionUID = 0L;
     if (retentionPolicy_ != null) {
       output.writeMessage(2, getRetentionPolicy());
     }
-    if (contentType_ != null) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getContentType());
     }
     getUnknownFields().writeTo(output);
@@ -226,7 +227,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getRetentionPolicy());
     }
-    if (contentType_ != null) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getContentType());
     }
@@ -401,13 +402,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getRetentionPolicyFieldBuilder();
+        getContentTypeFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -465,11 +473,14 @@ private static final long serialVersionUID = 0L;
             ? retentionPolicy_
             : retentionPolicyBuilder_.build();
       }
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.contentType_ = contentTypeBuilder_ == null
             ? contentType_
             : contentTypeBuilder_.build();
+        to_bitField0_ |= 0x00000001;
       }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -907,7 +918,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      * @return Whether the contentType field is set.
      */
     public boolean hasContentType() {
@@ -918,7 +929,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      * @return The contentType.
      */
     public io.littlehorse.sdk.common.proto.ReturnType getContentType() {
@@ -933,7 +944,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      */
     public Builder setContentType(io.littlehorse.sdk.common.proto.ReturnType value) {
       if (contentTypeBuilder_ == null) {
@@ -953,7 +964,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      */
     public Builder setContentType(
         io.littlehorse.sdk.common.proto.ReturnType.Builder builderForValue) {
@@ -971,7 +982,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      */
     public Builder mergeContentType(io.littlehorse.sdk.common.proto.ReturnType value) {
       if (contentTypeBuilder_ == null) {
@@ -994,7 +1005,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      */
     public Builder clearContentType() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -1011,7 +1022,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ReturnType.Builder getContentTypeBuilder() {
       bitField0_ |= 0x00000004;
@@ -1023,7 +1034,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder() {
       if (contentTypeBuilder_ != null) {
@@ -1038,7 +1049,7 @@ private static final long serialVersionUID = 0L;
      * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
      * </pre>
      *
-     * <code>.littlehorse.ReturnType content_type = 3;</code>
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> 

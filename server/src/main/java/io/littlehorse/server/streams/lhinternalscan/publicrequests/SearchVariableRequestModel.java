@@ -127,11 +127,11 @@ public class SearchVariableRequestModel
 
         // ONLY do this check if the Variable is a PRIMITIVE type.
         // TODO: Extend this when implementing Struct and StructDef.
-        TypeDefinitionModel varType = varDef.getVarDef().getType();
+        TypeDefinitionModel varType = varDef.getVarDef().getTypeDef();
         if (varType.isPrimitive() && !varType.isCompatibleWith(value)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
-                    "Specified Variable has type " + varDef.getVarDef().getType());
+                    "Specified Variable has type " + varDef.getVarDef().getTypeDef());
         }
 
         // Currently, all tags are LOCAL

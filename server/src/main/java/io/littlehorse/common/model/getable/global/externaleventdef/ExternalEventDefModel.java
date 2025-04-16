@@ -35,6 +35,9 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         this.retentionPolicy = new ExternalEventRetentionPolicyModel();
     }
 
+    /**
+     * Note that returnType can be null.
+     */
     public ExternalEventDefModel(
             String name, ExternalEventRetentionPolicyModel retentionPolicy, ReturnTypeModel returnType) {
         this();
@@ -64,7 +67,7 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         if (returnType != null) {
             b.setTypeInformation(returnType.toProto());
         } else {
-            log.debug("Handling ExternalEventDef created prior to 0.13.2: no type information");
+            log.trace("Handling ExternalEventDef created prior to 0.13.2 or with lazy user: no type information");
         }
         return b;
     }
@@ -74,7 +77,9 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         ExternalEventDef proto = (ExternalEventDef) p;
         id = LHSerializable.fromProto(proto.getId(), ExternalEventDefIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        if (proto.hasTypeInformation()) {}
+        if (proto.hasTypeInformation()) {
+            this.returnType = LHSerializable.fromProto(proto.getTypeInformation(), ReturnTypeModel.class, context);
+        }
 
         retentionPolicy =
                 LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);

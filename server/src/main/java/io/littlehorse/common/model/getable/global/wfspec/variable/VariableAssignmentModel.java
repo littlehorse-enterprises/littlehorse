@@ -124,7 +124,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
 
                 // This will need to be refactored once we introduce Structs and StructDefs.
-                baseType = varDef.getType().getType();
+                baseType = varDef.getTypeDef().getType();
                 break;
             case LITERAL_VALUE:
                 baseType = rhsLiteralValue.getType();

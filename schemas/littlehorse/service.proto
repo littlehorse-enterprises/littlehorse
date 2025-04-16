@@ -395,7 +395,7 @@ message PutExternalEventDefRequest {
   ExternalEventRetentionPolicy retention_policy = 2;
 
   // Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
-  ReturnType content_type = 3;
+  optional ReturnType content_type = 3;
 }
 
 // Request used to create an ExternalEvent.

@@ -80,7 +80,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
    * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
    * @return Whether the contentType field is set.
    */
   boolean hasContentType();
@@ -89,7 +89,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
    * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
    * @return The contentType.
    */
   io.littlehorse.sdk.common.proto.ReturnType getContentType();
@@ -98,7 +98,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
    * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder();
 }

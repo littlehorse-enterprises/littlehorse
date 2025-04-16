@@ -143,8 +143,9 @@ type ExternalEventDef struct {
 	// Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
 	//
 	// It is _optional_ for compatibility purposes: ExternalEventDef's that were created
-	// before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
-	// WfSpec's nor do we validate the
+	// before 0.13.2 will not have a schema. For those `ExternalEventDef`s that do not have
+	// a specified type_information, we do not validate the WfSpec's usage of the ExternalEvent
+	// nor do we validate the type of `content` in the `rpc PutExternalEvent`.
 	TypeInformation *ReturnType `protobuf:"bytes,4,opt,name=type_information,json=typeInformation,proto3,oneof" json:"type_information,omitempty"`
 }
 

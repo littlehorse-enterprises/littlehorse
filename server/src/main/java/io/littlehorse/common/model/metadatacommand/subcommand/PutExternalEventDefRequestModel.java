@@ -30,10 +30,12 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
 
     @Override
     public PutExternalEventDefRequest.Builder toProto() {
-        PutExternalEventDefRequest.Builder out = PutExternalEventDefRequest.newBuilder()
-                .setName(name)
-                .setRetentionPolicy(retentionPolicy.toProto())
-                .setContentType(contentType.toProto());
+        PutExternalEventDefRequest.Builder out =
+                PutExternalEventDefRequest.newBuilder().setName(name).setRetentionPolicy(retentionPolicy.toProto());
+
+        if (contentType != null) {
+            out.setContentType(contentType.toProto());
+        }
 
         return out;
     }
@@ -44,7 +46,9 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         name = p.getName();
         retentionPolicy =
                 LHSerializable.fromProto(p.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
-        contentType = LHSerializable.fromProto(p.getContentType(), ReturnTypeModel.class, context);
+        if (p.hasContentType()) {
+            contentType = LHSerializable.fromProto(p.getContentType(), ReturnTypeModel.class, context);
+        }
     }
 
     @Override

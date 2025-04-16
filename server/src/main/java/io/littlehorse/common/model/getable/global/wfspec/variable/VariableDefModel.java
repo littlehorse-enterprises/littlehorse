@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = false)
 public class VariableDefModel extends LHSerializable<VariableDef> {
 
-    private TypeDefinitionModel type;
+    private TypeDefinitionModel typeDef;
     private String name;
     private VariableValueModel defaultValue;
 
@@ -43,12 +43,12 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         // was post-1.0, we would not modify the stored proto.
         if (p.hasType()) {
             log.debug("Detected a `VariableDef` from before 0.13.2!");
-            this.type = new TypeDefinitionModel();
-            this.type.setMasked(p.getMaskedValue());
-            this.type.setType(p.getType());
+            this.typeDef = new TypeDefinitionModel();
+            this.typeDef.setMasked(p.getMaskedValue());
+            this.typeDef.setType(p.getType());
         } else {
             // This means the proto is up-to-date, so we're all good.
-            this.type = LHSerializable.fromProto(p.getTypeDef(), TypeDefinitionModel.class, context);
+            this.typeDef = LHSerializable.fromProto(p.getTypeDef(), TypeDefinitionModel.class, context);
         }
 
         name = p.getName();
@@ -59,7 +59,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
 
     public VariableDef.Builder toProto() {
         VariableDef.Builder out =
-                VariableDef.newBuilder().setTypeDef(type.toProto()).setName(name);
+                VariableDef.newBuilder().setTypeDef(typeDef.toProto()).setName(name);
 
         if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
         return out;
@@ -72,19 +72,19 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     }
 
     public boolean isJson() {
-        return type.isJson();
+        return typeDef.isJson();
     }
 
     public boolean isMaskedValue() {
-        return type.isMasked();
+        return typeDef.isMasked();
     }
 
     public void validateValue(VariableValueModel value) throws LHValidationError {
-        if (value.getType() == null || value.getType() == type.getType()) {
+        if (value.getType() == null || value.getType() == typeDef.getType()) {
             return;
         }
         throw new LHValidationError(
-                null, "Variable " + name + " should be " + type + " but is of type " + value.getType());
+                null, "Variable " + name + " should be " + typeDef + " but is of type " + value.getType());
     }
 
     public VarNameAndValModel assignValue(VariableValueModel value) throws LHVarSubError {
@@ -93,7 +93,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         } catch (LHValidationError e) {
             throw new LHVarSubError(e, e.getMessage());
         }
-        if (type.isMasked()) {
+        if (typeDef.isMasked()) {
             return new VarNameAndValModel(name, value, true);
         }
         return new VarNameAndValModel(name, value, false);

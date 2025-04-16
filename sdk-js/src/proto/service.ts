@@ -221,7 +221,7 @@ export interface PutExternalEventDefRequest {
     | ExternalEventRetentionPolicy
     | undefined;
   /** Typing information for the content of ExternalEvent's associated with this ExternalEventDef. */
-  contentType: ReturnType | undefined;
+  contentType?: ReturnType | undefined;
 }
 
 /** Request used to create an ExternalEvent. */

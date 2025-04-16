@@ -165,7 +165,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(new TypeDefinitionModel(VariableType.BOOL));
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.BOOL));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
@@ -193,10 +193,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(new TypeDefinitionModel(VariableType.STR));
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(new TypeDefinitionModel(VariableType.STR));
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -225,10 +225,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(new TypeDefinitionModel(VariableType.INT));
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.INT));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(new TypeDefinitionModel(VariableType.STR));
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -257,10 +257,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(new TypeDefinitionModel(VariableType.DOUBLE));
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.DOUBLE));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(new TypeDefinitionModel(VariableType.STR));
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -300,7 +300,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(new TypeDefinitionModel(VariableType.JSON_OBJ));
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.JSON_OBJ));
             List<JsonIndexModel> indices = List.of(
                     new JsonIndexModel("$.name", VariableType.STR),
                     new JsonIndexModel("$.age", VariableType.INT),
@@ -309,7 +309,7 @@ public class GetableManagerTest {
 
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(new TypeDefinitionModel(VariableType.STR));
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, indices, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -434,7 +434,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(new TypeDefinitionModel(VariableType.STR));
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });

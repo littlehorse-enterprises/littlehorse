@@ -262,7 +262,7 @@ public class TestUtil {
     public static VariableDefModel variableDef(String name, VariableType variableTypePb) {
         VariableDefModel variableDef = new VariableDefModel();
         variableDef.setName(name);
-        variableDef.setType(new TypeDefinitionModel(variableTypePb));
+        variableDef.setTypeDef(new TypeDefinitionModel(variableTypePb));
         return variableDef;
     }
 

@@ -82,7 +82,8 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         }
 
         // Reject ExternalEvent's with the wrong content type. Note that if the ExternalEventDef was created prior
-        // to 0.13.2, we don't have typing information and just use the Chulla Vida strategy.
+        // to 0.13.2 or the user did not provide content_type information, we don't have typing information and
+        // just use the Chulla Vida strategy.
         if (eed.getReturnType().isPresent()) {
             ReturnTypeModel type = eed.getReturnType().get();
             if (!type.isCompatibleWith(content)) {
