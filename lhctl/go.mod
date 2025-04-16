@@ -1,6 +1,7 @@
 module github.com/littlehorse-enterprises/lhctl
 
-go 1.21.3
+go 1.23.0
+
 toolchain go1.24.1
 
 require (
