@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.store;
 
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -32,7 +32,7 @@ public class LHIterKeyValue<T extends Storeable<?>> {
         if (val == null) {
             try {
                 val = LHSerializable.fromBytes(valBytes.get(), cls, this.executionContext);
-            } catch (LHSerdeError exn) {
+            } catch (LHSerdeException exn) {
                 // Not possible
                 throw new RuntimeException(exn);
             }

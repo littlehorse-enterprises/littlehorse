@@ -9,7 +9,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -30,7 +30,7 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CancelUserTaskRunRequest cancelUserTaskRunPb = (CancelUserTaskRunRequest) proto;
         userTaskRunId =
                 LHSerializable.fromProto(cancelUserTaskRunPb.getUserTaskRunId(), UserTaskRunIdModel.class, context);

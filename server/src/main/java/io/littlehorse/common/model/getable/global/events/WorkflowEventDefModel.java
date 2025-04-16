@@ -8,7 +8,6 @@ import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -42,7 +41,7 @@ public class WorkflowEventDefModel extends MetadataGetable<WorkflowEventDef> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         WorkflowEventDef p = (WorkflowEventDef) proto;
         this.id = LHSerializable.fromProto(p.getId(), WorkflowEventDefIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());

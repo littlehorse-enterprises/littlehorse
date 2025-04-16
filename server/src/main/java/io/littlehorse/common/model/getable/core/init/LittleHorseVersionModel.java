@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.core.init;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LittleHorseVersion;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
@@ -45,7 +44,7 @@ public class LittleHorseVersionModel extends LHSerializable<LittleHorseVersion> 
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         LittleHorseVersion LittleHorseVersion = (LittleHorseVersion) proto;
         this.majorVersion = LittleHorseVersion.getMajorVersion();
         this.minorVersion = LittleHorseVersion.getMinorVersion();

@@ -9,7 +9,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.StoredGetablePb;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
         objectType = p.getType();
         try {
             storedObject = LHSerializable.fromBytes(getablePayload, getStoredClass(), context);
-        } catch (LHSerdeError exception) {
+        } catch (LHSerdeException exception) {
             log.error("Failed loading from store: {}", exception.getMessage(), exception);
         }
     }

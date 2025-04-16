@@ -6,7 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -104,7 +104,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
         try {
             return LHSerializable.protoFromBytes(raw.get(), cls);
-        } catch (LHSerdeError exn) {
+        } catch (LHSerdeException exn) {
             throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
         }
     }
