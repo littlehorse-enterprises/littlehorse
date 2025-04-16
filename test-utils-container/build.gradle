@@ -26,9 +26,6 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
 }
 
 test {
@@ -85,8 +82,8 @@ publishing {
                 url = 'https://github.com/littlehorse-enterprises/littlehorse'
                 licenses {
                     license {
-                        name = 'Server Side Public License, Version 1'
-                        url = 'https://spdx.org/licenses/SSPL-1.0.html'
+                        name = 'GNU Affero General Public License Version 3'
+                        url = 'https://www.gnu.org/licenses/agpl-3.0.en.html'
                     }
                 }
                 developers {

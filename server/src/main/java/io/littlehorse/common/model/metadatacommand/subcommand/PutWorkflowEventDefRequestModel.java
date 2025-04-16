@@ -7,7 +7,7 @@ import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
@@ -37,7 +37,7 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         PutWorkflowEventDefRequest p = (PutWorkflowEventDefRequest) proto;
         name = p.getName();
         this.type = p.getType();

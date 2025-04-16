@@ -13,7 +13,7 @@ import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.ScheduleWfRun;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -55,7 +55,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ScheduleWfRun p = (ScheduleWfRun) proto;
         scheduledId = LHSerializable.fromProto(p.getScheduledId(), ScheduledWfRunIdModel.class, context);
         wfSpecName = p.getWfSpecName();

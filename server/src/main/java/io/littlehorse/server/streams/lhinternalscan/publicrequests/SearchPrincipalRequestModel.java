@@ -9,7 +9,7 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.SearchPrincipalRequest;
@@ -83,14 +83,14 @@ public class SearchPrincipalRequestModel
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         SearchPrincipalRequest p = (SearchPrincipalRequest) proto;
 
         if (p.hasBookmark()) {
             try {
                 this.bookmark = BookmarkPb.parseFrom(p.getBookmark());
             } catch (InvalidProtocolBufferException exn) {
-                throw new LHSerdeError(String.format("Failed to load bookmark: %s", exn.getMessage()));
+                throw new LHSerdeException(String.format("Failed to load bookmark: %s", exn.getMessage()));
             }
         }
         if (p.hasLimit()) {

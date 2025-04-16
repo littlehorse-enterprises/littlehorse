@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -26,7 +26,7 @@ public class WorkflowEventDefIdModel extends MetadataId<WorkflowEventDefId, Work
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         WorkflowEventDefId p = (WorkflowEventDefId) proto;
         this.name = p.getName();
     }

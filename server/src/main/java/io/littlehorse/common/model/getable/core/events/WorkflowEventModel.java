@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -39,7 +39,7 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         WorkflowEvent p = (WorkflowEvent) proto;
         this.id = LHSerializable.fromProto(p.getId(), WorkflowEventIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());

@@ -196,7 +196,7 @@ jobs:
       - name: Create Package
         run: dotnet pack --configuration Release sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
       - name: Publish Package to nuget.org
-        run: dotnet nuget push sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push --skip-duplicate sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
 

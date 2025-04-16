@@ -36,34 +36,43 @@ export const WfRuns: FC<WfSpec> = spec => {
 
   const getKey = (pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
-    return ['wfRun', status, tenantId, limit, startTime, previousPageData?.bookmarkAsString]
+    return [
+      'wfRun',
+      status,
+      tenantId,
+      limit,
+      startTime,
+      previousPageData?.bookmarkAsString,
+      spec.id!.name,
+      spec.id!.majorVersion,
+      spec.id!.revision,
+    ]
   }
 
-  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunIdList>(
-    getKey,
-    async (key) => {
-      const [, status, tenantId, limit, startTime, bookmarkAsString] = key
-      return await searchWfRun({
-        wfSpecName: spec.id!.name,
-        wfSpecMajorVersion: spec.id!.majorVersion,
-        wfSpecRevision: spec.id!.revision,
-        variableFilters: [],
-        limit,
-        status: status === 'ALL' ? undefined : status,
-        tenantId,
-        bookmarkAsString,
-        ...startTime,
-      })
-    }
-  )
+  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunIdList>(getKey, async key => {
+    const [, status, tenantId, limit, startTime, bookmarkAsString, wfSpecName, wfSpecMajorVersion, wfSpecRevision] = key
+    return await searchWfRun({
+      wfSpecName,
+      wfSpecMajorVersion,
+      wfSpecRevision,
+      variableFilters: [],
+      limit,
+      status: status === 'ALL' ? undefined : status,
+      tenantId,
+      bookmarkAsString,
+      ...startTime,
+    })
+  })
 
   const wfRunPromises = useMemo(() => {
-    return data?.flatMap(page =>
-      page.results.map(wfRunId => ({
-        wfRunId: wfRunId.id,
-        promise: getWfRun({ wfRunId, tenantId })
-      }))
-    ) ?? []
+    return (
+      data?.flatMap(page =>
+        page.results.map(wfRunId => ({
+          wfRunId: wfRunId.id,
+          promise: getWfRun({ wfRunId, tenantId }),
+        }))
+      ) ?? []
+    )
   }, [data, tenantId])
 
   useEffect(() => {
@@ -71,11 +80,10 @@ export const WfRuns: FC<WfSpec> = spec => {
       const data = await promise
       setResolvedWfRuns(prev => ({
         ...prev,
-        [wfRunId]: data
-      }));
+        [wfRunId]: data,
+      }))
     })
   }, [wfRunPromises])
-
 
   const isPending = !data && !error
   const hasNextPage = !!(data && data[data.length - 1]?.bookmarkAsString)
@@ -97,9 +105,10 @@ export const WfRuns: FC<WfSpec> = spec => {
                   <span className={cn('ml-2 rounded px-2', statusColors[resolvedWfRuns[wfRunId.id]?.wfRun.status])}>
                     {`${resolvedWfRuns[wfRunId.id]?.wfRun.status}`}
                   </span>
-                  <span className="ml-2 rounded px-2 bg-gray-200">
-                    Started: {resolvedWfRuns[wfRunId.id]?.wfRun.startTime ?
-                      new Date(resolvedWfRuns[wfRunId.id]?.wfRun.startTime!).toLocaleString()
+                  <span className="ml-2 rounded bg-gray-200 px-2">
+                    Started:{' '}
+                    {resolvedWfRuns[wfRunId.id]?.wfRun.startTime
+                      ? new Date(resolvedWfRuns[wfRunId.id]?.wfRun.startTime!).toLocaleString()
                       : ''}
                   </span>
                 </SelectionLink>
@@ -108,7 +117,12 @@ export const WfRuns: FC<WfSpec> = spec => {
           ))}
         </div>
       )}
-      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={() => setSize(size + 1)} />
+      <SearchFooter
+        currentLimit={limit}
+        setLimit={setLimit}
+        hasNextPage={hasNextPage}
+        fetchNextPage={() => setSize(size + 1)}
+      />
     </div>
   )
 }

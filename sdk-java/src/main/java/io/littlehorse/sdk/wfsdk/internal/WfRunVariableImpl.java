@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
@@ -110,7 +110,7 @@ class WfRunVariableImpl implements WfRunVariable {
     private void setDefaultValue(Object defaultVal) {
         try {
             this.defaultValue = LHLibUtil.objToVarVal(defaultVal);
-        } catch (LHSerdeError e) {
+        } catch (LHSerdeException e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }
     }

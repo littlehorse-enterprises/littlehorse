@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ScheduledWfRun;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -48,7 +48,7 @@ public class ScheduledWfRunModel extends CoreGetable<ScheduledWfRun> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ScheduledWfRun p = (ScheduledWfRun) proto;
         id = ScheduledWfRunIdModel.fromProto(p.getId(), ScheduledWfRunIdModel.class, context);
         wfSpecId = WfSpecIdModel.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
