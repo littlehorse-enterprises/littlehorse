@@ -28,6 +28,7 @@ public class Workflow
     private ExponentialBackoffRetryPolicy _defaultExponentialBackoff = null!;
     private ThreadRetentionPolicy? _defaultThreadRetentionPolicy;
     private WorkflowRetentionPolicy? _wfRetentionPolicy;
+    internal readonly Stack<WorkflowThread> Threads;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Workflow"/> class.
@@ -46,6 +47,7 @@ public class Workflow
         _requiredTaskDefNames = new HashSet<string>();
         _requiredEedNames = new HashSet<string>();
         _requiredWorkflowEventDefNames = new HashSet<string>();
+        Threads = new Stack<WorkflowThread>();
     }
     
     /// <summary>

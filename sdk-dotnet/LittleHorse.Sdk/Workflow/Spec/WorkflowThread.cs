@@ -14,13 +14,13 @@ public class WorkflowThread
     /// <value>
     /// The parent workflow of this thread.
     /// </value>
-    public Workflow Parent { get; private set; }
+    public Workflow Parent { get; init; }
     
     /// <value>
     /// The name of the last node in the thread.
     /// </value>
     public string LastNodeName { get; private set; }
-    
+
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
     /// Handler or Exception Handler thread.
@@ -28,15 +28,16 @@ public class WorkflowThread
     public const string HandlerInputVar = "INPUT";
     
     private readonly ThreadSpec _spec;
-    private readonly bool _isActive;
     private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     private ThreadRetentionPolicy? _retentionPolicy;
     
+    internal bool IsActive { get; }
+    
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
-        Parent = parent;
+        Parent = parent ?? throw new ArgumentNullException(nameof(parent));
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
@@ -46,7 +47,8 @@ public class WorkflowThread
         var entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
-        _isActive = true;
+        IsActive = true;
+        Parent.Threads.Push(this);
         action.Invoke(this);
 
         var lastNode = FindLastNode();
@@ -54,7 +56,7 @@ public class WorkflowThread
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
-        _isActive = false;
+        IsActive = false;
         
         _spec.RetentionPolicy = GetRetentionPolicy();
     }
@@ -100,7 +102,7 @@ public class WorkflowThread
     
     private void CheckIfWorkflowThreadIsActive() 
     {
-        if (!_isActive) 
+        if (!IsActive) 
         {
             throw new InvalidOperationException("Using an inactive thread");
         }
