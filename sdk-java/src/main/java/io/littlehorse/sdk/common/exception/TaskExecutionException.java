@@ -1,10 +1,10 @@
 package io.littlehorse.sdk.common.exception;
 
-public class TaskExecutionError extends Exception {
+public class TaskExecutionException extends Exception {
 
     private Exception parent;
 
-    public TaskExecutionError(Exception parent) {
+    public TaskExecutionException(Exception parent) {
         this.parent = parent;
     }
 

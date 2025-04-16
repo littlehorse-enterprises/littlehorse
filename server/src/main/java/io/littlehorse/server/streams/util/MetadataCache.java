@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.util;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.MetadataGetable;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.store.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,7 +12,7 @@ public class MetadataCache extends LHCache<String, StoredGetable<? extends Messa
     public MetadataCache() {}
 
     public void evictOrUpdate(StoredGetable<? extends Message, ? extends MetadataGetable<?>> value, String cacheKey)
-            throws LHSerdeError {
+            throws LHSerdeException {
         if (value == null) {
             super.evictCache(cacheKey);
         } else {

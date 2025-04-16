@@ -14,7 +14,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartMulti
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -41,7 +41,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
     private ExecutionContext context;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         StartMultipleThreadsRun nodeRun = (StartMultipleThreadsRun) proto;
         threadSpecName = nodeRun.getThreadSpecName();
         childThreadIds.addAll(nodeRun.getChildThreadIdsList());
@@ -99,7 +99,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                         .startThread(threadSpecName, time, parentThreadNumber, inputs, ThreadType.CHILD);
                 childThreadIds.add(child.getNumber());
             }
-        } catch (LHVarSubError | LHSerdeError | LHValidationError e) {
+        } catch (LHVarSubError | LHSerdeException | LHValidationError e) {
             FailureModel failure = new FailureModel();
             failure.message = "Failed constructing input variables for thread: " + e.getMessage();
             failure.failureName = LHConstants.VAR_SUB_ERROR;

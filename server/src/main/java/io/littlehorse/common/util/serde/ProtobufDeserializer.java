@@ -2,7 +2,7 @@ package io.littlehorse.common.util.serde;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import org.apache.kafka.common.serialization.Deserializer;
 
 public class ProtobufDeserializer<T extends Message> implements Deserializer<T> {
@@ -18,7 +18,7 @@ public class ProtobufDeserializer<T extends Message> implements Deserializer<T> 
         try {
             return protobufParser.parseFrom(data);
         } catch (Exception ex) {
-            throw new LHSerdeError(ex, "unable to process bytes");
+            throw new LHSerdeException(ex, "unable to process bytes");
         }
     }
 }

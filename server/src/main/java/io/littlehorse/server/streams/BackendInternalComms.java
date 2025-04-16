@@ -48,7 +48,7 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
@@ -211,7 +211,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
-            ObjectIdModel<?, U, T> objectId, Class<T> clazz, ExecutionContext context) throws LHSerdeError {
+            ObjectIdModel<?, U, T> objectId, Class<T> clazz, ExecutionContext context) throws LHSerdeException {
 
         if (objectId.getPartitionKey().isEmpty()) {
             throw new IllegalArgumentException(

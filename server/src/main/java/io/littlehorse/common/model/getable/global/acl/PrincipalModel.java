@@ -9,7 +9,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.Principal;
@@ -41,7 +41,7 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
     public PrincipalModel() {}
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         Principal principal = (Principal) proto;
         this.id = LHSerializable.fromProto(principal.getId(), PrincipalIdModel.class, context);
         this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class, context);

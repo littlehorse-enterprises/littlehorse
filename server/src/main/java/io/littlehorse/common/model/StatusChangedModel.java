@@ -6,7 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.StatusChanged;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
@@ -36,7 +36,7 @@ public class StatusChangedModel extends LHSerializable<StatusChanged> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         StatusChanged p = (StatusChanged) proto;
         time = LHUtil.fromProtoTs(p.getTime());
         firstEventToLastDelay = p.getFirstEventToLastDelay();

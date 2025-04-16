@@ -7,7 +7,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.WfMetricUpdate;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
@@ -44,7 +44,7 @@ public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         WfMetricUpdate p = (WfMetricUpdate) proto;
         this.windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);

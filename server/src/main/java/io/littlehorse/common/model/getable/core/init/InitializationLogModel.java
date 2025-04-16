@@ -9,7 +9,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.proto.InitializationLog;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.ServerACLs;
@@ -50,7 +50,7 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         InitializationLog il = (InitializationLog) proto;
         this.initServerVersion = ServerVersionModel.fromProto(il.getInitVersion(), ServerVersionModel.class, context);
         this.initTime = LHUtil.fromProtoTs(il.getInitTime());
