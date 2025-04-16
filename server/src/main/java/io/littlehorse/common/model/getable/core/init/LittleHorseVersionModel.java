@@ -31,16 +31,16 @@ public class LittleHorseVersionModel extends LHSerializable<LittleHorseVersion> 
 
     @Override
     public LittleHorseVersion.Builder toProto() {
-        LittleHorseVersion.Builder severVersionBuilder = LittleHorseVersion.newBuilder()
+        LittleHorseVersion.Builder snapeVersion = LittleHorseVersion.newBuilder()
                 .setMajorVersion(majorVersion)
                 .setMinorVersion(minorVersion)
                 .setPatchVersion(patchVersion);
 
         if (preReleaseIdentifier.isPresent()) {
-            severVersionBuilder.setPreReleaseIdentifier(preReleaseIdentifier.get());
+            snapeVersion.setPreReleaseIdentifier(preReleaseIdentifier.get());
         }
 
-        return severVersionBuilder;
+        return snapeVersion;
     }
 
     @Override
