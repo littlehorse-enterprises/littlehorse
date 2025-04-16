@@ -182,7 +182,25 @@ class WfRunVariableImpl implements WfRunVariable {
 
     @Override
     public void assign(Serializable rhs) {
-        parent.mutate(this, VariableMutationType.ASSIGN, rhs);
+        WorkflowThreadImpl activeThread = getActiveThread();
+
+        activeThread.mutate(this, VariableMutationType.ASSIGN, rhs);
+    }
+
+    private WorkflowThreadImpl getActiveThread() {
+        WorkflowThreadImpl activeThread = parent;
+
+        if (parent == null) {
+            throw new IllegalStateException("Cannot assign a variable outside the context of an active thread.");
+        }
+
+        WorkflowThreadImpl lastThread = parent.getParent().getThreads().peek();
+
+        if (lastThread.isActive()) {
+            activeThread = lastThread;
+        }
+
+        return activeThread;
     }
 
     @Override

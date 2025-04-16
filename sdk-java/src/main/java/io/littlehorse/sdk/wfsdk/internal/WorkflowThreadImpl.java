@@ -58,12 +58,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-@Setter
 final class WorkflowThreadImpl implements WorkflowThread {
 
     private WorkflowImpl parent;
@@ -90,6 +88,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         lastNodeName = entrypointNodeName;
         spec.putNodes(entrypointNodeName, entrypointNode);
         isActive = true;
+        parent.getThreads().push(this);
         // Call the function and do its work
         func.threadFunction(this);
 

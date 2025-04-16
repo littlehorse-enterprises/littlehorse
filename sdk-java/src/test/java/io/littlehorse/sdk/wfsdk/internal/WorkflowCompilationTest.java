@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.Map;
@@ -37,5 +38,28 @@ public class WorkflowCompilationTest {
         Assertions.assertThat(throwable)
                 .isInstanceOf(LHMisconfigurationException.class)
                 .hasMessage("Thread my-thread already exists");
+    }
+
+    @Test
+    void shouldCompileAWorkflowWhenAParentVarIsAssignedFromChildNestedThreads() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", abuelo -> {
+            WfRunVariable abueloVar = abuelo.declareStr("abuelo");
+            abuelo.spawnThread(
+                    hijo -> {
+                        abueloVar.assign("fdsa");
+                        hijo.spawnThread(
+                                nieto -> {
+                                    abueloVar.assign("foo");
+                                },
+                                "child-thread",
+                                null);
+                    },
+                    "grandchild",
+                    null);
+        });
+
+        PutWfSpecRequest expectedWfSpecRequest = wf.compileWorkflow();
+
+        Assertions.assertThat(expectedWfSpecRequest).isNotNull();
     }
 }
