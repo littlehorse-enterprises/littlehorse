@@ -35,7 +35,6 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public String jsonPath;
 
-    @NonNull
     private final WorkflowThreadImpl parent;
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
