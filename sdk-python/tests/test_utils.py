@@ -20,7 +20,7 @@ from littlehorse.workflow import (
     LHFormatString,
     NodeOutput,
     WfRunVariable,
-    to_variable_assignment, WorkflowThread, Workflow, ThreadInitializer,
+    to_variable_assignment, WorkflowThread, Workflow,
 )
 
 
