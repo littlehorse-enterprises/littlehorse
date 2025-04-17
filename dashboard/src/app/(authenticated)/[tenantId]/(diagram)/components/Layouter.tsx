@@ -7,10 +7,10 @@ import { Edge, Node, useReactFlow, useStore } from 'reactflow'
 // used to calculate the width of the
 export const EDGE_WIDTH = 200
 
-export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }; nodeRunNameToBeHighlighted?: string }> = ({
-  wfRun,
-  nodeRunNameToBeHighlighted,
-}) => {
+export const Layouter: FC<{
+  wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
+  nodeRunNameToBeHighlighted?: string
+}> = ({ wfRun, nodeRunNameToBeHighlighted }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
   const setNodes = useStore(store => store.setNodes)
@@ -35,7 +35,9 @@ export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[
         const nodeWithPosition = dagreGraph.node(node.id)
 
         const [nodeName, threadRunName] = node.id.split(':')
-        const threadRun = wfRun?.threadRuns.find(threadRun => threadRun.threadSpecName === threadRunName) as ThreadRunWithNodeRuns | undefined
+        const threadRun = wfRun?.threadRuns.find(threadRun => threadRun.threadSpecName === threadRunName) as
+          | ThreadRunWithNodeRuns
+          | undefined
 
         const nodeRun = threadRun?.nodeRuns.find(nodeRun => {
           return nodeRun.nodeName === nodeName
@@ -44,7 +46,7 @@ export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[
           return nodeRun.nodeName === nodeName
         })
 
-        const fade = threadRun?.nodeRuns && !nodeRun || (wfRun && !threadRun)
+        const fade = (threadRun?.nodeRuns && !nodeRun) || (wfRun && !threadRun)
         const nodeNeedsToBeHighlighted = nodeName === nodeRunNameToBeHighlighted
 
         return {

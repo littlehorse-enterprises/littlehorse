@@ -3,7 +3,17 @@ import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
 import { rescueWfRun } from '@/app/actions/rescueWfRun'
 import { resumeWfRun } from '@/app/actions/resumeWfRun'
 import { stopWfRun } from '@/app/actions/stopWfRun'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { LHStatus, NodeRun, ThreadSpec, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
@@ -61,7 +71,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
 
   const threadSpec: ThreadSpecWithName = useMemo(() => {
-    if (thread === undefined) return { name: spec.entrypointThreadName, threadSpec: spec.threadSpecs[spec.entrypointThreadName] }
+    if (thread === undefined)
+      return { name: spec.entrypointThreadName, threadSpec: spec.threadSpecs[spec.entrypointThreadName] }
     return { name: thread.name, threadSpec: spec.threadSpecs[thread.name] }
   }, [spec, thread])
 
