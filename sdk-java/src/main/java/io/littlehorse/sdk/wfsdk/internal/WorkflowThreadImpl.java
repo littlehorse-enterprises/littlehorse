@@ -76,7 +76,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     public WorkflowThreadImpl(String name, WorkflowImpl parent, ThreadFunc func) {
         this.parent = Objects.requireNonNull(parent, "Parent workflow can not be null.");
-        ;
         this.spec = ThreadSpec.newBuilder();
         this.name = name;
         this.variableMutations = new LinkedList<>();
