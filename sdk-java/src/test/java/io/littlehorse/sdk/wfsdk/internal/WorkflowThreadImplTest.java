@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
@@ -645,5 +646,13 @@ public class WorkflowThreadImplTest {
 
         assertThat(edge.getVariableMutations(0).getRhsAssignment().getJsonPath())
                 .isEqualTo("$.hello.there");
+    }
+
+    @Test
+    public void ShouldThrowANullPointerExceptionWhenParentWorkflowIsNull() {
+        NullPointerException e =
+                assertThrows(NullPointerException.class, () -> new WorkflowThreadImpl("my-thread", null, null));
+
+        assertEquals("Parent workflow can not be null.", e.getMessage());
     }
 }
