@@ -1,43 +1,45 @@
 package io.littlehorse.server.streams;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
-import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
-import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Semaphore;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
 
+@Slf4j
 public class CommandSender {
 
-    private final BackendInternalComms internalComms;
     private final Duration successDurationTimeout;
     private final ExecutorService networkThreadpool;
     private final LHProducer commandProducer;
     private final LHProducer taskClaimProducer;
     private final LHServerConfig serverConfig;
+    private final Map<String, ResponseOrError> responses = new ConcurrentHashMap<>();
 
     public CommandSender(
-            BackendInternalComms internalComms,
             ExecutorService networkThreadpool,
             LHProducer commandProducer,
             LHProducer taskClaimProducer,
             long streamsSessionTimeout,
             LHServerConfig serverConfig) {
-        this.internalComms = internalComms;
         // Streams Session Timeout is how long it takes to notice that the server is down.
         // Then we need the rebalance to occur, and the new server must process the command.
         // So we give it a buffer of 10 additional seconds.
@@ -56,25 +58,19 @@ public class CommandSender {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    public <AC extends Message, RC extends Message> void doSend(
-            AbstractCommand<AC> command,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
-            boolean shouldCompleteStream,
+    public <T extends Message> void doSend(
+            AbstractCommand<?> command,
+            StreamObserver<T> responseObserver,
             PrincipalIdModel principalId,
-            TenantIdModel tenantId,
-            RequestExecutionContext context) {
-        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                internalComms,
-                command,
-                context,
-                successDurationTimeout,
-                networkThreadpool);
+            TenantIdModel tenantId) {
 
-        Callback callback = this.internalComms.createProducerCommandCallback(command, commandObserver, context);
+        Callback callback = (recordMetadata, e) -> {
+            if (e != null) {
+                log.error("Failed to send command to Kafka", e);
+                responseObserver.onError(e);
+                command.getCommandId().notify();
+            }
+        };
 
         command.setCommandId(LHUtil.generateGuid());
 
@@ -85,6 +81,49 @@ public class CommandSender {
                 command.getTopic(serverConfig),
                 callback,
                 commandMetadata.toArray());
+        try {
+            Semaphore lock = new Semaphore(0);
+            synchronized (command.getCommandId()) {
+                log.info(
+                        "Waiting for response for command {} for command {}",
+                        command.getCommandId(),
+                        command.getSubCommand().getClass().getSimpleName());
+                responses.put(command.getCommandId(), new ResponseOrError(lock, null, null));
+                lock.acquire();
+                log.info("Done waiting for response for command {}", command.getCommandId());
+            }
+            ResponseOrError responseOrError = responses.remove(command.getCommandId());
+            if (responseOrError.isError()) {
+                responseObserver.onError(responseOrError.error);
+            } else if (responseOrError.isResponse()) {
+                // Trust in the force
+                responseObserver.onNext((T) responseOrError.response);
+                responseObserver.onCompleted();
+            } else {
+                responseObserver.onError(
+                        new LHApiException(Status.INTERNAL, "Timedout waiting for response from Kafka"));
+            }
+        } catch (InterruptedException e) {
+            log.error("Response timeout", e);
+        }
+    }
+
+    public void registerResponseAndNotifyWaitingThreads(String commandId, Message response) {
+        if (responses.containsKey(commandId)) {
+            Semaphore lock = responses.get(commandId).lock;
+            responses.put(commandId, new ResponseOrError(lock, response, null));
+            log.info("releasing lock for command {}", commandId);
+            lock.release();
+        }
+    }
+
+    public void registerErrorAndNotifyWaitingThreads(String commandId, Throwable cause) {
+        if (responses.containsKey(commandId)) {
+            Semaphore lock = responses.get(commandId).lock;
+            responses.put(commandId, new ResponseOrError(lock, null, cause));
+            log.info("releasing lock for command {}", commandId);
+            lock.release();
+        }
     }
 
     public void doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
@@ -96,5 +135,15 @@ public class CommandSender {
                 new TaskClaimEventProducerCallback(scheduledTask, client),
                 HeadersUtil.metadataHeadersFor(client.getTenantId(), client.getPrincipalId())
                         .toArray());
+    }
+
+    private record ResponseOrError(Semaphore lock, Message response, Throwable error) {
+        public boolean isError() {
+            return error != null;
+        }
+
+        public boolean isResponse() {
+            return response != null;
+        }
     }
 }

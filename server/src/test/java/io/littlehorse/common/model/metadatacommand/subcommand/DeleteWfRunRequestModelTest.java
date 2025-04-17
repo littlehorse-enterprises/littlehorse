@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 public class DeleteWfRunRequestModelTest {
 
@@ -37,7 +38,8 @@ public class DeleteWfRunRequestModelTest {
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final TaskQueueManager queueManager = mock();
-    private final CommandProcessor processor = new CommandProcessor(lhConfig, server, metadataCache, queueManager);
+    private final CommandProcessor processor =
+            new CommandProcessor(lhConfig, server, metadataCache, queueManager, Mockito.mock());
     private final String wfRunId = UUID.randomUUID().toString();
     private final WfRunModel wfRun = TestUtil.wfRun(wfRunId);
     private final Command command = commandProto();

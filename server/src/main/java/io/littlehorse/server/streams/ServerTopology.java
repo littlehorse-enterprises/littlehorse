@@ -86,7 +86,8 @@ public class ServerTopology {
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
-            TaskQueueManager globalTaskQueueManager) {
+            TaskQueueManager globalTaskQueueManager,
+            CommandSender commandSender) {
         Topology topo = new Topology();
 
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
@@ -113,7 +114,9 @@ public class ServerTopology {
                 config.getMetadataCmdTopicName() // source topic
                 );
         topo.addProcessor(
-                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, metadataCache), METADATA_SOURCE);
+                METADATA_PROCESSOR,
+                () -> new MetadataProcessor(config, server, metadataCache, commandSender),
+                METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addSink(
@@ -133,7 +136,7 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 CORE_PROCESSOR,
-                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager),
+                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, commandSender),
                 CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,

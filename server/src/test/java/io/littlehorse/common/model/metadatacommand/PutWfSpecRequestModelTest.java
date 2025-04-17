@@ -78,7 +78,7 @@ public class PutWfSpecRequestModelTest {
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, mock());
     }
 
     @ParameterizedTest

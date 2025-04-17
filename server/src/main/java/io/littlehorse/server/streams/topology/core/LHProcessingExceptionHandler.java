@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.topology.core;
 
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.CommandSender;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.RecordTooLargeException;
@@ -12,9 +13,11 @@ import org.apache.kafka.common.errors.RecordTooLargeException;
 public class LHProcessingExceptionHandler {
 
     private final LHServer server;
+    private final CommandSender sender;
 
-    public LHProcessingExceptionHandler(LHServer server) {
+    public LHProcessingExceptionHandler(LHServer server, CommandSender sender) {
         this.server = server;
+        this.sender = sender;
     }
 
     public void tryRun(Runnable runnable) {
@@ -40,7 +43,8 @@ public class LHProcessingExceptionHandler {
             }
             if (commandException.isNotifyClientOnError()) {
                 try {
-                    server.sendErrorToClient(commandException.getCommand().getCommandId(), commandException.getCause());
+                    sender.registerErrorAndNotifyWaitingThreads(
+                            commandException.getCommand().getCommandId(), commandException.getCause());
                 } catch (Exception e) {
                     // Nothing to do
                 }
@@ -58,7 +62,7 @@ public class LHProcessingExceptionHandler {
                         ex.getCause());
             }
             try {
-                server.sendErrorToClient(ex.getCommand().getCommandId(), ex.getCause());
+                sender.registerErrorAndNotifyWaitingThreads(ex.getCommand().getCommandId(), ex.getCause());
             } catch (Exception e) {
                 // Nothing to do
             }

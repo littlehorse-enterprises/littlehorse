@@ -79,7 +79,7 @@ public class TenantAdministrationTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, mock());
     }
 
     @Test

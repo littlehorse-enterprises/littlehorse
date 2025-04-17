@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 public class LHProcessingExceptionHandlerTest {
 
     private final LHServer mockServer = mock();
-    private final LHProcessingExceptionHandler exceptionHandler = new LHProcessingExceptionHandler(mockServer);
+    private final LHProcessingExceptionHandler exceptionHandler = new LHProcessingExceptionHandler(mockServer, mock());
 
     @Test
     public void shouldIgnoreRecordTooLargeException() {

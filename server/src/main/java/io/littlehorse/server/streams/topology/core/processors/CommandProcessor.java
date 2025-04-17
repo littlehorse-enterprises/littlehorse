@@ -15,10 +15,9 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Aggr
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -57,6 +56,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private KeyValueStore<String, Bytes> nativeStore;
     private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
+    private final CommandSender commandSender;
 
     private final LHProcessingExceptionHandler exceptionHandler;
 
@@ -64,12 +64,14 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
-            TaskQueueManager globalTaskQueueManager) {
+            TaskQueueManager globalTaskQueueManager,
+            CommandSender commandSender) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server);
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, commandSender);
+        this.commandSender = commandSender;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void processHelper(final Record<String, Command> commandRecord) {
         ProcessorExecutionContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
-        log.trace(
+        log.info(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),
                 command.type,
@@ -99,13 +101,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
             if (command.hasResponse() && command.getCommandId() != null) {
-                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCommandId(command.getCommandId())
-                        .setResultTime(LHUtil.fromDate(new Date()))
-                        .setResult(response.toByteString())
-                        .build();
-
-                server.onResponseReceived(command.getCommandId(), cmdReply);
+                commandSender.registerResponseAndNotifyWaitingThreads(command.getCommandId(), response);
             }
         } catch (KafkaException ke) {
             throw ke;

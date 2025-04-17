@@ -1,11 +1,6 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
@@ -67,7 +62,7 @@ public class PutWorkflowEventDefRequestModelTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, mock());
         metadataManager = TestMetadataManager.create(nativeMetadataStore, tenantId, executionContext);
     }
 

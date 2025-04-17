@@ -1,7 +1,6 @@
 package io.littlehorse.server;
 
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-
 import java.util.function.Consumer;
 
 public class RequestTask implements Runnable {

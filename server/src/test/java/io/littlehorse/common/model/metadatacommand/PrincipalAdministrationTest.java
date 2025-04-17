@@ -91,7 +91,7 @@ public class PrincipalAdministrationTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, mock());
         defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
 
         PrincipalModel requester = new PrincipalModel();

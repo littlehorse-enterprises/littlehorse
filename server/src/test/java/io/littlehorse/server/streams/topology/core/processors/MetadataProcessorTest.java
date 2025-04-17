@@ -45,7 +45,7 @@ public class MetadataProcessorTest {
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, null);
     }
 
     /*@Test

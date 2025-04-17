@@ -11,12 +11,12 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.InitializationLog;
 import io.littlehorse.common.proto.MetadataCommand;
-import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.Version;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -50,12 +50,15 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private KeyValueStore<String, Bytes> metadataStore;
+    private final CommandSender sender;
 
-    public MetadataProcessor(LHServerConfig config, LHServer server, MetadataCache metadataCache) {
+    public MetadataProcessor(
+            LHServerConfig config, LHServer server, MetadataCache metadataCache, CommandSender sender) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server);
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, sender);
+        this.sender = sender;
     }
 
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
@@ -156,14 +159,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         try {
             Message response = command.process(metadataContext);
             if (command.hasResponse() && command.getCommandId() != null) {
-                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCommandId(command.getCommandId())
-                        .setResultTime(LHUtil.fromDate(new Date()))
-                        .setResult(response.toByteString())
-                        .build();
-
-                server.onResponseReceived(command.getCommandId(), cmdReply);
-
+                sender.registerResponseAndNotifyWaitingThreads(command.getCommandId(), response);
                 // This allows us to set a larger commit interval for the Core Topology
                 // without affecting latency of updates to the metadata global store.
                 //
