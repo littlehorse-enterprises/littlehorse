@@ -18,4 +18,12 @@ public interface TaskNodeOutput extends NodeOutput {
      * @param retries is the number of times to retry failed executions of TaskRuns on this Task Node.
      */
     TaskNodeOutput withRetries(int retries);
+
+    /**
+     * Adds a timeout to a TaskNode.
+     *
+     * @param timeoutSeconds the timeout length.
+     * @return the TaskNodeOutput.
+     */
+    public TaskNodeOutput timeout(int timeoutSeconds);
 }

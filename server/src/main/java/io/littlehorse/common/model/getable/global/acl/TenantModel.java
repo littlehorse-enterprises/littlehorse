@@ -7,7 +7,7 @@ import io.littlehorse.common.model.ClusterMetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -43,7 +43,7 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         Tenant tenant = (Tenant) proto;
         this.id = LHSerializable.fromProto(tenant.getId(), TenantIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());

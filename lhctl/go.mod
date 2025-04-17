@@ -1,6 +1,8 @@
 module github.com/littlehorse-enterprises/lhctl
 
-go 1.21.3
+go 1.23.0
+
+toolchain go1.24.1
 
 require (
 	github.com/coreos/go-oidc/v3 v3.11.0
@@ -22,9 +24,9 @@ require (
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/ztrue/tracerr v0.4.0 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/net v0.28.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240827150818-7e3bb234dfed // indirect
 )

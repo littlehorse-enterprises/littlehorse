@@ -6,7 +6,7 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -36,7 +36,7 @@ public class WorkflowEventIdModel extends CoreObjectId<WorkflowEventId, Workflow
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         WorkflowEventId p = (WorkflowEventId) proto;
         this.wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         this.workflowEventDefId =
