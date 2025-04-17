@@ -228,6 +228,17 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_initializing_thread_without_parent_workflow_should_raise_an_error(self):
+        def entrypoint_func(thread: WorkflowThread) -> None:
+            pass
+
+        with self.assertRaises(ValueError) as exception_context:
+            WorkflowThread(workflow=None, initializer=entrypoint_func)
+        self.assertEqual(
+            "Workflow cannot be None.",
+            str(exception_context.exception),
+        )
+
     def test_compile_with_declare_str(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             thread.declare_str("test-var", default_value="Qui-Gon Jinn")
@@ -1325,6 +1336,15 @@ class TestThreadBuilder(unittest.TestCase):
 
         self.assertEqual(
             edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there"
+        )
+
+    def test_initializing_variable_without_parent_thread_should_raise_an_error(self):
+        with self.assertRaises(ValueError) as exception_context:
+            WfRunVariable("my-var", VariableType.STR, parent=None)
+
+        self.assertEqual(
+            "Parent workflow thread cannot be None.",
+            str(exception_context.exception),
         )
 
 
