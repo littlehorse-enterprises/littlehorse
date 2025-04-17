@@ -1,8 +1,9 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -42,24 +43,81 @@ public class WorkflowCompilationTest {
 
     @Test
     void shouldCompileAWorkflowWhenAParentVarIsAssignedFromChildNestedThreads() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", abuelo -> {
-            WfRunVariable abueloVar = abuelo.declareStr("abuelo");
-            abuelo.spawnThread(
-                    hijo -> {
-                        abueloVar.assign("fdsa");
-                        hijo.spawnThread(
-                                nieto -> {
-                                    abueloVar.assign("foo");
+        WorkflowImpl wf = new WorkflowImpl("TestWorkflow", grandParentWfThread -> {
+            WfRunVariable grandParentVar = grandParentWfThread.declareStr("grand-parent-var");
+            grandParentWfThread.spawnThread(
+                    son -> {
+                        grandParentVar.assign("son-value");
+                        son.spawnThread(
+                                grandchild -> {
+                                    grandParentVar.assign("grandchild-value");
                                 },
-                                "child-thread",
+                                "grandchild-thread",
                                 null);
                     },
-                    "grandchild",
+                    "son-thread",
                     null);
         });
 
-        PutWfSpecRequest expectedWfSpecRequest = wf.compileWorkflow();
+        PutWfSpecRequest actualWfSpecRequest = wf.compileWorkflow();
+        ThreadSpec entrypointThread = actualWfSpecRequest.getThreadSpecsOrThrow("entrypoint");
+        Node nodeWithVariableMuatatedInEntryPoint = entrypointThread.getNodesOrThrow("1-son-thread-START_THREAD");
 
-        Assertions.assertThat(expectedWfSpecRequest).isNotNull();
+        var expectedEntryPointEdge = Edge.newBuilder()
+                .setSinkNodeName("2-exit-EXIT")
+                .addVariableMutations(VariableMutation.newBuilder()
+                        .setLhsName("1-son-thread-START_THREAD")
+                        .setRhsAssignment(VariableAssignment.newBuilder()
+                                .setNodeOutput(VariableAssignment.NodeOutputReference.newBuilder()
+                                        .setNodeName("1-son-thread-START_THREAD")
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+
+        assertEquals(
+                expectedEntryPointEdge,
+                nodeWithVariableMuatatedInEntryPoint.getOutgoingEdgesList().get(0));
+
+        ThreadSpec sonThread = actualWfSpecRequest.getThreadSpecsOrThrow("son-thread");
+        Node nodeWithVariableMutatedInSonEntrypointThread = sonThread.getNodesOrThrow("0-entrypoint-ENTRYPOINT");
+        Node nodeWithVariableMutatedInSonGrandchildThread =
+                sonThread.getNodesOrThrow("1-grandchild-thread-START_THREAD");
+
+        var expectedSonEdge = Edge.newBuilder()
+                .setSinkNodeName("1-grandchild-thread-START_THREAD")
+                .addVariableMutations(VariableMutation.newBuilder()
+                        .setLhsName("grand-parent-var")
+                        .setOperation(VariableMutationType.ASSIGN)
+                        .setRhsAssignment(VariableAssignment.newBuilder()
+                                .setLiteralValue(VariableValue.newBuilder().setStr("son-value"))
+                                .build())
+                        .build())
+                .build();
+
+        assertEquals(
+                expectedSonEdge,
+                nodeWithVariableMutatedInSonEntrypointThread
+                        .getOutgoingEdgesList()
+                        .get(0));
+
+        var expectedGrandchildEdge = Edge.newBuilder()
+                .setSinkNodeName("2-exit-EXIT")
+                .addVariableMutations(VariableMutation.newBuilder()
+                        .setLhsName("1-grandchild-thread-START_THREAD")
+                        .setOperation(VariableMutationType.ASSIGN)
+                        .setRhsAssignment(VariableAssignment.newBuilder()
+                                .setNodeOutput(VariableAssignment.NodeOutputReference.newBuilder()
+                                        .setNodeName("1-grandchild-thread-START_THREAD")
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+
+        assertEquals(
+                expectedGrandchildEdge,
+                nodeWithVariableMutatedInSonGrandchildThread
+                        .getOutgoingEdgesList()
+                        .get(0));
     }
 }
