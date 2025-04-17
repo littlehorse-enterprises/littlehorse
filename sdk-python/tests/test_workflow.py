@@ -74,12 +74,13 @@ class TestNodeOutput(unittest.TestCase):
 
 class TestWfRunVariable(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         def entrypoint_func(wf: WorkflowThread) -> None:
             pass
 
         workflow = Workflow("test-workflow", entrypoint_func)
-        self.workflow_thread = WorkflowThread(workflow, entrypoint_func)
+        cls.workflow_thread = WorkflowThread(workflow, entrypoint_func)
 
     def test_value_is_not_none(self):
         variable = WfRunVariable(
