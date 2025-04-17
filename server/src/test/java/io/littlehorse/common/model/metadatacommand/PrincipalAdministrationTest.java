@@ -26,6 +26,7 @@ import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.ServerACL;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -62,6 +63,8 @@ public class PrincipalAdministrationTest {
     @Mock
     private LHServer server;
 
+    private final CommandSender sender = Mockito.mock(CommandSender.class);
+
     private final MetadataCache metadataCache = new MetadataCache();
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
@@ -91,7 +94,7 @@ public class PrincipalAdministrationTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, mock());
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, sender);
         defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
 
         PrincipalModel requester = new PrincipalModel();
@@ -193,7 +196,7 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setOverwrite(false);
         metadataCache.clear();
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
-        verify(server).sendErrorToClient(eq(command.getCommandId()), any());
+        verify(sender).registerErrorAndNotifyWaitingThreads(eq(command.getCommandId()), any());
     }
 
     @Test
@@ -264,7 +267,8 @@ public class PrincipalAdministrationTest {
 
         ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
 
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+        verify(sender)
+                .registerErrorAndNotifyWaitingThreads(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
 
         Exception thrown = exceptionArgumentCaptor.getValue();
         assertThat(thrown)
@@ -283,7 +287,8 @@ public class PrincipalAdministrationTest {
 
         ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
 
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+        verify(sender)
+                .registerErrorAndNotifyWaitingThreads(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
 
         Exception thrown = exceptionArgumentCaptor.getValue();
         assertThat(thrown)
@@ -306,7 +311,8 @@ public class PrincipalAdministrationTest {
 
         ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
 
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+        verify(sender)
+                .registerErrorAndNotifyWaitingThreads(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
 
         Exception thrown = exceptionArgumentCaptor.getValue();
         assertThat(thrown)
@@ -331,7 +337,8 @@ public class PrincipalAdministrationTest {
 
         ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
 
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+        verify(sender)
+                .registerErrorAndNotifyWaitingThreads(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
 
         Exception thrown = exceptionArgumentCaptor.getValue();
         assertThat(thrown)

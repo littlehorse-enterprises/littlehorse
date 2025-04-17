@@ -644,8 +644,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 coreStoreProvider,
                 metadataCache,
                 serverConfig,
-                requestContext(),
-                requestScheduler);
+                requestContext());
     }
 
     @Override

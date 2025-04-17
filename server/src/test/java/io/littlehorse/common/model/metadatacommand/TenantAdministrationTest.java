@@ -15,6 +15,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -52,6 +53,7 @@ public class TenantAdministrationTest {
     private LHServer server;
 
     private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
+    private final CommandSender sender = Mockito.mock(CommandSender.class);
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
@@ -79,7 +81,7 @@ public class TenantAdministrationTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, mock());
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, sender);
     }
 
     @Test
@@ -107,7 +109,7 @@ public class TenantAdministrationTest {
         command.setTime(new Date(secondTimestamp));
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), secondTimestamp, metadata));
-        verify(server, times(0)).sendErrorToClient(any(), any());
+        verify(sender, times(0)).registerErrorAndNotifyWaitingThreads(any(), any());
         assertThat(storedTenant()).isNotNull();
         assertThat(storedTenant().getCreatedAt().getTime()).isEqualTo(firstTimestamp);
     }
@@ -124,7 +126,7 @@ public class TenantAdministrationTest {
 
         ArgumentCaptor<Exception> argumentCaptor = ArgumentCaptor.forClass(Exception.class);
 
-        verify(server, times(1)).sendErrorToClient(any(), argumentCaptor.capture());
+        verify(sender, times(1)).registerErrorAndNotifyWaitingThreads(any(), argumentCaptor.capture());
 
         assertThat(argumentCaptor.getValue()).isInstanceOf(LHApiException.class);
         assertThat(argumentCaptor.getValue().getMessage())
@@ -143,7 +145,7 @@ public class TenantAdministrationTest {
 
         ArgumentCaptor<Exception> argumentCaptor = ArgumentCaptor.forClass(Exception.class);
 
-        verify(server, times(1)).sendErrorToClient(any(), argumentCaptor.capture());
+        verify(sender, times(1)).registerErrorAndNotifyWaitingThreads(any(), argumentCaptor.capture());
 
         assertThat(argumentCaptor.getValue()).isInstanceOf(LHApiException.class);
         assertThat(argumentCaptor.getValue().getMessage())

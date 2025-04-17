@@ -12,7 +12,6 @@ import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.concurrent.ExecutorService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +37,6 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
-    private final ExecutorService requestScheduler;
 
     public PollTaskRequestObserver(
             StreamObserver<PollTaskResponse> responseObserver,
@@ -48,8 +46,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             LHServerConfig config,
-            RequestExecutionContext requestContext,
-            ExecutorService requestExecutor) {
+            RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.principalId = principalId;
@@ -59,7 +56,6 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.config = config;
         this.clientId = null;
         this.requestContext = requestContext;
-        this.requestScheduler = requestExecutor;
     }
 
     public String getTaskWorkerVersion() {
