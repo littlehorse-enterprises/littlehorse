@@ -390,6 +390,9 @@ class WfRunVariable:
         Raises:
             TypeError: If variable_type and type(default_value) are not compatible.
         """
+        if parent is None:
+            raise ValueError("Parent workflow thread cannot be None.")
+
         self.name = variable_name
         self.type = variable_type
         self.parent = parent
@@ -589,7 +592,12 @@ class WfRunVariable:
         return self.parent.condition(self, Comparator.NOT_IN, rhs)
 
     def assign(self, rhs: Any) -> None:
-        self.parent.mutate(self, VariableMutationType.ASSIGN, rhs)
+        active_thread = self.parent
+        last_thread = self.parent.get_parent_workflow().get_threads()[-1]
+        if last_thread.is_active:
+            active_thread = last_thread
+
+        active_thread.mutate(self, VariableMutationType.ASSIGN, rhs)
 
     def add(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.ADD, other)
@@ -941,7 +949,7 @@ class WorkflowThread:
         self._retention_policy: Optional[ThreadRetentionPolicy] = None
 
         if workflow is None:
-            raise ValueError("Workflow must be not None")
+            raise ValueError("Workflow cannot be None.")
 
         self._workflow = workflow
         self._workflow._builders.append(self)
@@ -955,6 +963,10 @@ class WorkflowThread:
         if node.node_case != NodeCase.EXIT:
             self.add_node("exit", ExitNode())
         self.is_active = False
+
+    def get_parent_workflow(self) -> "Workflow":
+        """Returns the parent workflow of this ThreadSpec."""
+        return self._workflow
 
     def spawn_thread(
         self,
@@ -1999,6 +2011,14 @@ class Workflow:
         self._default_retries: Optional[int] = None
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
+
+    def get_threads(self) -> list[WorkflowThread]:
+        """Get the threads.
+
+        Returns:
+            list[WorkflowThread]: The threads.
+        """
+        return self._builders
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
