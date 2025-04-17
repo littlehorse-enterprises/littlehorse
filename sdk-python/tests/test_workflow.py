@@ -73,26 +73,34 @@ class TestNodeOutput(unittest.TestCase):
 
 
 class TestWfRunVariable(unittest.TestCase):
+
+    def setUp(self):
+        def entrypoint_func(wf: WorkflowThread) -> None:
+            pass
+
+        workflow = Workflow("test-workflow", entrypoint_func)
+        self.workflow_thread = WorkflowThread(workflow, entrypoint_func)
+
     def test_value_is_not_none(self):
         variable = WfRunVariable(
-            "my-var", VariableType.STR, None, default_value="my-str"
+            "my-var", VariableType.STR, self.workflow_thread, default_value="my-str"
         )
         self.assertEqual(variable.default_value.WhichOneof("value"), "str")
         self.assertEqual(variable.default_value.str, "my-str")
 
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         self.assertEqual(variable.default_value, None)
 
     def test_validate_are_same_type(self):
         with self.assertRaises(TypeError) as exception_context:
-            WfRunVariable("my-var", VariableType.STR, None, 10)
+            WfRunVariable("my-var", VariableType.STR, self.workflow_thread, 10)
         self.assertEqual(
             "Default value type does not match LH variable type STR",
             str(exception_context.exception),
         )
 
     def test_validate_with_json_path_already_set(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         variable.json_path = "$.myPath"
         with self.assertRaises(ValueError) as exception_context:
             variable.with_json_path("$.myNewOne")
@@ -102,7 +110,7 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_json_path_already_set(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         variable.json_path = "$.myPath"
         with self.assertRaises(ValueError) as exception_context:
             variable.json_path = "$.myNewOne"
@@ -112,7 +120,7 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_json_path_format(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         with self.assertRaises(ValueError) as exception_context:
             variable.json_path = "$myNewOne"
         self.assertEqual(
@@ -121,7 +129,7 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_is_json_obj_when_using_json_index(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         with self.assertRaises(ValueError) as exception_context:
             variable.searchable_on("$.myPath", VariableType.STR)
         self.assertEqual(
@@ -130,11 +138,11 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_persistent(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None).searchable()
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread).searchable()
         self.assertEqual(variable.compile().searchable, True)
 
     def test_validate_is_json_obj_when_using_json_pth(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         with self.assertRaises(ValueError) as exception_context:
             variable.with_json_path("$.myPath")
         self.assertEqual(
@@ -142,19 +150,19 @@ class TestWfRunVariable(unittest.TestCase):
             str(exception_context.exception),
         )
 
-        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, self.workflow_thread)
         variable.with_json_path("$.myPath")
 
-        variable = WfRunVariable("my-var", VariableType.JSON_ARR, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_ARR, self.workflow_thread)
         variable.with_json_path("$.myPath")
 
     def test_json_path_creates_new(self):
-        variable = WfRunVariable("my-var", VariableType.JSON_ARR, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_ARR, self.workflow_thread)
         with_json = variable.with_json_path("$.myPath")
         self.assertIsNot(variable, with_json)
 
     def test_compile_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         self.assertEqual(
             variable.compile(),
             ThreadVarDef(
@@ -163,7 +171,7 @@ class TestWfRunVariable(unittest.TestCase):
             ),
         )
 
-        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, self.workflow_thread)
         variable.searchable_on("$.myPath", VariableType.STR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ),
@@ -176,7 +184,7 @@ class TestWfRunVariable(unittest.TestCase):
 
     def test_compile_private_variable(self):
         variable = WfRunVariable(
-            "my-var", VariableType.STR, None, access_level="PRIVATE_VAR"
+            "my-var", VariableType.STR, self.workflow_thread, access_level="PRIVATE_VAR"
         )
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.STR),
@@ -185,7 +193,7 @@ class TestWfRunVariable(unittest.TestCase):
         self.assertEqual(variable.compile(), expected_output)
 
     def test_compile_inherited_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         variable.with_access_level(WfRunVariableAccessLevel.INHERITED_VAR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.STR),
