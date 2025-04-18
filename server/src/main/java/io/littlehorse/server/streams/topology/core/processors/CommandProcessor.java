@@ -15,10 +15,9 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Aggr
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -35,6 +34,7 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
@@ -57,6 +57,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private KeyValueStore<String, Bytes> nativeStore;
     private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
+    private final ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables;
 
     private final LHProcessingExceptionHandler exceptionHandler;
 
@@ -64,12 +65,14 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
-            TaskQueueManager globalTaskQueueManager) {
+            TaskQueueManager globalTaskQueueManager,
+            ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server);
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncCompletables);
+        this.asyncCompletables = asyncCompletables;
     }
 
     @Override
@@ -89,7 +92,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void processHelper(final Record<String, Command> commandRecord) {
         ProcessorExecutionContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
-        log.trace(
+        log.info(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),
                 command.type,
@@ -99,13 +102,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
             if (command.hasResponse() && command.getCommandId() != null) {
-                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCommandId(command.getCommandId())
-                        .setResultTime(LHUtil.fromDate(new Date()))
-                        .setResult(response.toByteString())
-                        .build();
-
-                server.onResponseReceived(command.getCommandId(), cmdReply);
+                if (command.type.toString().equals("TASK_WORKER_HEART_BEAT")) {
+                    log.info("Sending response to waiting thread");
+                }
+                asyncCompletables.get(command.getCommandId()).completable().complete(response);
+            } else {
+                log.info("No response for commandId {} type {}", command.getCommandId(), command.type);
             }
         } catch (KafkaException ke) {
             throw ke;

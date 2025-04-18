@@ -30,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class AsyncWaitersTest {
 
-    public AsyncWaiters asyncWaiters = new AsyncWaiters(mock());
+    public AsyncWaiters asyncWaiters = new AsyncWaiters();
     private final InternalWaitForWfEventRequest mockRequest = mock(Answers.RETURNS_DEEP_STUBS);
     private final RequestExecutionContext requestContext = mock(Answers.RETURNS_DEEP_STUBS);
     private final WorkflowEventModel mockEvent = mock(Answers.RETURNS_DEEP_STUBS);

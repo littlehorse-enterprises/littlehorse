@@ -9,6 +9,8 @@ import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.CommandSender;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.common.errors.InvalidProducerEpochException;
 import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,9 @@ import org.junit.jupiter.api.Test;
 public class LHProcessingExceptionHandlerTest {
 
     private final LHServer mockServer = mock();
-    private final LHProcessingExceptionHandler exceptionHandler = new LHProcessingExceptionHandler(mockServer);
+    private final CommandSender sender = mock(CommandSender.class);
+    private final LHProcessingExceptionHandler exceptionHandler =
+            new LHProcessingExceptionHandler(mockServer, new ConcurrentHashMap<>());
 
     @Test
     public void shouldIgnoreRecordTooLargeException() {
@@ -42,7 +46,7 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw cce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
+        verify(sender).registerErrorAndNotifyWaitingThreads(eq("myCommand"), any());
     }
 
     @Test
@@ -54,7 +58,7 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw cce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
+        verify(sender).registerErrorAndNotifyWaitingThreads(eq("myCommand"), any());
     }
 
     @Test
@@ -78,7 +82,7 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw mce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
+        verify(sender).registerErrorAndNotifyWaitingThreads(eq("myCommand"), any());
     }
 
     @Test
@@ -90,6 +94,6 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw mce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
+        verify(sender).registerErrorAndNotifyWaitingThreads(eq("myCommand"), any());
     }
 }

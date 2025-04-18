@@ -1,11 +1,6 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
@@ -16,12 +11,14 @@ import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.TestMetadataManager;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -44,6 +41,7 @@ public class PutWorkflowEventDefRequestModelTest {
     private final PutWorkflowEventDefRequestModel putWorkflowEventDef = createSubCommand();
 
     private MetadataProcessor metadataProcessor;
+    private final CommandSender sender = Mockito.mock(CommandSender.class);
 
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
@@ -67,7 +65,7 @@ public class PutWorkflowEventDefRequestModelTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, new ConcurrentHashMap<>());
         metadataManager = TestMetadataManager.create(nativeMetadataStore, tenantId, executionContext);
     }
 
@@ -84,7 +82,7 @@ public class PutWorkflowEventDefRequestModelTest {
         WorkflowEventDefModel storedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-created"));
         Assertions.assertThat(storedEventDef).isNotNull();
         sendCommand(new PutWorkflowEventDefRequestModel("user-created", VariableType.INT));
-        verify(server, times(1)).sendErrorToClient(anyString(), any());
+        verify(sender, times(1)).registerErrorAndNotifyWaitingThreads(anyString(), any());
         PutWorkflowEventDefRequestModel userUpdatedCommand =
                 new PutWorkflowEventDefRequestModel("user-updated", VariableType.STR);
         reset(server);
