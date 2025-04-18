@@ -18,6 +18,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -64,7 +65,7 @@ public class PutWorkflowEventDefRequestModelTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, sender);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, new ConcurrentHashMap<>());
         metadataManager = TestMetadataManager.create(nativeMetadataStore, tenantId, executionContext);
     }
 

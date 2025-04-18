@@ -34,6 +34,7 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
@@ -56,7 +57,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private KeyValueStore<String, Bytes> nativeStore;
     private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
-    private final CommandSender commandSender;
+    private final ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables;
 
     private final LHProcessingExceptionHandler exceptionHandler;
 
@@ -65,13 +66,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            CommandSender commandSender) {
+            ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server, commandSender);
-        this.commandSender = commandSender;
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncCompletables);
+        this.asyncCompletables = asyncCompletables;
     }
 
     @Override
@@ -101,7 +102,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
             if (command.hasResponse() && command.getCommandId() != null) {
-                commandSender.registerResponseAndNotifyWaitingThreads(command.getCommandId(), response);
+                if (command.type.toString().equals("TASK_WORKER_HEART_BEAT")) {
+                    log.info("Sending response to waiting thread");
+                }
+                asyncCompletables.get(command.getCommandId()).completable().complete(response);
+            } else {
+                log.info("No response for commandId {} type {}", command.getCommandId(), command.type);
             }
         } catch (KafkaException ke) {
             throw ke;

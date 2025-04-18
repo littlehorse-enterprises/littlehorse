@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -55,6 +56,7 @@ public class LHServer {
     private final ExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
     private final CommandSender commandSender;
+    private static final ConcurrentHashMap<String, CommandSender.FutureAndType> responses = new ConcurrentHashMap<>();
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -75,9 +77,10 @@ public class LHServer {
                 config.getCommandProducer(),
                 config.getTaskClaimProducer(),
                 config.getStreamsSessionTimeout(),
-                config);
+                config,
+                responses);
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, commandSender),
+                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, responses),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
 

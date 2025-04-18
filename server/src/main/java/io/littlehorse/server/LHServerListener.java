@@ -264,9 +264,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
@@ -401,7 +404,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
         PutPrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, PutPrincipalRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), Principal.class), ctx);
+    }
+
+    private <T> void waitAndCompleteObserver(Future<T> futureResponse, StreamObserver<T> ctx) {
+        try {
+            long startTime = System.currentTimeMillis();
+            T result = futureResponse.get(10, TimeUnit.SECONDS);
+            long endTime = System.currentTimeMillis();
+            log.info("Waiting for {} ms", endTime - startTime);
+            ctx.onNext(result);
+            ctx.onCompleted();
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -409,7 +425,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deletePrincipal(DeletePrincipalRequest req, StreamObserver<Empty> ctx) {
         DeletePrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, DeletePrincipalRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -502,7 +518,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void putTaskDef(PutTaskDefRequest req, StreamObserver<TaskDef> ctx) {
         PutTaskDefRequestModel reqModel = LHSerializable.fromProto(req, PutTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), TaskDef.class), ctx);
     }
 
     @Override
@@ -510,7 +526,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putWorkflowEventDef(PutWorkflowEventDefRequest req, StreamObserver<WorkflowEventDef> ctx) {
         PutWorkflowEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutWorkflowEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), WorkflowEventDef.class), ctx);
     }
 
     @Override
@@ -518,7 +534,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putExternalEvent(PutExternalEventRequest req, StreamObserver<ExternalEvent> ctx) {
         PutExternalEventRequestModel reqModel =
                 LHSerializable.fromProto(req, PutExternalEventRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), ExternalEvent.class), ctx);
     }
 
     @Override
@@ -526,7 +542,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putExternalEventDef(PutExternalEventDefRequest req, StreamObserver<ExternalEventDef> ctx) {
         PutExternalEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutExternalEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), ExternalEventDef.class), ctx);
     }
 
     @Override
@@ -534,7 +550,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putUserTaskDef(PutUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
         PutUserTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutUserTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), UserTaskDef.class), ctx);
     }
 
     @Override
@@ -542,7 +558,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void assignUserTaskRun(AssignUserTaskRunRequest req, StreamObserver<Empty> ctx) {
         AssignUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, AssignUserTaskRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -550,7 +566,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void completeUserTaskRun(CompleteUserTaskRunRequest req, StreamObserver<Empty> ctx) {
         CompleteUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, CompleteUserTaskRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -558,7 +574,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void saveUserTaskRunProgress(SaveUserTaskRunProgressRequest req, StreamObserver<UserTaskRun> ctx) {
         SaveUserTaskRunProgressRequestModel reqModel =
                 LHSerializable.fromProto(req, SaveUserTaskRunProgressRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), UserTaskRun.class), ctx);
     }
 
     @Override
@@ -566,14 +582,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void cancelUserTaskRun(CancelUserTaskRunRequest req, StreamObserver<Empty> ctx) {
         CancelUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, CancelUserTaskRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), WfSpec.class), ctx);
     }
 
     @Override
@@ -581,7 +597,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void migrateWfSpec(MigrateWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         MigrateWfSpecRequestModel reqModel =
                 LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), WfSpec.class), ctx);
     }
 
     @Override
@@ -622,14 +638,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         }
 
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
-        this.processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), WfRun.class), ctx);
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRun> ctx) {
         ScheduleWfRequestModel reqModel = LHSerializable.fromProto(req, ScheduleWfRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), ScheduledWfRun.class), ctx);
     }
 
     @Override
@@ -664,7 +680,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
         ClusterHealthRequestObserver clusterHealthRequestObserver = new ClusterHealthRequestObserver(responseObserver);
 
-        processCommand(new CommandModel(heartBeat), clusterHealthRequestObserver);
+        waitAndCompleteObserver(
+                processCommand(new CommandModel(heartBeat), RegisterTaskWorkerResponse.class),
+                clusterHealthRequestObserver);
     }
 
     @Override
@@ -762,7 +780,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_TENANT, actions = ACLAction.WRITE_METADATA)
     public void putTenant(PutTenantRequest req, StreamObserver<Tenant> ctx) {
         PutTenantRequestModel reqModel = LHSerializable.fromProto(req, PutTenantRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), Tenant.class), ctx);
     }
 
     @Override
@@ -963,7 +981,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void stopWfRun(StopWfRunRequest req, StreamObserver<Empty> ctx) {
         StopWfRunRequestModel reqModel = LHSerializable.fromProto(req, StopWfRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -971,7 +989,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void rescueThreadRun(RescueThreadRunRequest req, StreamObserver<WfRun> ctx) {
         RescueThreadRunRequestModel reqModel =
                 LHSerializable.fromProto(req, RescueThreadRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), WfRun.class), ctx);
     }
 
     @Override
@@ -979,7 +997,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void resumeWfRun(ResumeWfRunRequest req, StreamObserver<Empty> ctx) {
         ResumeWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, ResumeWfRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -987,7 +1005,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteWfRun(DeleteWfRunRequest req, StreamObserver<Empty> ctx) {
         DeleteWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteWfRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -995,7 +1013,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteWfSpec(DeleteWfSpecRequest req, StreamObserver<Empty> ctx) {
         DeleteWfSpecRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteWfSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -1003,7 +1021,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteTaskDef(DeleteTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -1011,7 +1029,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteScheduledWfRun(DeleteScheduledWfRunRequest req, StreamObserver<Empty> ctx) {
         DeleteScheduledWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteScheduledWfRunRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -1019,7 +1037,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteUserTaskDef(DeleteUserTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteUserTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteUserTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), Empty.class), ctx);
     }
 
     @Override
@@ -1027,7 +1045,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteExternalEventDef(DeleteExternalEventDefRequest req, StreamObserver<Empty> ctx) {
         DeleteExternalEventDefRequestModel deedr =
                 LHSerializable.fromProto(req, DeleteExternalEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(deedr), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(deedr), Empty.class), ctx);
     }
 
     @Override
@@ -1035,7 +1053,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteWorkflowEventDef(DeleteWorkflowEventDefRequest req, StreamObserver<Empty> ctx) {
         DeleteWorkflowEventDefRequestModel dwedr =
                 LHSerializable.fromProto(req, DeleteWorkflowEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(dwedr), ctx);
+        waitAndCompleteObserver(processCommand(new MetadataCommandModel(dwedr), Empty.class), ctx);
     }
 
     @Override
@@ -1127,20 +1145,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
      * context, for example the `returnTaskToClient()` method. That method is called
      * from within the CommandProcessor#process() method.
      */
-    private <RC extends Message> void processCommand(AbstractCommand<?> command, StreamObserver<RC> responseObserver) {
+    private <RC extends Message> Future<RC> processCommand(AbstractCommand<?> command, Class<RC> responseType) {
         RequestExecutionContext requestContext = requestContext();
-        commandSender.doSend(
+        return commandSender.doSend(
                 command,
-                responseObserver,
-                requestContext.authorization().principalId(),
-                requestContext.authorization().tenantId());
-    }
-
-    private <T extends Message> void processCommand(
-            CommandModel command, StreamObserver<T> responseObserver, RequestExecutionContext requestContext) {
-        commandSender.doSend(
-                command,
-                responseObserver,
+                responseType,
                 requestContext.authorization().principalId(),
                 requestContext.authorization().tenantId());
     }

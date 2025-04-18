@@ -14,6 +14,7 @@ import io.littlehorse.server.streams.topology.core.processors.MetadataGlobalStor
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.topology.timer.TimerProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
@@ -87,7 +88,7 @@ public class ServerTopology {
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            CommandSender commandSender) {
+            ConcurrentHashMap<String, CommandSender.FutureAndType> commandSender) {
         Topology topo = new Topology();
 
         Serializer<Object> sinkValueSerializer = (topic, output) -> {

@@ -28,6 +28,7 @@ import io.littlehorse.server.streams.topology.core.MetadataCommandException;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
@@ -50,15 +51,18 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private KeyValueStore<String, Bytes> metadataStore;
-    private final CommandSender sender;
+    private final ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables;
 
     public MetadataProcessor(
-            LHServerConfig config, LHServer server, MetadataCache metadataCache, CommandSender sender) {
+            LHServerConfig config,
+            LHServer server,
+            MetadataCache metadataCache,
+            ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server, sender);
-        this.sender = sender;
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncCompletables);
+        this.asyncCompletables = asyncCompletables;
     }
 
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
@@ -159,7 +163,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         try {
             Message response = command.process(metadataContext);
             if (command.hasResponse() && command.getCommandId() != null) {
-                sender.registerResponseAndNotifyWaitingThreads(command.getCommandId(), response);
+                asyncCompletables.get(command.getCommandId()).completable().complete(response);
                 // This allows us to set a larger commit interval for the Core Topology
                 // without affecting latency of updates to the metadata global store.
                 //
@@ -168,6 +172,8 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 // commit will not impact performance of the rest of the application very
                 // often.
                 ctx.commit();
+            } else {
+                log.info("Skipping command response {}", command.getCommandId());
             }
         } catch (Exception exn) {
             throw new MetadataCommandException(exn, command);

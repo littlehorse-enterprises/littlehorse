@@ -27,6 +27,7 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -81,7 +82,7 @@ public class TenantAdministrationTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, sender);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, new ConcurrentHashMap<>());
     }
 
     @Test

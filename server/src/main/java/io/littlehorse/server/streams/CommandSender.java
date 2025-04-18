@@ -1,10 +1,7 @@
 package io.littlehorse.server.streams;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -13,13 +10,15 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
+import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.time.Duration;
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
@@ -32,14 +31,15 @@ public class CommandSender {
     private final LHProducer commandProducer;
     private final LHProducer taskClaimProducer;
     private final LHServerConfig serverConfig;
-    private final Map<String, ResponseOrError> responses = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, CommandSender.FutureAndType> responses;
 
     public CommandSender(
             ExecutorService networkThreadpool,
             LHProducer commandProducer,
             LHProducer taskClaimProducer,
             long streamsSessionTimeout,
-            LHServerConfig serverConfig) {
+            LHServerConfig serverConfig,
+            ConcurrentHashMap<String, CommandSender.FutureAndType> responses) {
         // Streams Session Timeout is how long it takes to notice that the server is down.
         // Then we need the rebalance to occur, and the new server must process the command.
         // So we give it a buffer of 10 additional seconds.
@@ -49,6 +49,8 @@ public class CommandSender {
         this.taskClaimProducer = taskClaimProducer;
         // The only reason for this is to resolve using the method AbstractCommand#getTopic
         this.serverConfig = serverConfig;
+        log.info("Creating CommandSender ");
+        this.responses = responses;
     }
 
     /*
@@ -58,21 +60,25 @@ public class CommandSender {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    public <T extends Message> void doSend(
-            AbstractCommand<?> command,
-            StreamObserver<T> responseObserver,
-            PrincipalIdModel principalId,
-            TenantIdModel tenantId) {
-
+    public synchronized <T extends Message> Future<T> doSend(
+            AbstractCommand<?> command, Class<T> responseType, PrincipalIdModel principalId, TenantIdModel tenantId) {
+        CompletableFuture<Message> out = new CompletableFuture<>();
         Callback callback = (recordMetadata, e) -> {
             if (e != null) {
-                log.error("Failed to send command to Kafka", e);
-                responseObserver.onError(e);
-                command.getCommandId().notify();
+                out.completeExceptionally(e);
             }
         };
-
         command.setCommandId(LHUtil.generateGuid());
+        responses.put(command.getCommandId(), new FutureAndType(out, responseType));
+        if (responseType.isAssignableFrom(RegisterTaskWorkerResponse.class)
+                || responseType.isAssignableFrom(Tenant.class)) {
+            log.info(
+                    "Registering future for task worker response cmd={}, responses={}, {} {}",
+                    command.getCommandId(),
+                    responses,
+                    this.toString(),
+                    Thread.currentThread());
+        }
 
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         commandProducer.send(
@@ -81,49 +87,28 @@ public class CommandSender {
                 command.getTopic(serverConfig),
                 callback,
                 commandMetadata.toArray());
-        try {
-            Semaphore lock = new Semaphore(0);
-            synchronized (command.getCommandId()) {
-                log.info(
-                        "Waiting for response for command {} for command {}",
-                        command.getCommandId(),
-                        command.getSubCommand().getClass().getSimpleName());
-                responses.put(command.getCommandId(), new ResponseOrError(lock, null, null));
-                lock.acquire();
-                log.info("Done waiting for response for command {}", command.getCommandId());
-            }
-            ResponseOrError responseOrError = responses.remove(command.getCommandId());
-            if (responseOrError.isError()) {
-                responseObserver.onError(responseOrError.error);
-            } else if (responseOrError.isResponse()) {
-                // Trust in the force
-                responseObserver.onNext((T) responseOrError.response);
-                responseObserver.onCompleted();
-            } else {
-                responseObserver.onError(
-                        new LHApiException(Status.INTERNAL, "Timedout waiting for response from Kafka"));
-            }
-        } catch (InterruptedException e) {
-            log.error("Response timeout", e);
+        return (CompletableFuture<T>) out;
+    }
+
+    public synchronized <T extends Message> void registerResponseAndNotifyWaitingThreads(String commandId, T response) {
+        FutureAndType removed = responses.remove(commandId);
+        if (removed == null) {
+            log.error(
+                    "No responses found for commandId={} responses={} clazz {} thread {}",
+                    commandId,
+                    responses,
+                    this.toString(),
+                    Thread.currentThread());
+        }
+        if (removed.responseType.equals(response.getClass())) {
+            CompletableFuture<T> completable = (CompletableFuture<T>) removed.completable;
+            completable.complete(response);
         }
     }
 
-    public void registerResponseAndNotifyWaitingThreads(String commandId, Message response) {
-        if (responses.containsKey(commandId)) {
-            Semaphore lock = responses.get(commandId).lock;
-            responses.put(commandId, new ResponseOrError(lock, response, null));
-            log.info("releasing lock for command {}", commandId);
-            lock.release();
-        }
-    }
-
-    public void registerErrorAndNotifyWaitingThreads(String commandId, Throwable cause) {
-        if (responses.containsKey(commandId)) {
-            Semaphore lock = responses.get(commandId).lock;
-            responses.put(commandId, new ResponseOrError(lock, null, cause));
-            log.info("releasing lock for command {}", commandId);
-            lock.release();
-        }
+    public synchronized void registerErrorAndNotifyWaitingThreads(String commandId, Throwable cause) {
+        FutureAndType removed = responses.remove(commandId);
+        removed.completable.completeExceptionally(cause);
     }
 
     public void doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
@@ -137,13 +122,5 @@ public class CommandSender {
                         .toArray());
     }
 
-    private record ResponseOrError(Semaphore lock, Message response, Throwable error) {
-        public boolean isError() {
-            return error != null;
-        }
-
-        public boolean isResponse() {
-            return response != null;
-        }
-    }
+    public record FutureAndType(CompletableFuture<Message> completable, Class<?> responseType) {}
 }
