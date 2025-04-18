@@ -310,8 +310,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             attempt.setError(new LHTaskErrorModel(
                     taskRunReport.getOutput().getDeserializationError().get(), LHErrorType.VAR_SUB_ERROR));
             attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
-            attempt.setOutput(taskRunReport.getOutput());
-            attempt.setException(taskRunReport.getException());
             transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
         } else {
             attempt.setOutput(taskRunReport.getOutput());
