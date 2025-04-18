@@ -6,6 +6,7 @@ import { FC, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { BaseFormField } from './BaseFormField'
 import { getValidation } from './validation'
+import { getVariableDefType } from '@/app/utils/variables'
 
 export const FormTextarea: FC<FormFieldProp> = props => {
   const [isDisabled, setIsDisabled] = useState(!props.variables?.required)
@@ -20,12 +21,14 @@ export const FormTextarea: FC<FormFieldProp> = props => {
   if (!props.variables?.varDef?.name) return null
   const {
     variables: {
-      varDef: { type, name },
+      varDef: { name },
       required,
     },
     register,
     formState: { errors },
   } = props
+
+  const type = getVariableDefType(props.variables.varDef)
 
   return (
     <BaseFormField {...props} isDisabled={isDisabled} setIsDisabled={setIsDisabled}>

@@ -108,16 +108,32 @@ class VariableMutation(_message.Message):
     def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs_assignment: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
-    __slots__ = ["type", "name", "default_value", "masked_value"]
+    __slots__ = ["type", "name", "default_value", "masked_value", "type_def"]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
     MASKED_VALUE_FIELD_NUMBER: _ClassVar[int]
+    TYPE_DEF_FIELD_NUMBER: _ClassVar[int]
     type: _common_enums_pb2.VariableType
     name: str
     default_value: _variable_pb2.VariableValue
     masked_value: bool
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ...) -> None: ...
+    type_def: TypeDefinition
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+
+class TypeDefinition(_message.Message):
+    __slots__ = ["type", "masked"]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    MASKED_FIELD_NUMBER: _ClassVar[int]
+    type: _common_enums_pb2.VariableType
+    masked: bool
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., masked: bool = ...) -> None: ...
+
+class ReturnType(_message.Message):
+    __slots__ = ["return_type"]
+    RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
+    return_type: TypeDefinition
+    def __init__(self, return_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class UTActionTrigger(_message.Message):
     __slots__ = ["task", "cancel", "reassign", "delay_seconds", "hook"]

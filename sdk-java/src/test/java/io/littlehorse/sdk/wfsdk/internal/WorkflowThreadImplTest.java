@@ -133,7 +133,7 @@ public class WorkflowThreadImplTest {
 
         VariableDef objVar = varDefs.get(1).getVarDef();
         assertThat(objVar.getDefaultValue()).isNotEqualTo(null);
-        assertEquals(objVar.getType(), VariableType.JSON_OBJ);
+        assertEquals(objVar.getTypeDef().getType(), VariableType.JSON_OBJ);
     }
 
     @Test

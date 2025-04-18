@@ -264,10 +264,7 @@ export function metricsWindowLengthToNumber(object: MetricsWindowLength): number
   }
 }
 
-/**
- * Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
- * VariableValue.
- */
+/** Specifies a primitive type in LittleHorse. */
 export enum VariableType {
   /**
    * JSON_OBJ - An object represented as a json string. <br/>

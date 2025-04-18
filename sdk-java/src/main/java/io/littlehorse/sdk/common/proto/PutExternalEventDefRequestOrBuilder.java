@@ -74,4 +74,31 @@ public interface PutExternalEventDefRequestOrBuilder extends
    * <code>.littlehorse.ExternalEventRetentionPolicy retention_policy = 2;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
+
+  /**
+   * <pre>
+   * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+   * @return Whether the contentType field is set.
+   */
+  boolean hasContentType();
+  /**
+   * <pre>
+   * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+   * @return The contentType.
+   */
+  io.littlehorse.sdk.common.proto.ReturnType getContentType();
+  /**
+   * <pre>
+   * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder();
 }

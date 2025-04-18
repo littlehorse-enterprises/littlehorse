@@ -29,7 +29,7 @@ public class LHClient {
     }
 
     public String getServerVersion() {
-        final ServerVersion response = blockingStub.getServerVersion(Empty.getDefaultInstance());
+        final LittleHorseVersion response = blockingStub.getServerVersion(Empty.getDefaultInstance());
         return "%s.%s.%s%s"
                 .formatted(
                         response.getMajorVersion(),

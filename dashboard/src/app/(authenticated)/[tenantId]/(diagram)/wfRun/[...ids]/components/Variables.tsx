@@ -1,5 +1,5 @@
 import { VARIABLE_TYPES } from '@/app/constants'
-import { getVariableValue } from '@/app/utils'
+import { getVariableDefType, getVariableValue } from '@/app/utils'
 import { ThreadVarDef, Variable, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { OverflowText } from '../../../../components/OverflowText'
@@ -28,7 +28,9 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables, inherit
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
           <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
-          <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[variable.varDef!.type]}</span>
+          <span className="rounded bg-yellow-100 p-1 text-xs">
+            {VARIABLE_TYPES[getVariableDefType(variable.varDef!)]}
+          </span>
           {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
           {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>

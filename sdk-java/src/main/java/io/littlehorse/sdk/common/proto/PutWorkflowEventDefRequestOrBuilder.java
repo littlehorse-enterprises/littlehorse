@@ -32,17 +32,25 @@ public interface PutWorkflowEventDefRequestOrBuilder extends
    * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 2;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.ReturnType content_type = 2;</code>
+   * @return Whether the contentType field is set.
    */
-  int getTypeValue();
+  boolean hasContentType();
   /**
    * <pre>
    * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 2;</code>
-   * @return The type.
+   * <code>.littlehorse.ReturnType content_type = 2;</code>
+   * @return The contentType.
    */
-  io.littlehorse.sdk.common.proto.VariableType getType();
+  io.littlehorse.sdk.common.proto.ReturnType getContentType();
+  /**
+   * <pre>
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+   * </pre>
+   *
+   * <code>.littlehorse.ReturnType content_type = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder();
 }

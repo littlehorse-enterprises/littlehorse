@@ -7,6 +7,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { ReturnType } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventDefId, ExternalEventId } from "./object_id";
 import { VariableValue } from "./variable";
@@ -71,7 +72,18 @@ export interface ExternalEventDef {
    * The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
    * ExternalEvent **only before** it is matched with a WfRun.
    */
-  retentionPolicy: ExternalEventRetentionPolicy | undefined;
+  retentionPolicy:
+    | ExternalEventRetentionPolicy
+    | undefined;
+  /**
+   * Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+   *
+   * It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+   * before 0.13.2 will not have a schema. For those `ExternalEventDef`s that do not have
+   * a specified type_information, we do not validate the WfSpec's usage of the ExternalEvent
+   * nor do we validate the type of `content` in the `rpc PutExternalEvent`.
+   */
+  typeInformation?: ReturnType | undefined;
 }
 
 /**
@@ -202,7 +214,7 @@ export const ExternalEvent = {
 };
 
 function createBaseExternalEventDef(): ExternalEventDef {
-  return { id: undefined, createdAt: undefined, retentionPolicy: undefined };
+  return { id: undefined, createdAt: undefined, retentionPolicy: undefined, typeInformation: undefined };
 }
 
 export const ExternalEventDef = {
@@ -215,6 +227,9 @@ export const ExternalEventDef = {
     }
     if (message.retentionPolicy !== undefined) {
       ExternalEventRetentionPolicy.encode(message.retentionPolicy, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.typeInformation !== undefined) {
+      ReturnType.encode(message.typeInformation, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -247,6 +262,13 @@ export const ExternalEventDef = {
 
           message.retentionPolicy = ExternalEventRetentionPolicy.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.typeInformation = ReturnType.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -267,6 +289,9 @@ export const ExternalEventDef = {
     message.createdAt = object.createdAt ?? undefined;
     message.retentionPolicy = (object.retentionPolicy !== undefined && object.retentionPolicy !== null)
       ? ExternalEventRetentionPolicy.fromPartial(object.retentionPolicy)
+      : undefined;
+    message.typeInformation = (object.typeInformation !== undefined && object.typeInformation !== null)
+      ? ReturnType.fromPartial(object.typeInformation)
       : undefined;
     return message;
   },
