@@ -281,7 +281,7 @@ func (w *WfRunVariable) IsNotIn(rhs interface{}) *WorkflowCondition {
 func (w *WfRunVariable) Assign(rhs interface{}) {
 	activeThread := w.thread
 	lastThread := w.thread.wf.threads[len(w.thread.wf.threads)-1]
-	
+
 	if lastThread.isActive {
 		activeThread = lastThread
 	}
