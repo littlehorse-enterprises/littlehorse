@@ -25,6 +25,7 @@ from littlehorse.model import (
     JsonIndex,
     Node,
     NopNode,
+    StartThreadNode,
     ThreadRetentionPolicy,
     ThreadSpec,
     FailureHandlerDef,
@@ -2015,6 +2016,109 @@ class TestWorkflow(unittest.TestCase):
                     )
                 },
             ),
+        )
+
+    def test_workflow_with_parent_var_assigned_to_child_nested_threads_should_compile(self):
+        def my_entrypoint(grand_patent_thread: WorkflowThread) -> None:
+            grand_parent_var = grand_patent_thread.declare_str("grand-parent-var")
+            def son_func(son_thread: WorkflowThread) -> None:
+                grand_parent_var.assign("son-value")
+                def grand_child_func(grandchild_thread: WorkflowThread) -> None:
+                    grand_parent_var.assign("grandchild-value")
+                son_thread.spawn_thread(
+                    grand_child_func,
+                    "grandchild-thread"
+                )
+            grand_patent_thread.spawn_thread(son_func,"son-thread")
+
+        compiled_wf = Workflow("my-wf", my_entrypoint).compile()
+        self.assertEqual(
+            compiled_wf,
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-son-thread-START_THREAD")],
+                            ),
+                            "1-son-thread-START_THREAD": Node(
+                                start_thread=StartThreadNode(thread_spec_name="son-thread"),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="1-son-thread-START_THREAD",
+                                                         rhs_assignment=VariableAssignment(
+                                                             node_output=VariableAssignment.NodeOutputReference(
+                                                                 node_name="1-son-thread-START_THREAD"
+                                                             )))
+                                                     ])
+                                                ]
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(name="grand-parent-var", type=VariableType.STR),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
+                            ),
+                            ThreadVarDef(
+                                var_def=VariableDef(name="1-son-thread-START_THREAD", type=VariableType.INT),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
+                            )
+                        ]
+                    ),
+                    "son-thread": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-grandchild-thread-START_THREAD",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="grand-parent-var",
+                                                         rhs_assignment=VariableAssignment(
+                                                             literal_value=VariableValue(str="son-value")
+                                                         ))]
+                                                     )]
+                            ),
+                            "1-grandchild-thread-START_THREAD": Node(
+                                start_thread=StartThreadNode(thread_spec_name="grandchild-thread"),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="1-grandchild-thread-START_THREAD",
+                                                         rhs_assignment=VariableAssignment(
+                                                             node_output=VariableAssignment.NodeOutputReference(
+                                                                 node_name="1-grandchild-thread-START_THREAD")
+                                                         ))
+                                                     ])
+                                                ]
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(name="1-grandchild-thread-START_THREAD", type=VariableType.INT),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
+                            )
+                        ]
+                    ),
+                    "grandchild-thread": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-exit-EXIT",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="grand-parent-var",
+                                                         rhs_assignment=VariableAssignment(
+                                                             literal_value=VariableValue(str="grandchild-value")
+                                                         ))]
+                                                     )]
+                            ),
+                            "1-exit-EXIT": Node(exit=ExitNode()),
+                        }
+                    )
+                },
+            )
         )
 
 
