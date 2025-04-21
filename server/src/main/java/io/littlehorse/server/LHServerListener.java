@@ -81,8 +81,6 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequ
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
-import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
@@ -257,22 +255,17 @@ import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 
 /**
@@ -342,7 +335,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                     @Override
                     public void sendMessage(RespT message) {
                         // 🔥 Intercept and modify or log the response here
-                        System.out.println("Call done in thread " + Thread.currentThread());
+                        Thread currentThread = Thread.currentThread();
+                        if (currentThread.toString().toLowerCase().contains("kafka")) {
+                            log.info("Call {} done in thread {}", message.getClass(), currentThread);
+                        }
+
                         super.sendMessage(message);
                     }
                 };
@@ -407,17 +404,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         waitAndCompleteObserver(processCommand(new MetadataCommandModel(reqModel), Principal.class), ctx);
     }
 
-    private <T> void waitAndCompleteObserver(Future<T> futureResponse, StreamObserver<T> ctx) {
+    private <T> void waitAndCompleteObserver(CompletableFuture<T> futureResponse, StreamObserver<T> ctx) {
+        long startTime = System.currentTimeMillis();
+        long endTime;
         try {
-            long startTime = System.currentTimeMillis();
-            T result = futureResponse.get(10, TimeUnit.SECONDS);
-            long endTime = System.currentTimeMillis();
-            log.info("Waiting for {} ms", endTime - startTime);
-            ctx.onNext(result);
+            T response = futureResponse.get(30, TimeUnit.SECONDS);
+            endTime = System.currentTimeMillis();
+            ctx.onNext(response);
             ctx.onCompleted();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new RuntimeException(e);
+        } catch (Throwable exn) {
+            endTime = System.currentTimeMillis();
+            ctx.onError(exn);
+            log.error("Error waiting for response", exn);
         }
+        log.trace("Waiting for {} ms", endTime - startTime);
     }
 
     @Override
@@ -653,6 +653,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public StreamObserver<PollTaskRequest> pollTask(StreamObserver<PollTaskResponse> ctx) {
         AuthorizationContext authorization = requestContext().authorization();
         return new PollTaskRequestObserver(
+                getInstanceName(),
                 ctx,
                 taskQueueManager,
                 authorization.tenantId(),
@@ -693,33 +694,16 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         // the Command to be persisted into Kafka.
         RequestExecutionContext executionContext = requestContext();
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, executionContext);
-
-        TenantIdModel tenantId = executionContext.authorization().tenantId();
-        PrincipalIdModel principalId = executionContext.authorization().principalId();
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-
-        CommandModel command = new CommandModel(reqModel, new Date());
-
-        Callback kafkaProducerCallback = (meta, exn) -> {
-            try {
-                if (exn == null) {
-                    ctx.onNext(Empty.getDefaultInstance());
-                    ctx.onCompleted();
-                } else {
-                    ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-                }
-            } catch (IllegalStateException e) {
-                log.debug("Call already closed");
-            }
-        };
-
-        LHProducer producer = internalComms.getCommandProducer();
-        producer.send(
-                command.getPartitionKey(),
-                command,
-                command.getTopic(serverConfig),
-                kafkaProducerCallback,
-                commandMetadata.toArray());
+        try {
+            CommandModel command = new CommandModel(reqModel, new Date());
+            Empty out = commandSender
+                    .doSend(command, executionContext.authorization())
+                    .join();
+            ctx.onNext(out);
+            ctx.onCompleted();
+        } catch (Exception ex) {
+            ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+        }
     }
 
     @Override
@@ -1129,14 +1113,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ctx.onCompleted();
     }
 
-    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        internalComms.onResponseReceived(commandId, response);
-    }
-
-    public void sendErrorToClient(String commandId, Exception caught) {
-        internalComms.sendErrorToClientForCommand(commandId, caught);
-    }
-
     /*
      * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
      * grpc call that asynchronously waits for the command to be processed.
@@ -1145,13 +1121,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
      * context, for example the `returnTaskToClient()` method. That method is called
      * from within the CommandProcessor#process() method.
      */
-    private <RC extends Message> Future<RC> processCommand(AbstractCommand<?> command, Class<RC> responseType) {
+    private <RC extends Message> CompletableFuture<RC> processCommand(
+            AbstractCommand<?> command, Class<RC> responseType) {
         RequestExecutionContext requestContext = requestContext();
-        return commandSender.doSend(
-                command,
-                responseType,
-                requestContext.authorization().principalId(),
-                requestContext.authorization().tenantId());
+        return commandSender.doSendAndWaitForResponse(command, responseType, requestContext);
     }
 
     private WfService getServiceFromContext() {

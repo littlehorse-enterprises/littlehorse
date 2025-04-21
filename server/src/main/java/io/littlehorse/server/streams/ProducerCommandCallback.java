@@ -6,7 +6,6 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.server.streams.util.AsyncWaiters;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 import org.apache.kafka.clients.producer.Callback;
@@ -21,7 +20,6 @@ public class ProducerCommandCallback implements Callback {
     private final KafkaStreams coreStreams;
     private final HostInfo thisHost;
     private final Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> internalStub;
-    private final AsyncWaiters asyncWaiters;
     private final Executor networkThreadPool;
 
     public ProducerCommandCallback(
@@ -30,14 +28,12 @@ public class ProducerCommandCallback implements Callback {
             KafkaStreams coreStreams,
             HostInfo thisHost,
             Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> internalStub,
-            AsyncWaiters asyncWaiters,
             Executor networkThreadPool) {
         this.observer = observer;
         this.command = command;
         this.coreStreams = coreStreams;
         this.thisHost = thisHost;
         this.internalStub = internalStub;
-        this.asyncWaiters = asyncWaiters;
         this.networkThreadPool = networkThreadPool;
     }
 

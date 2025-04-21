@@ -34,6 +34,7 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
@@ -92,7 +93,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void processHelper(final Record<String, Command> commandRecord) {
         ProcessorExecutionContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
-        log.info(
+        log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),
                 command.type,
@@ -102,12 +103,11 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
             if (command.hasResponse() && command.getCommandId() != null) {
-                if (command.type.toString().equals("TASK_WORKER_HEART_BEAT")) {
-                    log.info("Sending response to waiting thread");
-                }
-                asyncCompletables.get(command.getCommandId()).completable().complete(response);
-            } else {
-                log.info("No response for commandId {} type {}", command.getCommandId(), command.type);
+                CommandSender.FutureAndType futureAndType =
+                        asyncCompletables.computeIfAbsent(command.getCommandId(), s -> {
+                            return new CommandSender.FutureAndType(new CompletableFuture<>(), Message.class);
+                        });
+                futureAndType.completable().complete(response);
             }
         } catch (KafkaException ke) {
             throw ke;

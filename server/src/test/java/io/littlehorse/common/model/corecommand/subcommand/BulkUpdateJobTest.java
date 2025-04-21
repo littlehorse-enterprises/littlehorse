@@ -61,7 +61,6 @@ public class BulkUpdateJobTest {
         getableManager.commit();
         processor.init(mockProcessor);
         processor.process(new Record<>("", command, 0L, testProcessorContext.getRecordMetadata()));
-        verify(server, never()).sendErrorToClient(anyString(), any());
     }
 
     private Command commandProto() {

@@ -37,8 +37,10 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
+    private final String instanceName;
 
     public PollTaskRequestObserver(
+            String instanceName,
             StreamObserver<PollTaskResponse> responseObserver,
             TaskQueueManager manager,
             TenantIdModel tenantId,
@@ -56,6 +58,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.config = config;
         this.clientId = null;
         this.requestContext = requestContext;
+        this.instanceName = instanceName;
     }
 
     public String getTaskWorkerVersion() {
@@ -77,11 +80,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     @Override
     public void onError(Throwable t) {
         taskQueueManager.onRequestDisconnected(this, tenantId);
-        log.debug(
-                "Instance {}: Client {} disconnected from task queue {}",
-                taskQueueManager.getBackend().getInstanceName(),
-                clientId,
-                taskDefId);
+        log.debug("Instance {}: Client {} disconnected from task queue {}", instanceName, clientId, taskDefId);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         taskQueueManager.onRequestDisconnected(this, tenantId);
     }
 
-    RequestExecutionContext getFreshExecutionContext() {
+    public RequestExecutionContext getFreshExecutionContext() {
         return new RequestExecutionContext(principalId, tenantId, coreStoreProvider, metadataCache, config, false);
     }
 

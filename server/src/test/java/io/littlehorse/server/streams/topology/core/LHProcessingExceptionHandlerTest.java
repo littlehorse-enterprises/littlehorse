@@ -67,7 +67,6 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         NullPointerException npe = new NullPointerException();
         CoreCommandException cce = new CoreCommandException(npe, command);
-        doThrow(new RuntimeException("oops!")).when(mockServer).sendErrorToClient(any(), any());
         exceptionHandler.tryRun(() -> {
             throw cce;
         });

@@ -32,7 +32,7 @@ public class OneTaskQueueTest {
     private final PollTaskRequestObserver mockClient = mock(Answers.RETURNS_DEEP_STUBS);
     private final ScheduledTaskModel mockTask = mock(Answers.RETURNS_DEEP_STUBS);
     private final OneTaskQueue taskQueue = new OneTaskQueue(
-            taskName, taskQueueManager, Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
+            taskName, taskQueueManager, "test", Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
     private final Command command = commandProto();
     private final TaskId streamsTaskId = TaskId.parse("0_2");
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
@@ -94,7 +94,7 @@ public class OneTaskQueueTest {
         processorContext.getCoreStore().put(task4);
         processorContext.endExecution();
         OneTaskQueue boundedQueue =
-                new OneTaskQueue(taskName, taskQueueManager, 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
+                new OneTaskQueue(taskName, taskQueueManager, "test", 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
 
         boundedQueue.onTaskScheduled(streamsTaskId, task1);
         boundedQueue.onTaskScheduled(streamsTaskId, task2);

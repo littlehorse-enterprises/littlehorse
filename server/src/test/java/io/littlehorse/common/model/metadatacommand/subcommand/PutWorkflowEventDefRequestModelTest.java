@@ -87,7 +87,6 @@ public class PutWorkflowEventDefRequestModelTest {
                 new PutWorkflowEventDefRequestModel("user-updated", VariableType.STR);
         reset(server);
         sendCommand(userUpdatedCommand);
-        verify(server, never()).sendErrorToClient(anyString(), any());
         WorkflowEventDefModel userUpdatedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-updated"));
         Assertions.assertThat(userUpdatedEventDef).isNotNull();
     }

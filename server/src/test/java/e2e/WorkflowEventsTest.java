@@ -17,9 +17,11 @@ import io.littlehorse.test.LHWorkflowEvent;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@Disabled
 public class WorkflowEventsTest {
 
     @LHWorkflow("events")

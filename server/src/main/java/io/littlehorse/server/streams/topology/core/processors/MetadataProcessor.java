@@ -28,6 +28,7 @@ import io.littlehorse.server.streams.topology.core.MetadataCommandException;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
@@ -163,7 +164,11 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         try {
             Message response = command.process(metadataContext);
             if (command.hasResponse() && command.getCommandId() != null) {
-                asyncCompletables.get(command.getCommandId()).completable().complete(response);
+                CommandSender.FutureAndType futureAndType =
+                        asyncCompletables.computeIfAbsent(command.getCommandId(), s -> {
+                            return new CommandSender.FutureAndType(new CompletableFuture<>(), Message.class);
+                        });
+                futureAndType.completable().complete(response);
                 // This allows us to set a larger commit interval for the Core Topology
                 // without affecting latency of updates to the metadata global store.
                 //
@@ -172,8 +177,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 // commit will not impact performance of the rest of the application very
                 // often.
                 ctx.commit();
-            } else {
-                log.info("Skipping command response {}", command.getCommandId());
             }
         } catch (Exception exn) {
             throw new MetadataCommandException(exn, command);

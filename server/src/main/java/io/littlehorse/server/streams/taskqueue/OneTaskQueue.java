@@ -36,12 +36,13 @@ public class OneTaskQueue {
     private final LinkedHashSet<QueueItem> pendingTasks;
     private final AtomicLong numberOfInMemoryTasks = new AtomicLong(0);
 
-    public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
+    public OneTaskQueue(
+            String taskDefName, TaskQueueManager parent, String instanceName, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
         this.parent = parent;
         this.capacity = capacity;
         this.tenantId = tenantId;
-        this.instanceName = parent.getBackend().getInstanceName();
+        this.instanceName = instanceName;
         this.pendingTasks = new LinkedHashSet<>();
     }
 
@@ -113,7 +114,8 @@ public class OneTaskQueue {
             }
         });
         if (luckyClient != null) {
-            parent.itsAMatch(scheduledTask, luckyClient);
+            parent.itsAMatch(scheduledTask, luckyClient).join();
+            luckyClient.sendResponse(scheduledTask);
         }
     }
 
@@ -134,7 +136,9 @@ public class OneTaskQueue {
             return pendingTasks.removeFirst();
         });
         if (nextItem != null) {
-            parent.itsAMatch(nextItem.resolveTask(requestContext), requestObserver);
+            ScheduledTaskModel toExecute = nextItem.resolveTask(requestContext);
+            parent.itsAMatch(toExecute, requestObserver).join();
+            requestObserver.sendResponse(toExecute);
         }
     }
 

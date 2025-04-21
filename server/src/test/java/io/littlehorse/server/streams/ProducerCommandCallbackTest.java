@@ -11,7 +11,6 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.server.streams.util.AsyncWaiters;
 import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,15 +33,14 @@ import org.mockito.ArgumentCaptor;
 class ProducerCommandCallbackTest {
 
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private final AsyncWaiters commandWaiters = new AsyncWaiters();
     private final StreamObserver<WaitForCommandResponse> responseObserver = mock();
     private final AbstractCommand<?> command = mock(AbstractCommand.class);
     private final KafkaStreams coreStreams = mock();
     private final HostInfo hostInfo = new HostInfo("localhost", 2023);
     private final LHInternalsGrpc.LHInternalsStub stub = mock();
     private final Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> stubProvider = (meta) -> stub;
-    private final ProducerCommandCallback producerCallback = new ProducerCommandCallback(
-            responseObserver, command, coreStreams, hostInfo, stubProvider, commandWaiters, executor);
+    private final ProducerCommandCallback producerCallback =
+            new ProducerCommandCallback(responseObserver, command, coreStreams, hostInfo, stubProvider, executor);
     private final RecordMetadata metadata = new RecordMetadata(new TopicPartition("my-topic", 2), 0L, 0, 0L, 0, 0);
     private final WaitForCommandResponse response = mock();
     private final KeyQueryMetadata keyQueryMetadata = new KeyQueryMetadata(hostInfo, Collections.emptySet(), 2);
@@ -62,7 +60,6 @@ class ProducerCommandCallbackTest {
         producerCallback.onCompletion(metadata, null);
         executor.shutdown();
         executor.awaitTermination(2, TimeUnit.SECONDS);
-        commandWaiters.registerCommandProcessed("123", response);
         verify(responseObserver).onNext(response);
         verify(responseObserver).onCompleted();
     }
