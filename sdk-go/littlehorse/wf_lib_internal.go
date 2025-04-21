@@ -1386,3 +1386,4 @@ func (t *WorkflowThread) checkIfIsActive() {
 		t.throwError(tracerr.Wrap(errors.New("using a inactive thread")))
 	}
 }
+
