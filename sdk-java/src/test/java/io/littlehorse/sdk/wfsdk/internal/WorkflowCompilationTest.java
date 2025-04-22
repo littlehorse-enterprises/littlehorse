@@ -61,7 +61,7 @@ public class WorkflowCompilationTest {
 
         PutWfSpecRequest actualWfSpecRequest = wf.compileWorkflow();
         ThreadSpec entrypointThread = actualWfSpecRequest.getThreadSpecsOrThrow("entrypoint");
-        Node nodeWithVariableMuatatedInEntryPoint = entrypointThread.getNodesOrThrow("1-son-thread-START_THREAD");
+        Node nodeWithVariableMutatedInEntryPoint = entrypointThread.getNodesOrThrow("1-son-thread-START_THREAD");
 
         var expectedEntryPointEdge = Edge.newBuilder()
                 .setSinkNodeName("2-exit-EXIT")
@@ -77,7 +77,7 @@ public class WorkflowCompilationTest {
 
         assertEquals(
                 expectedEntryPointEdge,
-                nodeWithVariableMuatatedInEntryPoint.getOutgoingEdgesList().get(0));
+                nodeWithVariableMutatedInEntryPoint.getOutgoingEdgesList().get(0));
 
         ThreadSpec sonThread = actualWfSpecRequest.getThreadSpecsOrThrow("son-thread");
         Node nodeWithVariableMutatedInSonEntrypointThread = sonThread.getNodesOrThrow("0-entrypoint-ENTRYPOINT");
