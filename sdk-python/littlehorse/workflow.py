@@ -7,6 +7,7 @@ from collections import deque
 from enum import Enum
 from inspect import signature
 from pathlib import Path
+from pipes import SINK
 from typing import Any, Callable, List, Optional, Union
 
 from google.protobuf.json_format import MessageToJson
@@ -365,16 +366,16 @@ class NodeOutput(LHExpression):
 
 
 class IfElseOutput:
-    def __init__(self, parent_thread: "WorkflowThread") -> None:
-        self._parent_thread = parent_thread
+    def __init__(self, parent_workflow_thread: WorkflowThread) -> None:
+        self._parent_workflow_thread = parent_workflow_thread
 
     def add_if(self, condition: WorkflowCondition,
                body: "ThreadInitializer") -> "IfElseOutput":
-        pass
+        self._parent_workflow_thread.do_pedro(condition, body)
 
     def add_else(self,
         body: "ThreadInitializer"):
-        pass
+        self._parent_workflow_thread.do_pedro(body)
 
 
 class WfRunVariable:
@@ -960,6 +961,9 @@ class WorkflowThread:
         self._variable_mutations: deque[VariableMutation] = deque()
         self._last_node_condition: EdgeCondition | None = None
         self._retention_policy: Optional[ThreadRetentionPolicy] = None
+        self._conditionals_thread_funcs: ["ThreadInitializer"] = []
+        self._start_nop_node_name = ""
+        self._end_nop_node_name = ""
 
         if workflow is None:
             raise ValueError("Workflow cannot be None.")
@@ -1195,6 +1199,11 @@ class WorkflowThread:
             if node.name == name and i < nodes_count:
                 return self._nodes[i]
         raise ReferenceError("Next node not found")
+
+    def _first_node(self) -> WorkflowNode:
+        if len(self._nodes) == 0:
+            raise ReferenceError("No node found")
+        return self._nodes[1]
 
     def _schedule_reminder_task_helper(
         self,
@@ -1936,14 +1945,29 @@ class WorkflowThread:
             )
 
     def do_pedro(self, condition: WorkflowCondition,
-        if_body: "ThreadInitializer") -> IfElseOutput:
+                 body: "ThreadInitializer") -> IfElseOutput:
         self._check_if_active()
-        self._validate_initializer(if_body)
-
-        start_node_name = self.add_node("nop", NopNode())
+        self._validate_initializer(body)
         self._last_node_condition = condition.compile()
-        if_body(self)
-        self.add_node("nop", NopNode())
+        if len(self._conditionals_thread_funcs) == 0:
+            self._start_nop_node_name = self.add_node("nop", NopNode())
+            body(self)
+            self._end_nop_node_name = self.add_node("nop", NopNode())
+        else:
+            end_nop_node = self._find_node(self._end_nop_node_name)
+            self._validate_initializer(body)
+            self._nodes.remove(end_nop_node)
+            body(self)
+            last_node_in_func = self._last_node()
+            self._nodes.append(end_nop_node)
+
+            last_node_in_func.outgoing_edges.append(
+                Edge(sink_node_name=self._end_nop_node_name,
+                     variable_mutations=self._collect_variable_mutations(),
+                     condition=self._last_node_condition)
+            )
+
+        self._conditionals_thread_funcs.append(body)
 
         return IfElseOutput(self)
 
