@@ -1,15 +1,26 @@
 import { getVariable } from '@/app/utils'
 import { PlusIcon } from 'lucide-react'
-import { FC, memo } from 'react'
+import { FC, memo, useState } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { useThread } from '../../hooks/useThread'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+
 const Node: FC<NodeProps> = ({ data }) => {
   const { fade } = data
   const { setThread } = useThread()
+  const [isOpen, setIsOpen] = useState(false)
+
   if (data.startMultipleThreads === undefined) return
   const variables = Object.entries(data.startMultipleThreads.variables)
   return (
@@ -46,20 +57,33 @@ const Node: FC<NodeProps> = ({ data }) => {
 
           {data.nodeRun && (
             <div className="mt-2">
-              <h2 className="font-bold">Thread Runs</h2>
-              <ul>
-                {data.nodeRun.startMultipleThreads?.childThreadIds.map(number => (
-                  <li
-                    className="cursor-pointer text-blue-500 hover:underline"
-                    onClick={() => {
-                      setThread({ name: data.startMultipleThreads?.threadSpecName || '', number })
-                    }}
-                    key={number}
-                  >
-                    {data.nodeRun?.startMultipleThreads?.threadSpecName}-{number}
-                  </li>
-                ))}
-              </ul>
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">View Thread List</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Thread Runs</DialogTitle>
+                  </DialogHeader>
+                  <div className="max-h-[300px] overflow-y-auto">
+                    <ul className="space-y-2">
+                      {data.nodeRun.startMultipleThreads?.childThreadIds.map(number => (
+                        <li key={number}>
+                          <button
+                            className="w-full text-left text-blue-500 hover:underline"
+                            onClick={() => {
+                              setThread({ name: data.startMultipleThreads?.threadSpecName || '', number })
+                              setIsOpen(false)
+                            }}
+                          >
+                            {data.nodeRun?.startMultipleThreads?.threadSpecName}-{number}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </DiagramDataGroup>
