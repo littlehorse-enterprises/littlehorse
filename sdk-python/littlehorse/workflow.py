@@ -364,6 +364,19 @@ class NodeOutput(LHExpression):
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
 
 
+class IfElseOutput:
+    def __init__(self, parent_thread: "WorkflowThread") -> None:
+        self._parent_thread = parent_thread
+
+    def add_if(self, condition: WorkflowCondition,
+               body: "ThreadInitializer") -> "IfElseOutput":
+        pass
+
+    def add_else(self,
+        body: "ThreadInitializer"):
+        pass
+
+
 class WfRunVariable:
     def __init__(
         self,
@@ -1921,6 +1934,18 @@ class WorkflowThread:
                     condition=condition.negate().compile(),
                 )
             )
+
+    def do_pedro(self, condition: WorkflowCondition,
+        if_body: "ThreadInitializer") -> IfElseOutput:
+        self._check_if_active()
+        self._validate_initializer(if_body)
+
+        start_node_name = self.add_node("nop", NopNode())
+        self._last_node_condition = condition.compile()
+        if_body(self)
+        self.add_node("nop", NopNode())
+
+        return IfElseOutput(self)
 
     def _collect_variable_mutations(self) -> list[VariableMutation]:
         variables_from_if_block = []
