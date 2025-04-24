@@ -1209,6 +1209,9 @@ class WorkflowThread:
             if not node.has_outgoing_edge():
                 return node
         
+        if len(self._nodes) > 0:
+            return self._nodes[-1]
+        
         raise Exception("No universal sink exists! Error building workflow.")
 
     def _find_node(self, name: str) -> WorkflowNode:
