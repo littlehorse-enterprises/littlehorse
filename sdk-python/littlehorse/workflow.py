@@ -365,8 +365,10 @@ class NodeOutput(LHExpression):
 
 
 class IfElseOutput:
-    def __init__(self, parent_workflow_thread: WorkflowThread) -> None:
+    def __init__(self, parent_workflow_thread: WorkflowThread, first_nop_node_name: str, last_nop_node_name: str) -> None:
         self._parent_workflow_thread = parent_workflow_thread
+        self._first_nop_node_name = first_nop_node_name
+        self._last_nop_node_name = last_nop_node_name
 
     def add_if(self, condition: WorkflowCondition,
                body: "ThreadInitializer") -> "IfElseOutput":
@@ -376,6 +378,30 @@ class IfElseOutput:
         body: "ThreadInitializer"):
         self._parent_workflow_thread.do_pedro(body)
 
+    def do_else_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> IfElseOutput:
+        
+        # Get the last node of the parent thread
+        last_node = self._parent_workflow_thread._last_node()
+
+        # Execute the Else If body
+        body(self._parent_workflow_thread)
+        
+        # Remove the last node
+        self._parent_workflow_thread._nodes.remove(last_node)
+        # Remove edge between last node and first node of body
+        last_outgoing_edge = last_node.outgoing_edges.pop()
+
+        # Get the first node of the body
+        first_node_of_body_name = last_outgoing_edge.sink_node_name
+
+        # Add an edge from the first NOP node to the first node of the body
+        self._parent_workflow_thread._find_node(self._first_nop_node_name).outgoing_edges.append(Edge(sink_node_name=first_node_of_body_name, condition=condition.compile()))
+
+        # Add edge from last node of the body to last NOP node
+        self._parent_workflow_thread._last_node().outgoing_edges.append(Edge(sink_node_name=self._last_nop_node_name))
+
+        # Restore last node of the parent thread
+        self._parent_workflow_thread._nodes.append(last_node)
 
 class WfRunVariable:
     def __init__(
@@ -1182,9 +1208,14 @@ class WorkflowThread:
             raise ReferenceError("Using an inactive thread, check your workflow")
 
     def _last_node(self) -> WorkflowNode:
-        if len(self._nodes) == 0:
-            raise ReferenceError("No node found")
-        return self._nodes[-1]
+        current_node = self._find_node("0-entrypoint-ENTRYPOINT")
+
+        while len(current_node.outgoing_edges) > 0:
+            current_node = self._find_node(current_node.outgoing_edges[0].sink_node_name)
+
+        # if len(self._nodes) == 0:
+        #     raise ReferenceError("No node found")
+        return current_node
 
     def _find_node(self, name: str) -> WorkflowNode:
         for node in self._nodes:
@@ -1963,6 +1994,19 @@ class WorkflowThread:
         self._conditionals_thread_funcs.append(body)
 
         return IfElseOutput(self)
+    
+    def do_if_pedro(self, condition: WorkflowCondition, body: "ThreadInitializer") -> IfElseOutput:
+        self._check_if_active()
+        self._validate_initializer(body)
+
+        first_nop_node_name = self.add_node("nop", NopNode())
+        self._last_node_condition = condition.compile()
+
+        body(self)
+
+        last_nop_node_name = self.add_node("nop", NopNode())
+
+        return IfElseOutput(self, first_nop_node_name, last_nop_node_name)
 
     def _collect_variable_mutations(self) -> list[VariableMutation]:
         variables_from_if_block = []
