@@ -1912,7 +1912,7 @@ class WorkflowThread:
 
         # Adds new chain-able else if functionality
         if else_body is None:
-            return self.do_if_pedro(condition, if_body)
+            return self._do_if(condition, if_body)
 
         # execute if branch
         start_node_name = self.add_node("nop", NopNode())
@@ -1965,7 +1965,7 @@ class WorkflowThread:
                 )
             )
     
-    def do_if_pedro(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
+    def _do_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
         self._check_if_active()
         self._validate_initializer(body)
 
