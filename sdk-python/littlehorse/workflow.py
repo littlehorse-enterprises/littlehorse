@@ -1205,10 +1205,12 @@ class WorkflowThread:
             raise ReferenceError("Using an inactive thread, check your workflow")
 
     def _last_node(self) -> WorkflowNode:
+        # search for universal sink
         for node in self._nodes:
             if not node.has_outgoing_edge():
                 return node
         
+        # if no universal sinks, return last node added to array
         if len(self._nodes) > 0:
             return self._nodes[-1]
         
