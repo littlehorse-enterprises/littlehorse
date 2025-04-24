@@ -9,11 +9,7 @@ import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class WorkflowImpl extends Workflow {
@@ -23,6 +19,7 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
     private Set<String> requiredWorkflowEventDefNames;
+    private Stack<WorkflowThreadImpl> threads;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
@@ -31,6 +28,7 @@ public class WorkflowImpl extends Workflow {
         this.requiredTaskDefNames = new HashSet<>();
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
+        this.threads = new Stack<>();
     }
 
     public Set<PutTaskDefRequest> compileTaskDefs() {
@@ -147,5 +145,9 @@ public class WorkflowImpl extends Workflow {
 
     protected int getDefaultSimpleRetries() {
         return defaultSimpleRetries;
+    }
+
+    Stack<WorkflowThreadImpl> getThreads() {
+        return this.threads;
     }
 }

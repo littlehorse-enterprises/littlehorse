@@ -4,8 +4,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.TestStreamObserver;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.InternalWaitForWfEventRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -36,6 +40,7 @@ public class AsyncWaitersTest {
     private final WorkflowEventModel mockEvent = mock(Answers.RETURNS_DEEP_STUBS);
     private final WfRunIdModel wfRunId =
             TestUtil.wfRun(UUID.randomUUID().toString()).getId();
+    private final TenantIdModel testTenantId = new TenantIdModel("test-tenant");
 
     @BeforeEach
     public void setup() {
@@ -48,7 +53,20 @@ public class AsyncWaitersTest {
         when(requestContext.getableManager().getWorkflowEvents(wfRunId)).thenReturn(List.of(mockEvent));
         TestStreamObserver<WorkflowEvent> clientObserver1 = new TestStreamObserver<>();
         asyncWaiters.registerObserverWaitingForWorkflowEvent(mockRequest, clientObserver1, requestContext);
-        asyncWaiters.registerWorkflowEventHappened(mockEvent);
+        asyncWaiters.registerWorkflowEventHappened(mockEvent, testTenantId);
+        Assertions.assertThat(clientObserver1.getValues()).hasSize(1).allMatch(Objects::nonNull);
+        Assertions.assertThat(clientObserver1.isCompleted()).isTrue();
+    }
+
+    @Test
+    void shouldSupportWorkflowEventsWithMultitenancy() {
+        PrincipalIdModel principalId = new PrincipalIdModel("my-principal");
+        TenantIdModel tenantId = new TenantIdModel("my-tenant");
+        AuthorizationContext auth = new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
+        when(requestContext.authorization()).thenReturn(auth);
+        TestStreamObserver<WorkflowEvent> clientObserver1 = new TestStreamObserver<>();
+        asyncWaiters.registerObserverWaitingForWorkflowEvent(mockRequest, clientObserver1, requestContext);
+        asyncWaiters.registerWorkflowEventHappened(mockEvent, tenantId);
         Assertions.assertThat(clientObserver1.getValues()).hasSize(1).allMatch(Objects::nonNull);
         Assertions.assertThat(clientObserver1.isCompleted()).isTrue();
     }
@@ -58,7 +76,7 @@ public class AsyncWaitersTest {
         when(requestContext.getableManager().getWorkflowEvents(wfRunId)).thenReturn(List.of(mockEvent));
         TestStreamObserver<WorkflowEvent> clientObserver1 = new TestStreamObserver<>();
 
-        asyncWaiters.registerWorkflowEventHappened(mockEvent);
+        asyncWaiters.registerWorkflowEventHappened(mockEvent, testTenantId);
         asyncWaiters.registerObserverWaitingForWorkflowEvent(mockRequest, clientObserver1, requestContext);
         Assertions.assertThat(clientObserver1.getValues()).hasSize(1).allMatch(Objects::nonNull);
         Assertions.assertThat(clientObserver1.isCompleted()).isTrue();

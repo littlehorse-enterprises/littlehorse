@@ -14,7 +14,7 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
   const replaceQuery = useReplaceQueryValue()
 
   return (
-    <div className="relative mb-2 flex items-center">
+    <div className="relative mb-2 flex items-center overflow-hidden">
       <div
         className={`absolute left-0 top-0 z-10 flex after:h-[38px] after:w-[50px] after:bg-gradient-to-r after:from-white after:to-transparent after:content-[''] ${scroll === 0 ? 'hidden' : ''}`}
       >
@@ -22,9 +22,9 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
           <ChevronLeftIcon className="h-6 w-6" />
         </button>
       </div>
-      <div className="flex touch-pan-y items-center overflow-hidden text-nowrap" ref={containerRef}>
+      <div className="flex touch-pan-y items-center text-nowrap w-full" ref={containerRef}>
         <div
-          className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex gap-2 will-change-transform"
+          className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex gap-2 will-change-transform overflow-x-auto"
           style={{ transform: `translateX(${scroll}px)` }}
           ref={itemsRef}
         >

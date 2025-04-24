@@ -20,7 +20,7 @@ from littlehorse.workflow import (
     LHFormatString,
     NodeOutput,
     WfRunVariable,
-    to_variable_assignment,
+    to_variable_assignment, WorkflowThread, Workflow,
 )
 
 
@@ -226,9 +226,14 @@ class TestProtoUtils(unittest.TestCase):
         self.assertEqual(var_assn.node_output.node_name, "some-node")
         self.assertEqual(var_assn.json_path, "$.asdf")
 
-        # a WfRunVariable
+        def entrypoint_func(wf: WorkflowThread) -> None:
+            pass
+
+        workflow = Workflow("test-workflow", entrypoint_func)
+        workflow_thread = WorkflowThread(workflow, entrypoint_func)
+
         wf_run_variable = WfRunVariable(
-            variable_name="my-var-name", variable_type=VariableType.STR, parent=None
+            variable_name="my-var-name", variable_type=VariableType.STR, parent=workflow_thread
         )
         wf_run_variable.json_path = "$.myPath"
         variable = to_variable_assignment(wf_run_variable)

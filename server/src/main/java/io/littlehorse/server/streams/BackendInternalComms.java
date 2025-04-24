@@ -322,8 +322,8 @@ public class BackendInternalComms implements Closeable {
         return taskClaimProducer;
     }
 
-    public void onWorkflowEventThrown(WorkflowEventModel event) {
-        //        asyncWaiters.registerWorkflowEventHappened(event);
+    public void onWorkflowEventThrown(WorkflowEventModel event, TenantIdModel tenantId) {
+        //        asyncWaiters.registerWorkflowEventHappened(event, tenantId);
     }
 
     private void localWaitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer) {

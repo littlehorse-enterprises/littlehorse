@@ -252,7 +252,7 @@ public class LHServer {
         return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
     }
 
-    public void onEventThrown(WorkflowEventModel event) {
-        internalComms.onWorkflowEventThrown(event);
+    public void onEventThrown(WorkflowEventModel event, TenantIdModel tenantId) {
+        internalComms.onWorkflowEventThrown(event, tenantId);
     }
 }
