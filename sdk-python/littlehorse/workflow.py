@@ -370,6 +370,9 @@ class WorkflowIfStatement:
         self._first_nop_node_name = first_nop_node_name
         self._last_nop_node_name = last_nop_node_name
 
+    def _get_first_nop_node(self) -> WorkflowNode:
+        return self._parent_workflow_thread._find_node(self._first_nop_node_name)
+
     def do_else_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
         # Get the last node of the parent thread
         last_node_of_parent_thread = self._parent_workflow_thread._last_node()
@@ -380,6 +383,19 @@ class WorkflowIfStatement:
         # Get the last node of the body to reference later
         last_node_of_body = self._parent_workflow_thread._last_node()
 
+        # If no nodes were added from body
+        if last_node_of_parent_thread.name == last_node_of_body.name:
+            self._get_first_nop_node().outgoing_edges.insert(0,
+                Edge(
+                    sink_node_name=self._last_nop_node_name,
+                    condition=condition.compile(),
+                    variable_mutations=self._parent_workflow_thread._collect_variable_mutations()
+                )
+            )
+            return self
+        
+        # Otherwise, move nodes that were added
+
         # Remove edge between last node of parent thread and first node of body
         last_outgoing_edge = last_node_of_parent_thread.outgoing_edges.pop()
 
@@ -387,10 +403,10 @@ class WorkflowIfStatement:
         first_node_of_body_name = last_outgoing_edge.sink_node_name
 
         # Add an edge from the first NOP node to the first node of the body
-        self._parent_workflow_thread._find_node(self._first_nop_node_name).outgoing_edges.append(
+        self._get_first_nop_node().outgoing_edges.append(
             Edge(sink_node_name=first_node_of_body_name,
-                 condition=condition.compile(),
-                 variable_mutations=last_outgoing_edge.variable_mutations))
+                condition=condition.compile(),
+                variable_mutations=last_outgoing_edge.variable_mutations))
 
         # Add edge from last node of the body to last NOP node
         last_node_of_body.outgoing_edges.append(Edge(sink_node_name=self._last_nop_node_name))
@@ -1900,7 +1916,7 @@ class WorkflowThread:
         condition: WorkflowCondition,
         if_body: "ThreadInitializer",
         else_body: Optional["ThreadInitializer"] = None,
-    ) -> Union[WorkflowIfStatement, None]:
+    ) -> Optional[WorkflowIfStatement]:
         """Conditionally executes some workflow code; equivalent
         to an if() statement in programming.
 
@@ -1919,15 +1935,17 @@ class WorkflowThread:
 
         # Adds new chain-able else if functionality
         if else_body is None:
-            return self._do_if(condition, if_body)
+            print("No else body found")
+            return self._do_if(condition, if_body, True)
 
+        
         # execute if branch
         start_node_name = self.add_node("nop", NopNode())
         self._last_node_condition = condition.compile()
         if_body(self)
 
-        last_condition_from_if_block = self._last_node_condition
-        last_node_from_if_block = self._last_node()
+        last_condition_from_if_body = self._last_node_condition
+        last_node_from_if_body = self._last_node()
         variables_from_if_block = self._collect_variable_mutations()
 
         start_node = self._find_node(start_node_name)
@@ -1937,44 +1955,32 @@ class WorkflowThread:
             self._validate_initializer(else_body)
 
             # change positions
-            self._nodes.remove(start_node)
-            self._nodes.append(start_node)
             self._last_node_condition = condition.negate().compile()
             else_body(self)
 
             # adds edge final NOP node
             end_node_name = self.add_node("nop", NopNode())
 
-            last_node_from_if_block.outgoing_edges.append(
+            # if the last node of if body has outgoing edges to else body, move them to start node
+            if last_node_from_if_body.outgoing_edges:
+                last_edge = last_node_from_if_body.outgoing_edges.pop()
+                start_node.outgoing_edges.append(last_edge)
+
+
+            last_node_from_if_body.outgoing_edges.append(
                 Edge(
                     sink_node_name=end_node_name,
                     variable_mutations=variables_from_if_block,
                     condition=(
-                        last_condition_from_if_block
-                        if last_node_from_if_block.name == start_node.name
+                        last_condition_from_if_body
+                        if last_node_from_if_body.name == start_node.name
                         else None
                     ),
                 )
             )
 
-        else:
-            end_node_name = self.add_node("nop", NopNode())
-
-            last_node_from_if_block._find_outgoing_edge(end_node_name).MergeFrom(
-                Edge(variable_mutations=variables_from_if_block)
-            )
-
-            # add else
-            start_node.outgoing_edges.append(
-                Edge(
-                    sink_node_name=end_node_name,
-                    condition=condition.negate().compile(),
-                )
-            )
-
         return None
-    
-    def _do_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
+    def _do_if(self, condition: WorkflowCondition, body: "ThreadInitializer", no_else_body: bool) -> WorkflowIfStatement:
         self._check_if_active()
         self._validate_initializer(body)
 
@@ -1984,6 +1990,15 @@ class WorkflowThread:
         body(self)
 
         last_nop_node_name = self.add_node("nop", NopNode())
+
+        first_nop_node = self._find_node(first_nop_node_name)
+
+        if no_else_body:
+            # If no else body thread is not specified, negate original condition and add edge to end if statement
+            first_nop_node.outgoing_edges.append(Edge(
+                sink_node_name=last_nop_node_name,
+                condition=condition.negate().compile()
+            ))
 
         return WorkflowIfStatement(self, first_nop_node_name, last_nop_node_name)
 

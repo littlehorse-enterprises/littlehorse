@@ -825,6 +825,7 @@ class TestThreadBuilder(unittest.TestCase):
 
         my_object = MyClass()
         thread_builder = my_object.to_thread()
+
         self.assertEqual(
             thread_builder.compile(),
             ThreadSpec(
