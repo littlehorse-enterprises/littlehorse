@@ -150,7 +150,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
             metricsAggregator.maybePersistState();
         }
         for (WorkflowEventModel event : eventsToThrow) {
-            server.onEventThrown(event);
+            server.onEventThrown(event, authContext.tenantId());
         }
     }
 
