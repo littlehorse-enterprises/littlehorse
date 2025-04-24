@@ -395,6 +395,8 @@ class WorkflowIfStatement:
         # Add edge from last node of the body to last NOP node
         last_node_of_body.outgoing_edges.append(Edge(sink_node_name=self._last_nop_node_name))
 
+        return self
+
     # def do_else(self, body: "ThreadInitializer") -> None:
     #     # TODO
     #     print("TODO")
@@ -1964,6 +1966,8 @@ class WorkflowThread:
                     condition=condition.negate().compile(),
                 )
             )
+
+        return None
     
     def _do_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
         self._check_if_active()
