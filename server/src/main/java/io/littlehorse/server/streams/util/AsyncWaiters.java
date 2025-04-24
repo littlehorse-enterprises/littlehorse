@@ -6,6 +6,7 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.InternalWaitForWfEventRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -31,7 +32,7 @@ import org.apache.kafka.streams.processor.TaskId;
 public class AsyncWaiters {
 
     private final ConcurrentHashMap<String, CommandWaiter> commandWaiters;
-    private final HashMap<WfRunIdModel, GroupOfObserversWaitingForEvent> eventWaiters;
+    private final HashMap<CommandWaiterId, GroupOfObserversWaitingForEvent> eventWaiters;
     private final Lock eventWaiterLock = new ReentrantLock();
 
     public AsyncWaiters(ScheduledExecutorService executor) {
@@ -41,6 +42,8 @@ public class AsyncWaiters {
         executor.scheduleAtFixedRate(this::cleanupOldCommandWaiters, 0, 10, TimeUnit.SECONDS);
         executor.scheduleAtFixedRate(this::cleanupOldWorkflowEventWaiters, 1, 10, TimeUnit.SECONDS);
     }
+
+    private record CommandWaiterId(TenantIdModel tenantId, WfRunIdModel wfRunId) {}
 
     public void registerObserverWaitingForCommand(
             String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
@@ -70,12 +73,12 @@ public class AsyncWaiters {
         }
     }
 
-    public void registerWorkflowEventHappened(WorkflowEventModel event) {
+    public void registerWorkflowEventHappened(WorkflowEventModel event, TenantIdModel tenantId) {
         WfRunIdModel key = event.getId().getWfRunId();
 
         try {
             eventWaiterLock.lock();
-            GroupOfObserversWaitingForEvent group = eventWaiters.get(key);
+            GroupOfObserversWaitingForEvent group = eventWaiters.get(new CommandWaiterId(tenantId, key));
             if (group != null) {
                 if (group.completeWithEvent(event)) {
                     eventWaiters.remove(key);
@@ -94,7 +97,8 @@ public class AsyncWaiters {
         try {
             eventWaiterLock.lock();
             GroupOfObserversWaitingForEvent tmp = new GroupOfObserversWaitingForEvent();
-            GroupOfObserversWaitingForEvent group = eventWaiters.putIfAbsent(wfRunId, tmp);
+            GroupOfObserversWaitingForEvent group = eventWaiters.putIfAbsent(
+                    new CommandWaiterId(ctx.authorization().tenantId(), wfRunId), tmp);
             if (group == null) group = tmp;
 
             group.addObserverForWorkflowEvent(req.getRequest(), observer, ctx);
@@ -142,10 +146,10 @@ public class AsyncWaiters {
     private void cleanupOldWorkflowEventWaiters() {
         try {
             eventWaiterLock.lock();
-            Iterator<Map.Entry<WfRunIdModel, GroupOfObserversWaitingForEvent>> waitForEventIter =
+            Iterator<Map.Entry<CommandWaiterId, GroupOfObserversWaitingForEvent>> waitForEventIter =
                     eventWaiters.entrySet().iterator();
             while (waitForEventIter.hasNext()) {
-                Map.Entry<WfRunIdModel, GroupOfObserversWaitingForEvent> entry = waitForEventIter.next();
+                Map.Entry<CommandWaiterId, GroupOfObserversWaitingForEvent> entry = waitForEventIter.next();
                 if (entry.getValue().cleanupOldWaitersAndCheckIfEmpty()) {
                     waitForEventIter.remove();
                 }
