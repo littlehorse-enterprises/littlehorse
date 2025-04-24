@@ -25,6 +25,7 @@ from littlehorse.model import (
     JsonIndex,
     Node,
     NopNode,
+    StartThreadNode,
     ThreadRetentionPolicy,
     ThreadSpec,
     FailureHandlerDef,
@@ -73,26 +74,35 @@ class TestNodeOutput(unittest.TestCase):
 
 
 class TestWfRunVariable(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        def entrypoint_func(wf: WorkflowThread) -> None:
+            pass
+
+        workflow = Workflow("test-workflow", entrypoint_func)
+        cls.workflow_thread = WorkflowThread(workflow, entrypoint_func)
+
     def test_value_is_not_none(self):
         variable = WfRunVariable(
-            "my-var", VariableType.STR, None, default_value="my-str"
+            "my-var", VariableType.STR, self.workflow_thread, default_value="my-str"
         )
         self.assertEqual(variable.default_value.WhichOneof("value"), "str")
         self.assertEqual(variable.default_value.str, "my-str")
 
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         self.assertEqual(variable.default_value, None)
 
     def test_validate_are_same_type(self):
         with self.assertRaises(TypeError) as exception_context:
-            WfRunVariable("my-var", VariableType.STR, None, 10)
+            WfRunVariable("my-var", VariableType.STR, self.workflow_thread, 10)
         self.assertEqual(
             "Default value type does not match LH variable type STR",
             str(exception_context.exception),
         )
 
     def test_validate_with_json_path_already_set(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         variable.json_path = "$.myPath"
         with self.assertRaises(ValueError) as exception_context:
             variable.with_json_path("$.myNewOne")
@@ -102,7 +112,7 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_json_path_already_set(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         variable.json_path = "$.myPath"
         with self.assertRaises(ValueError) as exception_context:
             variable.json_path = "$.myNewOne"
@@ -112,7 +122,7 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_json_path_format(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         with self.assertRaises(ValueError) as exception_context:
             variable.json_path = "$myNewOne"
         self.assertEqual(
@@ -121,7 +131,7 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_is_json_obj_when_using_json_index(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         with self.assertRaises(ValueError) as exception_context:
             variable.searchable_on("$.myPath", VariableType.STR)
         self.assertEqual(
@@ -130,11 +140,11 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_persistent(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None).searchable()
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread).searchable()
         self.assertEqual(variable.compile().searchable, True)
 
     def test_validate_is_json_obj_when_using_json_pth(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         with self.assertRaises(ValueError) as exception_context:
             variable.with_json_path("$.myPath")
         self.assertEqual(
@@ -142,19 +152,19 @@ class TestWfRunVariable(unittest.TestCase):
             str(exception_context.exception),
         )
 
-        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, self.workflow_thread)
         variable.with_json_path("$.myPath")
 
-        variable = WfRunVariable("my-var", VariableType.JSON_ARR, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_ARR, self.workflow_thread)
         variable.with_json_path("$.myPath")
 
     def test_json_path_creates_new(self):
-        variable = WfRunVariable("my-var", VariableType.JSON_ARR, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_ARR, self.workflow_thread)
         with_json = variable.with_json_path("$.myPath")
         self.assertIsNot(variable, with_json)
 
     def test_compile_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         self.assertEqual(
             variable.compile(),
             ThreadVarDef(
@@ -163,7 +173,7 @@ class TestWfRunVariable(unittest.TestCase):
             ),
         )
 
-        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, None)
+        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, self.workflow_thread)
         variable.searchable_on("$.myPath", VariableType.STR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ),
@@ -176,7 +186,7 @@ class TestWfRunVariable(unittest.TestCase):
 
     def test_compile_private_variable(self):
         variable = WfRunVariable(
-            "my-var", VariableType.STR, None, access_level="PRIVATE_VAR"
+            "my-var", VariableType.STR, self.workflow_thread, access_level="PRIVATE_VAR"
         )
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.STR),
@@ -185,7 +195,7 @@ class TestWfRunVariable(unittest.TestCase):
         self.assertEqual(variable.compile(), expected_output)
 
     def test_compile_inherited_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None)
+        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         variable.with_access_level(WfRunVariableAccessLevel.INHERITED_VAR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.STR),
@@ -217,6 +227,17 @@ class TestThreadBuilder(unittest.TestCase):
                     "1-exit-EXIT": Node(exit=ExitNode()),
                 },
             ),
+        )
+
+    def test_initializing_thread_without_parent_workflow_should_raise_an_error(self):
+        def entrypoint_func(thread: WorkflowThread) -> None:
+            pass
+
+        with self.assertRaises(ValueError) as exception_context:
+            WorkflowThread(workflow=None, initializer=entrypoint_func)
+        self.assertEqual(
+            "Workflow cannot be None.",
+            str(exception_context.exception),
         )
 
     def test_compile_with_declare_str(self):
@@ -1318,6 +1339,15 @@ class TestThreadBuilder(unittest.TestCase):
             edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there"
         )
 
+    def test_initializing_variable_without_parent_thread_should_raise_an_error(self):
+        with self.assertRaises(ValueError) as exception_context:
+            WfRunVariable("my-var", VariableType.STR, parent=None)
+
+        self.assertEqual(
+            "Parent workflow thread cannot be None.",
+            str(exception_context.exception),
+        )
+
 
 class TestWorkflow(unittest.TestCase):
     def test_entrypoint_is_a_function(self):
@@ -1986,6 +2016,109 @@ class TestWorkflow(unittest.TestCase):
                     )
                 },
             ),
+        )
+
+    def test_workflow_with_parent_var_assigned_to_child_nested_threads_should_compile(self):
+        def my_entrypoint(grand_patent_thread: WorkflowThread) -> None:
+            grand_parent_var = grand_patent_thread.declare_str("grand-parent-var")
+            def son_func(son_thread: WorkflowThread) -> None:
+                grand_parent_var.assign("son-value")
+                def grand_child_func(grandchild_thread: WorkflowThread) -> None:
+                    grand_parent_var.assign("grandchild-value")
+                son_thread.spawn_thread(
+                    grand_child_func,
+                    "grandchild-thread"
+                )
+            grand_patent_thread.spawn_thread(son_func,"son-thread")
+
+        compiled_wf = Workflow("my-wf", my_entrypoint).compile()
+        self.assertEqual(
+            compiled_wf,
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-son-thread-START_THREAD")],
+                            ),
+                            "1-son-thread-START_THREAD": Node(
+                                start_thread=StartThreadNode(thread_spec_name="son-thread"),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="1-son-thread-START_THREAD",
+                                                         rhs_assignment=VariableAssignment(
+                                                             node_output=VariableAssignment.NodeOutputReference(
+                                                                 node_name="1-son-thread-START_THREAD"
+                                                             )))
+                                                     ])
+                                                ]
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(name="grand-parent-var", type=VariableType.STR),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
+                            ),
+                            ThreadVarDef(
+                                var_def=VariableDef(name="1-son-thread-START_THREAD", type=VariableType.INT),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
+                            )
+                        ]
+                    ),
+                    "son-thread": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-grandchild-thread-START_THREAD",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="grand-parent-var",
+                                                         rhs_assignment=VariableAssignment(
+                                                             literal_value=VariableValue(str="son-value")
+                                                         ))]
+                                                     )]
+                            ),
+                            "1-grandchild-thread-START_THREAD": Node(
+                                start_thread=StartThreadNode(thread_spec_name="grandchild-thread"),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="1-grandchild-thread-START_THREAD",
+                                                         rhs_assignment=VariableAssignment(
+                                                             node_output=VariableAssignment.NodeOutputReference(
+                                                                 node_name="1-grandchild-thread-START_THREAD")
+                                                         ))
+                                                     ])
+                                                ]
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                        variable_defs=[
+                            ThreadVarDef(
+                                var_def=VariableDef(name="1-grandchild-thread-START_THREAD", type=VariableType.INT),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
+                            )
+                        ]
+                    ),
+                    "grandchild-thread": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-exit-EXIT",
+                                                     variable_mutations=[VariableMutation(
+                                                         lhs_name="grand-parent-var",
+                                                         rhs_assignment=VariableAssignment(
+                                                             literal_value=VariableValue(str="grandchild-value")
+                                                         ))]
+                                                     )]
+                            ),
+                            "1-exit-EXIT": Node(exit=ExitNode()),
+                        }
+                    )
+                },
+            )
         )
 
 

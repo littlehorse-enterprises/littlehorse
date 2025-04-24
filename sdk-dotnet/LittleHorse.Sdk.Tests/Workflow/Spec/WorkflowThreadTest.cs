@@ -1176,4 +1176,13 @@ public class WorkflowThreadTest
         Assert.Equal(numberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedThreadSpec, compiledWfThread);
     }
+
+    [Fact]
+    public void WorkflowThread_WithNullParentWorkflow_ShouldThrowArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            new WorkflowThread(null!, _action));
+        
+        Assert.Equal("Value cannot be null. (Parameter 'parent')", exception.Message);
+    }
 }

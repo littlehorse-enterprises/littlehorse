@@ -1,13 +1,14 @@
+import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
 import dagre from 'dagre'
-import { NodeRun } from 'littlehorse-client/proto'
+import { WfRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect } from 'react'
 import { Edge, Node, useReactFlow, useStore } from 'reactflow'
 
 // used to calculate the width of the
 export const EDGE_WIDTH = 200
 
-export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: string }> = ({
-  nodeRuns,
+export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }; nodeRunNameToBeHighlighted?: string }> = ({
+  wfRun,
   nodeRunNameToBeHighlighted,
 }) => {
   const nodes = useStore(store => store.getNodes())
@@ -19,7 +20,7 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
     (nodes: Node[], edges: Edge[]) => {
       const dagreGraph = new dagre.graphlib.Graph()
       dagreGraph.setDefaultEdgeLabel(() => ({}))
-      dagreGraph.setGraph({ rankdir: 'LR', align: 'DR', ranksep: 100 })
+      dagreGraph.setGraph({ rankdir: 'LR', align: 'UL', ranksep: 100 })
       nodes.forEach(node => {
         dagreGraph.setNode(node.id, { width: node.width, height: node.height })
       })
@@ -32,14 +33,19 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
 
       const layoutedNodes = nodes.map(node => {
         const nodeWithPosition = dagreGraph.node(node.id)
-        const nodeRun = nodeRuns?.find(nodeRun => {
-          return nodeRun.nodeName === node.id
+
+        const [nodeName, threadRunName] = node.id.split(':')
+        const threadRun = wfRun?.threadRuns.find(threadRun => threadRun.threadSpecName === threadRunName) as ThreadRunWithNodeRuns | undefined
+
+        const nodeRun = threadRun?.nodeRuns.find(nodeRun => {
+          return nodeRun.nodeName === nodeName
         })
-        const nodeRunsList = nodeRuns?.filter(nodeRun => {
-          return nodeRun.nodeName === node.id
+        const nodeRunsList = threadRun?.nodeRuns.filter(nodeRun => {
+          return nodeRun.nodeName === nodeName
         })
-        const fade = nodeRuns !== undefined && nodeRun === undefined
-        const nodeNeedsToBeHighlighted = node.id === nodeRunNameToBeHighlighted
+
+        const fade = threadRun?.nodeRuns && !nodeRun || (wfRun && !threadRun)
+        const nodeNeedsToBeHighlighted = nodeName === nodeRunNameToBeHighlighted
 
         return {
           ...node,
@@ -52,7 +58,7 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
       setNodes(layoutedNodes)
       fitView()
     },
-    [fitView, nodeRuns, setNodes, nodeRunNameToBeHighlighted]
+    [fitView, setNodes, nodeRunNameToBeHighlighted]
   )
 
   useEffect(() => {

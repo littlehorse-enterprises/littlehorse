@@ -2,6 +2,7 @@ package internal
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -36,38 +37,48 @@ var getScheduledWfRun = &cobra.Command{
 }
 
 var searchWfRunCmd = &cobra.Command{
-	Use:   "wfRun",
+	Use:   "wfRun <wfSpecName> [<majorVersion>] [<revision>]",
 	Short: "Search for WfRuns",
 	Long: `
-Search for WfRuns. You may provide any of the following option groups:
+Search for WfRuns. You may provide the optional arguments:
+- [<majorVersion>]
+- [<revision>]
 
-[wfSpecName, majorVersion, revision, status]
-[wfSpecName, majorVersion, revision]
-[wfSpecName, status]
-[wfSpecName]
+And the optional flag:
+- [--status]
 
   * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-    options with this group to put a time bound on WfRun's which are returned.
-	The time bound applies to the time that the WfRun was created.
+          flags to put a time bound on WfRun's which are returned.
+          The time bound applies to the time that the WfRun was created.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
-	Args: cobra.ExactArgs(0),
+	Args: cobra.MaximumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+		wfSpecName := args[0]
 		statusRaw, _ := cmd.Flags().GetString("status")
-		majorVersionRaw, _ := cmd.Flags().GetInt32("majorVersion")
-		revisionRaw, _ := cmd.Flags().GetInt32("revision")
-
-		var majorVersion, revision *int32 = nil, nil
 		var status *lhproto.LHStatus
+		var majorVersion *int32 = nil
+		var revision *int32 = nil
 
-		if majorVersionRaw != -1 {
-			majorVersion = &majorVersionRaw
+		if len(args) > 1 {
+			majorVersionInt, err := strconv.Atoi(args[1])
+			if err != nil {
+				log.Fatal("Couldn't convert majorVersion to int:\n", err)
+			}
+			val := int32(majorVersionInt)
+			majorVersion = &val
 		}
-		if revisionRaw != -1 {
-			revision = &revisionRaw
+
+		if len(args) > 2 {
+			revisionInt, err := strconv.Atoi(args[2])
+			if err != nil {
+				log.Fatal("Couldn't convert revision to int:\n", err)
+			}
+			val := int32(revisionInt)
+			revision = &val
 		}
+
 		if statusRaw != "" {
 			statusTmp := lhproto.LHStatus(lhproto.LHStatus_value[statusRaw])
 			status = &statusTmp
@@ -105,12 +116,13 @@ var stopWfRunCmd = &cobra.Command{
 	Short: "Stop a Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		wfRunId := args[0]
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).StopWfRun(
 			requestContext(cmd),
 			&lhproto.StopWfRunRequest{
-				WfRunId:         littlehorse.StrToWfRunId(args[0]),
+				WfRunId:         littlehorse.StrToWfRunId(wfRunId),
 				ThreadRunNumber: trn,
 			},
 		))
@@ -122,12 +134,13 @@ var resumeWfRunCmd = &cobra.Command{
 	Short: "Stop a Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		wfRunId := args[0]
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ResumeWfRun(
 			requestContext(cmd),
 			&lhproto.ResumeWfRunRequest{
-				WfRunId:         littlehorse.StrToWfRunId(args[0]),
+				WfRunId:         littlehorse.StrToWfRunId(wfRunId),
 				ThreadRunNumber: trn,
 			},
 		))
@@ -139,11 +152,12 @@ var deleteWfRunCmd = &cobra.Command{
 	Short: "Delete a Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		wfRunId := args[0]
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteWfRunRequest{
 				Id: &lhproto.WfRunId{
-					Id: args[0],
+					Id: wfRunId,
 				},
 			},
 		))
@@ -155,11 +169,12 @@ var deleteScheduledWfRun = &cobra.Command{
 	Short: "Delete a Scheduled Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		wfRunId := args[0]
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteScheduledWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteScheduledWfRunRequest{
 				Id: &lhproto.ScheduledWfRunId{
-					Id: args[0],
+					Id: wfRunId,
 				},
 			},
 		))
@@ -287,7 +302,7 @@ var searchScheduledWfsCmd = &cobra.Command{
 		} else {
 			revision = &raw
 		}
-		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+		wfSpecName := args[0]
 		req := &lhproto.SearchScheduledWfRunRequest{
 			WfSpecName:   wfSpecName,
 			MajorVersion: majorVersion,
@@ -313,18 +328,9 @@ func init() {
 	searchCmd.AddCommand(searchScheduledWfsCmd)
 
 	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
-	searchWfRunCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
-	searchWfRunCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
-	searchWfRunCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
-	searchWfRunCmd.MarkFlagRequired("wfSpecName")
-	searchWfRunCmd.MarkFlagsRequiredTogether("revision", "majorVersion")
-	searchScheduledWfsCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
-	searchScheduledWfsCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
-	searchScheduledWfsCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 
-	scheduleWfCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 	scheduleWfCmd.Flags().String("id", "", "")

@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
@@ -16,6 +16,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 
 @Getter
@@ -37,7 +38,7 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
         this.name = name;
-        this.parent = parent;
+        this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
 
         if (typeOrDefaultVal == null) {
             throw new IllegalArgumentException(
@@ -110,7 +111,7 @@ class WfRunVariableImpl implements WfRunVariable {
     private void setDefaultValue(Object defaultVal) {
         try {
             this.defaultValue = LHLibUtil.objToVarVal(defaultVal);
-        } catch (LHSerdeError e) {
+        } catch (LHSerdeException e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }
     }
@@ -182,7 +183,15 @@ class WfRunVariableImpl implements WfRunVariable {
 
     @Override
     public void assign(Serializable rhs) {
-        parent.mutate(this, VariableMutationType.ASSIGN, rhs);
+        WorkflowThreadImpl activeThread = parent;
+
+        WorkflowThreadImpl lastThread = parent.getParent().getThreads().peek();
+
+        if (lastThread.isActive()) {
+            activeThread = lastThread;
+        }
+
+        activeThread.mutate(this, VariableMutationType.ASSIGN, rhs);
     }
 
     @Override

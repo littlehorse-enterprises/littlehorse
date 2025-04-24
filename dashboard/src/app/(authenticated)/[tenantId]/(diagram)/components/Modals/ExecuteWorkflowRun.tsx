@@ -10,12 +10,14 @@ import {
 } from '@/components/ui/dialog'
 import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
-import { FC, useRef } from 'react'
+import { FC, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
+
+export const DOT_REPLACEMENT_PATTERN = "*-/:DOT_REPLACE:"
 
 export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
@@ -23,12 +25,21 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const tenantId = useParams().tenantId as string
   const router = useRouter()
   const formRef = useRef<HTMLFormElement | null>(null)
-  const wfSpecVariables = lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs
+  const wfSpecVariables = useMemo(() => {
+    return lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs?.map(variable => {
+      const newVariable = { ...variable };
+      if (newVariable.varDef?.name) {
+        newVariable.varDef.name = newVariable.varDef.name.replace(/\./g, DOT_REPLACEMENT_PATTERN);
+      }
+      return newVariable;
+    }) ?? [];
+  }, [lhWorkflowSpec]);
 
   const formatVariablesPayload = (values: FormValues) => {
     const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
       if (values[key] === undefined) return acc
-      acc[key] = { [matchVariableType(key)]: values[key] }
+      const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
+      acc[transformedKey] = { [matchVariableType(transformedKey)]: values[key] }
       return acc
     }, {})
 

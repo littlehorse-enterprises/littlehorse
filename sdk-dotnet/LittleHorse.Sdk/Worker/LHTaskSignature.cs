@@ -7,14 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
 {
-    public class LHTaskSignature<T>
+    internal class LHTaskSignature<T>
     {
         private readonly List<LHMethodParam> _lhMethodParams;
         internal List<LHMethodParam> LhMethodParams => _lhMethodParams;
-        public MethodInfo TaskMethod { get; init; }
-        public bool HasWorkerContextAtEnd { get; set; }
-        public string TaskDefName { get; init; }
-        public T? Executable { get; init; }
+        internal MethodInfo TaskMethod { get; init; }
+        internal bool HasWorkerContextAtEnd { get; set; }
+        internal string TaskDefName { get; init; }
+        internal T? Executable { get; init; }
         
         private ILogger<LHTaskSignature<T>?> _logger;
 
@@ -22,7 +22,7 @@ namespace LittleHorse.Sdk.Worker
 
         internal TaskDefOutputSchema? TaskDefOutputSchema => _taskDefOutputSchema;
 
-        public LHTaskSignature(string taskDefName, T executable)
+        internal LHTaskSignature(string taskDefName, T executable)
         {
             _logger = LHLoggerFactoryProvider.GetLogger<LHTaskSignature<T>>();
             _lhMethodParams = new List<LHMethodParam>();

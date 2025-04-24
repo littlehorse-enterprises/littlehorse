@@ -13,6 +13,7 @@ import io.littlehorse.test.internal.TestExecutionContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VerifyTaskRunOutputsStep extends AbstractStep {
 
@@ -32,12 +33,12 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
         assertEquals(
                 expectedOutputs.size(),
                 taskRuns.getResultsList().size(),
-                "Expected %d taskRuns but got %d".formatted(expectedOutputs.size(), taskRuns.getResultsCount()));
+                String.format("Expected %d taskRuns but got %d", expectedOutputs.size(), taskRuns.getResultsCount()));
 
         // Currently, the result of the rpc ListTaskRuns is NOT sorted. It will
         // be sorted after LH-152. So for now we manually sort.
         List<VariableValue> expected =
-                expectedOutputs.stream().map(LHLibUtil::objToVarVal).toList();
+                expectedOutputs.stream().map(LHLibUtil::objToVarVal).collect(Collectors.toList());
 
         // Make a copy because you can't modify the proto list
         List<TaskRun> sortedTasks = new ArrayList<>();

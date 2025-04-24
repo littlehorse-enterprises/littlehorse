@@ -26,6 +26,6 @@ public class StepExecutionException extends LHTestException {
 
     @Override
     public String getMessage() {
-        return "WfRun %s Failed to execute step %s: %s".formatted(LHLibUtil.wfRunIdToString(wfRunId), id, message);
+        return String.format("WfRun %s Failed to execute step %s: %s", LHLibUtil.wfRunIdToString(wfRunId), id, message);
     }
 }
