@@ -984,9 +984,6 @@ class WorkflowThread:
         self._variable_mutations: deque[VariableMutation] = deque()
         self._last_node_condition: EdgeCondition | None = None
         self._retention_policy: Optional[ThreadRetentionPolicy] = None
-        self._conditionals_thread_funcs: ["ThreadInitializer"] = []
-        self._start_nop_node_name = ""
-        self._end_nop_node_name = ""
 
         if workflow is None:
             raise ValueError("Workflow cannot be None.")
