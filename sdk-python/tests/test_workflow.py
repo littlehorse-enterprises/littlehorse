@@ -897,7 +897,7 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
-    def test_should_compile_a_wf_with_multiple_conditions_and_one_task_in_each_body_functions_case_do_else(self):
+    def test_should_compile_a_wf_with_multiple_conditions_and_one_task_in_each_body_functions_case_do_else_if(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
             my_int = wf.declare_int("my-int")
 
