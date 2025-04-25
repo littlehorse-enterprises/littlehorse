@@ -372,8 +372,17 @@ class WorkflowIfStatement:
 
     def _get_first_nop_node(self) -> WorkflowNode:
         return self._parent_workflow_thread._find_node(self._first_nop_node_name)
+    
+    def _remove_else_edge(self) -> None:
+        first_nop_node = self._parent_workflow_thread._find_node(self._first_nop_node_name)
+
+        for edge in first_nop_node.outgoing_edges:
+            if self._last_nop_node_name == edge.sink_node_name:
+                first_nop_node.outgoing_edges.remove(edge)
 
     def do_else_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
+        self._remove_else_edge()
+
         # Get the last node of the parent thread
         last_node_of_parent_thread = self._parent_workflow_thread._last_node()
 
@@ -393,25 +402,25 @@ class WorkflowIfStatement:
                 )
             )
             return self
-        
-        # Otherwise, move nodes that were added
+        else:
+            # Otherwise, move nodes that were added
 
-        # Remove edge between last node of parent thread and first node of body
-        last_outgoing_edge = last_node_of_parent_thread.outgoing_edges.pop()
+            # Remove edge between last node of parent thread and first node of body
+            last_outgoing_edge = last_node_of_parent_thread.outgoing_edges.pop()
 
-        # Get the first node of the body
-        first_node_of_body_name = last_outgoing_edge.sink_node_name
+            # Get the first node of the body
+            first_node_of_body_name = last_outgoing_edge.sink_node_name
 
-        # Add an edge from the first NOP node to the first node of the body
-        self._get_first_nop_node().outgoing_edges.append(
-            Edge(sink_node_name=first_node_of_body_name,
-                condition=condition.compile(),
-                variable_mutations=last_outgoing_edge.variable_mutations))
+            # Add an edge from the first NOP node to the first node of the body
+            self._get_first_nop_node().outgoing_edges.append(
+                Edge(sink_node_name=first_node_of_body_name,
+                    condition=condition.compile(),
+                    variable_mutations=last_outgoing_edge.variable_mutations))
 
-        # Add edge from last node of the body to last NOP node
-        last_node_of_body.outgoing_edges.append(Edge(sink_node_name=self._last_nop_node_name))
+            # Add edge from last node of the body to last NOP node
+            last_node_of_body.outgoing_edges.append(Edge(sink_node_name=self._last_nop_node_name))
 
-        return self
+            return self
 
     # def do_else(self, body: "ThreadInitializer") -> None:
     #     # TODO
