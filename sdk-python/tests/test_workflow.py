@@ -945,15 +945,6 @@ class TestThreadBuilder(unittest.TestCase):
                                         literal_value=VariableValue(int=9)
                                     ),
                                 ),
-                                variable_mutations=[
-                                    VariableMutation(
-                                        lhs_name="my-int",
-                                        operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(
-                                            literal_value=VariableValue(int=9)
-                                        ),
-                                    )
-                                ],
                             ),
                             Edge(
                                 sink_node_name="4-task-b-TASK",
