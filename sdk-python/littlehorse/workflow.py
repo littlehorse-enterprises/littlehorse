@@ -1254,7 +1254,7 @@ class WorkflowThread:
     def _last_node(self) -> WorkflowNode:
         # search for universal sink
         for node in self._nodes:
-            if not node.has_outgoing_edge():
+            if not node._has_outgoing_edge():
                 return node
         
         # if no universal sinks, return last node added to array

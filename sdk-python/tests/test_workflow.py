@@ -1143,14 +1143,17 @@ class TestThreadBuilder(unittest.TestCase):
                         literal_value=VariableValue(int=2)
                     ),
                 ),
-            ),
-            Edge(sink_node_name="3-nop-NOP"),
-        ]), compiled_first_nope_node)
-        self.assertEqual(VariableMutation(lhs_name="my-int",
+                variable_mutations=[
+                    VariableMutation(lhs_name="my-int",
                         operation=VariableMutationType.ASSIGN,
                         rhs_assignment=VariableAssignment(
                             literal_value=VariableValue(int=1)
-                        )), compiled_task_b.outgoing_edges[0].variable_mutations[0])
+                        )
+                    )
+                ]
+            ),
+            Edge(sink_node_name="3-nop-NOP"),
+        ]), compiled_first_nope_node)
         self.assertEqual(expected_last_sink_nop_node_name, compiled_task_a.outgoing_edges[0].sink_node_name)
         self.assertEqual(expected_last_sink_nop_node_name, compiled_task_b.outgoing_edges[0].sink_node_name)
         self.assertEqual(expected_exit_sink_node_name, compiled_last_nope_node.outgoing_edges[0].sink_node_name)
