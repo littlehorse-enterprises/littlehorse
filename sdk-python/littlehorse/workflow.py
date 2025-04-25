@@ -373,7 +373,30 @@ class WorkflowIfStatement:
         return self._parent_workflow_thread._find_node(self._first_nop_node_name)
 
     def do_else_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
+        """After checking the previous condition(s) of the If Statement,
+        conditionally executes some workflow code; equivalent to
+        an elseif() statement in programming.
+
+        Args:
+            condition (WorkflowCondition): is the WorkflowCondition
+            to be satisfied.
+            body (ThreadInitializer): is the block of
+            ThreadSpec code to be executed if the provided
+            WorkflowCondition is satisfied.
+        """
         return self._do_else_if(condition, body)
+
+    def do_else(self, body: "ThreadInitializer") -> None:
+        """After checking all previous condition(s) of the If Statement,
+        executes some workflow code; equivalent to
+        an else block in programming.
+
+        Args:
+            body (ThreadInitializer): the block of
+            ThreadSpec code to be executed if all previous
+            WorkflowConditions were not satisfied.
+        """
+        self._do_else_if(None, body)
 
     def _do_else_if(self, input_condition: Optional[WorkflowCondition], body: "ThreadInitializer") -> WorkflowIfStatement:
         else_edge = self._get_first_nop_node().outgoing_edges.pop()
@@ -427,9 +450,6 @@ class WorkflowIfStatement:
             self._get_first_nop_node().outgoing_edges.append(else_edge)
 
         return self
-
-    def do_else(self, body: "ThreadInitializer") -> None:
-        self._do_else_if(None, body)
 
 class WfRunVariable:
     def __init__(
