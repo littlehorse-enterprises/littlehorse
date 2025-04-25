@@ -1216,16 +1216,6 @@ class WorkflowThread:
         if not inspect.isfunction(initializer) and not inspect.ismethod(initializer):
             raise TypeError("Object is not a ThreadInitializer")
 
-        sig = inspect.signature(initializer)
-        
-        if len(sig.parameters) != 1:
-            raise TypeError("ThreadInitializer receives only one parameter")
-        
-        if list(sig.parameters.values())[0].annotation is not WorkflowThread:
-            raise TypeError("ThreadInitializer receives a ThreadBuilder")
-        
-        if sig.return_annotation is not None:
-            raise TypeError("ThreadInitializer returns None")
     def compile(self) -> ThreadSpec:
         """Compile this into Protobuf Objects.
 
