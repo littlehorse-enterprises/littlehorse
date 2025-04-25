@@ -1971,7 +1971,7 @@ class WorkflowThread:
             sink_node_name=last_nop_node_name
         ))
 
-        return WorkflowIfStatement(self, first_nop_node_name, last_nop_node_name, condition)
+        return WorkflowIfStatement(self, first_nop_node_name, last_nop_node_name)
 
     def _collect_variable_mutations(self) -> list[VariableMutation]:
         variables_from_if_block = []
