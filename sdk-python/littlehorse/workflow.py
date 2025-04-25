@@ -401,10 +401,7 @@ class WorkflowIfStatement:
     def _do_else_if(self, input_condition: Optional[WorkflowCondition], body: "ThreadInitializer") -> WorkflowIfStatement:
         else_edge = self._get_first_nop_node().outgoing_edges.pop()
 
-        if input_condition:
-            else_if_condition = input_condition.compile()
-        else:
-            else_if_condition = None
+        else_if_condition = input_condition.compile() if input_condition else None
 
         # Get the last node of the parent thread
         last_node_of_parent_thread = self._parent_workflow_thread._last_node()
@@ -827,7 +824,7 @@ class WorkflowNode:
 
         raise ValueError("Edge not found")
     
-    def has_outgoing_edge(self) -> bool:
+    def _has_outgoing_edge(self) -> bool:
         return len(self.outgoing_edges) > 0
 
     def compile(self) -> Node:
@@ -1219,18 +1216,16 @@ class WorkflowThread:
         if not inspect.isfunction(initializer) and not inspect.ismethod(initializer):
             raise TypeError("Object is not a ThreadInitializer")
 
-        # WARNING: Removing these if statements in v0.13.2 to support lambdas:
-        #
-        # sig = signature(initializer)
-        #
-        # if len(sig.parameters) != 1:
-        #     raise TypeError("ThreadInitializer receives only one parameter")
-        #
-        # if list(sig.parameters.values())[0].annotation is not WorkflowThread:
-        #     raise TypeError("ThreadInitializer receives a ThreadBuilder")
-        #
-        # if sig.return_annotation is not None:
-        #     raise TypeError("ThreadInitializer returns None")
+        sig = inspect.signature(initializer)
+        
+        if len(sig.parameters) != 1:
+            raise TypeError("ThreadInitializer receives only one parameter")
+        
+        if list(sig.parameters.values())[0].annotation is not WorkflowThread:
+            raise TypeError("ThreadInitializer receives a ThreadBuilder")
+        
+        if sig.return_annotation is not None:
+            raise TypeError("ThreadInitializer returns None")
     def compile(self) -> ThreadSpec:
         """Compile this into Protobuf Objects.
 
