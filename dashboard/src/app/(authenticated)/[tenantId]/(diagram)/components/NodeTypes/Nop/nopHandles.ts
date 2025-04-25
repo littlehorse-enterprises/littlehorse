@@ -6,8 +6,8 @@ export const nopHandles = (node: NodeProps) => {
   const getLevel = (level: string) => parseInt(level.split('-')[0])
 
   // Define positions for forward and backward edges
-  const forwardPositions = [Position.Top, Position.Bottom]
-  const backwardPositions = [Position.Bottom, Position.Top]
+  const forwardPositions = [Position.Top, Position.Bottom, Position.Right]
+  const backwardPositions = [Position.Bottom, Position.Top, Position.Right]
 
   let forwardCounter = 0,
     backwardCounter = 0
