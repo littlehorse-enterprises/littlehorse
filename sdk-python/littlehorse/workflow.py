@@ -1193,25 +1193,25 @@ class WorkflowThread:
         thread_name = self._workflow.add_sub_thread(f"interrupt-{name}", handler)
         self._wf_interruptions.append(WorkflowInterruption(name, thread_name))
 
-    def _validate_initializer(self, initializer: "ThreadInitializer", with_spicy_lambdas: Optional[bool] = False) -> None:
+    def _validate_initializer(self, initializer: "ThreadInitializer") -> None:
         if initializer is None:
             raise ValueError("ThreadInitializer cannot be None")
 
         if not inspect.isfunction(initializer) and not inspect.ismethod(initializer):
             raise TypeError("Object is not a ThreadInitializer")
 
-        sig = signature(initializer)
-
-        if not with_spicy_lambdas:
-            if len(sig.parameters) != 1:
-                raise TypeError("ThreadInitializer receives only one parameter")
-
-            if list(sig.parameters.values())[0].annotation is not WorkflowThread:
-                raise TypeError("ThreadInitializer receives a ThreadBuilder")
-
-            if sig.return_annotation is not None:
-                raise TypeError("ThreadInitializer returns None")
-
+        # WARNING: Removing these if statements in v0.13.2 to support lambdas:
+        #
+        # sig = signature(initializer)
+        #
+        # if len(sig.parameters) != 1:
+        #     raise TypeError("ThreadInitializer receives only one parameter")
+        #
+        # if list(sig.parameters.values())[0].annotation is not WorkflowThread:
+        #     raise TypeError("ThreadInitializer receives a ThreadBuilder")
+        #
+        # if sig.return_annotation is not None:
+        #     raise TypeError("ThreadInitializer returns None")
     def compile(self) -> ThreadSpec:
         """Compile this into Protobuf Objects.
 
@@ -1948,13 +1948,13 @@ class WorkflowThread:
             WorkflowCondition is NOT satisfied. Default None.
         """
         self._check_if_active()
-        self._validate_initializer(if_body, True)
+        self._validate_initializer(if_body)
 
         # Adds new chain-able else if functionality
         if else_body is None:
             return self._do_if(condition, if_body)
 
-        self._validate_initializer(else_body, True)
+        self._validate_initializer(else_body)
         self._do_if(condition, if_body).do_else(else_body)
         return None
 
