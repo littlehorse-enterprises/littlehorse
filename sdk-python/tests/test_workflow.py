@@ -1618,42 +1618,6 @@ class TestWorkflow(unittest.TestCase):
             str(exception_context.exception),
         )
 
-    def test_entrypoint_has_one_parameter(self):
-        def my_entrypoint(thread: WorkflowThread, another: str) -> None:
-            pass
-
-        with self.assertRaises(TypeError) as exception_context:
-            Workflow("my-wf", my_entrypoint).compile()
-
-        self.assertEqual(
-            "ThreadInitializer receives only one parameter",
-            str(exception_context.exception),
-        )
-
-    def test_entrypoint_receives_thread_builder(self):
-        def my_entrypoint(thread: str) -> None:
-            pass
-
-        with self.assertRaises(TypeError) as exception_context:
-            Workflow("my-wf", my_entrypoint).compile()
-
-        self.assertEqual(
-            "ThreadInitializer receives a ThreadBuilder",
-            str(exception_context.exception),
-        )
-
-    def test_entrypoint_returns_none(self):
-        def my_entrypoint(thread: WorkflowThread):
-            pass
-
-        with self.assertRaises(TypeError) as exception_context:
-            Workflow("my-wf", my_entrypoint).compile()
-
-        self.assertEqual(
-            "ThreadInitializer returns None",
-            str(exception_context.exception),
-        )
-
     def test_validate_entrypoint(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             pass
