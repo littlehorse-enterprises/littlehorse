@@ -37,7 +37,7 @@ from littlehorse.workflow import (
     NodeOutput,
     WorkflowThread,
     WfRunVariable,
-    Workflow,
+    Workflow, WorkflowIfStatement,
 )
 from littlehorse.workflow import SpawnedThreads, to_variable_assignment
 
@@ -896,6 +896,105 @@ class TestThreadBuilder(unittest.TestCase):
                 },
             ),
         )
+
+    def test_should_compile_a_wf_with_multiple_conditions_and_one_task_in_each_body_functions_case_do_else(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            my_int = wf.declare_int("my-int")
+
+            def if_body_a(thread: WorkflowThread) -> None:
+                thread.execute("task-a")
+                my_int.assign(9)
+
+            def if_body_b(thread: WorkflowThread) -> None:
+                my_int.assign(10)
+                thread.execute("task-b")
+
+            def if_body_c(thread: WorkflowThread) -> None:
+                thread.execute("task-c")
+
+            if_statement: WorkflowIfStatement = wf.do_if(condition=wf.condition(5, Comparator.GREATER_THAN_EQ, 9),
+                                                         if_body=if_body_a)
+            if_statement.do_else_if(wf.condition(7, Comparator.LESS_THAN, 4), body=if_body_b)
+            if_statement.do_else_if(wf.condition(5, Comparator.EQUALS, 5), if_body_c)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+        compiled_wf = workflow.compile()
+
+        compiled_first_nope_node = compiled_wf.thread_specs.get("entrypoint").nodes.get("1-nop-NOP")
+        compiled_task_a = compiled_wf.thread_specs.get("entrypoint").nodes.get("2-task-a-TASK")
+        compiled_task_b = compiled_wf.thread_specs.get("entrypoint").nodes.get("4-task-b-TASK")
+        compiled_task_c = compiled_wf.thread_specs.get("entrypoint").nodes.get("5-task-c-TASK")
+        compiled_last_nope_node = compiled_wf.thread_specs.get("entrypoint").nodes.get("3-nop-NOP")
+
+        expected_number_outgoing_edges_from_first_nop_node = 3
+        expected_last_sink_nop_node_name = "3-nop-NOP"
+        expected_exit_sink_node_name = "6-exit-EXIT"
+
+        self.assertEqual(expected_number_outgoing_edges_from_first_nop_node, len(compiled_first_nope_node.outgoing_edges))
+        self.assertEqual(Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-task-a-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=9)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="my-int",
+                                        operation=VariableMutationType.ASSIGN,
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=9)
+                                        ),
+                                    )
+                                ],
+                            ),
+                            Edge(
+                                sink_node_name="4-task-b-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=7)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=4)
+                                    ),
+                                ),
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="my-int",
+                                        operation=VariableMutationType.ASSIGN,
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=10)
+                                        ),
+                                    )
+                                ],
+                            ),
+                            Edge(
+                                sink_node_name="5-task-c-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.EQUALS,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(int=5)
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ), compiled_first_nope_node)
+        self.assertEqual(expected_last_sink_nop_node_name, compiled_task_a.outgoing_edges[0].sink_node_name)
+        self.assertEqual(expected_last_sink_nop_node_name, compiled_task_b.outgoing_edges[0].sink_node_name)
+        self.assertEqual(expected_last_sink_nop_node_name, compiled_task_c.outgoing_edges[0].sink_node_name)
+        self.assertEqual(expected_exit_sink_node_name, compiled_last_nope_node.outgoing_edges[0].sink_node_name)
+
 
     def test_do_while(self):
         class MyClass:
