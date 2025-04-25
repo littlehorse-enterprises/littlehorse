@@ -1,9 +1,10 @@
 package io.littlehorse.server.streams.topology.core;
 
+import com.google.protobuf.Message;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.server.LHServer;
-import io.littlehorse.server.streams.CommandSender;
-import java.util.concurrent.ConcurrentHashMap;
+import io.littlehorse.server.streams.util.AsyncWaiters;
+import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.RecordTooLargeException;
@@ -14,12 +15,11 @@ import org.apache.kafka.common.errors.RecordTooLargeException;
 public class LHProcessingExceptionHandler {
 
     private final LHServer server;
-    private final ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables;
+    private final AsyncWaiters asyncWaiters;
 
-    public LHProcessingExceptionHandler(
-            LHServer server, ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables) {
+    public LHProcessingExceptionHandler(LHServer server, AsyncWaiters asyncWaiters) {
         this.server = server;
-        this.asyncCompletables = asyncCompletables;
+        this.asyncWaiters = asyncWaiters;
     }
 
     public void tryRun(Runnable runnable) {
@@ -44,10 +44,9 @@ public class LHProcessingExceptionHandler {
                         commandException.getCause());
             }
             if (commandException.isNotifyClientOnError()) {
-                asyncCompletables
-                        .get(commandException.getCommand().getCommandId())
-                        .completable()
-                        .completeExceptionally(commandException.getCause());
+                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                        commandException.getCommand().getCommandId(), Message.class, new CompletableFuture<>());
+                completable.completeExceptionally(commandException.getCause());
             }
         } catch (MetadataCommandException ex) {
             if (ex.isUserError()) {
@@ -62,10 +61,9 @@ public class LHProcessingExceptionHandler {
                         ex.getCause());
             }
             try {
-                asyncCompletables
-                        .get(ex.getCommand().getCommandId())
-                        .completable()
-                        .completeExceptionally(ex.getCause());
+                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                        ex.getCommand().getCommandId(), Message.class, new CompletableFuture<>());
+                completable.completeExceptionally(ex.getCause());
             } catch (Exception e) {
                 // Nothing to do
             }

@@ -13,8 +13,8 @@ import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataGlobalStoreProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.topology.timer.TimerProcessor;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
@@ -88,7 +88,7 @@ public class ServerTopology {
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            ConcurrentHashMap<String, CommandSender.FutureAndType> commandSender) {
+            AsyncWaiters asyncWaiters) {
         Topology topo = new Topology();
 
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
@@ -116,7 +116,7 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 METADATA_PROCESSOR,
-                () -> new MetadataProcessor(config, server, metadataCache, commandSender),
+                () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters),
                 METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
@@ -137,7 +137,7 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 CORE_PROCESSOR,
-                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, commandSender),
+                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters),
                 CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,

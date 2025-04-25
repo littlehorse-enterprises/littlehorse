@@ -22,6 +22,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
 import java.io.FileWriter;
@@ -30,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,7 +58,6 @@ public class LHServer {
     private final ExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
     private final CommandSender commandSender;
-    private static final ConcurrentHashMap<String, CommandSender.FutureAndType> responses = new ConcurrentHashMap<>();
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -69,13 +68,14 @@ public class LHServer {
         this.config = config;
         this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
         LHInternalClient internalClient = new LHInternalClient(config.getInternalClientCreds(), this.networkThreadpool);
+        final AsyncWaiters asyncWaiters = new AsyncWaiters();
         this.commandSender = new CommandSender(
                 networkThreadpool,
                 config.getCommandProducer(),
                 config.getTaskClaimProducer(),
                 config.getStreamsSessionTimeout(),
                 config,
-                responses,
+                asyncWaiters,
                 this::lookupPartitionKey,
                 internalClient);
         this.taskQueueManager = new TaskQueueManager(
@@ -86,7 +86,7 @@ public class LHServer {
             overrideStreamsProcessId("timer");
         }
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, responses),
+                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, asyncWaiters),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
 
@@ -108,7 +108,7 @@ public class LHServer {
                 metadataCache,
                 contextKey,
                 coreStoreProvider,
-                responses);
+                asyncWaiters);
 
         // Health Server Setup
         this.healthService =

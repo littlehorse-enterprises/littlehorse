@@ -17,10 +17,10 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.LHInternalClient;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class CommandSender {
     private final LHProducer commandProducer;
     private final LHProducer taskClaimProducer;
     private final LHServerConfig serverConfig;
-    private final ConcurrentHashMap<String, CommandSender.FutureAndType> responses;
+    private final AsyncWaiters asyncWaiters;
     private final BiFunction<String, String, KeyQueryMetadata> lookupPartitionKey;
     private final HostInfo thisHost;
     private final LHInternalClient internalClient;
@@ -48,7 +48,7 @@ public class CommandSender {
             LHProducer taskClaimProducer,
             long streamsSessionTimeout,
             LHServerConfig serverConfig,
-            ConcurrentHashMap<String, CommandSender.FutureAndType> responses,
+            AsyncWaiters asyncWaiters,
             BiFunction<String, String, KeyQueryMetadata> lookupPartitionKey,
             LHInternalClient internalClient) {
         // Streams Session Timeout is how long it takes to notice that the server is down.
@@ -60,7 +60,7 @@ public class CommandSender {
         this.taskClaimProducer = taskClaimProducer;
         // The only reason for this is to resolve using the method AbstractCommand#getTopic
         this.serverConfig = serverConfig;
-        this.responses = responses;
+        this.asyncWaiters = asyncWaiters;
         this.lookupPartitionKey = lookupPartitionKey;
         this.thisHost =
                 new HostInfo(serverConfig.getInternalAdvertisedHost(), serverConfig.getInternalAdvertisedPort());
@@ -80,15 +80,14 @@ public class CommandSender {
         KeyQueryMetadata keyMetadata =
                 lookupPartitionKey.apply(storeName(command.getStore()), command.getPartitionKey());
         command.setCommandId(LHUtil.generateGuid());
-        CompletableFuture<Message> out = new CompletableFuture<>();
-        Callback callback = (recordMetadata, e) -> {
-            if (e != null) {
-                out.completeExceptionally(e);
+        CompletableFuture<Void> commandFuture = new CompletableFuture<>();
+        Callback callback = (meta, exn) -> {
+            if (exn == null) {
+                commandFuture.complete(null);
+            } else {
+                commandFuture.completeExceptionally(exn);
             }
         };
-        if (isLocalKey(keyMetadata)) {
-            responses.put(command.getCommandId(), new FutureAndType(out, responseType));
-        }
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(auth.tenantId(), auth.principalId());
         commandProducer.send(
                 command.getPartitionKey(),
@@ -97,14 +96,18 @@ public class CommandSender {
                 callback,
                 commandMetadata.toArray());
         if (isLocalKey(keyMetadata)) {
+            CompletableFuture<Message> out = asyncWaiters.getOrRegisterFuture(
+                    command.getCommandId(),
+                    responseType,
+                    commandFuture.thenCompose(unused -> new CompletableFuture<>()));
             return (CompletableFuture<T>) out;
         } else {
             WaitForCommandRequest request = WaitForCommandRequest.newBuilder()
                     .setCommandId(command.getCommandId())
                     .setPartition(keyMetadata.partition())
                     .build();
-            return internalClient.remoteWaitForCommand(
-                    request, responseType, keyMetadata.activeHost(), executionContext);
+            return commandFuture.thenCompose(unused -> internalClient.remoteWaitForCommand(
+                    request, responseType, keyMetadata.activeHost(), executionContext));
         }
     }
 
@@ -121,10 +124,7 @@ public class CommandSender {
         };
     }
 
-    public synchronized void registerErrorAndNotifyWaitingThreads(String commandId, Throwable cause) {
-        FutureAndType removed = responses.remove(commandId);
-        removed.completable.completeExceptionally(cause);
-    }
+    public synchronized void registerErrorAndNotifyWaitingThreads(String commandId, Throwable cause) {}
 
     public CompletableFuture<Empty> doSend(AbstractCommand<?> command, AuthorizationContext auth) {
         TenantIdModel tenantId = auth.tenantId();
@@ -168,6 +168,4 @@ public class CommandSender {
                 commandMetadata.toArray());
         return out;
     }
-
-    public record FutureAndType(CompletableFuture<Message> completable, Class<?> responseType) {}
 }

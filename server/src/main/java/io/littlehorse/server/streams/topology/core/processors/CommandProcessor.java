@@ -17,7 +17,6 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
-import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -30,12 +29,12 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
@@ -58,7 +57,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private KeyValueStore<String, Bytes> nativeStore;
     private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
-    private final ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables;
+    private final AsyncWaiters asyncWaiters;
 
     private final LHProcessingExceptionHandler exceptionHandler;
 
@@ -67,13 +66,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            ConcurrentHashMap<String, CommandSender.FutureAndType> asyncCompletables) {
+            AsyncWaiters asyncWaiters) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncCompletables);
-        this.asyncCompletables = asyncCompletables;
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncWaiters);
+        this.asyncWaiters = asyncWaiters;
     }
 
     @Override
@@ -103,11 +102,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
             if (command.hasResponse() && command.getCommandId() != null) {
-                CommandSender.FutureAndType futureAndType =
-                        asyncCompletables.computeIfAbsent(command.getCommandId(), s -> {
-                            return new CommandSender.FutureAndType(new CompletableFuture<>(), Message.class);
-                        });
-                futureAndType.completable().complete(response);
+                CompletableFuture<Message> completable =
+                        asyncWaiters.getOrRegisterFuture(command.commandId, Message.class, new CompletableFuture<>());
+                completable.complete(response);
             }
         } catch (KafkaException ke) {
             throw ke;

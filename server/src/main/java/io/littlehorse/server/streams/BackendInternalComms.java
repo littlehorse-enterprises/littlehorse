@@ -66,6 +66,7 @@ import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
 import java.io.IOException;
@@ -126,7 +127,7 @@ public class BackendInternalComms implements Closeable {
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
     private final Executor networkThreadPool;
-    private final ConcurrentHashMap<String, CommandSender.FutureAndType> responses;
+    private final AsyncWaiters asyncWaiters;
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -136,8 +137,8 @@ public class BackendInternalComms implements Closeable {
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
             CoreStoreProvider coreStoreProvider,
-            ConcurrentHashMap<String, CommandSender.FutureAndType> responses) {
-        this.responses = responses;
+            AsyncWaiters asyncWaiters) {
+        this.asyncWaiters = asyncWaiters;
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -447,12 +448,10 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
-            CommandSender.FutureAndType previousValue = responses.computeIfAbsent(req.getCommandId(), s -> {
-                CompletableFuture<Message> future = new CompletableFuture<>();
-                return new CommandSender.FutureAndType(future, Message.class);
-            });
+            CompletableFuture<Message> completable =
+                    asyncWaiters.getOrRegisterFuture(req.getCommandId(), Message.class, new CompletableFuture<>());
             try {
-                ByteString byteString = previousValue.completable().join().toByteString();
+                ByteString byteString = completable.join().toByteString();
                 ctx.onNext(WaitForCommandResponse.newBuilder()
                         .setCommandId(req.getCommandId())
                         .setResultTime(LHUtil.fromDate(new Date()))
