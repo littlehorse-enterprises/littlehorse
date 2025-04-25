@@ -1956,7 +1956,7 @@ class WorkflowThread:
 
         self._validate_initializer(else_body, True)
         self._do_if(condition, if_body).do_else(else_body)
-        return
+        return None
 
     def _do_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
         first_nop_node_name = self.add_node("nop", NopNode())
