@@ -5,7 +5,6 @@ import logging
 import typing
 from collections import deque
 from enum import Enum
-from inspect import signature
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Union
 
