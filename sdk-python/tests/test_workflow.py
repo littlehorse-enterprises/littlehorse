@@ -972,7 +972,7 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(expected_exit_sink_node_name, compiled_last_nope_node.outgoing_edges[0].sink_node_name)
 
     def test_should_compile_a_wf_with_multiple_conditions_including_else_one(self):
-        def my_entrypoint(wf: WorkflowThread) -> None:
+        def my_entrypoint2(wf: WorkflowThread) -> None:
             my_int = wf.declare_int("my-int")
 
             def if_body_a(thread: WorkflowThread) -> None:
@@ -991,78 +991,105 @@ class TestThreadBuilder(unittest.TestCase):
             if_statement.do_else_if(wf.condition(7, Comparator.LESS_THAN, 4), body=if_body_b)
             if_statement.do_else(if_body_c)
 
-            workflow = Workflow("test-wf", my_entrypoint)
-            compiled_wf = workflow.compile()
+        workflow = Workflow("test-wf2", my_entrypoint2)
+        compiled_wf = workflow.compile()
 
-            compiled_first_nope_node = compiled_wf.thread_specs.get("entrypoint").nodes.get("1-nop-NOP")
-            compiled_task_a = compiled_wf.thread_specs.get("entrypoint").nodes.get("2-task-a-TASK")
-            compiled_task_b = compiled_wf.thread_specs.get("entrypoint").nodes.get("4-task-b-TASK")
-            compiled_task_c = compiled_wf.thread_specs.get("entrypoint").nodes.get("5-task-c-TASK")
-            compiled_last_nope_node = compiled_wf.thread_specs.get("entrypoint").nodes.get("3-nop-NOP")
+        compiled_first_nope_node = compiled_wf.thread_specs.get("entrypoint").nodes.get("1-nop-NOP")
+        compiled_task_a = compiled_wf.thread_specs.get("entrypoint").nodes.get("2-task-a-TASK")
+        compiled_task_b = compiled_wf.thread_specs.get("entrypoint").nodes.get("4-task-b-TASK")
+        compiled_task_c = compiled_wf.thread_specs.get("entrypoint").nodes.get("5-task-c-TASK")
+        compiled_last_nope_node = compiled_wf.thread_specs.get("entrypoint").nodes.get("3-nop-NOP")
 
-            expected_number_outgoing_edges_from_first_nop_node = 4
-            expected_last_sink_nop_node_name = "3-nop-NOP"
-            expected_exit_sink_node_name = "6-exit-EXIT"
+        expected_number_outgoing_edges_from_first_nop_node = 4
+        expected_last_sink_nop_node_name = "3-nop-NOP"
+        expected_exit_sink_node_name = "6-exit-EXIT"
 
-            self.assertEqual(expected_number_outgoing_edges_from_first_nop_node,
-                             len(compiled_first_nope_node.outgoing_edges))
-            self.assertEqual(Node(
-                        nop=NopNode(),
-                        outgoing_edges=[
-                            Edge(
-                                sink_node_name="2-task-a-TASK",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.GREATER_THAN_EQ,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=9)
-                                    ),
-                                ),
+        self.assertEqual(expected_number_outgoing_edges_from_first_nop_node,
+                         len(compiled_first_nope_node.outgoing_edges))
+        self.assertEqual(Node(
+            nop=NopNode(),
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-a-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.GREATER_THAN_EQ,
+                        left=VariableAssignment(
+                            literal_value=VariableValue(int=5)
+                        ),
+                        right=VariableAssignment(
+                            literal_value=VariableValue(int=9)
+                        ),
+                    ),
+                ),
+                Edge(
+                    sink_node_name="4-task-b-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.LESS_THAN,
+                        left=VariableAssignment(
+                            literal_value=VariableValue(int=7)
+                        ),
+                        right=VariableAssignment(
+                            literal_value=VariableValue(int=4)
+                        ),
+                    ),
+                    variable_mutations=[
+                        VariableMutation(
+                            lhs_name="my-int",
+                            operation=VariableMutationType.ASSIGN,
+                            rhs_assignment=VariableAssignment(
+                                literal_value=VariableValue(int=10)
                             ),
-                            Edge(
-                                sink_node_name="4-task-b-TASK",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.LESS_THAN,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=7)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                ),
-                                variable_mutations=[
-                                    VariableMutation(
-                                        lhs_name="my-int",
-                                        operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(
-                                            literal_value=VariableValue(int=10)
-                                        ),
-                                    )
-                                ],
-                            ),
-                            Edge(
-                                sink_node_name="5-task-c-TASK",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.GREATER_THAN_EQ,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=7)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                ),
-                            ),
-                            Edge(
-                                sink_node_name="3-nop-NOP",
-                            )
-                        ],
-                    ), compiled_first_nope_node)
-            self.assertEqual(expected_last_sink_nop_node_name, compiled_task_a.outgoing_edges[0].sink_node_name)
-            self.assertEqual(expected_last_sink_nop_node_name, compiled_task_b.outgoing_edges[0].sink_node_name)
-            self.assertEqual(expected_last_sink_nop_node_name, compiled_task_c.outgoing_edges[0].sink_node_name)
-            self.assertEqual(expected_exit_sink_node_name, compiled_last_nope_node.outgoing_edges[0].sink_node_name)
+                        )
+                    ],
+                ),
+                Edge(
+                    sink_node_name="5-task-c-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.GREATER_THAN_EQ,
+                        left=VariableAssignment(
+                            literal_value=VariableValue(int=7)
+                        ),
+                        right=VariableAssignment(
+                            literal_value=VariableValue(int=4)
+                        ),
+                    ),
+                ),
+                Edge(
+                    sink_node_name="3-nop-NOP",
+                )
+            ],
+        ), compiled_first_nope_node)
+        self.assertEqual(expected_last_sink_nop_node_name, compiled_task_a.outgoing_edges[0].sink_node_name)
+        self.assertEqual(expected_last_sink_nop_node_name, compiled_task_b.outgoing_edges[0].sink_node_name)
+        self.assertEqual(expected_last_sink_nop_node_name, compiled_task_c.outgoing_edges[0].sink_node_name)
+        self.assertEqual(expected_exit_sink_node_name, compiled_last_nope_node.outgoing_edges[0].sink_node_name)
+
+    def test_should_throw_an_error_compiling_a_wf_else_body_and_do_else_if_are_used(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(thread: WorkflowThread) -> None:
+                thread.execute("task-a")
+
+            def if_body_b(thread: WorkflowThread) -> None:
+                thread.execute("task-b")
+
+            def else_body_c(thread: WorkflowThread) -> None:
+                thread.execute("task-c")
+
+            if_statement: WorkflowIfStatement = wf.do_if(condition=wf.condition(5, Comparator.EQUALS, 9),
+                                                         if_body=if_body_a,
+                                                         else_body=else_body_c)
+            if_statement.do_else_if(wf.condition(7, Comparator.LESS_THAN, 4), body=if_body_b)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(AttributeError) as exception_context:
+            workflow.compile()
+
+        self.assertEqual(
+            "'NoneType' object has no attribute 'do_else_if'",
+            str(exception_context.exception),
+        )
+
 
     def test_do_while(self):
         class MyClass:
