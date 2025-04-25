@@ -376,7 +376,7 @@ class WorkflowIfStatement:
     def do_else_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
         return self._do_else_if(condition, body)
 
-    def _do_else_if(self, input_condition: Optional[WorkflowCondition], body: "ThreadInitializer") -> WorkflowIfStatement:
+    def _do_else_if(self, input_condition: Union[WorkflowCondition, None], body: "ThreadInitializer") -> WorkflowIfStatement:
         else_edge = self._get_first_nop_node().outgoing_edges.pop()
 
         if input_condition:
@@ -1955,7 +1955,7 @@ class WorkflowThread:
             return self._do_if(condition, if_body)
 
         self._validate_initializer(else_body, True)
-        return self._do_if(condition, if_body).do_else(else_body)
+        self._do_if(condition, if_body).do_else(else_body)
 
     def _do_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
         first_nop_node_name = self.add_node("nop", NopNode())
