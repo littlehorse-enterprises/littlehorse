@@ -917,6 +917,8 @@ class TestThreadBuilder(unittest.TestCase):
             if_statement.do_else_if(wf.condition(7, Comparator.LESS_THAN, 4), body=if_body_b)
             if_statement.do_else_if(wf.condition(5, Comparator.EQUALS, 5), if_body_c)
 
+            my_int.assign(0)
+
         workflow = Workflow("test-wf", my_entrypoint)
         compiled_wf = workflow.compile()
 
@@ -979,6 +981,18 @@ class TestThreadBuilder(unittest.TestCase):
                                     ),
                                 ),
                             ),
+                            Edge(
+                                sink_node_name="3-nop-NOP",
+                                variable_mutations=[
+                                    VariableMutation(
+                                        lhs_name="my-int",
+                                        operation=VariableMutationType.ASSIGN,
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=0)
+                                        ),
+                                    )
+                                ],
+                            ),
                         ],
                     ), compiled_first_nope_node)
         self.assertEqual(VariableMutation(
@@ -1022,7 +1036,7 @@ class TestThreadBuilder(unittest.TestCase):
             compiled_task_c = compiled_wf.thread_specs.get("entrypoint").nodes.get("5-task-c-TASK")
             compiled_last_nope_node = compiled_wf.thread_specs.get("entrypoint").nodes.get("3-nop-NOP")
 
-            expected_number_outgoing_edges_from_first_nop_node = 3
+            expected_number_outgoing_edges_from_first_nop_node = 4
             expected_last_sink_nop_node_name = "3-nop-NOP"
             expected_exit_sink_node_name = "6-exit-EXIT"
 
@@ -1076,6 +1090,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     ),
                                 ),
                             ),
+                            Edge(
+                                sink_node_name="3-nop-NOP",
+                            )
                         ],
                     ), compiled_first_nope_node)
             self.assertEqual(expected_last_sink_nop_node_name, compiled_task_a.outgoing_edges[0].sink_node_name)
