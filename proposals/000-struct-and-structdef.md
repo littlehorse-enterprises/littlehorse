@@ -1,5 +1,30 @@
 # Proposal: `StructDef` and `Struct`
 
+- [Proposal: `StructDef` and `Struct`](#proposal-structdef-and-struct)
+  - [Server-Side Changes](#server-side-changes)
+    - [`Struct` and `StructDef` Protobuf](#struct-and-structdef-protobuf)
+      - [Inline Structs](#inline-structs)
+      - [`StructDef` Versioning](#structdef-versioning)
+    - [Existing Protobuf](#existing-protobuf)
+    - [`StructDef` Schema Evolution](#structdef-schema-evolution)
+    - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
+  - [Client-Side Enhancements](#client-side-enhancements)
+    - [Task Workers](#task-workers)
+      - [`StructDef` References](#structdef-references)
+      - [Automatic `StructDef` Creation](#automatic-structdef-creation)
+    - [Creating `VariableValue`s](#creating-variablevalues)
+      - [Using an `@LHStruct` Annotated Class](#using-an-lhstruct-annotated-class)
+      - [Using a Struct Name](#using-a-struct-name)
+    - [The `WfSpec` DSL](#the-wfspec-dsl)
+      - [Using and Creating `StructDef`s](#using-and-creating-structdefs)
+      - [Accessing Sub-Structures](#accessing-sub-structures)
+  - [Further Discussion](#further-discussion)
+    - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
+    - [External Events?](#external-events)
+    - [Implementation and Performance](#implementation-and-performance)
+    - [Further Work](#further-work)
+
+
 Author: Colt McNealy
 
 We want schemas on the LH Server for several reasons:
