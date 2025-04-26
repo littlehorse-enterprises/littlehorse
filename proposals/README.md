@@ -17,11 +17,12 @@ Proposals should include:
 * Any proposed changes to the SDK API.
 * Any architectural changes to the Server which might impact performance or operations.
 * How the Proposal will affect backwards compatibility, deprecations, etc.
+* The GitHub Issue used to track implementation progress.
 
 To make a Proposal, please open a PR which adds the Proposasl markdown file and adds it to the `Accepted Proposals` table below.
 
 ## Accepted Proposals
 
-| #  | Title                                                                 |Author(s)    |
-|:--:|:----------------------------------------------------------------------|-------------|
-| 000 | [`Struct` and `StructDef](./000-struct-and-structdef.md) |Colt McNealy |
+| #  | Title                                                                 |Author(s)    |GitHub Issue #|
+|:--:|:----------------------------------------------------------------------|-------------|--------------|
+| 000 | [`Struct` and `StructDef](./000-struct-and-structdef.md) |Colt McNealy |[#880](https://github.com/littlehorse-enterprises/littlehorse/issues/880)|
