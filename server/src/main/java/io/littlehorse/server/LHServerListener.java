@@ -17,6 +17,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -259,12 +260,15 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 
@@ -408,14 +412,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         long startTime = System.currentTimeMillis();
         long endTime;
         try {
-            T response = futureResponse.get(30, TimeUnit.SECONDS);
-            endTime = System.currentTimeMillis();
+            Duration maxIncomingRequestIdlZeTime = LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME;
+            T response = futureResponse.get(maxIncomingRequestIdlZeTime.getSeconds(), TimeUnit.SECONDS);
             ctx.onNext(response);
             ctx.onCompleted();
-        } catch (Throwable exn) {
+        } catch (TimeoutException timeoutException) {
+            ctx.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                    "Command not processed within deadline: likely due to rebalance")));
+        } catch (ExecutionException exn) {
+            ctx.onError(exn.getCause());
+        } catch (Throwable t) {
+            ctx.onError(t);
+            log.error("Unexpected exception", t);
+        } finally {
             endTime = System.currentTimeMillis();
-            ctx.onError(exn);
-            log.error("Error waiting for response", exn);
         }
         log.trace("Waiting for {} ms", endTime - startTime);
     }

@@ -20,7 +20,8 @@ class AsyncWaitersTest {
     private final TenantIdModel tenantId = new TenantIdModel("test");
 
     @Test
-    void getOrRegisterFuture() throws ExecutionException, InterruptedException, TimeoutException {
+    void shouldCompleteAllRegisteredFuturesAndReturnWorkflowEvents()
+            throws ExecutionException, InterruptedException, TimeoutException {
         WorkflowEventDefIdModel event1 = new WorkflowEventDefIdModel("123");
         WorkflowEventDefIdModel event2 = new WorkflowEventDefIdModel("456");
         WorkflowEventDefIdModel event3 = new WorkflowEventDefIdModel("789");
