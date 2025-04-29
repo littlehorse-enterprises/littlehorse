@@ -26,6 +26,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
+import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -319,6 +320,42 @@ public class UserTaskTest {
                             .isEqualTo("Invalid group task assignment. UserGroup can't be empty");
                 })
                 .start();
+    }
+
+    @Test
+    public void shouldValidateUserIdIsNotEmptyInClientRequest() {
+        Workflow workflow = new WorkflowImpl("test-wf-2-group", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
+        });
+
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            workflowVerifier
+                    .prepareRun(workflow, Arg.of("name", "test-name"))
+                    .waitForStatus(RUNNING)
+                    .thenAssignUserTask(0, 1, false, "", null)
+                    .start();
+        });
+
+        Assertions.assertThat(throwable.getMessage()).contains("UserId can't be empty");
+    }
+
+    @Test
+    public void shouldValidateUserGroupIsNotEmptyInClientRequest() {
+        Workflow workflow = new WorkflowImpl("test-wf-2-group", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
+        });
+
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            workflowVerifier
+                    .prepareRun(workflow, Arg.of("name", "test-name"))
+                    .waitForStatus(RUNNING)
+                    .thenAssignUserTask(0, 1, false, null, "  ")
+                    .start();
+        });
+
+        Assertions.assertThat(throwable.getMessage()).contains("UserGroup can't be empty");
     }
 
     @Test
