@@ -50,6 +50,7 @@ func (l *LHWorkflow) compile() (*lhproto.PutWfSpecRequest, error) {
 					spec:              lhproto.ThreadSpec{},
 					variableMutations: make([]*lhproto.VariableMutation, 0),
 				}
+				l.threads = append(l.threads, &thr)
 				thr.spec.InterruptDefs = make([]*lhproto.InterruptDef, 0)
 				thr.spec.VariableDefs = make([]*lhproto.ThreadVarDef, 0)
 

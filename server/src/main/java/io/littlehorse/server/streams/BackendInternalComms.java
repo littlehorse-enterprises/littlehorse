@@ -362,8 +362,8 @@ public class BackendInternalComms implements Closeable {
         return taskClaimProducer;
     }
 
-    public void onWorkflowEventThrown(WorkflowEventModel event) {
-        asyncWaiters.registerWorkflowEventHappened(event);
+    public void onWorkflowEventThrown(WorkflowEventModel event, TenantIdModel tenantId) {
+        asyncWaiters.registerWorkflowEventHappened(event, tenantId);
     }
 
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
@@ -459,10 +459,6 @@ public class BackendInternalComms implements Closeable {
         }
 
         return storeResult.getStoredObject();
-    }
-
-    public void registerWorkflowEventProcessed(WorkflowEventModel event) {
-        asyncWaiters.registerWorkflowEventHappened(event);
     }
 
     public void handleRebalance(Set<TaskId> taskIds) {
