@@ -1,13 +1,20 @@
 name: Enhancement
-description: Minor change, refactor or enhancement
-labels: ["enhancement"]
+description: Feature, Minor change, refactor or enhancement.
+type: "feature"
 projects: ["littlehorse-enterprises/1"]
 body:
   - type: textarea
-    id: context
+    id: background
     attributes:
-      label: Context
-      description: Describe the context and any relevant information about this enhancement.
+      label: Background
+      description: Describe the background of this change. What inspired this enhancement?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Enhancement Proposal
+      description: Describe your proposed enhancement
     validations:
       required: true
   - type: textarea
@@ -28,18 +35,23 @@ body:
     attributes:
       label: Out of Scope
       description: Allows to define what is within the scope of the user story and what's not.
-  - type: dropdown
+  - type: checkboxes
     id: components
     attributes:
-      label: Components
-      description: Please select all the affected components.
-      multiple: true
+      label: Which components does this enhancement affect?
+      description: You may select more than one.
       options:
         - Dashboard
-        - Server
-        - Python SDK
-        - Go SDK
-        - Java SDK
-        - C# SDK
-        - LH Control
+        - Kernel
+        - sdk-python
+        - sdk-go
+        - sdk-java
+        - sdk-dotnet
+        - lhctl
         - LH Tests Utils
+  - type: textarea
+    id: documentation
+    attributes:
+      label: What documentation changes are necessary to complete this enhancement?
+    validations:
+      required: true
