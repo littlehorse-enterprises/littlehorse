@@ -27,6 +27,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
+import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -273,6 +274,54 @@ public class UserTaskTest {
     }
 
     @Test
+    public void shouldValidateUserIdNotEmptyFromResultTask() {
+        Workflow workflow = new WorkflowImpl("test-wf", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+
+            TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, result, null);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow)
+                .waitForStatus(ERROR)
+                .waitForNodeRunStatus(0, 2, ERROR)
+                .thenVerifyNodeRun(0, 2, nodeRun -> {
+                    List<Failure> failures = nodeRun.getFailuresList();
+                    Assertions.assertThat(failures).hasSize(1);
+                    Failure nodeFailure = failures.get(0);
+                    Assertions.assertThat(nodeFailure.getFailureName()).isEqualTo("VAR_ERROR");
+                    Assertions.assertThat(nodeFailure.getMessage())
+                            .isEqualTo("Invalid user task assignment. UserId can't be empty");
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldValidateGroupIdNotEmptyFromResultTask() {
+        Workflow workflow = new WorkflowImpl("test-wf-group", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+
+            TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, result);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow)
+                .waitForStatus(ERROR)
+                .waitForNodeRunStatus(0, 2, ERROR)
+                .thenVerifyNodeRun(0, 2, nodeRun -> {
+                    List<Failure> failures = nodeRun.getFailuresList();
+                    Assertions.assertThat(failures).hasSize(1);
+                    Failure nodeFailure = failures.get(0);
+                    Assertions.assertThat(nodeFailure.getFailureName()).isEqualTo("VAR_ERROR");
+                    Assertions.assertThat(nodeFailure.getMessage())
+                            .isEqualTo("Invalid group task assignment. UserGroup can't be empty");
+                })
+                .start();
+    }
+
+    @Test
     void shouldTransferOwnershipFromUserToSpecificGroupOnDeadline() {
         SearchResultCaptor<WfRunIdList> instanceCaptor = SearchResultCaptor.of(WfRunIdList.class);
         Function<TestExecutionContext, SearchWfRunRequest> buildId = context -> SearchWfRunRequest.newBuilder()
@@ -467,6 +516,11 @@ public class UserTaskTest {
     @LHTaskMethod("reminder-task")
     public void doReminder(WorkerContext ctx) {
         cache.put(ctx.getWfRunId().getId(), "hello there!");
+    }
+
+    @LHTaskMethod("return-empty-string-task")
+    public String returnEmptyString() {
+        return "";
     }
 
     @LHTaskMethod("verify-worker-context")
