@@ -30,59 +30,72 @@ public class WorkflowIfStatement
 
     public WorkflowIfStatement DoElseIf(WorkflowCondition condition, Action<WorkflowThread> body)
     {
+        OrganizeEdgesAfterBodyExecution(body, condition);
+        
+        return this;
+    }
+
+    public WorkflowIfStatement DoElse(Action<WorkflowThread> body)
+    {
+        OrganizeEdgesAfterBodyExecution(body);
+        
+       return this;
+    }
+
+    private void OrganizeEdgesAfterBodyExecution(Action<WorkflowThread> body, WorkflowCondition? condition = null)
+    {
         var firstNopNode = _parent.FindNode(_firstNopNodeName);
         var elseEdge = GetLastRemovedEdge(firstNopNode.OutgoingEdges);
-        var compiledCondition = condition.Compile();
-        
         var lastNodeNameOfParentThread = _parent.LastNodeName;
-        
+    
         body.Invoke(_parent);
-        
+    
         var lastNodeNameOfBody = _parent.LastNodeName;
-        
+    
         if (lastNodeNameOfParentThread == lastNodeNameOfBody)
         {
-            firstNopNode.OutgoingEdges.Add(new Edge
-            {
-                SinkNodeName = _lastNopNodeName,
-                Condition = new EdgeCondition
-                {
-                    Left = compiledCondition.Left,
-                    Comparator = compiledCondition.Comparator,
-                    Right = compiledCondition.Right
-                },
-                VariableMutations = { _parent.CollectVariableMutations() }
-            });
+            var edge = GetNewEdge(_lastNopNodeName, condition, _parent.CollectVariableMutations());
+            firstNopNode.OutgoingEdges.Add(edge);
         }
         else
         {
-            var lastOutgoingEdgesFromParentThread = _parent.FindNode(lastNodeNameOfParentThread).OutgoingEdges;
+            var lastNodeOfParentThread = _parent.FindNode(lastNodeNameOfParentThread);
+            var lastOutgoingEdgesFromParentThread = lastNodeOfParentThread.OutgoingEdges;
             var lastOutgoingEdge = GetLastRemovedEdge(lastOutgoingEdgesFromParentThread);
-            var firstNodeNameOfBody = lastOutgoingEdge.SinkNodeName;                       
-            firstNopNode.OutgoingEdges.Add(new Edge
-            {
-                SinkNodeName = firstNodeNameOfBody,
-                Condition = new EdgeCondition
-                {
-                    Left = compiledCondition.Left,
-                    Comparator = compiledCondition.Comparator,
-                    Right = compiledCondition.Right
-                } ,
-                VariableMutations = { lastOutgoingEdge.VariableMutations }
-            });
+            var firstNodeNameOfBody = lastOutgoingEdge.SinkNodeName;
+            var edge = GetNewEdge(firstNodeNameOfBody, condition, lastOutgoingEdge.VariableMutations);
+            firstNopNode.OutgoingEdges.Add(edge);
 
             _parent.Spec.Nodes.Remove(_lastNopNodeName);
             _lastNopNodeName = _parent.AddNode(_lastNopNodeName, Node.NodeOneofCase.Nop, new NopNode(), 
                 keepNodeName: true);
         }
-
-        firstNopNode.OutgoingEdges.Add(elseEdge);
         
-        return this;
+        if (condition != null)
+        {
+            firstNopNode.OutgoingEdges.Add(elseEdge);
+        }
     }
 
-    private WorkflowIfStatement DoElse(Action<WorkflowThread> body)
+    private Edge GetNewEdge(string sinkNodeName, WorkflowCondition? condition, 
+        ICollection<VariableMutation> variableMutations)
     {
-       return this;
+        if (condition != null)
+        {
+            var compiledCondition = condition.Compile();
+
+            return new Edge
+            {
+                SinkNodeName = sinkNodeName,
+                Condition = compiledCondition,
+                VariableMutations = { variableMutations }
+            };
+        }
+        
+        return new Edge
+        {
+            SinkNodeName = sinkNodeName,
+            VariableMutations = { variableMutations }
+        };
     }
 }
