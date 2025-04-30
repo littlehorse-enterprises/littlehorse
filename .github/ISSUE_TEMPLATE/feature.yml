@@ -8,8 +8,6 @@ body:
     attributes:
       label: Background
       description: Describe the background of this change. What inspired this enhancement?
-    validations:
-      required: true
   - type: textarea
     id: proposal
     attributes:
