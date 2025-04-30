@@ -7,6 +7,171 @@ import { Edge, Node, useReactFlow, useStore } from '@xyflow/react'
 // used to calculate the width of the
 export const EDGE_WIDTH = 200
 
+const threadSpecs = {
+  "entrypoint": {
+    "nodes": {
+      "0-entrypoint-ENTRYPOINT": {
+        "outgoingEdges": [{
+          "sinkNodeName": "1-task-a-TASK",
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "entrypoint": {}
+      },
+      "1-task-a-TASK": {
+        "outgoingEdges": [{
+          "sinkNodeName": "2-nop-NOP",
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "task": {
+          "taskDefId": {
+            "name": "task-a"
+          },
+          "timeoutSeconds": 0,
+          "retries": 0,
+          "variables": []
+        }
+      },
+      "2-nop-NOP": {
+        "outgoingEdges": [{
+          "sinkNodeName": "3-task-b-TASK",
+          "condition": {
+            "comparator": "LESS_THAN",
+            "left": {
+              "jsonPath": "$.bar",
+              "variableName": "foo"
+            },
+            "right": {
+              "literalValue": {
+                "int": "10"
+              }
+            }
+          },
+          "variableMutations": []
+        }, {
+          "sinkNodeName": "4-task-c-TASK",
+          "condition": {
+            "comparator": "LESS_THAN_EQ",
+            "left": {
+              "jsonPath": "$.bar",
+              "variableName": "foo"
+            },
+            "right": {
+              "literalValue": {
+                "int": "10"
+              }
+            }
+          },
+          "variableMutations": []
+        }, {
+          "sinkNodeName": "99-task-omega-TASK",
+          "condition": {
+            "comparator": "GREATER_THAN",
+            "left": {
+              "jsonPath": "$.bar",
+              "variableName": "foo"
+            },
+            "right": {
+              "literalValue": {
+                "int": "99"
+              }
+            }
+          },
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "nop": {}
+      },
+      "3-task-b-TASK": {
+        "outgoingEdges": [{
+          "sinkNodeName": "5-nop-NOP",
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "task": {
+          "taskDefId": {
+            "name": "task-b"
+          },
+          "timeoutSeconds": 0,
+          "retries": 0,
+          "variables": []
+        }
+      },
+      "99-task-omega-TASK": {
+        "outgoingEdges": [{
+          "sinkNodeName": "5-nop-NOP",
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "task": {
+          "taskDefId": {
+            "name": "task-omega"
+          },
+          "timeoutSeconds": 0,
+          "retries": 0,
+          "variables": []
+        }
+      },
+      "4-task-c-TASK": {
+        "outgoingEdges": [{
+          "sinkNodeName": "5-nop-NOP",
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "task": {
+          "taskDefId": {
+            "name": "task-c"
+          },
+          "timeoutSeconds": 0,
+          "retries": 0,
+          "variables": []
+        }
+      },
+      "5-nop-NOP": {
+        "outgoingEdges": [{
+          "sinkNodeName": "6-task-d-TASK",
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "nop": {}
+      },
+      "6-task-d-TASK": {
+        "outgoingEdges": [{
+          "sinkNodeName": "7-exit-EXIT",
+          "variableMutations": []
+        }],
+        "failureHandlers": [],
+        "task": {
+          "taskDefId": {
+            "name": "task-d"
+          },
+          "timeoutSeconds": 0,
+          "retries": 0,
+          "variables": []
+        }
+      },
+      "7-exit-EXIT": {
+        "outgoingEdges": [],
+        "failureHandlers": [],
+        "exit": {}
+      }
+    },
+    "variableDefs": [{
+      "varDef": {
+        "type": "JSON_OBJ",
+        "name": "foo",
+        "maskedValue": false
+      },
+      "required": false,
+      "searchable": false,
+      "jsonIndexes": [],
+      "accessLevel": "PRIVATE_VAR"
+    }],
+    "interruptDefs": []
+  }
+}
+
 export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }; nodeRunNameToBeHighlighted?: string }> = ({
   wfRun,
   nodeRunNameToBeHighlighted,
