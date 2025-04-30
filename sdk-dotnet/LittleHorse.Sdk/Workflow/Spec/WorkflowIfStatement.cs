@@ -35,11 +35,13 @@ public class WorkflowIfStatement
     }
 
     /// <summary>
-    /// Executes the body of the if statement if the condition is true.
+    /// After checking the previous condition(s) of the If Statement,
+    /// conditionally executes some workflow code; equivalent to
+    /// an if() statement in programming.
     /// </summary>
-    /// <param name="condition">The workflow condition to be validated.</param>
-    /// <param name="body">The body function to execute.
-    /// When the condition is true, the internal function business logic will be executed.
+    /// <param name="condition">It is the WorkflowCondition to be satisfied.</param>
+    /// <param name="body">It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+    /// is satisfied.
     /// </param>
     /// <returns>WorkflowIfStatement</returns>
     public WorkflowIfStatement DoElseIf(WorkflowCondition condition, Action<WorkflowThread> body)
@@ -50,11 +52,13 @@ public class WorkflowIfStatement
     }
 
     /// <summary>
-    /// Executes the body of the else statement if the condition is false.
+    /// After checking all previous condition(s) of the If Statement,
+    /// executes some workflow code; equivalent to
+    /// an else block in programming.
     /// </summary>
-    /// <param name="body">The body function to execute.</param>
-    /// When the condition is false, the internal function business logic will be executed.
-    /// <returns>WorkflowIfStatement</returns>
+    /// <param name="body">The block of ThreadSpec code to be executed if all previous
+    ///  WorkflowConditions were not satisfied.
+    /// </param>
     public void DoElse(Action<WorkflowThread> body)
     {
         if (_wasElseExecuted)

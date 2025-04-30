@@ -482,7 +482,7 @@ public class WorkflowThread
     }
 
     /// <summary>
-    /// Conditionally executes one of two workflow code branches; equivalent to an if/else statement
+    /// Conditionally executes one of two workflow code branches; equivalent to an if() statement
     /// in programming.
     /// </summary>
     /// <param name="condition">
