@@ -12,7 +12,7 @@ body:
     id: steps
     attributes:
       label: Steps To Reproduce
-      description: "Anything that makes this issue complete."
+      description: Anything that makes this issue complete. Include screenshots if applicable.
       placeholder: |
         Go to ...
         Click on ....
@@ -33,32 +33,34 @@ body:
       label: Affected Components
       description: Which components does this bug affect? You may select more than one.
       options:
-        - label: Dashboard
         - label: Kernel (/server)
+        - label: LH Control (/lhctl)
+        - label: Dashboard
         - label: Java SDK
         - label: Python SDK
         - label: Go SDK
         - label: .NET SDK
-        - label: LH Control
         - label: LH Tests Utils
   - type: input
     id: version
     attributes:
-      label: LittleHorse Version
-      description: The version(s) of LittleHorse that this bug occurred on
-      placeholder: "v0.13.2"
-  - type: textarea
-    id: screenshots
-    attributes:
-      label: Screenshots
-      description: If applicable, add screenshots to help explain your problem.
+      label: Environment
+      description: Environment details for when this bug occurred. Be as descriptive as possible.
+      value: |
+        OS: [e.g. macOS 15.1.1, Windows 11]
+        Client: [e.g. v0.13.2]
+        Java: [e.g. Corretto 21.0.4]
+        Browser: [e.g. Safari v18.11, Chrome v136] (if dashboard related)
+        etc...
+    validations:
+      required: true
   - type: textarea
     id: documentation
     attributes:
       label: Documentation
-      description: What documentation changes are necessary when this bug is fixed?
+      description: "Include ideas about or references to documentation changes that should be made when this feature is implemented."
   - type: textarea
     id: additional-context
     attributes:
       label: Additional Context
-      description: Add any other context about the problem here.
+      description: Add any additional information or comments about the bug here.
