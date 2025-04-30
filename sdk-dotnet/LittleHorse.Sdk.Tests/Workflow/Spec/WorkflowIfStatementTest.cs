@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
@@ -214,6 +215,8 @@ public class WorkflowIfStatementTest
             });
 
             ifStatement.DoElse(body => body.Execute("task-c"));
+            ifStatement.DoElseIf(thread.Condition(5, Comparator.Equals, 5),
+                body => body.Execute("task-d"));
         }
 
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
@@ -298,5 +301,23 @@ public class WorkflowIfStatementTest
         Assert.Equal(expectedLastSinkNopNodeName, taskNodeB.OutgoingEdges[0].SinkNodeName);
         Assert.Equal(expectedLastSinkNopNodeName, taskNodeC.OutgoingEdges[0].SinkNodeName);
         Assert.Equal(expectedExitSinkNodeName, lastNopNode.OutgoingEdges[0].SinkNodeName);
+    }
+
+    [Fact]
+    public void WorkflowThread_WithMoreThanOneElseStatement_ShouldThrownAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        new WorkflowThread(mockParentWorkflow.Object, thread =>
+        {
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
+                body => body.Execute("task-a"));
+            ifStatement.DoElse(body => body.Execute("task-b"));
+            
+            var exception = Assert.Throws<TargetException>(() =>
+                ifStatement.DoElse(body => body.Execute("task-c")));
+        
+            Assert.Equal("DoElse() method should not be called multiple times.", exception.Message);
+        });
     }
 }

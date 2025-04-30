@@ -1,3 +1,4 @@
+using System.Reflection;
 using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
@@ -10,12 +11,14 @@ public class WorkflowIfStatement
     private readonly WorkflowThread _parent;
     private readonly string _firstNopNodeName;
     private string _lastNopNodeName;
+    private bool _wasElseExecuted;
     
     internal WorkflowIfStatement(WorkflowThread parent, string firstNopNodeName, string lastNopNodeName)
     {
         _parent = parent;
         _firstNopNodeName = firstNopNodeName;
         _lastNopNodeName = lastNopNodeName;
+        _wasElseExecuted = false;
     }
 
     private Edge GetLastRemovedEdge(ICollection<Edge> outgoingEdges)
@@ -53,11 +56,15 @@ public class WorkflowIfStatement
     /// <param name="body">The body function to execute.</param>
     /// When the condition is false, the internal function business logic will be executed.
     /// <returns>WorkflowIfStatement</returns>
-    public WorkflowIfStatement DoElse(Action<WorkflowThread> body)
+    public void DoElse(Action<WorkflowThread> body)
     {
-        OrganizeEdgesAfterBodyExecution(body);
+        if (_wasElseExecuted)
+        {
+            throw new TargetException("DoElse() method should not be called multiple times.");
+        }
         
-       return this;
+        _wasElseExecuted = true;
+        OrganizeEdgesAfterBodyExecution(body);
     }
 
     private void OrganizeEdgesAfterBodyExecution(Action<WorkflowThread> body, WorkflowCondition? condition = null)
