@@ -1,3 +1,4 @@
+import tempfile
 import unittest
 import os
 from pathlib import Path
@@ -48,8 +49,8 @@ class TestLHConfig(unittest.TestCase):
 
     @parameterized.expand(
         [
-            f"/tmp/sdk-python-test-{uuid.uuid4()}.config",
-            Path(f"/tmp/sdk-python-test-{uuid.uuid4()}.config"),
+            f"{tempfile.gettempdir()}/sdk-python-test-{uuid.uuid4()}.config",
+            Path(f"{tempfile.gettempdir()}/sdk-python-test-{uuid.uuid4()}.config"),
         ]
     )
     def test_load_from_file(self, path):
@@ -82,7 +83,9 @@ class TestLHConfig(unittest.TestCase):
         os.environ["LHC_VARIABLE"] = "my-lhc-variable-from-env"
         os.environ["LHC_VARIABLE_2"] = "my-lhc-variable-2-from-env"
 
-        temp_config_file_path = f"/tmp/sdk-python-test-{uuid.uuid4()}.config"
+        temp_config_file_path = (
+            f"{tempfile.gettempdir()}/sdk-python-test-{uuid.uuid4()}.config"
+        )
 
         with open(temp_config_file_path, "w") as file_input:
             file_input.write("LHC_VARIABLE=my-lhc-variable-from-file\n")
