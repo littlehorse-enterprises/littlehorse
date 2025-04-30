@@ -22,6 +22,7 @@
     - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
     - [External Events?](#external-events)
     - [Implementation and Performance](#implementation-and-performance)
+    - [Testing](#testing)
     - [Further Work](#further-work)
 
 
@@ -31,7 +32,7 @@ We want schemas on the LH Server for several reasons:
 
 * Add type safety to WfSpec’s.
 * Allow users of the upcoming _Output Topic_ feature to safely perform joins and transformations without worrying about type casting failures.
-* Better developer experience so that @sauljabin is happier :smile:
+* Better developer experience.
 
 We already have strong typing for primitive types (`INT`, `STR`, `DOUBLE`, `BOOL`). However, the `JSON_OBJ` and `JSON_ARR` fields are YOLO Wild West, which has caused problems and errors for our users.
 
@@ -484,7 +485,11 @@ This proposal does not _directly_ discuss External Events. That is not an oversi
 Since this proposal is very API-driven rather than performance-driven, there aren’t many implementation details that are worthy of being noted in the proposal. However, some notes:
 
 * We will need to make sure that any schema validation happening inside a `Command#process()` call is very fast.
-* We want to avoid json serialization as much as possible. This is part of the motivation for not using 
+* We want to avoid json deserialization as much as possible. This is part of the motivation for not using JSONSchema.
+
+### Testing
+
+We will write end to end tests.
 
 ### Further Work
 
