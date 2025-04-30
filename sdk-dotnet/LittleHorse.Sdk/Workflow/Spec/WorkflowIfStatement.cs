@@ -1,4 +1,3 @@
-using System.Reflection;
 using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
