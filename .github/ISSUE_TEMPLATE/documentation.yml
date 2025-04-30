@@ -1,0 +1,22 @@
+name: Documentation
+description: Suggest an improvement or report an issue relating to our documentation (https://littlehorse.io/docs)
+type: "task"
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Describe the details of your suggested improvement.
+    validations:
+      required: true
+  - type: textarea
+    id: links
+    attributes:
+      label: Links
+      description: Add links to the affected webpages from https://littlehorse.io/docs
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Include screenshots of unexpected behavior or formatting if needed.
