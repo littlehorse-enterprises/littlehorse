@@ -2,7 +2,6 @@ package io.littlehorse.server.streams.taskqueue;
 
 import com.google.protobuf.Empty;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -65,8 +64,7 @@ public class TaskQueueManager {
         TaskClaimEvent taskClaimEvent =
                 new TaskClaimEvent(scheduledTask, luckyClient.getClientId(), luckyClient.getTaskWorkerVersion());
         return commandSender.doSend(
-                new CommandModel(taskClaimEvent),
-                luckyClient.getFreshExecutionContext().authorization());
+                taskClaimEvent, luckyClient.getFreshExecutionContext().authorization());
     }
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
