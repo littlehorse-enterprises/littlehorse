@@ -40,7 +40,7 @@ body:
         - label: Java SDK
         - label: Python SDK
         - label: Go SDK
-        - label: Dotnet SDK
+        - label: .NET SDK
         - label: LH Control
         - label: LH Tests Utils
   - type: input
