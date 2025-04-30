@@ -1,4 +1,4 @@
-name: Bug Report
+name: 🐞 Bug Report
 description: Allows to report any bug or unexpected functionality in LittleHorse.
 type: "bug"
 projects: ["littlehorse-enterprises/1"]
