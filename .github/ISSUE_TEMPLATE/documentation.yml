@@ -1,5 +1,5 @@
 name: 📖 Documentation
-description: Suggest an improvement or report an issue relating to our documentation (https://littlehorse.io/docs)
+description: Suggest an improvement or report an issue relating to our documentation.
 type: "task"
 labels: ["documentation"]
 body:
