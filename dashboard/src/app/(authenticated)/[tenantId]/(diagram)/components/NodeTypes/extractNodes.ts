@@ -1,24 +1,31 @@
-import { Node as NodeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
 import { Node, NodeProps } from '@xyflow/react'
+import { Node as NodeProto, WfSpec } from 'littlehorse-client/proto'
 import { ThreadSpecWithName } from '../Diagram'
 
 export function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {
   const reactFlowNodes: Node[] = []
-  Object.entries(threadSpec.threadSpec.nodes).forEach(([id, node]) => {
-    const reactFlowNode = extractNode(id, node, threadSpec)
-    reactFlowNodes.push(reactFlowNode)
+  Object.entries(threadSpec.threadSpec.nodes)
+    .sort(([idA], [idB]) => {
+      // Extract numeric part from IDs (e.g., '2' from '2-invoke-ai-TASK')
+      const numA = parseInt(idA.split('-')[0])
+      const numB = parseInt(idB.split('-')[0])
+      return numA - numB
+    })
+    .forEach(([id, node]) => {
+      const reactFlowNode = extractNode(id, node, threadSpec)
+      reactFlowNodes.push(reactFlowNode)
 
-    if (reactFlowNode.type === 'START_THREAD') {
-      const startedThreadSpecName = node.startThread?.threadSpecName
-      if (startedThreadSpecName === undefined) return
+      if (reactFlowNode.type === 'START_THREAD') {
+        const startedThreadSpecName = node.startThread?.threadSpecName
+        if (startedThreadSpecName === undefined) return
 
-      const moreNodes = extractNodes(wfSpec, {
-        name: startedThreadSpecName,
-        threadSpec: wfSpec.threadSpecs[startedThreadSpecName],
-      })
-      reactFlowNodes.push(...moreNodes)
-    }
-  })
+        const moreNodes = extractNodes(wfSpec, {
+          name: startedThreadSpecName,
+          threadSpec: wfSpec.threadSpecs[startedThreadSpecName],
+        })
+        reactFlowNodes.push(...moreNodes)
+      }
+    })
   return reactFlowNodes
 }
 

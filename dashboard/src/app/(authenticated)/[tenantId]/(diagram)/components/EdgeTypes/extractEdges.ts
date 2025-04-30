@@ -1,7 +1,7 @@
 import { getVariable } from '@/app/utils'
 import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
-import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from '@xyflow/react'
+import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
 import { ThreadSpecWithName } from '../Diagram'
 import { getNodeType } from '../NodeTypes/extractNodes'
 
@@ -48,7 +48,19 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
       })
     })
   })
-  return edges
+
+  // Sort edges by their numeric components
+  return edges.sort((a, b) => {
+    // Extract the first numeric parts from the IDs
+    const numA = parseInt(a.id.split('-')[0]) || 0
+    const numB = parseInt(b.id.split('-')[0]) || 0
+    if (numA !== numB) return numA - numB
+
+    // If first numbers are equal, try to sort by the second number
+    const secondNumA = parseInt(a.id.split('-')[1]) || 0
+    const secondNumB = parseInt(b.id.split('-')[1]) || 0
+    return secondNumA - secondNumB
+  })
 }
 
 const formatVariableValue = (value?: VariableAssignment) => {
