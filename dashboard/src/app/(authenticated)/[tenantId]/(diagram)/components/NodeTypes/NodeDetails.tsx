@@ -2,7 +2,7 @@
 import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
 import { NodeRun } from 'littlehorse-client/proto'
 import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
-import { internalsSymbol, useNodeId, useStore } from '@xyflow/react'
+import { useNodeId, useStore } from '@xyflow/react'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { DiagramDataGroupIndexer } from './DataGroupComponents/DiagramDataGroupIndexer'
 import { Duration } from './DataGroupComponents/Duration'
@@ -48,7 +48,7 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
     }
   }, [nodeRunsIndex, nodeRunsIndexInternal, setNodeRunsIndex])
 
-  const zIndex: number = Math.max(...nodes.map(node => (node[internalsSymbol]?.z || 1) + 10))
+  const zIndex: number = Math.max(...nodes.map(node => (node.zIndex || 1) + 10))
   if (!selectedNode) {
     return null
   }
