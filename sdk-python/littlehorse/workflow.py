@@ -1497,6 +1497,16 @@ class WorkflowThread:
                 "Must provide either user_id or user_group to assign_user_task()"
             )
 
+        if user_id is not None and isinstance(user_id, str) and user_id.strip() == "":
+            raise ValueError("UserId can't be empty to assign_user_task()")
+
+        if (
+            user_group is not None
+            and isinstance(user_group, str)
+            and user_group.strip() == ""
+        ):
+            raise ValueError("UserGroup can't be empty to assign_user_task()")
+
         ug = to_variable_assignment(user_group) if user_group else None
         ui = to_variable_assignment(user_id) if user_id else None
         ut_node = UserTaskNode(
