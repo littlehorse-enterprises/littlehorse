@@ -3,7 +3,7 @@ import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigati
 import { ScheduledWfRunIdList, WfSpec as Spec } from 'littlehorse-client/proto'
 import { LucidePlayCircle } from 'lucide-react'
 import { FC, useCallback, useState } from 'react'
-import { Diagram } from '../../../components/Diagram'
+import { Diagram, NewDiagram } from '../../../components/Diagram'
 import { useModal } from '../../../hooks/useModal'
 import { Details } from './Details'
 import { Thread } from './Thread'

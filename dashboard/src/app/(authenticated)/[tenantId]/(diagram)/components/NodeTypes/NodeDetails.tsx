@@ -2,7 +2,7 @@
 import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
 import { NodeRun } from 'littlehorse-client/proto'
 import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
-import { internalsSymbol, useNodeId, useStore } from 'reactflow'
+import { internalsSymbol, useNodeId, useStore } from '@xyflow/react'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { DiagramDataGroupIndexer } from './DataGroupComponents/DiagramDataGroupIndexer'
 import { Duration } from './DataGroupComponents/Duration'
@@ -21,7 +21,7 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
   const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0)
 
   const contextNodeId = useNodeId()
-  const nodes = useStore(state => state.getNodes())
+  const nodes = useStore(state => state.nodes)
   const setNodes = useStore(state => state.setNodes)
   const selectedNode = useMemo(
     () => nodes.find(node => node.selected && node.id === contextNodeId),

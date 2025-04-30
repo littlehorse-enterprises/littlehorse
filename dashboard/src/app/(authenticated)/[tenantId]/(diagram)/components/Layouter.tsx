@@ -1,8 +1,8 @@
 import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
-import dagre from 'dagre'
+import dagre from '@dagrejs/dagre'
 import { WfRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect } from 'react'
-import { Edge, Node, useReactFlow, useStore } from 'reactflow'
+import { Edge, Node, useReactFlow, useStore } from '@xyflow/react'
 
 // used to calculate the width of the
 export const EDGE_WIDTH = 200
@@ -11,7 +11,7 @@ export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[
   wfRun,
   nodeRunNameToBeHighlighted,
 }) => {
-  const nodes = useStore(store => store.getNodes())
+  const nodes = useStore(store => store.nodes)
   const edges = useStore(store => store.edges)
   const setNodes = useStore(store => store.setNodes)
   const { fitView } = useReactFlow()
@@ -62,6 +62,7 @@ export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[
   )
 
   useEffect(() => {
+    console.log(nodes, edges)
     if (
       nodes.some(
         (node: Node & { layouted?: boolean }) => node.width !== undefined && node.height !== undefined && !node.layouted

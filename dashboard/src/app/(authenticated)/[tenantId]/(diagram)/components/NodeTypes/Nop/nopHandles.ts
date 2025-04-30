@@ -1,4 +1,4 @@
-import { Position } from 'reactflow'
+import { Position } from '@xyflow/react'
 import { NodeProps } from '..'
 
 export const nopHandles = (node: NodeProps) => {

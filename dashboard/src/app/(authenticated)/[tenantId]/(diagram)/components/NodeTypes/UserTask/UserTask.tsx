@@ -2,13 +2,13 @@ import { UserTaskDefDetails } from '@/app/(authenticated)/[tenantId]/(diagram)/c
 import { UserIcon } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, memo } from 'react'
-import { Handle, Position } from 'reactflow'
+import { Handle, Position } from '@xyflow/react'
 import { ExternalLinkButton } from '../../ExternalLinkButton'
 import { NodeRunsList } from '../../NodeRunsList'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 import { Fade } from '../Fade'
-import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
+import { NodeProps } from '../index'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   const router = useRouter()

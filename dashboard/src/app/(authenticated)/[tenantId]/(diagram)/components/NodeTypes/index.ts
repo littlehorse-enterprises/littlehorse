@@ -1,6 +1,20 @@
-import { Node, NodeRun } from 'littlehorse-client/proto'
+import {
+  ExternalEventNode,
+  Node,
+  NodeRun,
+  UserTaskNode,
+  EntrypointNode,
+  ExitNode,
+  TaskNode,
+  StartThreadNode,
+  WaitForThreadsNode,
+  NopNode,
+  SleepNode,
+  StartMultipleThreadsNode,
+  ThrowEventNode,
+  WaitForConditionNode,
+} from 'littlehorse-client/proto'
 import { ComponentType } from 'react'
-import { NodeProps as NodeFlow } from 'reactflow'
 import { Entrypoint } from './Entrypoint'
 import { Exit } from './Exit'
 import { ExternalEvent } from './ExternalEvent/ExternalEvent'
@@ -14,8 +28,10 @@ import { WaitForThreads } from './WaitForThreads'
 import { NodeType } from './extractNodes'
 import { ThrowEvent } from './ThrowEvent'
 import { WaitForCondition } from './WaitForCondition'
+import { NodeTypes, NodeProps as XYNodeProps } from '@xyflow/react'
+import { UserTaskNodeRun } from 'littlehorse-client/proto'
 
-const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
+const nodeTypes: NodeTypes = {
   ENTRYPOINT: Entrypoint,
   TASK: Task,
   NOP: Nop,
@@ -31,7 +47,24 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   UNKNOWN_NODE_TYPE: WaitForThreads,
 }
 
-export type NodeProps<T = Node> = NodeFlow<
-  T & { nodeRun?: NodeRun; fade?: boolean; nodeNeedsToBeHighlighted?: boolean; nodeRunsList: [NodeRun] }
->
+export type NodeProps = XYNodeProps & {
+  data: {
+    nodeRun?: NodeRun
+    fade?: boolean
+    nodeNeedsToBeHighlighted?: boolean
+    nodeRunsList: [NodeRun]
+    userTask?: UserTaskNode
+    externalEvent?: ExternalEventNode
+    entrypoint?: EntrypointNode
+    exit?: ExitNode
+    task?: TaskNode
+    startThread?: StartThreadNode
+    waitForThreads?: WaitForThreadsNode
+    nop?: NopNode
+    sleep?: SleepNode
+    startMultipleThreads?: StartMultipleThreadsNode
+    throwEvent?: ThrowEventNode
+    waitForCondition?: WaitForConditionNode
+  }
+}
 export default nodeTypes

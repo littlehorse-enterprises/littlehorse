@@ -1,7 +1,7 @@
 import { getVariable } from '@/app/utils'
 import { PlusIcon } from 'lucide-react'
 import { FC, memo } from 'react'
-import { Handle, Position } from 'reactflow'
+import { Handle, Position } from '@xyflow/react'
 import { NodeProps } from '.'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { Fade } from './Fade'

@@ -2,7 +2,7 @@ import { formatTime, getVariableValue } from '@/app/utils'
 import { Node as NodeProto } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
 import { FC, memo } from 'react'
-import { Handle, Position } from 'reactflow'
+import { Handle, Position } from '@xyflow/react'
 import { NodeProps } from '..'
 
 import { Fade } from '../Fade'
@@ -12,7 +12,7 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 import PostEvent from './PostEvent'
 
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
+const Node: FC<NodeProps> = ({ data }) => {
   if (!data.externalEvent) return null
 
   const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data

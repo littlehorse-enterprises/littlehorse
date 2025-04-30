@@ -1,7 +1,7 @@
 import { getVariable } from '@/app/utils'
 import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
 import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
-import { Edge, MarkerType } from 'reactflow'
+import { Edge, MarkerType } from '@xyflow/react'
 import { ThreadSpecWithName } from '../Diagram'
 import { getNodeType } from '../NodeTypes/extractNodes'
 
@@ -40,9 +40,7 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
         type: 'default',
         target: `${edge.sinkNodeName}:${threadSpecWithName.name}`,
         label,
-        data: edge,
-        targetHandle: `target-${targetIndex}`,
-        sourceHandle: `source-${sourceIndex}`,
+        data: edge as any,
         markerEnd: {
           type: MarkerType.ArrowClosed,
         },

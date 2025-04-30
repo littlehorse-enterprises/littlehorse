@@ -1,5 +1,5 @@
 import { Node as NodeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
-import { Node, NodeProps } from 'reactflow'
+import { Node, NodeProps } from '@xyflow/react'
 import { ThreadSpecWithName } from '../Diagram'
 
 export function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {

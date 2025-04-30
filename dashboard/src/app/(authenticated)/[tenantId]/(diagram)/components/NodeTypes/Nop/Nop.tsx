@@ -1,5 +1,5 @@
 import { FC, memo } from 'react'
-import { Handle, Position } from 'reactflow'
+import { Handle, Position } from '@xyflow/react'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
 import { nopHandles } from './nopHandles'

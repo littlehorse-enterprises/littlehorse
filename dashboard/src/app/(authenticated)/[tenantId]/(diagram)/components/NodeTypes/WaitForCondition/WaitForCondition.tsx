@@ -2,7 +2,7 @@ import { formatTime, getVariableValue } from '@/app/utils'
 import { Comparator, Node as NodeProto } from 'littlehorse-client/proto'
 import { CircleEqualIcon, ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
 import { FC, memo } from 'react'
-import { Handle, Position } from 'reactflow'
+import { Handle, Position } from '@xyflow/react'
 import { NodeProps } from '..'
 
 import { Fade } from '../Fade'

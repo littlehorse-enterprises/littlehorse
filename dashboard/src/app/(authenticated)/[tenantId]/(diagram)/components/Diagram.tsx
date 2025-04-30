@@ -9,8 +9,7 @@ import { LHStatus, NodeRun, ThreadSpec, WfRun, WfSpec } from 'littlehorse-client
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
-import 'reactflow/dist/base.css'
+import { ReactFlow as XYFlow, useEdgesState, useNodesState } from '@xyflow/react'
 import { ThreadProvider, ThreadType } from '../context'
 import { edgeTypes } from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
@@ -18,6 +17,8 @@ import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
+import '@xyflow/react/dist/style.css';
+
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -44,6 +45,10 @@ const determineDefaultThreadRun = (
     threadToShowByDefault = { name: threadRunName, number: threadRunNumberFromRedirection }
   }
   return threadToShowByDefault
+}
+
+export const NewDiagram: FC<Props> = ({ spec, wfRun }) => {
+  return <div>NewDiagram</div>
 }
 
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
@@ -150,7 +155,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         )}
       </div>
       <div className="mb-4 min-h-[800px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
-        <ReactFlow
+        {/* <ReactFlow
           nodes={nodes}
           edges={edges}
           nodesConnectable={false}
@@ -162,7 +167,14 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           className="min-h-[800px] min-w-full bg-slate-50"
         >
           <Controls />
-        </ReactFlow>
+        </ReactFlow> */}
+        <XYFlow
+          className="min-h-[800px] min-w-full bg-slate-50"
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+        />
         <Layouter wfRun={wfRun} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
       </div>
     </ThreadProvider>

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { ReactFlowProvider } from 'reactflow'
+import { ReactFlowProvider } from '@xyflow/react'
 import { Modal, ModalProvider } from './context'
 
 export default function RootLayout({
