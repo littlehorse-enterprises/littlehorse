@@ -1296,10 +1296,8 @@ public class WorkflowThread
     public UserTaskOutput AssignUserTask(string userTaskDefName, object? userId, object? userGroup)
     {
         CheckIfWorkflowThreadIsActive();
-        if (userId == null && userGroup == null)
-        {
-            throw new ArgumentException("userId or userGroup is required.");
-        }
+        
+        ValidateUserIdAndUserGroup(userId, userGroup);
         
         var utNode = new UserTaskNode
         {
@@ -1395,10 +1393,7 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         Node currentNode = FindNode(LastNodeName);
         
-        if (userId == null && userGroup == null)
-        {
-            throw new ArgumentException("userId or userGroup is required.");
-        }
+        ValidateUserIdAndUserGroup(userId, userGroup);
         
         if (!LastNodeName.Equals(userTask.NodeName)) 
         {
@@ -1445,5 +1440,23 @@ public class WorkflowThread
     public LHFormatString Format(string format, params WfRunVariable[] args)
     {
         return new LHFormatString(this, format, args);
+    }
+
+    private void ValidateUserIdAndUserGroup(object? userId, object? userGroup)
+    {
+        if (userId == null && userGroup == null)
+        {
+            throw new ArgumentException("userId or userGroup is required.");
+        }
+
+        if (userId is string userIdValue && string.IsNullOrWhiteSpace(userIdValue))
+        {
+            throw new ArgumentException("userId can't be empty.");
+        }
+        
+        if (userGroup is string userGroupValue && string.IsNullOrWhiteSpace(userGroupValue))
+        {
+            throw new ArgumentException("userGroup can't be empty.");
+        }
     }
 }

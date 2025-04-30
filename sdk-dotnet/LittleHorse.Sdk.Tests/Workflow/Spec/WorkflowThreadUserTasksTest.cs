@@ -534,4 +534,46 @@ public class WorkflowThreadUserTasksTest
             
         Assert.Equal("Tried to edit a stale User Task node!", exception.Message);
     }
+    
+    [Fact]
+    public void WfThread_WithUserTaskAssignedToUserIdWithEmptyValue_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            UserTaskOutput formOutput = wf.AssignUserTask(
+                "user-task-def-name",
+                "",
+                null
+            );
+        }
+        
+        var exception = Assert.Throws<ArgumentException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, EntryPointAction));
+            
+        Assert.Contains("userId can't be empty.", exception.Message);
+    }
+    
+    [Fact]
+    public void WfThread_WithUserTaskAssignedToGroupWithEmptyValue_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            UserTaskOutput formOutput = wf.AssignUserTask(
+                "user-task-def-name",
+                null,
+                " "
+            );
+        }
+        
+        var exception = Assert.Throws<ArgumentException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, EntryPointAction));
+            
+        Assert.Contains("userGroup can't be empty.", exception.Message);
+    }
 }
