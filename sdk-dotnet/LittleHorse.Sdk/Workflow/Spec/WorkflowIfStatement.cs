@@ -2,6 +2,9 @@ using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// Represents a conditional statement in a workflow.
+/// </summary>
 public class WorkflowIfStatement
 {
     private readonly WorkflowThread _parent;
@@ -29,6 +32,14 @@ public class WorkflowIfStatement
         return lastEdge;
     }
 
+    /// <summary>
+    /// Executes the body of the if statement if the condition is true.
+    /// </summary>
+    /// <param name="condition">The workflow condition to be validated.</param>
+    /// <param name="body">The body function to execute.
+    /// When the condition is true, the internal function business logic will be executed.
+    /// </param>
+    /// <returns>WorkflowIfStatement</returns>
     public WorkflowIfStatement DoElseIf(WorkflowCondition condition, Action<WorkflowThread> body)
     {
         OrganizeEdgesAfterBodyExecution(body, condition);
@@ -36,6 +47,12 @@ public class WorkflowIfStatement
         return this;
     }
 
+    /// <summary>
+    /// Executes the body of the else statement if the condition is false.
+    /// </summary>
+    /// <param name="body">The body function to execute.</param>
+    /// When the condition is false, the internal function business logic will be executed.
+    /// <returns>WorkflowIfStatement</returns>
     public WorkflowIfStatement DoElse(Action<WorkflowThread> body)
     {
         OrganizeEdgesAfterBodyExecution(body);
