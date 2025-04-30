@@ -41,7 +41,7 @@ body:
         - label: Go SDK
         - label: .NET SDK
         - label: LH Tests Utils
-  - type: input
+  - type: textarea
     id: version
     attributes:
       label: Environment
