@@ -26,7 +26,7 @@ public class WorkflowIfStatementTest
         var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         void MyEntrypoint(WorkflowThread thread)
         {
-            thread.DoIfWithResult(thread.Condition(5, Comparator.GreaterThanEq, 9),
+            thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
                 body => {});
         }
 
@@ -70,7 +70,7 @@ public class WorkflowIfStatementTest
         void MyEntrypoint(WorkflowThread thread)
         {
             var myInt = thread.DeclareInt("my-int");
-            WorkflowIfStatement ifStatement = thread.DoIfWithResult(thread.Condition(5, Comparator.GreaterThanEq, 9),
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
                 body =>
                 {
                     body.Execute("task-a");
@@ -200,7 +200,7 @@ public class WorkflowIfStatementTest
         void MyEntrypoint(WorkflowThread thread)
         {
             var myInt = thread.DeclareInt("my-int");
-            WorkflowIfStatement ifStatement = thread.DoIfWithResult(thread.Condition(5, Comparator.GreaterThanEq, 9),
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
                 body =>
                 {
                     body.Execute("task-a");

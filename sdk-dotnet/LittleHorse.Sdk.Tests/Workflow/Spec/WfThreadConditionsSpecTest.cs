@@ -67,13 +67,7 @@ public class WfThreadDoIfTest
                 },
                 new Edge
                 {
-                    SinkNodeName = "3-nop-NOP",
-                    Condition = new EdgeCondition
-                    {
-                        Comparator = Comparator.LessThanEq,
-                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
-                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
-                    }
+                    SinkNodeName = "3-nop-NOP"
                 }
             }
         };
@@ -171,13 +165,7 @@ public class WfThreadDoIfTest
                 },
                 new Edge
                 {
-                    SinkNodeName = "3-task-b-TASK",
-                    Condition = new EdgeCondition
-                    {
-                        Comparator = Comparator.GreaterThanEq,
-                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
-                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
-                    }
+                    SinkNodeName = "4-task-b-TASK"
                 }
             }
         };
@@ -192,7 +180,7 @@ public class WfThreadDoIfTest
             {
                 new Edge
                 {
-                    SinkNodeName = "4-nop-NOP"
+                    SinkNodeName = "3-nop-NOP"
                 }
             }
         };
@@ -207,7 +195,7 @@ public class WfThreadDoIfTest
             {
                 new Edge
                 {
-                    SinkNodeName = "4-nop-NOP"
+                    SinkNodeName = "3-nop-NOP"
                 }
             }
         };
@@ -232,8 +220,8 @@ public class WfThreadDoIfTest
         expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
         expectedSpec.Nodes.Add("1-nop-NOP", nop1Node);
         expectedSpec.Nodes.Add("2-task-a-TASK", taskA);
-        expectedSpec.Nodes.Add("3-task-b-TASK", taskB);
-        expectedSpec.Nodes.Add("4-nop-NOP", nop4Node);
+        expectedSpec.Nodes.Add("4-task-b-TASK", taskB);
+        expectedSpec.Nodes.Add("3-nop-NOP", nop4Node);
         expectedSpec.Nodes.Add("5-exit-EXIT", exitNode);
         
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfNopNodes + numberOfTasks;

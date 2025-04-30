@@ -471,47 +471,13 @@ public class WorkflowThread
     /// It is the block of ThreadSpec code to be executed if the provided
     /// WorkflowCondition is NOT satisfied.
     /// </param>
-    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null) 
+    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
-        CheckIfWorkflowThreadIsActive();
+        WorkflowIfStatement ifResult = DoIf(condition, ifBody);
         
-        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        var treeRootNodeName = LastNodeName;
-        _lastNodeCondition = condition.Compile();
-
-        ifBody.Invoke(this);
-        
-        var lastConditionFromIfBlock = _lastNodeCondition;
-        var lastNodeFromIfBlockName = LastNodeName;
-        var variablesFromIfBlock = CollectVariableMutations();
-
         if (elseBody != null)
         {
-            LastNodeName = treeRootNodeName;
-            _lastNodeCondition = condition.GetOpposite();
-            
-            elseBody.Invoke(this);
-            
-            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-            var lastNodeFromIfBlock = FindNode(lastNodeFromIfBlockName);
-            var ifBlockEdge = new Edge { SinkNodeName = LastNodeName };
-            ifBlockEdge.VariableMutations.AddRange(variablesFromIfBlock);
-            if (lastNodeFromIfBlockName == treeRootNodeName)
-            {
-                ifBlockEdge.Condition = lastConditionFromIfBlock;
-            }
-            lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
-        }
-        else
-        {
-            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-
-            var treeRoot = FindNode(treeRootNodeName);
-            treeRoot.OutgoingEdges.Add(new Edge
-            {
-                SinkNodeName = LastNodeName,
-                Condition = condition.GetOpposite()
-            });
+            ifResult.DoElse(elseBody);
         }
     }
 
@@ -526,7 +492,7 @@ public class WorkflowThread
     /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
     /// is satisfied.
     /// </param>
-    public WorkflowIfStatement DoIfWithResult(WorkflowCondition condition, Action<WorkflowThread> body)
+    public WorkflowIfStatement DoIf(WorkflowCondition condition, Action<WorkflowThread> body)
     {
         CheckIfWorkflowThreadIsActive();
         var firstNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());

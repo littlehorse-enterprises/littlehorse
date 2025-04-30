@@ -7,6 +7,7 @@ public class WorkflowIfStatement
     private readonly WorkflowThread _parent;
     private readonly string _firstNopNodeName;
     private string _lastNopNodeName;
+    
     internal WorkflowIfStatement(WorkflowThread parent, string firstNopNodeName, string lastNopNodeName)
     {
         _parent = parent;
