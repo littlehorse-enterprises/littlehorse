@@ -42,7 +42,7 @@ body:
       description: Which components does this bug affect? You may select more than one.
       options:
         - label: Dashboard
-        - label: Kernel
+        - label: Kernel (/server)
         - label: Java SDK
         - label: Python SDK
         - label: Go SDK
