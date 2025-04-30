@@ -32,8 +32,8 @@ body:
   - type: checkboxes
     id: components
     attributes:
-      label: Which components does this bug affect?
-      description: You may select more than one.
+      label: Affected Components
+      description: Which components does this bug affect? You may select more than one.
       options:
         - label: Dashboard
         - label: Kernel
@@ -57,7 +57,8 @@ body:
   - type: textarea
     id: documentation
     attributes:
-      label: What documentation changes are necessary when this bug is fixed?
+      label: Documentation
+      description: What documentation changes are necessary when this bug is fixed?
   - type: textarea
     id: additional-context
     attributes:
