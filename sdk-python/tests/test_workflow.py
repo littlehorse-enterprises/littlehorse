@@ -1248,6 +1248,39 @@ class TestThreadBuilder(unittest.TestCase):
             compiled_last_nope_node.outgoing_edges[0].sink_node_name,
         )
 
+    def test_should_throw_an_error_when_do_else_is_called_multiple_times(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(thread: WorkflowThread) -> None:
+                thread.execute("task-a")
+
+            def if_body_b(thread: WorkflowThread) -> None:
+                thread.execute("task-b")
+
+            def else_body_c(thread: WorkflowThread) -> None:
+                thread.execute("task-c")
+
+            def else_body_d(thread: WorkflowThread) -> None:
+                thread.execute("task-d")
+
+            if_statement: WorkflowIfStatement = wf.do_if(
+                condition=wf.condition(5, Comparator.EQUALS, 9), if_body=if_body_a
+            )
+            if_statement.do_else_if(
+                wf.condition(7, Comparator.LESS_THAN, 4), body=if_body_b
+            )
+            if_statement.do_else(body=else_body_c)
+
+            with self.assertRaises(RuntimeError) as exception_context:
+                if_statement.do_else(body=else_body_d)
+
+            self.assertEqual(
+                "Else block has already been executed. Cannot add another else block.",
+                str(exception_context.exception),
+            )
+
+        workflow = Workflow("test-wf", my_entrypoint)
+        workflow.compile()
+
     def test_do_while(self):
         class MyClass:
             def my_condition(self, thread: WorkflowThread) -> None:
