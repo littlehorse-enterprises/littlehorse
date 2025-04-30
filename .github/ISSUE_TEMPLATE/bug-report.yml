@@ -1,5 +1,5 @@
 name: Bug Report
-description: Allows to report any bug/defect you have found in our project
+description: Allows to report any bug or unexpected functionality in LittleHorse.
 type: "bug"
 projects: ["littlehorse-enterprises/1"]
 body:
