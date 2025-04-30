@@ -13,8 +13,8 @@ body:
   - type: textarea
     id: proposal
     attributes:
-      label: Enhancement Proposal
-      description: Describe your proposed enhancement
+      label: Proposal
+      description: Describe your proposed feature, minor change, or enhancement
     validations:
       required: true
   - type: textarea
