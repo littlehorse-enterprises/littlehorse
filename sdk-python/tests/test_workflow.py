@@ -3021,7 +3021,7 @@ class TestUserTasks(unittest.TestCase):
             thread.assign_user_task("my-user-task", user_id="")
 
         with self.assertRaises(Exception) as ctx:
-            wf = Workflow("my-wf", wf_func).compile()
+            Workflow("my-wf", wf_func).compile()
         self.assertIn("UserId can't be empty to assign_user_task()", str(ctx.exception))
 
     def test_user_group_is_not_empty(self):
@@ -3029,7 +3029,7 @@ class TestUserTasks(unittest.TestCase):
             thread.assign_user_task("my-user-task", user_group="  ")
 
         with self.assertRaises(Exception) as ctx:
-            wf = Workflow("my-wf", wf_func).compile()
+            Workflow("my-wf", wf_func).compile()
         self.assertIn(
             "UserGroup can't be empty to assign_user_task()", str(ctx.exception)
         )
