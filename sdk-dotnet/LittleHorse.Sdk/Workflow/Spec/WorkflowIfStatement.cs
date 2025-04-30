@@ -60,7 +60,7 @@ public class WorkflowIfStatement
     {
         if (_wasElseExecuted)
         {
-            throw new TargetException("DoElse() method should not be called multiple times.");
+            throw new InvalidOperationException("DoElse() method should not be called multiple times.");
         }
         
         _wasElseExecuted = true;

@@ -314,7 +314,7 @@ public class WorkflowIfStatementTest
                 body => body.Execute("task-a"));
             ifStatement.DoElse(body => body.Execute("task-b"));
             
-            var exception = Assert.Throws<TargetException>(() =>
+            var exception = Assert.Throws<InvalidOperationException>(() =>
                 ifStatement.DoElse(body => body.Execute("task-c")));
         
             Assert.Equal("DoElse() method should not be called multiple times.", exception.Message);
