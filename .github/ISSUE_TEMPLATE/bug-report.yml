@@ -15,8 +15,7 @@ body:
     attributes:
       label: Steps To Reproduce
       description: "Anything that makes this issue complete."
-      value: |
-        Example:
+      placeholder: |
         Go to ...
         Click on ....
         Scroll down to ....
@@ -54,6 +53,12 @@ body:
         - label: Dotnet SDK
         - label: LH Control
         - label: LH Tests Utils
+  - type: input
+    id: version
+    attributes:
+      label: LittleHorse Version
+      description: A version of LittleHorse that this bug occurred on
+      placeholder: "v0.13.2"
   - type: textarea
     id: documentation
     attributes:
