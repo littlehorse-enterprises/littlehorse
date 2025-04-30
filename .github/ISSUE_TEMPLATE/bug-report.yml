@@ -1,6 +1,6 @@
 name: Bug Report
 description: Allows to report any bug/defect you have found in our project
-labels: ["bug"]
+type: "bug"
 projects: ["littlehorse-enterprises/1"]
 body:
   - type: textarea
@@ -14,8 +14,9 @@ body:
     id: steps
     attributes:
       label: Steps To Reproduce
-      description: "Anything that makes this issue complete. Example:"
+      description: "Anything that makes this issue complete."
       value: |
+        Example:
         Go to ...
         Click on ....
         Scroll down to ....
@@ -39,18 +40,23 @@ body:
     attributes:
       label: Additional Context
       description: Add any other context about the problem here.
-  - type: dropdown
+  - type: checkboxes
     id: components
     attributes:
-      label: Components
-      description: Please select all the affected components.
-      multiple: true
+      label: Which components does this bug affect?
+      description: You may select more than one.
       options:
-        - Dashboard
-        - Server
-        - Python SDK
-        - Go SDK
-        - Java SDK
-        - C# SDK
-        - LH Control
-        - LH Tests Utils
+        - label: Dashboard
+        - label: Kernel
+        - label: Java SDK
+        - label: Python SDK
+        - label: Go SDK
+        - label: Dotnet SDK
+        - label: LH Control
+        - label: LH Tests Utils
+  - type: textarea
+    id: documentation
+    attributes:
+      label: What documentation changes are necessary when this bug is fixed?
+    validations:
+      required: true
