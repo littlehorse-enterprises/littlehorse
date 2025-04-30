@@ -4,7 +4,16 @@ import { FC, memo, useCallback } from 'react'
 import { BaseEdge, EdgeLabelRenderer, Position, SmoothStepEdgeProps, getSmoothStepPath } from '@xyflow/react'
 import { useModal } from '../../hooks/useModal'
 
-const Default: FC<SmoothStepEdgeProps & { data: EdgeProto }> = ({
+type DefaultEdgeProps = SmoothStepEdgeProps & {
+  data: EdgeProto;
+  animated?: boolean;
+  selectable?: boolean;
+  deletable?: boolean;
+  sourceHandleId?: string;
+  targetHandleId?: string;
+}
+
+const Default: FC<DefaultEdgeProps> = ({
   id,
   sourceX,
   sourceY,
@@ -16,6 +25,11 @@ const Default: FC<SmoothStepEdgeProps & { data: EdgeProto }> = ({
   data,
   sourcePosition = Position.Bottom,
   targetPosition = Position.Top,
+  animated,
+  selectable,
+  deletable,
+  sourceHandleId,
+  targetHandleId,
   ...rest
 }) => {
   const [path, labelX, labelY] = getSmoothStepPath({
@@ -37,7 +51,15 @@ const Default: FC<SmoothStepEdgeProps & { data: EdgeProto }> = ({
 
   return (
     <>
-      <BaseEdge id={id} path={path} style={style} {...rest} />
+      <BaseEdge
+        id={id}
+        path={path}
+        style={style}
+        {...(animated ? { animated: animated.toString() } : {})}
+        {...(selectable ? { selectable: selectable.toString() } : {})}
+        {...(deletable ? { deletable: deletable.toString() } : {})}
+        {...rest}
+      />
       <EdgeLabelRenderer>
         <div
           style={{
