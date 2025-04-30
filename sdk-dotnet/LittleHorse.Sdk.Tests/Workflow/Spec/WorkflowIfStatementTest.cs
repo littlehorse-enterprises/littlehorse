@@ -215,8 +215,6 @@ public class WorkflowIfStatementTest
             });
 
             ifStatement.DoElse(body => body.Execute("task-c"));
-            ifStatement.DoElseIf(thread.Condition(5, Comparator.Equals, 5),
-                body => body.Execute("task-d"));
         }
 
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
