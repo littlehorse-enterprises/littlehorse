@@ -1,36 +1,29 @@
-import React, { useCallback } from 'react';
-import {
-    Background,
-    ReactFlow,
-    addEdge,
-    ConnectionLineType,
-    Panel,
-    useNodesState,
-    useEdgesState,
-    useStore,
-    Position,
-    OnEdgesChange,
-    OnNodesChange,
-} from '@xyflow/react';
-import { Edge, Node } from '@xyflow/react';
 import dagre from '@dagrejs/dagre';
+import {
+  Background,
+  ConnectionLineType,
+  Controls,
+  Edge, Node,
+  OnEdgesChange,
+  OnNodesChange,
+  Position,
+  ReactFlow,
+  useEdgesState,
+  useNodesState
+} from '@xyflow/react';
+import { useCallback } from 'react';
 
 import '@xyflow/react/dist/style.css';
-import nodeTypes from './NodeTypes';
 import { edgeTypes } from './EdgeTypes';
-import { extractNodes } from './NodeTypes/extractNodes';
-import { extractEdges } from './EdgeTypes/extractEdges';
-import { WfSpec } from 'littlehorse-client/proto';
-import { ThreadSpecWithName } from './Diagram';
+import nodeTypes from './NodeTypes';
 
 const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const nodeWidth = 172;
 const nodeHeight = 36;
 
-const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'LR') => {
-    const isHorizontal = direction === 'LR';
-    dagreGraph.setGraph({ rankdir: direction });
+const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
+    dagreGraph.setGraph({ rankdir: 'LR' });
 
     nodes.forEach((node) => {
         dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
@@ -46,8 +39,8 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'LR') => 
         const nodeWithPosition = dagreGraph.node(node.id);
         const newNode: Node = {
             ...node,
-            targetPosition: isHorizontal ? Position.Left : Position.Top,
-            sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
+            targetPosition: Position.Left,
+            sourcePosition: Position.Right,
             // We are shifting the dagre node position (anchor=center center) to the top left
             // so it matches the React Flow node anchor point (top left).
             position: {
@@ -328,7 +321,7 @@ export const initialEdges = [
   {id: 'e56', source: '5', target: '6', type: edgeType, animated: true},
 ];
 
-export function Layouter() {
+export function Layouter({initialNodes, initialEdges}: {initialNodes: Node[], initialEdges: Edge[]}) {
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
         initialNodes,
         initialEdges,
@@ -337,11 +330,10 @@ export function Layouter() {
     const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
 
     const onLayout = useCallback(
-        (direction: 'TB' | 'LR') => {
+        () => {
             const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
                 nodes,
                 edges,
-                direction,
             );
 
             setNodes([...layoutedNodes]);
@@ -354,7 +346,7 @@ export function Layouter() {
         <ReactFlow
             nodes={nodes}
             edges={edges}
-            className="min-h-[800px] min-w-full bg-slate-50"
+            className="min-h-[800px] min-w-full"
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             onNodesChange={onNodesChange as OnNodesChange<Node>}
@@ -363,15 +355,8 @@ export function Layouter() {
             fitView
             style={{ backgroundColor: '#F7F9FB' }}
         >
-            <Panel position="top-right">
-                <button className="xy-theme__button" onClick={() => onLayout('TB')}>
-                    vertical layout
-                </button>
-                <button className="xy-theme__button" onClick={() => onLayout('LR')}>
-                    horizontal layout
-                </button>
-            </Panel>
             <Background />
+            <Controls/>
         </ReactFlow>
     );
 }

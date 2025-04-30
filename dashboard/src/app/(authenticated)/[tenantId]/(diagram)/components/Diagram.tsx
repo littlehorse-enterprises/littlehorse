@@ -53,22 +53,22 @@ export const NewDiagram: FC<Props> = ({ spec, wfRun }) => {
 
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   // const tenantId = useParams().tenantId as string
-  // const currentThread = wfRun
-  //   ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
-  //   : spec.entrypointThreadName
+  const currentThread = wfRun
+    ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
+    : spec.entrypointThreadName
 
-  // const searchParams: ReadonlyURLSearchParams = useSearchParams()
-  // const threadRunNumberFromRedirection = Number(searchParams.get('threadRunNumber'))
-  // const nodeRunNameToBeHighlighted = searchParams.get('nodeRunName')!
+  const searchParams: ReadonlyURLSearchParams = useSearchParams()
+  const threadRunNumberFromRedirection = Number(searchParams.get('threadRunNumber'))
+  const nodeRunNameToBeHighlighted = searchParams.get('nodeRunName')!
 
-  // let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
+  let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 
-  // const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
+  const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
 
-  // const threadSpec: ThreadSpecWithName = useMemo(() => {
-  //   if (thread === undefined) return { name: spec.entrypointThreadName, threadSpec: spec.threadSpecs[spec.entrypointThreadName] }
-  //   return { name: thread.name, threadSpec: spec.threadSpecs[thread.name] }
-  // }, [spec, thread])
+  const threadSpec: ThreadSpecWithName = useMemo(() => {
+    if (thread === undefined) return { name: spec.entrypointThreadName, threadSpec: spec.threadSpecs[spec.entrypointThreadName] }
+    return { name: thread.name, threadSpec: spec.threadSpecs[thread.name] }
+  }, [spec, thread])
 
   // const [edges, setEdges] = useEdgesState(extractEdges(spec, threadSpec))
   // const [nodes, setNodes] = useNodesState(extractNodes(spec, threadSpec))
@@ -98,8 +98,14 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   //         ? 'Rescue'
   //         : ''
 
+  const initialNodes = extractNodes(spec, threadSpec)
+  const initialEdges = extractEdges(spec, threadSpec)
+  
+  console.log("initialNodes", initialNodes)
+  console.log("initialEdges", initialEdges)
+
   return (
-    <Layouter />
+    <Layouter initialNodes={initialNodes} initialEdges={initialEdges} />
   )
 }
 
