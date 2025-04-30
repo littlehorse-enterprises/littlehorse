@@ -29,16 +29,6 @@ body:
       description: A clear and concise description of what you expected to happen.
     validations:
       required: true
-  - type: textarea
-    id: screenshots
-    attributes:
-      label: Screenshots
-      description: If applicable, add screenshots to help explain your problem.
-  - type: textarea
-    id: additional-context
-    attributes:
-      label: Additional Context
-      description: Add any other context about the problem here.
   - type: checkboxes
     id: components
     attributes:
@@ -57,11 +47,19 @@ body:
     id: version
     attributes:
       label: LittleHorse Version
-      description: A version of LittleHorse that this bug occurred on
+      description: The version(s) of LittleHorse that this bug occurred on
       placeholder: "v0.13.2"
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
   - type: textarea
     id: documentation
     attributes:
       label: What documentation changes are necessary when this bug is fixed?
-    validations:
-      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here.
