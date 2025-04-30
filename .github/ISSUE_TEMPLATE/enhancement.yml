@@ -34,7 +34,7 @@ body:
     id: scope
     attributes:
       label: Out of Scope
-      description: Allows to define what is within the scope of the user story and what's not.
+      description: Allows to define what is within the scope of the enhancement and what's not.
   - type: checkboxes
     id: components
     attributes:
@@ -43,11 +43,11 @@ body:
       options:
         - label: Dashboard
         - label: Kernel
-        - label: sdk-python
-        - label: sdk-go
-        - label: sdk-java
-        - label: sdk-dotnet
-        - label: lhctl
+        - label: Java SDK
+        - label: Python SDK
+        - label: Go SDK
+        - label: Dotnet SDK
+        - label: LH Control
         - label: LH Tests Utils
   - type: textarea
     id: documentation
