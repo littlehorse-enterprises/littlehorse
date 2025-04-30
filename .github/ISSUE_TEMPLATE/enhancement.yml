@@ -1,5 +1,5 @@
 name: Enhancement
-description: Feature, Minor change, refactor or enhancement.
+description: Feature, minor change, or enhancement.
 type: "feature"
 projects: ["littlehorse-enterprises/1"]
 body:
