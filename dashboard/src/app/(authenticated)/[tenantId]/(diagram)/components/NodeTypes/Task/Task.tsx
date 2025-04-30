@@ -8,7 +8,7 @@ import { Fade } from '../Fade'
 import { TaskDetails } from './TaskDetails'
 
 const Node: FC<NodeProps> = ({ selected, data }) => {
-  const { fade, nodeNeedsToBeHighlighted, nodeRunsList } = data
+  const { isFaded, nodeNeedsToBeHighlighted, nodeRunsList } = data
   if (!data.task) return null
   const { task } = data
   const nodeRun = sortNodeRunsByLatest(nodeRunsList)?.[0]
@@ -16,7 +16,7 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
   return (
     <>
       <TaskDetails taskNode={task} nodeRun={nodeRun} selected={selected} nodeRunsList={nodeRunsList} />
-      <Fade fade={fade} status={nodeRun?.status}>
+      <Fade isFaded={isFaded} status={nodeRun?.status}>
         <div
           className={
             'flex cursor-pointer flex-col items-center rounded-md border-[1px] border-orange-500 bg-orange-200 px-2 pt-1 text-xs' +

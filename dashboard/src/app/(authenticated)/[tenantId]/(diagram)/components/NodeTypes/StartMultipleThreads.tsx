@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog'
 
 const Node: FC<NodeProps> = ({ data }) => {
-  const { fade } = data
+  const { isFaded } = data
   const { setThread } = useThread()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -88,7 +88,7 @@ const Node: FC<NodeProps> = ({ data }) => {
           )}
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRun?.status}>
+      <Fade isFaded={isFaded} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer">
           <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[2px] border-gray-500 bg-gray-200">
             <PlusIcon className="h-5 w-5 rotate-45 fill-gray-500" />

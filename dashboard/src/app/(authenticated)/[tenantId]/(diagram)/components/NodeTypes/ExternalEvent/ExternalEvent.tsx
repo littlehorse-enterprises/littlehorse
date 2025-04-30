@@ -15,7 +15,7 @@ import PostEvent from './PostEvent'
 const Node: FC<NodeProps> = ({ data }) => {
   if (!data.externalEvent) return null
 
-  const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
+  const { isFaded, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
   externalEventNode.externalEventDefId?.name
   return (
     <>
@@ -43,7 +43,7 @@ const Node: FC<NodeProps> = ({ data }) => {
           </div>
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
+      <Fade isFaded={isFaded} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={

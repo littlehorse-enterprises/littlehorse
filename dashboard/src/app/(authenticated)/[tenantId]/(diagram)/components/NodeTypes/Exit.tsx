@@ -7,10 +7,10 @@ import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 
 const ExitNode: FC<NodeProps> = ({ data }) => {
-  const { fade } = data
+  const { isFaded } = data
   const failureDef = data.exit?.failureDef
   return (
-    <Fade fade={fade} status={failureDef ? LHStatus.EXCEPTION : undefined}>
+    <Fade isFaded={isFaded} status={failureDef ? LHStatus.EXCEPTION : undefined}>
       {failureDef && (
         <NodeDetails nodeRunList={data.nodeRunsList}>
           <div className="mb-2 flex gap-1 text-nowrap">

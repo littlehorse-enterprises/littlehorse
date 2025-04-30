@@ -1,21 +1,21 @@
-import { formatTime, getVariableValue } from '@/app/utils'
-import { Comparator, Node as NodeProto } from 'littlehorse-client/proto'
-import { CircleEqualIcon, ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
-import { FC, memo } from 'react'
+import { getVariableValue } from '@/app/utils'
 import { Handle, Position } from '@xyflow/react'
+import { Comparator } from 'littlehorse-client/proto'
+import { CircleEqualIcon } from 'lucide-react'
+import { FC, memo } from 'react'
 import { NodeProps } from '..'
 
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 
 import { NodeRunsList } from '../../NodeRunsList'
-import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { Condition } from './Condition'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
+import { Condition } from './Condition'
+
+const Node: FC<NodeProps> = ({ data }) => {
   if (!data.waitForCondition) return null
 
-  const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted, nodeRun } = data
+  const { isFaded, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted, nodeRun } = data
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -46,7 +46,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <NodeRunsList nodeRuns={data?.nodeRunsList} />
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
+      <Fade isFaded={isFaded} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={

@@ -1,8 +1,7 @@
 import { UserTaskDefDetails } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
-import { UserIcon } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
-import { FC, memo } from 'react'
 import { Handle, Position } from '@xyflow/react'
+import { UserIcon } from 'lucide-react'
+import { FC, memo } from 'react'
 import { ExternalLinkButton } from '../../ExternalLinkButton'
 import { NodeRunsList } from '../../NodeRunsList'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
@@ -11,11 +10,8 @@ import { NodeDetails } from '../NodeDetails'
 import { NodeProps } from '../index'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
-  const router = useRouter()
-  const tenantId = useParams().tenantId as string
-
   if (!data.userTask) return null
-  const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
+  const { isFaded, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
 
   return (
     <>
@@ -38,7 +34,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
           </div>
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={nodeRunsList?.[nodeRunsList.length - 1]?.status}>
+      <Fade isFaded={isFaded} status={nodeRunsList?.[nodeRunsList.length - 1]?.status}>
         <div
           className={
             'flex cursor-pointer flex-col items-center rounded-md border-[1px] border-blue-500 bg-blue-200 px-2 pt-1 text-xs ' +

@@ -7,7 +7,7 @@ import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 const Node: FC<NodeProps> = ({ data }) => {
-  const { fade, nodeRunsList } = data
+  const { isFaded, nodeRunsList } = data
 
   return (
     <>
@@ -32,7 +32,7 @@ const Node: FC<NodeProps> = ({ data }) => {
           )}
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRun?.status}>
+      <Fade isFaded={isFaded} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer">
           <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[1px] border-gray-500 bg-gray-200">
             <PlusIcon className="h-4 w-4 rotate-45 fill-gray-500" />

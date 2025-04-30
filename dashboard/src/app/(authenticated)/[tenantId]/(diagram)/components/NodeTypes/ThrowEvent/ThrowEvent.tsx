@@ -1,7 +1,6 @@
-import { Node as NodeProto } from 'littlehorse-client/proto'
+import { Handle, Position } from '@xyflow/react'
 import { CircleArrowOutUpRightIcon, ExternalLinkIcon } from 'lucide-react'
 import { FC, memo } from 'react'
-import { Handle, Position } from '@xyflow/react'
 import { NodeProps } from '..'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
@@ -10,10 +9,10 @@ import { NodeDetails } from '../NodeDetails'
 
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
+const Node: FC<NodeProps> = ({ data }) => {
   if (!data.throwEvent) return null
 
-  const { fade, throwEvent: throwEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
+  const { isFaded, throwEvent: throwEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -33,7 +32,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           </div>
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRun?.status}>
+      <Fade isFaded={isFaded} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={

@@ -50,7 +50,7 @@ const nodeTypes: NodeTypes = {
 export type NodeProps = XYNodeProps & {
   data: {
     nodeRun?: NodeRun
-    fade?: boolean
+    isFaded?: boolean
     nodeNeedsToBeHighlighted?: boolean
     nodeRunsList: [NodeRun]
     userTask?: UserTaskNode
