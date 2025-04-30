@@ -43,10 +43,10 @@ body:
       options:
         - Dashboard
         - Kernel
-        - sdk-python
-        - sdk-go
-        - sdk-java
-        - sdk-dotnet
+        - "sdk-python"
+        - "sdk-go"
+        - "sdk-java"
+        - "sdk-dotnet"
         - lhctl
         - LH Tests Utils
   - type: textarea
