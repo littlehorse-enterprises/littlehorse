@@ -41,14 +41,14 @@ body:
       label: Which components does this enhancement affect?
       description: You may select more than one.
       options:
-        - Dashboard
-        - Kernel
-        - "sdk-python"
-        - "sdk-go"
-        - "sdk-java"
-        - "sdk-dotnet"
-        - lhctl
-        - LH Tests Utils
+        - label: Dashboard
+        - label: Kernel
+        - label: sdk-python
+        - label: sdk-go
+        - label: sdk-java
+        - label: sdk-dotnet
+        - label: lhctl
+        - label: LH Tests Utils
   - type: textarea
     id: documentation
     attributes:
