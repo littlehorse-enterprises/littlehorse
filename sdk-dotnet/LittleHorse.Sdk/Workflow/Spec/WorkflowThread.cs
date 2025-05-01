@@ -34,6 +34,7 @@ public class WorkflowThread
     private ThreadRetentionPolicy? _retentionPolicy;
     
     internal bool IsActive { get; }
+    internal ThreadSpec Spec => _spec;
     
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
@@ -108,10 +109,15 @@ public class WorkflowThread
         }
     }
     
-    private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode) 
+    internal string AddNode(string name, Node.NodeOneofCase type, IMessage subNode, bool keepNodeName = false)
     {
         CheckIfWorkflowThreadIsActive();
         string nextNodeName = GetNodeName(name, type);
+        if (keepNodeName)
+        {
+            nextNodeName = name;
+        }
+        
         if (LastNodeName == null) 
         {
             throw new InvalidOperationException("Not possible to have null last node here");
@@ -439,7 +445,7 @@ public class WorkflowThread
         return AddVariable(name, VariableType.JsonObj);
     }
     
-    private List<VariableMutation> CollectVariableMutations() 
+    internal List<VariableMutation> CollectVariableMutations() 
     {
         var variablesFromIfBlock = new List<VariableMutation>();
         while (_variableMutations.Count > 0) 
@@ -457,58 +463,54 @@ public class WorkflowThread
     /// <param name="condition">
     /// It is the WorkflowCondition to be satisfied.
     /// </param>
-    /// /// <param name="ifBody">
+    /// <param name="ifBody">
     /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
     /// is satisfied.
     /// </param>
-    /// /// <param name="elseBody">
+    /// <param name="elseBody">
     /// It is the block of ThreadSpec code to be executed if the provided
     /// WorkflowCondition is NOT satisfied.
     /// </param>
-    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null) 
+    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
-        CheckIfWorkflowThreadIsActive();
+        WorkflowIfStatement ifResult = DoIf(condition, ifBody);
         
-        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        var treeRootNodeName = LastNodeName;
-        _lastNodeCondition = condition.Compile();
-
-        ifBody.Invoke(this);
-        
-        var lastConditionFromIfBlock = _lastNodeCondition;
-        var lastNodeFromIfBlockName = LastNodeName;
-        var variablesFromIfBlock = CollectVariableMutations();
-
         if (elseBody != null)
         {
-            LastNodeName = treeRootNodeName;
-            _lastNodeCondition = condition.GetOpposite();
-            
-            elseBody.Invoke(this);
-            
-            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-            var lastNodeFromIfBlock = FindNode(lastNodeFromIfBlockName);
-            var ifBlockEdge = new Edge { SinkNodeName = LastNodeName };
-            ifBlockEdge.VariableMutations.AddRange(variablesFromIfBlock);
-            if (lastNodeFromIfBlockName == treeRootNodeName)
-            {
-                ifBlockEdge.Condition = lastConditionFromIfBlock;
-            }
-            lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
-        }
-        else
-        {
-            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-
-            var treeRoot = FindNode(treeRootNodeName);
-            treeRoot.OutgoingEdges.Add(new Edge
-            {
-                SinkNodeName = LastNodeName,
-                Condition = condition.GetOpposite()
-            });
+            ifResult.DoElse(elseBody);
         }
     }
-    
+
+    /// <summary>
+    /// Conditionally executes one of two workflow code branches; equivalent to an if() statement
+    /// in programming.
+    /// </summary>
+    /// <param name="condition">
+    /// It is the WorkflowCondition to be satisfied.
+    /// </param>
+    /// <param name="body">
+    /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+    /// is satisfied.
+    /// </param>
+    public WorkflowIfStatement DoIf(WorkflowCondition condition, Action<WorkflowThread> body)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var firstNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        _lastNodeCondition = condition.Compile();
+
+        body.Invoke(this);
+
+        var lastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+
+        var firstNopeNode = FindNode(firstNodeName);
+        firstNopeNode.OutgoingEdges.Add(new Edge
+        {
+            SinkNodeName = lastNodeName
+        });
+        
+        return new WorkflowIfStatement(this, firstNodeName, lastNodeName);
+    }
+
     /// <summary>
     /// Conditionally executes some workflow code; equivalent to an while() statement in programming.
     /// </summary>
