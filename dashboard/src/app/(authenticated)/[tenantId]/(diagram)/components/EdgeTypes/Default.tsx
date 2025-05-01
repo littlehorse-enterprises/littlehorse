@@ -30,7 +30,7 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
     targetX,
     targetY,
     targetPosition,
-    borderRadius: 20,
+    borderRadius: 0,
   });
 
   const { setModal, setShowModal } = useModal()
