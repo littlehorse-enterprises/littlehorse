@@ -63,7 +63,7 @@ public class WorkflowIfStatement
     {
         if (_wasElseExecuted)
         {
-            throw new InvalidOperationException("DoElse() method should not be called multiple times.");
+            throw new InvalidOperationException("Else block has already been executed. Cannot add another else block.");
         }
         
         _wasElseExecuted = true;

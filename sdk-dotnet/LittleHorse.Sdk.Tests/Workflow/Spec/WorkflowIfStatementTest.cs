@@ -315,7 +315,7 @@ public class WorkflowIfStatementTest
             var exception = Assert.Throws<InvalidOperationException>(() =>
                 ifStatement.DoElse(body => body.Execute("task-c")));
         
-            Assert.Equal("DoElse() method should not be called multiple times.", exception.Message);
+            Assert.Equal("Else block has already been executed. Cannot add another else block.", exception.Message);
         });
     }
 }
