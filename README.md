@@ -1,7 +1,7 @@
 # LittleHorse
 
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/site-badge.svg"/></a>
-<a href="https://littlehorse.io/learn"><img alt="littlehorse.io/learn" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
+<a href="https://littlehorse.io/learn"><img alt="littlehorse.io/docs/server/concepts" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
 <a href="https://littlehorse.io/docs"><img alt="littlehorse.io/docs" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/docs-badge.svg"/></a>
 [![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity/free)
 
