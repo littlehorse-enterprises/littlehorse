@@ -200,7 +200,7 @@ public class WfThreadDoIfTest
             }
         };
 
-        var nop4Node = new Node
+        var nop3Node = new Node
         {
             Nop = new NopNode(),
             OutgoingEdges =
@@ -221,7 +221,7 @@ public class WfThreadDoIfTest
         expectedSpec.Nodes.Add("1-nop-NOP", nop1Node);
         expectedSpec.Nodes.Add("2-task-a-TASK", taskA);
         expectedSpec.Nodes.Add("4-task-b-TASK", taskB);
-        expectedSpec.Nodes.Add("3-nop-NOP", nop4Node);
+        expectedSpec.Nodes.Add("3-nop-NOP", nop3Node);
         expectedSpec.Nodes.Add("5-exit-EXIT", exitNode);
         
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfNopNodes + numberOfTasks;
