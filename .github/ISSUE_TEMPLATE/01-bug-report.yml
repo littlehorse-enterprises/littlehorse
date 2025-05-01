@@ -31,7 +31,7 @@ body:
     attributes:
       label: Affected Components
       description: Which components does this bug affect? You may keep more than one
-      options: |
+      value: |
         - Kernel (/server)
         - LH Control (/lhctl)
         - Dashboard
