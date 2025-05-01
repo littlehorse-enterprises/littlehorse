@@ -33,7 +33,7 @@ function extractNode(id: string, node: NodeProto, threadSpec: ThreadSpecWithName
   const type = getNodeType(node)
   return {
     id: `${id}:${threadSpec.name}`,
-    type,
+    type: "ENTRYPOINT",
     data: { ...node, ...extractData(type, node) },
     position: { x: 0, y: 0 },
   }

@@ -68,12 +68,12 @@ const Default: FC<DefaultEdgeProps> = ({
             pointerEvents: 'all',
           }}
         >
-          <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
+          {/* <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
             {(data?.variableMutations?.length ?? 0) > 0 && (
               <CircleAlertIcon size={16} className={`fill-gray-200 ${label ? 'mb-1' : 'mb-6'}`} />
             )}
             <div className="rounded-md bg-gray-200 px-2 text-center text-xs text-gray-600">{label}</div>
-          </div>
+          </div> */}
         </div>
       </EdgeLabelRenderer>
     </>
