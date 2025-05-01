@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 🌍 Community Slack
+    url: [link to create bug report]
+    about: Join our Community Slack to get real time support and connect with other LittleHorse users!
+  - name: 💬 Discussions
+    url: https://github.com/littlehorse-enterprises/littlehorse/discussions
+    about: Open a discussion! Useful for open-ended conversations and community engagement.
