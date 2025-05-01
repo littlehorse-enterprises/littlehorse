@@ -379,6 +379,11 @@ func (t *WorkflowThread) assignUserTask(
 
 	if userGroup != nil {
 		var err error
+		if str, ok := userGroup.(string); ok && strings.TrimSpace(str) == "" {
+			t.throwError(tracerr.Wrap(errors.New(
+				"userGroup can't be blank when assigning usertask",
+			)))
+		}
 		userGroupAssn, err := t.assignVariable(userGroup)
 		if err != nil {
 			t.throwError(tracerr.Wrap(err))
@@ -387,6 +392,11 @@ func (t *WorkflowThread) assignUserTask(
 	}
 
 	if userId != nil {
+		if str, ok := userId.(string); ok && strings.TrimSpace(str) == "" {
+			t.throwError(tracerr.Wrap(errors.New(
+				"userId can't be blank when assigning usertask",
+			)))
+		}
 		userIdAssn, err := t.assignVariable(userId)
 		if err != nil {
 			t.throwError(tracerr.Wrap(err))
