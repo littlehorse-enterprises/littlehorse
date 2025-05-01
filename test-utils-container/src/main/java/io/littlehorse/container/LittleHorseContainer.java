@@ -4,6 +4,7 @@ import static io.littlehorse.container.LittleHorseCluster.LHC_API_HOST;
 import static io.littlehorse.container.LittleHorseCluster.LHC_API_PORT;
 
 import com.github.dockerjava.api.model.PortBinding;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import org.testcontainers.containers.GenericContainer;
@@ -78,10 +79,10 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
 
     /**
      * Kafka bootstrap servers. Configures the {@code LHS_KAFKA_BOOTSTRAP_SERVERS} env variable.
-     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_kafka_bootstrap_servers">Server Documentation.</a>
      *
      * @param bootstrapServers Example: kafka:19092
      * @return This testcontainer
+     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_kafka_bootstrap_servers">Server Documentation.</a>
      */
     public LittleHorseContainer withKafkaBootstrapServers(final String bootstrapServers) {
         return this.withEnv(LHS_KAFKA_BOOTSTRAP_SERVERS, bootstrapServers);
@@ -89,10 +90,10 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
 
     /**
      * External port for connection. It configures the {@code LHS_ADVERTISED_LISTENERS} env variable.
-     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_advertised_listeners">Server Documentation.</a>
      *
      * @param port Example: 32023
      * @return This testcontainer
+     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_advertised_listeners">Server Documentation.</a>
      */
     public LittleHorseContainer withAdvertisedPort(final int port) {
         return this.withEnv(LHS_ADVERTISED_LISTENERS, String.format("PLAIN://localhost:%d", port))
@@ -112,10 +113,10 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
 
     /**
      * For docker network. It configures the {@code LHS_INTERNAL_ADVERTISED_HOST} env variable.
-     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_internal_advertised_host">Server Documentation.</a>
      *
      * @param hostname Example: server1
      * @return This testcontainer
+     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_internal_advertised_host">Server Documentation.</a>
      */
     public LittleHorseContainer withInternalAdvertisedHost(final String hostname) {
         return this.withEnv(LHS_INTERNAL_ADVERTISED_HOST, hostname).withNetworkAliases(hostname);
@@ -161,16 +162,28 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     }
 
     /**
-     * Return a properties object.
+     *  Return a properties object with the client configuration for connections.
      * <p>
      * Use: {@code new LHConfig(littlehorseContainer.getClientProperties())}
      * </p>
-     * @return Properties with the container configurations
+     *
+     * @return Properties with the container configurations.
      */
     public Properties getClientProperties() {
         Properties properties = new Properties();
-        properties.put(LHC_API_HOST, getApiHost());
-        properties.put(LHC_API_PORT, getApiPort());
+        properties.putAll(getClientConfig());
         return properties;
+    }
+
+    /**
+     * Return a map object with the client configuration for connections.
+     * <p>
+     * Use: {@code LHConfig.newBuilder().loadFromMap(littlehorseContainer.getClientConfig()).build()}
+     * </p>
+     *
+     * @return Map with the container configurations.
+     */
+    public Map<String, String> getClientConfig() {
+        return Map.of(LHC_API_HOST, getApiHost(), LHC_API_PORT, String.valueOf(getApiPort()));
     }
 }
