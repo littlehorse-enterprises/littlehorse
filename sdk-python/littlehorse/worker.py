@@ -705,7 +705,7 @@ def shutdown_hook(*workers: LHTaskWorker) -> None:
 
     loop = asyncio.get_running_loop()
 
-    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+    for sig in (signal.SIGTERM, signal.SIGINT):
         loop.add_signal_handler(sig, functools.partial(stop_workers, *workers))
 
 
