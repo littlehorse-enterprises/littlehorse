@@ -15,6 +15,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
@@ -81,9 +82,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -451,15 +454,23 @@ public class BackendInternalComms implements Closeable {
             CompletableFuture<Message> completable =
                     asyncWaiters.getOrRegisterFuture(req.getCommandId(), Message.class, new CompletableFuture<>());
             try {
-                ByteString byteString = completable.join().toByteString();
+                ByteString byteString = completable
+                        .get(LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                        .toByteString();
                 ctx.onNext(WaitForCommandResponse.newBuilder()
                         .setCommandId(req.getCommandId())
                         .setResultTime(LHUtil.fromDate(new Date()))
                         .setResult(byteString)
                         .build());
                 ctx.onCompleted();
-            } catch (Throwable e) {
-                ctx.onError(e.getCause());
+            } catch (TimeoutException timeoutException) {
+                ctx.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                        "Command not processed within deadline: likely due to rebalance")));
+            } catch (ExecutionException exn) {
+                ctx.onError(exn.getCause());
+            } catch (Throwable t) {
+                ctx.onError(t);
+                log.error("Unexpected exception", t);
             }
         }
 
