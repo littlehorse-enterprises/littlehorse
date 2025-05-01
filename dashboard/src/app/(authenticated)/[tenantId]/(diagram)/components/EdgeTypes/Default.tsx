@@ -34,17 +34,10 @@ const CustomEdge: FC<EdgeProps<Edge<{ label: string }>>> = ({
       <EdgeLabelRenderer>
         {label && (
           <div
+            className="absolute bg-white px-2 py-1 rounded text-xs font-medium nodrag nopan"
             style={{
-              position: 'absolute',
-              background: 'white',
-              padding: '4px 8px',
-              borderRadius: 4,
-              fontSize: 10,
-              fontWeight: 500,
               transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-              pointerEvents: 'all',
             }}
-            className="nodrag nopan"
           >
             {label}
           </div>
