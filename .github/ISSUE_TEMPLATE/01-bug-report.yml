@@ -31,6 +31,7 @@ body:
     attributes:
       label: Affected Components
       description: Please select all the affected components.
+      multiple: true
       options:
         - Kernel (/server)
         - LH Control (/lhctl)
