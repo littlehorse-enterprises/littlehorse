@@ -26,12 +26,12 @@ body:
     attributes:
       label: Out of Scope
       description: Allows to define what is within the scope of the feature request and what's not.
-  - type: textarea
+  - type: dropdown
     id: components
     attributes:
       label: Affected Components
-      description: Which components does this bug affect? You may keep more than one
-      value: |
+      description: Please select all the affected components.
+      options:
         - Kernel (/server)
         - LH Control (/lhctl)
         - Dashboard
