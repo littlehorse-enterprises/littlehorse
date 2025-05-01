@@ -373,6 +373,7 @@ class WorkflowIfStatement:
         self._parent_workflow_thread = parent_workflow_thread
         self._first_nop_node_name = first_nop_node_name
         self._last_nop_node_name = last_nop_node_name
+        self._was_else_executed = False
 
     def _get_first_nop_node(self) -> WorkflowNode:
         return self._parent_workflow_thread._find_node(self._first_nop_node_name)
@@ -403,6 +404,12 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if all previous
             WorkflowConditions were not satisfied.
         """
+        if self._was_else_executed:
+            raise RuntimeError(
+                "Else block has already been executed. Cannot add another else block."
+            )
+
+        self._was_else_executed = True
         self._do_else_if(None, body)
 
     def _do_else_if(
