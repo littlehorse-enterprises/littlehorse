@@ -864,6 +864,61 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_do_if_with_lambda(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            wf.do_if(
+                wf.condition(5, Comparator.EQUALS, 5), lambda wf: wf.execute("my-task")
+            )
+
+        workflow = Workflow("my-wf", my_entrypoint)
+        entrypoint_thread = workflow.compile().thread_specs.get("entrypoint")
+        self.assertEqual(
+            entrypoint_thread,
+            ThreadSpec(
+                nodes=(
+                    {
+                        "0-entrypoint-ENTRYPOINT": Node(
+                            entrypoint=EntrypointNode(),
+                            outgoing_edges=[Edge(sink_node_name="1-nop-NOP")],
+                        ),
+                        "1-nop-NOP": Node(
+                            nop=NopNode(),
+                            outgoing_edges=[
+                                Edge(
+                                    sink_node_name="2-my-task-TASK",
+                                    condition=EdgeCondition(
+                                        left=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                        comparator=Comparator.EQUALS,
+                                        right=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                    ),
+                                ),
+                                Edge(
+                                    sink_node_name="3-nop-NOP",
+                                ),
+                            ],
+                        ),
+                        "2-my-task-TASK": Node(
+                            task=TaskNode(task_def_id=TaskDefId(name="my-task")),
+                            outgoing_edges=[
+                                Edge(
+                                    sink_node_name="3-nop-NOP",
+                                )
+                            ],
+                        ),
+                        "3-nop-NOP": Node(
+                            nop=NopNode(),
+                            outgoing_edges=[Edge(sink_node_name="4-exit-EXIT")],
+                        ),
+                        "4-exit-EXIT": Node(exit=ExitNode()),
+                    }
+                )
+            ),
+        )
+
     def test_should_compile_a_wf_with_multiple_if_conditions_and_one_task_in_each_body_functions_case_do_else_if(
         self,
     ):
@@ -1247,6 +1302,39 @@ class TestThreadBuilder(unittest.TestCase):
             expected_exit_sink_node_name,
             compiled_last_nope_node.outgoing_edges[0].sink_node_name,
         )
+
+    def test_should_throw_an_error_when_do_else_is_called_multiple_times(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(thread: WorkflowThread) -> None:
+                thread.execute("task-a")
+
+            def if_body_b(thread: WorkflowThread) -> None:
+                thread.execute("task-b")
+
+            def else_body_c(thread: WorkflowThread) -> None:
+                thread.execute("task-c")
+
+            def else_body_d(thread: WorkflowThread) -> None:
+                thread.execute("task-d")
+
+            if_statement: WorkflowIfStatement = wf.do_if(
+                condition=wf.condition(5, Comparator.EQUALS, 9), if_body=if_body_a
+            )
+            if_statement.do_else_if(
+                wf.condition(7, Comparator.LESS_THAN, 4), body=if_body_b
+            )
+            if_statement.do_else(body=else_body_c)
+
+            with self.assertRaises(RuntimeError) as exception_context:
+                if_statement.do_else(body=else_body_d)
+
+            self.assertEqual(
+                "Else block has already been executed. Cannot add another else block.",
+                str(exception_context.exception),
+            )
+
+        workflow = Workflow("test-wf", my_entrypoint)
+        workflow.compile()
 
     def test_do_while(self):
         class MyClass:
