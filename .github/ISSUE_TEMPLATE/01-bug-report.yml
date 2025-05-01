@@ -1,5 +1,5 @@
 name: 🐞 Bug Report
-description: Allows to report any bug or unexpected functionality in LittleHorse.
+description: Report any bug or unexpected functionality in LittleHorse.
 type: "bug"
 body:
   - type: textarea
@@ -11,7 +11,7 @@ body:
     id: steps
     attributes:
       label: Steps To Reproduce
-      description: Anything that makes this issue complete. Include screenshots if applicable.
+      description: A list of steps that can be used to replicate this issue. Include screenshots if applicable.
       placeholder: |
         Go to ...
         Click on ....
@@ -59,7 +59,7 @@ body:
     id: documentation
     attributes:
       label: Documentation
-      description: "Include ideas about or references to documentation changes that should be made when this feature is implemented."
+      description: "Include documentation changes that should be made when this feature is implemented."
   - type: textarea
     id: additional-context
     attributes:

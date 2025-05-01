@@ -25,7 +25,7 @@ body:
     id: scope
     attributes:
       label: Out of Scope
-      description: Allows to define what is within the scope of the feature request and what's not.
+      description: Define what is within the scope of the feature request and what's not.
   - type: dropdown
     id: components
     attributes:
@@ -45,9 +45,9 @@ body:
     id: documentation
     attributes:
       label: Documentation
-      description: "Include ideas about or references to documentation changes that should be made when this feature is implemented."
+      description: "Include documentation changes that should be made when this feature is implemented."
   - type: textarea
     id: additional-context
     attributes:
       label: Additional Context
-      description: Add any additional information or comments about the bug here.
+      description: Add any additional information or comments about the feature here.
