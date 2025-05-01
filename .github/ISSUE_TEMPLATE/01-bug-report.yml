@@ -48,7 +48,7 @@ body:
       description: Environment details for when this bug occurred. Be as descriptive as possible.
       value: |
         OS: [e.g. macOS 15.1.1, Windows 11]
-        Client Version: [e.g. v0.12.5]
+        Client Version: [e.g. lhctl v0.12.5, Python SDK v0.11.0]
         Server Version: [e.g. v0.13.2]
         Java: [e.g. Corretto 21.0.4] (if applicable)
         Browser: [e.g. Safari v18.11, Chrome v136] (if dashboard related)
