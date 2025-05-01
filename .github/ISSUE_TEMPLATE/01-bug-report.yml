@@ -26,20 +26,20 @@ body:
       description: A clear and concise description of what you expected to happen.
     validations:
       required: true
-  - type: checkboxes
+  - type: textarea
     id: components
     attributes:
       label: Affected Components
-      description: Which components does this bug affect? You may select more than one.
-      options:
-        - label: Kernel (/server)
-        - label: LH Control (/lhctl)
-        - label: Dashboard
-        - label: Java SDK
-        - label: Python SDK
-        - label: Go SDK
-        - label: .NET SDK
-        - label: LH Tests Utils
+      description: Which components does this bug affect? You may keep more than one
+      options: |
+        - Kernel (/server)
+        - LH Control (/lhctl)
+        - Dashboard
+        - Java SDK
+        - Python SDK
+        - Go SDK
+        - .NET SDK
+        - LH Tests Utils
   - type: textarea
     id: version
     attributes:
