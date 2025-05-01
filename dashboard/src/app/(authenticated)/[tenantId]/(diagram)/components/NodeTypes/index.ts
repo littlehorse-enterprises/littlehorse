@@ -27,8 +27,8 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   SLEEP: Sleep,
   USER_TASK: UserTask,
   START_MULTIPLE_THREADS: StartMultipleThreads,
-  THROW_EVENT: Entrypoint,
-  UNKNOWN_NODE_TYPE: Entrypoint,
+  THROW_EVENT: ThrowEvent,
+  UNKNOWN_NODE_TYPE: Nop,
 }
 
 export type NodeProps<T = Node> = NodeFlow<
