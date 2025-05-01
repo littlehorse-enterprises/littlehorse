@@ -708,7 +708,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CommandModel command = new CommandModel(reqModel, new Date());
             Empty out = commandSender
                     .doSend(command, executionContext.authorization())
-                    .join();
+                    .get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
             ctx.onNext(out);
             ctx.onCompleted();
         } catch (Exception ex) {
