@@ -1,7 +1,6 @@
 name: 🌟 Feature Request
 description: Suggest a feature, minor change, or enhancement to LittleHorse.
 type: "feature"
-projects: ["littlehorse-enterprises/1"]
 body:
   - type: textarea
     id: background
