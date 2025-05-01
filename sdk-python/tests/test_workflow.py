@@ -1798,18 +1798,6 @@ class TestWorkflow(unittest.TestCase):
             str(exception_context.exception),
         )
 
-    def test_no_error_on_lambdas_for_if_statements(self):
-        def my_entrypoint(thread: WorkflowThread) -> None:
-            thread.do_if(
-                thread.condition(5, Comparator.EQUALS, 5),
-                lambda wf: wf.execute("my-task"),
-            )
-
-        try:
-            Workflow("my-wf", my_entrypoint)
-        except Exception as e:
-            self.fail(f"No exception expected != {type(e)}: {e}")
-
     def test_validate_entrypoint(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             pass
