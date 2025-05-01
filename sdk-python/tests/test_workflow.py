@@ -1802,7 +1802,7 @@ class TestWorkflow(unittest.TestCase):
         def my_entrypoint(thread: WorkflowThread) -> None:
             pass
 
-        # try:
+        try:
             Workflow("my-wf", my_entrypoint)
         except Exception as e:
             self.fail(f"No exception expected != {type(e)}: {e}")
