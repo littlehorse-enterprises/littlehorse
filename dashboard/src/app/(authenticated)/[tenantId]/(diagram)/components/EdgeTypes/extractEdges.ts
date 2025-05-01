@@ -37,7 +37,7 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
       edges.push({
         id,
         source: `${source}:${threadSpecWithName.name}`,
-        type: 'default',
+        type: 'custom',
         target: `${edge.sinkNodeName}:${threadSpecWithName.name}`,
         label,
         data: edge,
