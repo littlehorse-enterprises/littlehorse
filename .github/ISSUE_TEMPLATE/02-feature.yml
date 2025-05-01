@@ -1,0 +1,53 @@
+name: 🌟 Feature Request
+description: Suggest a feature, minor change, or enhancement to LittleHorse.
+type: "feature"
+body:
+  - type: textarea
+    id: background
+    attributes:
+      label: Background
+      description: Describe the background of this change. What inspired this enhancement?
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe your proposed feature, minor change, or enhancement
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Anything that makes this issue complete.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Out of Scope
+      description: Define what is within the scope of the feature request and what's not.
+  - type: dropdown
+    id: components
+    attributes:
+      label: Affected Components
+      description: Please select all the affected components.
+      multiple: true
+      options:
+        - Kernel (/server)
+        - LH Control (/lhctl)
+        - Dashboard
+        - Java SDK
+        - Python SDK
+        - Go SDK
+        - .NET SDK
+        - LH Tests Utils
+  - type: textarea
+    id: documentation
+    attributes:
+      label: Documentation
+      description: "Include documentation changes that should be made when this feature is implemented."
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any additional information or comments about the feature here.
