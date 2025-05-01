@@ -867,8 +867,7 @@ class TestThreadBuilder(unittest.TestCase):
     def test_do_if_with_lambda(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
             wf.do_if(
-                wf.condition(5, Comparator.EQUALS, 5),
-                lambda wf: wf.execute("my-task")
+                wf.condition(5, Comparator.EQUALS, 5), lambda wf: wf.execute("my-task")
             )
 
         workflow = Workflow("my-wf", my_entrypoint)
@@ -876,46 +875,48 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             entrypoint_thread,
             ThreadSpec(
-                nodes=({
-                    "0-entrypoint-ENTRYPOINT": Node(
-                        entrypoint=EntrypointNode(),
-                        outgoing_edges=[Edge(sink_node_name="1-nop-NOP")]
-                    ),
-                    "1-nop-NOP": Node(
-                        nop=NopNode(),
-                        outgoing_edges=[
-                            Edge(
-                                sink_node_name="2-my-task-TASK",
-                                condition=EdgeCondition(
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
+                nodes=(
+                    {
+                        "0-entrypoint-ENTRYPOINT": Node(
+                            entrypoint=EntrypointNode(),
+                            outgoing_edges=[Edge(sink_node_name="1-nop-NOP")],
+                        ),
+                        "1-nop-NOP": Node(
+                            nop=NopNode(),
+                            outgoing_edges=[
+                                Edge(
+                                    sink_node_name="2-my-task-TASK",
+                                    condition=EdgeCondition(
+                                        left=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                        comparator=Comparator.EQUALS,
+                                        right=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
                                     ),
-                                    comparator=Comparator.EQUALS,
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    )
+                                ),
+                                Edge(
+                                    sink_node_name="3-nop-NOP",
+                                ),
+                            ],
+                        ),
+                        "2-my-task-TASK": Node(
+                            task=TaskNode(task_def_id=TaskDefId(name="my-task")),
+                            outgoing_edges=[
+                                Edge(
+                                    sink_node_name="3-nop-NOP",
                                 )
-                            ),
-                            Edge(
-                                sink_node_name="3-nop-NOP",
-                            )
-                        ]
-                    ),
-                    "2-my-task-TASK": Node(
-                        task=TaskNode(task_def_id=TaskDefId(name="my-task")),
-                        outgoing_edges=[
-                            Edge(
-                                sink_node_name="3-nop-NOP",
-                            )
-                        ],
-                    ),
-                    "3-nop-NOP": Node(
-                        nop=NopNode(),
-                        outgoing_edges=[Edge(sink_node_name="4-exit-EXIT")],
-                    ),
-                    "4-exit-EXIT": Node(exit=ExitNode()),
-                })
-            )
+                            ],
+                        ),
+                        "3-nop-NOP": Node(
+                            nop=NopNode(),
+                            outgoing_edges=[Edge(sink_node_name="4-exit-EXIT")],
+                        ),
+                        "4-exit-EXIT": Node(exit=ExitNode()),
+                    }
+                )
+            ),
         )
 
     def test_should_compile_a_wf_with_multiple_if_conditions_and_one_task_in_each_body_functions_case_do_else_if(
@@ -1799,7 +1800,10 @@ class TestWorkflow(unittest.TestCase):
 
     def test_no_error_on_lambdas_for_if_statements(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
-            thread.do_if(thread.condition(5, Comparator.EQUALS, 5), lambda wf: wf.execute("my-task"))
+            thread.do_if(
+                thread.condition(5, Comparator.EQUALS, 5),
+                lambda wf: wf.execute("my-task"),
+            )
 
         try:
             Workflow("my-wf", my_entrypoint)
