@@ -1,7 +1,6 @@
 package io.littlehorse.server.metrics;
 
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import java.util.Date;
 import java.util.List;

@@ -13,27 +13,20 @@ import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
-import io.littlehorse.common.model.getable.objectId.NodeReferenceModel;
-import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
-import io.littlehorse.common.model.getable.objectId.ThreadSpecReferenceModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
-import io.littlehorse.sdk.common.proto.NodeRun;
-import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
-import io.littlehorse.server.metrics.GetableUpdates;
 import io.littlehorse.server.metrics.TaskRunStatusUpdate;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -414,7 +407,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         if (taskRunSource.getTaskNode() != null) {
             processorContext
                     .getableUpdates()
-                    .append(taskRunSource.getTaskNode().getNodeRunId(), new TaskRunStatusUpdate(taskDefId, taskRunSource.getWfSpecId(), previousStatus, newStatus));
+                    .append(
+                            taskRunSource.getTaskNode().getNodeRunId(),
+                            new TaskRunStatusUpdate(taskDefId, taskRunSource.getWfSpecId(), previousStatus, newStatus));
         }
     }
 }

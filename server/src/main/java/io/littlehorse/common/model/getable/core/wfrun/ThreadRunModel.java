@@ -57,7 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -953,16 +952,20 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
         GetableStatusUpdate update;
-        while ((update = processorExecutionContext.getableUpdates().getUpdatesForThreadRunNumber(wfRun.getId(), number).poll()) != null) {
+        while ((update = processorExecutionContext
+                        .getableUpdates()
+                        .getUpdatesForThreadRunNumber(wfRun.getId(), number)
+                        .poll())
+                != null) {
             sensor().record(update);
             processorContext.getableUpdates().append(wfRun.getId(), update);
         }
     }
 
     private Sensor sensor() {
-        if(sensor == null) {
+        if (sensor == null) {
             MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new ThreadSpecReferenceModel(wfSpecId, number));
-            return new Sensor(Set.of(wfSpecMetricId),  executionContext.castOnSupport(ProcessorExecutionContext.class));
+            return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(ProcessorExecutionContext.class));
         }
         return sensor;
     }

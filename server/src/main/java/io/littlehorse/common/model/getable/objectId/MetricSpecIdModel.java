@@ -106,8 +106,7 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
             }
             case WF_SPEC_ID -> {
                 this.wfSpecId = new WfSpecIdModel();
-                this.wfSpecId.initFromString(
-                        storeKey.substring(parts[0].length() + 1));
+                this.wfSpecId.initFromString(storeKey.substring(parts[0].length() + 1));
             }
             default -> throw new IllegalStateException("Unexpected value: " + referenceCase);
         }

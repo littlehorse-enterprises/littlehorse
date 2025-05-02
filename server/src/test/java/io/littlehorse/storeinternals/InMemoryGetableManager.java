@@ -8,6 +8,4 @@ public class InMemoryGetableManager extends GetableManager {
     public InMemoryGetableManager(ProcessorExecutionContext executionContext) {
         super(null, null, null, null, executionContext);
     }
-
-
 }

@@ -11,7 +11,6 @@ import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInvento
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
-import io.littlehorse.common.proto.PartitionMetricInventory;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
@@ -95,8 +94,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.eventsToThrow = new ArrayList<>();
         this.clusterScopedStore = ClusterScopedStore.newInstance(nativeCoreStore, this);
         this.metricsInventory = Optional.ofNullable(clusterScopedStore.get(
-                PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY,
-                PartitionMetricInventoryModel.class)).orElse(new PartitionMetricInventoryModel());
+                        PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY, PartitionMetricInventoryModel.class))
+                .orElse(new PartitionMetricInventoryModel());
     }
 
     /**
@@ -163,7 +162,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
             server.onEventThrown(event, authContext.tenantId());
         }
 
-        if(metricsInventory.metricAdded()) {
+        if (metricsInventory.metricAdded()) {
             clusterScopedStore.put(metricsInventory);
         }
     }

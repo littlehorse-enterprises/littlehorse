@@ -5,13 +5,10 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
-import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.sdk.common.proto.PartitionWindowedMetric;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -26,7 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,7 +31,6 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     private Date createdAt;
     private Set<PartitionWindowedMetricModel> activeWindowedMetrics;
     private Duration windowLength;
-
 
     public PartitionMetricModel() {}
 

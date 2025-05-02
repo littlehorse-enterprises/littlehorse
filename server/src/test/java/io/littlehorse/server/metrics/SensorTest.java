@@ -1,6 +1,5 @@
 package io.littlehorse.server.metrics;
 
-
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
@@ -10,11 +9,10 @@ import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.storeinternals.InMemoryGetableManager;
 import io.littlehorse.storeinternals.InMemoryMetadataManager;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.util.Set;
 
 class SensorTest {
 
@@ -37,5 +35,4 @@ class SensorTest {
         Sensor sensor = new Sensor(Set.of(metricSpecId), executionContext);
         sensor.record(new WfRunStatusUpdate(TestUtil.wfSpecId(), null, LHStatus.RUNNING, LHStatus.COMPLETED));
     }
-
 }

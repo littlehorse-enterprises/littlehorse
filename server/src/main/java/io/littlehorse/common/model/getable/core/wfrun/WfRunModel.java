@@ -421,8 +421,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
         //     threadRunsUseMeCarefully.get(i).advance(time);
         // }
-        ProcessorExecutionContext processorExecutionContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        if(processorExecutionContext == null) {
+        ProcessorExecutionContext processorExecutionContext =
+                executionContext.castOnSupport(ProcessorExecutionContext.class);
+        if (processorExecutionContext == null) {
             throw new IllegalStateException("Invalid operation from this context");
         }
 
@@ -456,7 +457,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     private void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
         GetableStatusUpdate update;
-        while ((update = processorExecutionContext.getableUpdates().getUpdatesForWfRunId(id).poll()) != null) {
+        while ((update = processorExecutionContext
+                        .getableUpdates()
+                        .getUpdatesForWfRunId(id)
+                        .poll())
+                != null) {
             sensor().record(update);
         }
     }
@@ -604,7 +609,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         }
         this.status = status;
-//        processorContext.getableUpdates().app(statusChanged);
+        //        processorContext.getableUpdates().app(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {
@@ -672,6 +677,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     private Sensor sensor() {
         MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(wfSpecId);
-        return new Sensor(Set.of(wfSpecMetricId),  executionContext.castOnSupport(ProcessorExecutionContext.class));
+        return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(ProcessorExecutionContext.class));
     }
 }

@@ -34,11 +34,14 @@ public class TaskRunModelTest {
     @Test
     void setTaskWorkerVersionAndIdToTaskRun() {
         // arrange. Complex because all the dependencies needed
-        NodeRunId nodeRunId = NodeRunId.newBuilder().setWfRunId(WfRunId.newBuilder().setId("my-wf")).build();
+        NodeRunId nodeRunId = NodeRunId.newBuilder()
+                .setWfRunId(WfRunId.newBuilder().setId("my-wf"))
+                .build();
         TaskRun taskRunProto = TaskRun.newBuilder()
                 .setId(new TaskRunIdModel(new WfRunIdModel("asdf"), processorContext).toProto())
                 .addAttempts(TaskAttempt.newBuilder().setStatus(TaskStatus.TASK_PENDING))
-                .setSource(TaskRunSource.newBuilder().setTaskNode(TaskNodeReference.newBuilder().setNodeRunId(nodeRunId)))
+                .setSource(TaskRunSource.newBuilder()
+                        .setTaskNode(TaskNodeReference.newBuilder().setNodeRunId(nodeRunId)))
                 .build();
         when(executionContext.castOnSupport(ProcessorExecutionContext.class)).thenReturn(processorContext);
 
