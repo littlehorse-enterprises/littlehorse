@@ -8,6 +8,7 @@
     - [Metadata and Execution Data](#metadata-and-execution-data)
     - [Multi-Tenancy](#multi-tenancy)
     - [Topic Naming](#topic-naming)
+    - [Partitioning](#partitioning)
   - [Proto Schemas](#proto-schemas)
     - [Tenant](#tenant)
     - [Output Topic Schemas](#output-topic-schemas)
@@ -110,6 +111,12 @@ Since there will be one `metadata-output` topic for each `Tenant` and one `execu
 * `f"{LHS_CLUSTER_ID}_{tenant}_metadata-output"`
 
 The `LHS_CLUSTER_ID` is the prefix of all topics for the cluster, so the LH Server already has permissions to write to it. By further isolating with `tenant_id` as the next step in the prefix, we can use Kafka's prefix-based ACL's to give a consumer permissions to read those specific topics.
+
+### Partitioning
+
+For the initial implementation, the `execution-output` topics will have a number of partitions determined by `LHS_OUTPUT_TOPIC_PARTITIONS`. We recommend making this a divisor of `LHS_CLUSTER_PARTITIONS` and using Kafka's rebalance mechanisms to ensure that the leader for the Command topic partition, the core-store-changelog partition, and the output topic partition all reside on the same broker. The reason for this is in order to allow batching all of those requests to Kafka.
+
+In the future, we can make this configurable on a per-`Tenant` basis.
 
 ## Proto Schemas
 
