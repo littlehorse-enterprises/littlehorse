@@ -6,7 +6,6 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.sdk.common.proto.PartitionMetricId;
@@ -39,7 +38,7 @@ public class PartitionMetricIdModel extends CoreObjectId<PartitionMetricId, Part
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         PartitionMetricId partitionMetricId = (PartitionMetricId) proto;
         this.metricId = LHSerializable.fromProto(partitionMetricId.getId(), MetricSpecIdModel.class, context);
         this.tenantId = LHSerializable.fromProto(partitionMetricId.getTenantId(), TenantIdModel.class, context);

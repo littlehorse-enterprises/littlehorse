@@ -11,7 +11,6 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ListMetricsRequest;
 import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.sdk.common.proto.MetricList;
@@ -62,7 +61,7 @@ public class ListMetricsRequestModel
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         ListMetricsRequest p = (ListMetricsRequest) proto;
         this.tenantId = context.authorization().tenantId();
         this.metricId = LHSerializable.fromProto(p.getMetricSpecId(), MetricSpecIdModel.class, context);

@@ -6,7 +6,6 @@ import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.metrics.MetricSpecModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.MetricId;
 import io.littlehorse.sdk.common.proto.MetricSpec;
@@ -47,7 +46,7 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         MetricSpecId p = (MetricSpecId) proto;
         this.referenceCase = p.getReferenceCase();
         this.object = p.hasObject() ? p.getObject() : null;

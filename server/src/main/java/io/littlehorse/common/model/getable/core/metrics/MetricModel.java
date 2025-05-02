@@ -8,7 +8,6 @@ import io.littlehorse.common.model.RepartitionedGetable;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -39,7 +38,7 @@ public class MetricModel extends RepartitionedGetable<Metric> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         Metric p = (Metric) proto;
         this.metricRunId = LHSerializable.fromProto(p.getId(), MetricIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());

@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.global.metrics.MetricSpecModel;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.MetricSpec;
@@ -23,7 +22,7 @@ public class PutMetricSpecRequestModel extends MetadataSubCommand<PutMetricSpecR
     private Duration windowLength;
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         PutMetricSpecRequest p = (PutMetricSpecRequest) proto;
         this.aggregationType = p.getAggregationType();
         this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());

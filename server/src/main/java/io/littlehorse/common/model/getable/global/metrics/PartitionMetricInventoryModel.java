@@ -6,7 +6,6 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.proto.PartitionMetricInventory;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PartitionMetricId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
@@ -54,7 +53,7 @@ public class PartitionMetricInventoryModel extends Storeable<PartitionMetricInve
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         PartitionMetricInventory p = (PartitionMetricInventory) proto;
         this.metrics = p.getMetricsList().stream()
                 .map(m -> LHSerializable.fromProto(m, PartitionMetricIdModel.class, context))

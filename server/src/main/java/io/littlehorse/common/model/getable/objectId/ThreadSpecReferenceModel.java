@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ThreadSpecReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
@@ -35,7 +34,7 @@ public class ThreadSpecReferenceModel extends LHSerializable<ThreadSpecReference
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         ThreadSpecReference p = (ThreadSpecReference) proto;
         this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         this.threadNumber = p.hasThreadNumber() ? p.getThreadNumber() : null;

@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.global.metrics;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PartitionWindowedMetric;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.time.Duration;
@@ -29,7 +28,7 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         PartitionWindowedMetric p = (PartitionWindowedMetric) proto;
         this.windowStart =
                 LocalDateTime.ofInstant(LHUtil.fromProtoTs(p.getWindowStart()).toInstant(), ZoneId.systemDefault());

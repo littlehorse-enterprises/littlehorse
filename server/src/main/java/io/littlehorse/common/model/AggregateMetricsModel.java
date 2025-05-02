@@ -10,7 +10,6 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateMetrics;
 import io.littlehorse.common.proto.RepartitionWindowedMetric;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -61,7 +60,7 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         AggregateMetrics p = (AggregateMetrics) proto;
         this.windowedMetrics = p.getWindowedMetricsList().stream()
                 .map(pb -> LHSerializable.fromProto(pb, RepartitionWindowedMetricModel.class, context))

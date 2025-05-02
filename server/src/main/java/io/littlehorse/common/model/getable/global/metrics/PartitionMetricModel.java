@@ -8,7 +8,6 @@ import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.sdk.common.proto.PartitionWindowedMetric;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -77,7 +76,7 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         PartitionMetric p = (PartitionMetric) proto;
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         this.id = LHSerializable.fromProto(p.getId(), PartitionMetricIdModel.class, context);

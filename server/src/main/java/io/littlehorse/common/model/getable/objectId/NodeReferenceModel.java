@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.NodeReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Objects;
@@ -50,7 +49,7 @@ public class NodeReferenceModel extends LHSerializable<NodeReference> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         NodeReference p = (NodeReference) proto;
         this.threadSpec = p.hasThreadSpec()
                 ? LHSerializable.fromProto(p.getThreadSpec(), ThreadSpecReferenceModel.class, context)

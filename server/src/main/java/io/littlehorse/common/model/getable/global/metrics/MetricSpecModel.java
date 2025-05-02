@@ -7,7 +7,6 @@ import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.MetricSpec;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -43,7 +42,7 @@ public class MetricSpecModel extends MetadataGetable<MetricSpec> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         MetricSpec p = (MetricSpec) proto;
         this.id = LHSerializable.fromProto(p.getId(), MetricSpecIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());

@@ -6,7 +6,6 @@ import io.littlehorse.common.model.getable.RepartitionedId;
 import io.littlehorse.common.model.getable.core.metrics.MetricModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.sdk.common.proto.MetricId;
@@ -44,7 +43,7 @@ public class MetricIdModel extends RepartitionedId<MetricId, Metric, MetricModel
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) {
         MetricId p = (MetricId) proto;
         this.metricSpecId = LHSerializable.fromProto(p.getMetricSpecId(), MetricSpecIdModel.class, context);
         this.windowStart = LHUtil.fromProtoTs(p.getWindowStart());
