@@ -2,6 +2,7 @@ package io.littlehorse.container;
 
 import com.github.dockerjava.api.model.RestartPolicy;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     private static final String KAFKA_BOOTSTRAP_SERVERS = KAFKA_HOSTNAME + ":19092";
     private static final long DEFAULT_KAFKA_MEMORY = 1024L * 1024L * 1024L;
     private static final int DEFAULT_ADVERTISED_PORT = 32023;
+    private final KafkaContainer kafka;
+    private final List<LittleHorseContainer> clusterInstances;
 
     /**
      * It creates a KafkaContainer and a list of LittleHorseContainer
@@ -52,15 +55,18 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
         super(DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lhctl")
                 .withTag(littlehorseImage.getVersionPart()));
 
-        KafkaContainer kafka = new KafkaContainer(kafkaImage)
+        if (instances <= 0) {
+            throw new IllegalArgumentException("Instances should be greater than 0");
+        }
+
+        kafka = new KafkaContainer(kafkaImage)
                 .withNetwork(network)
                 .withNetworkAliases(KAFKA_HOSTNAME)
                 .withListener(KAFKA_BOOTSTRAP_SERVERS)
                 .withCreateContainerCmdModifier(
                         cmd -> Objects.requireNonNull(cmd.getHostConfig()).withMemory(DEFAULT_KAFKA_MEMORY));
 
-        List<LittleHorseContainer> clusterInstances = IntStream.range(
-                        DEFAULT_ADVERTISED_PORT, DEFAULT_ADVERTISED_PORT + instances)
+        clusterInstances = IntStream.range(DEFAULT_ADVERTISED_PORT, DEFAULT_ADVERTISED_PORT + instances)
                 .mapToObj(port -> new LittleHorseContainer(littlehorseImage)
                         .withKafkaBootstrapServers(KAFKA_BOOTSTRAP_SERVERS)
                         .withAdvertisedPort(port)
@@ -92,17 +98,27 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     }
 
     /**
-     * Return a properties object with the client configuration for connections
+     * Return a properties object with the client configuration for connections.
      * <p>
      * Use: {@code new LHConfig(littleHorseCluster.getClientProperties())}
      * </p>
-     * @return Properties with the container configurations
+     *
+     * @return Properties with the container configurations.
      */
     public Properties getClientProperties() {
-        Properties properties = new Properties();
-        properties.put(LHC_API_HOST, getHost());
-        properties.put(LHC_API_PORT, DEFAULT_ADVERTISED_PORT);
-        return properties;
+        return clusterInstances.get(0).getClientProperties();
+    }
+
+    /**
+     * Return a map object with the client configuration for connections.
+     * <p>
+     * Use: {@code LHConfig.newBuilder().loadFromMap(littlehorseContainer.getClientConfig()).build()}
+     * </p>
+     *
+     * @return Map with the container configurations.
+     */
+    public Map<String, String> getClientConfig() {
+        return clusterInstances.get(0).getClientConfig();
     }
 
     /**
@@ -162,7 +178,9 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
          * @return This builder
          */
         public LittleHorseClusterBuilder withInstances(final int instances) {
-            assert instances > 0;
+            if (instances <= 0) {
+                throw new IllegalArgumentException("Instances should be greater than 0");
+            }
             this.instances = instances;
             return this;
         }
@@ -173,7 +191,9 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
          * @return
          */
         public LittleHorseClusterBuilder withNetwork(final Network network) {
-            assert network != null;
+            if (network == null) {
+                throw new NullPointerException("Network shouldn't be null");
+            }
             this.network = network;
             return this;
         }

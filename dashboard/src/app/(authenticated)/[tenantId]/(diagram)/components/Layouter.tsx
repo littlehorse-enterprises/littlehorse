@@ -20,7 +20,7 @@ export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[
     (nodes: Node[], edges: Edge[]) => {
       const dagreGraph = new dagre.graphlib.Graph()
       dagreGraph.setDefaultEdgeLabel(() => ({}))
-      dagreGraph.setGraph({ rankdir: 'LR', align: 'UL', ranksep: 100 })
+      dagreGraph.setGraph({ rankdir: 'LR', ranksep: 100, nodesep: 100 })
       nodes.forEach(node => {
         dagreGraph.setNode(node.id, { width: node.width, height: node.height })
       })

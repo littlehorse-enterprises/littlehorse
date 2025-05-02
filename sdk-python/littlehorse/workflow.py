@@ -405,7 +405,9 @@ class WorkflowIfStatement:
             WorkflowConditions were not satisfied.
         """
         if self._was_else_executed:
-            raise RuntimeError("Else block has already been executed. Cannot add another else block.")
+            raise RuntimeError(
+                "Else block has already been executed. Cannot add another else block."
+            )
 
         self._was_else_executed = True
         self._do_else_if(None, body)
