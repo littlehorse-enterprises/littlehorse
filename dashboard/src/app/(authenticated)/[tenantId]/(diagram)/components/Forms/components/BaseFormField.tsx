@@ -5,6 +5,7 @@ import { FC, ReactNode } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { accessLevels } from '../../../wfSpec/[...props]/components/Variables'
 import { Button } from '@/components/ui/button'
+import { DOT_REPLACEMENT_PATTERN } from '../../Modals/ExecuteWorkflowRun'
 
 type BaseFormFieldProps = FormFieldProp & {
   children: ReactNode
@@ -43,7 +44,7 @@ export const BaseFormField: FC<BaseFormFieldProps> = ({
     <div>
       <div className="mb-2 flex justify-between">
         <Label htmlFor={name} className="flex items-center gap-2">
-          {name}
+          {name.replace(DOT_REPLACEMENT_PATTERN, ".")}
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[accessLevel]}</span>
           {required ? (
             <span className="rounded bg-red-300 p-1 text-xs">Required</span>

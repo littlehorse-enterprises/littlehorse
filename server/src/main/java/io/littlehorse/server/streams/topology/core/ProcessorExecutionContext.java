@@ -160,7 +160,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         }
 
         for (WorkflowEventModel event : eventsToThrow) {
-            server.onEventThrown(event);
+            server.onEventThrown(event, authContext.tenantId());
         }
 
         if(metricsInventory.metricAdded()) {

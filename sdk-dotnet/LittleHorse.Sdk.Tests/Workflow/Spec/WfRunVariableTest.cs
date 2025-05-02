@@ -70,4 +70,15 @@ public class WfRunVariableTest
         
         Assert.Equal(expectedVarDef, actualVarDef);
     }
+    
+    [Fact]
+    public void WfRunVariable_WithNullParentThread_ShouldThrowArgumentNullException()
+    {
+        const VariableType expectedType = VariableType.Str;
+        
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            new WfRunVariable("test-var", expectedType, null!));
+        
+        Assert.Equal("Value cannot be null. (Parameter 'parent')", exception.Message);
+    }
 }

@@ -4,8 +4,8 @@ import com.google.common.base.Throwables;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHTaskError;
@@ -69,13 +69,13 @@ public class ScheduledTaskExecutor {
             log.debug("Task executed for: " + scheduledTask.getTaskDefId().getName());
             VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
             taskResult.setOutput(serialized.toBuilder()).setStatus(TaskStatus.TASK_SUCCESS);
-        } catch (InputVarSubstitutionError exn) {
+        } catch (InputVarSubstitutionException exn) {
             log.error("Failed calculating task input variables", exn);
             taskResult.setStatus(TaskStatus.TASK_INPUT_VAR_SUB_ERROR);
             taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
-        } catch (LHSerdeError exn) {
+        } catch (LHSerdeException exn) {
             log.error("Failed serializing Task Output", exn);
-            taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR);
+            taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
             taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
         } catch (InvocationTargetException exn) {
             if (exn.getTargetException() instanceof LHTaskException) {
@@ -128,7 +128,7 @@ public class ScheduledTaskExecutor {
                 return LHErrorType.TASK_FAILURE;
             case TASK_TIMEOUT:
                 return LHErrorType.TIMEOUT;
-            case TASK_OUTPUT_SERIALIZING_ERROR:
+            case TASK_OUTPUT_SERDE_ERROR:
                 return LHErrorType.VAR_MUTATION_ERROR;
             case TASK_INPUT_VAR_SUB_ERROR:
                 return LHErrorType.VAR_SUB_ERROR;

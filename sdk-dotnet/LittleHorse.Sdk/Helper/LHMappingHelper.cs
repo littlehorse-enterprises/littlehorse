@@ -11,8 +11,18 @@ using Type = System.Type;
 
 namespace LittleHorse.Sdk.Helper
 {
+    /// <summary>
+    /// Helper class to handle transformations of LittleHorse or dotnet objects.
+    /// </summary>
     public static class LHMappingHelper
     {
+        /// <summary>
+        /// Converts a Dotnet type to a LittleHorse VariableType.
+        /// This method returns LH <c>JsonObj</c> type if the dotnet type is not 64-bit integers and floating points,
+        ///  <c>strings</c>, <c>bool</c>, <c>bytes</c>, <c>objects</c> and the family of <c>Ilist</c>
+        /// 
+        /// </summary>
+        /// <param name="type"> The LH type to convert.</param>
         public static VariableType DotNetTypeToLHVariableType(Type type)
         {
             if (IsInt(type))
@@ -48,7 +58,12 @@ namespace LittleHorse.Sdk.Helper
             return VariableType.JsonObj;
         }
         
-        public static DateTime? DateTimeFromProtoTimeStamp(Timestamp protoTimestamp)
+        /// <summary>
+        /// Converts a Timestamp from the proto lib to Dotnet Datetime.
+        /// 
+        /// </summary>
+        /// <param name="protoTimestamp"> The timestamp to convert.</param>
+        public static DateTime? DateTimeFromProtoTimeStamp(Timestamp? protoTimestamp)
         {
             if (protoTimestamp == null) return null;
 
@@ -63,6 +78,16 @@ namespace LittleHorse.Sdk.Helper
             return outDate;
         }
         
+        /// <summary>
+        /// Converts a dotnet object to LH VariableValue.
+        /// If the object already is a VariableValue, it will return the same value.
+        /// The object will be parsed to LH <c>JsonArr</c> if it is an <c>Ilist</c> type
+        /// 
+        /// </summary>
+        /// <param name="obj"> The object to convert.</param>
+        /// <exception cref="LHJsonProcessingException">
+        /// It will throw an exception if the object can not be serialized. 
+        /// </exception>
         public static VariableValue ObjectToVariableValue(object? obj)
         {
             if (obj is VariableValue variableValue) return variableValue;
@@ -106,6 +131,13 @@ namespace LittleHorse.Sdk.Helper
             return result;
         }
         
+        /// <summary>
+        /// Concatenates the <c>exception.StackTrace</c> and the <c>LogOutput</c> coming from <c>LHWorkerContext</c>
+        /// to an only string variable value.
+        /// 
+        /// </summary>
+        /// <param name="exception"> The exception to add to VariableValue.</param>
+        /// <param name="ctx"> The worker context that contains a LogOutput to add to VariableValue.</param>
         public static VariableValue ExceptionToVariableValue(Exception exception, LHWorkerContext ctx)
         {
             using (StringWriter sw = new StringWriter())
@@ -129,6 +161,11 @@ namespace LittleHorse.Sdk.Helper
             }
         }
         
+        /// <summary>
+        /// Converts a proto message to json string.
+        /// 
+        /// </summary>
+        /// <param name="o"> It is the proto message such as LH VariableValue.</param>
         public static string? ProtoToJson(IMessage o)
         {
             try
@@ -147,6 +184,14 @@ namespace LittleHorse.Sdk.Helper
             }
         }
 
+        /// <summary>
+        /// Converts a LH variable value type to a LH variable type.
+        /// <c>JsonObj</c> and <c>None</c> ValueCase will be mapped to VariableType.JsonObj
+        /// 
+        /// </summary>
+        /// <param name="valueCase"> The valueCase which can contain any of the LH allowed types.
+        /// <c>JsonObj, JsonArr, Double, Bool, Str, Int, Bytes</c>
+        /// </param>
         public static VariableType ValueCaseToVariableType(VariableValue.ValueOneofCase valueCase)
         {
             switch (valueCase) {
@@ -238,12 +283,13 @@ namespace LittleHorse.Sdk.Helper
         
         internal static LHErrorType GetFailureCodeFor(TaskStatus status)
         {
-            switch (status) {
+            switch (status) 
+            {
                 case TaskStatus.TaskFailed:
                     return LHErrorType.TaskFailure;
                 case TaskStatus.TaskTimeout:
                     return LHErrorType.Timeout;
-                case TaskStatus.TaskOutputSerializingError:
+                case TaskStatus.TaskOutputSerdeError:
                     return LHErrorType.VarMutationError;
                 case TaskStatus.TaskInputVarSubError:
                     return LHErrorType.VarSubError;

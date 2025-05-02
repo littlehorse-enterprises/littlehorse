@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.ClusterMetadataId;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -27,7 +27,7 @@ public class TenantIdModel extends ClusterMetadataId<TenantId, Tenant, TenantMod
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         TenantId tenantId = (TenantId) proto;
         this.id = tenantId.getId();
     }

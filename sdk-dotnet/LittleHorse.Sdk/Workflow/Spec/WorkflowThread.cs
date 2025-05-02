@@ -6,26 +6,39 @@ using static LittleHorse.Sdk.Common.Proto.UTActionTrigger.Types;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// This class is used to define the logic of a ThreadSpec in a ThreadFunc. 
+/// </summary>
 public class WorkflowThread
 {
-    public Workflow Parent { get; private set; }
-    private readonly ThreadSpec _spec;
-    public string LastNodeName { get; private set; }
-    private readonly bool _isActive;
-    private readonly List<WfRunVariable> _wfRunVariables;
-    private EdgeCondition? _lastNodeCondition;
-    private readonly Queue<VariableMutation> _variableMutations;
-    private ThreadRetentionPolicy? _retentionPolicy;
+    /// <value>
+    /// The parent workflow of this thread.
+    /// </value>
+    public Workflow Parent { get; init; }
     
+    /// <value>
+    /// The name of the last node in the thread.
+    /// </value>
+    public string LastNodeName { get; private set; }
+
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
     /// Handler or Exception Handler thread.
     /// </summary>
     public const string HandlerInputVar = "INPUT";
     
-    public WorkflowThread(Workflow parent, Action<WorkflowThread> action)
+    private readonly ThreadSpec _spec;
+    private readonly List<WfRunVariable> _wfRunVariables;
+    private EdgeCondition? _lastNodeCondition;
+    private readonly Queue<VariableMutation> _variableMutations;
+    private ThreadRetentionPolicy? _retentionPolicy;
+    
+    internal bool IsActive { get; }
+    internal ThreadSpec Spec => _spec;
+    
+    internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
-        Parent = parent;
+        Parent = parent ?? throw new ArgumentNullException(nameof(parent));
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
@@ -35,7 +48,8 @@ public class WorkflowThread
         var entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
-        _isActive = true;
+        IsActive = true;
+        Parent.Threads.Push(this);
         action.Invoke(this);
 
         var lastNode = FindLastNode();
@@ -43,11 +57,15 @@ public class WorkflowThread
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
-        _isActive = false;
+        IsActive = false;
         
         _spec.RetentionPolicy = GetRetentionPolicy();
     }
 
+    /// <summary>
+    /// This is a compilation method for workflows
+    /// </summary>
+    /// <returns>A ThreadSpec.</returns>
     public ThreadSpec Compile()
     {
         if (_spec.VariableDefs.Count > 0)
@@ -85,16 +103,21 @@ public class WorkflowThread
     
     private void CheckIfWorkflowThreadIsActive() 
     {
-        if (!_isActive) 
+        if (!IsActive) 
         {
             throw new InvalidOperationException("Using an inactive thread");
         }
     }
     
-    private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode) 
+    internal string AddNode(string name, Node.NodeOneofCase type, IMessage subNode, bool keepNodeName = false)
     {
         CheckIfWorkflowThreadIsActive();
         string nextNodeName = GetNodeName(name, type);
+        if (keepNodeName)
+        {
+            nextNodeName = name;
+        }
+        
         if (LastNodeName == null) 
         {
             throw new InvalidOperationException("Not possible to have null last node here");
@@ -344,7 +367,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareBool(string name) 
     {
         return AddVariable(name, VariableType.Bool);
@@ -356,7 +379,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareInt(string name) 
     {
         return AddVariable(name, VariableType.Int);
@@ -368,7 +391,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareStr(string name) 
     {
         return AddVariable(name, VariableType.Str);
@@ -380,7 +403,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareDouble(string name) 
     {
         return AddVariable(name, VariableType.Double);
@@ -392,7 +415,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareBytes(string name) 
     {
         return AddVariable(name, VariableType.Bytes);
@@ -404,7 +427,7 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareJsonArr(string name) 
     {
         return AddVariable(name, VariableType.JsonArr);
@@ -416,13 +439,13 @@ public class WorkflowThread
     /// <param name="name">
     /// It is the name of the variable.
     /// </param>
-    /// <returns>The value of <paramref name="WfRunVariable" /> </returns>
+    /// <returns>The value of WfRunVariable </returns>
     public WfRunVariable DeclareJsonObj(string name) 
     {
         return AddVariable(name, VariableType.JsonObj);
     }
     
-    private List<VariableMutation> CollectVariableMutations() 
+    internal List<VariableMutation> CollectVariableMutations() 
     {
         var variablesFromIfBlock = new List<VariableMutation>();
         while (_variableMutations.Count > 0) 
@@ -440,58 +463,54 @@ public class WorkflowThread
     /// <param name="condition">
     /// It is the WorkflowCondition to be satisfied.
     /// </param>
-    /// /// <param name="ifBody">
+    /// <param name="ifBody">
     /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
     /// is satisfied.
     /// </param>
-    /// /// <param name="elseBody">
+    /// <param name="elseBody">
     /// It is the block of ThreadSpec code to be executed if the provided
     /// WorkflowCondition is NOT satisfied.
     /// </param>
-    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null) 
+    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
-        CheckIfWorkflowThreadIsActive();
+        WorkflowIfStatement ifResult = DoIf(condition, ifBody);
         
-        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        var treeRootNodeName = LastNodeName;
-        _lastNodeCondition = condition.Compile();
-
-        ifBody.Invoke(this);
-        
-        var lastConditionFromIfBlock = _lastNodeCondition;
-        var lastNodeFromIfBlockName = LastNodeName;
-        var variablesFromIfBlock = CollectVariableMutations();
-
         if (elseBody != null)
         {
-            LastNodeName = treeRootNodeName;
-            _lastNodeCondition = condition.GetOpposite();
-            
-            elseBody.Invoke(this);
-            
-            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-            var lastNodeFromIfBlock = FindNode(lastNodeFromIfBlockName);
-            var ifBlockEdge = new Edge { SinkNodeName = LastNodeName };
-            ifBlockEdge.VariableMutations.AddRange(variablesFromIfBlock);
-            if (lastNodeFromIfBlockName == treeRootNodeName)
-            {
-                ifBlockEdge.Condition = lastConditionFromIfBlock;
-            }
-            lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
-        }
-        else
-        {
-            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-
-            var treeRoot = FindNode(treeRootNodeName);
-            treeRoot.OutgoingEdges.Add(new Edge
-            {
-                SinkNodeName = LastNodeName,
-                Condition = condition.GetOpposite()
-            });
+            ifResult.DoElse(elseBody);
         }
     }
-    
+
+    /// <summary>
+    /// Conditionally executes one of two workflow code branches; equivalent to an if() statement
+    /// in programming.
+    /// </summary>
+    /// <param name="condition">
+    /// It is the WorkflowCondition to be satisfied.
+    /// </param>
+    /// <param name="body">
+    /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+    /// is satisfied.
+    /// </param>
+    public WorkflowIfStatement DoIf(WorkflowCondition condition, Action<WorkflowThread> body)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var firstNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        _lastNodeCondition = condition.Compile();
+
+        body.Invoke(this);
+
+        var lastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+
+        var firstNopeNode = FindNode(firstNodeName);
+        firstNopeNode.OutgoingEdges.Add(new Edge
+        {
+            SinkNodeName = lastNodeName
+        });
+        
+        return new WorkflowIfStatement(this, firstNodeName, lastNodeName);
+    }
+
     /// <summary>
     /// Conditionally executes some workflow code; equivalent to an while() statement in programming.
     /// </summary>
@@ -546,7 +565,7 @@ public class WorkflowThread
     /// It is either a literal value (which the Library casts to a Variable Value) or a
     /// `WfRunVariable` representing the RHS of the expression.
     /// </param>
-    /// <returns>The value of <paramref name="WorkflowCondition" /> </returns>
+    /// <returns>The value of WorkflowCondition </returns>
     public WorkflowCondition Condition(object lhs, Comparator comparator, object rhs)
     {
         return new WorkflowCondition(AssignVariableHelper(lhs), 

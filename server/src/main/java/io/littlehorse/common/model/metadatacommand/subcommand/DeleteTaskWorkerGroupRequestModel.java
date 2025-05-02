@@ -8,7 +8,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
@@ -46,7 +46,7 @@ public class DeleteTaskWorkerGroupRequestModel extends CoreSubCommand<DeleteTask
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         DeleteTaskWorkerGroupRequest p = (DeleteTaskWorkerGroupRequest) proto;
         this.taskDefId = LHSerializable.fromProto(p.getId(), TaskDefIdModel.class, context);
     }

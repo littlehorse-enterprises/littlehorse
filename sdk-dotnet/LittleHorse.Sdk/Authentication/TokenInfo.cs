@@ -1,10 +1,10 @@
 ﻿namespace LittleHorse.Sdk.Authentication
 {
-    public class TokenInfo
+    internal class TokenInfo
     {
-        public string ClientId { get; init; }
-        public string AccessToken { get; init; }
-        public DateTime Expiration { get; init; }
+        internal string ClientId { get; init; }
+        internal string AccessToken { get; init; }
+        internal DateTime Expiration { get; init; }
 
         public bool IsExpired
         {

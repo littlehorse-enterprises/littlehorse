@@ -5,11 +5,18 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.ThreadFunc;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class FixedSpawnedThreadsTest {
+    ThreadFunc threadFunction = new ThreadFunc() {
+        @Override
+        public void threadFunction(WorkflowThread thread) {}
+    };
 
+    private WorkflowThreadImpl workflowThread;
     private final SpawnedThread spawnedThread1 = mock();
     private final SpawnedThread spawnedThread2 = mock();
 
@@ -17,8 +24,11 @@ public class FixedSpawnedThreadsTest {
 
     @BeforeEach
     void setup() {
-        when(spawnedThread1.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-1", 1, null));
-        when(spawnedThread2.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-2", 2, null));
+        WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
+        workflowThread = new WorkflowThreadImpl("my-thread", workflow, threadFunction);
+
+        when(spawnedThread1.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-1", 1, workflowThread));
+        when(spawnedThread2.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-2", 2, workflowThread));
     }
 
     @Test
@@ -29,7 +39,7 @@ public class FixedSpawnedThreadsTest {
 
     @Test
     void shouldThrowIllegalArgumentExceptionIfThereIsANonIntegerVar() {
-        doReturn(new WfRunVariableImpl("thread-2", "2", null))
+        doReturn(new WfRunVariableImpl("thread-2", "2", workflowThread))
                 .when(spawnedThread2)
                 .getThreadNumberVariable();
         Throwable exception = catchThrowable(fixedSpawnedThreads::buildNode);

@@ -76,7 +76,7 @@ Choose one of the following option groups:
   - TASK_SUCCESS
   - TASK_FAILED
   - TASK_TIMEOUT
-  - TASK_OUTPUT_SERIALIZING_ERROR
+  - TASK_OUTPUT_SERDE_ERROR
   - TASK_INPUT_VAR_SUB_ERROR
 	`,
 	Args: cobra.ExactArgs(1),

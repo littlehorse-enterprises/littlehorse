@@ -925,3 +925,43 @@ func TestWaitForThreadsHandleErrorOnChild(t *testing.T) {
 	assert.Equal(t, lhproto.FailureHandlerDef_FAILURE_TYPE_ERROR, anyErrorHandler.GetAnyFailureOfType())
 	assert.Equal(t, "error-handler-2-threads-WAIT_FOR_THREADS", anyErrorHandler.HandlerSpecName)
 }
+
+func TestShouldAssignAParentVarFromChildNestedThreadsWhenWorkflowIsCompiled(t *testing.T) {
+	expectedParentVarName := "grand-parent-var"
+	expectedSonThreadVarValue := "son-value"
+	expectedGrandChildThreadVarValue := "grandchild-value"
+
+	wf := littlehorse.NewWorkflow(func(grandParentThread *littlehorse.WorkflowThread) {
+		grandParentVar := grandParentThread.DeclareStr(expectedParentVarName)
+		grandParentThread.SpawnThread(
+			func(sonThread *littlehorse.WorkflowThread) {
+				grandParentVar.Assign(expectedSonThreadVarValue)
+				sonThread.SpawnThread(
+					func(grandChildThread *littlehorse.WorkflowThread) {
+						grandParentVar.Assign(expectedGrandChildThreadVarValue)
+					},
+					"grandchild-thread",
+					nil,
+				)
+			},
+			"son-thread",
+			nil,
+		)
+	}, "my-workflow")
+	compiledWorkflow, error := wf.Compile()
+
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	sonThread := compiledWorkflow.ThreadSpecs["son-thread"]
+	grandChildThread := compiledWorkflow.ThreadSpecs["grandchild-thread"]
+
+	assert.Nil(t, error)
+	assert.NotNil(t, compiledWorkflow)
+	assert.Equal(t, 3, len(entrypoint.GetNodes()))
+	assert.Equal(t, 3, len(sonThread.GetNodes()))
+	assert.Equal(t, 2, len(grandChildThread.GetNodes()))
+	assert.Equal(t, expectedParentVarName, entrypoint.GetVariableDefs()[0].VarDef.Name)
+	assert.Equal(t, expectedParentVarName, sonThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].LhsName)
+	assert.Equal(t, expectedSonThreadVarValue, sonThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].GetRhsAssignment().GetLiteralValue().GetStr())
+	assert.Equal(t, expectedParentVarName, grandChildThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].LhsName)
+	assert.Equal(t, expectedGrandChildThreadVarValue, grandChildThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].GetRhsAssignment().GetLiteralValue().GetStr())
+}

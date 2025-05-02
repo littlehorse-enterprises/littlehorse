@@ -16,6 +16,7 @@ func NewWorkflow(threadFunc ThreadFunc, name string) *LHWorkflow {
 type LHWorkflow struct {
 	EntrypointThread ThreadFunc
 	Name             string
+	threads          []*WorkflowThread
 
 	spec  lhproto.PutWfSpecRequest
 	funcs map[string]ThreadFunc
@@ -278,7 +279,14 @@ func (w *WfRunVariable) IsNotIn(rhs interface{}) *WorkflowCondition {
 }
 
 func (w *WfRunVariable) Assign(rhs interface{}) {
-	w.thread.mutate(w, lhproto.VariableMutationType_ASSIGN, rhs)
+	activeThread := w.thread
+	lastThread := w.thread.wf.threads[len(w.thread.wf.threads)-1]
+
+	if lastThread.isActive {
+		activeThread = lastThread
+	}
+
+	activeThread.mutate(w, lhproto.VariableMutationType_ASSIGN, rhs)
 }
 
 func (w *WfRunVariable) Add(other interface{}) LHExpression {

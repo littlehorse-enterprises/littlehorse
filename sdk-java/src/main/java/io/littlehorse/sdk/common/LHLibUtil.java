@@ -14,7 +14,7 @@ import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -47,7 +47,7 @@ public class LHLibUtil {
         return fromMillis(date.getTime());
     }
 
-    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeError {
+    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeException {
         try {
             return cls.cast(cls.getMethod("parseFrom", byte[].class).invoke(null, data));
         } catch (NoSuchMethodException | IllegalAccessException exn) {
@@ -55,7 +55,7 @@ public class LHLibUtil {
             throw new RuntimeException("Passed in an invalid proto class. Not possible");
         } catch (InvocationTargetException exn) {
             exn.printStackTrace();
-            throw new LHSerdeError(exn.getCause(), "Failed loading protobuf: " + exn.getMessage());
+            throw new LHSerdeException(exn.getCause(), "Failed loading protobuf: " + exn.getMessage());
         }
     }
 
@@ -147,7 +147,7 @@ public class LHLibUtil {
         return wfRunIdToString(taskRunId.getWfRunId()) + "/" + taskRunId.getTaskGuid();
     }
 
-    public static VariableValue objToVarVal(Object o) throws LHSerdeError {
+    public static VariableValue objToVarVal(Object o) throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
 
         VariableValue.Builder out = VariableValue.newBuilder();
@@ -187,7 +187,7 @@ public class LHLibUtil {
                 case NULL:
                     break;
                 default:
-                    throw new LHSerdeError("Failed serializing object to Json: " + o.toString());
+                    throw new LHSerdeException("Failed serializing object to Json: " + o.toString());
             }
         }
 

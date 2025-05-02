@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Grpc.Core;
+﻿using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
 using LittleHorse.Sdk.Utils;
@@ -11,7 +10,10 @@ using LittleHorse.Sdk.Common.Proto;
 using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk {
-
+    
+    /// <summary>
+    /// This class is used to configure a LHClient.
+    /// </summary>
     public class LHConfig
     {
         private ILogger<LHConfig>? _logger;
@@ -24,6 +26,13 @@ namespace LittleHorse.Sdk {
         private OAuthClient? _oAuthClient;
         private const string DefaultProtocol = "PLAINTEXT";
         
+        /// <summary>
+        /// Creates a LHConfig that loads values from environmental variables.
+        /// This is the default constructor which could be initialized such as <c>new LHConfig();</c>
+        /// 
+        /// </summary>
+        /// <param name="loggerFactory">Optional parameter that allow to propagate logs configs from parent apps.
+        /// </param>
         public LHConfig(ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
@@ -32,6 +41,13 @@ namespace LittleHorse.Sdk {
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
         
+        /// <summary>
+        /// Creates a LHConfig that loads values from a file which contains LH configs.
+        /// <example>new LHConfig("file-path");</example>
+        /// </summary>
+        /// <param name="configOptionsFilePath">It is the file location where the LH config options are placed.</param>
+        /// <param name="loggerFactory">Optional parameter that allow to propagate logs configs from parent apps.
+        /// </param>
         public LHConfig(string configOptionsFilePath, ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
@@ -40,6 +56,12 @@ namespace LittleHorse.Sdk {
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
         
+        /// <summary>
+        /// Creates a LHConfig that loads values from arguments being added from an app initialization.
+        /// </summary>
+        /// <param name="configArgs">A dictionary of arguments with LH config options.</param>
+        /// <param name="loggerFactory">Optional parameter that allow to propagate logs configs from parent apps.
+        /// </param>
         public LHConfig(Dictionary<string, string> configArgs, ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
@@ -48,6 +70,9 @@ namespace LittleHorse.Sdk {
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
 
+        /// <summary>
+        /// Retrieves the task worker ID from the configuration properties,
+        /// </summary>
         public string? WorkerId
         {
             get
@@ -56,15 +81,25 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the task worker version from the configuration properties.
+        /// </summary>
         public string? TaskWorkerVersion
         {
             get { return _inputVariables.LHW_TASK_WORKER_VERSION; }
         }
 
+        /// <summary>
+        /// Retrieves the number of worker threads from the configuration properties.
+        /// </summary>
         public int WorkerThreads
         {
             get { return _inputVariables.LHW_NUM_WORKER_THREADS; }
         }
+        
+        /// <summary>
+        /// Retrieves the bootstrap host from the configuration properties.
+        /// </summary>
         public string BootstrapHost
         {
             get
@@ -72,6 +107,10 @@ namespace LittleHorse.Sdk {
                 return _inputVariables.LHC_API_HOST;
             }
         }
+        
+        /// <summary>
+        /// Retrieves the bootstrap server port from the configuration properties.
+        /// </summary>
         public int BootstrapPort
         {
             get
@@ -80,6 +119,9 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the API protocol from the configuration properties.
+        /// </summary>
         public string ApiProtocol
         {
             get
@@ -88,6 +130,9 @@ namespace LittleHorse.Sdk {
             }
         }
         
+        /// <summary>
+        /// Retrieves the TenantId from the configuration properties.
+        /// </summary>
         public string? TenantId
         {
             get
@@ -95,6 +140,13 @@ namespace LittleHorse.Sdk {
                 return _inputVariables.LHC_TENANT_ID;
             }
         }
+        
+        /// <summary>
+        /// Retrieves the Bootstrap protocol from the configuration properties.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// Throws an exception when <c>LHC_API_PROTOCOL</c> is different from <c>PLAINTEXT</c> or <c>TLS</c>
+        /// </exception>
         public string BootstrapProtocol
         {
             get
@@ -107,6 +159,10 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the Bootstrap server url.
+        /// <example>https://localhost:2023</example>
+        /// </summary>
         public string BootstrapServer
         {
             get
@@ -135,11 +191,21 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the LittleHorse Grpc client connected to a boostrap server.
+        /// </summary>
+        /// <returns>A LittleHorseClient</returns>
         public LittleHorseClient GetGrpcClientInstance()
         {
             return GetGrpcClientInstance(BootstrapHost, BootstrapPort);
         }
 
+        /// <summary>
+        /// Retrieves the LittleHorse Grpc client connected to a specific channel.
+        /// </summary>
+        /// <param name="host">Host value</param>
+        /// <param name="port">Port value</param>
+        /// <returns>A LittleHorseClient</returns>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public LittleHorseClient GetGrpcClientInstance(string host, int port)
         {
@@ -236,12 +302,17 @@ namespace LittleHorse.Sdk {
             });
         }
 
+        /// <summary>
+        /// Retrieves a specific TaskDef searched by its Name.
+        /// </summary>
+        /// <param name="taskDefName">The name of the TaskDef</param>
+        /// <returns>A TaskDef</returns>
         public TaskDef GetTaskDef(string taskDefName)
         {
             try
             {
                 var client = GetGrpcClientInstance();
-                var taskDefId = new TaskDefId()
+                var taskDefId = new TaskDefId
                 {
                     Name = taskDefName
                 };
