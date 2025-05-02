@@ -7,6 +7,7 @@
   - [Topic Structure](#topic-structure)
     - [Metadata and Execution Data](#metadata-and-execution-data)
     - [Multi-Tenancy](#multi-tenancy)
+    - [Topic Naming](#topic-naming)
   - [Proto Schemas](#proto-schemas)
     - [Tenant](#tenant)
     - [Output Topic Schemas](#output-topic-schemas)
@@ -100,6 +101,15 @@ Due to the above reasons, I propose that:
 2. We utilize protobuf `oneof`s to allow putting all data into the two topics above, and clients can filter it out as needed.
 
 This prevents an expensive proliferation of Kafka topics and partitions as much as possible while still allowing different LittleHorse `Tenant`s to have isolated data.
+
+### Topic Naming
+
+Since there will be one `metadata-output` topic for each `Tenant` and one `execution-output` topic for each `Tenant`, the topics will be named as follows:
+
+* `f"{LHS_CLUSTER_ID}_{tenant}_execution-output"`
+* `f"{LHS_CLUSTER_ID}_{tenant}_metadata-output"`
+
+The `LHS_CLUSTER_ID` is the prefix of all topics for the cluster, so the LH Server already has permissions to write to it. By further isolating with `tenant_id` as the next step in the prefix, we can use Kafka's prefix-based ACL's to give a consumer permissions to read those specific topics.
 
 ## Proto Schemas
 
