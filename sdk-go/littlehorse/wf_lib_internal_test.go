@@ -5,6 +5,7 @@ import (
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -964,4 +965,46 @@ func TestShouldAssignAParentVarFromChildNestedThreadsWhenWorkflowIsCompiled(t *t
 	assert.Equal(t, expectedSonThreadVarValue, sonThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].GetRhsAssignment().GetLiteralValue().GetStr())
 	assert.Equal(t, expectedParentVarName, grandChildThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].LhsName)
 	assert.Equal(t, expectedGrandChildThreadVarValue, grandChildThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].GetRhsAssignment().GetLiteralValue().GetStr())
+}
+
+func TestShouldCompileWorkflowWithDoElseIfStatementInWorkflowThread(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		myInt := thread.DeclareInt("my-int")
+		thread.DoIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 9), func(t *littlehorse.WorkflowThread) {
+			t.Execute("task-a")
+			myInt.Assign(9);
+		}).DoElseIf(thread.Condition(7, lhproto.Comparator_LESS_THAN, 4), func(t *littlehorse.WorkflowThread) {
+			myInt.Assign(10);
+			t.Execute("task-b")
+		}).DoElseIf(thread.Condition(5, lhproto.Comparator_EQUALS, 5), func(t *littlehorse.WorkflowThread) {
+			t.Execute("task-c")
+		})
+		myInt.Assign(0);
+	}, "my-workflow")
+
+
+	compiledWorkflow, error := wf.Compile()
+	result, err := protojson.Marshal(compiledWorkflow)
+	if err != nil {
+		t.Error(err)
+	}
+	print(string(result))
+
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	firstNopNode := entrypoint.Nodes["1-nop-NOP"]
+	taskNodeA := entrypoint.Nodes["2-task-a-TASK"]
+	taskNodeB := entrypoint.Nodes["4-task-b-TASK"]
+	taskNodeC := entrypoint.Nodes["5-task-c-TASK"]
+	lastNopNode := entrypoint.Nodes["3-nop-NOP"]
+
+	expectedNumberOutgoingEdgesFromFirstNopNode := 4;
+    expectedLastSinkNopNodeName := "3-nop-NOP";
+    expectedExitSinkNodeName := "6-exit-EXIT";
+
+	assert.Nil(t, error)
+	assert.Equal(t, expectedNumberOutgoingEdgesFromFirstNopNode, len(firstNopNode.GetOutgoingEdges()))
+	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeA.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeB.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeC.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, expectedExitSinkNodeName, lastNopNode.GetOutgoingEdges()[0].GetSinkNodeName())
 }
