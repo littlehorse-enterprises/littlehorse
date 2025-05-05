@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -192,4 +193,43 @@ message TenantId {
 // ID for a ScheduledWfRun
 message ScheduledWfRunId {
   string id = 1;
+}
+
+// Reference to a `NodeSpec` which can be measured for metrics collection. It contains
+// fields to specify the reference at various levels of granularity, such as by ThreadSpec
+// Node type, or node position
+message NodeReference {
+  // References to the ThreadSpec where the node belongs.
+  optional ThreadSpecReference thread_spec = 1;
+  // Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+  // any node type is implied
+  optional string node_type = 2;
+  // Indicates the position of the node within the specific thread. If set to null,
+  // any node within the thread is implied
+  optional int32 node_position = 3;
+}
+
+// Reference to a specific thread within a WfSpec
+message ThreadSpecReference {
+  // References to a specific WfSpec
+  WfSpecId wf_spec_id = 1;
+  // Represents a thread run number within a WfRun. If set to null,
+  // any thread run is implied
+  optional int32 thread_number = 2;
+}
+
+message MetricSpecId {
+  oneof reference {
+    MeasurableObject object = 1;
+    NodeReference node = 2;
+    WfSpecId wf_spec_id = 3;
+    ThreadSpecReference thread_spec = 4;
+  }
+}
+
+message MetricId {
+  MetricSpecId metric_spec_id = 1;
+  google.protobuf.Duration window_length = 2;
+  google.protobuf.Timestamp window_start = 3;
+  AggregationType aggregation_type = 4;
 }

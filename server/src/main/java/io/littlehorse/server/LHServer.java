@@ -140,7 +140,9 @@ public class LHServer {
      * infers the request context from the GRPC Context.
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        commandSender.doSend(scheduledTask, client);
+        networkThreadpool.execute(() -> {
+            commandSender.doSend(scheduledTask, client);
+        });
     }
 
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {

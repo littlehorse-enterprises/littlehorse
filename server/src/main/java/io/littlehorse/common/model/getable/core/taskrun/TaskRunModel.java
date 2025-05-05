@@ -27,10 +27,10 @@ import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.server.metrics.TaskRunStatusUpdate;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -403,9 +403,13 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private void transitionTo(TaskStatus newStatus) {
         TaskStatus previousStatus = status;
         this.status = newStatus;
-        processorContext
-                .getableUpdates()
-                .dispatch(GetableUpdates.create(
-                        taskDefId, processorContext.authorization().tenantId(), previousStatus, newStatus));
+        // This condition metrics for tasks that are triggered by a UserTaskRunNode
+        if (taskRunSource.getTaskNode() != null) {
+            processorContext
+                    .getableUpdates()
+                    .append(
+                            taskRunSource.getTaskNode().getNodeRunId(),
+                            new TaskRunStatusUpdate(taskDefId, taskRunSource.getWfSpecId(), previousStatus, newStatus));
+        }
     }
 }

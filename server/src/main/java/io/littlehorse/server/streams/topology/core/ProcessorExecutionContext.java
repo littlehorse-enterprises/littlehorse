@@ -7,15 +7,18 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
+import io.littlehorse.server.metrics.GetableUpdates;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -24,6 +27,7 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
@@ -43,19 +47,20 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
     private LHTaskManager currentTaskManager;
-    private TaskQueueManager globalTaskQueueManager;
+    private final TaskQueueManager globalTaskQueueManager;
     private GetableManager storageManager;
     private final Headers recordMetadata;
     private final CommandModel currentCommand;
     private final TenantScopedStore coreStore;
     private final ReadOnlyMetadataManager metadataManager;
     private WfService service;
+    private final PartitionMetricInventoryModel metricsInventory;
 
-    private List<WorkflowEventModel> eventsToThrow;
+    private final List<WorkflowEventModel> eventsToThrow;
 
     private final LHServer server;
     private GetableUpdates getableUpdates;
-    private MetricsUpdater metricsAggregator;
+    private final ClusterScopedStore clusterScopedStore;
 
     public ProcessorExecutionContext(
             Command currentCommand,
@@ -81,11 +86,16 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordHeaders;
         this.server = server;
-        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
+        KeyValueStore<String, Bytes> nativeCoreStore = nativeCoreStore();
+        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore, tenantId, this);
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
+        this.clusterScopedStore = ClusterScopedStore.newInstance(nativeCoreStore, this);
+        this.metricsInventory = Optional.ofNullable(clusterScopedStore.get(
+                        PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY, PartitionMetricInventoryModel.class))
+                .orElse(new PartitionMetricInventoryModel());
     }
 
     /**
@@ -139,6 +149,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
      * decide when to call this method
      */
     public void endExecution() {
+
         if (storageManager != null) {
             storageManager.commit();
         }
@@ -146,11 +157,13 @@ public class ProcessorExecutionContext implements ExecutionContext {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();
         }
-        if (metricsAggregator != null) {
-            metricsAggregator.maybePersistState();
-        }
+
         for (WorkflowEventModel event : eventsToThrow) {
             server.onEventThrown(event, authContext.tenantId());
+        }
+
+        if (metricsInventory.metricAdded()) {
+            clusterScopedStore.put(metricsInventory);
         }
     }
 
@@ -171,6 +184,10 @@ public class ProcessorExecutionContext implements ExecutionContext {
         return metadataManager;
     }
 
+    public PartitionMetricInventoryModel metricsInventory() {
+        return metricsInventory;
+    }
+
     @Override
     public LHServerConfig serverConfig() {
         return config;
@@ -179,7 +196,6 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public GetableUpdates getableUpdates() {
         if (getableUpdates == null) {
             getableUpdates = new GetableUpdates();
-            // TODO: enable metrics here
         }
         return getableUpdates;
     }

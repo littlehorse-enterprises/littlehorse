@@ -99,5 +99,20 @@ public interface RepartitionCommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder getAggregateTaskMetricsOrBuilder();
 
+  /**
+   * <code>.littlehorse.AggregateMetrics aggregate_metrics = 9;</code>
+   * @return Whether the aggregateMetrics field is set.
+   */
+  boolean hasAggregateMetrics();
+  /**
+   * <code>.littlehorse.AggregateMetrics aggregate_metrics = 9;</code>
+   * @return The aggregateMetrics.
+   */
+  io.littlehorse.common.proto.AggregateMetrics getAggregateMetrics();
+  /**
+   * <code>.littlehorse.AggregateMetrics aggregate_metrics = 9;</code>
+   */
+  io.littlehorse.common.proto.AggregateMetricsOrBuilder getAggregateMetricsOrBuilder();
+
   io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
 }

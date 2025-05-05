@@ -442,3 +442,134 @@ export function lHErrorTypeToNumber(object: LHErrorType): number {
       return -1;
   }
 }
+
+/** This enum is all the LittleHorse types that can be measured */
+export enum MeasurableObject {
+  /** WORKFLOW - Measures metrics related to WfSpec */
+  WORKFLOW = "WORKFLOW",
+  /** TASK - Measures metrics related to tasks */
+  TASK = "TASK",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function measurableObjectFromJSON(object: any): MeasurableObject {
+  switch (object) {
+    case 0:
+    case "WORKFLOW":
+      return MeasurableObject.WORKFLOW;
+    case 1:
+    case "TASK":
+      return MeasurableObject.TASK;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MeasurableObject.UNRECOGNIZED;
+  }
+}
+
+export function measurableObjectToNumber(object: MeasurableObject): number {
+  switch (object) {
+    case MeasurableObject.WORKFLOW:
+      return 0;
+    case MeasurableObject.TASK:
+      return 1;
+    case MeasurableObject.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+export enum AggregationType {
+  COUNT = "COUNT",
+  AVG = "AVG",
+  RATIO = "RATIO",
+  LATENCY = "LATENCY",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function aggregationTypeFromJSON(object: any): AggregationType {
+  switch (object) {
+    case 0:
+    case "COUNT":
+      return AggregationType.COUNT;
+    case 1:
+    case "AVG":
+      return AggregationType.AVG;
+    case 2:
+    case "RATIO":
+      return AggregationType.RATIO;
+    case 3:
+    case "LATENCY":
+      return AggregationType.LATENCY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return AggregationType.UNRECOGNIZED;
+  }
+}
+
+export function aggregationTypeToNumber(object: AggregationType): number {
+  switch (object) {
+    case AggregationType.COUNT:
+      return 0;
+    case AggregationType.AVG:
+      return 1;
+    case AggregationType.RATIO:
+      return 2;
+    case AggregationType.LATENCY:
+      return 3;
+    case AggregationType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+/** The status that a UserTaskRun can be in. */
+export enum UserTaskRunStatus {
+  /** UNASSIGNED - Not assigned to a specific user yet. */
+  UNASSIGNED = "UNASSIGNED",
+  /** ASSIGNED - Assigned to a specific user, but not completed or cancelled yet. */
+  ASSIGNED = "ASSIGNED",
+  /** DONE - Done. */
+  DONE = "DONE",
+  /** CANCELLED - Cancelled. */
+  CANCELLED = "CANCELLED",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function userTaskRunStatusFromJSON(object: any): UserTaskRunStatus {
+  switch (object) {
+    case 0:
+    case "UNASSIGNED":
+      return UserTaskRunStatus.UNASSIGNED;
+    case 1:
+    case "ASSIGNED":
+      return UserTaskRunStatus.ASSIGNED;
+    case 3:
+    case "DONE":
+      return UserTaskRunStatus.DONE;
+    case 4:
+    case "CANCELLED":
+      return UserTaskRunStatus.CANCELLED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return UserTaskRunStatus.UNRECOGNIZED;
+  }
+}
+
+export function userTaskRunStatusToNumber(object: UserTaskRunStatus): number {
+  switch (object) {
+    case UserTaskRunStatus.UNASSIGNED:
+      return 0;
+    case UserTaskRunStatus.ASSIGNED:
+      return 1;
+    case UserTaskRunStatus.DONE:
+      return 3;
+    case UserTaskRunStatus.CANCELLED:
+      return 4;
+    case UserTaskRunStatus.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}

@@ -41,9 +41,14 @@ public final class CommonEnums {
       "AR_SUB_ERROR\020\001\022\026\n\022VAR_MUTATION_ERROR\020\002\022\027" +
       "\n\023USER_TASK_CANCELLED\020\003\022\013\n\007TIMEOUT\020\004\022\020\n\014" +
       "TASK_FAILURE\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n\nTASK_ER" +
-      "ROR\020\007\022\022\n\016INTERNAL_ERROR\020\010BM\n\037io.littleho" +
-      "rse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Litt" +
-      "leHorse.Sdk.Common.Protob\006proto3"
+      "ROR\020\007\022\022\n\016INTERNAL_ERROR\020\010**\n\020MeasurableO" +
+      "bject\022\014\n\010WORKFLOW\020\000\022\010\n\004TASK\020\001*=\n\017Aggrega" +
+      "tionType\022\t\n\005COUNT\020\000\022\007\n\003AVG\020\001\022\t\n\005RATIO\020\002\022" +
+      "\013\n\007LATENCY\020\003*J\n\021UserTaskRunStatus\022\016\n\nUNA" +
+      "SSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCAN" +
+      "CELLED\020\004BM\n\037io.littlehorse.sdk.common.pr" +
+      "otoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Commo" +
+      "n.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
