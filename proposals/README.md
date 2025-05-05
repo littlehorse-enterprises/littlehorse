@@ -25,4 +25,6 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 
 | #  | Title                                                                 |Author(s)    |GitHub Issue #|
 |:--:|:----------------------------------------------------------------------|-------------|--------------|
-| 000 | [`Struct` and `StructDef](./000-struct-and-structdef.md) |Colt McNealy |[#880](https://github.com/littlehorse-enterprises/littlehorse/issues/880)|
+| 000 | [`Struct` and `StructDef`](./000-struct-and-structdef.md) |Colt McNealy |[#880](https://github.com/littlehorse-enterprises/littlehorse/issues/880)|
+| 001 | [The Output Topic](./001-output-topic.md) | Colt McNealy | [#1304](https://github.com/littlehorse-enterprises/littlehorse/issues/1304) |
+
