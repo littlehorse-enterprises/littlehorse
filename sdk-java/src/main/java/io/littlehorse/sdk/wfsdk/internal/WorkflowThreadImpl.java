@@ -56,10 +56,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Queue;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -467,98 +465,109 @@ final class WorkflowThreadImpl implements WorkflowThread {
         lastNodeCondition = cond.getSpec();
 
         ifBody.body(this);
-        
+
         addNopNode();
         String lastNopNodeName = lastNodeName;
 
         Node.Builder treeRoot = spec.getNodesOrThrow(firstNopNodeName).toBuilder();
-        treeRoot.addOutgoingEdges(Edge.newBuilder()
-                .setSinkNodeName(lastNopNodeName)
-                .build());
+        treeRoot.addOutgoingEdges(
+                Edge.newBuilder().setSinkNodeName(lastNopNodeName).build());
         spec.putNodes(firstNopNodeName, treeRoot.build());
 
         return new WorkflowIfStatementImpl(this, firstNopNodeName, lastNopNodeName);
     }
 
-    WorkflowIfStatement doElseIf(WorkflowIfStatement inputIfStatement, WorkflowCondition inputCondition, IfElseBody ifElseBody) {
+    WorkflowIfStatement doElseIf(
+            WorkflowIfStatement inputIfStatement, WorkflowCondition inputCondition, IfElseBody ifElseBody) {
         WorkflowIfStatementImpl ifStatement = (WorkflowIfStatementImpl) inputIfStatement;
-        WorkflowConditionImpl elseIfCondition = (inputCondition != null) ?  (WorkflowConditionImpl) inputCondition : null;
-        
+        EdgeCondition elseIfCondition = (inputCondition != null)
+                ? ((WorkflowConditionImpl) inputCondition).getSpec()
+                : EdgeCondition.getDefaultInstance();
+
         // Remove else edge from firstNopNode
-        Node.Builder firstNopNodeBuilder = this.spec.getNodesOrThrow(ifStatement.getFirstNopNodeName()).toBuilder();
-        List<Edge> firstNopNodeOutgoingEdges = new ArrayList<>(firstNopNodeBuilder.getOutgoingEdgesList());
-        Edge elseEdge = firstNopNodeOutgoingEdges.removeLast();
-        firstNopNodeBuilder.clearOutgoingEdges();
-        firstNopNodeBuilder.addAllOutgoingEdges(firstNopNodeOutgoingEdges);
-        this.spec.putNodes(ifStatement.getFirstNopNodeName(), firstNopNodeBuilder.build());
+        Edge elseEdge = removeLastOutgoingEdgeFromNode(ifStatement.getFirstNopNodeName());
 
         // Get the last Node of the parent thread
-        Entry<String, Node> lastNodeOfParentThread = this.getLastNodeInGraph();
+        // Entry<String, Node> lastNodeOfParentThread = this.getLastNodeInGraph();
+        String lastNodeOfParentThreadName = lastNodeName;
 
         ifElseBody.body(this);
 
-        Entry<String, Node> lastNodeOfBody = this.getLastNodeInGraph();
+        String lastNodeOfBodyName = lastNodeName;
 
         // If no nodes were added from the body...
-        if (lastNodeOfParentThread.getKey() == lastNodeOfBody.getKey()) {
-            firstNopNodeOutgoingEdges.add(
-                Edge.newBuilder()
-                    .setSinkNodeName(ifStatement.getLastNopNodeName())
-                    .setCondition(elseIfCondition.getSpec())
-                    .addAllVariableMutations(this.collectVariableMutations())
-                    .build()
-            );
-            this.spec.putNodes(ifStatement.getFirstNopNodeName(), firstNopNodeBuilder.build());
+        if (lastNodeOfParentThreadName.equals(lastNodeOfBodyName)) {
+            System.out.println("no nodes added from body");
+            addOutgoingEdgeToNode(
+                    ifStatement.getFirstNopNodeName(),
+                    Edge.newBuilder()
+                            .setSinkNodeName(ifStatement.getLastNopNodeName())
+                            .setCondition(elseIfCondition)
+                            .addAllVariableMutations(this.collectVariableMutations())
+                            .build());
         } else {
+            System.out.println("nodes added from body");
             // Remove edge between last node of parent thread and first node of body
-            Node.Builder lastNodeOfParentThreadBuilder = lastNodeOfParentThread.getValue().toBuilder();
-            List<Edge> lastNodeOfParentThreadOutgoingEdges = new ArrayList<Edge>(lastNodeOfParentThreadBuilder.getOutgoingEdgesList());
-            Edge lastOutgoingEdge = lastNodeOfParentThreadOutgoingEdges.removeLast();
-            lastNodeOfParentThreadBuilder.clearOutgoingEdges();
-            lastNodeOfParentThreadBuilder.addAllOutgoingEdges(lastNodeOfParentThreadOutgoingEdges);
-            this.spec.putNodes(lastNodeOfParentThread.getKey(), lastNodeOfParentThreadBuilder.build());
+            Edge lastOutgoingEdge = removeLastOutgoingEdgeFromNode(lastNodeOfParentThreadName);
 
+            // Add edge from the firstNopNode to the first node of the body
             String firstNodeOfBodyName = lastOutgoingEdge.getSinkNodeName();
 
-            firstNopNodeOutgoingEdges.add(
-                Edge.newBuilder()
-                    .setSinkNodeName(firstNodeOfBodyName)
-                    .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList())
-                    .setCondition(elseIfCondition.getSpec())
-                    .build()
-            );
-            this.spec.putNodes(ifStatement.getFirstNopNodeName(), firstNopNodeBuilder.build());
+            addOutgoingEdgeToNode(
+                    ifStatement.getFirstNopNodeName(),
+                    Edge.newBuilder()
+                            .setSinkNodeName(firstNodeOfBodyName)
+                            .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList())
+                            .setCondition(elseIfCondition)
+                            .build());
 
             // Add edge from last node of the body to last NOP node
-            Node.Builder lastNodeOfBodyBuilder = lastNodeOfBody.getValue().toBuilder();
-            lastNodeOfBodyBuilder.addOutgoingEdges(
-                Edge.newBuilder()
-                    .setSinkNodeName(ifStatement.getLastNopNodeName())
-                    .addAllVariableMutations(this.collectVariableMutations())
-                    .build()
-            );
-            this.spec.putNodes(lastNodeOfBody.getKey(), lastNodeOfBodyBuilder.build());
+            addOutgoingEdgeToNode(
+                    lastNodeOfBodyName,
+                    Edge.newBuilder()
+                            .setSinkNodeName(ifStatement.getLastNopNodeName())
+                            .addAllVariableMutations(this.collectVariableMutations())
+                            .build());
         }
 
-        // // If elseIf condition was not specified, add back 'else' edge
-        if  (elseIfCondition != null) {
-            firstNopNodeOutgoingEdges.removeLast();
-            firstNopNodeOutgoingEdges.add(elseEdge);
-            this.spec.putNodes(ifStatement.getFirstNopNodeName(), firstNopNodeBuilder.build());
+        // If elseIf condition was not specified, add back 'else' edge we removed earlier
+        if (elseIfCondition.equals(Edge.getDefaultInstance())) {
+            addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), elseEdge);
+        }
+
+        // If the nopNode has no outgoing edges, set it as the last node of the ThreadSpec
+        if (this.spec.getNodesOrThrow(ifStatement.getLastNopNodeName()).getOutgoingEdgesCount() == 0) {
+            lastNodeName = ifStatement.getLastNopNodeName();
         }
 
         return ifStatement;
     }
 
-    private Entry<String, Node> getLastNodeInGraph() {
-        for (Entry<String, Node> node : this.spec.getNodesMap().entrySet()) {
-            if (node.getValue().getOutgoingEdgesCount() == 0) {
-                return node;
-            }
-        }
-
-        throw new RuntimeException("No universal sink exists! Error building workflow.");
+    private Edge removeLastOutgoingEdgeFromNode(String nodeName) {
+        Node.Builder nodeBuilder = this.spec.getNodesOrThrow(nodeName).toBuilder();
+        List<Edge> outgoingEdges = new ArrayList<>(nodeBuilder.getOutgoingEdgesList());
+        Edge lastEdge = outgoingEdges.removeLast();
+        nodeBuilder.clearOutgoingEdges();
+        nodeBuilder.addAllOutgoingEdges(outgoingEdges);
+        this.spec.putNodes(nodeName, nodeBuilder.build());
+        return lastEdge;
     }
+
+    private void addOutgoingEdgeToNode(String nodeName, Edge edge) {
+        Node.Builder nodeBuilder = this.spec.getNodesOrThrow(nodeName).toBuilder();
+        nodeBuilder.addOutgoingEdges(edge);
+        this.spec.putNodes(nodeName, nodeBuilder.build());
+    }
+
+    // private Entry<String, Node> getLastNodeInGraph() {
+    //     for (Entry<String, Node> node : this.spec.getNodesMap().entrySet()) {
+    //         if (node.getValue().getOutgoingEdgesCount() == 0) {
+    //             return node;
+    //         }
+    //     }
+
+    //     throw new RuntimeException("No universal sink exists! Error building workflow.");
+    // }
 
     private void addNopNode() {
         checkIfIsActive();
@@ -926,7 +935,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         checkIfIsActive();
         String nextNodeName = getNodeName(name, type);
 
-        lastNodeName = getLastNodeInGraph().getKey();
         if (lastNodeName == null) {
             throw new IllegalStateException("Not possible to have null last node here");
         }
