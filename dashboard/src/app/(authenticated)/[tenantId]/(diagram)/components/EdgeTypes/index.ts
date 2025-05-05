@@ -1,6 +1,6 @@
 import { EdgeTypes } from 'reactflow'
-import { DefaultEdge } from './Default'
+import CustomEdge from './Default'
 
 export const edgeTypes: EdgeTypes = {
-  default: DefaultEdge,
+  custom: CustomEdge,
 }
