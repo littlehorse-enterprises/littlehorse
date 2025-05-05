@@ -27,6 +27,7 @@ type WorkflowThread struct {
 	isActive          bool
 	spec              lhproto.ThreadSpec
 	wf                *LHWorkflow
+	firstNopNodeName  *string
 	lastNodeName      *string
 	lastNodeCondition *WorkflowCondition
 	variableMutations []*lhproto.VariableMutation
@@ -88,6 +89,12 @@ type LHExpression struct {
 }
 
 type LHErrorType string
+
+type WorkflowIfStatement struct {
+	firstNopNodeName    string
+	lastNopNodeName     string
+	thread          	*WorkflowThread
+}
 
 const (
 	ChildFailure      LHErrorType = "CHILD_FAILURE"
@@ -501,8 +508,17 @@ func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interfa
 
 type IfElseBody func(t *WorkflowThread)
 
-func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
-	t.doIf(cond, doIf)
+func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+	return t.doIf(cond, doIf)
+}
+
+func (s *WorkflowIfStatement) DoElseIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+	result := s.thread.doElseIf(cond, doIf)
+	return &result
+}
+
+func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
+	s.thread.doIfElse(nil, nil, doElse)
 }
 
 func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
