@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -31,20 +31,36 @@ public class ConditionalTest {
             ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
             Node firstNOPNode = thread.getNodesOrThrow("1-nop-NOP");
 
-            assertThat(firstNOPNode.getOutgoingEdgesList())
+            assertThat(firstNOPNode.getOutgoingEdgesCount()).isEqualTo(2);
+            assertThat(firstNOPNode.getOutgoingEdges(0))
                     .extracting(
+                            (edge) -> edge.getCondition().getLeft().getVariableName(),
                             (edge) -> edge.getCondition().getComparator(),
                             (edge) -> edge.getCondition()
                                     .getRight()
                                     .getLiteralValue()
                                     .getInt(),
-                            (edge) -> edge.getVariableMutations(0)
-                                    .getRhsAssignment()
-                                    .getLiteralValue()
-                                    .getStr())
-                    .containsExactlyInAnyOrder(
-                            Tuple.tuple(Comparator.GREATER_THAN, 10L, "if-body"),
-                            Tuple.tuple(Comparator.LESS_THAN_EQ, 10L, "else-body"));
+                            (edge) -> {
+                                return edge.getVariableMutations(0)
+                                        .getRhsAssignment()
+                                        .getLiteralValue()
+                                        .getStr();
+                            })
+                    .containsExactly("my-var", Comparator.GREATER_THAN, 10L, "if-body");
+            assertThat(firstNOPNode.getOutgoingEdges(1))
+                    .extracting(
+                            (edge) -> edge.getCondition().getLeft(),
+                            (edge) -> edge.getCondition().getRight(),
+                            (edge) -> {
+                                return edge.getVariableMutations(0)
+                                        .getRhsAssignment()
+                                        .getLiteralValue()
+                                        .getStr();
+                            })
+                    .containsExactly(
+                            VariableAssignment.getDefaultInstance(),
+                            VariableAssignment.getDefaultInstance(),
+                            "else-body");
         }
     }
 }
