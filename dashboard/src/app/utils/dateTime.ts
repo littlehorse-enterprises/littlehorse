@@ -42,6 +42,9 @@ export const formatTime = (seconds: number | undefined): string => {
 }
 
 export function formatDuration(durationMs: number) {
+  // Negative durations don't make sense, so we clamp them at 0
+  durationMs = Math.max(durationMs, 0)
+
   let durationDisplay
   if (durationMs < 1000) {
     durationDisplay = `${durationMs} ms`

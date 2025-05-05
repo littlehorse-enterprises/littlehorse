@@ -220,7 +220,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             {
                 _logger?.LogError(ex, "Failed serializing Task Output");
                 taskResult.LogOutput = LHMappingHelper.ExceptionToVariableValue(ex, workerContext);
-                taskResult.Status = TaskStatus.TaskOutputSerializingError;
+                taskResult.Status = TaskStatus.TaskOutputSerdeError;
                 taskResult.Error = new LHTaskError
                 {
                     Message = ex.ToString(), Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)

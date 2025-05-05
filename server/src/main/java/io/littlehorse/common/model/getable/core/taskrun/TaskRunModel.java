@@ -9,6 +9,7 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
@@ -22,6 +23,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -227,7 +229,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             case TASK_EXCEPTION:
             case TASK_FAILED:
             case TASK_INPUT_VAR_SUB_ERROR:
-            case TASK_OUTPUT_SERIALIZING_ERROR:
+            case TASK_OUTPUT_SERDE_ERROR:
             case TASK_SUCCESS:
             case TASK_TIMEOUT:
                 return false;
@@ -271,12 +273,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
-    public void onTaskAttemptResultReported(ReportTaskRunModel ce) {
-        if (ce.getAttemptNumber() >= attempts.size()) {
+    public void onTaskAttemptResultReported(ReportTaskRunModel taskRunReport) {
+        if (taskRunReport.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
 
-        TaskAttemptModel attempt = attempts.get(ce.getAttemptNumber());
+        TaskAttemptModel attempt = attempts.get(taskRunReport.getAttemptNumber());
 
         if (attempt.getStatus() != TaskStatus.TASK_RUNNING) {
             // The task result has already been processed, so ignore this event.
@@ -289,9 +291,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             // complicated very quickly from a user semantics perspective.
             log.trace(
                     "Ignored {} TaskRunResult on TaskRun {} attempt no. {} w/status {}",
-                    ce.getStatus(),
+                    taskRunReport.getStatus(),
                     id.getStoreableKey(),
-                    ce.getAttemptNumber(),
+                    taskRunReport.getAttemptNumber(),
                     attempt.getStatus());
             return;
         }
@@ -302,27 +304,36 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             attempt.setMaskedValue(true);
         }
 
-        attempt.setOutput(ce.getStdout());
-        attempt.setLogOutput(ce.getStderr());
-        attempt.setStatus(ce.getStatus());
-        attempt.setEndTime(ce.getTime());
-        attempt.setError(ce.getError());
-        attempt.setException(ce.getException());
-        if (ce.getException() != null) {
-            attempt.setOutput(ce.getException().getContent());
-        }
+        attempt.setEndTime(taskRunReport.getTime());
+        attempt.setLogOutput(taskRunReport.getLogOutput());
 
-        if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
-            // Tell the WfRun that the TaskRun is done.
-            transitionTo(TaskStatus.TASK_SUCCESS);
-        } else if (shouldRetry()) {
-            scheduleRetryAtAppropriateTime();
+        if (taskRunReport.getOutput() != null
+                && taskRunReport.getOutput().getDeserializationError().isPresent()) {
+            attempt.setError(new LHTaskErrorModel(
+                    taskRunReport.getOutput().getDeserializationError().get(), LHErrorType.VAR_SUB_ERROR));
+            attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
+            transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
         } else {
-            transitionTo(ce.getStatus());
+            attempt.setOutput(taskRunReport.getOutput());
+            attempt.setStatus(taskRunReport.getStatus());
+            attempt.setError(taskRunReport.getError());
+            attempt.setException(taskRunReport.getException());
+            if (taskRunReport.getException() != null) {
+                attempt.setOutput(taskRunReport.getException().getContent());
+            }
+
+            if (taskRunReport.getStatus() == TaskStatus.TASK_SUCCESS) {
+                // Tell the WfRun that the TaskRun is done.
+                transitionTo(TaskStatus.TASK_SUCCESS);
+            } else if (shouldRetry()) {
+                scheduleRetryAtAppropriateTime();
+            } else {
+                transitionTo(taskRunReport.getStatus());
+            }
         }
 
         // The WfRun may need to advance.
-        processorContext.getableManager().get(getWfRunId()).advance(ce.getTime());
+        processorContext.getableManager().get(getWfRunId()).advance(taskRunReport.getTime());
     }
 
     /**

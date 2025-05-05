@@ -1,6 +1,6 @@
 import { getVariable } from '@/app/utils'
 import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
-import { Edge as EdgeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
+import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
 import { ThreadSpecWithName } from '../Diagram'
 import { getNodeType } from '../NodeTypes/extractNodes'
@@ -37,7 +37,7 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
       edges.push({
         id,
         source: `${source}:${threadSpecWithName.name}`,
-        type: 'default',
+        type: 'custom',
         target: `${edge.sinkNodeName}:${threadSpecWithName.name}`,
         label,
         data: edge,
@@ -53,11 +53,16 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
   return edges
 }
 
+const formatVariableValue = (value?: VariableAssignment) => {
+  if (value?.literalValue?.str === undefined) return getVariable(value)
+  return `"${getVariable(value)}"`
+}
+
 const extractEdgeLabel = ({ condition }: EdgeProto) => {
   if (!condition) return
 
   const { left, right, comparator } = condition
-  return `${getVariable(left)} ${getComparatorSymbol(comparator)} ${getVariable(right)}`
+  return `${formatVariableValue(left)} ${getComparatorSymbol(comparator)} ${formatVariableValue(right)}`
 }
 
 function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string, wfSpec: WfSpec): Edge[] {
@@ -73,6 +78,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       edges.push({
         id: `${sourceId}>${targetId}:${threadName}`,
         source: sourceId,
+        type: 'custom',
         sourceHandle: 'bottom-0',
         target: targetId,
         markerEnd: {
@@ -97,6 +103,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
         edges.push({
           id: `${sourceId}>${targetId}`,
           source: sourceId,
+          type: 'custom',
           target: targetId,
           targetHandle: 'bottom-0',
           markerEnd: { type: MarkerType.ArrowClosed },

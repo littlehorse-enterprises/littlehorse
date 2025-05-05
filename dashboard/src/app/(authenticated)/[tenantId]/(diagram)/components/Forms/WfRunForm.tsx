@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ThreadVarDef } from 'littlehorse-client/proto'
 import { forwardRef } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, UseFormRegister, FieldValues, FieldPath } from 'react-hook-form'
 import { FormFields } from './components/FormFields'
 
 export type FormValues = {
@@ -16,7 +16,7 @@ type Prop = {
 
 // eslint-disable-next-line react/display-name
 export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, onSubmit }, ref) => {
-  const methods = useForm()
+  const methods = useForm<FormValues>()
   const { register, handleSubmit, formState } = methods
 
   const onSubmitForm = (data: FormValues) => {

@@ -75,7 +75,7 @@ public class ScheduledTaskExecutor {
             taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
         } catch (LHSerdeException exn) {
             log.error("Failed serializing Task Output", exn);
-            taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR);
+            taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
             taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
         } catch (InvocationTargetException exn) {
             if (exn.getTargetException() instanceof LHTaskException) {
@@ -128,7 +128,7 @@ public class ScheduledTaskExecutor {
                 return LHErrorType.TASK_FAILURE;
             case TASK_TIMEOUT:
                 return LHErrorType.TIMEOUT;
-            case TASK_OUTPUT_SERIALIZING_ERROR:
+            case TASK_OUTPUT_SERDE_ERROR:
                 return LHErrorType.VAR_MUTATION_ERROR;
             case TASK_INPUT_VAR_SUB_ERROR:
                 return LHErrorType.VAR_SUB_ERROR;

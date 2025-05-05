@@ -413,7 +413,7 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 				taskResult.LogOutput = &lhproto.VariableValue{
 					Value: &lhproto.VariableValue_Str{Str: msg},
 				}
-				taskResult.Status = lhproto.TaskStatus_TASK_OUTPUT_SERIALIZING_ERROR
+				taskResult.Status = lhproto.TaskStatus_TASK_OUTPUT_SERDE_ERROR
 				return taskResult
 			}
 			taskResult.Result = &lhproto.ReportTaskRun_Output{Output: taskOutputVarVal}

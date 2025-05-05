@@ -311,7 +311,7 @@ class LHConnection:
                 output = None
                 stacktrace = traceback.format_exc()
                 logging.error(stacktrace)
-                status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
+                status = TaskStatus.TASK_OUTPUT_SERDE_ERROR
                 task_error = LHTaskError(
                     type=LHErrorType.VAR_SUB_ERROR,
                     message=f"Failed serializing output: {stacktrace}",
@@ -704,7 +704,7 @@ def shutdown_hook(*workers: LHTaskWorker) -> None:
 
     loop = asyncio.get_running_loop()
 
-    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+    for sig in (signal.SIGTERM, signal.SIGINT):
         loop.add_signal_handler(sig, functools.partial(stop_workers, *workers))
 
 

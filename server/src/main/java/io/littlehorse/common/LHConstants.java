@@ -42,7 +42,7 @@ public class LHConstants {
             INTERNAL_ERROR,
             USER_TASK_CANCELLED));
 
-    public static final int DEFAULT_TASK_TIMEOUT_SECONDS = 15;
+    public static final int DEFAULT_TASK_TIMEOUT_SECONDS = 60;
 
     public static final int DEFAULT_LIMIT = 1000;
     public static final int MIN_WORKER_ASSIGNMENT_BY_SERVER = 2;
