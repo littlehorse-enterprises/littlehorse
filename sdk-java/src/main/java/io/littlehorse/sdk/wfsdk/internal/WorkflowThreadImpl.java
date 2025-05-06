@@ -557,16 +557,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         this.spec.putNodes(nodeName, nodeBuilder.build());
     }
 
-    // private Entry<String, Node> getLastNodeInGraph() {
-    //     for (Entry<String, Node> node : this.spec.getNodesMap().entrySet()) {
-    //         if (node.getValue().getOutgoingEdgesCount() == 0) {
-    //             return node;
-    //         }
-    //     }
-
-    //     throw new RuntimeException("No universal sink exists! Error building workflow.");
-    // }
-
     private void addNopNode() {
         checkIfIsActive();
         addNode("nop", NodeCase.NOP, NopNode.newBuilder().build());
