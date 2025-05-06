@@ -482,7 +482,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         WorkflowIfStatementImpl ifStatement = (WorkflowIfStatementImpl) inputIfStatement;
         EdgeCondition elseIfCondition = (inputCondition != null)
                 ? ((WorkflowConditionImpl) inputCondition).getSpec()
-                : EdgeCondition.getDefaultInstance();
+                : Edge.getDefaultInstance().getCondition();
 
         // Remove else edge from firstNopNode
         Edge elseEdge = removeLastOutgoingEdgeFromNode(ifStatement.getFirstNopNodeName());
