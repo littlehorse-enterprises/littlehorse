@@ -897,10 +897,9 @@ func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) WorkflowIfStatement {
 	firstNopNode := t.spec.Nodes[*t.firstNopNodeName]
 	elseEdge := firstNopNode.OutgoingEdges[len(firstNopNode.OutgoingEdges)-1]
-	remove(firstNopNode.OutgoingEdges, elseEdge)
-
+	// Remove else edge from the first NOP node
+	firstNopNode.OutgoingEdges = removeEdge(firstNopNode.OutgoingEdges, elseEdge)
 	lastNodeOfParentThread := t.spec.Nodes[*t.lastNodeName]
-
 	lastNopNodeName := t.lastNodeName
 
 	doElseIf(t)
@@ -920,10 +919,9 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 			},
 		)
 		} else {
-		// Remove edge between last node of parent thread and first node of body
 		lastOutgoingEdge := lastNodeOfParentThread.OutgoingEdges[len(lastNodeOfParentThread.OutgoingEdges)-1]
-		lastNodeOfParentThread.OutgoingEdges = lastNodeOfParentThread.OutgoingEdges[:len(lastNodeOfParentThread.OutgoingEdges)-1]
-
+		// Remove edge between last node of parent thread and first node of body
+		lastNodeOfParentThread.OutgoingEdges = removeEdge(lastNodeOfParentThread.OutgoingEdges, lastOutgoingEdge)
 		// Get the first node of the body
 		firstNodeOfBodyName := lastOutgoingEdge.SinkNodeName
 
@@ -937,7 +935,7 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 			},
 		)
 
-		// Add edge from last node of the body to last NOP node
+		// Add an edge from the last node of the body to the last NOP node
 		lastNodeOfBody.OutgoingEdges = append(
 			lastNodeOfBody.OutgoingEdges,
 			&lhproto.Edge{
@@ -945,8 +943,6 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 				VariableMutations: t.collectVariableMutations(),
 			},
 		)
-
-		t.lastNodeName = lastNopNodeName
 	}
 
 	// If else condition was not replaced, add it back
@@ -954,24 +950,26 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 		firstNopNode.OutgoingEdges = append(firstNopNode.OutgoingEdges, elseEdge)
 	}
 
+	// If no edges were added to the last NOP node, set it as last node of the threadSpec
+	if len(t.spec.Nodes[*lastNopNodeName].OutgoingEdges) == 0 {
+		t.lastNodeName = lastNopNodeName
+	}
+
 	return WorkflowIfStatement{firstNopNodeName: *t.firstNopNodeName,
 		lastNopNodeName: *t.lastNodeName,
 		thread: t}
 }
 
-func remove(edges []*lhproto.Edge, edgeToRemove *lhproto.Edge) *lhproto.Edge {
-	var removedEdge *lhproto.Edge
+func removeEdge(edges []*lhproto.Edge, edgeToRemove *lhproto.Edge) []*lhproto.Edge {
     for i, edge := range edges {
         if edge == edgeToRemove {
             // Remove the element by slicing around it
-            removedEdge = edge
-            edges = append(edges[:i], edges[i+1:]...)
-            return removedEdge
+            result := append(edges[:i], edges[i+1:]...)
+            return result
         }
     }
-    return nil // Return nil if the edge was not found
+    return edges // Return original edges if the edge was not found
 }
-
 
 func (t *WorkflowThread) doIfElse(
 	cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody,
