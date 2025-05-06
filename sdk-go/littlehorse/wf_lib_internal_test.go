@@ -1012,7 +1012,7 @@ func TestShouldValidateGroupIdIsNotEmptyInUserTask(t *testing.T) {
 	wf.Compile()
 }
 
-func TestShouldCompileWorkflowWithDoElseIfStatementInWorkflowThread(t *testing.T) {
+func TestShouldCompileWorkflowWithMultipleDoElseIfStatementsInWorkflowThread(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
 		myInt := thread.DeclareInt("my-int")
 		thread.DoIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 9), func(t *littlehorse.WorkflowThread) {
@@ -1146,4 +1146,150 @@ func TestShouldCompileWorkflowWithDoElseIfStatementInWorkflowThread(t *testing.T
 	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeC.GetOutgoingEdges()[0].GetSinkNodeName())
 	assert.Equal(t, expectedTaskDSinkNodeName, lastNopNode.GetOutgoingEdges()[0].GetSinkNodeName())
 	assert.Equal(t, expectedExitSinkNodeName, taskNodeD.GetOutgoingEdges()[0].GetSinkNodeName())
+}
+
+func TestShouldCompileWorkflowWithDoIfElseAndElseStatements(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		myInt := thread.DeclareInt("my-int")
+		thread.DoIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 9), func(t *littlehorse.WorkflowThread) {
+			t.Execute("task-a")
+			myInt.Assign(9)
+		}).DoElseIf(thread.Condition(7, lhproto.Comparator_LESS_THAN, 4), func(t *littlehorse.WorkflowThread) {
+			myInt.Assign(10)
+			t.Execute("task-b")
+		}).DoElse(func(t *littlehorse.WorkflowThread) {
+			t.Execute("task-c")
+		})
+	}, "my-workflow")
+
+	compiledWorkflow, error := wf.Compile()
+
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	firstNopNode := entrypoint.Nodes["1-nop-NOP"]
+	taskNodeA := entrypoint.Nodes["2-task-a-TASK"]
+	taskNodeB := entrypoint.Nodes["4-task-b-TASK"]
+	taskNodeC := entrypoint.Nodes["5-task-c-TASK"]
+	lastNopNode := entrypoint.Nodes["3-nop-NOP"]
+
+	expectedNumberOutgoingEdgesFromFirstNopNode := 3
+	expectedLastSinkNopNodeName := "3-nop-NOP"
+	expectedExitSinkNodeName := "6-exit-EXIT"
+	expectedFirstNopeNode := lhproto.Node{
+		Node: &lhproto.Node_Nop{},
+		OutgoingEdges: []*lhproto.Edge{
+			{
+				SinkNodeName: "2-task-a-TASK",
+				Condition: &lhproto.EdgeCondition{
+					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+					Left: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 5},
+							},
+						},
+					},
+					Right: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 9},
+							},
+						},
+					},
+				},
+			},
+			{
+				SinkNodeName: "4-task-b-TASK",
+				Condition: &lhproto.EdgeCondition{
+					Comparator: lhproto.Comparator_LESS_THAN,
+					Left: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 7},
+							},
+						},
+					},
+					Right: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 4},
+							},
+						},
+					},
+				},
+				VariableMutations: []*lhproto.VariableMutation{
+					{
+						LhsName: "my-int",
+						RhsValue: &lhproto.VariableMutation_RhsAssignment{
+							RhsAssignment: &lhproto.VariableAssignment{
+								Source: &lhproto.VariableAssignment_LiteralValue{
+									LiteralValue: &lhproto.VariableValue{
+										Value: &lhproto.VariableValue_Int{Int: 10},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				SinkNodeName: "5-task-c-TASK",
+			},
+		},
+	}
+
+	assert.Nil(t, error)
+	assert.Equal(t, expectedNumberOutgoingEdgesFromFirstNopNode, len(firstNopNode.GetOutgoingEdges()))
+	assert.True(t, proto.Equal(firstNopNode, &expectedFirstNopeNode))
+	assert.True(t, proto.Equal(taskNodeA.OutgoingEdges[0].VariableMutations[0],
+		&lhproto.VariableMutation{
+			LhsName: "my-int",
+			RhsValue: &lhproto.VariableMutation_RhsAssignment{
+				RhsAssignment: &lhproto.VariableAssignment{
+					Source: &lhproto.VariableAssignment_LiteralValue{
+						LiteralValue: &lhproto.VariableValue{
+							Value: &lhproto.VariableValue_Int{Int: 9},
+						},
+					},
+				},
+			},
+		}))
+	assert.Equal(t, expectedNumberOutgoingEdgesFromFirstNopNode, len(firstNopNode.GetOutgoingEdges()))
+	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeA.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeB.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeC.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, expectedExitSinkNodeName, lastNopNode.GetOutgoingEdges()[0].GetSinkNodeName())
+}
+
+func TestShouldPanicAnErrorIfDoElseIsCalledMoreThanOnce(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		ifStatement := thread.DoIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 9),
+			func(t *littlehorse.WorkflowThread) {
+				t.Execute("task-a")
+			})
+		ifStatement.DoElse(func(t *littlehorse.WorkflowThread) {
+			t.Execute("task-b")
+		})
+
+		defer func() {
+			if r := recover(); r != nil {
+				err, ok := r.(error)
+				if !ok {
+					t.Fatalf("expected error, got: %v", r)
+				}
+				if !strings.Contains(err.Error(), "else block has already been executed") {
+					t.Errorf("expected error about already executed else block, got: %v", err)
+				}
+			} else {
+				t.Errorf("expected panic, but function completed normally")
+			}
+		}()
+
+		ifStatement.DoElse(func(t *littlehorse.WorkflowThread) {
+			t.Execute("task-c")
+		})
+	}, "my-workflow")
+
+	_, err := wf.Compile()
+
+	assert.Nil(t, err)
 }

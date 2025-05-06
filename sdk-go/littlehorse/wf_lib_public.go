@@ -1,6 +1,7 @@
 package littlehorse
 
 import (
+	"errors"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
@@ -93,6 +94,7 @@ type LHErrorType string
 type WorkflowIfStatement struct {
 	firstNopNodeName string
 	lastNopNodeName  string
+	wasElseExecuted  bool
 	thread           *WorkflowThread
 }
 
@@ -518,7 +520,11 @@ func (s *WorkflowIfStatement) DoElseIf(cond *WorkflowCondition, doIf IfElseBody)
 }
 
 func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
-	s.thread.doIfElse(nil, nil, doElse)
+	if s.wasElseExecuted {
+		panic(errors.New("else block has already been executed, cannot add another else block"))
+	}
+	s.wasElseExecuted = true
+	s.thread.doElseIf(nil, doElse)
 }
 
 func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
