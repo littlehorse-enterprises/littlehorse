@@ -545,7 +545,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private Edge removeLastOutgoingEdgeFromNode(String nodeName) {
         Node.Builder nodeBuilder = this.spec.getNodesOrThrow(nodeName).toBuilder();
         ArrayList<Edge> outgoingEdges = new ArrayList<>(nodeBuilder.getOutgoingEdgesList());
-        Edge lastEdge = outgoingEdges.remove(outgoingEdges.size()-1);
+        Edge lastEdge = outgoingEdges.remove(outgoingEdges.size() - 1);
         nodeBuilder.clearOutgoingEdges();
         nodeBuilder.addAllOutgoingEdges(outgoingEdges);
         this.spec.putNodes(nodeName, nodeBuilder.build());
