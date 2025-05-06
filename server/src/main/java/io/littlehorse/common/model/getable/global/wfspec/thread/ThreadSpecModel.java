@@ -313,8 +313,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             VariableDefModel varDef = threadVarDef.getVarDef();
             if (val == null) {
                 if (threadVarDef.isRequired()) {
-                    throw new LHValidationError(
-                            "Must provide required input variable %s of type %s".formatted(varName, varDef.getType()));
+                    throw new LHValidationError("Must provide required input variable %s of type %s"
+                            .formatted(varName, varDef.getTypeDef()));
                 }
                 log.debug("Variable {} not provided, defaulting to null", varName);
                 continue;
@@ -366,11 +366,11 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 continue;
             }
 
-            if (!assn.canBeType(e.getValue().getVarDef().getType(), this)) {
+            if (!assn.canBeType(e.getValue().getVarDef().getTypeDef(), this)) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Var " + e.getKey() + " should be "
-                                + e.getValue().getVarDef().getType());
+                                + e.getValue().getVarDef().getTypeDef());
             }
         }
 

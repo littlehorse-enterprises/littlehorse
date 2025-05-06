@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -31,7 +32,7 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
     public List<VariableDefModel> inputVars;
 
     @Setter
-    private TaskDefOutputSchemaModel schemaOutput;
+    private ReturnTypeModel returnType;
 
     public TaskDefModel() {
         inputVars = new ArrayList<>();
@@ -65,12 +66,12 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
 
     @Override
     public TaskDef.Builder toProto() {
-        TaskDef.Builder b = TaskDef.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        TaskDef.Builder b = TaskDef.newBuilder()
+                .setId(id.toProto())
+                .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
+                .setReturnType(returnType.toProto());
         for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
-        }
-        if (schemaOutput != null) {
-            b.setSchemaOutput(schemaOutput.toProto());
         }
 
         return b;
@@ -85,9 +86,11 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
         for (VariableDef entry : proto.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
         }
-        if (proto.hasSchemaOutput()) {
-            schemaOutput = LHSerializable.fromProto(proto.getSchemaOutput(), TaskDefOutputSchemaModel.class, context);
-        }
+        returnType = LHSerializable.fromProto(proto.getReturnType(), ReturnTypeModel.class, context);
+
+        // The `return_type` was introduced over a year ago; we don't have anyone using LittleHorse without
+        // return types now. Safe to ignore / evolve it.
+        returnType = LHSerializable.fromProto(proto.getReturnType(), ReturnTypeModel.class, context);
     }
 
     public String getName() {

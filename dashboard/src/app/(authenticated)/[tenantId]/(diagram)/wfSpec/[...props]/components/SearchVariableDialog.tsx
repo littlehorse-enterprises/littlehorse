@@ -19,6 +19,7 @@ import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { searchVariables } from '../actions/searchVariables'
+import { getVariableDefType } from '@/app/utils/variables'
 
 type Props = {
   spec: WfSpec
@@ -54,7 +55,10 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
         limit,
         bookmark: pageParam,
         varName: variable.name,
-        value: convertToVariableValue({ type: variable.type.toLowerCase(), value: variableValueDebounced }),
+        value: convertToVariableValue({
+          type: getVariableDefType(variable).toLowerCase(),
+          value: variableValueDebounced,
+        }),
       })
     },
   })
