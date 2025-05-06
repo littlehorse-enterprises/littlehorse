@@ -13,11 +13,15 @@ public class WorkflowIfStatementImpl implements WorkflowIfStatement {
     private String firstNopNodeName;
     private String lastNopNodeName;
 
+    @Getter()
+    private boolean wasElseExecuted;
+
     public WorkflowIfStatementImpl(
             WorkflowThread parentWorkflowThread, String firstNopNodeName, String lastNopNodeName) {
         this.parentWorkflowThread = (WorkflowThreadImpl) parentWorkflowThread;
         this.firstNopNodeName = firstNopNodeName;
         this.lastNopNodeName = lastNopNodeName;
+        this.wasElseExecuted = false;
     }
 
     @Override
@@ -27,6 +31,11 @@ public class WorkflowIfStatementImpl implements WorkflowIfStatement {
 
     @Override
     public void doElse(IfElseBody body) {
+        if (this.wasElseExecuted) {
+            throw new IllegalStateException("doElse() can only be called once per WorkflowIfStatement.");
+        }
+
+        this.wasElseExecuted = true;
         this.parentWorkflowThread.doElseIf(this, null, body);
     }
 }
