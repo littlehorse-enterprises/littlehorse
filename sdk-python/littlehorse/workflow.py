@@ -41,6 +41,7 @@ from littlehorse.model import (
     JsonIndex,
     Node,
     NopNode,
+    ReturnType,
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
@@ -48,6 +49,7 @@ from littlehorse.model import (
     ThreadSpec,
     ThreadVarDef,
     ThrowEventNode,
+    TypeDefinition,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -1602,6 +1604,16 @@ class WorkflowThread:
                 "Must provide either user_id or user_group to assign_user_task()"
             )
 
+        if user_id is not None and isinstance(user_id, str) and user_id.strip() == "":
+            raise ValueError("UserId can't be empty to assign_user_task()")
+
+        if (
+            user_group is not None
+            and isinstance(user_group, str)
+            and user_group.strip() == ""
+        ):
+            raise ValueError("UserGroup can't be empty to assign_user_task()")
+
         ug = to_variable_assignment(user_group) if user_group else None
         ui = to_variable_assignment(user_id) if user_id else None
         ut_node = UserTaskNode(
@@ -2278,6 +2290,9 @@ def create_workflow_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutWorkflowEventDefRequest(name=name, type=type)
+    request = PutWorkflowEventDefRequest(
+        name=name,
+        content_type=ReturnType(TypeDefinition(type=type)),
+    )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")

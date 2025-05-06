@@ -379,6 +379,11 @@ func (t *WorkflowThread) assignUserTask(
 
 	if userGroup != nil {
 		var err error
+		if str, ok := userGroup.(string); ok && strings.TrimSpace(str) == "" {
+			t.throwError(tracerr.Wrap(errors.New(
+				"userGroup can't be blank when assigning usertask",
+			)))
+		}
 		userGroupAssn, err := t.assignVariable(userGroup)
 		if err != nil {
 			t.throwError(tracerr.Wrap(err))
@@ -387,6 +392,11 @@ func (t *WorkflowThread) assignUserTask(
 	}
 
 	if userId != nil {
+		if str, ok := userId.(string); ok && strings.TrimSpace(str) == "" {
+			t.throwError(tracerr.Wrap(errors.New(
+				"userId can't be blank when assigning usertask",
+			)))
+		}
 		userIdAssn, err := t.assignVariable(userId)
 		if err != nil {
 			t.throwError(tracerr.Wrap(err))
@@ -595,7 +605,7 @@ func (w *WfRunVariable) withDefaultImpl(defaultValue interface{}) *WfRunVariable
 		if err != nil {
 			log.Fatal(err)
 		}
-		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.Type {
+		if *GetVarType(defaultVarVal) != *w.threadVarDef.VarDef.Type {
 			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.Type.String())
 		}
 		w.threadVarDef.VarDef.DefaultValue = defaultVarVal
@@ -624,7 +634,7 @@ func (w *WfRunVariable) searchableOnImpl(fieldPath string, fieldType lhproto.Var
 }
 
 func (w *WfRunVariable) maskedValueImpl() *WfRunVariable {
-	w.threadVarDef.VarDef.MaskedValue = true
+	*w.threadVarDef.VarDef.MaskedValue = true
 	return w
 }
 
@@ -800,7 +810,7 @@ func (t *WorkflowThread) addVariable(
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &lhproto.VariableDef{
-		Type: varType,
+		Type: &varType,
 		Name: name,
 	}
 

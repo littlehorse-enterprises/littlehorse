@@ -78,28 +78,28 @@ public interface PutTaskDefRequestOrBuilder extends
 
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Specifies the return type of the TaskDef.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
-   * @return Whether the outputSchema field is set.
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   * @return Whether the returnType field is set.
    */
-  boolean hasOutputSchema();
+  boolean hasReturnType();
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Specifies the return type of the TaskDef.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
-   * @return The outputSchema.
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   * @return The returnType.
    */
-  io.littlehorse.sdk.common.proto.TaskDefOutputSchema getOutputSchema();
+  io.littlehorse.sdk.common.proto.ReturnType getReturnType();
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Specifies the return type of the TaskDef.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getOutputSchemaOrBuilder();
+  io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder();
 }
