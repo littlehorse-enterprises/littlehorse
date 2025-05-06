@@ -498,9 +498,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(this.collectVariableMutations());
 
             if (inputCondition != null) {
-                {
-                    edgeToNopNode.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
-                }
+                edgeToNopNode.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToNopNode.build());
@@ -516,9 +514,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList());
 
             if (inputCondition != null) {
-                {
-                    edgeToBody.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
-                }
+                edgeToBody.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToBody.build());
