@@ -506,13 +506,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
                             .addAllVariableMutations(this.collectVariableMutations())
                             .build());
         } else {
-            System.out.println("nodes added from body");
             // Remove edge between last node of parent thread and first node of body
             Edge lastOutgoingEdge = removeLastOutgoingEdgeFromNode(lastNodeOfParentThreadName);
 
-            // Add edge from the firstNopNode to the first node of the body
             String firstNodeOfBodyName = lastOutgoingEdge.getSinkNodeName();
 
+            // Add edge from the firstNopNode to the first node of the body
             addOutgoingEdgeToNode(
                     ifStatement.getFirstNopNodeName(),
                     Edge.newBuilder()
@@ -530,8 +529,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
                             .build());
         }
 
-        // If elseIf condition was not specified, add back 'else' edge we removed earlier
-        if (elseIfCondition.equals(Edge.getDefaultInstance())) {
+        // If else condition was not specified, add back 'else' edge we removed earlier
+        if (inputCondition != null) {
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), elseEdge);
         }
 
