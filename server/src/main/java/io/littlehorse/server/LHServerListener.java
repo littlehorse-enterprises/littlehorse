@@ -117,6 +117,7 @@ import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
 import io.littlehorse.sdk.common.proto.ListWorkflowEventsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseImplBase;
+import io.littlehorse.sdk.common.proto.LittleHorseVersion;
 import io.littlehorse.sdk.common.proto.MigrateWfSpecRequest;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
@@ -161,7 +162,6 @@ import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchWorkflowEventRequest;
-import io.littlehorse.sdk.common.proto.ServerVersion;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -1118,8 +1118,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(
             resources = {},
             actions = {})
-    public void getServerVersion(Empty request, StreamObserver<ServerVersion> ctx) {
-        ctx.onNext(Version.getServerVersion());
+    public void getServerVersion(Empty request, StreamObserver<LittleHorseVersion> ctx) {
+        ctx.onNext(Version.getCurrentServerVersion());
         ctx.onCompleted();
     }
 

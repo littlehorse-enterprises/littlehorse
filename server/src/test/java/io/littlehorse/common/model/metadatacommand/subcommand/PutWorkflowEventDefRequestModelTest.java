@@ -1,10 +1,16 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -83,10 +89,10 @@ public class PutWorkflowEventDefRequestModelTest {
         sendCommand(putWorkflowEventDef);
         WorkflowEventDefModel storedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-created"));
         Assertions.assertThat(storedEventDef).isNotNull();
-        sendCommand(new PutWorkflowEventDefRequestModel("user-created", VariableType.INT));
+        sendCommand(new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.INT)));
         verify(sender, times(1)).registerErrorAndNotifyWaitingThreads(anyString(), any());
         PutWorkflowEventDefRequestModel userUpdatedCommand =
-                new PutWorkflowEventDefRequestModel("user-updated", VariableType.STR);
+                new PutWorkflowEventDefRequestModel("user-updated", new ReturnTypeModel(VariableType.STR));
         reset(server);
         sendCommand(userUpdatedCommand);
         WorkflowEventDefModel userUpdatedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-updated"));
@@ -94,7 +100,7 @@ public class PutWorkflowEventDefRequestModelTest {
     }
 
     private PutWorkflowEventDefRequestModel createSubCommand() {
-        return new PutWorkflowEventDefRequestModel("user-created", VariableType.STR);
+        return new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.STR));
     }
 
     private MetadataCommandModel sendCommand(MetadataSubCommand<?> putPrincipalRequest) {

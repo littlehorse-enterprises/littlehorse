@@ -61,22 +61,22 @@ class PutWfSpecRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
-    __slots__ = ["name", "input_vars", "output_schema"]
+    __slots__ = ["name", "input_vars", "return_type"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     INPUT_VARS_FIELD_NUMBER: _ClassVar[int]
-    OUTPUT_SCHEMA_FIELD_NUMBER: _ClassVar[int]
+    RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
-    output_schema: _task_def_pb2.TaskDefOutputSchema
-    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., output_schema: _Optional[_Union[_task_def_pb2.TaskDefOutputSchema, _Mapping]] = ...) -> None: ...
+    return_type: _common_wfspec_pb2.ReturnType
+    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
-    __slots__ = ["name", "type"]
+    __slots__ = ["name", "content_type"]
     NAME_FIELD_NUMBER: _ClassVar[int]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     name: str
-    type: _common_enums_pb2.VariableType
-    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
+    content_type: _common_wfspec_pb2.ReturnType
+    def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
     __slots__ = ["name", "fields", "description"]
@@ -89,12 +89,14 @@ class PutUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
-    __slots__ = ["name", "retention_policy"]
+    __slots__ = ["name", "retention_policy", "content_type"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     name: str
     retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
-    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ...) -> None: ...
+    content_type: _common_wfspec_pb2.ReturnType
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ["wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position"]
@@ -913,7 +915,7 @@ class GetLatestWfSpecRequest(_message.Message):
     major_version: int
     def __init__(self, name: _Optional[str] = ..., major_version: _Optional[int] = ...) -> None: ...
 
-class ServerVersion(_message.Message):
+class LittleHorseVersion(_message.Message):
     __slots__ = ["major_version", "minor_version", "patch_version", "pre_release_identifier"]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
     MINOR_VERSION_FIELD_NUMBER: _ClassVar[int]

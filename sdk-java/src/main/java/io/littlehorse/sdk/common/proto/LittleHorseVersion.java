@@ -5,21 +5,21 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * The version of the LH Server according to Semantic Versioning
+ * The version of LittleHorse according to Semantic Versioning
  * </pre>
  *
- * Protobuf type {@code littlehorse.ServerVersion}
+ * Protobuf type {@code littlehorse.LittleHorseVersion}
  */
-public final class ServerVersion extends
+public final class LittleHorseVersion extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.ServerVersion)
-    ServerVersionOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.LittleHorseVersion)
+    LittleHorseVersionOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use ServerVersion.newBuilder() to construct.
-  private ServerVersion(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use LittleHorseVersion.newBuilder() to construct.
+  private LittleHorseVersion(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private ServerVersion() {
+  private LittleHorseVersion() {
     preReleaseIdentifier_ = "";
   }
 
@@ -27,20 +27,20 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new ServerVersion();
+    return new LittleHorseVersion();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ServerVersion_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_LittleHorseVersion_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ServerVersion_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_LittleHorseVersion_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.ServerVersion.class, io.littlehorse.sdk.common.proto.ServerVersion.Builder.class);
+            io.littlehorse.sdk.common.proto.LittleHorseVersion.class, io.littlehorse.sdk.common.proto.LittleHorseVersion.Builder.class);
   }
 
   private int bitField0_;
@@ -211,10 +211,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.ServerVersion)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.LittleHorseVersion)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.ServerVersion other = (io.littlehorse.sdk.common.proto.ServerVersion) obj;
+    io.littlehorse.sdk.common.proto.LittleHorseVersion other = (io.littlehorse.sdk.common.proto.LittleHorseVersion) obj;
 
     if (getMajorVersion()
         != other.getMajorVersion()) return false;
@@ -253,44 +253,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -298,26 +298,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ServerVersion parseFrom(
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -330,7 +330,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ServerVersion prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.LittleHorseVersion prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -347,29 +347,29 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The version of the LH Server according to Semantic Versioning
+   * The version of LittleHorse according to Semantic Versioning
    * </pre>
    *
-   * Protobuf type {@code littlehorse.ServerVersion}
+   * Protobuf type {@code littlehorse.LittleHorseVersion}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.ServerVersion)
-      io.littlehorse.sdk.common.proto.ServerVersionOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.LittleHorseVersion)
+      io.littlehorse.sdk.common.proto.LittleHorseVersionOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ServerVersion_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_LittleHorseVersion_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ServerVersion_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_LittleHorseVersion_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.ServerVersion.class, io.littlehorse.sdk.common.proto.ServerVersion.Builder.class);
+              io.littlehorse.sdk.common.proto.LittleHorseVersion.class, io.littlehorse.sdk.common.proto.LittleHorseVersion.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.ServerVersion.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.LittleHorseVersion.newBuilder()
     private Builder() {
 
     }
@@ -393,17 +393,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ServerVersion_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_LittleHorseVersion_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ServerVersion getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.LittleHorseVersion getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ServerVersion build() {
-      io.littlehorse.sdk.common.proto.ServerVersion result = buildPartial();
+    public io.littlehorse.sdk.common.proto.LittleHorseVersion build() {
+      io.littlehorse.sdk.common.proto.LittleHorseVersion result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -411,14 +411,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ServerVersion buildPartial() {
-      io.littlehorse.sdk.common.proto.ServerVersion result = new io.littlehorse.sdk.common.proto.ServerVersion(this);
+    public io.littlehorse.sdk.common.proto.LittleHorseVersion buildPartial() {
+      io.littlehorse.sdk.common.proto.LittleHorseVersion result = new io.littlehorse.sdk.common.proto.LittleHorseVersion(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.ServerVersion result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.LittleHorseVersion result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.majorVersion_ = majorVersion_;
@@ -471,16 +471,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.ServerVersion) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.ServerVersion)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.LittleHorseVersion) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.LittleHorseVersion)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ServerVersion other) {
-      if (other == io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.LittleHorseVersion other) {
+      if (other == io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance()) return this;
       if (other.getMajorVersion() != 0) {
         setMajorVersion(other.getMajorVersion());
       }
@@ -811,23 +811,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.ServerVersion)
+    // @@protoc_insertion_point(builder_scope:littlehorse.LittleHorseVersion)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.ServerVersion)
-  private static final io.littlehorse.sdk.common.proto.ServerVersion DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.LittleHorseVersion)
+  private static final io.littlehorse.sdk.common.proto.LittleHorseVersion DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ServerVersion();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.LittleHorseVersion();
   }
 
-  public static io.littlehorse.sdk.common.proto.ServerVersion getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.LittleHorseVersion getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ServerVersion>
-      PARSER = new com.google.protobuf.AbstractParser<ServerVersion>() {
+  private static final com.google.protobuf.Parser<LittleHorseVersion>
+      PARSER = new com.google.protobuf.AbstractParser<LittleHorseVersion>() {
     @java.lang.Override
-    public ServerVersion parsePartialFrom(
+    public LittleHorseVersion parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -846,17 +846,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<ServerVersion> parser() {
+  public static com.google.protobuf.Parser<LittleHorseVersion> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ServerVersion> getParserForType() {
+  public com.google.protobuf.Parser<LittleHorseVersion> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ServerVersion getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.LittleHorseVersion getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

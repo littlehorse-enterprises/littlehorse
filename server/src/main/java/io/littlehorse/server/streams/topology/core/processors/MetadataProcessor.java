@@ -86,7 +86,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         if (storedInitializationLogModel == null) {
             log.info("Initializing Cluster...");
             InitializationLog.Builder initializationLogBuilder = InitializationLog.newBuilder()
-                    .setInitVersion(Version.getServerVersion())
+                    .setInitVersion(Version.getCurrentServerVersion())
                     .setInitTime(LHUtil.fromDate(new Date()));
 
             Tenant initialDefaultTenant = getDefaultTenant(context, metadataManager);

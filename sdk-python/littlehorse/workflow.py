@@ -41,6 +41,7 @@ from littlehorse.model import (
     JsonIndex,
     Node,
     NopNode,
+    ReturnType,
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
@@ -48,6 +49,7 @@ from littlehorse.model import (
     ThreadSpec,
     ThreadVarDef,
     ThrowEventNode,
+    TypeDefinition,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -364,15 +366,23 @@ class NodeOutput(LHExpression):
 
 
 class WorkflowIfStatement:
-    def __init__(self, parent_workflow_thread: WorkflowThread, first_nop_node_name: str, last_nop_node_name: str) -> None:
+    def __init__(
+        self,
+        parent_workflow_thread: WorkflowThread,
+        first_nop_node_name: str,
+        last_nop_node_name: str,
+    ) -> None:
         self._parent_workflow_thread = parent_workflow_thread
         self._first_nop_node_name = first_nop_node_name
         self._last_nop_node_name = last_nop_node_name
+        self._was_else_executed = False
 
     def _get_first_nop_node(self) -> WorkflowNode:
         return self._parent_workflow_thread._find_node(self._first_nop_node_name)
 
-    def do_else_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
+    def do_else_if(
+        self, condition: WorkflowCondition, body: "ThreadInitializer"
+    ) -> WorkflowIfStatement:
         """After checking the previous condition(s) of the If Statement,
         conditionally executes some workflow code; equivalent to
         an elseif() statement in programming.
@@ -396,9 +406,17 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if all previous
             WorkflowConditions were not satisfied.
         """
+        if self._was_else_executed:
+            raise RuntimeError(
+                "Else block has already been executed. Cannot add another else block."
+            )
+
+        self._was_else_executed = True
         self._do_else_if(None, body)
 
-    def _do_else_if(self, input_condition: Optional[WorkflowCondition], body: "ThreadInitializer") -> WorkflowIfStatement:
+    def _do_else_if(
+        self, input_condition: Optional[WorkflowCondition], body: "ThreadInitializer"
+    ) -> WorkflowIfStatement:
         else_edge = self._get_first_nop_node().outgoing_edges.pop()
 
         else_if_condition = input_condition.compile() if input_condition else None
@@ -408,7 +426,7 @@ class WorkflowIfStatement:
 
         # Execute the Else If body
         body(self._parent_workflow_thread)
-        
+
         # Get the last node of the Else If body to reference later
         last_node_of_body = self._parent_workflow_thread._last_node()
 
@@ -419,7 +437,7 @@ class WorkflowIfStatement:
                 Edge(
                     sink_node_name=self._last_nop_node_name,
                     variable_mutations=self._parent_workflow_thread._collect_variable_mutations(),
-                    condition=else_if_condition
+                    condition=else_if_condition,
                 )
             )
         # Otherwise, move nodes that were added
@@ -432,21 +450,27 @@ class WorkflowIfStatement:
 
             # Add an edge from the first NOP node to the first node of the body
             self._get_first_nop_node().outgoing_edges.append(
-                    Edge(sink_node_name=first_node_of_body_name,
+                Edge(
+                    sink_node_name=first_node_of_body_name,
                     variable_mutations=last_outgoing_edge.variable_mutations,
-                    condition=else_if_condition))
+                    condition=else_if_condition,
+                )
+            )
 
             # Add edge from last node of the body to last NOP node
             last_node_of_body.outgoing_edges.append(
-                Edge(sink_node_name=self._last_nop_node_name,
-                     variable_mutations=self._parent_workflow_thread._collect_variable_mutations()
-                ))
-        
+                Edge(
+                    sink_node_name=self._last_nop_node_name,
+                    variable_mutations=self._parent_workflow_thread._collect_variable_mutations(),
+                )
+            )
+
         # If else condition was not replaced, add it back
         if else_if_condition is not None:
             self._get_first_nop_node().outgoing_edges.append(else_edge)
 
         return self
+
 
 class WfRunVariable:
     def __init__(
@@ -823,7 +847,7 @@ class WorkflowNode:
                 return edge
 
         raise ValueError("Edge not found")
-    
+
     def _has_outgoing_edge(self) -> bool:
         return len(self.outgoing_edges) > 0
 
@@ -1246,11 +1270,11 @@ class WorkflowThread:
         for node in self._nodes:
             if not node._has_outgoing_edge():
                 return node
-        
+
         # if no universal sinks, return last node added to array
         if len(self._nodes) > 0:
             return self._nodes[-1]
-        
+
         raise Exception("No universal sink exists! Error building workflow.")
 
     def _find_node(self, name: str) -> WorkflowNode:
@@ -1579,6 +1603,16 @@ class WorkflowThread:
             raise ValueError(
                 "Must provide either user_id or user_group to assign_user_task()"
             )
+
+        if user_id is not None and isinstance(user_id, str) and user_id.strip() == "":
+            raise ValueError("UserId can't be empty to assign_user_task()")
+
+        if (
+            user_group is not None
+            and isinstance(user_group, str)
+            and user_group.strip() == ""
+        ):
+            raise ValueError("UserGroup can't be empty to assign_user_task()")
 
         ug = to_variable_assignment(user_group) if user_group else None
         ui = to_variable_assignment(user_id) if user_id else None
@@ -1962,19 +1996,19 @@ class WorkflowThread:
         self._do_if(condition, if_body).do_else(else_body)
         return None
 
-    def _do_if(self, condition: WorkflowCondition, body: "ThreadInitializer") -> WorkflowIfStatement:
+    def _do_if(
+        self, condition: WorkflowCondition, body: "ThreadInitializer"
+    ) -> WorkflowIfStatement:
         first_nop_node_name = self.add_node("nop", NopNode())
         self._last_node_condition = condition.compile()
 
         body(self)
 
         last_nop_node_name = self.add_node("nop", NopNode())
-        
+
         # Add else edge, which should always be LAST
         first_nop_node = self._find_node(first_nop_node_name)
-        first_nop_node.outgoing_edges.append(Edge(
-            sink_node_name=last_nop_node_name
-        ))
+        first_nop_node.outgoing_edges.append(Edge(sink_node_name=last_nop_node_name))
 
         return WorkflowIfStatement(self, first_nop_node_name, last_nop_node_name)
 
@@ -2256,6 +2290,9 @@ def create_workflow_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutWorkflowEventDefRequest(name=name, type=type)
+    request = PutWorkflowEventDefRequest(
+        name=name,
+        content_type=ReturnType(TypeDefinition(type=type)),
+    )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")

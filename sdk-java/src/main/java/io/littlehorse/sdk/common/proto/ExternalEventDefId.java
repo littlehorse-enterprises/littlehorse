@@ -48,7 +48,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object name_ = "";
   /**
    * <pre>
-   * ExternalEventDef's are uniquedly identified by their name.
+   * ExternalEventDef's are uniquedly identified by their name and version.
    * </pre>
    *
    * <code>string name = 1;</code>
@@ -69,7 +69,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * ExternalEventDef's are uniquedly identified by their name.
+   * ExternalEventDef's are uniquedly identified by their name and version.
    * </pre>
    *
    * <code>string name = 1;</code>
@@ -90,6 +90,21 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int VERSION_FIELD_NUMBER = 2;
+  private int version_ = 0;
+  /**
+   * <pre>
+   * The version of this ExternalEventDef.
+   * </pre>
+   *
+   * <code>int32 version = 2;</code>
+   * @return The version.
+   */
+  @java.lang.Override
+  public int getVersion() {
+    return version_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -107,6 +122,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
+    if (version_ != 0) {
+      output.writeInt32(2, version_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -118,6 +136,10 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+    }
+    if (version_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, version_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -136,6 +158,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
+    if (getVersion()
+        != other.getVersion()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -149,6 +173,8 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -285,6 +311,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
+      version_ = 0;
       return this;
     }
 
@@ -320,6 +347,9 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.version_ = version_;
       }
     }
 
@@ -372,6 +402,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
+      if (other.getVersion() != 0) {
+        setVersion(other.getVersion());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -403,6 +436,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 16: {
+              version_ = input.readInt32();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -423,7 +461,7 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object name_ = "";
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -443,7 +481,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -464,7 +502,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -481,7 +519,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -495,7 +533,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -508,6 +546,50 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       name_ = value;
       bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+
+    private int version_ ;
+    /**
+     * <pre>
+     * The version of this ExternalEventDef.
+     * </pre>
+     *
+     * <code>int32 version = 2;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
+    }
+    /**
+     * <pre>
+     * The version of this ExternalEventDef.
+     * </pre>
+     *
+     * <code>int32 version = 2;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(int value) {
+
+      version_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The version of this ExternalEventDef.
+     * </pre>
+     *
+     * <code>int32 version = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      version_ = 0;
       onChanged();
       return this;
     }

@@ -107,28 +107,40 @@ public interface TaskDefOrBuilder extends
 
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+   * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+   *
+   * Versions after 0.13.2 require that typing information is provided when creating
+   * TaskDef's.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
-   * @return Whether the schemaOutput field is set.
+   * <code>optional .littlehorse.ReturnType return_type = 4;</code>
+   * @return Whether the returnType field is set.
    */
-  boolean hasSchemaOutput();
+  boolean hasReturnType();
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+   * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+   *
+   * Versions after 0.13.2 require that typing information is provided when creating
+   * TaskDef's.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
-   * @return The schemaOutput.
+   * <code>optional .littlehorse.ReturnType return_type = 4;</code>
+   * @return The returnType.
    */
-  io.littlehorse.sdk.common.proto.TaskDefOutputSchema getSchemaOutput();
+  io.littlehorse.sdk.common.proto.ReturnType getReturnType();
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+   * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+   *
+   * Versions after 0.13.2 require that typing information is provided when creating
+   * TaskDef's.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   * <code>optional .littlehorse.ReturnType return_type = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getSchemaOutputOrBuilder();
+  io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder();
 }

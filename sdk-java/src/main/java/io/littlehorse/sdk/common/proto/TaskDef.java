@@ -181,42 +181,54 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
-  public static final int SCHEMA_OUTPUT_FIELD_NUMBER = 4;
-  private io.littlehorse.sdk.common.proto.TaskDefOutputSchema schemaOutput_;
+  public static final int RETURN_TYPE_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.ReturnType returnType_;
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+   * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+   *
+   * Versions after 0.13.2 require that typing information is provided when creating
+   * TaskDef's.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
-   * @return Whether the schemaOutput field is set.
+   * <code>optional .littlehorse.ReturnType return_type = 4;</code>
+   * @return Whether the returnType field is set.
    */
   @java.lang.Override
-  public boolean hasSchemaOutput() {
+  public boolean hasReturnType() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+   * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+   *
+   * Versions after 0.13.2 require that typing information is provided when creating
+   * TaskDef's.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
-   * @return The schemaOutput.
+   * <code>optional .littlehorse.ReturnType return_type = 4;</code>
+   * @return The returnType.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefOutputSchema getSchemaOutput() {
-    return schemaOutput_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+  public io.littlehorse.sdk.common.proto.ReturnType getReturnType() {
+    return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
   }
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+   * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+   *
+   * Versions after 0.13.2 require that typing information is provided when creating
+   * TaskDef's.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   * <code>optional .littlehorse.ReturnType return_type = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getSchemaOutputOrBuilder() {
-    return schemaOutput_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+  public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder() {
+    return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -243,7 +255,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(3, getCreatedAt());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(4, getSchemaOutput());
+      output.writeMessage(4, getReturnType());
     }
     getUnknownFields().writeTo(output);
   }
@@ -268,7 +280,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getSchemaOutput());
+        .computeMessageSize(4, getReturnType());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -297,10 +309,10 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (hasSchemaOutput() != other.hasSchemaOutput()) return false;
-    if (hasSchemaOutput()) {
-      if (!getSchemaOutput()
-          .equals(other.getSchemaOutput())) return false;
+    if (hasReturnType() != other.hasReturnType()) return false;
+    if (hasReturnType()) {
+      if (!getReturnType()
+          .equals(other.getReturnType())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -325,9 +337,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    if (hasSchemaOutput()) {
-      hash = (37 * hash) + SCHEMA_OUTPUT_FIELD_NUMBER;
-      hash = (53 * hash) + getSchemaOutput().hashCode();
+    if (hasReturnType()) {
+      hash = (37 * hash) + RETURN_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getReturnType().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -466,7 +478,7 @@ private static final long serialVersionUID = 0L;
         getIdFieldBuilder();
         getInputVarsFieldBuilder();
         getCreatedAtFieldBuilder();
-        getSchemaOutputFieldBuilder();
+        getReturnTypeFieldBuilder();
       }
     }
     @java.lang.Override
@@ -490,10 +502,10 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
-      schemaOutput_ = null;
-      if (schemaOutputBuilder_ != null) {
-        schemaOutputBuilder_.dispose();
-        schemaOutputBuilder_ = null;
+      returnType_ = null;
+      if (returnTypeBuilder_ != null) {
+        returnTypeBuilder_.dispose();
+        returnTypeBuilder_ = null;
       }
       return this;
     }
@@ -553,9 +565,9 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.schemaOutput_ = schemaOutputBuilder_ == null
-            ? schemaOutput_
-            : schemaOutputBuilder_.build();
+        result.returnType_ = returnTypeBuilder_ == null
+            ? returnType_
+            : returnTypeBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
@@ -637,8 +649,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.hasSchemaOutput()) {
-        mergeSchemaOutput(other.getSchemaOutput());
+      if (other.hasReturnType()) {
+        mergeReturnType(other.getReturnType());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -695,7 +707,7 @@ private static final long serialVersionUID = 0L;
             } // case 26
             case 34: {
               input.readMessage(
-                  getSchemaOutputFieldBuilder().getBuilder(),
+                  getReturnTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000008;
               break;
@@ -1339,50 +1351,62 @@ private static final long serialVersionUID = 0L;
       return createdAtBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.TaskDefOutputSchema schemaOutput_;
+    private io.littlehorse.sdk.common.proto.ReturnType returnType_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder> schemaOutputBuilder_;
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> returnTypeBuilder_;
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
-     * @return Whether the schemaOutput field is set.
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
+     * @return Whether the returnType field is set.
      */
-    public boolean hasSchemaOutput() {
+    public boolean hasReturnType() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
-     * @return The schemaOutput.
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
+     * @return The returnType.
      */
-    public io.littlehorse.sdk.common.proto.TaskDefOutputSchema getSchemaOutput() {
-      if (schemaOutputBuilder_ == null) {
-        return schemaOutput_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+    public io.littlehorse.sdk.common.proto.ReturnType getReturnType() {
+      if (returnTypeBuilder_ == null) {
+        return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
       } else {
-        return schemaOutputBuilder_.getMessage();
+        return returnTypeBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
      */
-    public Builder setSchemaOutput(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
-      if (schemaOutputBuilder_ == null) {
+    public Builder setReturnType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (returnTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        schemaOutput_ = value;
+        returnType_ = value;
       } else {
-        schemaOutputBuilder_.setMessage(value);
+        returnTypeBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000008;
       onChanged();
@@ -1390,17 +1414,21 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
      */
-    public Builder setSchemaOutput(
-        io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder builderForValue) {
-      if (schemaOutputBuilder_ == null) {
-        schemaOutput_ = builderForValue.build();
+    public Builder setReturnType(
+        io.littlehorse.sdk.common.proto.ReturnType.Builder builderForValue) {
+      if (returnTypeBuilder_ == null) {
+        returnType_ = builderForValue.build();
       } else {
-        schemaOutputBuilder_.setMessage(builderForValue.build());
+        returnTypeBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000008;
       onChanged();
@@ -1408,22 +1436,26 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
      */
-    public Builder mergeSchemaOutput(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
-      if (schemaOutputBuilder_ == null) {
+    public Builder mergeReturnType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (returnTypeBuilder_ == null) {
         if (((bitField0_ & 0x00000008) != 0) &&
-          schemaOutput_ != null &&
-          schemaOutput_ != io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance()) {
-          getSchemaOutputBuilder().mergeFrom(value);
+          returnType_ != null &&
+          returnType_ != io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance()) {
+          getReturnTypeBuilder().mergeFrom(value);
         } else {
-          schemaOutput_ = value;
+          returnType_ = value;
         }
       } else {
-        schemaOutputBuilder_.mergeFrom(value);
+        returnTypeBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000008;
       onChanged();
@@ -1431,67 +1463,83 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
      */
-    public Builder clearSchemaOutput() {
+    public Builder clearReturnType() {
       bitField0_ = (bitField0_ & ~0x00000008);
-      schemaOutput_ = null;
-      if (schemaOutputBuilder_ != null) {
-        schemaOutputBuilder_.dispose();
-        schemaOutputBuilder_ = null;
+      returnType_ = null;
+      if (returnTypeBuilder_ != null) {
+        returnTypeBuilder_.dispose();
+        returnTypeBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder getSchemaOutputBuilder() {
+    public io.littlehorse.sdk.common.proto.ReturnType.Builder getReturnTypeBuilder() {
       bitField0_ |= 0x00000008;
       onChanged();
-      return getSchemaOutputFieldBuilder().getBuilder();
+      return getReturnTypeFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getSchemaOutputOrBuilder() {
-      if (schemaOutputBuilder_ != null) {
-        return schemaOutputBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder() {
+      if (returnTypeBuilder_ != null) {
+        return returnTypeBuilder_.getMessageOrBuilder();
       } else {
-        return schemaOutput_ == null ?
-            io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+        return returnType_ == null ?
+            io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
       }
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+     * was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+     *
+     * Versions after 0.13.2 require that typing information is provided when creating
+     * TaskDef's.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * <code>optional .littlehorse.ReturnType return_type = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder> 
-        getSchemaOutputFieldBuilder() {
-      if (schemaOutputBuilder_ == null) {
-        schemaOutputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder>(
-                getSchemaOutput(),
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> 
+        getReturnTypeFieldBuilder() {
+      if (returnTypeBuilder_ == null) {
+        returnTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder>(
+                getReturnType(),
                 getParentForChildren(),
                 isClean());
-        schemaOutput_ = null;
+        returnType_ = null;
       }
-      return schemaOutputBuilder_;
+      return returnTypeBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
