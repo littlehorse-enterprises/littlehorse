@@ -6,6 +6,7 @@ import { VariableType } from 'littlehorse-client/proto'
 import { FC, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { BaseFormField } from './BaseFormField'
+import { getVariableDefType } from '@/app/utils/variables'
 
 export const FormInput: FC<FormFieldProp> = props => {
   const [isDisabled, setIsDisabled] = useState(!props.variables?.required)
@@ -21,12 +22,14 @@ export const FormInput: FC<FormFieldProp> = props => {
 
   const {
     variables: {
-      varDef: { type, name },
+      varDef: { name },
       required,
     },
     register,
     formState: { errors },
   } = props
+
+  const type = getVariableDefType(props.variables.varDef)
 
   return (
     <BaseFormField {...props} isDisabled={isDisabled} setIsDisabled={setIsDisabled}>

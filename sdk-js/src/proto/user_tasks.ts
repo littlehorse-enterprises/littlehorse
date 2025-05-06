@@ -92,7 +92,7 @@ export interface UserTaskField {
    * single-level JSON_OBJ. Each key is the name of the field. Must be unique.
    */
   name: string;
-  /** The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE). */
+  /** The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE). */
   type: VariableType;
   /**
    * Optional description which can be displayed by the User Task UI application.
