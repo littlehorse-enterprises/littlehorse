@@ -871,11 +871,9 @@ func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 	t.addNopNode()
 	firstNode := t.spec.Nodes[*t.lastNodeName]
 	t.firstNopNodeName = t.lastNodeName
-
 	t.lastNodeCondition = cond
 
 	// Do the work. This adds the 'A'
-
 	doIf(t)
 
 	// Close off the tree. This creates the B node
