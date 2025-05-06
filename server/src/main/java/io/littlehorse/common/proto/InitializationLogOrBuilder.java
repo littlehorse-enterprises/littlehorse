@@ -12,7 +12,7 @@ public interface InitializationLogOrBuilder extends
    * The version of the server when it is initialized.
    * </pre>
    *
-   * <code>.littlehorse.ServerVersion init_version = 1;</code>
+   * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
    * @return Whether the initVersion field is set.
    */
   boolean hasInitVersion();
@@ -21,18 +21,18 @@ public interface InitializationLogOrBuilder extends
    * The version of the server when it is initialized.
    * </pre>
    *
-   * <code>.littlehorse.ServerVersion init_version = 1;</code>
+   * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
    * @return The initVersion.
    */
-  io.littlehorse.sdk.common.proto.ServerVersion getInitVersion();
+  io.littlehorse.sdk.common.proto.LittleHorseVersion getInitVersion();
   /**
    * <pre>
    * The version of the server when it is initialized.
    * </pre>
    *
-   * <code>.littlehorse.ServerVersion init_version = 1;</code>
+   * <code>.littlehorse.LittleHorseVersion init_version = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.ServerVersionOrBuilder getInitVersionOrBuilder();
+  io.littlehorse.sdk.common.proto.LittleHorseVersionOrBuilder getInitVersionOrBuilder();
 
   /**
    * <pre>

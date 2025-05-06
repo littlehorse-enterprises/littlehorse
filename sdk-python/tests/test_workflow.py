@@ -171,7 +171,11 @@ class TestWfRunVariable(unittest.TestCase):
         self.assertEqual(
             variable.compile(),
             ThreadVarDef(
-                var_def=VariableDef(name="my-var", type=VariableType.STR),
+                var_def=VariableDef(
+                    name="my-var",
+                    type=VariableType.STR,
+                    masked_value=False,
+                ),
                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
             ),
         )
@@ -179,7 +183,11 @@ class TestWfRunVariable(unittest.TestCase):
         variable = WfRunVariable("my-var", VariableType.JSON_OBJ, self.workflow_thread)
         variable.searchable_on("$.myPath", VariableType.STR)
         expected_output = ThreadVarDef(
-            var_def=VariableDef(name="my-var", type=VariableType.JSON_OBJ),
+            var_def=VariableDef(
+                name="my-var",
+                type=VariableType.JSON_OBJ,
+                masked_value=False,
+            ),
             access_level="PRIVATE_VAR",
         )
         expected_output.json_indexes.append(
@@ -192,7 +200,11 @@ class TestWfRunVariable(unittest.TestCase):
             "my-var", VariableType.STR, self.workflow_thread, access_level="PRIVATE_VAR"
         )
         expected_output = ThreadVarDef(
-            var_def=VariableDef(name="my-var", type=VariableType.STR),
+            var_def=VariableDef(
+                name="my-var",
+                type=VariableType.STR,
+                masked_value=False
+            ),
             access_level="PRIVATE_VAR",
         )
         self.assertEqual(variable.compile(), expected_output)
@@ -201,7 +213,11 @@ class TestWfRunVariable(unittest.TestCase):
         variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         variable.with_access_level(WfRunVariableAccessLevel.INHERITED_VAR)
         expected_output = ThreadVarDef(
-            var_def=VariableDef(name="my-var", type=VariableType.STR),
+            var_def=VariableDef(
+                name="my-var",
+                type=VariableType.STR,
+                masked_value=False,
+            ),
             access_level="INHERITED_VAR",
         )
         self.assertEqual(variable.compile(), expected_output)
@@ -218,7 +234,11 @@ class TestThreadBuilder(unittest.TestCase):
             ThreadSpec(
                 variable_defs=[
                     ThreadVarDef(
-                        var_def=VariableDef(name="input-name", type=VariableType.STR),
+                        var_def=VariableDef(
+                            name="input-name",
+                            type=VariableType.STR,
+                            masked_value=False,
+                        ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
                 ],
@@ -1492,7 +1512,11 @@ class TestThreadBuilder(unittest.TestCase):
             ThreadSpec(
                 variable_defs=[
                     ThreadVarDef(
-                        var_def=VariableDef(name="input-name", type=VariableType.STR),
+                        var_def=VariableDef(
+                            name="input-name",
+                            type=VariableType.STR,
+                            masked_value=False,
+                        ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     )
                 ],
@@ -1655,7 +1679,11 @@ class TestThreadBuilder(unittest.TestCase):
             ThreadSpec(
                 variable_defs=[
                     ThreadVarDef(
-                        var_def=VariableDef(name="value", type=VariableType.INT),
+                        var_def=VariableDef(
+                            name="value",
+                            type=VariableType.INT,
+                            masked_value=False,
+                        ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
                 ],
@@ -2249,7 +2277,9 @@ class TestWorkflow(unittest.TestCase):
                         variable_defs=[
                             ThreadVarDef(
                                 var_def=VariableDef(
-                                    name="input-name", type=VariableType.STR
+                                    name="input-name",
+                                    type=VariableType.STR,
+                                    masked_value=False,
                                 ),
                                 access_level="INHERITED_VAR",
                             ),
@@ -2283,7 +2313,9 @@ class TestWorkflow(unittest.TestCase):
                         variable_defs=[
                             ThreadVarDef(
                                 var_def=VariableDef(
-                                    name="input-name", type=VariableType.STR
+                                    name="input-name",
+                                    type=VariableType.STR,
+                                    masked_value=False,
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2317,7 +2349,9 @@ class TestWorkflow(unittest.TestCase):
                         variable_defs=[
                             ThreadVarDef(
                                 var_def=VariableDef(
-                                    name="input-name", type=VariableType.STR
+                                    name="input-name",
+                                    type=VariableType.STR,
+                                    masked_value=False,
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2477,7 +2511,9 @@ class TestWorkflow(unittest.TestCase):
                         variable_defs=[
                             ThreadVarDef(
                                 var_def=VariableDef(
-                                    name="grand-parent-var", type=VariableType.STR
+                                    name="grand-parent-var",
+                                    type=VariableType.STR,
+                                    masked_value=False,
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2485,6 +2521,7 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="1-son-thread-START_THREAD",
                                     type=VariableType.INT,
+                                    masked_value=False,
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2537,6 +2574,7 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="1-grandchild-thread-START_THREAD",
                                     type=VariableType.INT,
+                                    masked_value=False,
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             )

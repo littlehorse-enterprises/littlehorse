@@ -41,6 +41,7 @@ from littlehorse.model import (
     JsonIndex,
     Node,
     NopNode,
+    ReturnType,
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
@@ -48,6 +49,7 @@ from littlehorse.model import (
     ThreadSpec,
     ThreadVarDef,
     ThrowEventNode,
+    TypeDefinition,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -2288,6 +2290,9 @@ def create_workflow_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutWorkflowEventDefRequest(name=name, type=type)
+    request = PutWorkflowEventDefRequest(
+        name=name,
+        content_type=ReturnType(TypeDefinition(type=type)),
+    )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")

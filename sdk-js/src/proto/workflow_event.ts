@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { VariableType, variableTypeFromJSON, variableTypeToNumber } from "./common_enums";
+import { ReturnType } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, WorkflowEventDefId, WorkflowEventId } from "./object_id";
 import { VariableValue } from "./variable";
@@ -47,7 +47,7 @@ export interface WorkflowEventDef {
     | string
     | undefined;
   /** The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. */
-  type: VariableType;
+  contentType: ReturnType | undefined;
 }
 
 function createBaseWorkflowEvent(): WorkflowEvent {
@@ -133,7 +133,7 @@ export const WorkflowEvent = {
 };
 
 function createBaseWorkflowEventDef(): WorkflowEventDef {
-  return { id: undefined, createdAt: undefined, type: VariableType.JSON_OBJ };
+  return { id: undefined, createdAt: undefined, contentType: undefined };
 }
 
 export const WorkflowEventDef = {
@@ -144,8 +144,8 @@ export const WorkflowEventDef = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(24).int32(variableTypeToNumber(message.type));
+    if (message.contentType !== undefined) {
+      ReturnType.encode(message.contentType, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -172,11 +172,11 @@ export const WorkflowEventDef = {
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.type = variableTypeFromJSON(reader.int32());
+          message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -196,7 +196,9 @@ export const WorkflowEventDef = {
       ? WorkflowEventDefId.fromPartial(object.id)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.contentType = (object.contentType !== undefined && object.contentType !== null)
+      ? ReturnType.fromPartial(object.contentType)
+      : undefined;
     return message;
   },
 };

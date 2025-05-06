@@ -139,8 +139,8 @@ namespace LittleHorse.Sdk.Worker
                     request.InputVars.Add(variableDef);
                 }
                 
-                if (signature.TaskDefOutputSchema != null) {
-                    request.OutputSchema = signature.TaskDefOutputSchema;
+                if (signature.ReturnType != null) {
+                    request.ReturnType = signature.ReturnType;
                 }
 
                 var response = _lhClient.PutTaskDef(request);
