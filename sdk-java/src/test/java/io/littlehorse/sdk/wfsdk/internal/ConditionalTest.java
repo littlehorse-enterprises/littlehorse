@@ -256,6 +256,61 @@ public class ConditionalTest {
         }
 
         @Test
+        public void testMultipleDoElseIfStatements() {
+            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
+                WfRunVariable myInt = wf.declareInt("my-int");
+                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                            body.execute("task-a");
+                        })
+                        .doElseIf(wf.condition(10, Comparator.EQUALS, 40), body -> {
+                            body.execute("task-b");
+                        })
+                        .doElseIf(wf.condition(myInt, Comparator.LESS_THAN, 100), body -> {
+                            body.execute("task-c");
+                        });
+            });
+
+            ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+
+            assertThat(entrypointThread.getNodesMap().size()).isEqualTo(7);
+
+            assertThat(entrypointThread.getNodesMap().get("1-nop-NOP"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder()
+                                    .setSinkNodeName("2-task-a-TASK")
+                                    .setCondition(EdgeCondition.newBuilder()
+                                            .setLeft(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(5)))
+                                            .setComparator(Comparator.GREATER_THAN)
+                                            .setRight(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(4)))))
+                            .addOutgoingEdges(Edge.newBuilder()
+                                    .setSinkNodeName("4-task-b-TASK")
+                                    .setCondition(EdgeCondition.newBuilder()
+                                            .setLeft(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(10)))
+                                            .setComparator(Comparator.EQUALS)
+                                            .setRight(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(40)))))
+                            .addOutgoingEdges(Edge.newBuilder()
+                                    .setSinkNodeName("5-task-c-TASK")
+                                    .setCondition(EdgeCondition.newBuilder()
+                                            .setLeft(VariableAssignment.newBuilder()
+                                                    .setVariableName("my-int"))
+                                            .setComparator(Comparator.LESS_THAN)
+                                            .setRight(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(100)))))
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
+                            .setNop(NopNode.getDefaultInstance())
+                            .build());
+        }
+
+        @Test
         public void testDoElseStatementThrowsExceptionWhenCalledTwice() {
             WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
                 WfRunVariable myInt = wf.declareInt("my-int");
