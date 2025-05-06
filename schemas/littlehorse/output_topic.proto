@@ -1,0 +1,111 @@
+syntax = "proto3";
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "workflow_event.proto";
+import "user_tasks.proto";
+import "task_run.proto";
+import "task_def.proto";
+import "wf_spec.proto";
+import "wf_run.proto";
+import "variable.proto";
+import "external_event.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// An OutputTopicRecord is a single record in the output topic, which can
+// denote one of several different types of events.
+message OutputTopicRecord {
+    // The ID of the WfRun that produced this record.
+    WfRunId id = 1;
+
+    // The time at which the event occurred.
+    google.protobuf.Timestamp timestamp = 2;
+
+    oneof payload {
+        // Records the results of a TaskRun in the Output Topic.
+        TaskRunExecutedRecord task_run_executed = 3;
+
+        // Records a WorkflowEvent that was thrown into the Output Topic.
+        WorkflowEventRecord workflow_event = 4;
+
+        // Records an update to a WfRun, triggered by a change to the status of a
+        // `ThreadRun`.
+        WfRunUpdateRecord wf_run = 5;
+
+        // Updates about a user task run.
+        UserTaskRunUpdateRecord user_task_run = 6;
+
+        // Updates about a specific Variable changing.
+        VariableUpdateRecord variable_update = 7;
+    }
+}
+
+// Record to state that a TaskRun was executed (`TASK_SUCCESS`,
+// `TASK_ERROR`, or `TASK_EXCEPTION`).
+message TaskRunExecutedRecord {
+    // The TaskRun that was executed. All information about TaskAttempts,
+    // input variables, start times, failures, etc is included in the
+    // TaskRun itself.
+    //
+    // Not sent until the `TaskRun` is in a terminal state.
+    TaskRun task_run = 1;
+}
+
+// Record in the Output Topic to denote that a WorkflowEvent was thrown
+// by a WfRun.
+message WorkflowEventRecord {
+    // The WorkflowEvent that was thrown.
+    WorkflowEvent workflow_event = 1;
+
+    // The WfSpecId for the WfRun that threw the WorkflowEvent.
+    WfSpecId wf_spec_id = 2;
+}
+
+// Represents a snapshot of a WfRun as an entity. Used in the Output Topic
+// to allow exporting a WfRun's public variables into external systems. This
+// only includes Variables that are of type `PUBLIC_VAR` and in the entrypoint
+// ThreadRun.
+message WfRunUpdateRecord {
+    // The current snapshot of the `WfRun` Getable.
+    WfRun wf_run = 1;
+}
+
+// Represents a snapshot of a UserTaskRun being updated. Used in the Output Topic
+// to allow exporting information about User Tasks into external systems.
+message UserTaskRunUpdateRecord {
+    // The current snapshot of the UserTaskRun.
+    UserTaskRun user_task_run = 1;
+}
+
+// Represents a snapshot of an individual Variable being updated. Used in the Output
+// Topic to allow exporting information for specific Variables to external systems.
+message VariableUpdateRecord {
+    // The cuurrent snapshot of the Variable in question.
+    Variable current_variable = 1;
+}
+
+// Message to configure data sent to the Metadata Output Topic
+message MetadataOutputTopicRecord {
+    // The data that was sent
+    oneof metadata_record {
+        // A WfSpec update
+        WfSpec wf_spec = 1;
+
+        // A TaskDef update
+        TaskDef task_def = 2;
+
+        // An ExternalEventDef Update
+        ExternalEventDef external_event_def = 3;
+
+        // A WorkflowEventDef update
+        WorkflowEventDef workflow_event_def = 4;
+
+        // A UserTaskDef update
+        UserTaskDef user_task_def = 5;
+    }
+}

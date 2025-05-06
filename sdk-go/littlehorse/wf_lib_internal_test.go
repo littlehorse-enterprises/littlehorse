@@ -1,10 +1,12 @@
 package littlehorse_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
 	"github.com/stretchr/testify/assert"

@@ -167,6 +167,58 @@ func (ACLAction) EnumDescriptor() ([]byte, []int) {
 	return file_acls_proto_rawDescGZIP(), []int{1}
 }
 
+// Enum to configure default recording level of Output Topic events.
+type OutputTopicConfig_OutputTopicRecordingLevel int32
+
+const (
+	// Records all updates for entities from all `WfSpec`s, `TaskDef`s,
+	// `WorkflowEventDef`s, `UserTaskDef`s, and `ExternalEventDef`s to
+	// the Output Topic by default.
+	OutputTopicConfig_ALL_ENTITY_EVENTS OutputTopicConfig_OutputTopicRecordingLevel = 0
+	// With this configuration, no events are sent to the Output Topic unless
+	// explicitly enabled in the metadata object itself (to do with future work).
+	OutputTopicConfig_NO_ENTITY_EVENTS OutputTopicConfig_OutputTopicRecordingLevel = 1
+)
+
+// Enum value maps for OutputTopicConfig_OutputTopicRecordingLevel.
+var (
+	OutputTopicConfig_OutputTopicRecordingLevel_name = map[int32]string{
+		0: "ALL_ENTITY_EVENTS",
+		1: "NO_ENTITY_EVENTS",
+	}
+	OutputTopicConfig_OutputTopicRecordingLevel_value = map[string]int32{
+		"ALL_ENTITY_EVENTS": 0,
+		"NO_ENTITY_EVENTS":  1,
+	}
+)
+
+func (x OutputTopicConfig_OutputTopicRecordingLevel) Enum() *OutputTopicConfig_OutputTopicRecordingLevel {
+	p := new(OutputTopicConfig_OutputTopicRecordingLevel)
+	*p = x
+	return p
+}
+
+func (x OutputTopicConfig_OutputTopicRecordingLevel) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (OutputTopicConfig_OutputTopicRecordingLevel) Descriptor() protoreflect.EnumDescriptor {
+	return file_acls_proto_enumTypes[2].Descriptor()
+}
+
+func (OutputTopicConfig_OutputTopicRecordingLevel) Type() protoreflect.EnumType {
+	return &file_acls_proto_enumTypes[2]
+}
+
+func (x OutputTopicConfig_OutputTopicRecordingLevel) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use OutputTopicConfig_OutputTopicRecordingLevel.Descriptor instead.
+func (OutputTopicConfig_OutputTopicRecordingLevel) EnumDescriptor() ([]byte, []int) {
+	return file_acls_proto_rawDescGZIP(), []int{6, 0}
+}
+
 // A Principal represents the identity of a client of LittleHorse, whether human or
 // machine. The ACL's on the Principal control what actions the client is allowed
 // to take.
@@ -604,18 +656,71 @@ func (x *DeletePrincipalRequest) GetId() *PrincipalId {
 	return nil
 }
 
+// Configurations for the Output Topic of a certain Tenant.
+type OutputTopicConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	DefaultRecordingLevel OutputTopicConfig_OutputTopicRecordingLevel `protobuf:"varint,1,opt,name=default_recording_level,json=defaultRecordingLevel,proto3,enum=littlehorse.OutputTopicConfig_OutputTopicRecordingLevel" json:"default_recording_level,omitempty"`
+}
+
+func (x *OutputTopicConfig) Reset() {
+	*x = OutputTopicConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_acls_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OutputTopicConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OutputTopicConfig) ProtoMessage() {}
+
+func (x *OutputTopicConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_acls_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OutputTopicConfig.ProtoReflect.Descriptor instead.
+func (*OutputTopicConfig) Descriptor() ([]byte, []int) {
+	return file_acls_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *OutputTopicConfig) GetDefaultRecordingLevel() OutputTopicConfig_OutputTopicRecordingLevel {
+	if x != nil {
+		return x.DefaultRecordingLevel
+	}
+	return OutputTopicConfig_ALL_ENTITY_EVENTS
+}
+
+// The request used to create a Tenant
 type PutTenantRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the tenant to put
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Configures the behavior of the Output Topic for this Tenant. If not set,
+	// then the OutputTopic is not considered to be enabled.
+	OutputTopicConfig *OutputTopicConfig `protobuf:"bytes,2,opt,name=output_topic_config,json=outputTopicConfig,proto3,oneof" json:"output_topic_config,omitempty"`
 }
 
 func (x *PutTenantRequest) Reset() {
 	*x = PutTenantRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_acls_proto_msgTypes[6]
+		mi := &file_acls_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -628,7 +733,7 @@ func (x *PutTenantRequest) String() string {
 func (*PutTenantRequest) ProtoMessage() {}
 
 func (x *PutTenantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_acls_proto_msgTypes[6]
+	mi := &file_acls_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -641,7 +746,7 @@ func (x *PutTenantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PutTenantRequest.ProtoReflect.Descriptor instead.
 func (*PutTenantRequest) Descriptor() ([]byte, []int) {
-	return file_acls_proto_rawDescGZIP(), []int{6}
+	return file_acls_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *PutTenantRequest) GetId() string {
@@ -649,6 +754,13 @@ func (x *PutTenantRequest) GetId() string {
 		return x.Id
 	}
 	return ""
+}
+
+func (x *PutTenantRequest) GetOutputTopicConfig() *OutputTopicConfig {
+	if x != nil {
+		return x.OutputTopicConfig
+	}
+	return nil
 }
 
 var File_acls_proto protoreflect.FileDescriptor
@@ -727,9 +839,29 @@ var file_acls_proto_rawDesc = []byte{
 	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
 	0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x49, 0x64, 0x52, 0x02,
-	0x69, 0x64, 0x22, 0x22, 0x0a, 0x10, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x2a, 0xc5, 0x01, 0x0a, 0x0b, 0x41, 0x43, 0x4c, 0x52, 0x65,
+	0x69, 0x64, 0x22, 0xcf, 0x01, 0x0a, 0x11, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x54, 0x6f, 0x70,
+	0x69, 0x63, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x70, 0x0a, 0x17, 0x64, 0x65, 0x66, 0x61,
+	0x75, 0x6c, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x6c, 0x65,
+	0x76, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x38, 0x2e, 0x6c, 0x69, 0x74, 0x74,
+	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x54, 0x6f,
+	0x70, 0x69, 0x63, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74,
+	0x54, 0x6f, 0x70, 0x69, 0x63, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x67, 0x4c, 0x65,
+	0x76, 0x65, 0x6c, 0x52, 0x15, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x63, 0x6f,
+	0x72, 0x64, 0x69, 0x6e, 0x67, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x22, 0x48, 0x0a, 0x19, 0x4f, 0x75,
+	0x74, 0x70, 0x75, 0x74, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x69,
+	0x6e, 0x67, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x12, 0x15, 0x0a, 0x11, 0x41, 0x4c, 0x4c, 0x5f, 0x45,
+	0x4e, 0x54, 0x49, 0x54, 0x59, 0x5f, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x53, 0x10, 0x00, 0x12, 0x14,
+	0x0a, 0x10, 0x4e, 0x4f, 0x5f, 0x45, 0x4e, 0x54, 0x49, 0x54, 0x59, 0x5f, 0x45, 0x56, 0x45, 0x4e,
+	0x54, 0x53, 0x10, 0x01, 0x22, 0x8f, 0x01, 0x0a, 0x10, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e, 0x61,
+	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x53, 0x0a, 0x13, 0x6f, 0x75, 0x74,
+	0x70, 0x75, 0x74, 0x5f, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x54, 0x6f, 0x70, 0x69, 0x63,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x48, 0x00, 0x52, 0x11, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74,
+	0x54, 0x6f, 0x70, 0x69, 0x63, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x88, 0x01, 0x01, 0x42, 0x16,
+	0x0a, 0x14, 0x5f, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x5f, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x5f,
+	0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2a, 0xc5, 0x01, 0x0a, 0x0b, 0x41, 0x43, 0x4c, 0x52, 0x65,
 	0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12, 0x10, 0x0a, 0x0c, 0x41, 0x43, 0x4c, 0x5f, 0x57, 0x4f,
 	0x52, 0x4b, 0x46, 0x4c, 0x4f, 0x57, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x41, 0x43, 0x4c, 0x5f,
 	0x54, 0x41, 0x53, 0x4b, 0x10, 0x01, 0x12, 0x16, 0x0a, 0x12, 0x41, 0x43, 0x4c, 0x5f, 0x45, 0x58,
@@ -766,44 +898,48 @@ func file_acls_proto_rawDescGZIP() []byte {
 	return file_acls_proto_rawDescData
 }
 
-var file_acls_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_acls_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_acls_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_acls_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_acls_proto_goTypes = []interface{}{
-	(ACLResource)(0),               // 0: littlehorse.ACLResource
-	(ACLAction)(0),                 // 1: littlehorse.ACLAction
-	(*Principal)(nil),              // 2: littlehorse.Principal
-	(*Tenant)(nil),                 // 3: littlehorse.Tenant
-	(*ServerACLs)(nil),             // 4: littlehorse.ServerACLs
-	(*ServerACL)(nil),              // 5: littlehorse.ServerACL
-	(*PutPrincipalRequest)(nil),    // 6: littlehorse.PutPrincipalRequest
-	(*DeletePrincipalRequest)(nil), // 7: littlehorse.DeletePrincipalRequest
-	(*PutTenantRequest)(nil),       // 8: littlehorse.PutTenantRequest
-	nil,                            // 9: littlehorse.Principal.PerTenantAclsEntry
-	nil,                            // 10: littlehorse.PutPrincipalRequest.PerTenantAclsEntry
-	(*PrincipalId)(nil),            // 11: littlehorse.PrincipalId
-	(*timestamppb.Timestamp)(nil),  // 12: google.protobuf.Timestamp
-	(*TenantId)(nil),               // 13: littlehorse.TenantId
+	(ACLResource)(0), // 0: littlehorse.ACLResource
+	(ACLAction)(0),   // 1: littlehorse.ACLAction
+	(OutputTopicConfig_OutputTopicRecordingLevel)(0), // 2: littlehorse.OutputTopicConfig.OutputTopicRecordingLevel
+	(*Principal)(nil),              // 3: littlehorse.Principal
+	(*Tenant)(nil),                 // 4: littlehorse.Tenant
+	(*ServerACLs)(nil),             // 5: littlehorse.ServerACLs
+	(*ServerACL)(nil),              // 6: littlehorse.ServerACL
+	(*PutPrincipalRequest)(nil),    // 7: littlehorse.PutPrincipalRequest
+	(*DeletePrincipalRequest)(nil), // 8: littlehorse.DeletePrincipalRequest
+	(*OutputTopicConfig)(nil),      // 9: littlehorse.OutputTopicConfig
+	(*PutTenantRequest)(nil),       // 10: littlehorse.PutTenantRequest
+	nil,                            // 11: littlehorse.Principal.PerTenantAclsEntry
+	nil,                            // 12: littlehorse.PutPrincipalRequest.PerTenantAclsEntry
+	(*PrincipalId)(nil),            // 13: littlehorse.PrincipalId
+	(*timestamppb.Timestamp)(nil),  // 14: google.protobuf.Timestamp
+	(*TenantId)(nil),               // 15: littlehorse.TenantId
 }
 var file_acls_proto_depIdxs = []int32{
-	11, // 0: littlehorse.Principal.id:type_name -> littlehorse.PrincipalId
-	12, // 1: littlehorse.Principal.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 2: littlehorse.Principal.per_tenant_acls:type_name -> littlehorse.Principal.PerTenantAclsEntry
-	4,  // 3: littlehorse.Principal.global_acls:type_name -> littlehorse.ServerACLs
-	13, // 4: littlehorse.Tenant.id:type_name -> littlehorse.TenantId
-	12, // 5: littlehorse.Tenant.created_at:type_name -> google.protobuf.Timestamp
-	5,  // 6: littlehorse.ServerACLs.acls:type_name -> littlehorse.ServerACL
+	13, // 0: littlehorse.Principal.id:type_name -> littlehorse.PrincipalId
+	14, // 1: littlehorse.Principal.created_at:type_name -> google.protobuf.Timestamp
+	11, // 2: littlehorse.Principal.per_tenant_acls:type_name -> littlehorse.Principal.PerTenantAclsEntry
+	5,  // 3: littlehorse.Principal.global_acls:type_name -> littlehorse.ServerACLs
+	15, // 4: littlehorse.Tenant.id:type_name -> littlehorse.TenantId
+	14, // 5: littlehorse.Tenant.created_at:type_name -> google.protobuf.Timestamp
+	6,  // 6: littlehorse.ServerACLs.acls:type_name -> littlehorse.ServerACL
 	0,  // 7: littlehorse.ServerACL.resources:type_name -> littlehorse.ACLResource
 	1,  // 8: littlehorse.ServerACL.allowed_actions:type_name -> littlehorse.ACLAction
-	10, // 9: littlehorse.PutPrincipalRequest.per_tenant_acls:type_name -> littlehorse.PutPrincipalRequest.PerTenantAclsEntry
-	4,  // 10: littlehorse.PutPrincipalRequest.global_acls:type_name -> littlehorse.ServerACLs
-	11, // 11: littlehorse.DeletePrincipalRequest.id:type_name -> littlehorse.PrincipalId
-	4,  // 12: littlehorse.Principal.PerTenantAclsEntry.value:type_name -> littlehorse.ServerACLs
-	4,  // 13: littlehorse.PutPrincipalRequest.PerTenantAclsEntry.value:type_name -> littlehorse.ServerACLs
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	12, // 9: littlehorse.PutPrincipalRequest.per_tenant_acls:type_name -> littlehorse.PutPrincipalRequest.PerTenantAclsEntry
+	5,  // 10: littlehorse.PutPrincipalRequest.global_acls:type_name -> littlehorse.ServerACLs
+	13, // 11: littlehorse.DeletePrincipalRequest.id:type_name -> littlehorse.PrincipalId
+	2,  // 12: littlehorse.OutputTopicConfig.default_recording_level:type_name -> littlehorse.OutputTopicConfig.OutputTopicRecordingLevel
+	9,  // 13: littlehorse.PutTenantRequest.output_topic_config:type_name -> littlehorse.OutputTopicConfig
+	5,  // 14: littlehorse.Principal.PerTenantAclsEntry.value:type_name -> littlehorse.ServerACLs
+	5,  // 15: littlehorse.PutPrincipalRequest.PerTenantAclsEntry.value:type_name -> littlehorse.ServerACLs
+	16, // [16:16] is the sub-list for method output_type
+	16, // [16:16] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_acls_proto_init() }
@@ -886,6 +1022,18 @@ func file_acls_proto_init() {
 			}
 		}
 		file_acls_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*OutputTopicConfig); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_acls_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PutTenantRequest); i {
 			case 0:
 				return &v.state
@@ -902,13 +1050,14 @@ func file_acls_proto_init() {
 		(*ServerACL_Name)(nil),
 		(*ServerACL_Prefix)(nil),
 	}
+	file_acls_proto_msgTypes[7].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_acls_proto_rawDesc,
-			NumEnums:      2,
-			NumMessages:   9,
+			NumEnums:      3,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

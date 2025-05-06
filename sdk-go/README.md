@@ -25,7 +25,8 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go test -v ./...
 ```
 
-## Fix formatting go style
+## Code Formatter 
+
 ```
-gofmt -w .
+go fmt ./...
 ```
