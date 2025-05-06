@@ -48,10 +48,13 @@ import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecM
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.metrics.GetableNodeStatusUpdate;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +68,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class AbstractGetable<T extends Message> extends LHSerializable<T> {
 
     public abstract Date getCreatedAt();
+
+    private final List<GetableNodeStatusUpdate> updates = new ArrayList<>();
 
     public Optional<String> getPartitionKey() {
         return getObjectId().getPartitionKey();
@@ -275,6 +280,14 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             result.add(list);
         }
         return result;
+    }
+
+    public final void addUpdate(GetableNodeStatusUpdate update) {
+        updates.add(update);
+    }
+
+    public final Collection<GetableNodeStatusUpdate> updates() {
+        return Collections.unmodifiableList(updates);
     }
 }
 /*

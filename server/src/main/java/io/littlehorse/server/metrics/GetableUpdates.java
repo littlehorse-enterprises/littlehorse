@@ -6,8 +6,10 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * Hold information about new events related to WfRuns
@@ -18,6 +20,7 @@ public class GetableUpdates {
     private final Map<WfRunIdAndThreadRunNumber, ArrayDeque<GetableStatusUpdate>> getableUpdatesByThreadRunNumber =
             new HashMap<>();
     private final Map<WfRunIdModel, ArrayDeque<GetableStatusUpdate>> getableUpdatesByWfRunId = new HashMap<>();
+    private final Queue<GetableStatusUpdate> updates = new ArrayDeque<>();
 
     public GetableUpdates() {}
 
@@ -37,6 +40,12 @@ public class GetableUpdates {
         getableUpdatesByWfRunId
                 .computeIfAbsent(wfRunId, k -> new ArrayDeque<>())
                 .add(statusUpdate);
+    }
+
+    public void add(Collection<GetableNodeStatusUpdate> updates) {
+        for (GetableNodeStatusUpdate update : updates) {
+            append(update.getNodeRunId(), update);
+        }
     }
 
     private record WfRunIdAndThreadRunNumber(WfRunIdModel wfRunId, int threadRunNumber) {}

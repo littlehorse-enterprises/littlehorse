@@ -11,7 +11,7 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +32,7 @@ public class TagStorageManager {
             TenantScopedStore lhStore,
             ProcessorContext<String, CommandProcessorOutput> context,
             LHServerConfig lhConfig,
-            ExecutionContext executionContext) {
+            ProcessorExecutionContext executionContext) {
         this.lhStore = lhStore;
         this.context = context;
         this.lhConfig = lhConfig;

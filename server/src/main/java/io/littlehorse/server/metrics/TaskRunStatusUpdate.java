@@ -1,31 +1,27 @@
 package io.littlehorse.server.metrics;
 
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class TaskRunStatusUpdate extends GetableStatusUpdate {
+public class TaskRunStatusUpdate extends GetableNodeStatusUpdate {
     private final TaskDefIdModel taskDefId;
-    private final TaskStatus previousStatus;
     private final TaskStatus newStatus;
-    private final WfSpecIdModel wfSpecId;
 
-    public TaskRunStatusUpdate(
-            TaskDefIdModel taskDefId, WfSpecIdModel wfSpecId, TaskStatus previousStatus, TaskStatus newStatus) {
+    public TaskRunStatusUpdate(TaskDefIdModel taskDefId, TaskStatus newStatus, NodeRunIdModel nodeRunId) {
+        super(nodeRunId);
         this.taskDefId = taskDefId;
-        this.previousStatus = previousStatus;
         this.newStatus = newStatus;
-        this.wfSpecId = wfSpecId;
     }
 
     @Override
     public List<MetricSpecIdModel> toMetricId() {
-        return List.of(new MetricSpecIdModel(wfSpecId));
+        return List.of();
     }
 
     @Override

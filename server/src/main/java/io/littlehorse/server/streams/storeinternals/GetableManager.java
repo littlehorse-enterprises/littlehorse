@@ -13,7 +13,7 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -24,17 +24,19 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
+    private final ProcessorExecutionContext executionContext;
 
     public GetableManager(
             final TenantScopedStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
-            final ExecutionContext executionContext) {
+            final ProcessorExecutionContext executionContext) {
         super(store);
         this.store = store;
         this.command = command;
         this.tagStorageManager = new TagStorageManager(this.store, ctx, config, executionContext);
+        this.executionContext = executionContext;
     }
 
     /**
@@ -91,6 +93,8 @@ public class GetableManager extends ReadOnlyGetableManager {
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> previousValue =
                 (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
+
+        executionContext.getableUpdates().add(getable.updates());
 
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());

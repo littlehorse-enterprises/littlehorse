@@ -163,16 +163,8 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
         return out;
     }
 
-    public static String getStorePrefix(String wfRunId, String externalEventDefId) {
-        return wfRunId + "/" + externalEventDefId;
-    }
-
     public Integer getThreadRunNumber() {
         return threadRunNumber;
-    }
-
-    public Integer getNodeRunPosition() {
-        return nodeRunPosition;
     }
 
     public ExternalEventIdModel getObjectId() {

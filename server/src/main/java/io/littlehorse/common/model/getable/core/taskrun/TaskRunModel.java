@@ -401,15 +401,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     }
 
     private void transitionTo(TaskStatus newStatus) {
-        TaskStatus previousStatus = status;
         this.status = newStatus;
-        // This condition metrics for tasks that are triggered by a UserTaskRunNode
-        if (taskRunSource.getTaskNode() != null) {
-            processorContext
-                    .getableUpdates()
-                    .append(
-                            taskRunSource.getTaskNode().getNodeRunId(),
-                            new TaskRunStatusUpdate(taskDefId, taskRunSource.getWfSpecId(), previousStatus, newStatus));
-        }
+        addUpdate(new TaskRunStatusUpdate(
+                taskDefId, newStatus, taskRunSource.getTaskNode().getNodeRunId()));
     }
 }
