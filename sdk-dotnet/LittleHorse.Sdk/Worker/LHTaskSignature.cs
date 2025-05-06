@@ -18,9 +18,9 @@ namespace LittleHorse.Sdk.Worker
         
         private ILogger<LHTaskSignature<T>?> _logger;
 
-        private TaskDefOutputSchema? _taskDefOutputSchema;
+        private ReturnType? _outputSchema;
 
-        internal TaskDefOutputSchema? TaskDefOutputSchema => _taskDefOutputSchema;
+        internal ReturnType? ReturnType => _outputSchema;
 
         internal LHTaskSignature(string taskDefName, T executable)
         {
@@ -52,8 +52,7 @@ namespace LittleHorse.Sdk.Worker
 
             BuildInputVarsSignature(methodParams);
 
-            if (!TaskMethod.ReturnType.IsAssignableFrom(typeof(void)))
-                BuildOutputSchemaSignature();
+            _outputSchema = BuildReturnType();
         }
         
         private bool IsValidLHTaskWorkerValue(Attribute? lhtaskWorkerAttribute, string taskDefName)
@@ -108,30 +107,26 @@ namespace LittleHorse.Sdk.Worker
             }
         }
         
-        private void BuildOutputSchemaSignature()
+        private ReturnType BuildReturnType()
         {
-            var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType);
-            var maskedValue = false;
-            string outputSchemaVarName = "output";
+            if (TaskMethod.ReturnType == typeof(void)) {
+                return new ReturnType{};
+            } else {
+                var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType);
+                var maskedValue = false;
 
-            if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
-                maskedValue = lhType!.Masked;
-                if (lhType.Name.Trim() != "") {
-                    outputSchemaVarName = lhType.Name;
+                if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
+                    maskedValue = lhType!.Masked;
                 }
+
+                return new ReturnType
+                {
+                    ReturnType_ = new TypeDefinition{
+                        Type = returnType,
+                        Masked = maskedValue
+                    }
+                };
             }
-
-            var variableDef = new VariableDef
-            {
-                Name = outputSchemaVarName,
-                Type = returnType,
-                MaskedValue = maskedValue
-            };
-
-            _taskDefOutputSchema = new TaskDefOutputSchema
-            {
-                ValueDef = variableDef
-            };
         }
     }
 }
