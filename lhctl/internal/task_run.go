@@ -137,7 +137,6 @@ func init() {
 	listCmd.AddCommand(listTaskRunCmd)
 
 	searchTaskRunCmd.Flags().String("status", "", "Status of TaskRun's to search for.")
-	searchTaskRunCmd.Flags().String("taskDefName", "", "TaskDef ID of TaskRun's to search for.")
 	searchTaskRunCmd.MarkFlagRequired("taskDefName")
 	searchTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for TaskRuns that started no more than this number of minutes ago")
 	searchTaskRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for TaskRuns that started at least this number of minutes ago")
