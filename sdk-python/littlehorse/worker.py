@@ -177,7 +177,8 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [to_type(var.type) for var in self.task_def.input_vars]
+
+        task_def_vars = [to_type(var.type_def.type) for var in self.task_def.input_vars]
 
         callable_params = [
             param.annotation
