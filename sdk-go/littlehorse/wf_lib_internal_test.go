@@ -972,16 +972,15 @@ func TestShouldCompileWorkflowWithDoElseIfStatementInWorkflowThread(t *testing.T
 		myInt := thread.DeclareInt("my-int")
 		thread.DoIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 9), func(t *littlehorse.WorkflowThread) {
 			t.Execute("task-a")
-			myInt.Assign(9);
+			myInt.Assign(9)
 		}).DoElseIf(thread.Condition(7, lhproto.Comparator_LESS_THAN, 4), func(t *littlehorse.WorkflowThread) {
-			myInt.Assign(10);
+			myInt.Assign(10)
 			t.Execute("task-b")
 		}).DoElseIf(thread.Condition(5, lhproto.Comparator_EQUALS, 5), func(t *littlehorse.WorkflowThread) {
 			t.Execute("task-c")
 		})
-		myInt.Assign(0);
+		myInt.Assign(0)
 	}, "my-workflow")
-
 
 	compiledWorkflow, error := wf.Compile()
 	result, err := protojson.Marshal(compiledWorkflow)
@@ -997,9 +996,9 @@ func TestShouldCompileWorkflowWithDoElseIfStatementInWorkflowThread(t *testing.T
 	taskNodeC := entrypoint.Nodes["5-task-c-TASK"]
 	lastNopNode := entrypoint.Nodes["3-nop-NOP"]
 
-	expectedNumberOutgoingEdgesFromFirstNopNode := 4;
-    expectedLastSinkNopNodeName := "3-nop-NOP";
-    expectedExitSinkNodeName := "6-exit-EXIT";
+	expectedNumberOutgoingEdgesFromFirstNopNode := 4
+	expectedLastSinkNopNodeName := "3-nop-NOP"
+	expectedExitSinkNodeName := "6-exit-EXIT"
 
 	assert.Nil(t, error)
 	assert.Equal(t, expectedNumberOutgoingEdgesFromFirstNopNode, len(firstNopNode.GetOutgoingEdges()))

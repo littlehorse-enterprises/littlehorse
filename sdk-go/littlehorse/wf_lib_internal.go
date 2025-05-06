@@ -891,7 +891,7 @@ func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 
 	return &WorkflowIfStatement{firstNopNodeName: *t.firstNopNodeName,
 		lastNopNodeName: *lastNodeName,
-		thread: t}
+		thread:          t}
 }
 
 func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) WorkflowIfStatement {
@@ -918,7 +918,7 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 				Condition:         cond.spec,
 			},
 		)
-		} else {
+	} else {
 		lastOutgoingEdge := lastNodeOfParentThread.OutgoingEdges[len(lastNodeOfParentThread.OutgoingEdges)-1]
 		// Remove edge between last node of parent thread and first node of body
 		lastNodeOfParentThread.OutgoingEdges = removeEdge(lastNodeOfParentThread.OutgoingEdges, lastOutgoingEdge)
@@ -957,18 +957,18 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 
 	return WorkflowIfStatement{firstNopNodeName: *t.firstNopNodeName,
 		lastNopNodeName: *t.lastNodeName,
-		thread: t}
+		thread:          t}
 }
 
 func removeEdge(edges []*lhproto.Edge, edgeToRemove *lhproto.Edge) []*lhproto.Edge {
-    for i, edge := range edges {
-        if edge == edgeToRemove {
-            // Remove the element by slicing around it
-            result := append(edges[:i], edges[i+1:]...)
-            return result
-        }
-    }
-    return edges // Return original edges if the edge was not found
+	for i, edge := range edges {
+		if edge == edgeToRemove {
+			// Remove the element by slicing around it
+			result := append(edges[:i], edges[i+1:]...)
+			return result
+		}
+	}
+	return edges // Return original edges if the edge was not found
 }
 
 func (t *WorkflowThread) doIfElse(

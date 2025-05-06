@@ -91,9 +91,9 @@ type LHExpression struct {
 type LHErrorType string
 
 type WorkflowIfStatement struct {
-	firstNopNodeName    string
-	lastNopNodeName     string
-	thread          	*WorkflowThread
+	firstNopNodeName string
+	lastNopNodeName  string
+	thread           *WorkflowThread
 }
 
 const (
