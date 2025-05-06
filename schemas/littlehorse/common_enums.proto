@@ -76,8 +76,7 @@ enum MetricsWindowLength {
   DAYS_1 = 2;
 }
 
-// Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
-// VariableValue.
+// Specifies a primitive type in LittleHorse.
 enum VariableType {
   // An object represented as a json string. <br/>
   //

@@ -40,13 +40,10 @@ public class LHTaskSignatureTest
             Name = "name",
             IsMasked = TRUE_IS_MASKET
         };
-        var expectedOutput = new TaskDefOutputSchema
-        {
-            ValueDef = new VariableDef
-            {
-                Name = DEFAULT_OUTPUT_VARIABLE_NAME,
+        var expectedOutput = new ReturnType{
+            ReturnType_ = new TypeDefinition{
                 Type = VariableType.Str,
-                MaskedValue = TRUE_IS_MASKET
+                Masked = TRUE_IS_MASKET
             }
         };
 
@@ -58,9 +55,7 @@ public class LHTaskSignatureTest
             Assert.Equal(expectedLHMethodParam.IsMasked, actualLHMethodParam.IsMasked);
         }
         
-        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema!.ValueDef.Name);
-        Assert.Equal(expectedOutput.ValueDef.Type, taskSignature.TaskDefOutputSchema.ValueDef.Type);
-        Assert.Equal(expectedOutput.ValueDef.MaskedValue, taskSignature.TaskDefOutputSchema.ValueDef.MaskedValue);
+        Assert.Equal(expectedOutput, taskSignature.ReturnType);
         Assert.False(taskSignature.HasWorkerContextAtEnd);
     }
     
@@ -86,7 +81,7 @@ public class LHTaskSignatureTest
             Assert.Equal(expectedLHMethodParam.IsMasked, actualLHMethodParam.IsMasked);
         }
         
-        Assert.Null(taskSignature.TaskDefOutputSchema);
+        Assert.Equal(taskSignature.ReturnType, new ReturnType{});
         Assert.False(taskSignature.HasWorkerContextAtEnd);
     }
     
@@ -97,13 +92,12 @@ public class LHTaskSignatureTest
         
         var taskSignature = new LHTaskSignature<TestWorker>(TASK_DEF_NAME_UPDATE, new TestWorker());
         
-        var expectedOutput = new TaskDefOutputSchema
+        var expectedOutput = new ReturnType
         {
-            ValueDef = new VariableDef
+            ReturnType_ = new TypeDefinition
             {
-                Name = "result",
                 Type = VariableType.Str,
-                MaskedValue = TRUE_IS_MASKET
+                Masked = TRUE_IS_MASKET
             }
         };
 
@@ -113,9 +107,7 @@ public class LHTaskSignatureTest
             Assert.False(actualLHMethodParam.IsMasked);
         }
         
-        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema!.ValueDef.Name);
-        Assert.Equal(expectedOutput.ValueDef.Type, taskSignature.TaskDefOutputSchema.ValueDef.Type);
-        Assert.Equal(expectedOutput.ValueDef.MaskedValue, taskSignature.TaskDefOutputSchema.ValueDef.MaskedValue);
+        Assert.Equal(expectedOutput, taskSignature.ReturnType);
         Assert.False(taskSignature.HasWorkerContextAtEnd);
     }
     
@@ -193,13 +185,12 @@ public class LHTaskSignatureTest
             }
         };
 
-        var expectedOutput = new TaskDefOutputSchema
+        var expectedOutput = new ReturnType
         {
-            ValueDef = new VariableDef
+            ReturnType_ = new TypeDefinition
             {
-                Name = DEFAULT_OUTPUT_VARIABLE_NAME,
                 Type = VariableType.Str,
-                MaskedValue = false
+                Masked = false
             }
         };
 
@@ -214,9 +205,7 @@ public class LHTaskSignatureTest
             }
         }
 
-        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema!.ValueDef.Name);
-        Assert.Equal(expectedOutput.ValueDef.Type, taskSignature.TaskDefOutputSchema.ValueDef.Type);
-        Assert.Equal(expectedOutput.ValueDef.MaskedValue, taskSignature.TaskDefOutputSchema.ValueDef.MaskedValue);
+        Assert.Equal(expectedOutput, taskSignature.ReturnType);
         Assert.False(taskSignature.HasWorkerContextAtEnd);
     }
     

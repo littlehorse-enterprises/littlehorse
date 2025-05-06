@@ -40,23 +40,25 @@ public final class ExternalEventOuterClass {
     java.lang.String[] descriptorData = {
       "\n\024external_event.proto\022\013littlehorse\032\037goo" +
       "gle/protobuf/timestamp.proto\032\016variable.p" +
-      "roto\032\017object_id.proto\"\223\002\n\rExternalEvent\022" +
-      "(\n\002id\030\001 \001(\0132\034.littlehorse.ExternalEventI" +
-      "d\022.\n\ncreated_at\030\002 \001(\0132\032.google.protobuf." +
-      "Timestamp\022+\n\007content\030\003 \001(\0132\032.littlehorse" +
-      ".VariableValue\022\036\n\021thread_run_number\030\004 \001(" +
-      "\005H\000\210\001\001\022\036\n\021node_run_position\030\005 \001(\005H\001\210\001\001\022\017" +
-      "\n\007claimed\030\006 \001(\010B\024\n\022_thread_run_numberB\024\n" +
-      "\022_node_run_position\"\264\001\n\020ExternalEventDef" +
-      "\022+\n\002id\030\001 \001(\0132\037.littlehorse.ExternalEvent" +
-      "DefId\022.\n\ncreated_at\030\002 \001(\0132\032.google.proto" +
-      "buf.Timestamp\022C\n\020retention_policy\030\003 \001(\0132" +
-      ").littlehorse.ExternalEventRetentionPoli" +
-      "cy\"P\n\034ExternalEventRetentionPolicy\022\033\n\021se" +
-      "conds_after_put\030\001 \001(\003H\000B\023\n\021ext_evt_gc_po" +
-      "licyBM\n\037io.littlehorse.sdk.common.protoP" +
-      "\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Pr" +
-      "otob\006proto3"
+      "roto\032\017object_id.proto\032\023common_wfspec.pro" +
+      "to\"\223\002\n\rExternalEvent\022(\n\002id\030\001 \001(\0132\034.littl" +
+      "ehorse.ExternalEventId\022.\n\ncreated_at\030\002 \001" +
+      "(\0132\032.google.protobuf.Timestamp\022+\n\007conten" +
+      "t\030\003 \001(\0132\032.littlehorse.VariableValue\022\036\n\021t" +
+      "hread_run_number\030\004 \001(\005H\000\210\001\001\022\036\n\021node_run_" +
+      "position\030\005 \001(\005H\001\210\001\001\022\017\n\007claimed\030\006 \001(\010B\024\n\022" +
+      "_thread_run_numberB\024\n\022_node_run_position" +
+      "\"\201\002\n\020ExternalEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
+      "lehorse.ExternalEventDefId\022.\n\ncreated_at" +
+      "\030\002 \001(\0132\032.google.protobuf.Timestamp\022C\n\020re" +
+      "tention_policy\030\003 \001(\0132).littlehorse.Exter" +
+      "nalEventRetentionPolicy\0226\n\020type_informat" +
+      "ion\030\004 \001(\0132\027.littlehorse.ReturnTypeH\000\210\001\001B" +
+      "\023\n\021_type_information\"P\n\034ExternalEventRet" +
+      "entionPolicy\022\033\n\021seconds_after_put\030\001 \001(\003H" +
+      "\000B\023\n\021ext_evt_gc_policyBM\n\037io.littlehorse" +
+      ".sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleH" +
+      "orse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -64,6 +66,7 @@ public final class ExternalEventOuterClass {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
+          io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor(),
         });
     internal_static_littlehorse_ExternalEvent_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -76,7 +79,7 @@ public final class ExternalEventOuterClass {
     internal_static_littlehorse_ExternalEventDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventDef_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "RetentionPolicy", });
+        new java.lang.String[] { "Id", "CreatedAt", "RetentionPolicy", "TypeInformation", "TypeInformation", });
     internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_ExternalEventRetentionPolicy_fieldAccessorTable = new
@@ -86,6 +89,7 @@ public final class ExternalEventOuterClass {
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
+    io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

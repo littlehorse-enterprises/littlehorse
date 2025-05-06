@@ -361,7 +361,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 argType = LHLibUtil.javaClassToLHVarType(arg.getClass());
             }
 
-            if (!argType.equals(taskDefInputVars.get(i).getType())) {
+            if (!argType.equals(taskDefInputVars.get(i).getTypeDef())) {
                 throw new TaskSchemaMismatchError("Mismatch var type for param "
                         + i
                         + "on taskdef "
@@ -369,7 +369,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                         + ": "
                         + argType
                         + " not compatible with "
-                        + taskDefInputVars.get(i).getType());
+                        + taskDefInputVars.get(i).getTypeDef());
             }
         }
     }
