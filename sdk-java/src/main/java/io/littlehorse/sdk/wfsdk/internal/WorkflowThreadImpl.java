@@ -480,10 +480,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
     WorkflowIfStatement doElseIf(
             WorkflowIfStatement inputIfStatement, WorkflowCondition inputCondition, IfElseBody ifElseBody) {
         WorkflowIfStatementImpl ifStatement = (WorkflowIfStatementImpl) inputIfStatement;
-        EdgeCondition elseIfCondition = (inputCondition != null)
-                ? ((WorkflowConditionImpl) inputCondition).getSpec()
-                : Edge.getDefaultInstance().getCondition();
-
         // Remove else edge from firstNopNode
         Edge elseEdge = removeLastOutgoingEdgeFromNode(ifStatement.getFirstNopNodeName());
 
@@ -497,14 +493,17 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         // If no nodes were added from the body...
         if (lastNodeOfParentThreadName.equals(lastNodeOfBodyName)) {
-            System.out.println("no nodes added from body");
+            Edge.Builder edgeToNopNode = Edge.newBuilder()
+                .setSinkNodeName(ifStatement.getLastNopNodeName())
+                .addAllVariableMutations(this.collectVariableMutations());
+
+            if (inputCondition != null) {{
+                edgeToNopNode.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
+            }}
+
             addOutgoingEdgeToNode(
                     ifStatement.getFirstNopNodeName(),
-                    Edge.newBuilder()
-                            .setSinkNodeName(ifStatement.getLastNopNodeName())
-                            .setCondition(elseIfCondition)
-                            .addAllVariableMutations(this.collectVariableMutations())
-                            .build());
+                    edgeToNopNode.build());
         } else {
             // Remove edge between last node of parent thread and first node of body
             Edge lastOutgoingEdge = removeLastOutgoingEdgeFromNode(lastNodeOfParentThreadName);
@@ -512,13 +511,17 @@ final class WorkflowThreadImpl implements WorkflowThread {
             String firstNodeOfBodyName = lastOutgoingEdge.getSinkNodeName();
 
             // Add edge from the firstNopNode to the first node of the body
+            Edge.Builder edgeToBody = Edge.newBuilder()
+                .setSinkNodeName(firstNodeOfBodyName)
+                .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList());
+
+            if (inputCondition != null) {{
+                edgeToBody.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
+            }}
+
             addOutgoingEdgeToNode(
                     ifStatement.getFirstNopNodeName(),
-                    Edge.newBuilder()
-                            .setSinkNodeName(firstNodeOfBodyName)
-                            .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList())
-                            .setCondition(elseIfCondition)
-                            .build());
+                    edgeToBody.build());
 
             // Add edge from last node of the body to last NOP node
             addOutgoingEdgeToNode(
