@@ -484,7 +484,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Edge elseEdge = removeLastOutgoingEdgeFromNode(ifStatement.getFirstNopNodeName());
 
         // Get the last Node of the parent thread
-        // Entry<String, Node> lastNodeOfParentThread = this.getLastNodeInGraph();
         String lastNodeOfParentThreadName = lastNodeName;
 
         ifElseBody.body(this);
