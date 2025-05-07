@@ -176,6 +176,7 @@ public interface WorkflowThread {
      * @param condition is the WorkflowCondition to be satisfied.
      * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
      *     is satisfied.
+     * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(WorkflowCondition, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
      */
     WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody doIf);
 
@@ -188,7 +189,7 @@ public interface WorkflowThread {
      *     is satisfied.
      * @param doElse is the block of ThreadSpec code to be executed if the provided
      *     WorkflowCondition is NOT satisfied.
-     * @deprecated Use {@link WorkflowIfStatement#doElse(IfElseBody body)} instead.
+     * @deprecated Use {@link WorkflowThread#doIf(WorkflowCondition, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody body)} instead.
      */
     @Deprecated(forRemoval = true)
     void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
