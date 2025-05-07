@@ -527,6 +527,7 @@ func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
 	s.thread.doElseIf(nil, doElse)
 }
 
+// Deprecated: Use DoIf and DoElse instead.
 func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
 	t.doIfElse(cond, doIf, doElse)
 }
