@@ -1012,6 +1012,48 @@ func TestShouldValidateGroupIdIsNotEmptyInUserTask(t *testing.T) {
 	wf.Compile()
 }
 
+func TestShouldCompileWorkflowWithDefaultEdgeWhenDoElseIfIsNotUsed(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		thread.DoIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 9), func(t *littlehorse.WorkflowThread) {
+		})
+	}, "my-workflow")
+
+	compiledWorkflow, error := wf.Compile()
+
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	firstNopNode := entrypoint.Nodes["1-nop-NOP"]
+
+	assert.Nil(t, error)
+	assert.True(t, proto.Equal(firstNopNode, &lhproto.Node{
+		Node: &lhproto.Node_Nop{},
+		OutgoingEdges: []*lhproto.Edge{
+			{
+				SinkNodeName: "2-nop-NOP",
+				Condition: &lhproto.EdgeCondition{
+					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+					Left: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 5},
+							},
+						},
+					},
+					Right: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 9},
+							},
+						},
+					},
+				},
+			},
+			{
+				SinkNodeName: "2-nop-NOP",
+			},
+		},
+	}))
+}
+
 func TestShouldCompileWorkflowWithMultipleDoElseIfStatementsInWorkflowThread(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
 		myInt := thread.DeclareInt("my-int")
