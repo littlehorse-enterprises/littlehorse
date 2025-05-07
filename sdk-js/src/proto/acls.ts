@@ -217,7 +217,14 @@ export interface Tenant {
     | TenantId
     | undefined;
   /** The time at which the Tenant was created. */
-  createdAt: string | undefined;
+  createdAt:
+    | string
+    | undefined;
+  /**
+   * Configuration for the output topic associated with this Tenant. If not set,
+   * then the output topic is not enabled.
+   */
+  outputTopicConfig?: OutputTopicConfig | undefined;
 }
 
 /** List of ACL's for LittleHorse */
@@ -505,7 +512,7 @@ export const Principal_PerTenantAclsEntry = {
 };
 
 function createBaseTenant(): Tenant {
-  return { id: undefined, createdAt: undefined };
+  return { id: undefined, createdAt: undefined, outputTopicConfig: undefined };
 }
 
 export const Tenant = {
@@ -515,6 +522,9 @@ export const Tenant = {
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.outputTopicConfig !== undefined) {
+      OutputTopicConfig.encode(message.outputTopicConfig, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -540,6 +550,13 @@ export const Tenant = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.outputTopicConfig = OutputTopicConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -556,6 +573,9 @@ export const Tenant = {
     const message = createBaseTenant();
     message.id = (object.id !== undefined && object.id !== null) ? TenantId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
+    message.outputTopicConfig = (object.outputTopicConfig !== undefined && object.outputTopicConfig !== null)
+      ? OutputTopicConfig.fromPartial(object.outputTopicConfig)
+      : undefined;
     return message;
   },
 };

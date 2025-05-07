@@ -82,39 +82,41 @@ public final class Acls {
       "try\022,\n\013global_acls\030\004 \001(\0132\027.littlehorse.S" +
       "erverACLs\032M\n\022PerTenantAclsEntry\022\013\n\003key\030\001" +
       " \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Server" +
-      "ACLs:\0028\001\"[\n\006Tenant\022!\n\002id\030\001 \001(\0132\025.littleh" +
-      "orse.TenantId\022.\n\ncreated_at\030\002 \001(\0132\032.goog" +
-      "le.protobuf.Timestamp\"2\n\nServerACLs\022$\n\004a" +
-      "cls\030\001 \003(\0132\026.littlehorse.ServerACL\"\236\001\n\tSe" +
-      "rverACL\022+\n\tresources\030\001 \003(\0162\030.littlehorse" +
-      ".ACLResource\022/\n\017allowed_actions\030\002 \003(\0162\026." +
-      "littlehorse.ACLAction\022\016\n\004name\030\003 \001(\tH\000\022\020\n" +
-      "\006prefix\030\004 \001(\tH\000B\021\n\017resource_filter\"\377\001\n\023P" +
-      "utPrincipalRequest\022\n\n\002id\030\001 \001(\t\022L\n\017per_te" +
-      "nant_acls\030\002 \003(\01323.littlehorse.PutPrincip" +
-      "alRequest.PerTenantAclsEntry\022,\n\013global_a" +
-      "cls\030\003 \001(\0132\027.littlehorse.ServerACLs\022\021\n\tov" +
-      "erwrite\030\005 \001(\010\032M\n\022PerTenantAclsEntry\022\013\n\003k" +
-      "ey\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Se" +
-      "rverACLs:\0028\001\">\n\026DeletePrincipalRequest\022$" +
-      "\n\002id\030\001 \001(\0132\030.littlehorse.PrincipalId\"\270\001\n" +
-      "\021OutputTopicConfig\022Y\n\027default_recording_" +
-      "level\030\001 \001(\01628.littlehorse.OutputTopicCon" +
-      "fig.OutputTopicRecordingLevel\"H\n\031OutputT" +
-      "opicRecordingLevel\022\025\n\021ALL_ENTITY_EVENTS\020" +
-      "\000\022\024\n\020NO_ENTITY_EVENTS\020\001\"x\n\020PutTenantRequ" +
-      "est\022\n\n\002id\030\001 \001(\t\022@\n\023output_topic_config\030\002" +
-      " \001(\0132\036.littlehorse.OutputTopicConfigH\000\210\001" +
-      "\001B\026\n\024_output_topic_config*\305\001\n\013ACLResourc" +
-      "e\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022ACL" +
-      "_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER_TASK\020\003\022\021\n\r" +
-      "ACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n\021ACL_A" +
-      "LL_RESOURCES\020\006\022\031\n\025ACL_TASK_WORKER_GROUP\020" +
-      "\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010*C\n\tACLAction\022\010" +
-      "\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n" +
-      "\013ALL_ACTIONS\020\003BM\n\037io.littlehorse.sdk.com" +
-      "mon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk" +
-      ".Common.Protob\006proto3"
+      "ACLs:\0028\001\"\265\001\n\006Tenant\022!\n\002id\030\001 \001(\0132\025.little" +
+      "horse.TenantId\022.\n\ncreated_at\030\002 \001(\0132\032.goo" +
+      "gle.protobuf.Timestamp\022@\n\023output_topic_c" +
+      "onfig\030\003 \001(\0132\036.littlehorse.OutputTopicCon" +
+      "figH\000\210\001\001B\026\n\024_output_topic_config\"2\n\nServ" +
+      "erACLs\022$\n\004acls\030\001 \003(\0132\026.littlehorse.Serve" +
+      "rACL\"\236\001\n\tServerACL\022+\n\tresources\030\001 \003(\0162\030." +
+      "littlehorse.ACLResource\022/\n\017allowed_actio" +
+      "ns\030\002 \003(\0162\026.littlehorse.ACLAction\022\016\n\004name" +
+      "\030\003 \001(\tH\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017resource_f" +
+      "ilter\"\377\001\n\023PutPrincipalRequest\022\n\n\002id\030\001 \001(" +
+      "\t\022L\n\017per_tenant_acls\030\002 \003(\01323.littlehorse" +
+      ".PutPrincipalRequest.PerTenantAclsEntry\022" +
+      ",\n\013global_acls\030\003 \001(\0132\027.littlehorse.Serve" +
+      "rACLs\022\021\n\toverwrite\030\005 \001(\010\032M\n\022PerTenantAcl" +
+      "sEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.lit" +
+      "tlehorse.ServerACLs:\0028\001\">\n\026DeletePrincip" +
+      "alRequest\022$\n\002id\030\001 \001(\0132\030.littlehorse.Prin" +
+      "cipalId\"\270\001\n\021OutputTopicConfig\022Y\n\027default" +
+      "_recording_level\030\001 \001(\01628.littlehorse.Out" +
+      "putTopicConfig.OutputTopicRecordingLevel" +
+      "\"H\n\031OutputTopicRecordingLevel\022\025\n\021ALL_ENT" +
+      "ITY_EVENTS\020\000\022\024\n\020NO_ENTITY_EVENTS\020\001\"x\n\020Pu" +
+      "tTenantRequest\022\n\n\002id\030\001 \001(\t\022@\n\023output_top" +
+      "ic_config\030\002 \001(\0132\036.littlehorse.OutputTopi" +
+      "cConfigH\000\210\001\001B\026\n\024_output_topic_config*\305\001\n" +
+      "\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TA" +
+      "SK\020\001\022\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER" +
+      "_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT" +
+      "\020\005\022\025\n\021ACL_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WO" +
+      "RKER_GROUP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010*C\n\t" +
+      "ACLAction\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_ME" +
+      "TADATA\020\002\022\017\n\013ALL_ACTIONS\020\003BM\n\037io.littleho" +
+      "rse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Litt" +
+      "leHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -139,7 +141,7 @@ public final class Acls {
     internal_static_littlehorse_Tenant_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Tenant_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", });
+        new java.lang.String[] { "Id", "CreatedAt", "OutputTopicConfig", "OutputTopicConfig", });
     internal_static_littlehorse_ServerACLs_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_ServerACLs_fieldAccessorTable = new

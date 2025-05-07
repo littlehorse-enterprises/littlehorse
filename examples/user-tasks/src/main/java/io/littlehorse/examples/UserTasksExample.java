@@ -90,7 +90,7 @@ public class UserTasksExample {
             financeUserTaskOutput.jsonPath("$.isApproved")
         );
 
-        wf.doIfElse(
+        wf.doIf(
             wf.condition(isApproved, Comparator.EQUALS, true),
             // Request approved!
             ifBody -> {
@@ -103,7 +103,8 @@ public class UserTasksExample {
                         itRequest.jsonPath("$.requestedItem")
                     )
                 );
-            },
+            }
+        ).doElse(
             // Request denied ):
             elseBody -> {
                 elseBody.execute(
@@ -115,8 +116,8 @@ public class UserTasksExample {
                         itRequest.jsonPath("$.requestedItem")
                     )
                 );
-            }
-        );
+        });
+
     }
 
     public static Properties getConfigProps() throws IOException {

@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.ClusterMetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -26,6 +27,7 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     private TenantIdModel id;
     private Date createdAt;
+    private OutputTopicConfigModel outputTopicConfig;
 
     public TenantModel() {}
 
@@ -37,9 +39,20 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
         this.id = id;
     }
 
+    public TenantModel(final TenantIdModel id, OutputTopicConfigModel outputTopicConfig) {
+        this.id = id;
+        this.outputTopicConfig = outputTopicConfig;
+    }
+
     @Override
     public Tenant.Builder toProto() {
-        return Tenant.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        Tenant.Builder result = Tenant.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+
+        if (outputTopicConfig != null) {
+            result.setOutputTopicConfig(outputTopicConfig.toProto());
+        }
+
+        return result;
     }
 
     @Override
@@ -47,6 +60,11 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
         Tenant tenant = (Tenant) proto;
         this.id = LHSerializable.fromProto(tenant.getId(), TenantIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());
+
+        if (tenant.hasOutputTopicConfig()) {
+            this.outputTopicConfig =
+                    LHSerializable.fromProto(tenant.getOutputTopicConfig(), OutputTopicConfigModel.class, context);
+        }
     }
 
     @Override
