@@ -370,5 +370,90 @@ public class ConditionalTest {
                             .setExit(ExitNode.getDefaultInstance())
                             .build());
         }
+
+        /**
+         * Tests a case where `WorkflowThread#execute()` is called
+         * between elseIf statements within the main body of the WorkflowThread.
+         */
+        @Test
+        public void testIfStatementWithExecuteMethodCallBetweenElseIfConditions() {
+            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
+                WorkflowIfStatement myIfStatement = wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                    body.execute("task-a");
+                });
+                wf.execute("task-c");
+                myIfStatement.doElseIf(wf.condition(10, Comparator.LESS_THAN_EQ, 200), body -> {
+                    body.execute("task-b");
+                });
+            });
+
+            ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+
+            assertThat(entrypointThread.getNodesMap().size()).isEqualTo(7);
+
+            assertThat(entrypointThread.getNodesMap().get("0-entrypoint-ENTRYPOINT"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("1-nop-NOP"))
+                            .setEntrypoint(EntrypointNode.getDefaultInstance())
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("1-nop-NOP"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder()
+                                    .setSinkNodeName("2-task-a-TASK")
+                                    .setCondition(EdgeCondition.newBuilder()
+                                            .setLeft(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(5)))
+                                            .setComparator(Comparator.GREATER_THAN)
+                                            .setRight(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(4)))))
+                            .addOutgoingEdges(Edge.newBuilder()
+                                    .setSinkNodeName("5-task-b-TASK")
+                                    .setCondition(EdgeCondition.newBuilder()
+                                            .setLeft(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(10)))
+                                            .setComparator(Comparator.LESS_THAN_EQ)
+                                            .setRight(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(200)))))
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
+                            .setNop(NopNode.getDefaultInstance())
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("2-task-a-TASK"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
+                            .setTask(TaskNode.newBuilder()
+                                    .setTaskDefId(TaskDefId.newBuilder().setName("task-a"))
+                                    .setTimeoutSeconds(0)
+                                    .setRetries(0))
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("5-task-b-TASK"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
+                            .setTask(TaskNode.newBuilder()
+                                    .setTaskDefId(TaskDefId.newBuilder().setName("task-b"))
+                                    .setTimeoutSeconds(0)
+                                    .setRetries(0))
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("3-nop-NOP"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("4-task-c-TASK"))
+                            .setNop(NopNode.getDefaultInstance())
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("4-task-c-TASK"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("6-exit-EXIT"))
+                            .setTask(TaskNode.newBuilder()
+                                    .setTaskDefId(TaskDefId.newBuilder().setName("task-c"))
+                                    .setTimeoutSeconds(0)
+                                    .setRetries(0))
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("6-exit-EXIT"))
+                    .isEqualTo(Node.newBuilder()
+                            .setExit(ExitNode.getDefaultInstance())
+                            .build());
+        }
     }
 }

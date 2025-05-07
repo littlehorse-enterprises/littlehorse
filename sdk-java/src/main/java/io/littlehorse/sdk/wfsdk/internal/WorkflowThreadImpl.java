@@ -532,10 +532,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), elseEdge);
         }
 
-        // If the nopNode has no outgoing edges, set it as the last node of the ThreadSpec
-        if (this.spec.getNodesOrThrow(ifStatement.getLastNopNodeName()).getOutgoingEdgesCount() == 0) {
-            lastNodeName = ifStatement.getLastNopNodeName();
-        }
+        lastNodeName = lastNodeOfParentThreadName;
 
         return ifStatement;
     }
