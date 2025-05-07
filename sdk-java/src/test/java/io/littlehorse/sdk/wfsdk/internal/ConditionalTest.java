@@ -325,5 +325,50 @@ public class ConditionalTest {
 
             assertThatThrownBy(() -> wfSpec.compileWorkflow()).isInstanceOf(IllegalStateException.class);
         }
+
+        @Test
+        public void testDoElseIfWithNodeAndMutationAfterIfStatement() {
+            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
+                WfRunVariable myInt = wf.declareInt("my-int");
+                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                            body.execute("task-a");
+                        })
+                        .doElseIf(wf.condition(10, Comparator.LESS_THAN_EQ, 200), body -> {
+                            body.execute("task-b");
+                        });
+                myInt.assign(40);
+                wf.execute("task-c");
+            });
+
+            ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+
+            assertThat(entrypointThread.getNodesMap().size()).isEqualTo(7);
+
+            assertThat(entrypointThread.getNodesMap().get("3-nop-NOP"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder()
+                                    .setSinkNodeName("5-task-c-TASK")
+                                    .addVariableMutations(VariableMutation.newBuilder()
+                                            .setLhsName("my-int")
+                                            .setOperation(VariableMutationType.ASSIGN)
+                                            .setRhsAssignment(VariableAssignment.newBuilder()
+                                                    .setLiteralValue(VariableValue.newBuilder()
+                                                            .setInt(40)))
+                                            .build()))
+                            .setNop(NopNode.newBuilder().build())
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("5-task-c-TASK"))
+                    .isEqualTo(Node.newBuilder()
+                            .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("6-exit-EXIT"))
+                            .setTask(TaskNode.newBuilder()
+                                    .setTaskDefId(TaskDefId.newBuilder().setName("task-c"))
+                                    .setTimeoutSeconds(0)
+                                    .setRetries(0))
+                            .build());
+            assertThat(entrypointThread.getNodesMap().get("6-exit-EXIT"))
+                    .isEqualTo(Node.newBuilder()
+                            .setExit(ExitNode.getDefaultInstance())
+                            .build());
+        }
     }
 }
