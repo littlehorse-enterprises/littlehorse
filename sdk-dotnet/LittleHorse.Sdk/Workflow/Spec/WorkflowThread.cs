@@ -471,6 +471,7 @@ public class WorkflowThread
     /// It is the block of ThreadSpec code to be executed if the provided
     /// WorkflowCondition is NOT satisfied.
     /// </param>
+    [Obsolete("Use DoIf(WorkflowCondition condition, Action<WorkflowThread> body) instead.")]
     public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
         WorkflowIfStatement ifResult = DoIf(condition, ifBody);
