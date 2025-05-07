@@ -44,6 +44,10 @@ message Tenant {
 
     // The time at which the Tenant was created.
     google.protobuf.Timestamp created_at = 2;
+
+    // Configuration for the output topic associated with this Tenant. If not set,
+    // then the output topic is not enabled.
+    optional OutputTopicConfig output_topic_config = 3;
 }
 
 // List of ACL's for LittleHorse

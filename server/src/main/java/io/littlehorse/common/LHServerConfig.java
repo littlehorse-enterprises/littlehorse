@@ -64,6 +64,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String LHS_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
     public static final String REPLICATION_FACTOR_KEY = "LHS_REPLICATION_FACTOR";
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
+    public static final String OUTPUT_TOPIC_PARTITIONS_KEY = "LHS_OUTPUT_TOPIC_PARTITIONS";
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
 
@@ -351,6 +352,11 @@ public class LHServerConfig extends ConfigBase {
 
     public int getClusterPartitions() {
         return Integer.valueOf(String.class.cast(props.getOrDefault(LHServerConfig.CLUSTER_PARTITIONS_KEY, "12")));
+    }
+
+    public int getOutputToppicPartitions() {
+        return Integer.valueOf(String.class.cast(props.getOrDefault(
+                LHServerConfig.OUTPUT_TOPIC_PARTITIONS_KEY, String.valueOf(getClusterPartitions()))));
     }
 
     public String getKafkaGroupId(String component) {
