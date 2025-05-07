@@ -12,8 +12,6 @@ public class WorkflowIfStatementImpl implements WorkflowIfStatement {
     private WorkflowThreadImpl parentWorkflowThread;
     private String firstNopNodeName;
     private String lastNopNodeName;
-
-    @Getter()
     private boolean wasElseExecuted;
 
     public WorkflowIfStatementImpl(
