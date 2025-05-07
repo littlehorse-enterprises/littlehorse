@@ -1335,3 +1335,82 @@ func TestShouldPanicAnErrorIfDoElseIsCalledMoreThanOnce(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestShouldCompileWorkflowWhenDoElseIfIsCalledAfterATask(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		ifStatement := thread.DoIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 9),
+			func(t *littlehorse.WorkflowThread) {})
+		thread.Execute("task-a")
+		ifStatement.DoElseIf(thread.Condition(5, lhproto.Comparator_GREATER_THAN_EQ, 3), func(t *littlehorse.WorkflowThread) {
+			t.Execute("task-b")
+		})
+	}, "my-workflow")
+
+	compiledWorkflow, err := wf.Compile()
+
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	firstNopNode := entrypoint.Nodes["1-nop-NOP"]
+	lastNopNode := entrypoint.Nodes["2-nop-NOP"]
+	taskNodeA := entrypoint.Nodes["3-task-a-TASK"]
+	taskNodeB := entrypoint.Nodes["4-task-b-TASK"]
+
+	expectedNumberOutgoingEdgesFromFirstNopNode := 3
+	expectedLastSinkNopNodeName := "2-nop-NOP"
+	expectedExitSinkNodeName := "5-exit-EXIT"
+
+	expectedFirstNopeNode := lhproto.Node{
+		Node: &lhproto.Node_Nop{},
+		OutgoingEdges: []*lhproto.Edge{
+			{
+				SinkNodeName: "2-nop-NOP",
+				Condition: &lhproto.EdgeCondition{
+					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+					Left: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 5},
+							},
+						},
+					},
+					Right: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 9},
+							},
+						},
+					},
+				},
+			},
+			{
+				SinkNodeName: "4-task-b-TASK",
+				Condition: &lhproto.EdgeCondition{
+					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+					Left: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 5},
+							},
+						},
+					},
+					Right: &lhproto.VariableAssignment{
+						Source: &lhproto.VariableAssignment_LiteralValue{
+							LiteralValue: &lhproto.VariableValue{
+								Value: &lhproto.VariableValue_Int{Int: 3},
+							},
+						},
+					},
+				},
+			},
+			{
+				SinkNodeName: "2-nop-NOP",
+			},
+		},
+	}
+
+	assert.Nil(t, err)
+	assert.Equal(t, expectedNumberOutgoingEdgesFromFirstNopNode, len(firstNopNode.GetOutgoingEdges()))
+	assert.True(t, proto.Equal(&expectedFirstNopeNode, firstNopNode))
+	assert.Equal(t, expectedLastSinkNopNodeName, taskNodeB.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, expectedExitSinkNodeName, taskNodeA.GetOutgoingEdges()[0].GetSinkNodeName())
+	assert.Equal(t, "3-task-a-TASK", lastNopNode.GetOutgoingEdges()[0].GetSinkNodeName())
+}

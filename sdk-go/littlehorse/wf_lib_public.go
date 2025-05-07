@@ -28,7 +28,6 @@ type WorkflowThread struct {
 	isActive          bool
 	spec              lhproto.ThreadSpec
 	wf                *LHWorkflow
-	firstNopNodeName  *string
 	lastNodeName      *string
 	lastNodeCondition *WorkflowCondition
 	variableMutations []*lhproto.VariableMutation
@@ -515,7 +514,7 @@ func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 }
 
 func (s *WorkflowIfStatement) DoElseIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
-	result := s.thread.doElseIf(cond, doIf)
+	result := s.thread.doElseIf(*s, cond, doIf)
 	return &result
 }
 
@@ -524,7 +523,7 @@ func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
 		panic(errors.New("else block has already been executed, cannot add another else block"))
 	}
 	s.wasElseExecuted = true
-	s.thread.doElseIf(nil, doElse)
+	s.thread.doElseIf(*s, nil, doElse)
 }
 
 // Deprecated: Use DoIf and DoElse instead.

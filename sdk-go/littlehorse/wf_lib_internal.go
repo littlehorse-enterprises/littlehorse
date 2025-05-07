@@ -879,8 +879,8 @@ func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 
 	// Top of the tree. This creates the T node
 	t.addNopNode()
-	firstNode := t.spec.Nodes[*t.lastNodeName]
-	t.firstNopNodeName = t.lastNodeName
+	firstNopNodeName := t.lastNodeName
+	firstNode := t.spec.Nodes[*firstNopNodeName]
 	t.lastNodeCondition = cond
 
 	// Do the work. This adds the 'A'
@@ -897,19 +897,19 @@ func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 		},
 	)
 
-	return &WorkflowIfStatement{firstNopNodeName: *t.firstNopNodeName,
+	return &WorkflowIfStatement{firstNopNodeName: *firstNopNodeName,
 		lastNopNodeName: *lastNodeName,
 		wasElseExecuted: false,
 		thread:          t}
 }
 
-func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) WorkflowIfStatement {
-	firstNopNode := t.spec.Nodes[*t.firstNopNodeName]
+func (t *WorkflowThread) doElseIf(ifStatement WorkflowIfStatement, cond *WorkflowCondition, doElseIf IfElseBody) WorkflowIfStatement {
+	firstNopNode := t.spec.Nodes[ifStatement.firstNopNodeName]
 	elseEdge := firstNopNode.OutgoingEdges[len(firstNopNode.OutgoingEdges)-1]
 	// Remove else edge from the first NOP node
 	firstNopNode.OutgoingEdges = removeEdge(firstNopNode.OutgoingEdges, elseEdge)
 	lastNodeOfParentThread := t.spec.Nodes[*t.lastNodeName]
-	lastNopNodeName := t.lastNodeName
+	lastNodeNameOfParentThread := t.lastNodeName
 
 	doElseIf(t)
 
@@ -921,7 +921,7 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 		// Add edge from nop 1 to nop 2 with variable mutations
 		firstNopNode.OutgoingEdges = append(
 			firstNopNode.OutgoingEdges,
-			t.buildNewEdge(*lastNopNodeName, cond, t.collectVariableMutations()),
+			t.buildNewEdge(ifStatement.lastNopNodeName, cond, t.collectVariableMutations()),
 		)
 	} else {
 		lastOutgoingEdge := lastNodeOfParentThread.OutgoingEdges[len(lastNodeOfParentThread.OutgoingEdges)-1]
@@ -940,7 +940,7 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 		lastNodeOfBody.OutgoingEdges = append(
 			lastNodeOfBody.OutgoingEdges,
 			&lhproto.Edge{
-				SinkNodeName:      *lastNopNodeName,
+				SinkNodeName:      ifStatement.lastNopNodeName,
 				VariableMutations: t.collectVariableMutations(),
 			},
 		)
@@ -951,13 +951,10 @@ func (t *WorkflowThread) doElseIf(cond *WorkflowCondition, doElseIf IfElseBody) 
 		firstNopNode.OutgoingEdges = append(firstNopNode.OutgoingEdges, elseEdge)
 	}
 
-	// If no edges were added to the last NOP node, set it as last node of the threadSpec
-	if len(t.spec.Nodes[*lastNopNodeName].OutgoingEdges) == 0 {
-		t.lastNodeName = lastNopNodeName
-	}
+	t.lastNodeName = lastNodeNameOfParentThread
 
-	return WorkflowIfStatement{firstNopNodeName: *t.firstNopNodeName,
-		lastNopNodeName: *t.lastNodeName,
+	return WorkflowIfStatement{firstNopNodeName: ifStatement.firstNopNodeName,
+		lastNopNodeName: ifStatement.lastNopNodeName,
 		wasElseExecuted: false,
 		thread:          t}
 }
