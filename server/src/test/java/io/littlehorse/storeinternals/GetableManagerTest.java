@@ -2,6 +2,7 @@ package io.littlehorse.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
@@ -32,6 +33,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.server.metrics.GetableUpdates;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -79,6 +81,7 @@ public class GetableManagerTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
     private GetableManager getableManager;
+    private final GetableUpdates getableUpdates = mock();
 
     @Mock
     private ProcessorExecutionContext executionContext;
@@ -92,6 +95,7 @@ public class GetableManagerTest {
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
     }
 
     @ParameterizedTest

@@ -16,15 +16,18 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     private PartitionMetricIdModel id;
     private Date createdAt;
@@ -110,8 +113,8 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
         return newWindow;
     }
 
-    Set<PartitionWindowedMetricModel> getActiveWindowedMetrics() {
-        return activeWindowedMetrics;
+    public Set<PartitionWindowedMetricModel> getActiveWindowedMetrics() {
+        return Collections.unmodifiableSet(activeWindowedMetrics);
     }
 
     public List<RepartitionWindowedMetricModel> buildRepartitionCommand(LocalDateTime currentTime) {

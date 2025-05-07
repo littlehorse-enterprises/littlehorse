@@ -44,6 +44,7 @@ public class Sensor {
                             .orElse(new PartitionMetricModel(partitionId, windowLength));
                     partitionMetric.incrementCurrentWindow(
                             LocalDateTime.now(), statusUpdate.getMetricIncrementValue(aggregationType));
+                    processorContext.getableManager().put(partitionMetric);
                     processorContext.metricsInventory().addMetric(partitionMetric.getObjectId());
                 }
             }
