@@ -402,7 +402,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
     private void transitionTo(TaskStatus newStatus) {
         this.status = newStatus;
-        addUpdate(new TaskRunStatusUpdate(
-                taskDefId, newStatus, taskRunSource.getTaskNode().getNodeRunId()));
+        if (taskRunSource.getTaskNode() != null) {
+            addUpdate(new TaskRunStatusUpdate(
+                    taskDefId, newStatus, taskRunSource.getTaskNode().getNodeRunId()));
+        }
     }
 }
