@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The request used to create a Tenant
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PutTenantRequest}
  */
 public final class PutTenantRequest extends
@@ -39,10 +43,15 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.PutTenantRequest.class, io.littlehorse.sdk.common.proto.PutTenantRequest.Builder.class);
   }
 
+  private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
+   * <pre>
+   * The ID of the tenant to put
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
@@ -60,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The ID of the tenant to put
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -76,6 +89,47 @@ private static final long serialVersionUID = 0L;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
+  }
+
+  public static final int OUTPUT_TOPIC_CONFIG_FIELD_NUMBER = 2;
+  private io.littlehorse.sdk.common.proto.OutputTopicConfig outputTopicConfig_;
+  /**
+   * <pre>
+   * Configures the behavior of the Output Topic for this Tenant. If not set,
+   * then the OutputTopic is not considered to be enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+   * @return Whether the outputTopicConfig field is set.
+   */
+  @java.lang.Override
+  public boolean hasOutputTopicConfig() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Configures the behavior of the Output Topic for this Tenant. If not set,
+   * then the OutputTopic is not considered to be enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+   * @return The outputTopicConfig.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.OutputTopicConfig getOutputTopicConfig() {
+    return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
+  }
+  /**
+   * <pre>
+   * Configures the behavior of the Output Topic for this Tenant. If not set,
+   * then the OutputTopic is not considered to be enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder() {
+    return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -95,6 +149,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(2, getOutputTopicConfig());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -106,6 +163,10 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getOutputTopicConfig());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -124,6 +185,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getId()
         .equals(other.getId())) return false;
+    if (hasOutputTopicConfig() != other.hasOutputTopicConfig()) return false;
+    if (hasOutputTopicConfig()) {
+      if (!getOutputTopicConfig()
+          .equals(other.getOutputTopicConfig())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -137,6 +203,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId().hashCode();
+    if (hasOutputTopicConfig()) {
+      hash = (37 * hash) + OUTPUT_TOPIC_CONFIG_FIELD_NUMBER;
+      hash = (53 * hash) + getOutputTopicConfig().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -235,6 +305,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The request used to create a Tenant
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PutTenantRequest}
    */
   public static final class Builder extends
@@ -256,19 +330,30 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.PutTenantRequest.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getOutputTopicConfigFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
       id_ = "";
+      outputTopicConfig_ = null;
+      if (outputTopicConfigBuilder_ != null) {
+        outputTopicConfigBuilder_.dispose();
+        outputTopicConfigBuilder_ = null;
+      }
       return this;
     }
 
@@ -305,6 +390,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = id_;
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.outputTopicConfig_ = outputTopicConfigBuilder_ == null
+            ? outputTopicConfig_
+            : outputTopicConfigBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -356,6 +449,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
+      if (other.hasOutputTopicConfig()) {
+        mergeOutputTopicConfig(other.getOutputTopicConfig());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -387,6 +483,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  getOutputTopicConfigFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -406,6 +509,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object id_ = "";
     /**
+     * <pre>
+     * The ID of the tenant to put
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The id.
      */
@@ -422,6 +529,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the tenant to put
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The bytes for id.
      */
@@ -439,6 +550,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the tenant to put
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -452,6 +567,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the tenant to put
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -462,6 +581,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the tenant to put
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.
@@ -474,6 +597,170 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.OutputTopicConfig outputTopicConfig_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.OutputTopicConfig, io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder, io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder> outputTopicConfigBuilder_;
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     * @return Whether the outputTopicConfig field is set.
+     */
+    public boolean hasOutputTopicConfig() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     * @return The outputTopicConfig.
+     */
+    public io.littlehorse.sdk.common.proto.OutputTopicConfig getOutputTopicConfig() {
+      if (outputTopicConfigBuilder_ == null) {
+        return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
+      } else {
+        return outputTopicConfigBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     */
+    public Builder setOutputTopicConfig(io.littlehorse.sdk.common.proto.OutputTopicConfig value) {
+      if (outputTopicConfigBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        outputTopicConfig_ = value;
+      } else {
+        outputTopicConfigBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     */
+    public Builder setOutputTopicConfig(
+        io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder builderForValue) {
+      if (outputTopicConfigBuilder_ == null) {
+        outputTopicConfig_ = builderForValue.build();
+      } else {
+        outputTopicConfigBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     */
+    public Builder mergeOutputTopicConfig(io.littlehorse.sdk.common.proto.OutputTopicConfig value) {
+      if (outputTopicConfigBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          outputTopicConfig_ != null &&
+          outputTopicConfig_ != io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance()) {
+          getOutputTopicConfigBuilder().mergeFrom(value);
+        } else {
+          outputTopicConfig_ = value;
+        }
+      } else {
+        outputTopicConfigBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     */
+    public Builder clearOutputTopicConfig() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      outputTopicConfig_ = null;
+      if (outputTopicConfigBuilder_ != null) {
+        outputTopicConfigBuilder_.dispose();
+        outputTopicConfigBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder getOutputTopicConfigBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getOutputTopicConfigFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder() {
+      if (outputTopicConfigBuilder_ != null) {
+        return outputTopicConfigBuilder_.getMessageOrBuilder();
+      } else {
+        return outputTopicConfig_ == null ?
+            io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
+      }
+    }
+    /**
+     * <pre>
+     * Configures the behavior of the Output Topic for this Tenant. If not set,
+     * then the OutputTopic is not considered to be enabled.
+     * </pre>
+     *
+     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.OutputTopicConfig, io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder, io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder> 
+        getOutputTopicConfigFieldBuilder() {
+      if (outputTopicConfigBuilder_ == null) {
+        outputTopicConfigBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.OutputTopicConfig, io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder, io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder>(
+                getOutputTopicConfig(),
+                getParentForChildren(),
+                isClean());
+        outputTopicConfig_ = null;
+      }
+      return outputTopicConfigBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -110,8 +110,22 @@ class DeletePrincipalRequest(_message.Message):
     id: _object_id_pb2.PrincipalId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ...) -> None: ...
 
+class OutputTopicConfig(_message.Message):
+    __slots__ = ["default_recording_level"]
+    class OutputTopicRecordingLevel(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = []
+        ALL_ENTITY_EVENTS: _ClassVar[OutputTopicConfig.OutputTopicRecordingLevel]
+        NO_ENTITY_EVENTS: _ClassVar[OutputTopicConfig.OutputTopicRecordingLevel]
+    ALL_ENTITY_EVENTS: OutputTopicConfig.OutputTopicRecordingLevel
+    NO_ENTITY_EVENTS: OutputTopicConfig.OutputTopicRecordingLevel
+    DEFAULT_RECORDING_LEVEL_FIELD_NUMBER: _ClassVar[int]
+    default_recording_level: OutputTopicConfig.OutputTopicRecordingLevel
+    def __init__(self, default_recording_level: _Optional[_Union[OutputTopicConfig.OutputTopicRecordingLevel, str]] = ...) -> None: ...
+
 class PutTenantRequest(_message.Message):
-    __slots__ = ["id"]
+    __slots__ = ["id", "output_topic_config"]
     ID_FIELD_NUMBER: _ClassVar[int]
+    OUTPUT_TOPIC_CONFIG_FIELD_NUMBER: _ClassVar[int]
     id: str
-    def __init__(self, id: _Optional[str] = ...) -> None: ...
+    output_topic_config: OutputTopicConfig
+    def __init__(self, id: _Optional[str] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ...) -> None: ...

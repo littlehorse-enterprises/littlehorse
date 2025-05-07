@@ -55,6 +55,11 @@ public final class Acls {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_DeletePrincipalRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_OutputTopicConfig_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_OutputTopicConfig_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_PutTenantRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -92,17 +97,24 @@ public final class Acls {
       "erwrite\030\005 \001(\010\032M\n\022PerTenantAclsEntry\022\013\n\003k" +
       "ey\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Se" +
       "rverACLs:\0028\001\">\n\026DeletePrincipalRequest\022$" +
-      "\n\002id\030\001 \001(\0132\030.littlehorse.PrincipalId\"\036\n\020" +
-      "PutTenantRequest\022\n\n\002id\030\001 \001(\t*\305\001\n\013ACLReso" +
-      "urce\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022" +
-      "ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER_TASK\020\003\022" +
-      "\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n\021AC" +
-      "L_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WORKER_GRO" +
-      "UP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010*C\n\tACLActio" +
-      "n\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002" +
-      "\022\017\n\013ALL_ACTIONS\020\003BM\n\037io.littlehorse.sdk." +
-      "common.protoP\001Z\t.;lhproto\252\002\034LittleHorse." +
-      "Sdk.Common.Protob\006proto3"
+      "\n\002id\030\001 \001(\0132\030.littlehorse.PrincipalId\"\270\001\n" +
+      "\021OutputTopicConfig\022Y\n\027default_recording_" +
+      "level\030\001 \001(\01628.littlehorse.OutputTopicCon" +
+      "fig.OutputTopicRecordingLevel\"H\n\031OutputT" +
+      "opicRecordingLevel\022\025\n\021ALL_ENTITY_EVENTS\020" +
+      "\000\022\024\n\020NO_ENTITY_EVENTS\020\001\"x\n\020PutTenantRequ" +
+      "est\022\n\n\002id\030\001 \001(\t\022@\n\023output_topic_config\030\002" +
+      " \001(\0132\036.littlehorse.OutputTopicConfigH\000\210\001" +
+      "\001B\026\n\024_output_topic_config*\305\001\n\013ACLResourc" +
+      "e\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022ACL" +
+      "_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER_TASK\020\003\022\021\n\r" +
+      "ACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n\021ACL_A" +
+      "LL_RESOURCES\020\006\022\031\n\025ACL_TASK_WORKER_GROUP\020" +
+      "\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010*C\n\tACLAction\022\010" +
+      "\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n" +
+      "\013ALL_ACTIONS\020\003BM\n\037io.littlehorse.sdk.com" +
+      "mon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk" +
+      ".Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -158,12 +170,18 @@ public final class Acls {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_DeletePrincipalRequest_descriptor,
         new java.lang.String[] { "Id", });
-    internal_static_littlehorse_PutTenantRequest_descriptor =
+    internal_static_littlehorse_OutputTopicConfig_descriptor =
       getDescriptor().getMessageTypes().get(6);
+    internal_static_littlehorse_OutputTopicConfig_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_OutputTopicConfig_descriptor,
+        new java.lang.String[] { "DefaultRecordingLevel", });
+    internal_static_littlehorse_PutTenantRequest_descriptor =
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_PutTenantRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutTenantRequest_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { "Id", "OutputTopicConfig", "OutputTopicConfig", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
   }
