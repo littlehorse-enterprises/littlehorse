@@ -28,9 +28,16 @@ var putWorkflowEventDefCmd = &cobra.Command{
 		}
 		contentTypeEnum := lhproto.VariableType(contentType)
 
+		returnType := lhproto.ReturnType{
+			ReturnType: &lhproto.TypeDefinition{
+				Type:   contentTypeEnum,
+				Masked: false,
+			},
+		}
+
 		pwed := lhproto.PutWorkflowEventDefRequest{
-			Name: name,
-			Type: contentTypeEnum,
+			Name:        name,
+			ContentType: &returnType,
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).PutWorkflowEventDef(requestContext(cmd), &pwed))
