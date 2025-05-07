@@ -417,8 +417,7 @@ public interface WorkflowThread {
     void handleAnyFailure(NodeOutput node, ThreadFunc handler);
 
     /**
-     * Returns a WorkflowCondition that can be used in `WorkflowThread::doIf()` or
-     * `WorkflowThread::doIfElse()`.
+     * Returns a WorkflowCondition that can be used in `WorkflowThread::doIf()`
      *
      * @param lhs is either a literal value (which the Library casts to a Variable Value) or a
      *     `WfRunVariable` representing the LHS of the expression.
