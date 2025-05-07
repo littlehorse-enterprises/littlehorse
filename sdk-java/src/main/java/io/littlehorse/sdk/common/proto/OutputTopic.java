@@ -59,47 +59,46 @@ public final class OutputTopic {
   static {
     java.lang.String[] descriptorData = {
       "\n\022output_topic.proto\022\013littlehorse\032\037googl" +
-      "e/protobuf/timestamp.proto\032\023common_wfspe" +
-      "c.proto\032\017object_id.proto\032\024workflow_event" +
-      ".proto\032\020user_tasks.proto\032\016task_run.proto" +
-      "\032\016task_def.proto\032\rwf_spec.proto\032\014wf_run." +
-      "proto\032\016variable.proto\032\024external_event.pr" +
-      "oto\"\233\003\n\021OutputTopicRecord\022 \n\002id\030\001 \001(\0132\024." +
-      "littlehorse.WfRunId\022-\n\ttimestamp\030\002 \001(\0132\032" +
-      ".google.protobuf.Timestamp\022?\n\021task_run_e" +
-      "xecuted\030\003 \001(\0132\".littlehorse.TaskRunExecu" +
-      "tedRecordH\000\022:\n\016workflow_event\030\004 \001(\0132 .li" +
-      "ttlehorse.WorkflowEventRecordH\000\0220\n\006wf_ru" +
-      "n\030\005 \001(\0132\036.littlehorse.WfRunUpdateRecordH" +
-      "\000\022=\n\ruser_task_run\030\006 \001(\0132$.littlehorse.U" +
-      "serTaskRunUpdateRecordH\000\022<\n\017variable_upd" +
-      "ate\030\007 \001(\0132!.littlehorse.VariableUpdateRe" +
-      "cordH\000B\t\n\007payload\"?\n\025TaskRunExecutedReco" +
-      "rd\022&\n\010task_run\030\001 \001(\0132\024.littlehorse.TaskR" +
-      "un\"t\n\023WorkflowEventRecord\0222\n\016workflow_ev" +
-      "ent\030\001 \001(\0132\032.littlehorse.WorkflowEvent\022)\n" +
-      "\nwf_spec_id\030\002 \001(\0132\025.littlehorse.WfSpecId" +
-      "\"7\n\021WfRunUpdateRecord\022\"\n\006wf_run\030\001 \001(\0132\022." +
-      "littlehorse.WfRun\"J\n\027UserTaskRunUpdateRe" +
-      "cord\022/\n\ruser_task_run\030\001 \001(\0132\030.littlehors" +
-      "e.UserTaskRun\"G\n\024VariableUpdateRecord\022/\n" +
-      "\020current_variable\030\001 \001(\0132\025.littlehorse.Va" +
-      "riable\"\255\002\n\031MetadataOutputTopicRecord\022&\n\007" +
-      "wf_spec\030\001 \001(\0132\023.littlehorse.WfSpecH\000\022(\n\010" +
-      "task_def\030\002 \001(\0132\024.littlehorse.TaskDefH\000\022;" +
-      "\n\022external_event_def\030\003 \001(\0132\035.littlehorse" +
-      ".ExternalEventDefH\000\022;\n\022workflow_event_de" +
-      "f\030\004 \001(\0132\035.littlehorse.WorkflowEventDefH\000" +
-      "\0221\n\ruser_task_def\030\005 \001(\0132\030.littlehorse.Us" +
-      "erTaskDefH\000B\021\n\017metadata_recordBM\n\037io.lit" +
-      "tlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002" +
-      "\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "e/protobuf/timestamp.proto\032\017object_id.pr" +
+      "oto\032\024workflow_event.proto\032\020user_tasks.pr" +
+      "oto\032\016task_run.proto\032\016task_def.proto\032\rwf_" +
+      "spec.proto\032\014wf_run.proto\032\016variable.proto" +
+      "\032\024external_event.proto\"\233\003\n\021OutputTopicRe" +
+      "cord\022 \n\002id\030\001 \001(\0132\024.littlehorse.WfRunId\022-" +
+      "\n\ttimestamp\030\002 \001(\0132\032.google.protobuf.Time" +
+      "stamp\022?\n\021task_run_executed\030\003 \001(\0132\".littl" +
+      "ehorse.TaskRunExecutedRecordH\000\022:\n\016workfl" +
+      "ow_event\030\004 \001(\0132 .littlehorse.WorkflowEve" +
+      "ntRecordH\000\0220\n\006wf_run\030\005 \001(\0132\036.littlehorse" +
+      ".WfRunUpdateRecordH\000\022=\n\ruser_task_run\030\006 " +
+      "\001(\0132$.littlehorse.UserTaskRunUpdateRecor" +
+      "dH\000\022<\n\017variable_update\030\007 \001(\0132!.littlehor" +
+      "se.VariableUpdateRecordH\000B\t\n\007payload\"?\n\025" +
+      "TaskRunExecutedRecord\022&\n\010task_run\030\001 \001(\0132" +
+      "\024.littlehorse.TaskRun\"t\n\023WorkflowEventRe" +
+      "cord\0222\n\016workflow_event\030\001 \001(\0132\032.littlehor" +
+      "se.WorkflowEvent\022)\n\nwf_spec_id\030\002 \001(\0132\025.l" +
+      "ittlehorse.WfSpecId\"7\n\021WfRunUpdateRecord" +
+      "\022\"\n\006wf_run\030\001 \001(\0132\022.littlehorse.WfRun\"J\n\027" +
+      "UserTaskRunUpdateRecord\022/\n\ruser_task_run" +
+      "\030\001 \001(\0132\030.littlehorse.UserTaskRun\"G\n\024Vari" +
+      "ableUpdateRecord\022/\n\020current_variable\030\001 \001" +
+      "(\0132\025.littlehorse.Variable\"\255\002\n\031MetadataOu" +
+      "tputTopicRecord\022&\n\007wf_spec\030\001 \001(\0132\023.littl" +
+      "ehorse.WfSpecH\000\022(\n\010task_def\030\002 \001(\0132\024.litt" +
+      "lehorse.TaskDefH\000\022;\n\022external_event_def\030" +
+      "\003 \001(\0132\035.littlehorse.ExternalEventDefH\000\022;" +
+      "\n\022workflow_event_def\030\004 \001(\0132\035.littlehorse" +
+      ".WorkflowEventDefH\000\0221\n\ruser_task_def\030\005 \001" +
+      "(\0132\030.littlehorse.UserTaskDefH\000B\021\n\017metada" +
+      "ta_recordBM\n\037io.littlehorse.sdk.common.p" +
+      "rotoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Comm" +
+      "on.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
-          io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
           io.littlehorse.sdk.common.proto.WorkflowEventOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.UserTasks.getDescriptor(),
@@ -153,7 +152,6 @@ public final class OutputTopic {
         internal_static_littlehorse_MetadataOutputTopicRecord_descriptor,
         new java.lang.String[] { "WfSpec", "TaskDef", "ExternalEventDef", "WorkflowEventDef", "UserTaskDef", "MetadataRecord", });
     com.google.protobuf.TimestampProto.getDescriptor();
-    io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
     io.littlehorse.sdk.common.proto.WorkflowEventOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.UserTasks.getDescriptor();

@@ -2,12 +2,14 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
@@ -17,10 +19,17 @@ import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.regex.Pattern;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
 
     private String id;
+    private OutputTopicConfigModel outputTopicConfig;
 
     public PutTenantRequestModel() {}
 
@@ -32,11 +41,21 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         PutTenantRequest putTenantRequest = (PutTenantRequest) proto;
         this.id = putTenantRequest.getId();
+        if (putTenantRequest.hasOutputTopicConfig()) {
+            this.outputTopicConfig = LHSerializable.fromProto(
+                    putTenantRequest.getOutputTopicConfig(), OutputTopicConfigModel.class, context);
+        }
     }
 
     @Override
     public PutTenantRequest.Builder toProto() {
-        return PutTenantRequest.newBuilder().setId(id);
+        PutTenantRequest.Builder result = PutTenantRequest.newBuilder().setId(id);
+
+        if (outputTopicConfig != null) {
+            result.setOutputTopicConfig(this.outputTopicConfig.toProto());
+        }
+
+        return result;
     }
 
     @Override
@@ -63,18 +82,19 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
                             ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
 
+        TenantModel toSave;
         TenantModel old = metadataManager.get(new TenantIdModel(id));
         if (old == null) {
             if (Pattern.matches(".*[\\\\/].*", this.id)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "/ and \\ are not valid characters for Tenant");
             }
-
-            TenantModel toSave = new TenantModel(id);
+            toSave = new TenantModel(id);
             toSave.setCreatedAt(context.currentCommand().getTime());
-            metadataManager.put(toSave);
-            return toSave.toProto().build();
         } else {
-            return old.toProto().build();
+            toSave = old;
         }
+        toSave.setOutputTopicConfig(outputTopicConfig);
+        metadataManager.put(toSave);
+        return toSave.toProto().build();
     }
 }

@@ -60,4 +60,34 @@ public interface TenantOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <pre>
+   * Configuration for the output topic associated with this Tenant. If not set,
+   * then the output topic is not enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
+   * @return Whether the outputTopicConfig field is set.
+   */
+  boolean hasOutputTopicConfig();
+  /**
+   * <pre>
+   * Configuration for the output topic associated with this Tenant. If not set,
+   * then the output topic is not enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
+   * @return The outputTopicConfig.
+   */
+  io.littlehorse.sdk.common.proto.OutputTopicConfig getOutputTopicConfig();
+  /**
+   * <pre>
+   * Configuration for the output topic associated with this Tenant. If not set,
+   * then the output topic is not enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder();
 }
