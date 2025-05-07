@@ -1,6 +1,7 @@
 package littlehorse_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
@@ -964,4 +965,48 @@ func TestShouldAssignAParentVarFromChildNestedThreadsWhenWorkflowIsCompiled(t *t
 	assert.Equal(t, expectedSonThreadVarValue, sonThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].GetRhsAssignment().GetLiteralValue().GetStr())
 	assert.Equal(t, expectedParentVarName, grandChildThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].LhsName)
 	assert.Equal(t, expectedGrandChildThreadVarValue, grandChildThread.Nodes["0-entrypoint-ENTRYPOINT"].GetOutgoingEdges()[0].VariableMutations[0].GetRhsAssignment().GetLiteralValue().GetStr())
+}
+
+func TestShouldValidateUserIdIsNotEmptyInUserTask(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			err, ok := r.(error)
+			if !ok {
+				t.Fatalf("expected error, got: %v", r)
+			}
+			if !strings.Contains(err.Error(), "userId can't be blank when assigning usertask") {
+				t.Errorf("expected error about blank userId, got: %v", err)
+			}
+		} else {
+			t.Errorf("expected panic, but function completed normally")
+		}
+	}()
+
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.AssignUserTask("my-task", "  ", nil)
+	}, "my-workflow")
+
+	wf.Compile()
+}
+
+func TestShouldValidateGroupIdIsNotEmptyInUserTask(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			err, ok := r.(error)
+			if !ok {
+				t.Fatalf("expected error, got: %v", r)
+			}
+			if !strings.Contains(err.Error(), "userGroup can't be blank when assigning usertask") {
+				t.Errorf("expected error about blank userGroup, got: %v", err)
+			}
+		} else {
+			t.Errorf("expected panic, but function completed normally")
+		}
+	}()
+
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.AssignUserTask("my-task", nil, "  ")
+	}, "my-workflow")
+
+	wf.Compile()
 }
