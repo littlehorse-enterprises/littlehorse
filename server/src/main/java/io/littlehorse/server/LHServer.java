@@ -55,7 +55,7 @@ public class LHServer {
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
-    private final ExecutorService networkThreadpool;
+    private final ExecutorService networkThreads;
     private final List<LHServerListener> listeners;
     private final CommandSender commandSender;
 
@@ -66,11 +66,11 @@ public class LHServer {
     public LHServer(LHServerConfig config) throws LHMisconfigurationException {
         this.metadataCache = new MetadataCache();
         this.config = config;
-        this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
-        LHInternalClient internalClient = new LHInternalClient(config.getInternalClientCreds(), this.networkThreadpool);
+        this.networkThreads = Executors.newVirtualThreadPerTaskExecutor();
+        LHInternalClient internalClient = new LHInternalClient(config.getInternalClientCreds(), this.networkThreads);
         final AsyncWaiters asyncWaiters = new AsyncWaiters();
         this.commandSender = new CommandSender(
-                networkThreadpool,
+                networkThreads,
                 config.getCommandProducer(),
                 config.getTaskClaimProducer(),
                 config.getStreamsSessionTimeout(),
@@ -78,8 +78,8 @@ public class LHServer {
                 asyncWaiters,
                 this::lookupPartitionKey,
                 internalClient);
-        this.taskQueueManager =
-                new TaskQueueManager(getInstanceName(), this.commandSender, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
+        this.taskQueueManager = new TaskQueueManager(
+                getInstanceName(), this.commandSender, networkThreads, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
             overrideStreamsProcessId("core");
@@ -104,7 +104,7 @@ public class LHServer {
                 config,
                 coreStreams,
                 timerStreams,
-                networkThreadpool,
+                networkThreads,
                 metadataCache,
                 contextKey,
                 coreStoreProvider,
@@ -123,7 +123,7 @@ public class LHServer {
                 listenerConfig,
                 taskQueueManager,
                 internalComms,
-                networkThreadpool,
+                networkThreads,
                 coreStoreProvider,
                 metadataCache,
                 List.of(

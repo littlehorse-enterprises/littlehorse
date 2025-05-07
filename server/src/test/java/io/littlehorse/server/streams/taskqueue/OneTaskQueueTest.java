@@ -54,7 +54,7 @@ public class OneTaskQueueTest {
 
     @Test
     public void shouldEnqueueScheduledTask() {
-        taskQueue.onTaskScheduled(streamsTaskId, mockTask);
+        taskQueue.onTaskScheduled(streamsTaskId, mockTask, mock());
         verify(taskQueueManager, never()).itsAMatch(any(), any());
         taskQueue.onPollRequest(mockClient, requestContext).join();
         verify(taskQueueManager, times(1)).itsAMatch(mockTask, mockClient);
@@ -65,7 +65,7 @@ public class OneTaskQueueTest {
         taskQueue.onPollRequest(mockClient, requestContext);
         verifyNoInteractions(processorContext.getableManager());
         verify(taskQueueManager, never()).itsAMatch(any(), any());
-        taskQueue.onTaskScheduled(streamsTaskId, mockTask);
+        taskQueue.onTaskScheduled(streamsTaskId, mockTask, mock());
         verify(taskQueueManager, times(1)).itsAMatch(same(mockTask), same(mockClient));
     }
 
@@ -96,10 +96,10 @@ public class OneTaskQueueTest {
         OneTaskQueue boundedQueue =
                 new OneTaskQueue(taskName, taskQueueManager, "test", 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
 
-        boundedQueue.onTaskScheduled(streamsTaskId, task1);
-        boundedQueue.onTaskScheduled(streamsTaskId, task2);
-        boundedQueue.onTaskScheduled(streamsTaskId, task3);
-        boundedQueue.onTaskScheduled(streamsTaskId, task4);
+        boundedQueue.onTaskScheduled(streamsTaskId, task1, mock());
+        boundedQueue.onTaskScheduled(streamsTaskId, task2, mock());
+        boundedQueue.onTaskScheduled(streamsTaskId, task3, mock());
+        boundedQueue.onTaskScheduled(streamsTaskId, task4, mock());
 
         boundedQueue.onPollRequest(mockClient, requestContext).join();
         boundedQueue.onPollRequest(mockClient, requestContext).join();

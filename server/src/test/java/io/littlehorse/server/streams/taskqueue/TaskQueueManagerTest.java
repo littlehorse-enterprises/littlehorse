@@ -43,7 +43,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TaskQueueManagerTest {
 
     private final CommandSender commandSender = Mockito.mock();
-    private final TaskQueueManager queueManager = new TaskQueueManager("test", commandSender, Integer.MAX_VALUE);
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private final TaskQueueManager queueManager =
+            new TaskQueueManager("test", commandSender, executorService, Integer.MAX_VALUE);
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();
     private final TaskId streamsTaskId = TaskId.parse("0_1");

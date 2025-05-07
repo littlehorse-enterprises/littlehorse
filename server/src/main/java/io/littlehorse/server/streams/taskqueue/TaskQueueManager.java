@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +26,18 @@ public class TaskQueueManager {
     private final int individualQueueConfiguredCapacity;
     private final CommandSender commandSender;
     private final String instanceName;
+    private final ExecutorService networkThreads;
 
-    public TaskQueueManager(String instanceName, CommandSender commandSender, int individualQueueConfiguredCapacity) {
+    public TaskQueueManager(
+            String instanceName,
+            CommandSender commandSender,
+            ExecutorService networkThreads,
+            int individualQueueConfiguredCapacity) {
         this.taskQueues = new ConcurrentHashMap<>();
         this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;
         this.commandSender = commandSender;
         this.instanceName = instanceName;
+        this.networkThreads = networkThreads;
     }
 
     public void onPollRequest(
@@ -49,7 +56,8 @@ public class TaskQueueManager {
 
     public void onTaskScheduled(
             TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
-        getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(streamsTaskId, scheduledTask);
+        getSubQueue(new TenantTaskName(tenantId, taskDef.getName()))
+                .onTaskScheduled(streamsTaskId, scheduledTask, networkThreads);
     }
 
     public void drainPartition(TaskId partitionToDrain) {

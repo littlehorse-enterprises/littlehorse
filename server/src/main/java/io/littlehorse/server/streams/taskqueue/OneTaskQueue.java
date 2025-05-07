@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -90,7 +91,7 @@ public class OneTaskQueue {
      *                        that was just
      *                        scheduled.
      */
-    public void onTaskScheduled(TaskId taskId, ScheduledTaskModel scheduledTask) {
+    public void onTaskScheduled(TaskId taskId, ScheduledTaskModel scheduledTask, ExecutorService networkThreads) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         // the pendingTaskIds queue/list must be empty.
@@ -115,8 +116,17 @@ public class OneTaskQueue {
             }
         });
         if (luckyClient != null) {
-            parent.itsAMatch(scheduledTask, luckyClient).join();
-            luckyClient.sendResponse(scheduledTask);
+            parent.itsAMatch(scheduledTask, luckyClient)
+                    .whenCompleteAsync(
+                            (empty, throwable) -> {
+                                if (throwable == null) {
+                                    luckyClient.sendResponse(scheduledTask);
+                                } else {
+                                    log.warn("Error sending response to client", throwable);
+                                    luckyClient.getResponseObserver().onError(throwable);
+                                }
+                            },
+                            networkThreads);
         }
     }
 
