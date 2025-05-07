@@ -241,6 +241,16 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                 throw new NodeFailureException(new FailureModel("Invalid user task assignment", LHConstants.VAR_ERROR));
             }
 
+            if (newUserId != null && newUserId.trim().isEmpty()) {
+                throw new NodeFailureException(
+                        new FailureModel("Invalid user task assignment. UserId can't be empty", LHConstants.VAR_ERROR));
+            }
+
+            if (newUserGroup != null && newUserGroup.trim().isEmpty()) {
+                throw new NodeFailureException(new FailureModel(
+                        "Invalid group task assignment. UserGroup can't be empty", LHConstants.VAR_ERROR));
+            }
+
             // Set owners and schedule all on-assignment hooks
             this.assignTo(newUserId, newUserGroup, true);
 
