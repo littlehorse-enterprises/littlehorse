@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.concurrent.ExecutorService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +39,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private final MetadataCache metadataCache;
     private LHServerConfig config;
     private final String instanceName;
+    private final ExecutorService networkThreads;
 
     public PollTaskRequestObserver(
             String instanceName,
@@ -48,6 +50,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             LHServerConfig config,
+            ExecutorService networkThreads,
             RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
@@ -59,6 +62,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.clientId = null;
         this.requestContext = requestContext;
         this.instanceName = instanceName;
+        this.networkThreads = networkThreads;
     }
 
     public String getTaskWorkerVersion() {
@@ -112,8 +116,10 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     }
 
     public void sendResponse(ScheduledTaskModel toExecute) {
-        PollTaskResponse response =
-                PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
-        responseObserver.onNext(response);
+        networkThreads.execute(() -> {
+            PollTaskResponse response =
+                    PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
+            responseObserver.onNext(response);
+        });
     }
 }

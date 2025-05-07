@@ -78,8 +78,8 @@ public class LHServer {
                 asyncWaiters,
                 this::lookupPartitionKey,
                 internalClient);
-        this.taskQueueManager = new TaskQueueManager(
-                getInstanceName(), networkThreadpool, this.commandSender, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
+        this.taskQueueManager =
+                new TaskQueueManager(getInstanceName(), this.commandSender, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
             overrideStreamsProcessId("core");

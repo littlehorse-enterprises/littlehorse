@@ -266,7 +266,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
@@ -288,7 +287,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final CoreStoreProvider coreStoreProvider;
     private final String listenerName;
     private final CommandSender commandSender;
-    private final ExecutorService requestScheduler = Executors.newVirtualThreadPerTaskExecutor();
+    private final ExecutorService networkThreads;
 
     private Server grpcListener;
 
@@ -300,7 +299,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ServerListenerConfig listenerConfig,
             TaskQueueManager taskQueueManager,
             BackendInternalComms internalComms,
-            ExecutorService networkThreadPool,
+            ExecutorService networkThreads,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
@@ -309,7 +308,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
-
+        this.networkThreads = networkThreads;
         this.metadataCache = metadataCache;
         this.serverConfig = listenerConfig.getConfig();
         this.taskQueueManager = taskQueueManager;
@@ -325,7 +324,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
-                .executor(networkThreadPool);
+                .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {
             builder.intercept(interceptor);
@@ -671,6 +670,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 coreStoreProvider,
                 metadataCache,
                 serverConfig,
+                networkThreads,
                 requestContext());
     }
 

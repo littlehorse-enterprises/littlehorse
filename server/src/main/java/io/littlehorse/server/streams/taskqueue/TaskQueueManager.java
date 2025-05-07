@@ -11,8 +11,9 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import lombok.Getter;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.TaskId;
 
@@ -21,20 +22,12 @@ public class TaskQueueManager {
 
     private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
 
-    @Getter
-    private ExecutorService networkThreads;
-
     private final int individualQueueConfiguredCapacity;
     private final CommandSender commandSender;
     private final String instanceName;
 
-    public TaskQueueManager(
-            String instanceName,
-            ExecutorService networkThreads,
-            CommandSender commandSender,
-            int individualQueueConfiguredCapacity) {
+    public TaskQueueManager(String instanceName, CommandSender commandSender, int individualQueueConfiguredCapacity) {
         this.taskQueues = new ConcurrentHashMap<>();
-        this.networkThreads = networkThreads;
         this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;
         this.commandSender = commandSender;
         this.instanceName = instanceName;
@@ -42,7 +35,12 @@ public class TaskQueueManager {
 
     public void onPollRequest(
             PollTaskRequestObserver listener, TenantIdModel tenantId, RequestExecutionContext requestContext) {
-        getSubQueue(new TenantTaskName(tenantId, listener.getTaskDefId())).onPollRequest(listener, requestContext);
+        try {
+            OneTaskQueue subQueue = getSubQueue(new TenantTaskName(tenantId, listener.getTaskDefId()));
+            subQueue.onPollRequest(listener, requestContext).get(3, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException("Queue got locked for more than 3 seconds", e);
+        }
     }
 
     public void onRequestDisconnected(PollTaskRequestObserver observer, TenantIdModel tenantId) {
@@ -51,9 +49,7 @@ public class TaskQueueManager {
 
     public void onTaskScheduled(
             TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
-        networkThreads.submit(() -> {
-            getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(streamsTaskId, scheduledTask);
-        });
+        getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(streamsTaskId, scheduledTask);
     }
 
     public void drainPartition(TaskId partitionToDrain) {

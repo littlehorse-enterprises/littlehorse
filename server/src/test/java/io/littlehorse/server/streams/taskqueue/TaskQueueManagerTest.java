@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.streams.processor.TaskId;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,9 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TaskQueueManagerTest {
 
     private final CommandSender commandSender = Mockito.mock();
-    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-    private final TaskQueueManager queueManager =
-            new TaskQueueManager("test", executor, commandSender, Integer.MAX_VALUE);
+    private final TaskQueueManager queueManager = new TaskQueueManager("test", commandSender, Integer.MAX_VALUE);
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();
     private final TaskId streamsTaskId = TaskId.parse("0_1");
@@ -78,6 +75,7 @@ public class TaskQueueManagerTest {
                 new PrincipalIdModel(""),
                 mock(),
                 new MetadataCache(),
+                mock(),
                 mock(),
                 mock()));
         doReturn(requestContext).when(trackableObserver).getFreshExecutionContext();

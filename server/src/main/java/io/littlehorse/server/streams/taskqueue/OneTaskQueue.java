@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -126,20 +127,22 @@ public class OneTaskQueue {
      *                        that talks to the
      *                        client who made the PollTaskRequest.
      */
-    public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
-
-        QueueItem nextItem = synchronizedBlock(() -> {
-            if (pendingTasks.isEmpty()) {
-                hungryClients.add(requestObserver);
-                return null;
+    public CompletableFuture<Void> onPollRequest(
+            PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
+        return CompletableFuture.runAsync(() -> {
+            QueueItem nextItem = synchronizedBlock(() -> {
+                if (pendingTasks.isEmpty()) {
+                    hungryClients.add(requestObserver);
+                    return null;
+                }
+                return pendingTasks.removeFirst();
+            });
+            if (nextItem != null) {
+                ScheduledTaskModel toExecute = nextItem.resolveTask(requestContext);
+                parent.itsAMatch(toExecute, requestObserver).join();
+                requestObserver.sendResponse(toExecute);
             }
-            return pendingTasks.removeFirst();
         });
-        if (nextItem != null) {
-            ScheduledTaskModel toExecute = nextItem.resolveTask(requestContext);
-            parent.itsAMatch(toExecute, requestObserver).join();
-            requestObserver.sendResponse(toExecute);
-        }
     }
 
     public void drainPartition(TaskId partitionToDrain) {

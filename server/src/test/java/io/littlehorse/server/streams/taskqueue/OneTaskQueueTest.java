@@ -56,7 +56,7 @@ public class OneTaskQueueTest {
     public void shouldEnqueueScheduledTask() {
         taskQueue.onTaskScheduled(streamsTaskId, mockTask);
         verify(taskQueueManager, never()).itsAMatch(any(), any());
-        taskQueue.onPollRequest(mockClient, requestContext);
+        taskQueue.onPollRequest(mockClient, requestContext).join();
         verify(taskQueueManager, times(1)).itsAMatch(mockTask, mockClient);
     }
 
@@ -101,10 +101,10 @@ public class OneTaskQueueTest {
         boundedQueue.onTaskScheduled(streamsTaskId, task3);
         boundedQueue.onTaskScheduled(streamsTaskId, task4);
 
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
         InOrder inOrder = inOrder(taskQueueManager);
         inOrder.verify(taskQueueManager, times(4)).itsAMatch(any(), same(mockClient));
     }
