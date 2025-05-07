@@ -103,14 +103,16 @@ public class ParallelApprovalExample {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-3-response", VariableType.JSON_OBJ);
             approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-3-approves"));
-            approvalThread.doIfElse(
-                    approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                    ifHandler -> {
-                        approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
-                    },
-                    elseHandler -> {
-                        approvalThread.fail("denied-by-user", "message here");
-                    });
+            approvalThread.doIf(
+                approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                ifHandler -> {
+                    approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
+                }
+            ).doElse(
+                elseHandler -> {
+                    approvalThread.fail("denied-by-user", "message here");
+                }
+            );
         };
     }
 
@@ -118,14 +120,16 @@ public class ParallelApprovalExample {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-2-response", VariableType.JSON_OBJ);
             approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-2-approves"));
-            approvalThread.doIfElse(
-                    approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                    ifHandler -> {
-                        approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
-                    },
-                    elseHandler -> {
-                        approvalThread.fail("denied-by-user", "message here");
-                    });
+            approvalThread.doIf(
+                approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                ifHandler -> {
+                    approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+                }
+            ).doElse(
+                elseHandler -> {
+                    approvalThread.fail("denied-by-user", "message here");
+                }
+            );
         };
     }
 
@@ -133,15 +137,16 @@ public class ParallelApprovalExample {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-1-response", VariableType.JSON_OBJ);
             approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-1-approves"));
-            approvalThread.doIfElse(
-                    approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                    ifHandler -> {
-                        approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
-                    },
-                    elseHandler -> {
-                        approvalThread.fail("denied-by-user", "message here");
-                    });
-
+            approvalThread.doIf(
+                approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                ifHandler -> {
+                    approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
+                }
+            ).doElse(
+                elseHandler -> {
+                    approvalThread.fail("denied-by-user", "message here");
+                }
+            );
         };
     }
 
