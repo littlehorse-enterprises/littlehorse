@@ -82,19 +82,16 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
                             ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
 
-        TenantModel toSave;
-        TenantModel old = metadataManager.get(new TenantIdModel(id));
-        if (old == null) {
+        TenantModel tenant = metadataManager.get(new TenantIdModel(id));
+        if (tenant == null) {
             if (Pattern.matches(".*[\\\\/].*", this.id)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "/ and \\ are not valid characters for Tenant");
             }
-            toSave = new TenantModel(id);
-            toSave.setCreatedAt(context.currentCommand().getTime());
-        } else {
-            toSave = old;
+            tenant = new TenantModel(id);
+            tenant.setCreatedAt(context.currentCommand().getTime());
         }
-        toSave.setOutputTopicConfig(outputTopicConfig);
-        metadataManager.put(toSave);
-        return toSave.toProto().build();
+        tenant.setOutputTopicConfig(outputTopicConfig);
+        metadataManager.put(tenant);
+        return tenant.toProto().build();
     }
 }
