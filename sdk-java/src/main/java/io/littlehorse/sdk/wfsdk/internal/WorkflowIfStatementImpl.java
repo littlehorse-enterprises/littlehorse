@@ -6,12 +6,16 @@ import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import lombok.Getter;
 
-@Getter
 public class WorkflowIfStatementImpl implements WorkflowIfStatement {
 
     private WorkflowThreadImpl parentWorkflowThread;
+
+    @Getter
     private String firstNopNodeName;
+
+    @Getter
     private String lastNopNodeName;
+
     private boolean wasElseExecuted;
 
     public WorkflowIfStatementImpl(
