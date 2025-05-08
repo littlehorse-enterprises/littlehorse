@@ -14,6 +14,7 @@ from littlehorse.model import (
     TaskDef,
     TaskNodeReference,
     TaskRunSource,
+    TypeDefinition,
     UserTaskTriggerReference,
 )
 
@@ -170,7 +171,7 @@ class TestLHTask(unittest.TestCase):
 
         task = LHTask(
             my_method,
-            TaskDef(input_vars=[VariableDef(name="param", type=VariableType.STR)]),
+            TaskDef(input_vars=[VariableDef(name="param", type_def=TypeDefinition(type=VariableType.STR, masked=False))]),
         )
 
         self.assertFalse(task.has_context())
@@ -214,8 +215,8 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="paramA", type=VariableType.STR),
-                VariableDef(name="paramB", type=VariableType.INT),
+                VariableDef(name="paramA", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
+                VariableDef(name="paramB", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
             ]
         )
 
@@ -230,8 +231,8 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="param2", type=VariableType.INT),
-                VariableDef(name="param1", type=VariableType.STR),
+                VariableDef(name="param2", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
+                VariableDef(name="param1", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
             ]
         )
 
@@ -249,8 +250,8 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="param1", type=VariableType.STR),
-                VariableDef(name="param2", type=VariableType.INT),
+                VariableDef(name="param1", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
+                VariableDef(name="param2", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
             ]
         )
 
@@ -268,8 +269,8 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="param1", type=VariableType.STR),
-                VariableDef(name="param2", type=VariableType.INT),
+                VariableDef(name="param1", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
+                VariableDef(name="param2", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
             ]
         )
 
@@ -287,7 +288,7 @@ class TestLHTask(unittest.TestCase):
                 pass
 
             task_def = TaskDef(
-                input_vars=[VariableDef(name="param", type=variable_type)]
+                input_vars=[VariableDef(name="param", type_def=TypeDefinition(type=variable_type, masked=False))]
             )
 
             with self.assertRaises(TaskSchemaMismatchException):
@@ -311,7 +312,7 @@ class TestLHTask(unittest.TestCase):
 
             task_def = TaskDef(
                 input_vars=[
-                    VariableDef(name="param", type=variable_type),
+                    VariableDef(name="param", type_def=TypeDefinition(type=variable_type, masked=False)),
                 ]
             )
 
