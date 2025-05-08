@@ -89,12 +89,14 @@ public class CommandSender {
             }
         };
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(auth.tenantId(), auth.principalId());
-        commandProducer.send(
-                command.getPartitionKey(),
-                command,
-                command.getTopic(serverConfig),
-                callback,
-                commandMetadata.toArray());
+        CompletableFuture.runAsync(() -> {
+            commandProducer.send(
+                    command.getPartitionKey(),
+                    command,
+                    command.getTopic(serverConfig),
+                    callback,
+                    commandMetadata.toArray());
+        });
         if (isLocalKey(keyMetadata)) {
             CompletableFuture<Message> out = asyncWaiters.getOrRegisterFuture(
                     command.getCommandId(),
@@ -138,13 +140,16 @@ public class CommandSender {
                 out.completeExceptionally(exn);
             }
         };
-        commandProducer.send(
-                command.getPartitionKey(),
-                command,
-                command.getTopic(serverConfig),
-                kafkaProducerCallback,
-                commandMetadata.toArray());
-        return out;
+        CompletableFuture<Void> producerSend = CompletableFuture.runAsync(() -> {
+            commandProducer.send(
+                    command.getPartitionKey(),
+                    command,
+                    command.getTopic(serverConfig),
+                    kafkaProducerCallback,
+                    commandMetadata.toArray());
+        });
+
+        return producerSend.thenCompose(unused -> out);
     }
 
     public CompletableFuture<Empty> doSend(TaskClaimEvent taskClaimEvent, AuthorizationContext auth) {
@@ -160,12 +165,14 @@ public class CommandSender {
                 out.completeExceptionally(exn);
             }
         };
-        taskClaimProducer.send(
-                taskClaim.getPartitionKey(),
-                taskClaim,
-                taskClaim.getTopic(serverConfig),
-                kafkaProducerCallback,
-                commandMetadata.toArray());
-        return out;
+        CompletableFuture<Void> producerSend = CompletableFuture.runAsync(() -> {
+            taskClaimProducer.send(
+                    taskClaim.getPartitionKey(),
+                    taskClaim,
+                    taskClaim.getTopic(serverConfig),
+                    kafkaProducerCallback,
+                    commandMetadata.toArray());
+        });
+        return producerSend.thenCompose(unused -> out);
     }
 }
