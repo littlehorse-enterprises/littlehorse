@@ -18,6 +18,8 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,10 +64,12 @@ public class OneTaskQueueTest {
 
     @Test
     public void shouldRememberPendingClient() {
-        taskQueue.onPollRequest(mockClient, requestContext);
-        verifyNoInteractions(processorContext.getableManager());
-        verify(taskQueueManager, never()).itsAMatch(any(), any());
-        taskQueue.onTaskScheduled(streamsTaskId, mockTask, mock());
+        try (ExecutorService executor = Executors.newFixedThreadPool(1)) {
+            taskQueue.onPollRequest(mockClient, requestContext);
+            verifyNoInteractions(processorContext.getableManager());
+            verify(taskQueueManager, never()).itsAMatch(any(), any());
+            taskQueue.onTaskScheduled(streamsTaskId, mockTask, executor);
+        }
         verify(taskQueueManager, times(1)).itsAMatch(same(mockTask), same(mockClient));
     }
 
