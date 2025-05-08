@@ -16,6 +16,7 @@ import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
+import { getVariableDefType } from '@/app/utils'
 
 export const DOT_REPLACEMENT_PATTERN = "*-/:DOT_REPLACE:"
 
@@ -51,7 +52,9 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
 
     if (!variable) return ''
 
-    const type = variable.varDef?.type as string
+    if (!variable.varDef) return ''
+
+    const type = getVariableDefType(variable.varDef)
 
     switch (type) {
       case VariableType.JSON_ARR:
