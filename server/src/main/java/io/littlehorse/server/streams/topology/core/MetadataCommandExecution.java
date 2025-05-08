@@ -5,6 +5,7 @@ import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -17,6 +18,8 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -92,6 +95,20 @@ public class MetadataCommandExecution implements ExecutionContext {
                 HeadersUtil.metadataHeadersFor(tenantId, principalId));
 
         this.processorContext.forward(out);
+    }
+
+    public void maybeCreateOutputTopic(TenantModel tenant) {
+        if (tenant.getOutputTopicConfig() == null) return;
+
+        Pair<NewTopic, NewTopic> topics = lhConfig.getOutputTopicsFor(tenant);
+        try {
+            this.lhConfig.createKafkaTopic(topics.getLeft());
+            this.lhConfig.createKafkaTopic(topics.getRight());
+        } catch (Exception exn) {
+            // Note that using automatic topic creation is not intended for production
+            // clusters.
+            exn.printStackTrace();
+        }
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {
