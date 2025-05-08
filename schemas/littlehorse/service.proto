@@ -15,6 +15,7 @@ import "task_run.proto";
 import "user_tasks.proto";
 import "wf_spec.proto";
 import "task_def.proto";
+import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
@@ -61,6 +62,18 @@ service LittleHorse {
    * As of 0.7.2, this feature is only partially implemented.
    */
   rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
+
+  /* Creates a new `StructDef``.
+   *
+   * Note that this request is idempotent: if you
+   * make a request to create a `StructDef` identical to the currently-created
+   * one with the same `name`, no new `StructDef` will be created. This is the
+   * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+   *
+   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+   * enum within the `PutStructDefRequest`.
+   */
+  rpc PutStructDef(PutStructDefRequest) returns (StructDef) {}
 
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
@@ -353,6 +366,32 @@ message PutTaskDefRequest {
 
   // Specifies the return type of the TaskDef.
   ReturnType return_type = 3;
+}
+
+// Creates a new StructDef.
+message PutStructDefRequest {
+  enum AllowedStructDefUpdateType {
+    // No updates are allowed.
+    NO_SCHEMA_UPDATES = 0;
+
+    // Allowed to make fully compatible (both backward-and-forward compatible)
+    // changes to the `struct_def` in this request.
+    FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
+  }
+
+  // The name of the StructDef.
+  string name = 1;
+
+  // The actual schema for the StructDef.
+  InlineStructDef struct_def = 2;
+
+  // If both of the following are true: <br/>
+  // - A `StructDef` with the specified `name` already exists, AND <br/>
+  // - The `InlineStructDef` is different <br/>
+  //
+  // Then the request will be accepted or rejected based on the value of the
+  // allowed_update_types.
+  AllowedStructDefUpdateType allowed_updates = 3;
 }
 
 // Creates a WorkflowEventDef

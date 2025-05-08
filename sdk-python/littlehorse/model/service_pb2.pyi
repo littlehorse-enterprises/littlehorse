@@ -11,6 +11,7 @@ import littlehorse.model.task_run_pb2 as _task_run_pb2
 import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
 import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
 import littlehorse.model.task_def_pb2 as _task_def_pb2
+import littlehorse.model.struct_def_pb2 as _struct_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
@@ -69,6 +70,22 @@ class PutTaskDefRequest(_message.Message):
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
     return_type: _common_wfspec_pb2.ReturnType
     def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+
+class PutStructDefRequest(_message.Message):
+    __slots__ = ["name", "struct_def", "allowed_updates"]
+    class AllowedStructDefUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = []
+        NO_SCHEMA_UPDATES: _ClassVar[PutStructDefRequest.AllowedStructDefUpdateType]
+        FULLY_COMPATIBLE_SCHEMA_UPDATES: _ClassVar[PutStructDefRequest.AllowedStructDefUpdateType]
+    NO_SCHEMA_UPDATES: PutStructDefRequest.AllowedStructDefUpdateType
+    FULLY_COMPATIBLE_SCHEMA_UPDATES: PutStructDefRequest.AllowedStructDefUpdateType
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
+    ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    struct_def: _struct_def_pb2.InlineStructDef
+    allowed_updates: PutStructDefRequest.AllowedStructDefUpdateType
+    def __init__(self, name: _Optional[str] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[PutStructDefRequest.AllowedStructDefUpdateType, str]] = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
     __slots__ = ["name", "content_type"]

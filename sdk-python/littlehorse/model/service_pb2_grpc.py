@@ -10,6 +10,7 @@ import littlehorse.model.node_run_pb2 as node__run__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.scheduled_wf_run_pb2 as scheduled__wf__run__pb2
 import littlehorse.model.service_pb2 as service__pb2
+import littlehorse.model.struct_def_pb2 as struct__def__pb2
 import littlehorse.model.task_def_pb2 as task__def__pb2
 import littlehorse.model.task_run_pb2 as task__run__pb2
 import littlehorse.model.user_tasks_pb2 as user__tasks__pb2
@@ -96,6 +97,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/MigrateWfSpec',
                 request_serializer=service__pb2.MigrateWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
+                _registered_method=True)
+        self.PutStructDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutStructDef',
+                request_serializer=service__pb2.PutStructDefRequest.SerializeToString,
+                response_deserializer=struct__def__pb2.StructDef.FromString,
                 _registered_method=True)
         self.PutUserTaskDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutUserTaskDef',
@@ -498,6 +504,21 @@ class LittleHorseServicer(object):
         completion.
 
         As of 0.7.2, this feature is only partially implemented.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutStructDef(self, request, context):
+        """Creates a new `StructDef``.
+
+        Note that this request is idempotent: if you
+        make a request to create a `StructDef` identical to the currently-created
+        one with the same `name`, no new `StructDef` will be created. This is the
+        same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+
+        For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+        enum within the `PutStructDefRequest`.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1058,6 +1079,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.MigrateWfSpec,
                     request_deserializer=service__pb2.MigrateWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
+            ),
+            'PutStructDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutStructDef,
+                    request_deserializer=service__pb2.PutStructDefRequest.FromString,
+                    response_serializer=struct__def__pb2.StructDef.SerializeToString,
             ),
             'PutUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutUserTaskDef,
@@ -1655,6 +1681,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/MigrateWfSpec',
             service__pb2.MigrateWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutStructDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutStructDef',
+            service__pb2.PutStructDefRequest.SerializeToString,
+            struct__def__pb2.StructDef.FromString,
             options,
             channel_credentials,
             insecure,

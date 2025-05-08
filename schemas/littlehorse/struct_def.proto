@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "common_wfspec.proto";
+import "object_id.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
+// that defines the structure and content of a variable value. It allows strong typing.
+message StructDef {
+  // The id of the `Schema`. This includes the version.
+  StructDefId id = 1;
+
+  // Optionally description of the schema.
+  optional string description = 2;
+
+  // The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
+  InlineStructDef struct_def = 3;
+}
+
+// An `InlineStructDef` is the actual representation of the Schema.
+message InlineStructDef {
+  // The fields in this schema.
+  repeated StructFieldDef fields = 1;
+}
+
+// A `SchemaFieldDef` defines a field inside a `StructDef`.
+message StructFieldDef {
+  // The name of the field.
+  string name = 1;
+
+  // Whether the field is optional / nullable.
+  bool optional = 2;
+
+  // The type of the field.
+  TypeDefinition field_type = 3;
+}

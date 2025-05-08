@@ -30,6 +30,7 @@ const (
 	LittleHorse_GetWfSpec_FullMethodName               = "/littlehorse.LittleHorse/GetWfSpec"
 	LittleHorse_GetLatestWfSpec_FullMethodName         = "/littlehorse.LittleHorse/GetLatestWfSpec"
 	LittleHorse_MigrateWfSpec_FullMethodName           = "/littlehorse.LittleHorse/MigrateWfSpec"
+	LittleHorse_PutStructDef_FullMethodName            = "/littlehorse.LittleHorse/PutStructDef"
 	LittleHorse_PutUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/PutUserTaskDef"
 	LittleHorse_GetUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/GetUserTaskDef"
 	LittleHorse_GetLatestUserTaskDef_FullMethodName    = "/littlehorse.LittleHorse/GetLatestUserTaskDef"
@@ -127,6 +128,16 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
+	// Creates a new `StructDef``.
+	//
+	// Note that this request is idempotent: if you
+	// make a request to create a `StructDef` identical to the currently-created
+	// one with the same `name`, no new `StructDef` will be created. This is the
+	// same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+	//
+	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+	// enum within the `PutStructDefRequest`.
+	PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	// Gets a specific UserTaskDef.
@@ -399,6 +410,15 @@ func (c *littleHorseClient) GetLatestWfSpec(ctx context.Context, in *GetLatestWf
 func (c *littleHorseClient) MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error) {
 	out := new(WfSpec)
 	err := c.cc.Invoke(ctx, LittleHorse_MigrateWfSpec_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error) {
+	out := new(StructDef)
+	err := c.cc.Invoke(ctx, LittleHorse_PutStructDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1042,6 +1062,16 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
+	// Creates a new `StructDef``.
+	//
+	// Note that this request is idempotent: if you
+	// make a request to create a `StructDef` identical to the currently-created
+	// one with the same `name`, no new `StructDef` will be created. This is the
+	// same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+	//
+	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+	// enum within the `PutStructDefRequest`.
+	PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
 	// Gets a specific UserTaskDef.
@@ -1256,6 +1286,9 @@ func (UnimplementedLittleHorseServer) GetLatestWfSpec(context.Context, *GetLates
 }
 func (UnimplementedLittleHorseServer) MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MigrateWfSpec not implemented")
+}
+func (UnimplementedLittleHorseServer) PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutStructDef not implemented")
 }
 func (UnimplementedLittleHorseServer) PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskDef not implemented")
@@ -1641,6 +1674,24 @@ func _LittleHorse_MigrateWfSpec_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).MigrateWfSpec(ctx, req.(*MigrateWfSpecRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutStructDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutStructDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutStructDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutStructDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutStructDef(ctx, req.(*PutStructDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2869,6 +2920,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MigrateWfSpec",
 			Handler:    _LittleHorse_MigrateWfSpec_Handler,
+		},
+		{
+			MethodName: "PutStructDef",
+			Handler:    _LittleHorse_PutStructDef_Handler,
 		},
 		{
 			MethodName: "PutUserTaskDef",
