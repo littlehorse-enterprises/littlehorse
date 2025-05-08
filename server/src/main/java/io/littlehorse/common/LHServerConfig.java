@@ -5,6 +5,7 @@ import io.grpc.ChannelCredentials;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.RocksConfigSetter;
 import io.littlehorse.sdk.common.config.ConfigBase;
@@ -34,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -357,6 +359,22 @@ public class LHServerConfig extends ConfigBase {
     public int getOutputToppicPartitions() {
         return Integer.valueOf(String.class.cast(props.getOrDefault(
                 LHServerConfig.OUTPUT_TOPIC_PARTITIONS_KEY, String.valueOf(getClusterPartitions()))));
+    }
+
+    public Pair<NewTopic, NewTopic> getOutputTopicsFor(TenantModel tenant) {
+        String executionTopicName = getLHClusterId() + "_" + tenant.getId().getId() + "_execution";
+        String metadataTopicName = getLHClusterId() + "_" + tenant.getId().getId() + "_metadata";
+
+        // metadata topic is compacted
+        HashMap<String, String> compactedTopicConfig = new HashMap<>() {
+            {
+                put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+            }
+        };
+
+        return Pair.of(
+                new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
+                new NewTopic(executionTopicName, getClusterPartitions(), getReplicationFactor()));
     }
 
     public String getKafkaGroupId(String component) {
