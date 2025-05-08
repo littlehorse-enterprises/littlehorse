@@ -658,10 +658,12 @@ class WfRunVariable:
         """
         return ThreadVarDef(
             var_def=VariableDef(
-                type=self.type,
+                type_def=TypeDefinition(
+                    type=self.type,
+                    masked=self._masked
+                ),
                 name=self.name,
-                default_value=self.default_value,
-                masked_value=self._masked,
+                default_value=self.default_value
             ),
             json_indexes=self._json_indexes.copy(),
             searchable=self._searchable,
