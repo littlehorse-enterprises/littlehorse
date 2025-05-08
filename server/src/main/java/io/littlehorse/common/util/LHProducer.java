@@ -5,6 +5,7 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Future;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -12,6 +13,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.utils.Bytes;
 
+@Slf4j
 public class LHProducer implements Closeable {
 
     private KafkaProducer<String, Bytes> prod;

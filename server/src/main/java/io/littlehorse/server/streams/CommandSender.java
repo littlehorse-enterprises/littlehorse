@@ -1,43 +1,56 @@
 package io.littlehorse.server.streams;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.grpc.stub.StreamObserver;
+import io.grpc.Status;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.common.proto.LHStoreType;
+import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
+import io.littlehorse.server.LHInternalClient;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
-import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.time.Duration;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.function.BiFunction;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.streams.KeyQueryMetadata;
+import org.apache.kafka.streams.state.HostInfo;
 
+@Slf4j
 public class CommandSender {
 
-    private final BackendInternalComms internalComms;
     private final Duration successDurationTimeout;
-    private final ScheduledExecutorService networkThreadpool;
+    private final ExecutorService networkThreadpool;
     private final LHProducer commandProducer;
     private final LHProducer taskClaimProducer;
     private final LHServerConfig serverConfig;
+    private final AsyncWaiters asyncWaiters;
+    private final BiFunction<String, String, KeyQueryMetadata> lookupPartitionKey;
+    private final HostInfo thisHost;
+    private final LHInternalClient internalClient;
 
     public CommandSender(
-            BackendInternalComms internalComms,
-            ScheduledExecutorService networkThreadpool,
+            ExecutorService networkThreadpool,
             LHProducer commandProducer,
             LHProducer taskClaimProducer,
             long streamsSessionTimeout,
-            LHServerConfig serverConfig) {
-        this.internalComms = internalComms;
+            LHServerConfig serverConfig,
+            AsyncWaiters asyncWaiters,
+            BiFunction<String, String, KeyQueryMetadata> lookupPartitionKey,
+            LHInternalClient internalClient) {
         // Streams Session Timeout is how long it takes to notice that the server is down.
         // Then we need the rebalance to occur, and the new server must process the command.
         // So we give it a buffer of 10 additional seconds.
@@ -47,6 +60,11 @@ public class CommandSender {
         this.taskClaimProducer = taskClaimProducer;
         // The only reason for this is to resolve using the method AbstractCommand#getTopic
         this.serverConfig = serverConfig;
+        this.asyncWaiters = asyncWaiters;
+        this.lookupPartitionKey = lookupPartitionKey;
+        this.thisHost =
+                new HostInfo(serverConfig.getInternalAdvertisedHost(), serverConfig.getInternalAdvertisedPort());
+        this.internalClient = internalClient;
     }
 
     /*
@@ -56,45 +74,105 @@ public class CommandSender {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    public <AC extends Message, RC extends Message> void doSend(
-            AbstractCommand<AC> command,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
-            boolean shouldCompleteStream,
-            PrincipalIdModel principalId,
-            TenantIdModel tenantId,
-            RequestExecutionContext context) {
-        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                internalComms,
-                command,
-                context,
-                successDurationTimeout,
-                networkThreadpool);
-
-        Callback callback = this.internalComms.createProducerCommandCallback(command, commandObserver, context);
-
+    public synchronized <T extends Message> CompletableFuture<T> doSendAndWaitForResponse(
+            AbstractCommand<?> command, Class<T> responseType, RequestExecutionContext executionContext) {
+        AuthorizationContext auth = executionContext.authorization();
+        KeyQueryMetadata keyMetadata =
+                lookupPartitionKey.apply(storeName(command.getStore()), command.getPartitionKey());
         command.setCommandId(LHUtil.generateGuid());
-
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        commandProducer.send(
-                command.getPartitionKey(),
-                command,
-                command.getTopic(serverConfig),
-                callback,
-                commandMetadata.toArray());
+        CompletableFuture<Void> commandFuture = new CompletableFuture<>();
+        Callback callback = (meta, exn) -> {
+            if (exn == null) {
+                commandFuture.complete(null);
+            } else {
+                commandFuture.completeExceptionally(exn);
+            }
+        };
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(auth.tenantId(), auth.principalId());
+        CompletableFuture.runAsync(() -> {
+            commandProducer.send(
+                    command.getPartitionKey(),
+                    command,
+                    command.getTopic(serverConfig),
+                    callback,
+                    commandMetadata.toArray());
+        });
+        if (isLocalKey(keyMetadata)) {
+            CompletableFuture<Message> out = asyncWaiters.getOrRegisterFuture(
+                    command.getCommandId(),
+                    responseType,
+                    commandFuture.thenCompose(unused -> new CompletableFuture<>()));
+            return (CompletableFuture<T>) out;
+        } else {
+            WaitForCommandRequest request = WaitForCommandRequest.newBuilder()
+                    .setCommandId(command.getCommandId())
+                    .setPartition(keyMetadata.partition())
+                    .build();
+            return commandFuture.thenCompose(unused -> internalClient.remoteWaitForCommand(
+                    request, responseType, keyMetadata.activeHost(), executionContext));
+        }
     }
 
-    public void doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        CommandModel taskClaim = new CommandModel(new TaskClaimEvent(scheduledTask, client));
-        taskClaimProducer.send(
-                taskClaim.getPartitionKey(),
-                taskClaim,
-                taskClaim.getTopic(serverConfig),
-                new TaskClaimEventProducerCallback(scheduledTask, client),
-                HeadersUtil.metadataHeadersFor(client.getTenantId(), client.getPrincipalId())
-                        .toArray());
+    private boolean isLocalKey(KeyQueryMetadata keyMetadata) {
+        return keyMetadata.activeHost().equals(thisHost);
+    }
+
+    private String storeName(LHStoreType storeType) {
+        return switch (storeType) {
+            case CORE -> ServerTopology.CORE_STORE;
+            case METADATA -> ServerTopology.METADATA_STORE;
+            case REPARTITION -> ServerTopology.CORE_REPARTITION_STORE;
+            case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
+        };
+    }
+
+    public synchronized void registerErrorAndNotifyWaitingThreads(String commandId, Throwable cause) {}
+
+    public CompletableFuture<Empty> doSend(AbstractCommand<?> command, AuthorizationContext auth) {
+        TenantIdModel tenantId = auth.tenantId();
+        PrincipalIdModel principalId = auth.principalId();
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+        CompletableFuture<Empty> out = new CompletableFuture<>();
+        Callback kafkaProducerCallback = (meta, exn) -> {
+            if (exn == null) {
+                out.complete(Empty.getDefaultInstance());
+            } else {
+                out.completeExceptionally(exn);
+            }
+        };
+        CompletableFuture<Void> producerSend = CompletableFuture.runAsync(() -> {
+            commandProducer.send(
+                    command.getPartitionKey(),
+                    command,
+                    command.getTopic(serverConfig),
+                    kafkaProducerCallback,
+                    commandMetadata.toArray());
+        });
+
+        return producerSend.thenCompose(unused -> out);
+    }
+
+    public CompletableFuture<Empty> doSend(TaskClaimEvent taskClaimEvent, AuthorizationContext auth) {
+        CommandModel taskClaim = new CommandModel(taskClaimEvent);
+        TenantIdModel tenantId = auth.tenantId();
+        PrincipalIdModel principalId = auth.principalId();
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+        CompletableFuture<Empty> out = new CompletableFuture<>();
+        Callback kafkaProducerCallback = (meta, exn) -> {
+            if (exn == null) {
+                out.complete(Empty.getDefaultInstance());
+            } else {
+                out.completeExceptionally(exn);
+            }
+        };
+        CompletableFuture<Void> producerSend = CompletableFuture.runAsync(() -> {
+            taskClaimProducer.send(
+                    taskClaim.getPartitionKey(),
+                    taskClaim,
+                    taskClaim.getTopic(serverConfig),
+                    kafkaProducerCallback,
+                    commandMetadata.toArray());
+        });
+        return producerSend.thenCompose(unused -> out);
     }
 }
