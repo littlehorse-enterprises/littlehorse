@@ -105,9 +105,7 @@ public abstract class Program
                             itRequest.WithJsonPath("$.RequestedItem")
                         )
                     );
-                },
-                // Request denied ):
-                elseBody => {
+                }).DoElse(elseBody => {
                     elseBody.Execute(
                         EmailTaskName,
                         userId,
@@ -117,8 +115,7 @@ public abstract class Program
                             itRequest.WithJsonPath("$.RequestedItem")
                         )
                     );
-                }
-            );
+                });
         }
         
         return new Workflow(WorkflowName, MyEntryPoint);
