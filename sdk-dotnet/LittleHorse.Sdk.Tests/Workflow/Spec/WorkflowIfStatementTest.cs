@@ -86,8 +86,9 @@ public class WorkflowIfStatementTest
 
             ifStatement.DoElseIf(thread.Condition(5, Comparator.Equals, 5),
                 body => body.Execute("task-c"));
-            
+
             myInt.Assign(0) ;
+            thread.Execute("task-d");
         }
 
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
@@ -97,11 +98,12 @@ public class WorkflowIfStatementTest
         var taskNodeA = compiledWfThread.Nodes["2-task-a-TASK"];
         var taskNodeB = compiledWfThread.Nodes["4-task-b-TASK"];
         var taskNodeC = compiledWfThread.Nodes["5-task-c-TASK"];
+        var taskNodeD = compiledWfThread.Nodes["6-task-d-TASK"];
         var lastNopNode = compiledWfThread.Nodes["3-nop-NOP"];
 
         var expectedNumberOutgoingEdgesFromFirstNopNode = 4;
         var expectedLastSinkNopNodeName = "3-nop-NOP";
-        var expectedExitSinkNodeName = "6-exit-EXIT";
+        var expectedExitSinkNodeName = "7-exit-EXIT";
 
         Assert.Equal(new Node
         {
@@ -187,7 +189,8 @@ public class WorkflowIfStatementTest
         Assert.Equal(expectedLastSinkNopNodeName, taskNodeA.OutgoingEdges[0].SinkNodeName);
         Assert.Equal(expectedLastSinkNopNodeName, taskNodeB.OutgoingEdges[0].SinkNodeName);
         Assert.Equal(expectedLastSinkNopNodeName, taskNodeC.OutgoingEdges[0].SinkNodeName);
-        Assert.Equal(expectedExitSinkNodeName, lastNopNode.OutgoingEdges[0].SinkNodeName);
+        Assert.Equal("6-task-d-TASK", lastNopNode.OutgoingEdges[0].SinkNodeName);
+        Assert.Equal(expectedExitSinkNodeName, taskNodeD.OutgoingEdges[0].SinkNodeName);
     }
     
     
