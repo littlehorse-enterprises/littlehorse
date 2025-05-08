@@ -65,10 +65,37 @@ public interface StructDefOrBuilder extends
 
   /**
    * <pre>
+   * When the StructDef was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return Whether the createdAt field is set.
+   */
+  boolean hasCreatedAt();
+  /**
+   * <pre>
+   * When the StructDef was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return The createdAt.
+   */
+  com.google.protobuf.Timestamp getCreatedAt();
+  /**
+   * <pre>
+   * When the StructDef was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <pre>
    * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
    * @return Whether the structDef field is set.
    */
   boolean hasStructDef();
@@ -77,7 +104,7 @@ public interface StructDefOrBuilder extends
    * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
    * @return The structDef.
    */
   io.littlehorse.sdk.common.proto.InlineStructDef getStructDef();
@@ -86,7 +113,7 @@ public interface StructDefOrBuilder extends
    * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
    */
   io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getStructDefOrBuilder();
 }

@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
   }
   private PutStructDefRequest() {
     name_ = "";
+    description_ = "";
     allowedUpdates_ = 0;
   }
 
@@ -170,6 +171,7 @@ private static final long serialVersionUID = 0L;
     // @@protoc_insertion_point(enum_scope:littlehorse.PutStructDefRequest.AllowedStructDefUpdateType)
   }
 
+  private int bitField0_;
   public static final int NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
@@ -217,14 +219,73 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int STRUCT_DEF_FIELD_NUMBER = 2;
+  public static final int DESCRIPTION_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object description_ = "";
+  /**
+   * <pre>
+   * The descripton of the StructDef.
+   * </pre>
+   *
+   * <code>optional string description = 2;</code>
+   * @return Whether the description field is set.
+   */
+  @java.lang.Override
+  public boolean hasDescription() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * The descripton of the StructDef.
+   * </pre>
+   *
+   * <code>optional string description = 2;</code>
+   * @return The description.
+   */
+  @java.lang.Override
+  public java.lang.String getDescription() {
+    java.lang.Object ref = description_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      description_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * The descripton of the StructDef.
+   * </pre>
+   *
+   * <code>optional string description = 2;</code>
+   * @return The bytes for description.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getDescriptionBytes() {
+    java.lang.Object ref = description_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      description_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int STRUCT_DEF_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.InlineStructDef structDef_;
   /**
    * <pre>
    * The actual schema for the StructDef.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
    * @return Whether the structDef field is set.
    */
   @java.lang.Override
@@ -236,7 +297,7 @@ private static final long serialVersionUID = 0L;
    * The actual schema for the StructDef.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
    * @return The structDef.
    */
   @java.lang.Override
@@ -248,14 +309,14 @@ private static final long serialVersionUID = 0L;
    * The actual schema for the StructDef.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getStructDefOrBuilder() {
     return structDef_ == null ? io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance() : structDef_;
   }
 
-  public static final int ALLOWED_UPDATES_FIELD_NUMBER = 3;
+  public static final int ALLOWED_UPDATES_FIELD_NUMBER = 4;
   private int allowedUpdates_ = 0;
   /**
    * <pre>
@@ -267,7 +328,7 @@ private static final long serialVersionUID = 0L;
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
    * @return The enum numeric value on the wire for allowedUpdates.
    */
   @java.lang.Override public int getAllowedUpdatesValue() {
@@ -283,7 +344,7 @@ private static final long serialVersionUID = 0L;
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
    * @return The allowedUpdates.
    */
   @java.lang.Override public io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType getAllowedUpdates() {
@@ -308,11 +369,14 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, description_);
+    }
     if (structDef_ != null) {
-      output.writeMessage(2, getStructDef());
+      output.writeMessage(3, getStructDef());
     }
     if (allowedUpdates_ != io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.NO_SCHEMA_UPDATES.getNumber()) {
-      output.writeEnum(3, allowedUpdates_);
+      output.writeEnum(4, allowedUpdates_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -326,13 +390,16 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, description_);
+    }
     if (structDef_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getStructDef());
+        .computeMessageSize(3, getStructDef());
     }
     if (allowedUpdates_ != io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.NO_SCHEMA_UPDATES.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, allowedUpdates_);
+        .computeEnumSize(4, allowedUpdates_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -351,6 +418,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
+    if (hasDescription() != other.hasDescription()) return false;
+    if (hasDescription()) {
+      if (!getDescription()
+          .equals(other.getDescription())) return false;
+    }
     if (hasStructDef() != other.hasStructDef()) return false;
     if (hasStructDef()) {
       if (!getStructDef()
@@ -370,6 +442,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
+    if (hasDescription()) {
+      hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getDescription().hashCode();
+    }
     if (hasStructDef()) {
       hash = (37 * hash) + STRUCT_DEF_FIELD_NUMBER;
       hash = (53 * hash) + getStructDef().hashCode();
@@ -512,6 +588,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
+      description_ = "";
       structDef_ = null;
       if (structDefBuilder_ != null) {
         structDefBuilder_.dispose();
@@ -554,14 +631,20 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
       }
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.description_ = description_;
+        to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.structDef_ = structDefBuilder_ == null
             ? structDef_
             : structDefBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.allowedUpdates_ = allowedUpdates_;
       }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -613,6 +696,11 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
+      if (other.hasDescription()) {
+        description_ = other.description_;
+        bitField0_ |= 0x00000002;
+        onChanged();
+      }
       if (other.hasStructDef()) {
         mergeStructDef(other.getStructDef());
       }
@@ -651,17 +739,22 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              input.readMessage(
-                  getStructDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              description_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              allowedUpdates_ = input.readEnum();
+            case 26: {
+              input.readMessage(
+                  getStructDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000004;
               break;
-            } // case 24
+            } // case 26
+            case 32: {
+              allowedUpdates_ = input.readEnum();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -771,6 +864,109 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private java.lang.Object description_ = "";
+    /**
+     * <pre>
+     * The descripton of the StructDef.
+     * </pre>
+     *
+     * <code>optional string description = 2;</code>
+     * @return Whether the description field is set.
+     */
+    public boolean hasDescription() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * The descripton of the StructDef.
+     * </pre>
+     *
+     * <code>optional string description = 2;</code>
+     * @return The description.
+     */
+    public java.lang.String getDescription() {
+      java.lang.Object ref = description_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        description_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * The descripton of the StructDef.
+     * </pre>
+     *
+     * <code>optional string description = 2;</code>
+     * @return The bytes for description.
+     */
+    public com.google.protobuf.ByteString
+        getDescriptionBytes() {
+      java.lang.Object ref = description_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        description_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * The descripton of the StructDef.
+     * </pre>
+     *
+     * <code>optional string description = 2;</code>
+     * @param value The description to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDescription(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      description_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The descripton of the StructDef.
+     * </pre>
+     *
+     * <code>optional string description = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearDescription() {
+      description_ = getDefaultInstance().getDescription();
+      bitField0_ = (bitField0_ & ~0x00000002);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The descripton of the StructDef.
+     * </pre>
+     *
+     * <code>optional string description = 2;</code>
+     * @param value The bytes for description to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDescriptionBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      description_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+
     private io.littlehorse.sdk.common.proto.InlineStructDef structDef_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> structDefBuilder_;
@@ -779,18 +975,18 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      * @return Whether the structDef field is set.
      */
     public boolean hasStructDef() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <pre>
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      * @return The structDef.
      */
     public io.littlehorse.sdk.common.proto.InlineStructDef getStructDef() {
@@ -805,7 +1001,7 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      */
     public Builder setStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
       if (structDefBuilder_ == null) {
@@ -816,7 +1012,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structDefBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -825,7 +1021,7 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      */
     public Builder setStructDef(
         io.littlehorse.sdk.common.proto.InlineStructDef.Builder builderForValue) {
@@ -834,7 +1030,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structDefBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -843,11 +1039,11 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      */
     public Builder mergeStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
       if (structDefBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
+        if (((bitField0_ & 0x00000004) != 0) &&
           structDef_ != null &&
           structDef_ != io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance()) {
           getStructDefBuilder().mergeFrom(value);
@@ -857,7 +1053,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structDefBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -866,10 +1062,10 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      */
     public Builder clearStructDef() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       structDef_ = null;
       if (structDefBuilder_ != null) {
         structDefBuilder_.dispose();
@@ -883,10 +1079,10 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.InlineStructDef.Builder getStructDefBuilder() {
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return getStructDefFieldBuilder().getBuilder();
     }
@@ -895,7 +1091,7 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getStructDefOrBuilder() {
       if (structDefBuilder_ != null) {
@@ -910,7 +1106,7 @@ private static final long serialVersionUID = 0L;
      * The actual schema for the StructDef.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> 
@@ -937,7 +1133,7 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
      * @return The enum numeric value on the wire for allowedUpdates.
      */
     @java.lang.Override public int getAllowedUpdatesValue() {
@@ -953,13 +1149,13 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
      * @param value The enum numeric value on the wire for allowedUpdates to set.
      * @return This builder for chaining.
      */
     public Builder setAllowedUpdatesValue(int value) {
       allowedUpdates_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -973,7 +1169,7 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
      * @return The allowedUpdates.
      */
     @java.lang.Override
@@ -991,7 +1187,7 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
      * @param value The allowedUpdates to set.
      * @return This builder for chaining.
      */
@@ -999,7 +1195,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       allowedUpdates_ = value.getNumber();
       onChanged();
       return this;
@@ -1014,11 +1210,11 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearAllowedUpdates() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       allowedUpdates_ = 0;
       onChanged();
       return this;

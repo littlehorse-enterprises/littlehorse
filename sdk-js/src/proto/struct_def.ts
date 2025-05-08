@@ -7,6 +7,7 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import { TypeDefinition } from "./common_wfspec";
+import { Timestamp } from "./google/protobuf/timestamp";
 import { StructDefId } from "./object_id";
 
 /**
@@ -20,6 +21,10 @@ export interface StructDef {
     | undefined;
   /** Optionally description of the schema. */
   description?:
+    | string
+    | undefined;
+  /** When the StructDef was created. */
+  createdAt:
     | string
     | undefined;
   /** The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`. */
@@ -43,7 +48,7 @@ export interface StructFieldDef {
 }
 
 function createBaseStructDef(): StructDef {
-  return { id: undefined, description: undefined, structDef: undefined };
+  return { id: undefined, description: undefined, createdAt: undefined, structDef: undefined };
 }
 
 export const StructDef = {
@@ -54,8 +59,11 @@ export const StructDef = {
     if (message.description !== undefined) {
       writer.uint32(18).string(message.description);
     }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
+    }
     if (message.structDef !== undefined) {
-      InlineStructDef.encode(message.structDef, writer.uint32(26).fork()).ldelim();
+      InlineStructDef.encode(message.structDef, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -86,6 +94,13 @@ export const StructDef = {
             break;
           }
 
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.structDef = InlineStructDef.decode(reader, reader.uint32());
           continue;
       }
@@ -104,6 +119,7 @@ export const StructDef = {
     const message = createBaseStructDef();
     message.id = (object.id !== undefined && object.id !== null) ? StructDefId.fromPartial(object.id) : undefined;
     message.description = object.description ?? undefined;
+    message.createdAt = object.createdAt ?? undefined;
     message.structDef = (object.structDef !== undefined && object.structDef !== null)
       ? InlineStructDef.fromPartial(object.structDef)
       : undefined;
@@ -232,3 +248,16 @@ type DeepPartial<T> = T extends Builtin ? T
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(dateStr: string): Timestamp {
+  const date = new globalThis.Date(dateStr);
+  const seconds = Math.trunc(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): string {
+  let millis = (t.seconds || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
+  return new globalThis.Date(millis).toISOString();
+}

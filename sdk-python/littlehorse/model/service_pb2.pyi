@@ -72,7 +72,7 @@ class PutTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutStructDefRequest(_message.Message):
-    __slots__ = ["name", "struct_def", "allowed_updates"]
+    __slots__ = ["name", "description", "struct_def", "allowed_updates"]
     class AllowedStructDefUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
         NO_SCHEMA_UPDATES: _ClassVar[PutStructDefRequest.AllowedStructDefUpdateType]
@@ -80,12 +80,14 @@ class PutStructDefRequest(_message.Message):
     NO_SCHEMA_UPDATES: PutStructDefRequest.AllowedStructDefUpdateType
     FULLY_COMPATIBLE_SCHEMA_UPDATES: PutStructDefRequest.AllowedStructDefUpdateType
     NAME_FIELD_NUMBER: _ClassVar[int]
+    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
     ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
     name: str
+    description: str
     struct_def: _struct_def_pb2.InlineStructDef
     allowed_updates: PutStructDefRequest.AllowedStructDefUpdateType
-    def __init__(self, name: _Optional[str] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[PutStructDefRequest.AllowedStructDefUpdateType, str]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[PutStructDefRequest.AllowedStructDefUpdateType, str]] = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
     __slots__ = ["name", "content_type"]

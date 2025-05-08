@@ -29,10 +29,39 @@ public interface PutStructDefRequestOrBuilder extends
 
   /**
    * <pre>
+   * The descripton of the StructDef.
+   * </pre>
+   *
+   * <code>optional string description = 2;</code>
+   * @return Whether the description field is set.
+   */
+  boolean hasDescription();
+  /**
+   * <pre>
+   * The descripton of the StructDef.
+   * </pre>
+   *
+   * <code>optional string description = 2;</code>
+   * @return The description.
+   */
+  java.lang.String getDescription();
+  /**
+   * <pre>
+   * The descripton of the StructDef.
+   * </pre>
+   *
+   * <code>optional string description = 2;</code>
+   * @return The bytes for description.
+   */
+  com.google.protobuf.ByteString
+      getDescriptionBytes();
+
+  /**
+   * <pre>
    * The actual schema for the StructDef.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
    * @return Whether the structDef field is set.
    */
   boolean hasStructDef();
@@ -41,7 +70,7 @@ public interface PutStructDefRequestOrBuilder extends
    * The actual schema for the StructDef.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
    * @return The structDef.
    */
   io.littlehorse.sdk.common.proto.InlineStructDef getStructDef();
@@ -50,7 +79,7 @@ public interface PutStructDefRequestOrBuilder extends
    * The actual schema for the StructDef.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 2;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
    */
   io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getStructDefOrBuilder();
 
@@ -64,7 +93,7 @@ public interface PutStructDefRequestOrBuilder extends
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
    * @return The enum numeric value on the wire for allowedUpdates.
    */
   int getAllowedUpdatesValue();
@@ -78,7 +107,7 @@ public interface PutStructDefRequestOrBuilder extends
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 3;</code>
+   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
    * @return The allowedUpdates.
    */
   io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType getAllowedUpdates();

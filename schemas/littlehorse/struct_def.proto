@@ -4,6 +4,7 @@ package littlehorse;
 
 import "common_wfspec.proto";
 import "object_id.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -19,8 +20,11 @@ message StructDef {
   // Optionally description of the schema.
   optional string description = 2;
 
+  // When the StructDef was created.
+  google.protobuf.Timestamp created_at = 3;
+
   // The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
-  InlineStructDef struct_def = 3;
+  InlineStructDef struct_def = 4;
 }
 
 // An `InlineStructDef` is the actual representation of the Schema.

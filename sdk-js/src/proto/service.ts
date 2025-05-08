@@ -183,6 +183,10 @@ export interface PutTaskDefRequest {
 export interface PutStructDefRequest {
   /** The name of the StructDef. */
   name: string;
+  /** The descripton of the StructDef. */
+  description?:
+    | string
+    | undefined;
   /** The actual schema for the StructDef. */
   structDef:
     | InlineStructDef
@@ -1888,6 +1892,7 @@ export const PutTaskDefRequest = {
 function createBasePutStructDefRequest(): PutStructDefRequest {
   return {
     name: "",
+    description: undefined,
     structDef: undefined,
     allowedUpdates: PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES,
   };
@@ -1898,11 +1903,14 @@ export const PutStructDefRequest = {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
+    if (message.description !== undefined) {
+      writer.uint32(18).string(message.description);
+    }
     if (message.structDef !== undefined) {
-      InlineStructDef.encode(message.structDef, writer.uint32(18).fork()).ldelim();
+      InlineStructDef.encode(message.structDef, writer.uint32(26).fork()).ldelim();
     }
     if (message.allowedUpdates !== PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES) {
-      writer.uint32(24).int32(putStructDefRequest_AllowedStructDefUpdateTypeToNumber(message.allowedUpdates));
+      writer.uint32(32).int32(putStructDefRequest_AllowedStructDefUpdateTypeToNumber(message.allowedUpdates));
     }
     return writer;
   },
@@ -1926,10 +1934,17 @@ export const PutStructDefRequest = {
             break;
           }
 
-          message.structDef = InlineStructDef.decode(reader, reader.uint32());
+          message.description = reader.string();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.structDef = InlineStructDef.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 32) {
             break;
           }
 
@@ -1950,6 +1965,7 @@ export const PutStructDefRequest = {
   fromPartial(object: DeepPartial<PutStructDefRequest>): PutStructDefRequest {
     const message = createBasePutStructDefRequest();
     message.name = object.name ?? "";
+    message.description = object.description ?? undefined;
     message.structDef = (object.structDef !== undefined && object.structDef !== null)
       ? InlineStructDef.fromPartial(object.structDef)
       : undefined;

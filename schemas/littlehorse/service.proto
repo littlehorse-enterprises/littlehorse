@@ -382,8 +382,11 @@ message PutStructDefRequest {
   // The name of the StructDef.
   string name = 1;
 
+  // The descripton of the StructDef.
+  optional string description = 2;
+
   // The actual schema for the StructDef.
-  InlineStructDef struct_def = 2;
+  InlineStructDef struct_def = 3;
 
   // If both of the following are true: <br/>
   // - A `StructDef` with the specified `name` already exists, AND <br/>
@@ -391,7 +394,7 @@ message PutStructDefRequest {
   //
   // Then the request will be accepted or rejected based on the value of the
   // allowed_update_types.
-  AllowedStructDefUpdateType allowed_updates = 3;
+  AllowedStructDefUpdateType allowed_updates = 4;
 }
 
 // Creates a WorkflowEventDef

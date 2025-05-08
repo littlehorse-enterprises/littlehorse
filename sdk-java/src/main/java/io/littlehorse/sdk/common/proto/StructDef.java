@@ -142,14 +142,52 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int STRUCT_DEF_FIELD_NUMBER = 3;
+  public static final int CREATED_AT_FIELD_NUMBER = 3;
+  private com.google.protobuf.Timestamp createdAt_;
+  /**
+   * <pre>
+   * When the StructDef was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return Whether the createdAt field is set.
+   */
+  @java.lang.Override
+  public boolean hasCreatedAt() {
+    return createdAt_ != null;
+  }
+  /**
+   * <pre>
+   * When the StructDef was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * @return The createdAt.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getCreatedAt() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+  /**
+   * <pre>
+   * When the StructDef was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+
+  public static final int STRUCT_DEF_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.InlineStructDef structDef_;
   /**
    * <pre>
    * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
    * @return Whether the structDef field is set.
    */
   @java.lang.Override
@@ -161,7 +199,7 @@ private static final long serialVersionUID = 0L;
    * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
    * @return The structDef.
    */
   @java.lang.Override
@@ -173,7 +211,7 @@ private static final long serialVersionUID = 0L;
    * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
    * </pre>
    *
-   * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+   * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getStructDefOrBuilder() {
@@ -200,8 +238,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, description_);
     }
+    if (createdAt_ != null) {
+      output.writeMessage(3, getCreatedAt());
+    }
     if (structDef_ != null) {
-      output.writeMessage(3, getStructDef());
+      output.writeMessage(4, getStructDef());
     }
     getUnknownFields().writeTo(output);
   }
@@ -219,9 +260,13 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, description_);
     }
+    if (createdAt_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getCreatedAt());
+    }
     if (structDef_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getStructDef());
+        .computeMessageSize(4, getStructDef());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -248,6 +293,11 @@ private static final long serialVersionUID = 0L;
       if (!getDescription()
           .equals(other.getDescription())) return false;
     }
+    if (hasCreatedAt() != other.hasCreatedAt()) return false;
+    if (hasCreatedAt()) {
+      if (!getCreatedAt()
+          .equals(other.getCreatedAt())) return false;
+    }
     if (hasStructDef() != other.hasStructDef()) return false;
     if (hasStructDef()) {
       if (!getStructDef()
@@ -271,6 +321,10 @@ private static final long serialVersionUID = 0L;
     if (hasDescription()) {
       hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
       hash = (53 * hash) + getDescription().hashCode();
+    }
+    if (hasCreatedAt()) {
+      hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
+      hash = (53 * hash) + getCreatedAt().hashCode();
     }
     if (hasStructDef()) {
       hash = (37 * hash) + STRUCT_DEF_FIELD_NUMBER;
@@ -418,6 +472,11 @@ private static final long serialVersionUID = 0L;
         idBuilder_ = null;
       }
       description_ = "";
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
+      }
       structDef_ = null;
       if (structDefBuilder_ != null) {
         structDefBuilder_.dispose();
@@ -467,6 +526,11 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.createdAt_ = createdAtBuilder_ == null
+            ? createdAt_
+            : createdAtBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.structDef_ = structDefBuilder_ == null
             ? structDef_
             : structDefBuilder_.build();
@@ -526,6 +590,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
+      if (other.hasCreatedAt()) {
+        mergeCreatedAt(other.getCreatedAt());
+      }
       if (other.hasStructDef()) {
         mergeStructDef(other.getStructDef());
       }
@@ -569,11 +636,18 @@ private static final long serialVersionUID = 0L;
             } // case 18
             case 26: {
               input.readMessage(
-                  getStructDefFieldBuilder().getBuilder(),
+                  getCreatedAtFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getStructDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -849,6 +923,161 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private com.google.protobuf.Timestamp createdAt_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * @return Whether the createdAt field is set.
+     */
+    public boolean hasCreatedAt() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * @return The createdAt.
+     */
+    public com.google.protobuf.Timestamp getCreatedAt() {
+      if (createdAtBuilder_ == null) {
+        return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+      } else {
+        return createdAtBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     */
+    public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        createdAt_ = value;
+      } else {
+        createdAtBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     */
+    public Builder setCreatedAt(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (createdAtBuilder_ == null) {
+        createdAt_ = builderForValue.build();
+      } else {
+        createdAtBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     */
+    public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          createdAt_ != null &&
+          createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getCreatedAtBuilder().mergeFrom(value);
+        } else {
+          createdAt_ = value;
+        }
+      } else {
+        createdAtBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     */
+    public Builder clearCreatedAt() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getCreatedAtFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+      if (createdAtBuilder_ != null) {
+        return createdAtBuilder_.getMessageOrBuilder();
+      } else {
+        return createdAt_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+      }
+    }
+    /**
+     * <pre>
+     * When the StructDef was created.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getCreatedAtFieldBuilder() {
+      if (createdAtBuilder_ == null) {
+        createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getCreatedAt(),
+                getParentForChildren(),
+                isClean());
+        createdAt_ = null;
+      }
+      return createdAtBuilder_;
+    }
+
     private io.littlehorse.sdk.common.proto.InlineStructDef structDef_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> structDefBuilder_;
@@ -857,18 +1086,18 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      * @return Whether the structDef field is set.
      */
     public boolean hasStructDef() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <pre>
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      * @return The structDef.
      */
     public io.littlehorse.sdk.common.proto.InlineStructDef getStructDef() {
@@ -883,7 +1112,7 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      */
     public Builder setStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
       if (structDefBuilder_ == null) {
@@ -894,7 +1123,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structDefBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -903,7 +1132,7 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      */
     public Builder setStructDef(
         io.littlehorse.sdk.common.proto.InlineStructDef.Builder builderForValue) {
@@ -912,7 +1141,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structDefBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -921,11 +1150,11 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      */
     public Builder mergeStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
       if (structDefBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           structDef_ != null &&
           structDef_ != io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance()) {
           getStructDefBuilder().mergeFrom(value);
@@ -935,7 +1164,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structDefBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -944,10 +1173,10 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      */
     public Builder clearStructDef() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       structDef_ = null;
       if (structDefBuilder_ != null) {
         structDefBuilder_.dispose();
@@ -961,10 +1190,10 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.InlineStructDef.Builder getStructDefBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getStructDefFieldBuilder().getBuilder();
     }
@@ -973,7 +1202,7 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getStructDefOrBuilder() {
       if (structDefBuilder_ != null) {
@@ -988,7 +1217,7 @@ private static final long serialVersionUID = 0L;
      * The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
      * </pre>
      *
-     * <code>.littlehorse.InlineStructDef struct_def = 3;</code>
+     * <code>.littlehorse.InlineStructDef struct_def = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> 

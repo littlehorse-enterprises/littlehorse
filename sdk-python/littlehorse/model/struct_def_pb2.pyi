@@ -1,5 +1,6 @@
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
+from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -8,14 +9,16 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class StructDef(_message.Message):
-    __slots__ = ["id", "description", "struct_def"]
+    __slots__ = ["id", "description", "created_at", "struct_def"]
     ID_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.StructDefId
     description: str
+    created_at: _timestamp_pb2.Timestamp
     struct_def: InlineStructDef
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[InlineStructDef, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., description: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., struct_def: _Optional[_Union[InlineStructDef, _Mapping]] = ...) -> None: ...
 
 class InlineStructDef(_message.Message):
     __slots__ = ["fields"]
