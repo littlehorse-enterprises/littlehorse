@@ -13,8 +13,7 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
   const { task } = data
   const nodeRun = sortNodeRunsByLatest(nodeRunsList)?.[0]
 
-  return (<>
-    <TaskDetails taskNode={task} nodeRun={nodeRun} selected={selected} nodeRunsList={nodeRunsList} />
+  return (
     <Fade fade={fade} status={nodeRun?.status}>
       <div
         className={
@@ -30,7 +29,7 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
         <Handle type="target" position={Position.Left} className="bg-transparent" />
       </div>
     </Fade>
-  </>)
+  )
 }
 
 export const Task = memo(Node)
