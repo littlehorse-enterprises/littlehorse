@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
