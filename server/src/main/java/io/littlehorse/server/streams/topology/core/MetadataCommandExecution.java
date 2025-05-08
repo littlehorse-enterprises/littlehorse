@@ -97,7 +97,7 @@ public class MetadataCommandExecution implements ExecutionContext {
         this.processorContext.forward(out);
     }
 
-    public void maybeCreateOutputTopic(TenantModel tenant) {
+    public void maybeCreateOutputTopics(TenantModel tenant) {
         if (tenant.getOutputTopicConfig() == null) return;
 
         Pair<NewTopic, NewTopic> topics = lhConfig.getOutputTopicsFor(tenant);
