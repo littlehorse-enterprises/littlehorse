@@ -108,8 +108,13 @@ odd total number of args. See 'lhctl run --help' for details.`)
 					log.Fatal("Variable name '" + varName + "' not found in WfSpec.")
 				}
 
+				vType := varDef.Type
+				if vType == nil {
+					vType = &varDef.TypeDef.Type
+				}
+
 				runReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, *varDef.Type,
+					varValStr, *vType,
 				)
 
 				if err != nil {
