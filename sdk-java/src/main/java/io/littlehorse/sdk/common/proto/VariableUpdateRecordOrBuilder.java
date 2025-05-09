@@ -12,25 +12,25 @@ public interface VariableUpdateRecordOrBuilder extends
    * The cuurrent snapshot of the Variable in question.
    * </pre>
    *
-   * <code>.littlehorse.Variable current_variable = 1;</code>
-   * @return Whether the currentVariable field is set.
+   * <code>.littlehorse.Variable variable = 1;</code>
+   * @return Whether the variable field is set.
    */
-  boolean hasCurrentVariable();
+  boolean hasVariable();
   /**
    * <pre>
    * The cuurrent snapshot of the Variable in question.
    * </pre>
    *
-   * <code>.littlehorse.Variable current_variable = 1;</code>
-   * @return The currentVariable.
+   * <code>.littlehorse.Variable variable = 1;</code>
+   * @return The variable.
    */
-  io.littlehorse.sdk.common.proto.Variable getCurrentVariable();
+  io.littlehorse.sdk.common.proto.Variable getVariable();
   /**
    * <pre>
    * The cuurrent snapshot of the Variable in question.
    * </pre>
    *
-   * <code>.littlehorse.Variable current_variable = 1;</code>
+   * <code>.littlehorse.Variable variable = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableOrBuilder getCurrentVariableOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableOrBuilder getVariableOrBuilder();
 }

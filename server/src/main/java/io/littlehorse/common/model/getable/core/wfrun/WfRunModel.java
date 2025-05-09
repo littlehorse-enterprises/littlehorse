@@ -30,6 +30,8 @@ import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicy
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
+import io.littlehorse.common.model.outputtopic.WfRunUpdateRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -141,6 +143,13 @@ public class WfRunModel extends CoreGetable<WfRun> {
             }
         }
         return List.of();
+    }
+
+    @Override
+    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
+        WfRunUpdateRecordModel out = new WfRunUpdateRecordModel();
+        out.setGetable(this);
+        return Optional.of(out);
     }
 
     public WfSpecModel getWfSpec() {

@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface WorkflowEventRecordOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.WorkflowEventRecord)
+public interface WorkflowEventUpdateRecordOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.WorkflowEventUpdateRecord)
     com.google.protobuf.MessageOrBuilder {
 
   /**

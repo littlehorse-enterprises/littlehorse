@@ -7,13 +7,16 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
+import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -24,17 +27,19 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
+    private final ProcessorExecutionContext ctx;
 
     public GetableManager(
             final TenantScopedStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
-            final ExecutionContext executionContext) {
+            final ProcessorExecutionContext executionContext) {
         super(store);
         this.store = store;
         this.command = command;
         this.tagStorageManager = new TagStorageManager(this.store, ctx, config, executionContext);
+        this.ctx = executionContext;
     }
 
     /**
@@ -188,6 +193,19 @@ public class GetableManager extends ReadOnlyGetableManager {
                 AbstractGetable<?> getable = entity.getObjectToStore();
                 store.put(new StoredGetable<>(getable));
                 tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
+
+                TenantModel tenant =
+                        ctx.metadataManager().get(ctx.authorization().tenantId());
+                if (tenant.getOutputTopicConfig() != null && getable instanceof CoreGetable) {
+                    CoreGetable<?> coreGetable = (CoreGetable<?>) getable;
+                    if (coreGetable.shouldUpdateToOutputTopic(tenant.getOutputTopicConfig(), ctx.metadataManager())) {
+                        Optional<GenericOutputTopicRecordModel> outputTopicUpdate = coreGetable.getOutputTopicUpdate();
+                        if (outputTopicUpdate.isPresent()) {
+                            OutputTopicRecordModel toForward = new OutputTopicRecordModel(outputTopicUpdate.get());
+                            ctx.forward(toForward, tenant.getId());
+                        }
+                    }
+                }
 
             } else if (entity.isDeletion()) {
                 // Do a deletion!

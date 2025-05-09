@@ -21,6 +21,8 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeMo
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
+import io.littlehorse.common.model.outputtopic.TaskRunExecutedRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
@@ -96,6 +98,13 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     @Override
     public Class<TaskRun> getProtoBaseClass() {
         return TaskRun.class;
+    }
+
+    @Override
+    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
+        TaskRunExecutedRecordModel out = new TaskRunExecutedRecordModel();
+        out.setGetable(this);
+        return Optional.of(out);
     }
 
     @Override

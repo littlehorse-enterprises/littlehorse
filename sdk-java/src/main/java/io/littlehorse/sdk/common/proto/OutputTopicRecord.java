@@ -49,11 +49,12 @@ private static final long serialVersionUID = 0L;
   public enum PayloadCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    TASK_RUN_EXECUTED(3),
-    WORKFLOW_EVENT(4),
-    WF_RUN(5),
-    USER_TASK_RUN(6),
-    VARIABLE_UPDATE(7),
+    TASK_RUN_EXECUTED(2),
+    WORKFLOW_EVENT(3),
+    WF_RUN(4),
+    USER_TASK_RUN(5),
+    VARIABLE_UPDATE(6),
+    EXTERNAL_EVENT(7),
     PAYLOAD_NOT_SET(0);
     private final int value;
     private PayloadCase(int value) {
@@ -71,11 +72,12 @@ private static final long serialVersionUID = 0L;
 
     public static PayloadCase forNumber(int value) {
       switch (value) {
-        case 3: return TASK_RUN_EXECUTED;
-        case 4: return WORKFLOW_EVENT;
-        case 5: return WF_RUN;
-        case 6: return USER_TASK_RUN;
-        case 7: return VARIABLE_UPDATE;
+        case 2: return TASK_RUN_EXECUTED;
+        case 3: return WORKFLOW_EVENT;
+        case 4: return WF_RUN;
+        case 5: return USER_TASK_RUN;
+        case 6: return VARIABLE_UPDATE;
+        case 7: return EXTERNAL_EVENT;
         case 0: return PAYLOAD_NOT_SET;
         default: return null;
       }
@@ -91,52 +93,14 @@ private static final long serialVersionUID = 0L;
         payloadCase_);
   }
 
-  public static final int ID_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.WfRunId id_;
-  /**
-   * <pre>
-   * The ID of the WfRun that produced this record.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId id = 1;</code>
-   * @return Whether the id field is set.
-   */
-  @java.lang.Override
-  public boolean hasId() {
-    return id_ != null;
-  }
-  /**
-   * <pre>
-   * The ID of the WfRun that produced this record.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId id = 1;</code>
-   * @return The id.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunId getId() {
-    return id_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : id_;
-  }
-  /**
-   * <pre>
-   * The ID of the WfRun that produced this record.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId id = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder() {
-    return id_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : id_;
-  }
-
-  public static final int TIMESTAMP_FIELD_NUMBER = 2;
+  public static final int TIMESTAMP_FIELD_NUMBER = 1;
   private com.google.protobuf.Timestamp timestamp_;
   /**
    * <pre>
    * The time at which the event occurred.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+   * <code>.google.protobuf.Timestamp timestamp = 1;</code>
    * @return Whether the timestamp field is set.
    */
   @java.lang.Override
@@ -148,7 +112,7 @@ private static final long serialVersionUID = 0L;
    * The time at which the event occurred.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+   * <code>.google.protobuf.Timestamp timestamp = 1;</code>
    * @return The timestamp.
    */
   @java.lang.Override
@@ -160,37 +124,37 @@ private static final long serialVersionUID = 0L;
    * The time at which the event occurred.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+   * <code>.google.protobuf.Timestamp timestamp = 1;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getTimestampOrBuilder() {
     return timestamp_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : timestamp_;
   }
 
-  public static final int TASK_RUN_EXECUTED_FIELD_NUMBER = 3;
+  public static final int TASK_RUN_EXECUTED_FIELD_NUMBER = 2;
   /**
    * <pre>
    * Records the results of a TaskRun in the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
    * @return Whether the taskRunExecuted field is set.
    */
   @java.lang.Override
   public boolean hasTaskRunExecuted() {
-    return payloadCase_ == 3;
+    return payloadCase_ == 2;
   }
   /**
    * <pre>
    * Records the results of a TaskRun in the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
    * @return The taskRunExecuted.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.TaskRunExecutedRecord getTaskRunExecuted() {
-    if (payloadCase_ == 3) {
+    if (payloadCase_ == 2) {
        return (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.getDefaultInstance();
@@ -200,72 +164,72 @@ private static final long serialVersionUID = 0L;
    * Records the results of a TaskRun in the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.TaskRunExecutedRecordOrBuilder getTaskRunExecutedOrBuilder() {
-    if (payloadCase_ == 3) {
+    if (payloadCase_ == 2) {
        return (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.getDefaultInstance();
   }
 
-  public static final int WORKFLOW_EVENT_FIELD_NUMBER = 4;
+  public static final int WORKFLOW_EVENT_FIELD_NUMBER = 3;
   /**
    * <pre>
    * Records a WorkflowEvent that was thrown into the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+   * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
    * @return Whether the workflowEvent field is set.
    */
   @java.lang.Override
   public boolean hasWorkflowEvent() {
-    return payloadCase_ == 4;
+    return payloadCase_ == 3;
   }
   /**
    * <pre>
    * Records a WorkflowEvent that was thrown into the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+   * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
    * @return The workflowEvent.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowEventRecord getWorkflowEvent() {
-    if (payloadCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_;
+  public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord getWorkflowEvent() {
+    if (payloadCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_;
     }
-    return io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance();
   }
   /**
    * <pre>
    * Records a WorkflowEvent that was thrown into the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+   * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowEventRecordOrBuilder getWorkflowEventOrBuilder() {
-    if (payloadCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_;
+  public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecordOrBuilder getWorkflowEventOrBuilder() {
+    if (payloadCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_;
     }
-    return io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance();
   }
 
-  public static final int WF_RUN_FIELD_NUMBER = 5;
+  public static final int WF_RUN_FIELD_NUMBER = 4;
   /**
    * <pre>
    * Records an update to a WfRun, triggered by a change to the status of a
    * `ThreadRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+   * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
    * @return Whether the wfRun field is set.
    */
   @java.lang.Override
   public boolean hasWfRun() {
-    return payloadCase_ == 5;
+    return payloadCase_ == 4;
   }
   /**
    * <pre>
@@ -273,12 +237,12 @@ private static final long serialVersionUID = 0L;
    * `ThreadRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+   * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
    * @return The wfRun.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfRunUpdateRecord getWfRun() {
-    if (payloadCase_ == 5) {
+    if (payloadCase_ == 4) {
        return (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.WfRunUpdateRecord.getDefaultInstance();
@@ -289,40 +253,40 @@ private static final long serialVersionUID = 0L;
    * `ThreadRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+   * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfRunUpdateRecordOrBuilder getWfRunOrBuilder() {
-    if (payloadCase_ == 5) {
+    if (payloadCase_ == 4) {
        return (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.WfRunUpdateRecord.getDefaultInstance();
   }
 
-  public static final int USER_TASK_RUN_FIELD_NUMBER = 6;
+  public static final int USER_TASK_RUN_FIELD_NUMBER = 5;
   /**
    * <pre>
    * Updates about a user task run.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
    * @return Whether the userTaskRun field is set.
    */
   @java.lang.Override
   public boolean hasUserTaskRun() {
-    return payloadCase_ == 6;
+    return payloadCase_ == 5;
   }
   /**
    * <pre>
    * Updates about a user task run.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
    * @return The userTaskRun.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord getUserTaskRun() {
-    if (payloadCase_ == 6) {
+    if (payloadCase_ == 5) {
        return (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.getDefaultInstance();
@@ -332,40 +296,40 @@ private static final long serialVersionUID = 0L;
    * Updates about a user task run.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecordOrBuilder getUserTaskRunOrBuilder() {
-    if (payloadCase_ == 6) {
+    if (payloadCase_ == 5) {
        return (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.getDefaultInstance();
   }
 
-  public static final int VARIABLE_UPDATE_FIELD_NUMBER = 7;
+  public static final int VARIABLE_UPDATE_FIELD_NUMBER = 6;
   /**
    * <pre>
    * Updates about a specific Variable changing.
    * </pre>
    *
-   * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+   * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
    * @return Whether the variableUpdate field is set.
    */
   @java.lang.Override
   public boolean hasVariableUpdate() {
-    return payloadCase_ == 7;
+    return payloadCase_ == 6;
   }
   /**
    * <pre>
    * Updates about a specific Variable changing.
    * </pre>
    *
-   * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+   * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
    * @return The variableUpdate.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableUpdateRecord getVariableUpdate() {
-    if (payloadCase_ == 7) {
+    if (payloadCase_ == 6) {
        return (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance();
@@ -375,14 +339,57 @@ private static final long serialVersionUID = 0L;
    * Updates about a specific Variable changing.
    * </pre>
    *
-   * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+   * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableUpdateRecordOrBuilder getVariableUpdateOrBuilder() {
-    if (payloadCase_ == 7) {
+    if (payloadCase_ == 6) {
        return (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_;
     }
     return io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance();
+  }
+
+  public static final int EXTERNAL_EVENT_FIELD_NUMBER = 7;
+  /**
+   * <pre>
+   * Updates about an `ExternalEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasExternalEvent() {
+    return payloadCase_ == 7;
+  }
+  /**
+   * <pre>
+   * Updates about an `ExternalEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+   * @return The externalEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord getExternalEvent() {
+    if (payloadCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_;
+    }
+    return io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Updates about an `ExternalEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecordOrBuilder getExternalEventOrBuilder() {
+    if (payloadCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_;
+    }
+    return io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -399,26 +406,26 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (id_ != null) {
-      output.writeMessage(1, getId());
-    }
     if (timestamp_ != null) {
-      output.writeMessage(2, getTimestamp());
+      output.writeMessage(1, getTimestamp());
+    }
+    if (payloadCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_);
     }
     if (payloadCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_);
     }
     if (payloadCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_);
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_);
     }
     if (payloadCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_);
+      output.writeMessage(5, (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_);
     }
     if (payloadCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_);
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_);
     }
     if (payloadCase_ == 7) {
-      output.writeMessage(7, (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_);
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -429,33 +436,33 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (id_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getId());
-    }
     if (timestamp_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getTimestamp());
+        .computeMessageSize(1, getTimestamp());
+    }
+    if (payloadCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_);
     }
     if (payloadCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_);
     }
     if (payloadCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_);
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_);
     }
     if (payloadCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_);
+        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_);
     }
     if (payloadCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_);
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_);
     }
     if (payloadCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_);
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -472,11 +479,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.OutputTopicRecord other = (io.littlehorse.sdk.common.proto.OutputTopicRecord) obj;
 
-    if (hasId() != other.hasId()) return false;
-    if (hasId()) {
-      if (!getId()
-          .equals(other.getId())) return false;
-    }
     if (hasTimestamp() != other.hasTimestamp()) return false;
     if (hasTimestamp()) {
       if (!getTimestamp()
@@ -484,25 +486,29 @@ private static final long serialVersionUID = 0L;
     }
     if (!getPayloadCase().equals(other.getPayloadCase())) return false;
     switch (payloadCase_) {
-      case 3:
+      case 2:
         if (!getTaskRunExecuted()
             .equals(other.getTaskRunExecuted())) return false;
         break;
-      case 4:
+      case 3:
         if (!getWorkflowEvent()
             .equals(other.getWorkflowEvent())) return false;
         break;
-      case 5:
+      case 4:
         if (!getWfRun()
             .equals(other.getWfRun())) return false;
         break;
-      case 6:
+      case 5:
         if (!getUserTaskRun()
             .equals(other.getUserTaskRun())) return false;
         break;
-      case 7:
+      case 6:
         if (!getVariableUpdate()
             .equals(other.getVariableUpdate())) return false;
+        break;
+      case 7:
+        if (!getExternalEvent()
+            .equals(other.getExternalEvent())) return false;
         break;
       case 0:
       default:
@@ -518,34 +524,34 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasId()) {
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId().hashCode();
-    }
     if (hasTimestamp()) {
       hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
       hash = (53 * hash) + getTimestamp().hashCode();
     }
     switch (payloadCase_) {
-      case 3:
+      case 2:
         hash = (37 * hash) + TASK_RUN_EXECUTED_FIELD_NUMBER;
         hash = (53 * hash) + getTaskRunExecuted().hashCode();
         break;
-      case 4:
+      case 3:
         hash = (37 * hash) + WORKFLOW_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getWorkflowEvent().hashCode();
         break;
-      case 5:
+      case 4:
         hash = (37 * hash) + WF_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getWfRun().hashCode();
         break;
-      case 6:
+      case 5:
         hash = (37 * hash) + USER_TASK_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getUserTaskRun().hashCode();
         break;
-      case 7:
+      case 6:
         hash = (37 * hash) + VARIABLE_UPDATE_FIELD_NUMBER;
         hash = (53 * hash) + getVariableUpdate().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getExternalEvent().hashCode();
         break;
       case 0:
       default:
@@ -686,11 +692,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      id_ = null;
-      if (idBuilder_ != null) {
-        idBuilder_.dispose();
-        idBuilder_ = null;
-      }
       timestamp_ = null;
       if (timestampBuilder_ != null) {
         timestampBuilder_.dispose();
@@ -710,6 +711,9 @@ private static final long serialVersionUID = 0L;
       }
       if (variableUpdateBuilder_ != null) {
         variableUpdateBuilder_.clear();
+      }
+      if (externalEventBuilder_ != null) {
+        externalEventBuilder_.clear();
       }
       payloadCase_ = 0;
       payload_ = null;
@@ -748,11 +752,6 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.OutputTopicRecord result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.id_ = idBuilder_ == null
-            ? id_
-            : idBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.timestamp_ = timestampBuilder_ == null
             ? timestamp_
             : timestampBuilder_.build();
@@ -762,25 +761,29 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.OutputTopicRecord result) {
       result.payloadCase_ = payloadCase_;
       result.payload_ = this.payload_;
-      if (payloadCase_ == 3 &&
+      if (payloadCase_ == 2 &&
           taskRunExecutedBuilder_ != null) {
         result.payload_ = taskRunExecutedBuilder_.build();
       }
-      if (payloadCase_ == 4 &&
+      if (payloadCase_ == 3 &&
           workflowEventBuilder_ != null) {
         result.payload_ = workflowEventBuilder_.build();
       }
-      if (payloadCase_ == 5 &&
+      if (payloadCase_ == 4 &&
           wfRunBuilder_ != null) {
         result.payload_ = wfRunBuilder_.build();
       }
-      if (payloadCase_ == 6 &&
+      if (payloadCase_ == 5 &&
           userTaskRunBuilder_ != null) {
         result.payload_ = userTaskRunBuilder_.build();
       }
-      if (payloadCase_ == 7 &&
+      if (payloadCase_ == 6 &&
           variableUpdateBuilder_ != null) {
         result.payload_ = variableUpdateBuilder_.build();
+      }
+      if (payloadCase_ == 7 &&
+          externalEventBuilder_ != null) {
+        result.payload_ = externalEventBuilder_.build();
       }
     }
 
@@ -828,9 +831,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.OutputTopicRecord other) {
       if (other == io.littlehorse.sdk.common.proto.OutputTopicRecord.getDefaultInstance()) return this;
-      if (other.hasId()) {
-        mergeId(other.getId());
-      }
       if (other.hasTimestamp()) {
         mergeTimestamp(other.getTimestamp());
       }
@@ -853,6 +853,10 @@ private static final long serialVersionUID = 0L;
         }
         case VARIABLE_UPDATE: {
           mergeVariableUpdate(other.getVariableUpdate());
+          break;
+        }
+        case EXTERNAL_EVENT: {
+          mergeExternalEvent(other.getExternalEvent());
           break;
         }
         case PAYLOAD_NOT_SET: {
@@ -887,49 +891,49 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  getIdFieldBuilder().getBuilder(),
+                  getTimestampFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
             case 18: {
               input.readMessage(
-                  getTimestampFieldBuilder().getBuilder(),
+                  getTaskRunExecutedFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000002;
+              payloadCase_ = 2;
               break;
             } // case 18
             case 26: {
               input.readMessage(
-                  getTaskRunExecutedFieldBuilder().getBuilder(),
+                  getWorkflowEventFieldBuilder().getBuilder(),
                   extensionRegistry);
               payloadCase_ = 3;
               break;
             } // case 26
             case 34: {
               input.readMessage(
-                  getWorkflowEventFieldBuilder().getBuilder(),
+                  getWfRunFieldBuilder().getBuilder(),
                   extensionRegistry);
               payloadCase_ = 4;
               break;
             } // case 34
             case 42: {
               input.readMessage(
-                  getWfRunFieldBuilder().getBuilder(),
+                  getUserTaskRunFieldBuilder().getBuilder(),
                   extensionRegistry);
               payloadCase_ = 5;
               break;
             } // case 42
             case 50: {
               input.readMessage(
-                  getUserTaskRunFieldBuilder().getBuilder(),
+                  getVariableUpdateFieldBuilder().getBuilder(),
                   extensionRegistry);
               payloadCase_ = 6;
               break;
             } // case 50
             case 58: {
               input.readMessage(
-                  getVariableUpdateFieldBuilder().getBuilder(),
+                  getExternalEventFieldBuilder().getBuilder(),
                   extensionRegistry);
               payloadCase_ = 7;
               break;
@@ -966,161 +970,6 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.WfRunId id_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> idBuilder_;
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     * @return Whether the id field is set.
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     * @return The id.
-     */
-    public io.littlehorse.sdk.common.proto.WfRunId getId() {
-      if (idBuilder_ == null) {
-        return id_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : id_;
-      } else {
-        return idBuilder_.getMessage();
-      }
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     */
-    public Builder setId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (idBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        id_ = value;
-      } else {
-        idBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     */
-    public Builder setId(
-        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
-      if (idBuilder_ == null) {
-        id_ = builderForValue.build();
-      } else {
-        idBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     */
-    public Builder mergeId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (idBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          id_ != null &&
-          id_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
-          getIdBuilder().mergeFrom(value);
-        } else {
-          id_ = value;
-        }
-      } else {
-        idBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     */
-    public Builder clearId() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      id_ = null;
-      if (idBuilder_ != null) {
-        idBuilder_.dispose();
-        idBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WfRunId.Builder getIdBuilder() {
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return getIdFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder() {
-      if (idBuilder_ != null) {
-        return idBuilder_.getMessageOrBuilder();
-      } else {
-        return id_ == null ?
-            io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : id_;
-      }
-    }
-    /**
-     * <pre>
-     * The ID of the WfRun that produced this record.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId id = 1;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
-        getIdFieldBuilder() {
-      if (idBuilder_ == null) {
-        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
-                getId(),
-                getParentForChildren(),
-                isClean());
-        id_ = null;
-      }
-      return idBuilder_;
-    }
-
     private com.google.protobuf.Timestamp timestamp_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> timestampBuilder_;
@@ -1129,18 +978,18 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      * @return Whether the timestamp field is set.
      */
     public boolean hasTimestamp() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <pre>
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      * @return The timestamp.
      */
     public com.google.protobuf.Timestamp getTimestamp() {
@@ -1155,7 +1004,7 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      */
     public Builder setTimestamp(com.google.protobuf.Timestamp value) {
       if (timestampBuilder_ == null) {
@@ -1166,7 +1015,7 @@ private static final long serialVersionUID = 0L;
       } else {
         timestampBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -1175,7 +1024,7 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      */
     public Builder setTimestamp(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1184,7 +1033,7 @@ private static final long serialVersionUID = 0L;
       } else {
         timestampBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -1193,11 +1042,11 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      */
     public Builder mergeTimestamp(com.google.protobuf.Timestamp value) {
       if (timestampBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
+        if (((bitField0_ & 0x00000001) != 0) &&
           timestamp_ != null &&
           timestamp_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getTimestampBuilder().mergeFrom(value);
@@ -1207,7 +1056,7 @@ private static final long serialVersionUID = 0L;
       } else {
         timestampBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -1216,10 +1065,10 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      */
     public Builder clearTimestamp() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000001);
       timestamp_ = null;
       if (timestampBuilder_ != null) {
         timestampBuilder_.dispose();
@@ -1233,10 +1082,10 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      */
     public com.google.protobuf.Timestamp.Builder getTimestampBuilder() {
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return getTimestampFieldBuilder().getBuilder();
     }
@@ -1245,7 +1094,7 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getTimestampOrBuilder() {
       if (timestampBuilder_ != null) {
@@ -1260,7 +1109,7 @@ private static final long serialVersionUID = 0L;
      * The time at which the event occurred.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+     * <code>.google.protobuf.Timestamp timestamp = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1283,30 +1132,30 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      * @return Whether the taskRunExecuted field is set.
      */
     @java.lang.Override
     public boolean hasTaskRunExecuted() {
-      return payloadCase_ == 3;
+      return payloadCase_ == 2;
     }
     /**
      * <pre>
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      * @return The taskRunExecuted.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.TaskRunExecutedRecord getTaskRunExecuted() {
       if (taskRunExecutedBuilder_ == null) {
-        if (payloadCase_ == 3) {
+        if (payloadCase_ == 2) {
           return (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.getDefaultInstance();
       } else {
-        if (payloadCase_ == 3) {
+        if (payloadCase_ == 2) {
           return taskRunExecutedBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.getDefaultInstance();
@@ -1317,7 +1166,7 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      */
     public Builder setTaskRunExecuted(io.littlehorse.sdk.common.proto.TaskRunExecutedRecord value) {
       if (taskRunExecutedBuilder_ == null) {
@@ -1329,7 +1178,7 @@ private static final long serialVersionUID = 0L;
       } else {
         taskRunExecutedBuilder_.setMessage(value);
       }
-      payloadCase_ = 3;
+      payloadCase_ = 2;
       return this;
     }
     /**
@@ -1337,7 +1186,7 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      */
     public Builder setTaskRunExecuted(
         io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.Builder builderForValue) {
@@ -1347,7 +1196,7 @@ private static final long serialVersionUID = 0L;
       } else {
         taskRunExecutedBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 3;
+      payloadCase_ = 2;
       return this;
     }
     /**
@@ -1355,11 +1204,11 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      */
     public Builder mergeTaskRunExecuted(io.littlehorse.sdk.common.proto.TaskRunExecutedRecord value) {
       if (taskRunExecutedBuilder_ == null) {
-        if (payloadCase_ == 3 &&
+        if (payloadCase_ == 2 &&
             payload_ != io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.getDefaultInstance()) {
           payload_ = io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.newBuilder((io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_)
               .mergeFrom(value).buildPartial();
@@ -1368,13 +1217,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 3) {
+        if (payloadCase_ == 2) {
           taskRunExecutedBuilder_.mergeFrom(value);
         } else {
           taskRunExecutedBuilder_.setMessage(value);
         }
       }
-      payloadCase_ = 3;
+      payloadCase_ = 2;
       return this;
     }
     /**
@@ -1382,17 +1231,17 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      */
     public Builder clearTaskRunExecuted() {
       if (taskRunExecutedBuilder_ == null) {
-        if (payloadCase_ == 3) {
+        if (payloadCase_ == 2) {
           payloadCase_ = 0;
           payload_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 3) {
+        if (payloadCase_ == 2) {
           payloadCase_ = 0;
           payload_ = null;
         }
@@ -1405,7 +1254,7 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.Builder getTaskRunExecutedBuilder() {
       return getTaskRunExecutedFieldBuilder().getBuilder();
@@ -1415,14 +1264,14 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.TaskRunExecutedRecordOrBuilder getTaskRunExecutedOrBuilder() {
-      if ((payloadCase_ == 3) && (taskRunExecutedBuilder_ != null)) {
+      if ((payloadCase_ == 2) && (taskRunExecutedBuilder_ != null)) {
         return taskRunExecutedBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 3) {
+        if (payloadCase_ == 2) {
           return (io.littlehorse.sdk.common.proto.TaskRunExecutedRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.getDefaultInstance();
@@ -1433,13 +1282,13 @@ private static final long serialVersionUID = 0L;
      * Records the results of a TaskRun in the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+     * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskRunExecutedRecord, io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.Builder, io.littlehorse.sdk.common.proto.TaskRunExecutedRecordOrBuilder> 
         getTaskRunExecutedFieldBuilder() {
       if (taskRunExecutedBuilder_ == null) {
-        if (!(payloadCase_ == 3)) {
+        if (!(payloadCase_ == 2)) {
           payload_ = io.littlehorse.sdk.common.proto.TaskRunExecutedRecord.getDefaultInstance();
         }
         taskRunExecutedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1449,45 +1298,45 @@ private static final long serialVersionUID = 0L;
                 isClean());
         payload_ = null;
       }
-      payloadCase_ = 3;
+      payloadCase_ = 2;
       onChanged();
       return taskRunExecutedBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WorkflowEventRecord, io.littlehorse.sdk.common.proto.WorkflowEventRecord.Builder, io.littlehorse.sdk.common.proto.WorkflowEventRecordOrBuilder> workflowEventBuilder_;
+        io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.Builder, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecordOrBuilder> workflowEventBuilder_;
     /**
      * <pre>
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      * @return Whether the workflowEvent field is set.
      */
     @java.lang.Override
     public boolean hasWorkflowEvent() {
-      return payloadCase_ == 4;
+      return payloadCase_ == 3;
     }
     /**
      * <pre>
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      * @return The workflowEvent.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowEventRecord getWorkflowEvent() {
+    public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord getWorkflowEvent() {
       if (workflowEventBuilder_ == null) {
-        if (payloadCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_;
+        if (payloadCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_;
         }
-        return io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance();
       } else {
-        if (payloadCase_ == 4) {
+        if (payloadCase_ == 3) {
           return workflowEventBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance();
       }
     }
     /**
@@ -1495,9 +1344,9 @@ private static final long serialVersionUID = 0L;
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      */
-    public Builder setWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventRecord value) {
+    public Builder setWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord value) {
       if (workflowEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1507,7 +1356,7 @@ private static final long serialVersionUID = 0L;
       } else {
         workflowEventBuilder_.setMessage(value);
       }
-      payloadCase_ = 4;
+      payloadCase_ = 3;
       return this;
     }
     /**
@@ -1515,17 +1364,17 @@ private static final long serialVersionUID = 0L;
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      */
     public Builder setWorkflowEvent(
-        io.littlehorse.sdk.common.proto.WorkflowEventRecord.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.Builder builderForValue) {
       if (workflowEventBuilder_ == null) {
         payload_ = builderForValue.build();
         onChanged();
       } else {
         workflowEventBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 4;
+      payloadCase_ = 3;
       return this;
     }
     /**
@@ -1533,26 +1382,26 @@ private static final long serialVersionUID = 0L;
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      */
-    public Builder mergeWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventRecord value) {
+    public Builder mergeWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord value) {
       if (workflowEventBuilder_ == null) {
-        if (payloadCase_ == 4 &&
-            payload_ != io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance()) {
-          payload_ = io.littlehorse.sdk.common.proto.WorkflowEventRecord.newBuilder((io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_)
+        if (payloadCase_ == 3 &&
+            payload_ != io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance()) {
+          payload_ = io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.newBuilder((io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_)
               .mergeFrom(value).buildPartial();
         } else {
           payload_ = value;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 4) {
+        if (payloadCase_ == 3) {
           workflowEventBuilder_.mergeFrom(value);
         } else {
           workflowEventBuilder_.setMessage(value);
         }
       }
-      payloadCase_ = 4;
+      payloadCase_ = 3;
       return this;
     }
     /**
@@ -1560,17 +1409,17 @@ private static final long serialVersionUID = 0L;
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      */
     public Builder clearWorkflowEvent() {
       if (workflowEventBuilder_ == null) {
-        if (payloadCase_ == 4) {
+        if (payloadCase_ == 3) {
           payloadCase_ = 0;
           payload_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 4) {
+        if (payloadCase_ == 3) {
           payloadCase_ = 0;
           payload_ = null;
         }
@@ -1583,9 +1432,9 @@ private static final long serialVersionUID = 0L;
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.WorkflowEventRecord.Builder getWorkflowEventBuilder() {
+    public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.Builder getWorkflowEventBuilder() {
       return getWorkflowEventFieldBuilder().getBuilder();
     }
     /**
@@ -1593,17 +1442,17 @@ private static final long serialVersionUID = 0L;
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowEventRecordOrBuilder getWorkflowEventOrBuilder() {
-      if ((payloadCase_ == 4) && (workflowEventBuilder_ != null)) {
+    public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecordOrBuilder getWorkflowEventOrBuilder() {
+      if ((payloadCase_ == 3) && (workflowEventBuilder_ != null)) {
         return workflowEventBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_;
+        if (payloadCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_;
         }
-        return io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance();
       }
     }
     /**
@@ -1611,23 +1460,23 @@ private static final long serialVersionUID = 0L;
      * Records a WorkflowEvent that was thrown into the Output Topic.
      * </pre>
      *
-     * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+     * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WorkflowEventRecord, io.littlehorse.sdk.common.proto.WorkflowEventRecord.Builder, io.littlehorse.sdk.common.proto.WorkflowEventRecordOrBuilder> 
+        io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.Builder, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecordOrBuilder> 
         getWorkflowEventFieldBuilder() {
       if (workflowEventBuilder_ == null) {
-        if (!(payloadCase_ == 4)) {
-          payload_ = io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance();
+        if (!(payloadCase_ == 3)) {
+          payload_ = io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance();
         }
         workflowEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WorkflowEventRecord, io.littlehorse.sdk.common.proto.WorkflowEventRecord.Builder, io.littlehorse.sdk.common.proto.WorkflowEventRecordOrBuilder>(
-                (io.littlehorse.sdk.common.proto.WorkflowEventRecord) payload_,
+            io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.Builder, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecordOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) payload_,
                 getParentForChildren(),
                 isClean());
         payload_ = null;
       }
-      payloadCase_ = 4;
+      payloadCase_ = 3;
       onChanged();
       return workflowEventBuilder_;
     }
@@ -1640,12 +1489,12 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      * @return Whether the wfRun field is set.
      */
     @java.lang.Override
     public boolean hasWfRun() {
-      return payloadCase_ == 5;
+      return payloadCase_ == 4;
     }
     /**
      * <pre>
@@ -1653,18 +1502,18 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      * @return The wfRun.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.WfRunUpdateRecord getWfRun() {
       if (wfRunBuilder_ == null) {
-        if (payloadCase_ == 5) {
+        if (payloadCase_ == 4) {
           return (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.WfRunUpdateRecord.getDefaultInstance();
       } else {
-        if (payloadCase_ == 5) {
+        if (payloadCase_ == 4) {
           return wfRunBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.WfRunUpdateRecord.getDefaultInstance();
@@ -1676,7 +1525,7 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      */
     public Builder setWfRun(io.littlehorse.sdk.common.proto.WfRunUpdateRecord value) {
       if (wfRunBuilder_ == null) {
@@ -1688,7 +1537,7 @@ private static final long serialVersionUID = 0L;
       } else {
         wfRunBuilder_.setMessage(value);
       }
-      payloadCase_ = 5;
+      payloadCase_ = 4;
       return this;
     }
     /**
@@ -1697,7 +1546,7 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      */
     public Builder setWfRun(
         io.littlehorse.sdk.common.proto.WfRunUpdateRecord.Builder builderForValue) {
@@ -1707,7 +1556,7 @@ private static final long serialVersionUID = 0L;
       } else {
         wfRunBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 5;
+      payloadCase_ = 4;
       return this;
     }
     /**
@@ -1716,11 +1565,11 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      */
     public Builder mergeWfRun(io.littlehorse.sdk.common.proto.WfRunUpdateRecord value) {
       if (wfRunBuilder_ == null) {
-        if (payloadCase_ == 5 &&
+        if (payloadCase_ == 4 &&
             payload_ != io.littlehorse.sdk.common.proto.WfRunUpdateRecord.getDefaultInstance()) {
           payload_ = io.littlehorse.sdk.common.proto.WfRunUpdateRecord.newBuilder((io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_)
               .mergeFrom(value).buildPartial();
@@ -1729,13 +1578,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 5) {
+        if (payloadCase_ == 4) {
           wfRunBuilder_.mergeFrom(value);
         } else {
           wfRunBuilder_.setMessage(value);
         }
       }
-      payloadCase_ = 5;
+      payloadCase_ = 4;
       return this;
     }
     /**
@@ -1744,17 +1593,17 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      */
     public Builder clearWfRun() {
       if (wfRunBuilder_ == null) {
-        if (payloadCase_ == 5) {
+        if (payloadCase_ == 4) {
           payloadCase_ = 0;
           payload_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 5) {
+        if (payloadCase_ == 4) {
           payloadCase_ = 0;
           payload_ = null;
         }
@@ -1768,7 +1617,7 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunUpdateRecord.Builder getWfRunBuilder() {
       return getWfRunFieldBuilder().getBuilder();
@@ -1779,14 +1628,14 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.WfRunUpdateRecordOrBuilder getWfRunOrBuilder() {
-      if ((payloadCase_ == 5) && (wfRunBuilder_ != null)) {
+      if ((payloadCase_ == 4) && (wfRunBuilder_ != null)) {
         return wfRunBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 5) {
+        if (payloadCase_ == 4) {
           return (io.littlehorse.sdk.common.proto.WfRunUpdateRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.WfRunUpdateRecord.getDefaultInstance();
@@ -1798,13 +1647,13 @@ private static final long serialVersionUID = 0L;
      * `ThreadRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+     * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunUpdateRecord, io.littlehorse.sdk.common.proto.WfRunUpdateRecord.Builder, io.littlehorse.sdk.common.proto.WfRunUpdateRecordOrBuilder> 
         getWfRunFieldBuilder() {
       if (wfRunBuilder_ == null) {
-        if (!(payloadCase_ == 5)) {
+        if (!(payloadCase_ == 4)) {
           payload_ = io.littlehorse.sdk.common.proto.WfRunUpdateRecord.getDefaultInstance();
         }
         wfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1814,7 +1663,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         payload_ = null;
       }
-      payloadCase_ = 5;
+      payloadCase_ = 4;
       onChanged();
       return wfRunBuilder_;
     }
@@ -1826,30 +1675,30 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      * @return Whether the userTaskRun field is set.
      */
     @java.lang.Override
     public boolean hasUserTaskRun() {
-      return payloadCase_ == 6;
+      return payloadCase_ == 5;
     }
     /**
      * <pre>
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      * @return The userTaskRun.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord getUserTaskRun() {
       if (userTaskRunBuilder_ == null) {
-        if (payloadCase_ == 6) {
+        if (payloadCase_ == 5) {
           return (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.getDefaultInstance();
       } else {
-        if (payloadCase_ == 6) {
+        if (payloadCase_ == 5) {
           return userTaskRunBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.getDefaultInstance();
@@ -1860,7 +1709,7 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      */
     public Builder setUserTaskRun(io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord value) {
       if (userTaskRunBuilder_ == null) {
@@ -1872,7 +1721,7 @@ private static final long serialVersionUID = 0L;
       } else {
         userTaskRunBuilder_.setMessage(value);
       }
-      payloadCase_ = 6;
+      payloadCase_ = 5;
       return this;
     }
     /**
@@ -1880,7 +1729,7 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      */
     public Builder setUserTaskRun(
         io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.Builder builderForValue) {
@@ -1890,7 +1739,7 @@ private static final long serialVersionUID = 0L;
       } else {
         userTaskRunBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 6;
+      payloadCase_ = 5;
       return this;
     }
     /**
@@ -1898,11 +1747,11 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      */
     public Builder mergeUserTaskRun(io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord value) {
       if (userTaskRunBuilder_ == null) {
-        if (payloadCase_ == 6 &&
+        if (payloadCase_ == 5 &&
             payload_ != io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.getDefaultInstance()) {
           payload_ = io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.newBuilder((io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_)
               .mergeFrom(value).buildPartial();
@@ -1911,13 +1760,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 6) {
+        if (payloadCase_ == 5) {
           userTaskRunBuilder_.mergeFrom(value);
         } else {
           userTaskRunBuilder_.setMessage(value);
         }
       }
-      payloadCase_ = 6;
+      payloadCase_ = 5;
       return this;
     }
     /**
@@ -1925,17 +1774,17 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      */
     public Builder clearUserTaskRun() {
       if (userTaskRunBuilder_ == null) {
-        if (payloadCase_ == 6) {
+        if (payloadCase_ == 5) {
           payloadCase_ = 0;
           payload_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 6) {
+        if (payloadCase_ == 5) {
           payloadCase_ = 0;
           payload_ = null;
         }
@@ -1948,7 +1797,7 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.Builder getUserTaskRunBuilder() {
       return getUserTaskRunFieldBuilder().getBuilder();
@@ -1958,14 +1807,14 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecordOrBuilder getUserTaskRunOrBuilder() {
-      if ((payloadCase_ == 6) && (userTaskRunBuilder_ != null)) {
+      if ((payloadCase_ == 5) && (userTaskRunBuilder_ != null)) {
         return userTaskRunBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 6) {
+        if (payloadCase_ == 5) {
           return (io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.getDefaultInstance();
@@ -1976,13 +1825,13 @@ private static final long serialVersionUID = 0L;
      * Updates about a user task run.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+     * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord, io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.Builder, io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecordOrBuilder> 
         getUserTaskRunFieldBuilder() {
       if (userTaskRunBuilder_ == null) {
-        if (!(payloadCase_ == 6)) {
+        if (!(payloadCase_ == 5)) {
           payload_ = io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord.getDefaultInstance();
         }
         userTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1992,7 +1841,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         payload_ = null;
       }
-      payloadCase_ = 6;
+      payloadCase_ = 5;
       onChanged();
       return userTaskRunBuilder_;
     }
@@ -2004,30 +1853,30 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      * @return Whether the variableUpdate field is set.
      */
     @java.lang.Override
     public boolean hasVariableUpdate() {
-      return payloadCase_ == 7;
+      return payloadCase_ == 6;
     }
     /**
      * <pre>
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      * @return The variableUpdate.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableUpdateRecord getVariableUpdate() {
       if (variableUpdateBuilder_ == null) {
-        if (payloadCase_ == 7) {
+        if (payloadCase_ == 6) {
           return (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance();
       } else {
-        if (payloadCase_ == 7) {
+        if (payloadCase_ == 6) {
           return variableUpdateBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance();
@@ -2038,7 +1887,7 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      */
     public Builder setVariableUpdate(io.littlehorse.sdk.common.proto.VariableUpdateRecord value) {
       if (variableUpdateBuilder_ == null) {
@@ -2050,7 +1899,7 @@ private static final long serialVersionUID = 0L;
       } else {
         variableUpdateBuilder_.setMessage(value);
       }
-      payloadCase_ = 7;
+      payloadCase_ = 6;
       return this;
     }
     /**
@@ -2058,7 +1907,7 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      */
     public Builder setVariableUpdate(
         io.littlehorse.sdk.common.proto.VariableUpdateRecord.Builder builderForValue) {
@@ -2068,7 +1917,7 @@ private static final long serialVersionUID = 0L;
       } else {
         variableUpdateBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 7;
+      payloadCase_ = 6;
       return this;
     }
     /**
@@ -2076,11 +1925,11 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      */
     public Builder mergeVariableUpdate(io.littlehorse.sdk.common.proto.VariableUpdateRecord value) {
       if (variableUpdateBuilder_ == null) {
-        if (payloadCase_ == 7 &&
+        if (payloadCase_ == 6 &&
             payload_ != io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance()) {
           payload_ = io.littlehorse.sdk.common.proto.VariableUpdateRecord.newBuilder((io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_)
               .mergeFrom(value).buildPartial();
@@ -2089,13 +1938,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 7) {
+        if (payloadCase_ == 6) {
           variableUpdateBuilder_.mergeFrom(value);
         } else {
           variableUpdateBuilder_.setMessage(value);
         }
       }
-      payloadCase_ = 7;
+      payloadCase_ = 6;
       return this;
     }
     /**
@@ -2103,17 +1952,17 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      */
     public Builder clearVariableUpdate() {
       if (variableUpdateBuilder_ == null) {
-        if (payloadCase_ == 7) {
+        if (payloadCase_ == 6) {
           payloadCase_ = 0;
           payload_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 7) {
+        if (payloadCase_ == 6) {
           payloadCase_ = 0;
           payload_ = null;
         }
@@ -2126,7 +1975,7 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableUpdateRecord.Builder getVariableUpdateBuilder() {
       return getVariableUpdateFieldBuilder().getBuilder();
@@ -2136,14 +1985,14 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableUpdateRecordOrBuilder getVariableUpdateOrBuilder() {
-      if ((payloadCase_ == 7) && (variableUpdateBuilder_ != null)) {
+      if ((payloadCase_ == 6) && (variableUpdateBuilder_ != null)) {
         return variableUpdateBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 7) {
+        if (payloadCase_ == 6) {
           return (io.littlehorse.sdk.common.proto.VariableUpdateRecord) payload_;
         }
         return io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance();
@@ -2154,13 +2003,13 @@ private static final long serialVersionUID = 0L;
      * Updates about a specific Variable changing.
      * </pre>
      *
-     * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+     * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableUpdateRecord, io.littlehorse.sdk.common.proto.VariableUpdateRecord.Builder, io.littlehorse.sdk.common.proto.VariableUpdateRecordOrBuilder> 
         getVariableUpdateFieldBuilder() {
       if (variableUpdateBuilder_ == null) {
-        if (!(payloadCase_ == 7)) {
+        if (!(payloadCase_ == 6)) {
           payload_ = io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance();
         }
         variableUpdateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -2170,9 +2019,187 @@ private static final long serialVersionUID = 0L;
                 isClean());
         payload_ = null;
       }
-      payloadCase_ = 7;
+      payloadCase_ = 6;
       onChanged();
       return variableUpdateBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.Builder, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecordOrBuilder> externalEventBuilder_;
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     * @return Whether the externalEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasExternalEvent() {
+      return payloadCase_ == 7;
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     * @return The externalEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord getExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (payloadCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_;
+        }
+        return io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance();
+      } else {
+        if (payloadCase_ == 7) {
+          return externalEventBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     */
+    public Builder setExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord value) {
+      if (externalEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        payload_ = value;
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(value);
+      }
+      payloadCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     */
+    public Builder setExternalEvent(
+        io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.Builder builderForValue) {
+      if (externalEventBuilder_ == null) {
+        payload_ = builderForValue.build();
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(builderForValue.build());
+      }
+      payloadCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     */
+    public Builder mergeExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord value) {
+      if (externalEventBuilder_ == null) {
+        if (payloadCase_ == 7 &&
+            payload_ != io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance()) {
+          payload_ = io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.newBuilder((io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          payload_ = value;
+        }
+        onChanged();
+      } else {
+        if (payloadCase_ == 7) {
+          externalEventBuilder_.mergeFrom(value);
+        } else {
+          externalEventBuilder_.setMessage(value);
+        }
+      }
+      payloadCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     */
+    public Builder clearExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (payloadCase_ == 7) {
+          payloadCase_ = 0;
+          payload_ = null;
+          onChanged();
+        }
+      } else {
+        if (payloadCase_ == 7) {
+          payloadCase_ = 0;
+          payload_ = null;
+        }
+        externalEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.Builder getExternalEventBuilder() {
+      return getExternalEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecordOrBuilder getExternalEventOrBuilder() {
+      if ((payloadCase_ == 7) && (externalEventBuilder_ != null)) {
+        return externalEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (payloadCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_;
+        }
+        return io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Updates about an `ExternalEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.Builder, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecordOrBuilder> 
+        getExternalEventFieldBuilder() {
+      if (externalEventBuilder_ == null) {
+        if (!(payloadCase_ == 7)) {
+          payload_ = io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance();
+        }
+        externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.Builder, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecordOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) payload_,
+                getParentForChildren(),
+                isClean());
+        payload_ = null;
+      }
+      payloadCase_ = 7;
+      onChanged();
+      return externalEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -20,28 +20,28 @@ option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 // An OutputTopicRecord is a single record in the output topic, which can
 // denote one of several different types of events.
 message OutputTopicRecord {
-    // The ID of the WfRun that produced this record.
-    WfRunId id = 1;
-
     // The time at which the event occurred.
-    google.protobuf.Timestamp timestamp = 2;
+    google.protobuf.Timestamp timestamp = 1;
 
     oneof payload {
         // Records the results of a TaskRun in the Output Topic.
-        TaskRunExecutedRecord task_run_executed = 3;
+        TaskRunExecutedRecord task_run_executed = 2;
 
         // Records a WorkflowEvent that was thrown into the Output Topic.
-        WorkflowEventRecord workflow_event = 4;
+        WorkflowEventUpdateRecord workflow_event = 3;
 
         // Records an update to a WfRun, triggered by a change to the status of a
         // `ThreadRun`.
-        WfRunUpdateRecord wf_run = 5;
+        WfRunUpdateRecord wf_run = 4;
 
         // Updates about a user task run.
-        UserTaskRunUpdateRecord user_task_run = 6;
+        UserTaskRunUpdateRecord user_task_run = 5;
 
         // Updates about a specific Variable changing.
-        VariableUpdateRecord variable_update = 7;
+        VariableUpdateRecord variable_update = 6;
+
+        // Updates about an `ExternalEvent` changing.
+        ExternalEventUpdateRecord external_event = 7;
     }
 }
 
@@ -58,7 +58,7 @@ message TaskRunExecutedRecord {
 
 // Record in the Output Topic to denote that a WorkflowEvent was thrown
 // by a WfRun.
-message WorkflowEventRecord {
+message WorkflowEventUpdateRecord {
     // The WorkflowEvent that was thrown.
     WorkflowEvent workflow_event = 1;
 
@@ -75,6 +75,11 @@ message WfRunUpdateRecord {
     WfRun wf_run = 1;
 }
 
+message ExternalEventUpdateRecord {
+    // The current snapshot of the `WfRun` Getable.
+    ExternalEvent external_event = 1;
+}
+
 // Represents a snapshot of a UserTaskRun being updated. Used in the Output Topic
 // to allow exporting information about User Tasks into external systems.
 message UserTaskRunUpdateRecord {
@@ -86,7 +91,7 @@ message UserTaskRunUpdateRecord {
 // Topic to allow exporting information for specific Variables to external systems.
 message VariableUpdateRecord {
     // The cuurrent snapshot of the Variable in question.
-    Variable current_variable = 1;
+    Variable variable = 1;
 }
 
 // Message to configure data sent to the Metadata Output Topic

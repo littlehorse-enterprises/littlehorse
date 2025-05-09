@@ -7,6 +7,8 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.outputtopic.ExternalEventUpdateRecordModel;
+import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
@@ -84,6 +86,13 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
         if (p.hasNodeRunPosition()) {
             nodeRunPosition = p.getNodeRunPosition();
         }
+    }
+
+    @Override
+    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
+        ExternalEventUpdateRecordModel out = new ExternalEventUpdateRecordModel();
+        out.setGetable(this);
+        return Optional.of(out);
     }
 
     public ExternalEvent.Builder toProto() {
