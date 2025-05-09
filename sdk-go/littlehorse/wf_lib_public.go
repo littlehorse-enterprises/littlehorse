@@ -1,6 +1,7 @@
 package littlehorse
 
 import (
+	"errors"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
@@ -88,6 +89,13 @@ type LHExpression struct {
 }
 
 type LHErrorType string
+
+type WorkflowIfStatement struct {
+	firstNopNodeName string
+	lastNopNodeName  string
+	wasElseExecuted  bool
+	thread           *WorkflowThread
+}
 
 const (
 	ChildFailure      LHErrorType = "CHILD_FAILURE"
@@ -501,10 +509,24 @@ func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interfa
 
 type IfElseBody func(t *WorkflowThread)
 
-func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
-	t.doIf(cond, doIf)
+func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+	return t.doIf(cond, doIf)
 }
 
+func (s *WorkflowIfStatement) DoElseIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+	result := s.thread.doElseIf(*s, cond, doIf)
+	return &result
+}
+
+func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
+	if s.wasElseExecuted {
+		panic(errors.New("else block has already been executed, cannot add another else block"))
+	}
+	s.wasElseExecuted = true
+	s.thread.doElseIf(*s, nil, doElse)
+}
+
+// Deprecated: Use DoIf and DoElse instead.
 func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
 	t.doIfElse(cond, doIf, doElse)
 }

@@ -34,7 +34,6 @@ public class WorkflowThread
     private ThreadRetentionPolicy? _retentionPolicy;
     
     internal bool IsActive { get; }
-    internal ThreadSpec Spec => _spec;
     
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
@@ -52,7 +51,7 @@ public class WorkflowThread
         Parent.Threads.Push(this);
         action.Invoke(this);
 
-        var lastNode = FindLastNode();
+        var lastNode = FindNode(LastNodeName);
         if (lastNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
@@ -80,16 +79,6 @@ public class WorkflowThread
         
         return _spec;
     }
-
-    private Node FindLastNode()
-    {
-        if (_spec.Nodes.Last().Key  != LastNodeName)
-        {
-            throw new ArgumentException("No node found.");
-        }
-
-        return _spec.Nodes[LastNodeName];
-    }
     
     internal Node FindNode(string nodeName)
     {
@@ -108,15 +97,11 @@ public class WorkflowThread
             throw new InvalidOperationException("Using an inactive thread");
         }
     }
-    
-    internal string AddNode(string name, Node.NodeOneofCase type, IMessage subNode, bool keepNodeName = false)
+
+    private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode)
     {
         CheckIfWorkflowThreadIsActive();
         string nextNodeName = GetNodeName(name, type);
-        if (keepNodeName)
-        {
-            nextNodeName = name;
-        }
         
         if (LastNodeName == null) 
         {
@@ -445,7 +430,7 @@ public class WorkflowThread
         return AddVariable(name, VariableType.JsonObj);
     }
     
-    internal List<VariableMutation> CollectVariableMutations() 
+    private List<VariableMutation> CollectVariableMutations() 
     {
         var variablesFromIfBlock = new List<VariableMutation>();
         while (_variableMutations.Count > 0) 
@@ -471,6 +456,7 @@ public class WorkflowThread
     /// It is the block of ThreadSpec code to be executed if the provided
     /// WorkflowCondition is NOT satisfied.
     /// </param>
+    [Obsolete("Use DoIf(WorkflowCondition condition, Action<WorkflowThread> body) instead.")]
     public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
         WorkflowIfStatement ifResult = DoIf(condition, ifBody);
@@ -509,6 +495,79 @@ public class WorkflowThread
         });
         
         return new WorkflowIfStatement(this, firstNodeName, lastNodeName);
+    }
+    
+    internal void OrganizeEdgesForElseIfExecution(WorkflowIfStatement ifStatement, 
+        Action<WorkflowThread> body, WorkflowCondition? condition = null)
+    {
+        var firstNopNode = FindNode(ifStatement.FirstNopNodeName);
+        var elseEdge = GetLastRemovedEdgeFrom(firstNopNode);
+        var lastNodeNameOfParentThread = LastNodeName;
+    
+        body.Invoke(this);
+    
+        var lastNodeNameOfBody = LastNodeName;
+    
+        if (lastNodeNameOfParentThread == lastNodeNameOfBody)
+        {
+            var edge = GetNewEdge(ifStatement.LastNopNodeName, condition, CollectVariableMutations());
+            firstNopNode.OutgoingEdges.Add(edge);
+        }         
+        else
+        {
+            var lastNodeOfParentThread = FindNode(lastNodeNameOfParentThread);
+            var lastOutgoingEdge = GetLastRemovedEdgeFrom(lastNodeOfParentThread);
+            var firstNodeNameOfBody = lastOutgoingEdge.SinkNodeName;
+            var edge = GetNewEdge(firstNodeNameOfBody, condition, lastOutgoingEdge.VariableMutations);
+            firstNopNode.OutgoingEdges.Add(edge);
+            
+            var lastNodeOfBody = FindNode(lastNodeNameOfBody);
+            var edgeFromLastNodeOfBody = GetNewEdge(ifStatement.LastNopNodeName, null,
+                CollectVariableMutations());
+            lastNodeOfBody.OutgoingEdges.Add(edgeFromLastNodeOfBody);
+        }
+        
+        if (condition != null)
+        {
+            firstNopNode.OutgoingEdges.Add(elseEdge);
+        }
+        LastNodeName = lastNodeNameOfParentThread;
+    }
+    
+    private Edge GetLastRemovedEdgeFrom(Node node)
+    {
+        if (node.OutgoingEdges == null || node.OutgoingEdges.Count == 0)
+        {
+            throw new InvalidOperationException("No edges to remove.");
+        }
+
+        var index = node.OutgoingEdges.Count - 1;
+        var lastEdge = node.OutgoingEdges.ElementAt(index);
+        node.OutgoingEdges.Remove(lastEdge);
+        
+        return lastEdge;
+    }
+
+    private Edge GetNewEdge(string sinkNodeName, WorkflowCondition? condition, 
+        ICollection<VariableMutation> variableMutations)
+    {
+        if (condition != null)
+        {
+            var compiledCondition = condition.Compile();
+
+            return new Edge
+            {
+                SinkNodeName = sinkNodeName,
+                Condition = compiledCondition,
+                VariableMutations = { variableMutations }
+            };
+        }
+        
+        return new Edge
+        {
+            SinkNodeName = sinkNodeName,
+            VariableMutations = { variableMutations }
+        };
     }
 
     /// <summary>
