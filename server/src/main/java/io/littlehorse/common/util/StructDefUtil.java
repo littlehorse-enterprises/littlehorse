@@ -1,15 +1,13 @@
 package io.littlehorse.common.util;
 
+import com.google.protobuf.Timestamp;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.sdk.common.proto.StructDef;
 import java.util.Arrays;
 import java.util.Date;
 
-import com.google.protobuf.Timestamp;
-
-import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
-import io.littlehorse.sdk.common.proto.StructDef;
-
 public class StructDefUtil {
-      private StructDefUtil() {}
+    private StructDefUtil() {}
 
     /**
      * Checks if two StructDefModel objects are equal by comparing their underlying proto representations.
