@@ -246,5 +246,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder getDeleteWorkflowEventDefOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+   * @return Whether the putStructDef field is set.
+   */
+  boolean hasPutStructDef();
+  /**
+   * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+   * @return The putStructDef.
+   */
+  io.littlehorse.sdk.common.proto.PutStructDefRequest getPutStructDef();
+  /**
+   * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutStructDefRequestOrBuilder getPutStructDefOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

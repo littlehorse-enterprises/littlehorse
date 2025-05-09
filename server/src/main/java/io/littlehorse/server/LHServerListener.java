@@ -491,7 +491,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     public void putStructDef(PutStructDefRequest req, StreamObserver<StructDef> ctx) {
-        PutStructDefRequestModel reqModel = LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
+        PutStructDefRequestModel reqModel =
+                LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, StructDef.class, true);
     }
 
