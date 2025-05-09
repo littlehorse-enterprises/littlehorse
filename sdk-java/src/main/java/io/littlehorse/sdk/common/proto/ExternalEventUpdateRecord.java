@@ -4,81 +4,76 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Represents a snapshot of an individual Variable being updated. Used in the Output
- * Topic to allow exporting information for specific Variables to external systems.
- * </pre>
- *
- * Protobuf type {@code littlehorse.VariableUpdateRecord}
+ * Protobuf type {@code littlehorse.ExternalEventUpdateRecord}
  */
-public final class VariableUpdateRecord extends
+public final class ExternalEventUpdateRecord extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.VariableUpdateRecord)
-    VariableUpdateRecordOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.ExternalEventUpdateRecord)
+    ExternalEventUpdateRecordOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use VariableUpdateRecord.newBuilder() to construct.
-  private VariableUpdateRecord(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ExternalEventUpdateRecord.newBuilder() to construct.
+  private ExternalEventUpdateRecord(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private VariableUpdateRecord() {
+  private ExternalEventUpdateRecord() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new VariableUpdateRecord();
+    return new ExternalEventUpdateRecord();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_VariableUpdateRecord_descriptor;
+    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_ExternalEventUpdateRecord_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_VariableUpdateRecord_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_ExternalEventUpdateRecord_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.VariableUpdateRecord.class, io.littlehorse.sdk.common.proto.VariableUpdateRecord.Builder.class);
+            io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.class, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.Builder.class);
   }
 
-  public static final int VARIABLE_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.Variable variable_;
+  public static final int EXTERNAL_EVENT_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.ExternalEvent externalEvent_;
   /**
    * <pre>
-   * The cuurrent snapshot of the Variable in question.
+   * The current snapshot of the `WfRun` Getable.
    * </pre>
    *
-   * <code>.littlehorse.Variable variable = 1;</code>
-   * @return Whether the variable field is set.
+   * <code>.littlehorse.ExternalEvent external_event = 1;</code>
+   * @return Whether the externalEvent field is set.
    */
   @java.lang.Override
-  public boolean hasVariable() {
-    return variable_ != null;
+  public boolean hasExternalEvent() {
+    return externalEvent_ != null;
   }
   /**
    * <pre>
-   * The cuurrent snapshot of the Variable in question.
+   * The current snapshot of the `WfRun` Getable.
    * </pre>
    *
-   * <code>.littlehorse.Variable variable = 1;</code>
-   * @return The variable.
+   * <code>.littlehorse.ExternalEvent external_event = 1;</code>
+   * @return The externalEvent.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.Variable getVariable() {
-    return variable_ == null ? io.littlehorse.sdk.common.proto.Variable.getDefaultInstance() : variable_;
+  public io.littlehorse.sdk.common.proto.ExternalEvent getExternalEvent() {
+    return externalEvent_ == null ? io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : externalEvent_;
   }
   /**
    * <pre>
-   * The cuurrent snapshot of the Variable in question.
+   * The current snapshot of the `WfRun` Getable.
    * </pre>
    *
-   * <code>.littlehorse.Variable variable = 1;</code>
+   * <code>.littlehorse.ExternalEvent external_event = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableOrBuilder getVariableOrBuilder() {
-    return variable_ == null ? io.littlehorse.sdk.common.proto.Variable.getDefaultInstance() : variable_;
+  public io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getExternalEventOrBuilder() {
+    return externalEvent_ == null ? io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : externalEvent_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -95,8 +90,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (variable_ != null) {
-      output.writeMessage(1, getVariable());
+    if (externalEvent_ != null) {
+      output.writeMessage(1, getExternalEvent());
     }
     getUnknownFields().writeTo(output);
   }
@@ -107,9 +102,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (variable_ != null) {
+    if (externalEvent_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getVariable());
+        .computeMessageSize(1, getExternalEvent());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -121,15 +116,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableUpdateRecord)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.VariableUpdateRecord other = (io.littlehorse.sdk.common.proto.VariableUpdateRecord) obj;
+    io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord other = (io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) obj;
 
-    if (hasVariable() != other.hasVariable()) return false;
-    if (hasVariable()) {
-      if (!getVariable()
-          .equals(other.getVariable())) return false;
+    if (hasExternalEvent() != other.hasExternalEvent()) return false;
+    if (hasExternalEvent()) {
+      if (!getExternalEvent()
+          .equals(other.getExternalEvent())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -142,53 +137,53 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasVariable()) {
-      hash = (37 * hash) + VARIABLE_FIELD_NUMBER;
-      hash = (53 * hash) + getVariable().hashCode();
+    if (hasExternalEvent()) {
+      hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
+      hash = (53 * hash) + getExternalEvent().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -196,26 +191,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -228,7 +223,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableUpdateRecord prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -244,31 +239,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Represents a snapshot of an individual Variable being updated. Used in the Output
-   * Topic to allow exporting information for specific Variables to external systems.
-   * </pre>
-   *
-   * Protobuf type {@code littlehorse.VariableUpdateRecord}
+   * Protobuf type {@code littlehorse.ExternalEventUpdateRecord}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.VariableUpdateRecord)
-      io.littlehorse.sdk.common.proto.VariableUpdateRecordOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.ExternalEventUpdateRecord)
+      io.littlehorse.sdk.common.proto.ExternalEventUpdateRecordOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_VariableUpdateRecord_descriptor;
+      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_ExternalEventUpdateRecord_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_VariableUpdateRecord_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_ExternalEventUpdateRecord_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.VariableUpdateRecord.class, io.littlehorse.sdk.common.proto.VariableUpdateRecord.Builder.class);
+              io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.class, io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.VariableUpdateRecord.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.newBuilder()
     private Builder() {
 
     }
@@ -282,10 +272,10 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      variable_ = null;
-      if (variableBuilder_ != null) {
-        variableBuilder_.dispose();
-        variableBuilder_ = null;
+      externalEvent_ = null;
+      if (externalEventBuilder_ != null) {
+        externalEventBuilder_.dispose();
+        externalEventBuilder_ = null;
       }
       return this;
     }
@@ -293,17 +283,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_VariableUpdateRecord_descriptor;
+      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_ExternalEventUpdateRecord_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableUpdateRecord getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableUpdateRecord build() {
-      io.littlehorse.sdk.common.proto.VariableUpdateRecord result = buildPartial();
+    public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord build() {
+      io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -311,19 +301,19 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableUpdateRecord buildPartial() {
-      io.littlehorse.sdk.common.proto.VariableUpdateRecord result = new io.littlehorse.sdk.common.proto.VariableUpdateRecord(this);
+    public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord buildPartial() {
+      io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord result = new io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.VariableUpdateRecord result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.variable_ = variableBuilder_ == null
-            ? variable_
-            : variableBuilder_.build();
+        result.externalEvent_ = externalEventBuilder_ == null
+            ? externalEvent_
+            : externalEventBuilder_.build();
       }
     }
 
@@ -361,18 +351,18 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.VariableUpdateRecord) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.VariableUpdateRecord)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableUpdateRecord other) {
-      if (other == io.littlehorse.sdk.common.proto.VariableUpdateRecord.getDefaultInstance()) return this;
-      if (other.hasVariable()) {
-        mergeVariable(other.getVariable());
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord other) {
+      if (other == io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord.getDefaultInstance()) return this;
+      if (other.hasExternalEvent()) {
+        mergeExternalEvent(other.getExternalEvent());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -402,7 +392,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  getVariableFieldBuilder().getBuilder(),
+                  getExternalEventFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
@@ -424,50 +414,50 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.Variable variable_;
+    private io.littlehorse.sdk.common.proto.ExternalEvent externalEvent_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.Variable, io.littlehorse.sdk.common.proto.Variable.Builder, io.littlehorse.sdk.common.proto.VariableOrBuilder> variableBuilder_;
+        io.littlehorse.sdk.common.proto.ExternalEvent, io.littlehorse.sdk.common.proto.ExternalEvent.Builder, io.littlehorse.sdk.common.proto.ExternalEventOrBuilder> externalEventBuilder_;
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
-     * @return Whether the variable field is set.
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
+     * @return Whether the externalEvent field is set.
      */
-    public boolean hasVariable() {
+    public boolean hasExternalEvent() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
-     * @return The variable.
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
+     * @return The externalEvent.
      */
-    public io.littlehorse.sdk.common.proto.Variable getVariable() {
-      if (variableBuilder_ == null) {
-        return variable_ == null ? io.littlehorse.sdk.common.proto.Variable.getDefaultInstance() : variable_;
+    public io.littlehorse.sdk.common.proto.ExternalEvent getExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        return externalEvent_ == null ? io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : externalEvent_;
       } else {
-        return variableBuilder_.getMessage();
+        return externalEventBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
      */
-    public Builder setVariable(io.littlehorse.sdk.common.proto.Variable value) {
-      if (variableBuilder_ == null) {
+    public Builder setExternalEvent(io.littlehorse.sdk.common.proto.ExternalEvent value) {
+      if (externalEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        variable_ = value;
+        externalEvent_ = value;
       } else {
-        variableBuilder_.setMessage(value);
+        externalEventBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000001;
       onChanged();
@@ -475,17 +465,17 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
      */
-    public Builder setVariable(
-        io.littlehorse.sdk.common.proto.Variable.Builder builderForValue) {
-      if (variableBuilder_ == null) {
-        variable_ = builderForValue.build();
+    public Builder setExternalEvent(
+        io.littlehorse.sdk.common.proto.ExternalEvent.Builder builderForValue) {
+      if (externalEventBuilder_ == null) {
+        externalEvent_ = builderForValue.build();
       } else {
-        variableBuilder_.setMessage(builderForValue.build());
+        externalEventBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000001;
       onChanged();
@@ -493,22 +483,22 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
      */
-    public Builder mergeVariable(io.littlehorse.sdk.common.proto.Variable value) {
-      if (variableBuilder_ == null) {
+    public Builder mergeExternalEvent(io.littlehorse.sdk.common.proto.ExternalEvent value) {
+      if (externalEventBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
-          variable_ != null &&
-          variable_ != io.littlehorse.sdk.common.proto.Variable.getDefaultInstance()) {
-          getVariableBuilder().mergeFrom(value);
+          externalEvent_ != null &&
+          externalEvent_ != io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance()) {
+          getExternalEventBuilder().mergeFrom(value);
         } else {
-          variable_ = value;
+          externalEvent_ = value;
         }
       } else {
-        variableBuilder_.mergeFrom(value);
+        externalEventBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000001;
       onChanged();
@@ -516,67 +506,67 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
      */
-    public Builder clearVariable() {
+    public Builder clearExternalEvent() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      variable_ = null;
-      if (variableBuilder_ != null) {
-        variableBuilder_.dispose();
-        variableBuilder_ = null;
+      externalEvent_ = null;
+      if (externalEventBuilder_ != null) {
+        externalEventBuilder_.dispose();
+        externalEventBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.Variable.Builder getVariableBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEvent.Builder getExternalEventBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return getVariableFieldBuilder().getBuilder();
+      return getExternalEventFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableOrBuilder getVariableOrBuilder() {
-      if (variableBuilder_ != null) {
-        return variableBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getExternalEventOrBuilder() {
+      if (externalEventBuilder_ != null) {
+        return externalEventBuilder_.getMessageOrBuilder();
       } else {
-        return variable_ == null ?
-            io.littlehorse.sdk.common.proto.Variable.getDefaultInstance() : variable_;
+        return externalEvent_ == null ?
+            io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : externalEvent_;
       }
     }
     /**
      * <pre>
-     * The cuurrent snapshot of the Variable in question.
+     * The current snapshot of the `WfRun` Getable.
      * </pre>
      *
-     * <code>.littlehorse.Variable variable = 1;</code>
+     * <code>.littlehorse.ExternalEvent external_event = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.Variable, io.littlehorse.sdk.common.proto.Variable.Builder, io.littlehorse.sdk.common.proto.VariableOrBuilder> 
-        getVariableFieldBuilder() {
-      if (variableBuilder_ == null) {
-        variableBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.Variable, io.littlehorse.sdk.common.proto.Variable.Builder, io.littlehorse.sdk.common.proto.VariableOrBuilder>(
-                getVariable(),
+        io.littlehorse.sdk.common.proto.ExternalEvent, io.littlehorse.sdk.common.proto.ExternalEvent.Builder, io.littlehorse.sdk.common.proto.ExternalEventOrBuilder> 
+        getExternalEventFieldBuilder() {
+      if (externalEventBuilder_ == null) {
+        externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExternalEvent, io.littlehorse.sdk.common.proto.ExternalEvent.Builder, io.littlehorse.sdk.common.proto.ExternalEventOrBuilder>(
+                getExternalEvent(),
                 getParentForChildren(),
                 isClean());
-        variable_ = null;
+        externalEvent_ = null;
       }
-      return variableBuilder_;
+      return externalEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
@@ -591,23 +581,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.VariableUpdateRecord)
+    // @@protoc_insertion_point(builder_scope:littlehorse.ExternalEventUpdateRecord)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.VariableUpdateRecord)
-  private static final io.littlehorse.sdk.common.proto.VariableUpdateRecord DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.ExternalEventUpdateRecord)
+  private static final io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableUpdateRecord();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord();
   }
 
-  public static io.littlehorse.sdk.common.proto.VariableUpdateRecord getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<VariableUpdateRecord>
-      PARSER = new com.google.protobuf.AbstractParser<VariableUpdateRecord>() {
+  private static final com.google.protobuf.Parser<ExternalEventUpdateRecord>
+      PARSER = new com.google.protobuf.AbstractParser<ExternalEventUpdateRecord>() {
     @java.lang.Override
-    public VariableUpdateRecord parsePartialFrom(
+    public ExternalEventUpdateRecord parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -626,17 +616,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<VariableUpdateRecord> parser() {
+  public static com.google.protobuf.Parser<ExternalEventUpdateRecord> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<VariableUpdateRecord> getParserForType() {
+  public com.google.protobuf.Parser<ExternalEventUpdateRecord> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableUpdateRecord getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

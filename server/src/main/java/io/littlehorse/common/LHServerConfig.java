@@ -6,6 +6,7 @@ import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.RocksConfigSetter;
 import io.littlehorse.sdk.common.config.ConfigBase;
@@ -361,9 +362,25 @@ public class LHServerConfig extends ConfigBase {
                 LHServerConfig.OUTPUT_TOPIC_PARTITIONS_KEY, String.valueOf(getClusterPartitions()))));
     }
 
+    public static String getExecutionOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "--" + tenantId.toString() + "--execution";
+    }
+
+    public static String getMetadataOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "--" + tenantId.toString() + "--metadata";
+    }
+
+    public String getExecutionOutputTopicName(TenantIdModel tenant) {
+        return getExecutionOutputTopicName(getLHClusterId(), tenant);
+    }
+
+    public String getMetadataOutputTopicName(TenantIdModel tenant) {
+        return getMetadataOutputTopicName(getLHClusterId(), tenant);
+    }
+
     public Pair<NewTopic, NewTopic> getOutputTopicsFor(TenantModel tenant) {
-        String executionTopicName = getLHClusterId() + "_" + tenant.getId().getId() + "_execution";
-        String metadataTopicName = getLHClusterId() + "_" + tenant.getId().getId() + "_metadata";
+        String executionTopicName = getExecutionOutputTopicName(tenant.getId());
+        String metadataTopicName = getMetadataOutputTopicName(tenant.getId());
 
         // metadata topic is compacted
         HashMap<String, String> compactedTopicConfig = new HashMap<>() {

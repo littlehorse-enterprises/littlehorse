@@ -9,38 +9,38 @@ package io.littlehorse.sdk.common.proto;
  * by a WfRun.
  * </pre>
  *
- * Protobuf type {@code littlehorse.WorkflowEventRecord}
+ * Protobuf type {@code littlehorse.WorkflowEventUpdateRecord}
  */
-public final class WorkflowEventRecord extends
+public final class WorkflowEventUpdateRecord extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.WorkflowEventRecord)
-    WorkflowEventRecordOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.WorkflowEventUpdateRecord)
+    WorkflowEventUpdateRecordOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use WorkflowEventRecord.newBuilder() to construct.
-  private WorkflowEventRecord(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use WorkflowEventUpdateRecord.newBuilder() to construct.
+  private WorkflowEventUpdateRecord(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private WorkflowEventRecord() {
+  private WorkflowEventUpdateRecord() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new WorkflowEventRecord();
+    return new WorkflowEventUpdateRecord();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventRecord_descriptor;
+    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventUpdateRecord_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventRecord_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventUpdateRecord_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.WorkflowEventRecord.class, io.littlehorse.sdk.common.proto.WorkflowEventRecord.Builder.class);
+            io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.class, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.Builder.class);
   }
 
   public static final int WORKFLOW_EVENT_FIELD_NUMBER = 1;
@@ -166,10 +166,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.WorkflowEventRecord)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.WorkflowEventRecord other = (io.littlehorse.sdk.common.proto.WorkflowEventRecord) obj;
+    io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord other = (io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) obj;
 
     if (hasWorkflowEvent() != other.hasWorkflowEvent()) return false;
     if (hasWorkflowEvent()) {
@@ -205,44 +205,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -250,26 +250,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -282,7 +282,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.WorkflowEventRecord prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -303,26 +303,26 @@ private static final long serialVersionUID = 0L;
    * by a WfRun.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.WorkflowEventRecord}
+   * Protobuf type {@code littlehorse.WorkflowEventUpdateRecord}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.WorkflowEventRecord)
-      io.littlehorse.sdk.common.proto.WorkflowEventRecordOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.WorkflowEventUpdateRecord)
+      io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecordOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventRecord_descriptor;
+      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventUpdateRecord_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventRecord_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventUpdateRecord_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.WorkflowEventRecord.class, io.littlehorse.sdk.common.proto.WorkflowEventRecord.Builder.class);
+              io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.class, io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.WorkflowEventRecord.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.newBuilder()
     private Builder() {
 
     }
@@ -352,17 +352,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventRecord_descriptor;
+      return io.littlehorse.sdk.common.proto.OutputTopic.internal_static_littlehorse_WorkflowEventUpdateRecord_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowEventRecord getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowEventRecord build() {
-      io.littlehorse.sdk.common.proto.WorkflowEventRecord result = buildPartial();
+    public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord build() {
+      io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -370,14 +370,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowEventRecord buildPartial() {
-      io.littlehorse.sdk.common.proto.WorkflowEventRecord result = new io.littlehorse.sdk.common.proto.WorkflowEventRecord(this);
+    public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord buildPartial() {
+      io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord result = new io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.WorkflowEventRecord result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.workflowEvent_ = workflowEventBuilder_ == null
@@ -425,16 +425,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.WorkflowEventRecord) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.WorkflowEventRecord)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.WorkflowEventRecord other) {
-      if (other == io.littlehorse.sdk.common.proto.WorkflowEventRecord.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord other) {
+      if (other == io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord.getDefaultInstance()) return this;
       if (other.hasWorkflowEvent()) {
         mergeWorkflowEvent(other.getWorkflowEvent());
       }
@@ -820,23 +820,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.WorkflowEventRecord)
+    // @@protoc_insertion_point(builder_scope:littlehorse.WorkflowEventUpdateRecord)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.WorkflowEventRecord)
-  private static final io.littlehorse.sdk.common.proto.WorkflowEventRecord DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.WorkflowEventUpdateRecord)
+  private static final io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.WorkflowEventRecord();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord();
   }
 
-  public static io.littlehorse.sdk.common.proto.WorkflowEventRecord getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<WorkflowEventRecord>
-      PARSER = new com.google.protobuf.AbstractParser<WorkflowEventRecord>() {
+  private static final com.google.protobuf.Parser<WorkflowEventUpdateRecord>
+      PARSER = new com.google.protobuf.AbstractParser<WorkflowEventUpdateRecord>() {
     @java.lang.Override
-    public WorkflowEventRecord parsePartialFrom(
+    public WorkflowEventUpdateRecord parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -855,17 +855,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<WorkflowEventRecord> parser() {
+  public static com.google.protobuf.Parser<WorkflowEventUpdateRecord> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<WorkflowEventRecord> getParserForType() {
+  public com.google.protobuf.Parser<WorkflowEventUpdateRecord> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowEventRecord getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

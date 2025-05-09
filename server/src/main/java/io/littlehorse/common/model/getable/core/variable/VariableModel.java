@@ -10,6 +10,8 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefMode
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
+import io.littlehorse.common.model.outputtopic.VariableUpdateRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
@@ -102,15 +104,24 @@ public class VariableModel extends CoreGetable<Variable> {
         return out;
     }
 
+    @Override
     public VariableIdModel getObjectId() {
         return id;
     }
 
+    @Override
     public Date getCreatedAt() {
         if (createdAt == null) {
             createdAt = new Date();
         }
         return createdAt;
+    }
+
+    @Override
+    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
+        VariableUpdateRecordModel out = new VariableUpdateRecordModel();
+        out.setGetable(this);
+        return Optional.of(out);
     }
 
     @Override

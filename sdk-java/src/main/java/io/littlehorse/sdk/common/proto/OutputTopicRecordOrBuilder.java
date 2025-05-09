@@ -9,37 +9,10 @@ public interface OutputTopicRecordOrBuilder extends
 
   /**
    * <pre>
-   * The ID of the WfRun that produced this record.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId id = 1;</code>
-   * @return Whether the id field is set.
-   */
-  boolean hasId();
-  /**
-   * <pre>
-   * The ID of the WfRun that produced this record.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId id = 1;</code>
-   * @return The id.
-   */
-  io.littlehorse.sdk.common.proto.WfRunId getId();
-  /**
-   * <pre>
-   * The ID of the WfRun that produced this record.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId id = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder();
-
-  /**
-   * <pre>
    * The time at which the event occurred.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+   * <code>.google.protobuf.Timestamp timestamp = 1;</code>
    * @return Whether the timestamp field is set.
    */
   boolean hasTimestamp();
@@ -48,7 +21,7 @@ public interface OutputTopicRecordOrBuilder extends
    * The time at which the event occurred.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+   * <code>.google.protobuf.Timestamp timestamp = 1;</code>
    * @return The timestamp.
    */
   com.google.protobuf.Timestamp getTimestamp();
@@ -57,7 +30,7 @@ public interface OutputTopicRecordOrBuilder extends
    * The time at which the event occurred.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp timestamp = 2;</code>
+   * <code>.google.protobuf.Timestamp timestamp = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getTimestampOrBuilder();
 
@@ -66,7 +39,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Records the results of a TaskRun in the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
    * @return Whether the taskRunExecuted field is set.
    */
   boolean hasTaskRunExecuted();
@@ -75,7 +48,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Records the results of a TaskRun in the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
    * @return The taskRunExecuted.
    */
   io.littlehorse.sdk.common.proto.TaskRunExecutedRecord getTaskRunExecuted();
@@ -84,7 +57,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Records the results of a TaskRun in the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 3;</code>
+   * <code>.littlehorse.TaskRunExecutedRecord task_run_executed = 2;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunExecutedRecordOrBuilder getTaskRunExecutedOrBuilder();
 
@@ -93,7 +66,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Records a WorkflowEvent that was thrown into the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+   * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
    * @return Whether the workflowEvent field is set.
    */
   boolean hasWorkflowEvent();
@@ -102,18 +75,18 @@ public interface OutputTopicRecordOrBuilder extends
    * Records a WorkflowEvent that was thrown into the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+   * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
    * @return The workflowEvent.
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventRecord getWorkflowEvent();
+  io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecord getWorkflowEvent();
   /**
    * <pre>
    * Records a WorkflowEvent that was thrown into the Output Topic.
    * </pre>
    *
-   * <code>.littlehorse.WorkflowEventRecord workflow_event = 4;</code>
+   * <code>.littlehorse.WorkflowEventUpdateRecord workflow_event = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WorkflowEventRecordOrBuilder getWorkflowEventOrBuilder();
+  io.littlehorse.sdk.common.proto.WorkflowEventUpdateRecordOrBuilder getWorkflowEventOrBuilder();
 
   /**
    * <pre>
@@ -121,7 +94,7 @@ public interface OutputTopicRecordOrBuilder extends
    * `ThreadRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+   * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
    * @return Whether the wfRun field is set.
    */
   boolean hasWfRun();
@@ -131,7 +104,7 @@ public interface OutputTopicRecordOrBuilder extends
    * `ThreadRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+   * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
    * @return The wfRun.
    */
   io.littlehorse.sdk.common.proto.WfRunUpdateRecord getWfRun();
@@ -141,7 +114,7 @@ public interface OutputTopicRecordOrBuilder extends
    * `ThreadRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunUpdateRecord wf_run = 5;</code>
+   * <code>.littlehorse.WfRunUpdateRecord wf_run = 4;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunUpdateRecordOrBuilder getWfRunOrBuilder();
 
@@ -150,7 +123,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Updates about a user task run.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
    * @return Whether the userTaskRun field is set.
    */
   boolean hasUserTaskRun();
@@ -159,7 +132,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Updates about a user task run.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
    * @return The userTaskRun.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecord getUserTaskRun();
@@ -168,7 +141,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Updates about a user task run.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 6;</code>
+   * <code>.littlehorse.UserTaskRunUpdateRecord user_task_run = 5;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunUpdateRecordOrBuilder getUserTaskRunOrBuilder();
 
@@ -177,7 +150,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Updates about a specific Variable changing.
    * </pre>
    *
-   * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+   * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
    * @return Whether the variableUpdate field is set.
    */
   boolean hasVariableUpdate();
@@ -186,7 +159,7 @@ public interface OutputTopicRecordOrBuilder extends
    * Updates about a specific Variable changing.
    * </pre>
    *
-   * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+   * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
    * @return The variableUpdate.
    */
   io.littlehorse.sdk.common.proto.VariableUpdateRecord getVariableUpdate();
@@ -195,9 +168,36 @@ public interface OutputTopicRecordOrBuilder extends
    * Updates about a specific Variable changing.
    * </pre>
    *
-   * <code>.littlehorse.VariableUpdateRecord variable_update = 7;</code>
+   * <code>.littlehorse.VariableUpdateRecord variable_update = 6;</code>
    */
   io.littlehorse.sdk.common.proto.VariableUpdateRecordOrBuilder getVariableUpdateOrBuilder();
+
+  /**
+   * <pre>
+   * Updates about an `ExternalEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  boolean hasExternalEvent();
+  /**
+   * <pre>
+   * Updates about an `ExternalEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+   * @return The externalEvent.
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventUpdateRecord getExternalEvent();
+  /**
+   * <pre>
+   * Updates about an `ExternalEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventUpdateRecord external_event = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventUpdateRecordOrBuilder getExternalEventOrBuilder();
 
   io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase getPayloadCase();
 }
