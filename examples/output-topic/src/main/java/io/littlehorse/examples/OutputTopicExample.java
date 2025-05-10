@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.OutputTopicRecord;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -38,7 +39,13 @@ public class OutputTopicExample {
             "output-topic",
             wf -> {
                 WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable().asPublic();
-                wf.execute("greet", theName);
+                WfRunVariable ignoredGreeting = wf.declareStr("ignored");
+                WfRunVariable publicGreeting = wf.declareStr("public-greeting").asPublic();
+
+                NodeOutput result = wf.execute("greet", theName);
+
+                ignoredGreeting.assign(result);
+                publicGreeting.assign(result);
             }
         );
     }

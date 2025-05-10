@@ -2,7 +2,6 @@ package io.littlehorse.server.streams.storeinternals;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -183,31 +182,39 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
     }
 
+    private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(TenantModel tenant, String storeableKey, GetableToStore<U, T> entity) {
+        if (entity.containsUpdate()) {
+            T getable = entity.getObjectToStore();
+            store.put(new StoredGetable<>(getable));
+            tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
+
+            if (tenant.getOutputTopicConfig() != null && getable instanceof CoreOutputTopicGetable) {
+                CoreOutputTopicGetable<U> outputTopicCandidate = (CoreOutputTopicGetable<U>) getable;
+                U previouslyStoredProto = entity.getPreviouslyStoredProto();
+
+                if (outputTopicCandidate.shouldProduceToOutputTopic(previouslyStoredProto, ctx.metadataManager(), tenant.getOutputTopicConfig())) {
+                    return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
+                }
+            }
+        } else if (entity.isDeletion()) {
+            // Do a deletion!
+            store.delete(storeableKey, StoreableType.STORED_GETABLE);
+            tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
+        }
+        return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
     public void commit() {
         List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
         TenantModel tenant = ctx.metadataManager().get(ctx.authorization().tenantId());
 
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             String storeableKey = entry.getKey();
-            GetableToStore<?, ?> entity = entry.getValue();
-
-            if (entity.containsUpdate()) {
-                // Actually put it in the key-value store.
-                // Note: we know this is a CoreGetable, but no need to cast, so
-                // we use AbstractGetable here.
-                AbstractGetable<?> getable = entity.getObjectToStore();
-                store.put(new StoredGetable<>(getable));
-                tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
-
-                if (tenant.getOutputTopicConfig() != null && getable instanceof CoreOutputTopicGetable) {
-                    CoreOutputTopicGetable<?> coreGetable = (CoreOutputTopicGetable<?>) getable;
-                    outputTopicRecords.add(new OutputTopicRecordModel(coreGetable, command.getTime()));
-                }
-
-            } else if (entity.isDeletion()) {
-                // Do a deletion!
-                store.delete(storeableKey, StoreableType.STORED_GETABLE);
-                tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
+            GetableToStore entity = entry.getValue();
+            Optional<OutputTopicRecordModel> newRecord = processEntity(tenant, storeableKey, entity);
+            if (newRecord.isPresent()) {
+                outputTopicRecords.add(newRecord.get());
             }
         }
 

@@ -10,10 +10,14 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefMode
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.Variable;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -63,11 +67,19 @@ public class VariableModel extends CoreOutputTopicGetable<Variable> {
         return Variable.class;
     }
 
-    public WfSpecModel getWfSpec() {
+    public WfSpecModel getWfSpec(ReadOnlyMetadataManager metadataManager) {
         if (wfSpec == null) {
             wfSpec = executionContext
                     .metadataManager()
                     .get(new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
+        }
+        return wfSpec;
+    }
+
+    @Deprecated
+    public WfSpecModel getWfSpec() {
+        if (wfSpec == null) {
+            wfSpec = getWfSpec(executionContext.metadataManager());
         }
         return wfSpec;
     }
@@ -147,6 +159,21 @@ public class VariableModel extends CoreOutputTopicGetable<Variable> {
 
     private boolean isIndexable() {
         return !getName().equals(LHConstants.EXT_EVT_HANDLER_VAR) && !value.isNull();
+    }
+
+    @Override
+    public boolean shouldProduceToOutputTopic(
+            Variable previousValue, ReadOnlyMetadataManager metadataManager, OutputTopicConfigModel config) {
+        if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            return false;
+        }
+
+        // Only PUBLIC_VAR variables should be pushed out.
+        ThreadVarDefModel variableDef =
+                getWfSpec(metadataManager).getAllVariables().get(id.getName());
+        WfRunVariableAccessLevel accessLevel = variableDef.getAccessLevel();
+        return accessLevel == WfRunVariableAccessLevel.PUBLIC_VAR
+                || accessLevel == WfRunVariableAccessLevel.INHERITED_VAR;
     }
 
     @Override
