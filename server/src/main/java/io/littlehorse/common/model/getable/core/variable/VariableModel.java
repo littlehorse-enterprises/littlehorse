@@ -4,14 +4,12 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
-import io.littlehorse.common.model.outputtopic.VariableUpdateRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
@@ -33,7 +31,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class VariableModel extends CoreGetable<Variable> {
+public class VariableModel extends CoreOutputTopicGetable<Variable> {
 
     private VariableValueModel value;
     private VariableIdModel id;
@@ -115,13 +113,6 @@ public class VariableModel extends CoreGetable<Variable> {
             createdAt = new Date();
         }
         return createdAt;
-    }
-
-    @Override
-    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
-        VariableUpdateRecordModel out = new VariableUpdateRecordModel();
-        out.setGetable(this);
-        return Optional.of(out);
     }
 
     @Override

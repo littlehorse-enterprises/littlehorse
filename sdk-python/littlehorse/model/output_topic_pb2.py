@@ -23,7 +23,7 @@ import littlehorse.model.variable_pb2 as variable__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12output_topic.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\x1a\x14workflow_event.proto\x1a\x10user_tasks.proto\x1a\x0etask_run.proto\x1a\x0etask_def.proto\x1a\rwf_spec.proto\x1a\x0cwf_run.proto\x1a\x0evariable.proto\x1a\x14\x65xternal_event.proto\"\xc1\x03\n\x11OutputTopicRecord\x12-\n\ttimestamp\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12?\n\x11task_run_executed\x18\x02 \x01(\x0b\x32\".littlehorse.TaskRunExecutedRecordH\x00\x12@\n\x0eworkflow_event\x18\x03 \x01(\x0b\x32&.littlehorse.WorkflowEventUpdateRecordH\x00\x12\x30\n\x06wf_run\x18\x04 \x01(\x0b\x32\x1e.littlehorse.WfRunUpdateRecordH\x00\x12=\n\ruser_task_run\x18\x05 \x01(\x0b\x32$.littlehorse.UserTaskRunUpdateRecordH\x00\x12<\n\x0fvariable_update\x18\x06 \x01(\x0b\x32!.littlehorse.VariableUpdateRecordH\x00\x12@\n\x0e\x65xternal_event\x18\x07 \x01(\x0b\x32&.littlehorse.ExternalEventUpdateRecordH\x00\x42\t\n\x07payload\"?\n\x15TaskRunExecutedRecord\x12&\n\x08task_run\x18\x01 \x01(\x0b\x32\x14.littlehorse.TaskRun\"z\n\x19WorkflowEventUpdateRecord\x12\x32\n\x0eworkflow_event\x18\x01 \x01(\x0b\x32\x1a.littlehorse.WorkflowEvent\x12)\n\nwf_spec_id\x18\x02 \x01(\x0b\x32\x15.littlehorse.WfSpecId\"7\n\x11WfRunUpdateRecord\x12\"\n\x06wf_run\x18\x01 \x01(\x0b\x32\x12.littlehorse.WfRun\"O\n\x19\x45xternalEventUpdateRecord\x12\x32\n\x0e\x65xternal_event\x18\x01 \x01(\x0b\x32\x1a.littlehorse.ExternalEvent\"J\n\x17UserTaskRunUpdateRecord\x12/\n\ruser_task_run\x18\x01 \x01(\x0b\x32\x18.littlehorse.UserTaskRun\"?\n\x14VariableUpdateRecord\x12\'\n\x08variable\x18\x01 \x01(\x0b\x32\x15.littlehorse.Variable\"\xad\x02\n\x19MetadataOutputTopicRecord\x12&\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x13.littlehorse.WfSpecH\x00\x12(\n\x08task_def\x18\x02 \x01(\x0b\x32\x14.littlehorse.TaskDefH\x00\x12;\n\x12\x65xternal_event_def\x18\x03 \x01(\x0b\x32\x1d.littlehorse.ExternalEventDefH\x00\x12;\n\x12workflow_event_def\x18\x04 \x01(\x0b\x32\x1d.littlehorse.WorkflowEventDefH\x00\x12\x31\n\ruser_task_def\x18\x05 \x01(\x0b\x32\x18.littlehorse.UserTaskDefH\x00\x42\x11\n\x0fmetadata_recordBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12output_topic.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\x1a\x14workflow_event.proto\x1a\x10user_tasks.proto\x1a\x0etask_run.proto\x1a\x0etask_def.proto\x1a\rwf_spec.proto\x1a\x0cwf_run.proto\x1a\x0evariable.proto\x1a\x14\x65xternal_event.proto\"\xe7\x02\n\x11OutputTopicRecord\x12-\n\ttimestamp\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12(\n\x08task_run\x18\x02 \x01(\x0b\x32\x14.littlehorse.TaskRunH\x00\x12\x34\n\x0eworkflow_event\x18\x03 \x01(\x0b\x32\x1a.littlehorse.WorkflowEventH\x00\x12$\n\x06wf_run\x18\x04 \x01(\x0b\x32\x12.littlehorse.WfRunH\x00\x12\x31\n\ruser_task_run\x18\x05 \x01(\x0b\x32\x18.littlehorse.UserTaskRunH\x00\x12)\n\x08variable\x18\x06 \x01(\x0b\x32\x15.littlehorse.VariableH\x00\x12\x34\n\x0e\x65xternal_event\x18\x07 \x01(\x0b\x32\x1a.littlehorse.ExternalEventH\x00\x42\t\n\x07payload\"\xad\x02\n\x19MetadataOutputTopicRecord\x12&\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x13.littlehorse.WfSpecH\x00\x12(\n\x08task_def\x18\x02 \x01(\x0b\x32\x14.littlehorse.TaskDefH\x00\x12;\n\x12\x65xternal_event_def\x18\x03 \x01(\x0b\x32\x1d.littlehorse.ExternalEventDefH\x00\x12;\n\x12workflow_event_def\x18\x04 \x01(\x0b\x32\x1d.littlehorse.WorkflowEventDefH\x00\x12\x31\n\ruser_task_def\x18\x05 \x01(\x0b\x32\x18.littlehorse.UserTaskDefH\x00\x42\x11\n\x0fmetadata_recordBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,19 +33,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
   _globals['_OUTPUTTOPICRECORD']._serialized_start=225
-  _globals['_OUTPUTTOPICRECORD']._serialized_end=674
-  _globals['_TASKRUNEXECUTEDRECORD']._serialized_start=676
-  _globals['_TASKRUNEXECUTEDRECORD']._serialized_end=739
-  _globals['_WORKFLOWEVENTUPDATERECORD']._serialized_start=741
-  _globals['_WORKFLOWEVENTUPDATERECORD']._serialized_end=863
-  _globals['_WFRUNUPDATERECORD']._serialized_start=865
-  _globals['_WFRUNUPDATERECORD']._serialized_end=920
-  _globals['_EXTERNALEVENTUPDATERECORD']._serialized_start=922
-  _globals['_EXTERNALEVENTUPDATERECORD']._serialized_end=1001
-  _globals['_USERTASKRUNUPDATERECORD']._serialized_start=1003
-  _globals['_USERTASKRUNUPDATERECORD']._serialized_end=1077
-  _globals['_VARIABLEUPDATERECORD']._serialized_start=1079
-  _globals['_VARIABLEUPDATERECORD']._serialized_end=1142
-  _globals['_METADATAOUTPUTTOPICRECORD']._serialized_start=1145
-  _globals['_METADATAOUTPUTTOPICRECORD']._serialized_end=1446
+  _globals['_OUTPUTTOPICRECORD']._serialized_end=584
+  _globals['_METADATAOUTPUTTOPICRECORD']._serialized_start=587
+  _globals['_METADATAOUTPUTTOPICRECORD']._serialized_end=888
 # @@protoc_insertion_point(module_scope)

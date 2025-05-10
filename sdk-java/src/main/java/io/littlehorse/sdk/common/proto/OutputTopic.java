@@ -20,36 +20,6 @@ public final class OutputTopic {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_OutputTopicRecord_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_TaskRunExecutedRecord_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_TaskRunExecutedRecord_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_WorkflowEventUpdateRecord_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_WorkflowEventUpdateRecord_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_WfRunUpdateRecord_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_WfRunUpdateRecord_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_ExternalEventUpdateRecord_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_ExternalEventUpdateRecord_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_UserTaskRunUpdateRecord_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_UserTaskRunUpdateRecord_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_VariableUpdateRecord_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_VariableUpdateRecord_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_MetadataOutputTopicRecord_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -68,40 +38,26 @@ public final class OutputTopic {
       "oto\032\024workflow_event.proto\032\020user_tasks.pr" +
       "oto\032\016task_run.proto\032\016task_def.proto\032\rwf_" +
       "spec.proto\032\014wf_run.proto\032\016variable.proto" +
-      "\032\024external_event.proto\"\301\003\n\021OutputTopicRe" +
+      "\032\024external_event.proto\"\347\002\n\021OutputTopicRe" +
       "cord\022-\n\ttimestamp\030\001 \001(\0132\032.google.protobu" +
-      "f.Timestamp\022?\n\021task_run_executed\030\002 \001(\0132\"" +
-      ".littlehorse.TaskRunExecutedRecordH\000\022@\n\016" +
-      "workflow_event\030\003 \001(\0132&.littlehorse.Workf" +
-      "lowEventUpdateRecordH\000\0220\n\006wf_run\030\004 \001(\0132\036" +
-      ".littlehorse.WfRunUpdateRecordH\000\022=\n\ruser" +
-      "_task_run\030\005 \001(\0132$.littlehorse.UserTaskRu" +
-      "nUpdateRecordH\000\022<\n\017variable_update\030\006 \001(\013" +
-      "2!.littlehorse.VariableUpdateRecordH\000\022@\n" +
-      "\016external_event\030\007 \001(\0132&.littlehorse.Exte" +
-      "rnalEventUpdateRecordH\000B\t\n\007payload\"?\n\025Ta" +
-      "skRunExecutedRecord\022&\n\010task_run\030\001 \001(\0132\024." +
-      "littlehorse.TaskRun\"z\n\031WorkflowEventUpda" +
-      "teRecord\0222\n\016workflow_event\030\001 \001(\0132\032.littl" +
-      "ehorse.WorkflowEvent\022)\n\nwf_spec_id\030\002 \001(\013" +
-      "2\025.littlehorse.WfSpecId\"7\n\021WfRunUpdateRe" +
-      "cord\022\"\n\006wf_run\030\001 \001(\0132\022.littlehorse.WfRun" +
-      "\"O\n\031ExternalEventUpdateRecord\0222\n\016externa" +
-      "l_event\030\001 \001(\0132\032.littlehorse.ExternalEven" +
-      "t\"J\n\027UserTaskRunUpdateRecord\022/\n\ruser_tas" +
-      "k_run\030\001 \001(\0132\030.littlehorse.UserTaskRun\"?\n" +
-      "\024VariableUpdateRecord\022\'\n\010variable\030\001 \001(\0132" +
-      "\025.littlehorse.Variable\"\255\002\n\031MetadataOutpu" +
-      "tTopicRecord\022&\n\007wf_spec\030\001 \001(\0132\023.littleho" +
-      "rse.WfSpecH\000\022(\n\010task_def\030\002 \001(\0132\024.littleh" +
-      "orse.TaskDefH\000\022;\n\022external_event_def\030\003 \001" +
-      "(\0132\035.littlehorse.ExternalEventDefH\000\022;\n\022w" +
-      "orkflow_event_def\030\004 \001(\0132\035.littlehorse.Wo" +
-      "rkflowEventDefH\000\0221\n\ruser_task_def\030\005 \001(\0132" +
-      "\030.littlehorse.UserTaskDefH\000B\021\n\017metadata_" +
-      "recordBM\n\037io.littlehorse.sdk.common.prot" +
-      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
-      "Protob\006proto3"
+      "f.Timestamp\022(\n\010task_run\030\002 \001(\0132\024.littleho" +
+      "rse.TaskRunH\000\0224\n\016workflow_event\030\003 \001(\0132\032." +
+      "littlehorse.WorkflowEventH\000\022$\n\006wf_run\030\004 " +
+      "\001(\0132\022.littlehorse.WfRunH\000\0221\n\ruser_task_r" +
+      "un\030\005 \001(\0132\030.littlehorse.UserTaskRunH\000\022)\n\010" +
+      "variable\030\006 \001(\0132\025.littlehorse.VariableH\000\022" +
+      "4\n\016external_event\030\007 \001(\0132\032.littlehorse.Ex" +
+      "ternalEventH\000B\t\n\007payload\"\255\002\n\031MetadataOut" +
+      "putTopicRecord\022&\n\007wf_spec\030\001 \001(\0132\023.little" +
+      "horse.WfSpecH\000\022(\n\010task_def\030\002 \001(\0132\024.littl" +
+      "ehorse.TaskDefH\000\022;\n\022external_event_def\030\003" +
+      " \001(\0132\035.littlehorse.ExternalEventDefH\000\022;\n" +
+      "\022workflow_event_def\030\004 \001(\0132\035.littlehorse." +
+      "WorkflowEventDefH\000\0221\n\ruser_task_def\030\005 \001(" +
+      "\0132\030.littlehorse.UserTaskDefH\000B\021\n\017metadat" +
+      "a_recordBM\n\037io.littlehorse.sdk.common.pr" +
+      "otoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Commo" +
+      "n.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -122,45 +78,9 @@ public final class OutputTopic {
     internal_static_littlehorse_OutputTopicRecord_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_OutputTopicRecord_descriptor,
-        new java.lang.String[] { "Timestamp", "TaskRunExecuted", "WorkflowEvent", "WfRun", "UserTaskRun", "VariableUpdate", "ExternalEvent", "Payload", });
-    internal_static_littlehorse_TaskRunExecutedRecord_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_littlehorse_TaskRunExecutedRecord_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_TaskRunExecutedRecord_descriptor,
-        new java.lang.String[] { "TaskRun", });
-    internal_static_littlehorse_WorkflowEventUpdateRecord_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_littlehorse_WorkflowEventUpdateRecord_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_WorkflowEventUpdateRecord_descriptor,
-        new java.lang.String[] { "WorkflowEvent", "WfSpecId", });
-    internal_static_littlehorse_WfRunUpdateRecord_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_littlehorse_WfRunUpdateRecord_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_WfRunUpdateRecord_descriptor,
-        new java.lang.String[] { "WfRun", });
-    internal_static_littlehorse_ExternalEventUpdateRecord_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_littlehorse_ExternalEventUpdateRecord_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_ExternalEventUpdateRecord_descriptor,
-        new java.lang.String[] { "ExternalEvent", });
-    internal_static_littlehorse_UserTaskRunUpdateRecord_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_littlehorse_UserTaskRunUpdateRecord_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_UserTaskRunUpdateRecord_descriptor,
-        new java.lang.String[] { "UserTaskRun", });
-    internal_static_littlehorse_VariableUpdateRecord_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_littlehorse_VariableUpdateRecord_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_VariableUpdateRecord_descriptor,
-        new java.lang.String[] { "Variable", });
+        new java.lang.String[] { "Timestamp", "TaskRun", "WorkflowEvent", "WfRun", "UserTaskRun", "Variable", "ExternalEvent", "Payload", });
     internal_static_littlehorse_MetadataOutputTopicRecord_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_MetadataOutputTopicRecord_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_MetadataOutputTopicRecord_descriptor,

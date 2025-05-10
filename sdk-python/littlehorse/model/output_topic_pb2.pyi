@@ -15,60 +15,22 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class OutputTopicRecord(_message.Message):
-    __slots__ = ["timestamp", "task_run_executed", "workflow_event", "wf_run", "user_task_run", "variable_update", "external_event"]
+    __slots__ = ["timestamp", "task_run", "workflow_event", "wf_run", "user_task_run", "variable", "external_event"]
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
-    TASK_RUN_EXECUTED_FIELD_NUMBER: _ClassVar[int]
+    TASK_RUN_FIELD_NUMBER: _ClassVar[int]
     WORKFLOW_EVENT_FIELD_NUMBER: _ClassVar[int]
     WF_RUN_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_RUN_FIELD_NUMBER: _ClassVar[int]
-    VARIABLE_UPDATE_FIELD_NUMBER: _ClassVar[int]
+    VARIABLE_FIELD_NUMBER: _ClassVar[int]
     EXTERNAL_EVENT_FIELD_NUMBER: _ClassVar[int]
     timestamp: _timestamp_pb2.Timestamp
-    task_run_executed: TaskRunExecutedRecord
-    workflow_event: WorkflowEventUpdateRecord
-    wf_run: WfRunUpdateRecord
-    user_task_run: UserTaskRunUpdateRecord
-    variable_update: VariableUpdateRecord
-    external_event: ExternalEventUpdateRecord
-    def __init__(self, timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_run_executed: _Optional[_Union[TaskRunExecutedRecord, _Mapping]] = ..., workflow_event: _Optional[_Union[WorkflowEventUpdateRecord, _Mapping]] = ..., wf_run: _Optional[_Union[WfRunUpdateRecord, _Mapping]] = ..., user_task_run: _Optional[_Union[UserTaskRunUpdateRecord, _Mapping]] = ..., variable_update: _Optional[_Union[VariableUpdateRecord, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventUpdateRecord, _Mapping]] = ...) -> None: ...
-
-class TaskRunExecutedRecord(_message.Message):
-    __slots__ = ["task_run"]
-    TASK_RUN_FIELD_NUMBER: _ClassVar[int]
     task_run: _task_run_pb2.TaskRun
-    def __init__(self, task_run: _Optional[_Union[_task_run_pb2.TaskRun, _Mapping]] = ...) -> None: ...
-
-class WorkflowEventUpdateRecord(_message.Message):
-    __slots__ = ["workflow_event", "wf_spec_id"]
-    WORKFLOW_EVENT_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     workflow_event: _workflow_event_pb2.WorkflowEvent
-    wf_spec_id: _object_id_pb2.WfSpecId
-    def __init__(self, workflow_event: _Optional[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
-
-class WfRunUpdateRecord(_message.Message):
-    __slots__ = ["wf_run"]
-    WF_RUN_FIELD_NUMBER: _ClassVar[int]
     wf_run: _wf_run_pb2.WfRun
-    def __init__(self, wf_run: _Optional[_Union[_wf_run_pb2.WfRun, _Mapping]] = ...) -> None: ...
-
-class ExternalEventUpdateRecord(_message.Message):
-    __slots__ = ["external_event"]
-    EXTERNAL_EVENT_FIELD_NUMBER: _ClassVar[int]
-    external_event: _external_event_pb2.ExternalEvent
-    def __init__(self, external_event: _Optional[_Union[_external_event_pb2.ExternalEvent, _Mapping]] = ...) -> None: ...
-
-class UserTaskRunUpdateRecord(_message.Message):
-    __slots__ = ["user_task_run"]
-    USER_TASK_RUN_FIELD_NUMBER: _ClassVar[int]
     user_task_run: _user_tasks_pb2.UserTaskRun
-    def __init__(self, user_task_run: _Optional[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]] = ...) -> None: ...
-
-class VariableUpdateRecord(_message.Message):
-    __slots__ = ["variable"]
-    VARIABLE_FIELD_NUMBER: _ClassVar[int]
     variable: _variable_pb2.Variable
-    def __init__(self, variable: _Optional[_Union[_variable_pb2.Variable, _Mapping]] = ...) -> None: ...
+    external_event: _external_event_pb2.ExternalEvent
+    def __init__(self, timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_run: _Optional[_Union[_task_run_pb2.TaskRun, _Mapping]] = ..., workflow_event: _Optional[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]] = ..., wf_run: _Optional[_Union[_wf_run_pb2.WfRun, _Mapping]] = ..., user_task_run: _Optional[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]] = ..., variable: _Optional[_Union[_variable_pb2.Variable, _Mapping]] = ..., external_event: _Optional[_Union[_external_event_pb2.ExternalEvent, _Mapping]] = ...) -> None: ...
 
 class MetadataOutputTopicRecord(_message.Message):
     __slots__ = ["wf_spec", "task_def", "external_event_def", "workflow_event_def", "user_task_def"]
