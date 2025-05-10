@@ -30,13 +30,12 @@ message StructDef {
 // An `InlineStructDef` is the actual representation of the Schema.
 message InlineStructDef {
   // The fields in this schema.
-  repeated StructFieldDef fields = 1;
+  map<string, StructFieldDef> fields = 1;
 }
 
 // A `SchemaFieldDef` defines a field inside a `StructDef`.
 message StructFieldDef {
-  // The name of the field.
-  string name = 1;
+  reserved 1;
 
   // Whether the field is optional / nullable.
   bool optional = 2;

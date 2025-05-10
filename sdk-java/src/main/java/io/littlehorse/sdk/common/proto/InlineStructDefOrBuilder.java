@@ -12,24 +12,7 @@ public interface InlineStructDefOrBuilder extends
    * The fields in this schema.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructFieldDef fields = 1;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.StructFieldDef> 
-      getFieldsList();
-  /**
-   * <pre>
-   * The fields in this schema.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.StructFieldDef fields = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.StructFieldDef getFields(int index);
-  /**
-   * <pre>
-   * The fields in this schema.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.StructFieldDef fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructFieldDef&gt; fields = 1;</code>
    */
   int getFieldsCount();
   /**
@@ -37,17 +20,44 @@ public interface InlineStructDefOrBuilder extends
    * The fields in this schema.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructFieldDef fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructFieldDef&gt; fields = 1;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.StructFieldDefOrBuilder> 
-      getFieldsOrBuilderList();
+  boolean containsFields(
+      java.lang.String key);
+  /**
+   * Use {@link #getFieldsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructFieldDef>
+  getFields();
   /**
    * <pre>
    * The fields in this schema.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructFieldDef fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructFieldDef&gt; fields = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.StructFieldDefOrBuilder getFieldsOrBuilder(
-      int index);
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructFieldDef>
+  getFieldsMap();
+  /**
+   * <pre>
+   * The fields in this schema.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.StructFieldDef&gt; fields = 1;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.StructFieldDef getFieldsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.StructFieldDef defaultValue);
+  /**
+   * <pre>
+   * The fields in this schema.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.StructFieldDef&gt; fields = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructFieldDef getFieldsOrThrow(
+      java.lang.String key);
 }

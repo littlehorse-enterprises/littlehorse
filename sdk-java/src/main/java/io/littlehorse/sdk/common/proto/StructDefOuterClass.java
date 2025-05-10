@@ -25,6 +25,11 @@ public final class StructDefOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_InlineStructDef_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_InlineStructDef_FieldsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_StructFieldDef_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -45,13 +50,15 @@ public final class StructDefOuterClass {
       "scription\030\002 \001(\tH\000\210\001\001\022.\n\ncreated_at\030\003 \001(\013" +
       "2\032.google.protobuf.Timestamp\0220\n\nstruct_d" +
       "ef\030\004 \001(\0132\034.littlehorse.InlineStructDefB\016" +
-      "\n\014_description\">\n\017InlineStructDef\022+\n\006fie" +
-      "lds\030\001 \003(\0132\033.littlehorse.StructFieldDef\"a" +
-      "\n\016StructFieldDef\022\014\n\004name\030\001 \001(\t\022\020\n\010option" +
-      "al\030\002 \001(\010\022/\n\nfield_type\030\003 \001(\0132\033.littlehor" +
-      "se.TypeDefinitionBM\n\037io.littlehorse.sdk." +
-      "common.protoP\001Z\t.;lhproto\252\002\034LittleHorse." +
-      "Sdk.Common.Protob\006proto3"
+      "\n\014_description\"\227\001\n\017InlineStructDef\0228\n\006fi" +
+      "elds\030\001 \003(\0132(.littlehorse.InlineStructDef" +
+      ".FieldsEntry\032J\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022*\n\005value\030\002 \001(\0132\033.littlehorse.StructFiel" +
+      "dDef:\0028\001\"Y\n\016StructFieldDef\022\020\n\010optional\030\002" +
+      " \001(\010\022/\n\nfield_type\030\003 \001(\0132\033.littlehorse.T" +
+      "ypeDefinitionJ\004\010\001\020\002BM\n\037io.littlehorse.sd" +
+      "k.common.protoP\001Z\t.;lhproto\252\002\034LittleHors" +
+      "e.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -72,12 +79,18 @@ public final class StructDefOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_InlineStructDef_descriptor,
         new java.lang.String[] { "Fields", });
+    internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor =
+      internal_static_littlehorse_InlineStructDef_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_InlineStructDef_FieldsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_StructFieldDef_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_StructFieldDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_StructFieldDef_descriptor,
-        new java.lang.String[] { "Name", "Optional", "FieldType", });
+        new java.lang.String[] { "Optional", "FieldType", });
     io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
     com.google.protobuf.TimestampProto.getDescriptor();

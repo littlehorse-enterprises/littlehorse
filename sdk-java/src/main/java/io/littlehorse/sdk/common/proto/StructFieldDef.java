@@ -20,7 +20,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private StructFieldDef() {
-    name_ = "";
   }
 
   @java.lang.Override
@@ -41,53 +40,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StructDefOuterClass.internal_static_littlehorse_StructFieldDef_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.StructFieldDef.class, io.littlehorse.sdk.common.proto.StructFieldDef.Builder.class);
-  }
-
-  public static final int NAME_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object name_ = "";
-  /**
-   * <pre>
-   * The name of the field.
-   * </pre>
-   *
-   * <code>string name = 1;</code>
-   * @return The name.
-   */
-  @java.lang.Override
-  public java.lang.String getName() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      name_ = s;
-      return s;
-    }
-  }
-  /**
-   * <pre>
-   * The name of the field.
-   * </pre>
-   *
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getNameBytes() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      name_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
   }
 
   public static final int OPTIONAL_FIELD_NUMBER = 2;
@@ -157,9 +109,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-    }
     if (optional_ != false) {
       output.writeBool(2, optional_);
     }
@@ -175,9 +124,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-    }
     if (optional_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(2, optional_);
@@ -201,8 +147,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.StructFieldDef other = (io.littlehorse.sdk.common.proto.StructFieldDef) obj;
 
-    if (!getName()
-        .equals(other.getName())) return false;
     if (getOptional()
         != other.getOptional()) return false;
     if (hasFieldType() != other.hasFieldType()) return false;
@@ -221,8 +165,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getName().hashCode();
     hash = (37 * hash) + OPTIONAL_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getOptional());
@@ -365,7 +307,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      name_ = "";
       optional_ = false;
       fieldType_ = null;
       if (fieldTypeBuilder_ != null) {
@@ -406,12 +347,9 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.StructFieldDef result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.name_ = name_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.optional_ = optional_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.fieldType_ = fieldTypeBuilder_ == null
             ? fieldType_
             : fieldTypeBuilder_.build();
@@ -462,11 +400,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.StructFieldDef other) {
       if (other == io.littlehorse.sdk.common.proto.StructFieldDef.getDefaultInstance()) return this;
-      if (!other.getName().isEmpty()) {
-        name_ = other.name_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
       if (other.getOptional() != false) {
         setOptional(other.getOptional());
       }
@@ -499,21 +432,16 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 10: {
-              name_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
             case 16: {
               optional_ = input.readBool();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000001;
               break;
             } // case 16
             case 26: {
               input.readMessage(
                   getFieldTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
               break;
             } // case 26
             default: {
@@ -532,98 +460,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     private int bitField0_;
-
-    private java.lang.Object name_ = "";
-    /**
-     * <pre>
-     * The name of the field.
-     * </pre>
-     *
-     * <code>string name = 1;</code>
-     * @return The name.
-     */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <pre>
-     * The name of the field.
-     * </pre>
-     *
-     * <code>string name = 1;</code>
-     * @return The bytes for name.
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <pre>
-     * The name of the field.
-     * </pre>
-     *
-     * <code>string name = 1;</code>
-     * @param value The name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      name_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The name of the field.
-     * </pre>
-     *
-     * <code>string name = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearName() {
-      name_ = getDefaultInstance().getName();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The name of the field.
-     * </pre>
-     *
-     * <code>string name = 1;</code>
-     * @param value The bytes for name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      name_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
 
     private boolean optional_ ;
     /**
@@ -650,7 +486,7 @@ private static final long serialVersionUID = 0L;
     public Builder setOptional(boolean value) {
 
       optional_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -663,7 +499,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearOptional() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000001);
       optional_ = false;
       onChanged();
       return this;
@@ -681,7 +517,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the fieldType field is set.
      */
     public boolean hasFieldType() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <pre>
@@ -714,7 +550,7 @@ private static final long serialVersionUID = 0L;
       } else {
         fieldTypeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -732,7 +568,7 @@ private static final long serialVersionUID = 0L;
       } else {
         fieldTypeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -745,7 +581,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeFieldType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
       if (fieldTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           fieldType_ != null &&
           fieldType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
           getFieldTypeBuilder().mergeFrom(value);
@@ -755,7 +591,7 @@ private static final long serialVersionUID = 0L;
       } else {
         fieldTypeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -767,7 +603,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.TypeDefinition field_type = 3;</code>
      */
     public Builder clearFieldType() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       fieldType_ = null;
       if (fieldTypeBuilder_ != null) {
         fieldTypeBuilder_.dispose();
@@ -784,7 +620,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.TypeDefinition field_type = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getFieldTypeBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getFieldTypeFieldBuilder().getBuilder();
     }
