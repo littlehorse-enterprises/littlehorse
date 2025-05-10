@@ -3,12 +3,10 @@ package io.littlehorse.common.model.getable.core.externalevent;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
-import io.littlehorse.common.model.outputtopic.ExternalEventUpdateRecordModel;
-import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
@@ -23,7 +21,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
-public class ExternalEventModel extends CoreGetable<ExternalEvent> {
+public class ExternalEventModel extends CoreOutputTopicGetable<ExternalEvent> {
 
     private ExternalEventIdModel id;
     private Date createdAt;
@@ -86,13 +84,6 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
         if (p.hasNodeRunPosition()) {
             nodeRunPosition = p.getNodeRunPosition();
         }
-    }
-
-    @Override
-    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
-        ExternalEventUpdateRecordModel out = new ExternalEventUpdateRecordModel();
-        out.setGetable(this);
-        return Optional.of(out);
     }
 
     public ExternalEvent.Builder toProto() {

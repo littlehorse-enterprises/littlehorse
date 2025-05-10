@@ -3,6 +3,13 @@ package io.littlehorse.common.model.outputtopic;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.OutputTopicRecord;
 import io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase;
@@ -20,19 +27,19 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
     private Timestamp timestamp;
 
     private PayloadCase payloadCase;
-    private WfRunUpdateRecordModel wfRunUpdate;
-    private ExternalEventUpdateRecordModel externalEventUpdate;
-    private WorkflowEventUpdateRecordModel workflowEventUpdate;
-    private UserTaskRunUpdateRecordModel userTaskRunUpdate;
-    private VariableUpdateRecordModel variableUpdate;
-    private TaskRunExecutedRecordModel taskRunUpdate;
+    private WfRunModel wfRun;
+    private ExternalEventModel externalEvent;
+    private WorkflowEventModel workflowEvent;
+    private UserTaskRunModel userTaskRun;
+    private VariableModel variable;
+    private TaskRunModel taskRun;
 
     public OutputTopicRecordModel() {
         this.timestamp = LHLibUtil.fromDate(new Date());
     }
 
-    public OutputTopicRecordModel(GenericOutputTopicRecordModel thing) {
-        this();
+    public OutputTopicRecordModel(CoreOutputTopicGetable<?> thing, Date time) {
+        this.timestamp = LHLibUtil.fromDate(time);
         setThing(thing);
     }
 
@@ -47,22 +54,22 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
 
         switch (payloadCase) {
             case WF_RUN:
-                out.setWfRun(wfRunUpdate.toProto());
+                out.setWfRun(wfRun.toProto());
                 break;
             case USER_TASK_RUN:
-                out.setUserTaskRun(userTaskRunUpdate.toProto());
+                out.setUserTaskRun(userTaskRun.toProto());
                 break;
             case EXTERNAL_EVENT:
-                out.setExternalEvent(externalEventUpdate.toProto());
+                out.setExternalEvent(externalEvent.toProto());
                 break;
-            case TASK_RUN_EXECUTED:
-                out.setTaskRunExecuted(taskRunUpdate.toProto());
+            case TASK_RUN:
+                out.setTaskRun(taskRun.toProto());
                 break;
             case WORKFLOW_EVENT:
-                out.setWorkflowEvent(workflowEventUpdate.toProto());
+                out.setWorkflowEvent(workflowEvent.toProto());
                 break;
-            case VARIABLE_UPDATE:
-                out.setVariableUpdate(variableUpdate.toProto());
+            case VARIABLE:
+                out.setVariable(variable.toProto());
                 break;
             case PAYLOAD_NOT_SET:
         }
@@ -79,83 +86,78 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         switch (p.getPayloadCase()) {
             case WF_RUN:
                 payloadCase = PayloadCase.WF_RUN;
-                wfRunUpdate = LHSerializable.fromProto(p.getWfRun(), WfRunUpdateRecordModel.class, ignored);
+                wfRun = LHSerializable.fromProto(p.getWfRun(), WfRunModel.class, ignored);
                 break;
             case USER_TASK_RUN:
                 payloadCase = PayloadCase.USER_TASK_RUN;
-                userTaskRunUpdate =
-                        LHSerializable.fromProto(p.getUserTaskRun(), UserTaskRunUpdateRecordModel.class, ignored);
+                userTaskRun = LHSerializable.fromProto(p.getUserTaskRun(), UserTaskRunModel.class, ignored);
                 break;
             case EXTERNAL_EVENT:
                 payloadCase = PayloadCase.EXTERNAL_EVENT;
-                externalEventUpdate =
-                        LHSerializable.fromProto(p.getExternalEvent(), ExternalEventUpdateRecordModel.class, ignored);
+                externalEvent = LHSerializable.fromProto(p.getExternalEvent(), ExternalEventModel.class, ignored);
                 break;
-            case TASK_RUN_EXECUTED:
-                payloadCase = PayloadCase.TASK_RUN_EXECUTED;
-                taskRunUpdate =
-                        LHSerializable.fromProto(p.getTaskRunExecuted(), TaskRunExecutedRecordModel.class, ignored);
+            case TASK_RUN:
+                payloadCase = PayloadCase.TASK_RUN;
+                taskRun = LHSerializable.fromProto(p.getTaskRun(), TaskRunModel.class, ignored);
                 break;
             case WORKFLOW_EVENT:
                 payloadCase = PayloadCase.WORKFLOW_EVENT;
-                workflowEventUpdate =
-                        LHSerializable.fromProto(p.getWorkflowEvent(), WorkflowEventUpdateRecordModel.class, ignored);
+                workflowEvent = LHSerializable.fromProto(p.getWorkflowEvent(), WorkflowEventModel.class, ignored);
                 break;
-            case VARIABLE_UPDATE:
-                payloadCase = PayloadCase.VARIABLE_UPDATE;
-                variableUpdate =
-                        LHSerializable.fromProto(p.getVariableUpdate(), VariableUpdateRecordModel.class, ignored);
+            case VARIABLE:
+                payloadCase = PayloadCase.VARIABLE;
+                variable = LHSerializable.fromProto(p.getVariable(), VariableModel.class, ignored);
                 break;
             case PAYLOAD_NOT_SET:
         }
     }
 
     public String getPartitionKey() {
-        return getSubrecord().getPartitionKey();
+        return getSubrecord().getPartitionKey().get();
     }
 
-    public GenericOutputTopicRecordModel getSubrecord() {
+    public CoreOutputTopicGetable<?> getSubrecord() {
         switch (payloadCase) {
             case WF_RUN:
-                return wfRunUpdate;
-            case TASK_RUN_EXECUTED:
-                return taskRunUpdate;
+                return wfRun;
+            case TASK_RUN:
+                return taskRun;
             case EXTERNAL_EVENT:
-                return externalEventUpdate;
+                return externalEvent;
             case USER_TASK_RUN:
-                return userTaskRunUpdate;
+                return userTaskRun;
             case WORKFLOW_EVENT:
-                return workflowEventUpdate;
-            case VARIABLE_UPDATE:
-                return variableUpdate;
+                return workflowEvent;
+            case VARIABLE:
+                return variable;
             case PAYLOAD_NOT_SET:
         }
         throw new IllegalStateException("Forgot to add new output topic record type here");
     }
 
-    public void setThing(GenericOutputTopicRecordModel thing) {
+    public void setThing(CoreOutputTopicGetable<?> thing) {
         if (thing == null) {
             throw new IllegalArgumentException();
         }
 
-        if (WfRunUpdateRecordModel.class.isAssignableFrom(thing.getClass())) {
+        if (WfRunModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.WF_RUN;
-            this.wfRunUpdate = (WfRunUpdateRecordModel) thing;
-        } else if (UserTaskRunUpdateRecordModel.class.isAssignableFrom(thing.getClass())) {
+            this.wfRun = (WfRunModel) thing;
+        } else if (UserTaskRunModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.USER_TASK_RUN;
-            this.userTaskRunUpdate = (UserTaskRunUpdateRecordModel) thing;
-        } else if (ExternalEventUpdateRecordModel.class.isAssignableFrom(thing.getClass())) {
+            this.userTaskRun = (UserTaskRunModel) thing;
+        } else if (ExternalEventModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.EXTERNAL_EVENT;
-            this.externalEventUpdate = (ExternalEventUpdateRecordModel) thing;
-        } else if (TaskRunExecutedRecordModel.class.isAssignableFrom(thing.getClass())) {
-            this.payloadCase = PayloadCase.TASK_RUN_EXECUTED;
-            this.taskRunUpdate = (TaskRunExecutedRecordModel) thing;
-        } else if (WorkflowEventUpdateRecordModel.class.isAssignableFrom(thing.getClass())) {
+            this.externalEvent = (ExternalEventModel) thing;
+        } else if (TaskRunModel.class.isAssignableFrom(thing.getClass())) {
+            this.payloadCase = PayloadCase.TASK_RUN;
+            this.taskRun = (TaskRunModel) thing;
+        } else if (WorkflowEventModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.WORKFLOW_EVENT;
-            this.workflowEventUpdate = (WorkflowEventUpdateRecordModel) thing;
-        } else if (VariableUpdateRecordModel.class.isAssignableFrom(thing.getClass())) {
-            this.payloadCase = PayloadCase.VARIABLE_UPDATE;
-            this.variableUpdate = (VariableUpdateRecordModel) thing;
+            this.workflowEvent = (WorkflowEventModel) thing;
+        } else if (VariableModel.class.isAssignableFrom(thing.getClass())) {
+            this.payloadCase = PayloadCase.VARIABLE;
+            this.variable = (VariableModel) thing;
         } else {
             throw new IllegalArgumentException("Unrecognized Output Topic Event thing: " + thing.getClass());
         }

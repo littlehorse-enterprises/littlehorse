@@ -3,13 +3,11 @@ package io.littlehorse.common.model.getable.core.events;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
-import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
-import io.littlehorse.common.model.outputtopic.WorkflowEventUpdateRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -24,7 +22,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
-public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
+public class WorkflowEventModel extends CoreOutputTopicGetable<WorkflowEvent> {
 
     private WorkflowEventIdModel id;
     private VariableValueModel content;
@@ -71,13 +69,6 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
     @Override
     public WorkflowEventIdModel getObjectId() {
         return id;
-    }
-
-    @Override
-    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
-        WorkflowEventUpdateRecordModel out = new WorkflowEventUpdateRecordModel();
-        out.setGetable(this);
-        return Optional.of(out);
     }
 
     @Override

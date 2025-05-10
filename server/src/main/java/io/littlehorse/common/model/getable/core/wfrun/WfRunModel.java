@@ -10,7 +10,7 @@ import io.littlehorse.common.exceptions.MissingThreadRunException;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
@@ -30,8 +30,6 @@ import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicy
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
-import io.littlehorse.common.model.outputtopic.WfRunUpdateRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -65,7 +63,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Setter
 @Getter
-public class WfRunModel extends CoreGetable<WfRun> {
+public class WfRunModel extends CoreOutputTopicGetable<WfRun> {
 
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
@@ -143,13 +141,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
             }
         }
         return List.of();
-    }
-
-    @Override
-    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
-        WfRunUpdateRecordModel out = new WfRunUpdateRecordModel();
-        out.setGetable(this);
-        return Optional.of(out);
     }
 
     public WfSpecModel getWfSpec() {

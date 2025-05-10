@@ -7,7 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
 import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
@@ -27,8 +27,6 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
-import io.littlehorse.common.model.outputtopic.UserTaskRunUpdateRecordModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -62,7 +60,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Getter
 @Setter
-public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
+public class UserTaskRunModel extends CoreOutputTopicGetable<UserTaskRun> {
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
@@ -139,13 +137,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     @Override
     public UserTaskRunIdModel getObjectId() {
         return id;
-    }
-
-    @Override
-    public Optional<GenericOutputTopicRecordModel> getOutputTopicUpdate() {
-        UserTaskRunUpdateRecordModel out = new UserTaskRunUpdateRecordModel();
-        out.setGetable(this);
-        return Optional.of(out);
     }
 
     @Override

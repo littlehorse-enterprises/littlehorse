@@ -4,15 +4,17 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.outputtopic.GenericOutputTopicRecordModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -182,6 +184,9 @@ public class GetableManager extends ReadOnlyGetableManager {
     }
 
     public void commit() {
+        List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
+        TenantModel tenant = ctx.metadataManager().get(ctx.authorization().tenantId());
+
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore<?, ?> entity = entry.getValue();
@@ -194,17 +199,9 @@ public class GetableManager extends ReadOnlyGetableManager {
                 store.put(new StoredGetable<>(getable));
                 tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
 
-                TenantModel tenant =
-                        ctx.metadataManager().get(ctx.authorization().tenantId());
-                if (tenant.getOutputTopicConfig() != null && getable instanceof CoreGetable) {
-                    CoreGetable<?> coreGetable = (CoreGetable<?>) getable;
-                    if (coreGetable.shouldUpdateToOutputTopic(tenant.getOutputTopicConfig(), ctx.metadataManager())) {
-                        Optional<GenericOutputTopicRecordModel> outputTopicUpdate = coreGetable.getOutputTopicUpdate();
-                        if (outputTopicUpdate.isPresent()) {
-                            OutputTopicRecordModel toForward = new OutputTopicRecordModel(outputTopicUpdate.get());
-                            ctx.forward(toForward, tenant.getId());
-                        }
-                    }
+                if (tenant.getOutputTopicConfig() != null && getable instanceof CoreOutputTopicGetable) {
+                    CoreOutputTopicGetable<?> coreGetable = (CoreOutputTopicGetable<?>) getable;
+                    outputTopicRecords.add(new OutputTopicRecordModel(coreGetable, command.getTime()));
                 }
 
             } else if (entity.isDeletion()) {
@@ -212,6 +209,25 @@ public class GetableManager extends ReadOnlyGetableManager {
                 store.delete(storeableKey, StoreableType.STORED_GETABLE);
                 tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
             }
+        }
+
+        // For any WfRun record, if the status is running, we want it to be the first
+        // in the list. Otherwise, we want the WfRun to be the last in the list.
+        outputTopicRecords.sort((o1, o2) -> {
+            CoreGetable<?> getable1 = o1.getSubrecord();
+            CoreGetable<?> getable2 = o2.getSubrecord();
+            if (getable1 instanceof WfRunModel) {
+                WfRunModel wfRun1 = (WfRunModel) getable1;
+                return wfRun1.getStatus() == LHStatus.RUNNING ? -1 : 1;
+            } else if (getable2 instanceof WfRunModel) {
+                WfRunModel wfRun2 = (WfRunModel) getable2;
+                return wfRun2.getStatus() == LHStatus.RUNNING ? 1 : -1;
+            }
+            return 0;
+        });
+
+        for (OutputTopicRecordModel record : outputTopicRecords) {
+            ctx.forward(record, tenant.getId());
         }
 
         uncommittedChanges.clear();
