@@ -43,6 +43,14 @@ export interface TaskDefId {
   name: string;
 }
 
+/** Unique identifier for a `StructDef`. */
+export interface StructDefId {
+  /** The name of the `StructDef`. */
+  name: string;
+  /** The version of the `StructDef`. */
+  version: number;
+}
+
 /** ID for ExternalEventDef */
 export interface ExternalEventDefId {
   /** ExternalEventDef's are uniquedly identified by their name and version. */
@@ -328,6 +336,62 @@ export const TaskDefId = {
   fromPartial(object: DeepPartial<TaskDefId>): TaskDefId {
     const message = createBaseTaskDefId();
     message.name = object.name ?? "";
+    return message;
+  },
+};
+
+function createBaseStructDefId(): StructDefId {
+  return { name: "", version: 0 };
+}
+
+export const StructDefId = {
+  encode(message: StructDefId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.version !== 0) {
+      writer.uint32(16).int32(message.version);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StructDefId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStructDefId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.version = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<StructDefId>): StructDefId {
+    return StructDefId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StructDefId>): StructDefId {
+    const message = createBaseStructDefId();
+    message.name = object.name ?? "";
+    message.version = object.version ?? 0;
     return message;
   },
 };
