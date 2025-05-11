@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.core.init.InitializationLogModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
@@ -48,7 +49,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     private final MetadataCache metadataCache;
     private final LHProcessingExceptionHandler exceptionHandler;
 
-    private ProcessorContext<String, CommandProcessorOutput> ctx;
+    private ProcessorContext<String, CommandProcessorOutput> streamsContext;
     private KeyValueStore<String, Bytes> metadataStore;
 
     public MetadataProcessor(LHServerConfig config, LHServer server, MetadataCache metadataCache) {
@@ -59,7 +60,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     }
 
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
-        this.ctx = ctx;
+        this.streamsContext = ctx;
         this.metadataStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
 
         maybeInitializeStartupResources();
@@ -76,7 +77,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         TenantScopedStore tenantScopedStore =
                 TenantScopedStore.newInstance(metadataStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), context);
 
-        MetadataManager metadataManager = new MetadataManager(clusterStore, tenantScopedStore, metadataCache);
+        MetadataManager metadataManager = new MetadataManager(clusterStore, tenantScopedStore, metadataCache, null);
 
         // If server has not been initialized..
         if (storedInitializationLogModel == null) {
@@ -99,6 +100,8 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
             log.info(initializationLogModel.toString());
         }
     }
+
+    private void observeMetadataGetable(MetadataGetable<?> getable, TenantIdModel tenant) {}
 
     // Gets the anonymous Principal configuration. If one does not exist, create a new one.
     public Tenant getDefaultTenant(BackgroundContext context, MetadataManager metadataManager) {
@@ -171,7 +174,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 // WfSpec is much less common than running a WfRun), so calling a premature
                 // commit will not impact performance of the rest of the application very
                 // often.
-                ctx.commit();
+                streamsContext.commit();
             }
         } catch (Exception exn) {
             throw new MetadataCommandException(exn, command);
@@ -180,6 +183,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     public MetadataCommandExecution buildContext(final Record<String, MetadataCommand> record) {
         Headers recordMetadata = record.headers();
-        return new MetadataCommandExecution(recordMetadata, ctx, metadataCache, config, record.value());
+        return new MetadataCommandExecution(recordMetadata, streamsContext, metadataCache, config, record.value());
     }
 }
