@@ -3,12 +3,14 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.model.outputtopic.MetadataOutputTopicRecordModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
@@ -43,12 +45,15 @@ public class MetadataCommandExecution implements ExecutionContext {
             MetadataCommand currentCommand) {
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
+        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ClusterScopedStore.newInstance(nativeMetadataStore, this),
-                TenantScopedStore.newInstance(
-                        nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this),
-                metadataCache);
+                TenantScopedStore.newInstance(nativeMetadataStore, tenantId, this),
+                metadataCache,
+                (getable) -> {
+                    maybeForwardMetadataGetableToOutputTopic(tenantId, getable);
+                });
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
@@ -94,6 +99,19 @@ public class MetadataCommandExecution implements ExecutionContext {
                 System.currentTimeMillis(),
                 HeadersUtil.metadataHeadersFor(tenantId, principalId));
 
+        this.processorContext.forward(out);
+    }
+
+    private void maybeForwardMetadataGetableToOutputTopic(TenantIdModel tenantId, MetadataGetable<?> getable) {
+        TenantModel tenant = metadataManager.get(tenantId);
+        if (tenant.getOutputTopicConfig() == null) return;
+
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.topic = lhConfig.getMetadataOutputTopicName(tenantId);
+        cpo.payload = new MetadataOutputTopicRecordModel(getable);
+        cpo.partitionKey = "not-the-droids-you-are-looking-for";
+
+        Record<String, CommandProcessorOutput> out = new Record<>(cpo.partitionKey, cpo, System.currentTimeMillis());
         this.processorContext.forward(out);
     }
 

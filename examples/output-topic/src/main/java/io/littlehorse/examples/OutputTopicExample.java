@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -94,16 +93,21 @@ public class OutputTopicExample {
         Properties kafkaProps = new Properties();
         kafkaProps.put("bootstrap.servers", "localhost:9092");
         kafkaProps.put("group.id", "obiwan");
+        kafkaProps.put("auto.offset.reset", "earliest");
         kafkaProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, OutputTopicRecordDeserializer.class);
         kafkaProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, Serdes.String().deserializer().getClass());
-        
-        KafkaConsumer<String, OutputTopicRecord> consumer = new KafkaConsumer<>(kafkaProps);
-        String outputTopicName = "my-cluster--default--execution";
-        consumer.subscribe(List.of(outputTopicName));
 
+        KafkaConsumer<String, OutputTopicRecord> consumer = new KafkaConsumer<>(kafkaProps);
+
+        String outputTopicName = "my-cluster--default--execution";
+        String metadataOutputTopicName = "my-cluster--default--metadata";
+        consumer.subscribe(List.of(outputTopicName, metadataOutputTopicName));
+
+        Runtime.getRuntime().addShutdownHook(new Thread(consumer::close));
         while (true) {
             ConsumerRecords<String, OutputTopicRecord> records = consumer.poll(Duration.ofSeconds(5));
             for (ConsumerRecord<String, OutputTopicRecord> record : records) {
+                System.out.println("****** " + record.topic() + "*******");
                 System.out.println(LHLibUtil.protoToJson(record.value()));
             }
         }

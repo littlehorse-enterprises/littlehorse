@@ -182,7 +182,8 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
     }
 
-    private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(TenantModel tenant, String storeableKey, GetableToStore<U, T> entity) {
+    private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(
+            TenantModel tenant, String storeableKey, GetableToStore<U, T> entity) {
         if (entity.containsUpdate()) {
             T getable = entity.getObjectToStore();
             store.put(new StoredGetable<>(getable));
@@ -192,7 +193,8 @@ public class GetableManager extends ReadOnlyGetableManager {
                 CoreOutputTopicGetable<U> outputTopicCandidate = (CoreOutputTopicGetable<U>) getable;
                 U previouslyStoredProto = entity.getPreviouslyStoredProto();
 
-                if (outputTopicCandidate.shouldProduceToOutputTopic(previouslyStoredProto, ctx.metadataManager(), tenant.getOutputTopicConfig())) {
+                if (outputTopicCandidate.shouldProduceToOutputTopic(
+                        previouslyStoredProto, ctx.metadataManager(), tenant.getOutputTopicConfig())) {
                     return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
                 }
             }
