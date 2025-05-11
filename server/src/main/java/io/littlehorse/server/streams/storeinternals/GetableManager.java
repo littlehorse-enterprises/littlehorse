@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.StoreableType;
@@ -17,6 +18,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +30,14 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
-    private final ProcessorExecutionContext ctx;
+    private final ExecutionContext ctx;
 
     public GetableManager(
             final TenantScopedStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
-            final ProcessorExecutionContext executionContext) {
+            final ExecutionContext executionContext) {
         super(store);
         this.store = store;
         this.command = command;
@@ -236,7 +238,12 @@ public class GetableManager extends ReadOnlyGetableManager {
         });
 
         for (OutputTopicRecordModel record : outputTopicRecords) {
-            ctx.forward(record, tenant.getId());
+            // I **really** don't like this, but if we force the GetableManager constructor to take in
+            // a ProcessorExecutionContext, we break all the unit tests (unit tests are stupid anyways).
+            // It should not be possible to create a GetableManager outside of the core streams
+            // processor, so I don't even know why this class was written to allow a generic
+            // ExecutionContext (my suspicion is that it was to allow for unit tests).
+            ctx.castOnSupport(ProcessorExecutionContext.class).forward(record, tenant.getId());
         }
 
         uncommittedChanges.clear();

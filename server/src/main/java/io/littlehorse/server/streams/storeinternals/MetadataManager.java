@@ -23,6 +23,11 @@ public class MetadataManager extends ReadOnlyMetadataManager {
     private TenantScopedGetableCallback callback;
 
     public MetadataManager(
+            ClusterScopedStore clusterStore, TenantScopedStore tenantStore, MetadataCache metadataCache) {
+        this(clusterStore, tenantStore, metadataCache, null);
+    }
+
+    public MetadataManager(
             ClusterScopedStore clusterStore,
             TenantScopedStore tenantStore,
             MetadataCache metadataCache,
