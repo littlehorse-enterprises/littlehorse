@@ -83,6 +83,8 @@ public class UserTaskRunModelStorageManagerTest {
 
         // when(mockCoreDao.context()).thenReturn(testContext);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
+        getableManager =
+                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
