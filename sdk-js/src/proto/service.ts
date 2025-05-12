@@ -1593,7 +1593,11 @@ export interface ListMetricsRequest {
     | MetricSpecId
     | undefined;
   /** Filters by window length */
-  windowLength: Duration | undefined;
+  windowLength:
+    | Duration
+    | undefined;
+  /** Filters by aggregation type */
+  aggregationType: AggregationType;
 }
 
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
@@ -8036,7 +8040,7 @@ export const MetricList = {
 };
 
 function createBaseListMetricsRequest(): ListMetricsRequest {
-  return { metricSpecId: undefined, windowLength: undefined };
+  return { metricSpecId: undefined, windowLength: undefined, aggregationType: AggregationType.COUNT };
 }
 
 export const ListMetricsRequest = {
@@ -8046,6 +8050,9 @@ export const ListMetricsRequest = {
     }
     if (message.windowLength !== undefined) {
       Duration.encode(message.windowLength, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(24).int32(aggregationTypeToNumber(message.aggregationType));
     }
     return writer;
   },
@@ -8071,6 +8078,13 @@ export const ListMetricsRequest = {
 
           message.windowLength = Duration.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8091,6 +8105,7 @@ export const ListMetricsRequest = {
     message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
       ? Duration.fromPartial(object.windowLength)
       : undefined;
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     return message;
   },
 };

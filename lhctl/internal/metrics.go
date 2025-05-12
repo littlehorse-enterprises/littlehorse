@@ -61,6 +61,7 @@ var listMetricRuns = &cobra.Command{
 	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		measurable := args[0]
+		aggregationType := toType(args[0])
 		windowLength, _ := time.ParseDuration(args[2])
 
 		metricId := &lhproto.MetricSpecId{

@@ -70,7 +70,6 @@ public class PartitionMetricInventoryModel extends Storeable<PartitionMetricInve
      * @return true if the metrics didn't exist before
      */
     public void addMetric(PartitionMetricIdModel metric) {
-        log.info("adding metric");
         metricAdded.set(metrics.add(metric));
     }
 

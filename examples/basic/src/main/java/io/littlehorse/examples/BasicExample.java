@@ -26,7 +26,7 @@ public class BasicExample {
                 WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
                 wf.execute("greet", theName);
             }
-        ).withDefaultTaskTimeout(60);
+        );
     }
 
     public static Properties getConfigProps() throws IOException {

@@ -53,9 +53,6 @@ public class Sensor {
 
     private MetricSpecModel getMetricSpec(MetricSpecIdModel metricSpecId) {
         return Optional.ofNullable(processorContext.metadataManager().get(metricSpecId))
-                .orElseGet(() -> {
-                    log.info(metricSpecId + " not found");
-                    return null;
-                });
+                .orElse(null);
     }
 }

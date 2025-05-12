@@ -60,4 +60,23 @@ public interface ListMetricsRequestOrBuilder extends
    * <code>.google.protobuf.Duration window_length = 2;</code>
    */
   com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
+
+  /**
+   * <pre>
+   * Filters by aggregation type
+   * </pre>
+   *
+   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
+   * @return The enum numeric value on the wire for aggregationType.
+   */
+  int getAggregationTypeValue();
+  /**
+   * <pre>
+   * Filters by aggregation type
+   * </pre>
+   *
+   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
+   * @return The aggregationType.
+   */
+  io.littlehorse.sdk.common.proto.AggregationType getAggregationType();
 }

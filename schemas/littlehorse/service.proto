@@ -1494,4 +1494,7 @@ message ListMetricsRequest {
   MetricSpecId metric_spec_id = 1;
   // Filters by window length
   google.protobuf.Duration window_length = 2;
+  // Filters by aggregation type
+  AggregationType aggregation_type = 3;
+
 }

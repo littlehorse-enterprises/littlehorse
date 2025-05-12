@@ -34,7 +34,7 @@ public class MetricModel extends RepartitionedGetable<Metric> {
     public MetricModel(MetricIdModel metricRunId) {
         this.metricRunId = metricRunId;
         this.createdAt = new Date();
-        log.info("creating new metric");
+        log.info("creating new metric" + metricRunId);
     }
 
     @Override

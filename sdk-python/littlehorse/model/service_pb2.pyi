@@ -964,9 +964,11 @@ class MetricList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_metrics_pb2.Metric, _Mapping]]] = ...) -> None: ...
 
 class ListMetricsRequest(_message.Message):
-    __slots__ = ["metric_spec_id", "window_length"]
+    __slots__ = ["metric_spec_id", "window_length", "aggregation_type"]
     METRIC_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    AGGREGATION_TYPE_FIELD_NUMBER: _ClassVar[int]
     metric_spec_id: _object_id_pb2.MetricSpecId
     window_length: _duration_pb2.Duration
-    def __init__(self, metric_spec_id: _Optional[_Union[_object_id_pb2.MetricSpecId, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
+    aggregation_type: _common_enums_pb2.AggregationType
+    def __init__(self, metric_spec_id: _Optional[_Union[_object_id_pb2.MetricSpecId, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ..., aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ...) -> None: ...
