@@ -190,7 +190,7 @@ public interface WorkflowThread {
      * @param doElse is the block of ThreadSpec code to be executed if the provided
      *     WorkflowCondition is NOT satisfied.
      * @see WorkflowThread#doIf
-    */
+     */
     void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
 
     /**
