@@ -397,6 +397,10 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if the provided
             WorkflowCondition is satisfied.
         """
+        if self._first_nop_node_name == "" and self._last_nop_node_name == "":
+            raise AttributeError(
+                "'WorkflowIfStatement' object has no attribute 'do_else_if'"
+            )
         self._parent_workflow_thread.organize_edges_for_else_if_execution(self, condition, body)
 
         return self
@@ -411,6 +415,10 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if all previous
             WorkflowConditions were not satisfied.
         """
+        if self._first_nop_node_name == "" and self._last_nop_node_name == "":
+            raise AttributeError(
+                "'WorkflowIfStatement' object has no attribute 'do_else'"
+            )
         if self._was_else_executed:
             raise RuntimeError(
                 "Else block has already been executed. Cannot add another else block."
@@ -1921,7 +1929,7 @@ class WorkflowThread:
         condition: WorkflowCondition,
         if_body: "ThreadInitializer",
         else_body: Optional["ThreadInitializer"] = None,
-    ) -> Optional[WorkflowIfStatement]:
+    ) -> WorkflowIfStatement:
         """Conditionally executes some workflow code; equivalent
         to an if() statement in programming.
 
@@ -1944,7 +1952,8 @@ class WorkflowThread:
 
         self._validate_initializer(else_body)
         self._do_if(condition, if_body).do_else(else_body)
-        return None
+
+        return WorkflowIfStatement(self, "", "")
 
     def organize_edges_for_else_if_execution(
         self, if_statement: WorkflowIfStatement, input_condition: Optional[WorkflowCondition], body: "ThreadInitializer"

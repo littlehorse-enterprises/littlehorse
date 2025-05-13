@@ -483,7 +483,7 @@ class TestThreadBuilder(unittest.TestCase):
                     thread.condition(20, Comparator.GREATER_THAN, 10),
                     self.if_condition,
                     self.else_condition,
-                )
+                ).do_else(self.else_condition)
 
             def to_thread(self):
                 return WorkflowThread(
@@ -1220,7 +1220,39 @@ class TestThreadBuilder(unittest.TestCase):
             workflow.compile()
 
         self.assertEqual(
-            "'NoneType' object has no attribute 'do_else_if'",
+            "'WorkflowIfStatement' object has no attribute 'do_else_if'",
+            str(exception_context.exception),
+        )
+
+    def test_should_throw_an_error_compiling_a_wf_when_else_body_and_do_else_are_used(
+        self,
+    ):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(thread: WorkflowThread) -> None:
+                thread.execute("task-a")
+
+            def if_body_b(thread: WorkflowThread) -> None:
+                thread.execute("task-b")
+
+            def else_body_c(thread: WorkflowThread) -> None:
+                thread.execute("task-c")
+
+            if_statement: WorkflowIfStatement = wf.do_if(
+                condition=wf.condition(5, Comparator.EQUALS, 9),
+                if_body=if_body_a,
+                else_body=else_body_c,
+            )
+            if_statement.do_else(
+                body=if_body_b
+            )
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(AttributeError) as exception_context:
+            workflow.compile()
+
+        self.assertEqual(
+            "'WorkflowIfStatement' object has no attribute 'do_else'",
             str(exception_context.exception),
         )
 
