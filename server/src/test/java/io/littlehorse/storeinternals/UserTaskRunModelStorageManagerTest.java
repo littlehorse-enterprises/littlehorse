@@ -17,7 +17,7 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -58,7 +58,7 @@ public class UserTaskRunModelStorageManagerTest {
     private String wfRunId = "1234567890";
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private ExecutionContext executionContext;
+    private ProcessorExecutionContext executionContext;
 
     // private AuthorizationContext testContext = new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
 
