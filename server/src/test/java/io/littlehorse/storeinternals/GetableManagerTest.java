@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
@@ -164,7 +165,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.BOOL);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.BOOL));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
@@ -192,10 +193,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.STR);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -224,10 +225,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.INT);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.INT));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -256,10 +257,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.DOUBLE);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.DOUBLE));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -299,7 +300,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.JSON_OBJ);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.JSON_OBJ));
             List<JsonIndexModel> indices = List.of(
                     new JsonIndexModel("$.name", VariableType.STR),
                     new JsonIndexModel("$.age", VariableType.INT),
@@ -308,7 +309,7 @@ public class GetableManagerTest {
 
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, indices, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -433,7 +434,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.STR);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
@@ -451,5 +452,110 @@ public class GetableManagerTest {
                 Arguments.of(taskRun, 2),
                 Arguments.of(variable, 3),
                 Arguments.of(externalEvent, 4));
+    }
+
+    @Test
+    void dontStoreGetableWhenNotModified() {
+        String varName = "my-str";
+        String wfRunId = "my-wf-run-id";
+        String valueBefore = "valueBefore";
+        String anotherValue = "anotherValue";
+        VariableModel actualVariable = TestUtil.variable(wfRunId);
+        actualVariable.getId().setName(varName);
+        actualVariable.setValue(new VariableValueModel(valueBefore));
+        actualVariable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
+            VariableDefModel variableDef1 = new VariableDefModel();
+            variableDef1.setName(varName);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
+        });
+
+        VariableModel anotherVariable = TestUtil.variable(wfRunId);
+        anotherVariable.getId().setName(varName);
+        anotherVariable.setValue(new VariableValueModel(anotherValue));
+        anotherVariable.setWfSpec(actualVariable.getWfSpec());
+
+        // As setup, we store the actual variable.
+        getableManager.put(actualVariable);
+        getableManager.commit();
+
+        // Sanity check that the variable has the "valueBefore"
+        String key = new StoredGetable(actualVariable).getStoreKey();
+        StoredGetable storedVariable = localStoreWrapper.get(key, StoredGetable.class);
+        assertThat(storedVariable).isNotNull();
+        assertThat(((VariableModel) storedVariable.getStoredObject()).getValue().getStrVal())
+                .isEqualTo(valueBefore);
+
+        // Now we "process another command" that reads the variable but doesn't modify it
+        getableManager.get(actualVariable.getObjectId());
+
+        // bypass the security of the test by corrupting it
+        StoredGetable fakeOne = new StoredGetable(anotherVariable);
+        localStoreWrapper.put(fakeOne);
+
+        // Commit the getable manager. If everything goes well, it won't have called put() on the actualVariable,
+        // so we should still see the "anotherValue" which we put two lines above.
+        getableManager.commit();
+        StoredGetable storedVariableAfterCommit = localStoreWrapper.get(key, StoredGetable.class);
+        assertThat(storedVariableAfterCommit).isNotNull();
+        assertThat(((VariableModel) storedVariableAfterCommit.getStoredObject())
+                        .getValue()
+                        .getStrVal())
+                .isEqualTo(anotherValue);
+    }
+
+    @Test
+    void doStoreGetableWhenModified() {
+        String varName = "my-str";
+        String wfRunId = "my-wf-run-id";
+        String valueBefore = "valueBefore";
+        String valueAfterModify = "valueAfterModify";
+        String anotherValue = "anotherValue";
+        VariableModel actualVariable = TestUtil.variable(wfRunId);
+        actualVariable.getId().setName(varName);
+        actualVariable.setValue(new VariableValueModel(valueBefore));
+        actualVariable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
+            VariableDefModel variableDef1 = new VariableDefModel();
+            variableDef1.setName(varName);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
+            threadSpec.setVariableDefs(
+                    List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
+        });
+
+        VariableModel anotherVariable = TestUtil.variable(wfRunId);
+        anotherVariable.getId().setName(varName);
+        anotherVariable.setValue(new VariableValueModel(anotherValue));
+        anotherVariable.setWfSpec(actualVariable.getWfSpec());
+
+        // As setup, we store the actual variable.
+        getableManager.put(actualVariable);
+        getableManager.commit();
+
+        // Sanity check that the variable has the "valueBefore"
+        String key = new StoredGetable(actualVariable).getStoreKey();
+        StoredGetable storedVariable = localStoreWrapper.get(key, StoredGetable.class);
+        assertThat(storedVariable).isNotNull();
+        assertThat(((VariableModel) storedVariable.getStoredObject()).getValue().getStrVal())
+                .isEqualTo(valueBefore);
+
+        // Now we "process another command" that reads the variable and do modify the value
+        VariableModel variableDuringProcess = getableManager.get(actualVariable.getObjectId());
+        variableDuringProcess.setWfSpec(actualVariable.getWfSpec());
+        variableDuringProcess.setValue(new VariableValueModel(valueAfterModify));
+
+        // bypass the security of the test by corrupting it
+        StoredGetable fakeOne = new StoredGetable(anotherVariable);
+        localStoreWrapper.put(fakeOne);
+
+        // Commit the getable manager. If everything goes well, it will notice that we modified the variable
+        // and will save it.
+        getableManager.commit();
+        StoredGetable storedVariableAfterCommit = localStoreWrapper.get(key, StoredGetable.class);
+        assertThat(storedVariableAfterCommit).isNotNull();
+        assertThat(((VariableModel) storedVariableAfterCommit.getStoredObject())
+                        .getValue()
+                        .getStrVal())
+                .isEqualTo(valueAfterModify);
     }
 }

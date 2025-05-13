@@ -13,7 +13,7 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -30,7 +30,7 @@ public class GetableManager extends ReadOnlyGetableManager {
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
-            final ExecutionContext executionContext) {
+            final ProcessorExecutionContext executionContext) {
         super(store);
         this.store = store;
         this.command = command;
@@ -181,7 +181,7 @@ public class GetableManager extends ReadOnlyGetableManager {
             String storeableKey = entry.getKey();
             GetableToStore<?, ?> entity = entry.getValue();
 
-            if (entity.getObjectToStore() != null) {
+            if (entity.containsUpdate()) {
                 // Actually put it in the key-value store.
                 // Note: we know this is a CoreGetable, but no need to cast, so
                 // we use AbstractGetable here.
@@ -189,7 +189,7 @@ public class GetableManager extends ReadOnlyGetableManager {
                 store.put(new StoredGetable<>(getable));
                 tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
 
-            } else {
+            } else if (entity.isDeletion()) {
                 // Do a deletion!
                 store.delete(storeableKey, StoreableType.STORED_GETABLE);
                 tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -83,10 +84,10 @@ public class PutWorkflowEventDefRequestModelTest {
         sendCommand(putWorkflowEventDef);
         WorkflowEventDefModel storedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-created"));
         Assertions.assertThat(storedEventDef).isNotNull();
-        sendCommand(new PutWorkflowEventDefRequestModel("user-created", VariableType.INT));
+        sendCommand(new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.INT)));
         verify(server, times(1)).sendErrorToClient(anyString(), any());
         PutWorkflowEventDefRequestModel userUpdatedCommand =
-                new PutWorkflowEventDefRequestModel("user-updated", VariableType.STR);
+                new PutWorkflowEventDefRequestModel("user-updated", new ReturnTypeModel(VariableType.STR));
         reset(server);
         sendCommand(userUpdatedCommand);
         verify(server, never()).sendErrorToClient(anyString(), any());
@@ -95,7 +96,7 @@ public class PutWorkflowEventDefRequestModelTest {
     }
 
     private PutWorkflowEventDefRequestModel createSubCommand() {
-        return new PutWorkflowEventDefRequestModel("user-created", VariableType.STR);
+        return new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.STR));
     }
 
     private MetadataCommandModel sendCommand(MetadataSubCommand<?> putPrincipalRequest) {

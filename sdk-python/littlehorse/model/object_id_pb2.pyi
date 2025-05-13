@@ -23,10 +23,12 @@ class TaskDefId(_message.Message):
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
 class ExternalEventDefId(_message.Message):
-    __slots__ = ["name"]
+    __slots__ = ["name", "version"]
     NAME_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
     name: str
-    def __init__(self, name: _Optional[str] = ...) -> None: ...
+    version: int
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
 
 class UserTaskDefId(_message.Message):
     __slots__ = ["name", "version"]

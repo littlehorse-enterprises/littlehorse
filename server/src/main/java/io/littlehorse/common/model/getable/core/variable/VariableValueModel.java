@@ -217,6 +217,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return out;
     }
 
+    /**
+     * Returns true if the value is empty, which is the LittleHorse equivalent of `null`.
+     */
+    public boolean isEmpty() {
+        return type == ValueCase.VALUE_NOT_SET;
+    }
+
     public VariableValueModel operate(
             VariableMutationType operation, VariableValueModel rhs, VariableType typeToCoerceTo) throws LHVarSubError {
 

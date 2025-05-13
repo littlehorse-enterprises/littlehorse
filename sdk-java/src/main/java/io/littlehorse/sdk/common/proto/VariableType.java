@@ -5,8 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
- * VariableValue.
+ * Specifies a primitive type in LittleHorse.
  * </pre>
  *
  * Protobuf enum {@code littlehorse.VariableType}

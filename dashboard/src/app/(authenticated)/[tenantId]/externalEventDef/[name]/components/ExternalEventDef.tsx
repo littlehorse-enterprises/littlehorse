@@ -36,7 +36,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit,
-        externalEventDefId: { name: spec.id?.name ?? '' },
+        externalEventDefId: { name: spec.id?.name ?? '', version: 0 },
         isClaimed,
         earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
         latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,

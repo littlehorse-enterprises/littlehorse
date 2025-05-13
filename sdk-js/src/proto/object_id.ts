@@ -45,8 +45,10 @@ export interface TaskDefId {
 
 /** ID for ExternalEventDef */
 export interface ExternalEventDefId {
-  /** ExternalEventDef's are uniquedly identified by their name. */
+  /** ExternalEventDef's are uniquedly identified by their name and version. */
   name: string;
+  /** The version of this ExternalEventDef. */
+  version: number;
 }
 
 /** ID for a UserTaskDef */
@@ -331,13 +333,16 @@ export const TaskDefId = {
 };
 
 function createBaseExternalEventDefId(): ExternalEventDefId {
-  return { name: "" };
+  return { name: "", version: 0 };
 }
 
 export const ExternalEventDefId = {
   encode(message: ExternalEventDefId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
+    }
+    if (message.version !== 0) {
+      writer.uint32(16).int32(message.version);
     }
     return writer;
   },
@@ -356,6 +361,13 @@ export const ExternalEventDefId = {
 
           message.name = reader.string();
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.version = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -371,6 +383,7 @@ export const ExternalEventDefId = {
   fromPartial(object: DeepPartial<ExternalEventDefId>): ExternalEventDefId {
     const message = createBaseExternalEventDefId();
     message.name = object.name ?? "";
+    message.version = object.version ?? 0;
     return message;
   },
 };

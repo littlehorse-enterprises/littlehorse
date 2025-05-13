@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
-import io.littlehorse.common.model.getable.global.taskdef.TaskDefOutputSchemaModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -27,7 +27,7 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
     public String name;
     public List<VariableDefModel> inputVars;
 
-    public TaskDefOutputSchemaModel outputSchema;
+    public ReturnTypeModel returnType;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -42,15 +42,11 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
     }
 
     public PutTaskDefRequest.Builder toProto() {
-        PutTaskDefRequest.Builder out = PutTaskDefRequest.newBuilder();
-        out.setName(name);
+        PutTaskDefRequest.Builder out =
+                PutTaskDefRequest.newBuilder().setName(name).setReturnType(returnType.toProto());
 
         for (VariableDefModel entry : inputVars) {
             out.addInputVars(entry.toProto());
-        }
-
-        if (outputSchema != null) {
-            out.setOutputSchema(outputSchema.toProto());
         }
 
         return out;
@@ -60,11 +56,9 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
     public void initFrom(Message proto, ExecutionContext context) {
         PutTaskDefRequest p = (PutTaskDefRequest) proto;
         name = p.getName();
+        returnType = LHSerializable.fromProto(p.getReturnType(), ReturnTypeModel.class, context);
         for (VariableDef entry : p.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
-        }
-        if (p.hasOutputSchema()) {
-            outputSchema = LHSerializable.fromProto(p.getOutputSchema(), TaskDefOutputSchemaModel.class, context);
         }
     }
 
@@ -81,9 +75,7 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         TaskDefModel spec = new TaskDefModel();
         spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
-        if (outputSchema != null) {
-            spec.setSchemaOutput(outputSchema);
-        }
+        spec.setReturnType(returnType);
 
         TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
         if (oldVersion != null) {

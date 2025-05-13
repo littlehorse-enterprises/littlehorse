@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "variable.proto";
 import "object_id.proto";
+import "common_wfspec.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -55,6 +56,14 @@ message ExternalEventDef {
   // The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
   // ExternalEvent **only before** it is matched with a WfRun.
   ExternalEventRetentionPolicy retention_policy = 3;
+
+  // Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+  //
+  // It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+  // before 0.13.2 will not have a schema. For those `ExternalEventDef`s that do not have
+  // a specified type_information, we do not validate the WfSpec's usage of the ExternalEvent
+  // nor do we validate the type of `content` in the `rpc PutExternalEvent`.
+  optional ReturnType type_information = 4;
 }
 
 // Policy to determine how long an ExternalEvent is retained after creation if it

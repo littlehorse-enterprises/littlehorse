@@ -22,12 +22,25 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
 
     private T objectToStore;
 
+    private U previouslyStoredProto;
+
+    public boolean isDeletion() {
+        return objectToStore == null;
+    }
+
+    public boolean containsUpdate() {
+        return objectToStore != null && !objectToStore.toProto().build().equals(previouslyStoredProto);
+    }
+
+    @SuppressWarnings("unchecked")
     public GetableToStore(StoredGetable<U, T> thingInStore, Class<T> cls) {
         this.objectType = AbstractGetable.getTypeEnum(cls);
 
         if (thingInStore != null) {
             this.tagsPresentBeforeUpdate = thingInStore.getIndexCache();
             this.objectToStore = thingInStore.getStoredObject();
+            this.previouslyStoredProto =
+                    (U) (thingInStore.getStoredObject().toProto().build());
         } else {
             this.tagsPresentBeforeUpdate = new TagsCache(List.of());
         }

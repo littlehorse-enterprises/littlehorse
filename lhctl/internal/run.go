@@ -109,7 +109,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				}
 
 				runReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, varDef.Type,
+					varValStr, varDef.TypeDef.Type,
 				)
 
 				if err != nil {

@@ -49,3 +49,5 @@ global.json
 *DotSettings.user
 !sdk-dotnet/Littlehorse.sln
 *.sln
+# java profiling
+.profileconfig.json
