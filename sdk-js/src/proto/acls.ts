@@ -217,7 +217,14 @@ export interface Tenant {
     | TenantId
     | undefined;
   /** The time at which the Tenant was created. */
-  createdAt: string | undefined;
+  createdAt:
+    | string
+    | undefined;
+  /**
+   * Configuration for the output topic associated with this Tenant. If not set,
+   * then the output topic is not enabled.
+   */
+  outputTopicConfig?: OutputTopicConfig | undefined;
 }
 
 /** List of ACL's for LittleHorse */
@@ -292,8 +299,67 @@ export interface DeletePrincipalRequest {
   id: PrincipalId | undefined;
 }
 
+/** Configurations for the Output Topic of a certain Tenant. */
+export interface OutputTopicConfig {
+  defaultRecordingLevel: OutputTopicConfig_OutputTopicRecordingLevel;
+}
+
+/** Enum to configure default recording level of Output Topic events. */
+export enum OutputTopicConfig_OutputTopicRecordingLevel {
+  /**
+   * ALL_ENTITY_EVENTS - Records all updates for entities from all `WfSpec`s, `TaskDef`s,
+   * `WorkflowEventDef`s, `UserTaskDef`s, and `ExternalEventDef`s to
+   * the Output Topic by default.
+   */
+  ALL_ENTITY_EVENTS = "ALL_ENTITY_EVENTS",
+  /**
+   * NO_ENTITY_EVENTS - With this configuration, no events are sent to the Output Topic unless
+   * explicitly enabled in the metadata object itself (to do with future work).
+   */
+  NO_ENTITY_EVENTS = "NO_ENTITY_EVENTS",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function outputTopicConfig_OutputTopicRecordingLevelFromJSON(
+  object: any,
+): OutputTopicConfig_OutputTopicRecordingLevel {
+  switch (object) {
+    case 0:
+    case "ALL_ENTITY_EVENTS":
+      return OutputTopicConfig_OutputTopicRecordingLevel.ALL_ENTITY_EVENTS;
+    case 1:
+    case "NO_ENTITY_EVENTS":
+      return OutputTopicConfig_OutputTopicRecordingLevel.NO_ENTITY_EVENTS;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return OutputTopicConfig_OutputTopicRecordingLevel.UNRECOGNIZED;
+  }
+}
+
+export function outputTopicConfig_OutputTopicRecordingLevelToNumber(
+  object: OutputTopicConfig_OutputTopicRecordingLevel,
+): number {
+  switch (object) {
+    case OutputTopicConfig_OutputTopicRecordingLevel.ALL_ENTITY_EVENTS:
+      return 0;
+    case OutputTopicConfig_OutputTopicRecordingLevel.NO_ENTITY_EVENTS:
+      return 1;
+    case OutputTopicConfig_OutputTopicRecordingLevel.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+/** The request used to create a Tenant */
 export interface PutTenantRequest {
+  /** The ID of the tenant to put */
   id: string;
+  /**
+   * Configures the behavior of the Output Topic for this Tenant. If not set,
+   * then the OutputTopic is not considered to be enabled.
+   */
+  outputTopicConfig?: OutputTopicConfig | undefined;
 }
 
 function createBasePrincipal(): Principal {
@@ -446,7 +512,7 @@ export const Principal_PerTenantAclsEntry = {
 };
 
 function createBaseTenant(): Tenant {
-  return { id: undefined, createdAt: undefined };
+  return { id: undefined, createdAt: undefined, outputTopicConfig: undefined };
 }
 
 export const Tenant = {
@@ -456,6 +522,9 @@ export const Tenant = {
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.outputTopicConfig !== undefined) {
+      OutputTopicConfig.encode(message.outputTopicConfig, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -481,6 +550,13 @@ export const Tenant = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.outputTopicConfig = OutputTopicConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -497,6 +573,9 @@ export const Tenant = {
     const message = createBaseTenant();
     message.id = (object.id !== undefined && object.id !== null) ? TenantId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
+    message.outputTopicConfig = (object.outputTopicConfig !== undefined && object.outputTopicConfig !== null)
+      ? OutputTopicConfig.fromPartial(object.outputTopicConfig)
+      : undefined;
     return message;
   },
 };
@@ -842,14 +921,63 @@ export const DeletePrincipalRequest = {
   },
 };
 
+function createBaseOutputTopicConfig(): OutputTopicConfig {
+  return { defaultRecordingLevel: OutputTopicConfig_OutputTopicRecordingLevel.ALL_ENTITY_EVENTS };
+}
+
+export const OutputTopicConfig = {
+  encode(message: OutputTopicConfig, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.defaultRecordingLevel !== OutputTopicConfig_OutputTopicRecordingLevel.ALL_ENTITY_EVENTS) {
+      writer.uint32(8).int32(outputTopicConfig_OutputTopicRecordingLevelToNumber(message.defaultRecordingLevel));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OutputTopicConfig {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOutputTopicConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.defaultRecordingLevel = outputTopicConfig_OutputTopicRecordingLevelFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<OutputTopicConfig>): OutputTopicConfig {
+    return OutputTopicConfig.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<OutputTopicConfig>): OutputTopicConfig {
+    const message = createBaseOutputTopicConfig();
+    message.defaultRecordingLevel = object.defaultRecordingLevel ??
+      OutputTopicConfig_OutputTopicRecordingLevel.ALL_ENTITY_EVENTS;
+    return message;
+  },
+};
+
 function createBasePutTenantRequest(): PutTenantRequest {
-  return { id: "" };
+  return { id: "", outputTopicConfig: undefined };
 }
 
 export const PutTenantRequest = {
   encode(message: PutTenantRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.outputTopicConfig !== undefined) {
+      OutputTopicConfig.encode(message.outputTopicConfig, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -868,6 +996,13 @@ export const PutTenantRequest = {
 
           message.id = reader.string();
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.outputTopicConfig = OutputTopicConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -883,6 +1018,9 @@ export const PutTenantRequest = {
   fromPartial(object: DeepPartial<PutTenantRequest>): PutTenantRequest {
     const message = createBasePutTenantRequest();
     message.id = object.id ?? "";
+    message.outputTopicConfig = (object.outputTopicConfig !== undefined && object.outputTopicConfig !== null)
+      ? OutputTopicConfig.fromPartial(object.outputTopicConfig)
+      : undefined;
     return message;
   },
 };

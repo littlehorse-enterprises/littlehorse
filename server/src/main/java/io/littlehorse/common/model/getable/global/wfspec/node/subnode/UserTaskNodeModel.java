@@ -54,8 +54,12 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     public UserTaskNode.Builder toProto() {
         UserTaskNode.Builder out = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
-        if (userId != null) out.setUserId(userId.toProto());
-        if (userGroup != null) out.setUserGroup(userGroup.toProto());
+        if (userId != null) {
+            out.setUserId(userId.toProto());
+        }
+        if (userGroup != null) {
+            out.setUserGroup(userGroup.toProto());
+        }
 
         for (UTActionTriggerModel action : actions) {
             out.addActions(action.toProto());
@@ -138,6 +142,18 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
         if (userId == null && userGroup == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify userGroup or userId");
+        }
+
+        if (userId != null
+                && userId.getRhsLiteralValue() != null
+                && userId.getRhsLiteralValue().getStrVal().trim().isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "UserId can't be empty");
+        }
+
+        if (userGroup != null
+                && userGroup.getRhsLiteralValue() != null
+                && userGroup.getRhsLiteralValue().getStrVal().trim().isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "UserGroup can't be empty");
         }
     }
 

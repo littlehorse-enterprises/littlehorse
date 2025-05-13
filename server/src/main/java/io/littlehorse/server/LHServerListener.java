@@ -565,6 +565,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
     public void assignUserTaskRun(AssignUserTaskRunRequest req, StreamObserver<Empty> ctx) {
+
+        if (req.hasUserId() && req.getUserId().trim().isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "UserId can't be empty");
+        }
+
+        if (req.hasUserGroup() && req.getUserGroup().trim().isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "UserGroup can't be empty");
+        }
+
         AssignUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, AssignUserTaskRunRequestModel.class, requestContext());
         waitAndCompleteObserver(processCommand(new CommandModel(reqModel), Empty.class), ctx);

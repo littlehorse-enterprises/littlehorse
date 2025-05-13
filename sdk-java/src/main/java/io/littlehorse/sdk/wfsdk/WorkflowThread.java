@@ -176,8 +176,9 @@ public interface WorkflowThread {
      * @param condition is the WorkflowCondition to be satisfied.
      * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
      *     is satisfied.
+     * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(WorkflowCondition, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
      */
-    void doIf(WorkflowCondition condition, IfElseBody doIf);
+    WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody doIf);
 
     /**
      * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
@@ -188,6 +189,7 @@ public interface WorkflowThread {
      *     is satisfied.
      * @param doElse is the block of ThreadSpec code to be executed if the provided
      *     WorkflowCondition is NOT satisfied.
+     * @see WorkflowThread#doIf
      */
     void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
 
@@ -414,8 +416,7 @@ public interface WorkflowThread {
     void handleAnyFailure(NodeOutput node, ThreadFunc handler);
 
     /**
-     * Returns a WorkflowCondition that can be used in `WorkflowThread::doIf()` or
-     * `WorkflowThread::doIfElse()`.
+     * Returns a WorkflowCondition that can be used in `WorkflowThread::doIf()`
      *
      * @param lhs is either a literal value (which the Library casts to a Variable Value) or a
      *     `WfRunVariable` representing the LHS of the expression.
