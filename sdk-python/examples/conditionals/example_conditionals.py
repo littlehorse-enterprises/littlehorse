@@ -52,8 +52,8 @@ class SaleService:
         wf.mutate(total_sales, VariableMutationType.ASSIGN, output)
 
         condition = wf.condition(total_sales, Comparator.GREATER_THAN_EQ, GOAL)
-        wf.do_if(condition, self.if_body
-                 ).do_else(self.else_body)
+        if_statement = wf.do_if(condition, self.if_body)
+        if_statement.do_else(self.else_body)
 
     def get_workflow(self) -> Workflow:
         return Workflow("example-conditionals", self.entrypoint)
