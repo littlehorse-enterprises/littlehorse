@@ -483,7 +483,7 @@ class TestThreadBuilder(unittest.TestCase):
                     thread.condition(20, Comparator.GREATER_THAN, 10),
                     self.if_condition,
                     self.else_condition,
-                ).do_else(self.else_condition)
+                )
 
             def to_thread(self):
                 return WorkflowThread(

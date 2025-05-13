@@ -56,8 +56,7 @@ def get_workflow() -> Workflow:
         condition = approval_thread.condition(
             approval.with_json_path("$.userId"), Comparator.EQUALS, None
         )
-        if_statement = approval_thread.do_if(condition, is_user_group)
-        if_statement.do_else(is_user)
+        approval_thread.do_if(condition, is_user_group).do_else(is_user)
 
     def my_entrypoint(wf: WorkflowThread) -> None:
         approvals_var = wf.add_variable("approvals", VariableType.JSON_ARR)
