@@ -66,6 +66,7 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
@@ -92,6 +93,7 @@ import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteStructDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
@@ -450,7 +452,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    // @Authorize()
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
         StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
         if (sd == null) {
@@ -506,6 +508,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
     public void putStructDef(PutStructDefRequest req, StreamObserver<StructDef> ctx) {
         PutStructDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
@@ -1052,6 +1055,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         DeleteWorkflowEventDefRequestModel dwedr =
                 LHSerializable.fromProto(req, DeleteWorkflowEventDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(dwedr), ctx, Empty.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
+    public void deleteStructDef(DeleteStructDefRequest req, StreamObserver<Empty> ctx) {
+        DeleteStructDefRequestModel dsdr =
+                LHSerializable.fromProto(req, DeleteStructDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(dsdr), ctx, Empty.class, true);
     }
 
     @Override

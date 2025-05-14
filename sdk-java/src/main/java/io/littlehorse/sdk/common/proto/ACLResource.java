@@ -91,6 +91,10 @@ public enum ACLResource
    * <code>ACL_WORKFLOW_EVENT = 8;</code>
    */
   ACL_WORKFLOW_EVENT(8),
+  /**
+   * <code>ACL_STRUCT = 9;</code>
+   */
+  ACL_STRUCT(9),
   UNRECOGNIZED(-1),
   ;
 
@@ -173,6 +177,10 @@ public enum ACLResource
    * <code>ACL_WORKFLOW_EVENT = 8;</code>
    */
   public static final int ACL_WORKFLOW_EVENT_VALUE = 8;
+  /**
+   * <code>ACL_STRUCT = 9;</code>
+   */
+  public static final int ACL_STRUCT_VALUE = 9;
 
 
   public final int getNumber() {
@@ -208,6 +216,7 @@ public enum ACLResource
       case 6: return ACL_ALL_RESOURCES;
       case 7: return ACL_TASK_WORKER_GROUP;
       case 8: return ACL_WORKFLOW_EVENT;
+      case 9: return ACL_STRUCT;
       default: return null;
     }
   }
