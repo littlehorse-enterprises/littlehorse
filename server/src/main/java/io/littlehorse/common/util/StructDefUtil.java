@@ -35,7 +35,9 @@ public class StructDefUtil {
      * Verifies if new StructDefModel has breaking changes compared to old.
      *
      * Returns true when:
-     * - required fields are added without default values
+     * - A required field is added without a default value
+     * - A required field is removed
+     * - A required field's type definition changes
      * @param newStructDef New StructDefModel to be compared
      * @param oldStructDef Old StructDefModel compared against
      * @return true when there is a breaking change, false otherwise
@@ -51,16 +53,16 @@ public class StructDefUtil {
             // If required field was removed...
             if (!newRequiredFields.containsKey(field.getKey())) {
                 return true;
-            } else {
-                // Check type compatibility
-                TypeDefinitionModel oldFieldType = field.getValue().getFieldType();
-                TypeDefinitionModel newFieldType =
-                        newRequiredFields.get(field.getKey()).getFieldType();
+            }
 
-                // If types change...
-                if (!oldFieldType.equals(newFieldType)) {
-                    return true;
-                }
+            // Check type compatibility
+            TypeDefinitionModel oldFieldType = field.getValue().getFieldType();
+            TypeDefinitionModel newFieldType =
+                    newRequiredFields.get(field.getKey()).getFieldType();
+
+            // If the TypeDefinition changes...
+            if (!oldFieldType.equals(newFieldType)) {
+                return true;
             }
         }
  
