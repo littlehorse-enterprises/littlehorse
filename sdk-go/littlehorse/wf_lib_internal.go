@@ -605,8 +605,8 @@ func (w *WfRunVariable) withDefaultImpl(defaultValue interface{}) *WfRunVariable
 		if err != nil {
 			log.Fatal(err)
 		}
-		if *GetVarType(defaultVarVal) != *w.threadVarDef.VarDef.Type {
-			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.Type.String())
+		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.TypeDef.Type {
+			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.TypeDef.Type.String())
 		}
 		w.threadVarDef.VarDef.DefaultValue = defaultVarVal
 	}
@@ -634,7 +634,7 @@ func (w *WfRunVariable) searchableOnImpl(fieldPath string, fieldType lhproto.Var
 }
 
 func (w *WfRunVariable) maskedValueImpl() *WfRunVariable {
-	*w.threadVarDef.VarDef.MaskedValue = true
+	w.threadVarDef.VarDef.TypeDef.Masked = true
 	return w
 }
 
@@ -810,8 +810,8 @@ func (t *WorkflowThread) addVariable(
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &lhproto.VariableDef{
-		Type: &varType,
-		Name: name,
+		TypeDef: &lhproto.TypeDefinition{Type: varType},
+		Name:    name,
 	}
 
 	threadVarDef := &lhproto.ThreadVarDef{
