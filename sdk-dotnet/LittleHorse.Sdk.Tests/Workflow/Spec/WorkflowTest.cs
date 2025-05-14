@@ -51,7 +51,7 @@ public class WorkflowTest
         {
             VarDef = new VariableDef
             {
-                Type = VariableType.Str,
+                TypeDef = new TypeDefinition { Type = VariableType.Str },
                 Name = "input-name"
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
@@ -194,7 +194,7 @@ public class WorkflowTest
         {
             VarDef = new VariableDef
             {
-                Type = VariableType.Str,
+                TypeDef = new TypeDefinition { Type = VariableType.Str },
                 Name = "grand-parent-var"
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
@@ -204,7 +204,7 @@ public class WorkflowTest
         {
             VarDef = new VariableDef
             {
-                Type = VariableType.Int,
+                TypeDef = new TypeDefinition { Type = VariableType.Int },
                 Name = "1-son-thread-START_THREAD"
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
@@ -276,7 +276,7 @@ public class WorkflowTest
         {
             VarDef = new VariableDef
             {
-                Type = VariableType.Int,
+                TypeDef = new TypeDefinition { Type = VariableType.Int },
                 Name = "1-grandchild-thread-START_THREAD"
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
