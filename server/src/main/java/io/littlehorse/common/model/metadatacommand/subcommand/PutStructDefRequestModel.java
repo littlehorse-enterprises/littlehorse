@@ -1,7 +1,5 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import java.util.Date;
-
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -18,6 +16,7 @@ import io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdat
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import java.util.Date;
 
 public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefRequest> {
 
@@ -63,7 +62,6 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
         StructDefModel oldVersion = context.service().getStructDef(name, null);
 
-        // TODO: AllowedUpdateType checking
         if (oldVersion != null) {
             if (StructDefUtil.equals(spec, oldVersion)) {
                 return oldVersion.toProto().build();
@@ -75,11 +73,13 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         return structDef.toProto().build();
     }
 
-    private void verifyUpdateType(AllowedStructDefUpdateType allowedUpdateType, StructDefModel spec, StructDefModel oldSpec) {
+    private void verifyUpdateType(
+            AllowedStructDefUpdateType allowedUpdateType, StructDefModel spec, StructDefModel oldSpec) {
         switch (allowedUpdateType) {
             case FULLY_COMPATIBLE_SCHEMA_UPDATES:
                 if (StructDefUtil.hasBreakingChanges(spec, oldSpec)) {
-                    throw new LHApiException(Status.FAILED_PRECONDITION, "The resulting StructDef has a breaking change");
+                    throw new LHApiException(
+                            Status.FAILED_PRECONDITION, "The resulting StructDef has a breaking change");
                 }
                 break;
             case NO_SCHEMA_UPDATES:
@@ -87,7 +87,6 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             case UNRECOGNIZED:
             default:
                 break;
-            
         }
     }
 

@@ -43,4 +43,31 @@ public interface StructFieldDefOrBuilder extends
    * <code>.littlehorse.TypeDefinition field_type = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getFieldTypeOrBuilder();
+
+  /**
+   * <pre>
+   * The default value of the field, which should match the Field Type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * @return Whether the defaultValue field is set.
+   */
+  boolean hasDefaultValue();
+  /**
+   * <pre>
+   * The default value of the field, which should match the Field Type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * @return The defaultValue.
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getDefaultValue();
+  /**
+   * <pre>
+   * The default value of the field, which should match the Field Type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();
 }

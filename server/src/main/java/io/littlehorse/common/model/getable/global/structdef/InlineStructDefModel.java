@@ -9,14 +9,12 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
 public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
 
@@ -57,10 +55,14 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                         Status.INVALID_ARGUMENT,
                         MessageFormat.format("StructField name [{0}] must be a valid hostname", field.getKey()));
             }
+
+            field.getValue().validate();
         }
     }
 
-    public Set<Entry<String, StructFieldDefModel>> getRequiredFields() {
-        return fields.entrySet().stream().filter(entry -> entry.getValue().isRequired()).collect(Collectors.toSet());
+    public Map<String, StructFieldDefModel> getRequiredFields() {
+        return fields.entrySet().stream()
+                .filter(entry -> entry.getValue().isRequired())
+                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
     }
 }

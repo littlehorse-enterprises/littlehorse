@@ -4,6 +4,7 @@ package littlehorse;
 
 import "common_wfspec.proto";
 import "object_id.proto";
+import "variable.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = ".;lhproto";
@@ -42,4 +43,7 @@ message StructFieldDef {
 
   // The type of the field.
   TypeDefinition field_type = 3;
+
+  // The default value of the field, which should match the Field Type.
+  optional VariableValue default_value = 4;
 }

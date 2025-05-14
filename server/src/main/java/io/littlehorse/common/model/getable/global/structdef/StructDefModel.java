@@ -13,11 +13,9 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,11 +33,19 @@ public class StructDefModel extends MetadataGetable<StructDef> {
 
     @Setter
     public Date createdAt;
-    
+
     private MetadataCommandExecution executionContext;
+
+    public StructDefModel() {}
 
     public StructDefModel(MetadataCommandExecution executionContext) {
         this.executionContext = executionContext;
+    }
+
+    public static StructDefModel fromProto(StructDef proto, ExecutionContext context) {
+        StructDefModel out = new StructDefModel();
+        out.initFrom(proto, context);
+        return out;
     }
 
     @Override

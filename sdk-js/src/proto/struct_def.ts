@@ -9,6 +9,7 @@ import _m0 from "protobufjs/minimal";
 import { TypeDefinition } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { StructDefId } from "./object_id";
+import { VariableValue } from "./variable";
 
 /**
  * A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
@@ -47,7 +48,11 @@ export interface StructFieldDef {
   /** Whether the field is optional / nullable. */
   optional: boolean;
   /** The type of the field. */
-  fieldType: TypeDefinition | undefined;
+  fieldType:
+    | TypeDefinition
+    | undefined;
+  /** The default value of the field, which should match the Field Type. */
+  defaultValue?: VariableValue | undefined;
 }
 
 function createBaseStructDef(): StructDef {
@@ -245,7 +250,7 @@ export const InlineStructDef_FieldsEntry = {
 };
 
 function createBaseStructFieldDef(): StructFieldDef {
-  return { optional: false, fieldType: undefined };
+  return { optional: false, fieldType: undefined, defaultValue: undefined };
 }
 
 export const StructFieldDef = {
@@ -255,6 +260,9 @@ export const StructFieldDef = {
     }
     if (message.fieldType !== undefined) {
       TypeDefinition.encode(message.fieldType, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.defaultValue !== undefined) {
+      VariableValue.encode(message.defaultValue, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -280,6 +288,13 @@ export const StructFieldDef = {
 
           message.fieldType = TypeDefinition.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.defaultValue = VariableValue.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -297,6 +312,9 @@ export const StructFieldDef = {
     message.optional = object.optional ?? false;
     message.fieldType = (object.fieldType !== undefined && object.fieldType !== null)
       ? TypeDefinition.fromPartial(object.fieldType)
+      : undefined;
+    message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
+      ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
     return message;
   },

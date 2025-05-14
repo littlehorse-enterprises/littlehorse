@@ -1,5 +1,6 @@
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
+import littlehorse.model.variable_pb2 as _variable_pb2
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
@@ -34,9 +35,11 @@ class InlineStructDef(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
-    __slots__ = ["optional", "field_type"]
+    __slots__ = ["optional", "field_type", "default_value"]
     OPTIONAL_FIELD_NUMBER: _ClassVar[int]
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
     optional: bool
     field_type: _common_wfspec_pb2.TypeDefinition
-    def __init__(self, optional: bool = ..., field_type: _Optional[_Union[_common_wfspec_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
+    default_value: _variable_pb2.VariableValue
+    def __init__(self, optional: bool = ..., field_type: _Optional[_Union[_common_wfspec_pb2.TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...

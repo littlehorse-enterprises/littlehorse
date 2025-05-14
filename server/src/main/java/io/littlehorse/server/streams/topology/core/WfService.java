@@ -95,7 +95,8 @@ public class WfService {
             if (version != null) {
                 storedResult = metadataManager.get(new StructDefIdModel(name, version));
             } else {
-                storedResult = metadataManager.getLastFromPrefix(StructDefIdModel.getPrefix(name), StructDefModel.class);
+                storedResult =
+                        metadataManager.getLastFromPrefix(StructDefIdModel.getPrefix(name), StructDefModel.class);
             }
 
             return storedResult;
