@@ -31,6 +31,7 @@ const (
 	LittleHorse_GetLatestWfSpec_FullMethodName         = "/littlehorse.LittleHorse/GetLatestWfSpec"
 	LittleHorse_MigrateWfSpec_FullMethodName           = "/littlehorse.LittleHorse/MigrateWfSpec"
 	LittleHorse_PutStructDef_FullMethodName            = "/littlehorse.LittleHorse/PutStructDef"
+	LittleHorse_GetStructDef_FullMethodName            = "/littlehorse.LittleHorse/GetStructDef"
 	LittleHorse_PutUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/PutUserTaskDef"
 	LittleHorse_GetUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/GetUserTaskDef"
 	LittleHorse_GetLatestUserTaskDef_FullMethodName    = "/littlehorse.LittleHorse/GetLatestUserTaskDef"
@@ -80,6 +81,7 @@ const (
 	LittleHorse_RescueThreadRun_FullMethodName         = "/littlehorse.LittleHorse/RescueThreadRun"
 	LittleHorse_DeleteWfRun_FullMethodName             = "/littlehorse.LittleHorse/DeleteWfRun"
 	LittleHorse_DeleteTaskDef_FullMethodName           = "/littlehorse.LittleHorse/DeleteTaskDef"
+	LittleHorse_DeleteStructDef_FullMethodName         = "/littlehorse.LittleHorse/DeleteStructDef"
 	LittleHorse_DeleteWfSpec_FullMethodName            = "/littlehorse.LittleHorse/DeleteWfSpec"
 	LittleHorse_DeleteUserTaskDef_FullMethodName       = "/littlehorse.LittleHorse/DeleteUserTaskDef"
 	LittleHorse_DeleteExternalEventDef_FullMethodName  = "/littlehorse.LittleHorse/DeleteExternalEventDef"
@@ -138,6 +140,8 @@ type LittleHorseClient interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error)
+	// Get a StructDef.
+	GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	// Gets a specific UserTaskDef.
@@ -284,6 +288,8 @@ type LittleHorseClient interface {
 	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a StructDef.
+	DeleteStructDef(ctx context.Context, in *DeleteStructDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a UserTaskDef.
@@ -419,6 +425,15 @@ func (c *littleHorseClient) MigrateWfSpec(ctx context.Context, in *MigrateWfSpec
 func (c *littleHorseClient) PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error) {
 	out := new(StructDef)
 	err := c.cc.Invoke(ctx, LittleHorse_PutStructDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error) {
+	out := new(StructDef)
+	err := c.cc.Invoke(ctx, LittleHorse_GetStructDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -888,6 +903,15 @@ func (c *littleHorseClient) DeleteTaskDef(ctx context.Context, in *DeleteTaskDef
 	return out, nil
 }
 
+func (c *littleHorseClient) DeleteStructDef(ctx context.Context, in *DeleteStructDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteStructDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteWfSpec_FullMethodName, in, out, opts...)
@@ -1072,6 +1096,8 @@ type LittleHorseServer interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error)
+	// Get a StructDef.
+	GetStructDef(context.Context, *StructDefId) (*StructDef, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
 	// Gets a specific UserTaskDef.
@@ -1218,6 +1244,8 @@ type LittleHorseServer interface {
 	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error)
+	// Deletes a StructDef.
+	DeleteStructDef(context.Context, *DeleteStructDefRequest) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error)
 	// Deletes a UserTaskDef.
@@ -1289,6 +1317,9 @@ func (UnimplementedLittleHorseServer) MigrateWfSpec(context.Context, *MigrateWfS
 }
 func (UnimplementedLittleHorseServer) PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutStructDef not implemented")
+}
+func (UnimplementedLittleHorseServer) GetStructDef(context.Context, *StructDefId) (*StructDef, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStructDef not implemented")
 }
 func (UnimplementedLittleHorseServer) PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskDef not implemented")
@@ -1436,6 +1467,9 @@ func (UnimplementedLittleHorseServer) DeleteWfRun(context.Context, *DeleteWfRunR
 }
 func (UnimplementedLittleHorseServer) DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTaskDef not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteStructDef(context.Context, *DeleteStructDefRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteStructDef not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWfSpec not implemented")
@@ -1692,6 +1726,24 @@ func _LittleHorse_PutStructDef_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).PutStructDef(ctx, req.(*PutStructDefRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetStructDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StructDefId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetStructDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetStructDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetStructDef(ctx, req.(*StructDefId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2586,6 +2638,24 @@ func _LittleHorse_DeleteTaskDef_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_DeleteStructDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteStructDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteStructDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteStructDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteStructDef(ctx, req.(*DeleteStructDefRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_DeleteWfSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteWfSpecRequest)
 	if err := dec(in); err != nil {
@@ -2926,6 +2996,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_PutStructDef_Handler,
 		},
 		{
+			MethodName: "GetStructDef",
+			Handler:    _LittleHorse_GetStructDef_Handler,
+		},
+		{
 			MethodName: "PutUserTaskDef",
 			Handler:    _LittleHorse_PutUserTaskDef_Handler,
 		},
@@ -3116,6 +3190,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteTaskDef",
 			Handler:    _LittleHorse_DeleteTaskDef_Handler,
+		},
+		{
+			MethodName: "DeleteStructDef",
+			Handler:    _LittleHorse_DeleteStructDef_Handler,
 		},
 		{
 			MethodName: "DeleteWfSpec",

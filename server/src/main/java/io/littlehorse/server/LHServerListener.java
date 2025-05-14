@@ -46,6 +46,7 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -164,6 +165,7 @@ import io.littlehorse.sdk.common.proto.SearchWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskDefIdList;
@@ -428,7 +430,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         if (utd == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion()));
+                    "Couldn't find UserTaskDef %s version %d".formatted(req.getName(), req.getVersion()));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -443,6 +445,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(td.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    // @Authorize()
+    public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
+        StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
+        if (sd == null) {
+            throw new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find StructDef %s version %d".formatted(req.getName(), req.getVersion()));
+        } else {
+            ctx.onNext(sd.toProto().build());
             ctx.onCompleted();
         }
     }

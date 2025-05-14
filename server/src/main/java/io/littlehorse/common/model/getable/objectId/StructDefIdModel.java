@@ -16,7 +16,7 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
 
     public StructDefIdModel() {}
 
-    public StructDefIdModel(String name) {
+    public StructDefIdModel(String name, int version) {
         this.name = name;
     }
 

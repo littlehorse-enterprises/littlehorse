@@ -31,6 +31,7 @@ import {
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
+  StructDefId,
   TaskDefId,
   TaskRunId,
   TaskWorkerGroupId,
@@ -348,6 +349,10 @@ export interface DeleteWfRunRequest {
 export interface DeleteTaskDefRequest {
   /** The ID of the TaskDef to delete. */
   id: TaskDefId | undefined;
+}
+
+export interface DeleteStructDefRequest {
+  id: StructDefId | undefined;
 }
 
 /** Deletes a UserTaskDef. */
@@ -2459,6 +2464,51 @@ export const DeleteTaskDefRequest = {
   fromPartial(object: DeepPartial<DeleteTaskDefRequest>): DeleteTaskDefRequest {
     const message = createBaseDeleteTaskDefRequest();
     message.id = (object.id !== undefined && object.id !== null) ? TaskDefId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteStructDefRequest(): DeleteStructDefRequest {
+  return { id: undefined };
+}
+
+export const DeleteStructDefRequest = {
+  encode(message: DeleteStructDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      StructDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteStructDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteStructDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = StructDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteStructDefRequest>): DeleteStructDefRequest {
+    return DeleteStructDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteStructDefRequest>): DeleteStructDefRequest {
+    const message = createBaseDeleteStructDefRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? StructDefId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -7990,6 +8040,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Get a StructDef. */
+    getStructDef: {
+      name: "GetStructDef",
+      requestType: StructDefId,
+      requestStream: false,
+      responseType: StructDef,
+      responseStream: false,
+      options: {},
+    },
     /** Creates a UserTaskDef. */
     putUserTaskDef: {
       name: "PutUserTaskDef",
@@ -8513,6 +8572,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a StructDef. */
+    deleteStructDef: {
+      name: "DeleteStructDef",
+      requestType: DeleteStructDefRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Deletes a WfSpec. */
     deleteWfSpec: {
       name: "DeleteWfSpec",
@@ -8711,6 +8779,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
+  /** Get a StructDef. */
+  getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: PutUserTaskDefRequest,
@@ -8981,6 +9051,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   deleteWfRun(request: DeleteWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeleteTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /** Deletes a StructDef. */
+  deleteStructDef(request: DeleteStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeleteWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a UserTaskDef. */
@@ -9093,6 +9165,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
+  /** Get a StructDef. */
+  getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: DeepPartial<PutUserTaskDefRequest>,
@@ -9369,6 +9443,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   deleteWfRun(request: DeepPartial<DeleteWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeepPartial<DeleteTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /** Deletes a StructDef. */
+  deleteStructDef(request: DeepPartial<DeleteStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeepPartial<DeleteWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a UserTaskDef. */

@@ -103,6 +103,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.PutStructDefRequest.SerializeToString,
                 response_deserializer=struct__def__pb2.StructDef.FromString,
                 _registered_method=True)
+        self.GetStructDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetStructDef',
+                request_serializer=object__id__pb2.StructDefId.SerializeToString,
+                response_deserializer=struct__def__pb2.StructDef.FromString,
+                _registered_method=True)
         self.PutUserTaskDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutUserTaskDef',
                 request_serializer=service__pb2.PutUserTaskDefRequest.SerializeToString,
@@ -348,6 +353,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.DeleteTaskDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
+        self.DeleteStructDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteStructDef',
+                request_serializer=service__pb2.DeleteStructDefRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
         self.DeleteWfSpec = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteWfSpec',
                 request_serializer=service__pb2.DeleteWfSpecRequest.SerializeToString,
@@ -519,6 +529,13 @@ class LittleHorseServicer(object):
 
         For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
         enum within the `PutStructDefRequest`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetStructDef(self, request, context):
+        """Get a StructDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -915,6 +932,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteStructDef(self, request, context):
+        """Deletes a StructDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def DeleteWfSpec(self, request, context):
         """Deletes a WfSpec.
         """
@@ -1083,6 +1107,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'PutStructDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutStructDef,
                     request_deserializer=service__pb2.PutStructDefRequest.FromString,
+                    response_serializer=struct__def__pb2.StructDef.SerializeToString,
+            ),
+            'GetStructDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetStructDef,
+                    request_deserializer=object__id__pb2.StructDefId.FromString,
                     response_serializer=struct__def__pb2.StructDef.SerializeToString,
             ),
             'PutUserTaskDef': grpc.unary_unary_rpc_method_handler(
@@ -1328,6 +1357,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteTaskDef,
                     request_deserializer=service__pb2.DeleteTaskDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteStructDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteStructDef,
+                    request_deserializer=service__pb2.DeleteStructDefRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWfSpec': grpc.unary_unary_rpc_method_handler(
@@ -1707,6 +1741,33 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/PutStructDef',
             service__pb2.PutStructDefRequest.SerializeToString,
+            struct__def__pb2.StructDef.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetStructDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetStructDef',
+            object__id__pb2.StructDefId.SerializeToString,
             struct__def__pb2.StructDef.FromString,
             options,
             channel_credentials,
@@ -3030,6 +3091,33 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/DeleteTaskDef',
             service__pb2.DeleteTaskDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteStructDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteStructDef',
+            service__pb2.DeleteStructDefRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,

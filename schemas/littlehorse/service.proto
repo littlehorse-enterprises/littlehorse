@@ -74,6 +74,9 @@ service LittleHorse {
    * enum within the `PutStructDefRequest`.
    */
   rpc PutStructDef(PutStructDefRequest) returns (StructDef) {}
+  
+  // Get a StructDef.
+  rpc GetStructDef(StructDefId) returns (StructDef) {}
 
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
@@ -265,6 +268,8 @@ service LittleHorse {
   rpc DeleteWfRun(DeleteWfRunRequest) returns (google.protobuf.Empty) {}
   // Deletes a TaskDef.
   rpc DeleteTaskDef(DeleteTaskDefRequest) returns (google.protobuf.Empty) {}
+  // Deletes a StructDef.
+  rpc DeleteStructDef(DeleteStructDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a WfSpec.
   rpc DeleteWfSpec(DeleteWfSpecRequest) returns (google.protobuf.Empty) {}
   // Deletes a UserTaskDef.
@@ -490,6 +495,10 @@ message DeleteWfRunRequest {
 message DeleteTaskDefRequest {
   // The ID of the TaskDef to delete.
   TaskDefId id = 1;
+}
+
+message DeleteStructDefRequest {
+  StructDefId id = 1;
 }
 
 // Deletes a UserTaskDef.

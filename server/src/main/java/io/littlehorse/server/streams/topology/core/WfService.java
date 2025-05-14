@@ -6,11 +6,13 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -81,6 +83,11 @@ public class WfService {
 
     public WorkflowEventDefModel getWorkflowEventDef(WorkflowEventDefIdModel id) {
         return metadataManager.get(id);
+    }
+
+    public StructDefModel getStructDef(String name, Integer version) {
+        StructDefIdModel sd = new StructDefIdModel(name, version);
+        return metadataManager.get(sd);
     }
 
     public TaskDefModel getTaskDef(String name) {

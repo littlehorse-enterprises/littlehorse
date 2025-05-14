@@ -157,6 +157,12 @@ class DeleteTaskDefRequest(_message.Message):
     id: _object_id_pb2.TaskDefId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
 
+class DeleteStructDefRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.StructDefId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ...) -> None: ...
+
 class DeleteUserTaskDefRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
