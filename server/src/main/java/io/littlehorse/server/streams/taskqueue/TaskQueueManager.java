@@ -44,7 +44,7 @@ public class TaskQueueManager {
             PollTaskRequestObserver listener, TenantIdModel tenantId, RequestExecutionContext requestContext) {
         try {
             OneTaskQueue subQueue = getSubQueue(new TenantTaskName(tenantId, listener.getTaskDefId()));
-            subQueue.onPollRequest(listener, requestContext).get(3, TimeUnit.SECONDS);
+            subQueue.onPollRequest(listener, requestContext).get(5, TimeUnit.MINUTES);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException("Queue got locked for more than 3 seconds", e);
         }
