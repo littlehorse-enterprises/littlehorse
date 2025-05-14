@@ -127,7 +127,7 @@ dependencies {
     implementation project(':sdk-java')
 
     // Prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.11.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.6'
     implementation 'io.javalin:javalin:6.3.0'
 
     // Lombok stuff

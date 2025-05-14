@@ -37,7 +37,7 @@ dependencies {
     implementation 'io.javalin:javalin-micrometer:6.3.0'
 
     // Prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.6'
 
     // RocksDB
     implementation 'org.rocksdb:rocksdbjni:9.0.0'
