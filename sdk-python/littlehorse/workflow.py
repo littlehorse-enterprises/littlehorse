@@ -383,6 +383,9 @@ class WorkflowIfStatement:
     def get_last_nop_node_name(self) -> str:
         return self._last_nop_node_name
 
+    def _is_not_initialized(self) -> bool:
+        return self._first_nop_node_name == "" and self._last_nop_node_name == ""
+
     def do_else_if(
         self, condition: WorkflowCondition, body: "ThreadInitializer"
     ) -> WorkflowIfStatement:
@@ -397,7 +400,7 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if the provided
             WorkflowCondition is satisfied.
         """
-        if self._first_nop_node_name == "" and self._last_nop_node_name == "":
+        if self._is_not_initialized():
             raise AttributeError(
                 "'WorkflowIfStatement' object has no attribute 'do_else_if'"
             )
@@ -415,7 +418,7 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if all previous
             WorkflowConditions were not satisfied.
         """
-        if self._first_nop_node_name == "" and self._last_nop_node_name == "":
+        if self._is_not_initialized():
             raise AttributeError(
                 "'WorkflowIfStatement' object has no attribute 'do_else'"
             )
