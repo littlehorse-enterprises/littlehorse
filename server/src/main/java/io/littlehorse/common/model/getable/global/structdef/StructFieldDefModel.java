@@ -10,11 +10,13 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.text.MessageFormat;
-import java.util.Optional;
+import lombok.Getter;
 
 public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     private boolean isOptional;
+
+    @Getter
     private TypeDefinitionModel fieldType;
 
     private VariableValueModel defaultValue;
@@ -46,8 +48,8 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         return StructFieldDef.class;
     }
 
-    public Optional<VariableValueModel> getDefaultValue() {
-        return Optional.ofNullable(defaultValue);
+    public boolean hasDefaultValue() {
+        return defaultValue != null;
     }
 
     public boolean isRequired() {

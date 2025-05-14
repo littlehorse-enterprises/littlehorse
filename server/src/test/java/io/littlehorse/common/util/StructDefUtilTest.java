@@ -221,4 +221,26 @@ public class StructDefUtilTest {
 
         assertEquals(false, StructDefUtil.hasBreakingChanges(structDefModel2, structDefModel1));
     }
+
+    @Test
+    public void testStructDefsAreNotCompatibleWhenRequiredFieldTypeChanges() {
+        Map<String, StructFieldDef> oldFields = Map.of(
+                "horsepower",
+                StructFieldDef.newBuilder()
+                        .setFieldType(TypeDefinition.newBuilder().setType(VariableType.INT))
+                        .build());
+        StructDef structDef1 = getCarStructDef(oldFields.entrySet());
+
+        Map<String, StructFieldDef> newFields = Map.of(
+                "horsepower",
+                StructFieldDef.newBuilder()
+                        .setFieldType(TypeDefinition.newBuilder().setType(VariableType.BOOL))
+                        .build());
+        StructDef structDef2 = getCarStructDef(newFields.entrySet());
+
+        StructDefModel structDefModel1 = StructDefModel.fromProto(structDef1, null);
+        StructDefModel structDefModel2 = StructDefModel.fromProto(structDef2, null);
+
+        assertEquals(true, StructDefUtil.hasBreakingChanges(structDefModel2, structDefModel1));
+    }
 }

@@ -3,6 +3,7 @@ package io.littlehorse.common.util;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.StructDef;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,24 +46,32 @@ public class StructDefUtil {
         Map<String, StructFieldDefModel> oldRequiredFields =
                 oldStructDef.getStructDef().getRequiredFields();
 
-        for (Entry<String, StructFieldDefModel> field : newRequiredFields.entrySet()) {
-            // If a new required field is found...
-            if (field.getValue().isRequired() && !oldRequiredFields.containsKey(field.getKey())) {
-                // If the new required field does not have a default value
-                if (field.getValue().getDefaultValue().isEmpty()) {
-                    System.out.println("New required field: " + field.getKey() + " Value: "
-                            + field.getValue().toJson());
+        // Check for required fields in old StructDef
+        for (Entry<String, StructFieldDefModel> field : oldRequiredFields.entrySet()) {
+            // If required field was removed...
+            if (!newRequiredFields.containsKey(field.getKey())) {
+                return true;
+            } else {
+                // Check type compatibility
+                TypeDefinitionModel oldFieldType = field.getValue().getFieldType();
+                TypeDefinitionModel newFieldType =
+                        newRequiredFields.get(field.getKey()).getFieldType();
+
+                // If types change...
+                if (!oldFieldType.equals(newFieldType)) {
                     return true;
                 }
             }
         }
-
-        for (Entry<String, StructFieldDefModel> field : oldRequiredFields.entrySet()) {
-            // If required field was removed...
-            if (field.getValue().isRequired() && !newRequiredFields.containsKey(field.getKey())) {
-                System.out.println("Required field removed: " + field.getKey() + " Value: "
-                        + field.getValue().toJson());
-                return true;
+ 
+        // Check for new fields in new StructDef
+        for (Entry<String, StructFieldDefModel> field : newRequiredFields.entrySet()) {
+            // If new required field was added
+            if (!oldRequiredFields.containsKey(field.getKey())) {
+                // If new required field does not have a default value
+                if (!field.getValue().hasDefaultValue()) {
+                    return true;
+                }
             }
         }
 
