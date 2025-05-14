@@ -85,9 +85,22 @@ public class WfService {
         return metadataManager.get(id);
     }
 
+    /**
+     *  Implementation inspired by {@link WfService#getWfSpec(String, Integer, Integer)}
+     */
     public StructDefModel getStructDef(String name, Integer version) {
-        StructDefIdModel sd = new StructDefIdModel(name, version);
-        return metadataManager.get(sd);
+        Supplier<StructDefModel> findStructDef = () -> {
+            final StructDefModel storedResult;
+
+            if (version != null) {
+                storedResult = metadataManager.get(new StructDefIdModel(name, version));
+            } else {
+                storedResult = metadataManager.getLastFromPrefix(StructDefIdModel.getPrefix(name), StructDefModel.class);
+            }
+
+            return storedResult;
+        };
+        return findStructDef.get();
     }
 
     public TaskDefModel getTaskDef(String name) {

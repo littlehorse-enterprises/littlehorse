@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
+import java.util.Date;
+
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -21,7 +23,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
     private String name;
     private InlineStructDefModel structDef;
-    private AllowedStructDefUpdateType allowedUpdates;
+    private AllowedStructDefUpdateType allowedUpdateType;
 
     public PutStructDefRequestModel() {}
 
@@ -30,7 +32,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         PutStructDefRequest.Builder out = PutStructDefRequest.newBuilder()
                 .setName(name)
                 .setStructDef(structDef.toProto())
-                .setAllowedUpdates(allowedUpdates);
+                .setAllowedUpdates(allowedUpdateType);
 
         return out;
     }
@@ -41,7 +43,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
         name = proto.getName();
         structDef = LHSerializable.fromProto(proto.getStructDef(), InlineStructDefModel.class, context);
-        allowedUpdates = proto.getAllowedUpdates();
+        allowedUpdateType = proto.getAllowedUpdates();
     }
 
     @Override
@@ -54,12 +56,12 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         MetadataManager metadataManager = context.metadataManager();
         this.validate();
 
-        StructDefModel spec = new StructDefModel();
-
-        spec.setId(new StructDefIdModel(name));
+        StructDefModel spec = new StructDefModel(context);
+        spec.setId(new StructDefIdModel(name, 0));
         spec.setStructDef(structDef);
+        spec.setCreatedAt(new Date());
 
-        StructDefModel oldVersion = metadataManager.get(new StructDefIdModel(name));
+        StructDefModel oldVersion = context.service().getStructDef(name, null);
 
         // TODO: AllowedUpdateType checking
         if (oldVersion != null) {
@@ -68,8 +70,25 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             }
         }
 
+        verifyUpdateType(allowedUpdateType, spec, oldVersion);
         metadataManager.put(spec);
         return structDef.toProto().build();
+    }
+
+    private void verifyUpdateType(AllowedStructDefUpdateType allowedUpdateType, StructDefModel spec, StructDefModel oldSpec) {
+        switch (allowedUpdateType) {
+            case FULLY_COMPATIBLE_SCHEMA_UPDATES:
+                if (StructDefUtil.hasBreakingChanges(spec, oldSpec)) {
+                    throw new LHApiException(Status.FAILED_PRECONDITION, "The resulting StructDef has a breaking change");
+                }
+                break;
+            case NO_SCHEMA_UPDATES:
+                throw new LHApiException(Status.ALREADY_EXISTS, "StructDef already exists.");
+            case UNRECOGNIZED:
+            default:
+                break;
+            
+        }
     }
 
     @Override

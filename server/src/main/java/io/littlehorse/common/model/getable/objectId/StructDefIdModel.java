@@ -34,6 +34,11 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
         version = proto.getVersion();
     }
 
+    // TODO: This leaks from Storeable.java
+    public static String getPrefix(String name) {
+        return GetableClassEnum.STRUCT_DEF.getNumber() + "/" + name + "/";
+    }
+
     @Override
     public String toString() {
         return name;

@@ -32,4 +32,8 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     public Class<StructFieldDef> getProtoBaseClass() {
         return StructFieldDef.class;
     }
+
+    public boolean isRequired() {
+        return !isOptional;
+    }
 }
