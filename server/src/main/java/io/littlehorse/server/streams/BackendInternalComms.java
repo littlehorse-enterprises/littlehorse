@@ -15,11 +15,11 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
@@ -73,18 +73,21 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -122,21 +125,23 @@ public class BackendInternalComms implements Closeable {
     private final ChannelCredentials clientCreds;
 
     private final Map<String, ManagedChannel> channels;
-    private final AsyncWaiters asyncWaiters;
     private final ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
     private final Executor networkThreadPool;
+    private final AsyncWaiters asyncWaiters;
 
     public BackendInternalComms(
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
-            ScheduledExecutorService networkThreadPool,
+            ExecutorService networkThreadPool,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
-            CoreStoreProvider coreStoreProvider) {
+            CoreStoreProvider coreStoreProvider,
+            AsyncWaiters asyncWaiters) {
+        this.asyncWaiters = asyncWaiters;
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -167,7 +172,6 @@ public class BackendInternalComms implements Closeable {
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.commandProducer = config.getCommandProducer();
         this.taskClaimProducer = config.getTaskClaimProducer();
-        this.asyncWaiters = new AsyncWaiters(networkThreadPool);
     }
 
     public void start() throws IOException {
@@ -236,46 +240,6 @@ public class BackendInternalComms implements Closeable {
             } catch (StatusRuntimeException ex) {
                 throw new LHApiException(ex.getStatus(), ex.getMessage());
             }
-        }
-    }
-
-    public ProducerCommandCallback createProducerCommandCallback(
-            AbstractCommand<?> command,
-            StreamObserver<WaitForCommandResponse> observer,
-            RequestExecutionContext requestCtx) {
-        Function<KeyQueryMetadata, LHInternalsStub> internalStub =
-                (meta) -> getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx));
-        return new ProducerCommandCallback(
-                observer, command, coreStreams, thisHost, internalStub, asyncWaiters, networkThreadPool);
-    }
-
-    public void waitForCommand(
-            AbstractCommand<?> command,
-            StreamObserver<WaitForCommandResponse> observer,
-            RequestExecutionContext requestCtx) {
-        String storeName =
-                switch (command.getStore()) {
-                    case CORE -> ServerTopology.CORE_STORE;
-                    case METADATA -> ServerTopology.METADATA_STORE;
-                    case REPARTITION -> ServerTopology.CORE_REPARTITION_STORE;
-                    case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
-                };
-        KeyQueryMetadata meta = lookupPartitionKey(storeName, command.getPartitionKey());
-
-        /*
-         * As a prerequisite to this method being called, the command has already
-         * been recorded into the CoreCommand Kafka Topic (and ack'ed by all
-         * of the in-sync replicas).
-         */
-        if (meta.activeHost().equals(thisHost)) {
-            localWaitForCommand(command.getCommandId(), meta.partition(), observer);
-        } else {
-            WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
-                    .setCommandId(command.getCommandId())
-                    .setPartition(meta.partition())
-                    .build();
-            getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx))
-                    .waitForCommand(req, observer);
         }
     }
 
@@ -363,26 +327,11 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void onWorkflowEventThrown(WorkflowEventModel event, TenantIdModel tenantId) {
-        asyncWaiters.registerWorkflowEventHappened(event, tenantId);
-    }
-
-    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        asyncWaiters.registerCommandProcessed(commandId, response);
-    }
-
-    public void sendErrorToClientForCommand(String commandId, Throwable caught) {
-        asyncWaiters.markCommandFailed(commandId, caught);
-    }
-
-    private void localWaitForCommand(String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.registerObserverWaitingForCommand(commandId, partition, observer);
-        // Once the command has been recorded, we've got nothing to do: the
-        // CommandProcessor will notify the StreamObserver once the command is
-        // processed.
+        //        asyncWaiters.registerWorkflowEventHappened(event, tenantId);
     }
 
     private void localWaitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer) {
-        asyncWaiters.registerObserverWaitingForWorkflowEvent(req, observer, executionContext());
+        //        asyncWaiters.registerObserverWaitingForWorkflowEvent(req, observer, executionContext());
     }
 
     public ReadOnlyKeyValueStore<String, Bytes> getRawStore(Integer specificPartition, String storeName) {
@@ -462,7 +411,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void handleRebalance(Set<TaskId> taskIds) {
-        asyncWaiters.handleRebalance(taskIds);
+        //        asyncWaiters.handleRebalance(taskIds);
     }
 
     /*
@@ -502,7 +451,27 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
-            localWaitForCommand(req.getCommandId(), req.getPartition(), ctx);
+            CompletableFuture<Message> completable =
+                    asyncWaiters.getOrRegisterFuture(req.getCommandId(), Message.class, new CompletableFuture<>());
+            try {
+                ByteString byteString = completable
+                        .get(LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                        .toByteString();
+                ctx.onNext(WaitForCommandResponse.newBuilder()
+                        .setCommandId(req.getCommandId())
+                        .setResultTime(LHUtil.fromDate(new Date()))
+                        .setResult(byteString)
+                        .build());
+                ctx.onCompleted();
+            } catch (TimeoutException timeoutException) {
+                ctx.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                        "Command not processed within deadline: likely due to rebalance")));
+            } catch (ExecutionException exn) {
+                ctx.onError(exn.getCause());
+            } catch (Throwable t) {
+                ctx.onError(t);
+                log.error("Unexpected exception", t);
+            }
         }
 
         @Override

@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataGlobalStoreProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.topology.timer.TimerProcessor;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -86,7 +87,8 @@ public class ServerTopology {
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
-            TaskQueueManager globalTaskQueueManager) {
+            TaskQueueManager globalTaskQueueManager,
+            AsyncWaiters asyncWaiters) {
         Topology topo = new Topology();
 
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
@@ -113,7 +115,9 @@ public class ServerTopology {
                 config.getMetadataCmdTopicName() // source topic
                 );
         topo.addProcessor(
-                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, metadataCache), METADATA_SOURCE);
+                METADATA_PROCESSOR,
+                () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters),
+                METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addSink(
@@ -133,7 +137,7 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 CORE_PROCESSOR,
-                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager),
+                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters),
                 CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,

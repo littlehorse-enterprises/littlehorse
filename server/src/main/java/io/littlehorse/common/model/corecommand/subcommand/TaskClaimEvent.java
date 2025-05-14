@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
-import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
@@ -40,11 +39,11 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
 
     public TaskClaimEvent() {}
 
-    public TaskClaimEvent(ScheduledTaskModel task, PollTaskRequestObserver taskClaimer) {
+    public TaskClaimEvent(ScheduledTaskModel task, String taskWorkerId, String taskWorkerVersion) {
         this.taskRunId = task.getTaskRunId();
         this.time = new Date();
-        this.taskWorkerId = taskClaimer.getClientId();
-        this.taskWorkerVersion = taskClaimer.getTaskWorkerVersion();
+        this.taskWorkerId = taskWorkerId;
+        this.taskWorkerVersion = taskWorkerVersion;
     }
 
     public Class<TaskClaimEventPb> getProtoBaseClass() {

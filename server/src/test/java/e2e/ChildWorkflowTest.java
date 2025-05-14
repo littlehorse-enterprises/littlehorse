@@ -63,7 +63,7 @@ public class ChildWorkflowTest {
             caught = exn;
         }
         assertThat(caught).isNotNull();
-        Assertions.assertEquals(caught.getStatus().getCode(), Code.INVALID_ARGUMENT);
+        Assertions.assertEquals(Code.INVALID_ARGUMENT, caught.getStatus().getCode());
 
         cleanupParentChild(parentChild);
     }
