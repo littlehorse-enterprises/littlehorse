@@ -1,3 +1,4 @@
+using Google.Protobuf.Reflection;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
@@ -90,9 +91,12 @@ public class WfRunVariable
     {
         VariableDef varDef = new VariableDef
         {
-            Type = Type,
-            Name = Name,
-            MaskedValue = _masked
+            TypeDef = new TypeDefinition
+            {
+                Type = Type,
+                Masked = _masked
+            },
+            Name = Name
         };
 
         if (_defaultValue != null) 
