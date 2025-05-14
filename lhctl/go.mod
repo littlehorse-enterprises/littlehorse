@@ -18,7 +18,7 @@ replace github.com/littlehorse-enterprises/littlehorse v0.0.0 => ../
 
 require (
 	cloud.google.com/go/compute/metadata v0.5.0 // indirect
-	github.com/go-jose/go-jose/v4 v4.0.4 // indirect
+	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
