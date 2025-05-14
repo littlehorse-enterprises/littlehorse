@@ -65,7 +65,7 @@ public class StructDefUtil {
                 return true;
             }
         }
- 
+
         // Check for new fields in new StructDef
         for (Entry<String, StructFieldDefModel> field : newRequiredFields.entrySet()) {
             // If new required field was added
