@@ -39,4 +39,25 @@ public class WorkerContextTest {
 
         assertEquals(context.getWfRunId().getId(), "hi");
     }
+
+    @Test
+    void checkWorkerContextLogOutput(){
+        WorkerContext context =
+                new WorkerContext(ScheduledTask.newBuilder().build(), null);  
+        context.log("test log");
+        assertEquals(context.getLogOutput(), "test log");
+    }
+
+    @Test
+    void checkWorkerContextLogOutputWNullValue(){
+        WorkerContext context =
+                new WorkerContext(ScheduledTask.newBuilder().build(), null);  
+        context.log(null);
+        assertEquals(context.getLogOutput(), "null");
+    }
+
+    
+
+    
+
 }
