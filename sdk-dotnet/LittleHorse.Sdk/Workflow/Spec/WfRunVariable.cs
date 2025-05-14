@@ -1,4 +1,3 @@
-using Google.Protobuf.Reflection;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
