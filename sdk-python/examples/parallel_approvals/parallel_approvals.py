@@ -58,8 +58,8 @@ def get_workflow() -> Workflow:
 
     def my_entrypoint(wf: WorkflowThread) -> None:
         approvals_var = wf.declare_json_arr("approvals")
-        (wf.declare_str("item-url").searchable())
-        (wf.declare_str("status", "PENDING").searchable())
+        wf.declare_str("item-url").searchable()
+        wf.declare_str("status", "PENDING").searchable()
         spawned_thread_1 = wf.spawn_thread_for_each(
             approvals_var, one_approval, "approval"
         )
