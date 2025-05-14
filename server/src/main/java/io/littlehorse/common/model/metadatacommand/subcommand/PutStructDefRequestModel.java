@@ -62,6 +62,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
         StructDefModel oldVersion = context.service().getStructDef(name, null);
 
+        // TODO: Bump version
         if (oldVersion != null) {
             if (StructDefUtil.equals(spec, oldVersion)) {
                 return oldVersion.toProto().build();
