@@ -41,23 +41,16 @@ public class WorkerContextTest {
     }
 
     @Test
-    void checkWorkerContextLogOutput(){
-        WorkerContext context =
-                new WorkerContext(ScheduledTask.newBuilder().build(), null);  
+    void checkWorkerContextLogOutput() {
+        WorkerContext context = new WorkerContext(ScheduledTask.newBuilder().build(), null);
         context.log("test log");
         assertEquals(context.getLogOutput(), "test log");
     }
 
     @Test
-    void checkWorkerContextLogOutputWNullValue(){
-        WorkerContext context =
-                new WorkerContext(ScheduledTask.newBuilder().build(), null);  
+    void checkWorkerContextLogOutputWNullValue() {
+        WorkerContext context = new WorkerContext(ScheduledTask.newBuilder().build(), null);
         context.log(null);
         assertEquals(context.getLogOutput(), "null");
     }
-
-    
-
-    
-
 }
