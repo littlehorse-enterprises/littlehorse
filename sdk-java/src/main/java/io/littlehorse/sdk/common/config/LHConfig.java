@@ -343,22 +343,15 @@ public class LHConfig extends ConfigBase {
     }
 
     private CallCredentials getCredentials(TenantId tenantId) {
-        boolean isOAuth = isOauth();
-        if (isOAuth) {
+        if (isOauth()) {
             return new CompositeCallCredentials(oauthCredentialsProvider, new TenantMetadataProvider(tenantId));
         } else {
-            return new TenantMetadataProvider(getTenantId());
+            return new TenantMetadataProvider(tenantId);
         }
     }
 
     private CallCredentials getCredentials() {
-        boolean isOAuth = isOauth();
-        TenantId tenantId = getTenantId();
-        if (isOAuth) {
-            return new CompositeCallCredentials(oauthCredentialsProvider, new TenantMetadataProvider(tenantId));
-        } else {
-            return new TenantMetadataProvider(getTenantId());
-        }
+        return getCredentials(getTenantId());
     }
 
     /**

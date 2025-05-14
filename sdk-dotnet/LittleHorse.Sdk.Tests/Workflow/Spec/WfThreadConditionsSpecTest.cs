@@ -117,7 +117,6 @@ public class WfThreadDoIfTest
     }
 
     [Fact]
-    [Obsolete("Obsolete test")]
     public void WfThread_WithIfElseStatement_ShouldCompileAnSpecAddingTaskNodesBothStatements()
     {
         const int leftHandSide = 1;

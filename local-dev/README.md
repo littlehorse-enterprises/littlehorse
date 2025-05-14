@@ -41,12 +41,8 @@ The LittleHorse repository contains the following components:
   - Synthetic Monitoring Tool for LH Server.
 - [`lhctl`](../lhctl)
     - The `lhctl` command line interface.
-- [`e2e-tests`](../e2e-tests)
-    - A series of system integration tests used to verify the cohesive behavior of
-    the LH Server, Java Workflow SDK, and Java Task Library together.
-    - Note: this framework is deprecated in favor of `test-utils`.
-  - [`test-utils`](../test-utils/)
-    - A new framework for running end-to-end tests in our pipeline.
+- [`test-utils`](../test-utils/)
+  - A new framework for running end-to-end tests in our pipeline.
 - [`examples`](../examples)
     - A series of examples with different level of complexity.
 - [`schemas`](../schemas)
@@ -62,7 +58,7 @@ This repository requires the following system dependencies:
 
 - `java`
     - [sdk-java](sdk-java): Java 11
-    - [server](server): Java 17
+    - [server](server): Java 21
 - `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
 - `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.

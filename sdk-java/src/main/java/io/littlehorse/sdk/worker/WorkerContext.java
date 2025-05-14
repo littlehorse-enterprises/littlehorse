@@ -19,7 +19,7 @@ public class WorkerContext {
     private ScheduledTask scheduledTask;
 
     private Date scheduleTime;
-    private String stderr;
+    private String logOutput;
 
     /**
      * Constructor for internal use by the Task Worker Library.
@@ -30,6 +30,7 @@ public class WorkerContext {
     public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime) {
         this.scheduledTask = scheduledTask;
         this.scheduleTime = scheduleTime;
+        this.logOutput = "";
     }
 
     /**
@@ -87,9 +88,9 @@ public class WorkerContext {
      */
     public void log(Object thing) {
         if (thing != null) {
-            stderr += thing.toString();
+            logOutput += thing.toString();
         } else {
-            stderr += "null";
+            logOutput += "null";
         }
     }
 
@@ -99,7 +100,7 @@ public class WorkerContext {
      * @return the current log output.
      */
     public String getLogOutput() {
-        return stderr;
+        return logOutput;
     }
 
     /**
