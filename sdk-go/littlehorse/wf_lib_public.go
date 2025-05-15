@@ -58,6 +58,7 @@ type TaskNodeOutput struct {
 
 type ExternalEventNodeOutput struct {
 	Output NodeOutput
+	node   *lhproto.Node
 	parent *WorkflowThread
 }
 
@@ -609,7 +610,7 @@ func (t *WorkflowThread) ReassignUserTaskOnDeadline(
 	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
 
-func (t *WorkflowThread) WaitForEvent(eventName string) *NodeOutput {
+func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput {
 	return t.waitForEvent(eventName)
 }
 

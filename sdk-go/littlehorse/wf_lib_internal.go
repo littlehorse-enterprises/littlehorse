@@ -494,6 +494,24 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
+	case *ExternalEventNodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.Output.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.Output.nodeName,
+				},
+			},
+		}
+	case ExternalEventNodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.Output.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.Output.nodeName,
+				},
+			},
+		}
 	case *LHExpression:
 		lhs, lhsErr := t.assignVariable(v.lhs)
 
@@ -1293,7 +1311,7 @@ func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) NodeOutput {
 	}
 }
 
-func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
+func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(eventName, "EXTERNAL_EVENT")
 
@@ -1303,10 +1321,14 @@ func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 		},
 	}
 
-	return &NodeOutput{
-		nodeName: nodeName,
-		jsonPath: nil,
-		thread:   t,
+	return &ExternalEventNodeOutput{
+		Output: NodeOutput{
+			nodeName: nodeName,
+			jsonPath: nil,
+			thread:   t,
+		},
+		node:   node,
+		parent: t,
 	}
 }
 
