@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
@@ -17,6 +18,8 @@ import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefRequest> {
 
@@ -78,10 +81,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             AllowedStructDefUpdateType allowedUpdateType, StructDefModel spec, StructDefModel oldSpec) {
         switch (allowedUpdateType) {
             case FULLY_COMPATIBLE_SCHEMA_UPDATES:
-                if (StructDefUtil.hasBreakingChanges(spec, oldSpec)) {
-                    throw new LHApiException(
-                            Status.FAILED_PRECONDITION, "The resulting StructDef has a breaking change");
-                }
+                validateFullyCompatibleSchema(spec, oldSpec);
                 break;
             case NO_SCHEMA_UPDATES:
                 throw new LHApiException(Status.ALREADY_EXISTS, "StructDef already exists.");
@@ -89,6 +89,20 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             default:
                 break;
         }
+    }
+
+    private void validateFullyCompatibleSchema(StructDefModel spec, StructDefModel oldSpec) {
+        List<Entry<String, StructFieldDefModel>> changedFields = StructDefUtil.getBreakingChanges(spec, oldSpec);
+
+        if (changedFields.isEmpty()) return;
+
+        StringBuilder errorMessage = new StringBuilder();
+
+        for (Entry<String, StructFieldDefModel> changedField : changedFields) {
+            errorMessage.append(String.format("Incompatible schema evolution on field: %s\n", changedField.getKey()));
+        }
+
+        throw new LHApiException(Status.INVALID_ARGUMENT, errorMessage.toString());
     }
 
     @Override
