@@ -90,9 +90,12 @@ public class WfRunVariable
     {
         VariableDef varDef = new VariableDef
         {
-            Type = Type,
-            Name = Name,
-            MaskedValue = _masked
+            TypeDef = new TypeDefinition
+            {
+                Type = Type,
+                Masked = _masked
+            },
+            Name = Name
         };
 
         if (_defaultValue != null) 

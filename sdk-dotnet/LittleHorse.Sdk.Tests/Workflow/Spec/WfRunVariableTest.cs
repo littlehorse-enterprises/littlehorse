@@ -59,9 +59,10 @@ public class WfRunVariableTest
         var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
         
         var actualVarDef = wfRunVariable.Compile();
-        
-        
-        var varDef = new VariableDef { Type = expectedType, Name = wfRunVariable.Name };
+
+
+        var varDef = new VariableDef
+            { TypeDef = new TypeDefinition { Type = expectedType }, Name = wfRunVariable.Name };
         var expectedVarDef = new ThreadVarDef
         {
             VarDef = varDef,

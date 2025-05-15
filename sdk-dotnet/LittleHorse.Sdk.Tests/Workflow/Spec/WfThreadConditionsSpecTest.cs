@@ -346,7 +346,7 @@ public class WfThreadDoIfTest
             VarDef = new VariableDef
             {
                 Name = "number-of-donuts",
-                Type = VariableType.Int
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
             },
             Required = true,
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
