@@ -89,7 +89,8 @@ message StructFieldDef {
 
   // The type of the field.
   TypeDefinition field_type = 3;
-
+  
+  // The default value of the field, which should match the Field Type.
   optional VariableValue default_value = 4;
 }
 
@@ -102,6 +103,7 @@ message StructDef {
   // Optionally description of the schema.
   optional string description = 2;
 
+  // When the `StructDef` was created.
   google.protobuf.Timestamp created_at = 3;
 
   // The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
