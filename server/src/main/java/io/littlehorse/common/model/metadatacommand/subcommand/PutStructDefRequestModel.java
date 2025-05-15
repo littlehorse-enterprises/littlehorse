@@ -71,7 +71,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             }
 
             verifyUpdateType(allowedUpdateType, spec, oldVersion);
-            spec.getObjectId().setVersion(oldVersion.getObjectId().getVersion()+1);
+            spec.getObjectId().setVersion(oldVersion.getObjectId().getVersion() + 1);
         }
 
         metadataManager.put(spec);
