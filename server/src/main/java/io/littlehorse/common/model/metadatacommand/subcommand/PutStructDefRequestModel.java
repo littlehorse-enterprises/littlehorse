@@ -86,7 +86,10 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
                 validateFullyCompatibleSchema(newSpec, oldSpec);
                 break;
             case NO_SCHEMA_UPDATES:
-                throw new LHApiException(Status.INVALID_ARGUMENT, "StructDef [%s] already exists and cannot be updated with the selected compatiblity type NO_SCHEMA_UPDATES.".formatted(name));
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "StructDef [%s] already exists and cannot be updated with the selected compatiblity type NO_SCHEMA_UPDATES."
+                                .formatted(name));
             case UNRECOGNIZED:
             default:
                 break;
@@ -101,9 +104,9 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         StringBuilder errorMessage = new StringBuilder("Incompatible schema evolution on field(s): ");
 
         String fieldNames = changedFields.stream()
-                             .map(Entry::getKey)
-                             .map((keyStr) ->  "[%s]".formatted(keyStr))
-                             .collect(Collectors.joining(", "));
+                .map(Entry::getKey)
+                .map((keyStr) -> "[%s]".formatted(keyStr))
+                .collect(Collectors.joining(", "));
 
         errorMessage.append(fieldNames);
 

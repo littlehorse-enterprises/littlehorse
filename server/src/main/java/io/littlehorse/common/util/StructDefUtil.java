@@ -54,6 +54,7 @@ public class StructDefUtil {
         Map<String, StructFieldDefModel> oldRequiredFields =
                 oldStructDef.getStructDef().getRequiredFields();
 
+        // TODO: Package Schema evolution failure message with each field.
         List<Entry<String, StructFieldDefModel>> incompatibleFields = new ArrayList<>();
         incompatibleFields.addAll(getChangedFields(newRequiredFields, oldRequiredFields));
         incompatibleFields.addAll(getNewFieldsWithoutDefault(newRequiredFields, oldRequiredFields));
