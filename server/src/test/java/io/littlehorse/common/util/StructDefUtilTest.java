@@ -38,37 +38,6 @@ public class StructDefUtilTest {
         assertThat(StructDefUtil.equals(structDefModel1, structDefModel2)).isFalse();
     }
 
-    //     @Test
-    //     public void testStructFieldDefComparison() {
-    //         StructFieldDef structFieldDef1 = StructFieldDef.newBuilder()
-    //                 .setFieldType(TypeDefinition.newBuilder().setType(VariableType.INT))
-    //                 .setOptional(false)
-    //                 .build();
-
-    //         StructFieldDef structFieldDef2 = StructFieldDef.newBuilder()
-    //                 .setFieldType(TypeDefinition.newBuilder().setType(VariableType.INT))
-    //                 .setOptional(false)
-    //                 .build();
-
-    //         assertEquals(true, structFieldDef1.equals(structFieldDef2));
-    //     }
-
-    //     @Test
-    //     public void testStructFieldDefComparisonWhenNotEquals() {
-    //         StructFieldDef structFieldDef1 = StructFieldDef.newBuilder()
-    //                 .setFieldType(TypeDefinition.newBuilder().setType(VariableType.INT))
-    //                 .setOptional(false)
-    //                 .build();
-
-    //         StructFieldDef structFieldDef2 = StructFieldDef.newBuilder()
-    //                 .setFieldType(TypeDefinition.newBuilder().setType(VariableType.INT))
-    //                 .setOptional(false)
-    //                 .setDefaultValue(VariableValue.newBuilder().setBool(true))
-    //                 .build();
-
-    //         assertEquals(false, structFieldDef1.equals(structFieldDef2));
-    //     }
-
     @Test
     public void testNoBreakingChangesWhenStructDefsAreEqual() {
         StructDef structDef1 = makeCarStructDef();
@@ -211,22 +180,22 @@ public class StructDefUtilTest {
     /**
      * @return a Car StructDef
      */
-    private StructDef makeCarStructDef() {
-        return this.makeCarStructDef(Map.of());
+    private static StructDef makeCarStructDef() {
+        return makeCarStructDef(Map.of());
     }
 
     /**
      * @return a Car StructDef
      */
-    private StructDef makeCarStructDef(Entry<String, StructFieldDef> extraField) {
-        return this.makeCarStructDef(Map.ofEntries(extraField));
+    private static StructDef makeCarStructDef(Entry<String, StructFieldDef> extraField) {
+        return makeCarStructDef(Map.ofEntries(extraField));
     }
 
     /**
      * @param extraFields A set of StructDef fields denoted by their String name and StructFieldDef value
      * @return a Car StructDef with additional StructFieldDefs
      */
-    private StructDef makeCarStructDef(Map<String, StructFieldDef> extraFields) {
+    private static StructDef makeCarStructDef(Map<String, StructFieldDef> extraFields) {
         InlineStructDef.Builder structFields = InlineStructDef.newBuilder()
                 .putFields(
                         "model",
