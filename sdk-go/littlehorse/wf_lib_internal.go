@@ -1126,26 +1126,28 @@ func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *Ta
 	node.GetTask().ExponentialBackoff = policy
 }
 
-func (t *WorkflowThread) addTimeoutToExtEvt(nodeOutput *NodeOutput, timeoutSeconds int64) {
+func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvnodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
-	node := t.spec.Nodes[nodeOutput.nodeName]
-	if node.GetTask() != nil {
-		node.GetTask().TimeoutSeconds = int32(timeoutSeconds)
-	} else if node.GetExternalEvent() != nil {
-		node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
-			JsonPath: nil,
-			Source: &lhproto.VariableAssignment_LiteralValue{
-				LiteralValue: &lhproto.VariableValue{
-					Value: &lhproto.VariableValue_Int{
-						Int: int64(timeoutSeconds),
-					},
+	node := t.spec.Nodes[extEvnodeOutput.Output.nodeName]
+	node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
+		JsonPath: nil,
+		Source: &lhproto.VariableAssignment_LiteralValue{
+			LiteralValue: &lhproto.VariableValue{
+				Value: &lhproto.VariableValue_Int{
+					Int: int64(timeoutSeconds),
 				},
 			},
-		}
-	} else {
-		t.throwError(errors.New("timeouts are only supposed on ExternalEvent and Task nodes."))
+		},
 	}
+}
+
+func (t *WorkflowThread) addTimeoutToTaskNode(taskNodeOutput *TaskNodeOutput, timeoutSeconds int64) {
+	t.checkIfIsActive()
+
+	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
+
+	node.GetTask().TimeoutSeconds = int32(timeoutSeconds)
 }
 
 func (t *WorkflowThread) spawnThread(
