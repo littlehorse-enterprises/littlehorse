@@ -497,7 +497,9 @@ message DeleteTaskDefRequest {
   TaskDefId id = 1;
 }
 
+// Deletes a StructDef.
 message DeleteStructDefRequest {
+  // The ID of the StructDef to delete.
   StructDefId id = 1;
 }
 

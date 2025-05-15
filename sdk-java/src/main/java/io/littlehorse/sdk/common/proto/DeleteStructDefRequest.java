@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Deletes a StructDef.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.DeleteStructDefRequest}
  */
 public final class DeleteStructDefRequest extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.StructDefId id_;
   /**
+   * <pre>
+   * The ID of the StructDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of the StructDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId id = 1;</code>
    * @return The id.
    */
@@ -57,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of the StructDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId id = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +243,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Deletes a StructDef.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.DeleteStructDefRequest}
    */
   public static final class Builder extends
@@ -406,6 +426,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -413,6 +437,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      * @return The id.
      */
@@ -424,6 +452,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.StructDefId value) {
@@ -440,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      */
     public Builder setId(
@@ -454,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.StructDefId value) {
@@ -473,6 +513,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      */
     public Builder clearId() {
@@ -486,6 +530,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.StructDefId.Builder getIdBuilder() {
@@ -494,6 +542,10 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getIdOrBuilder() {
@@ -505,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the StructDef to delete.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

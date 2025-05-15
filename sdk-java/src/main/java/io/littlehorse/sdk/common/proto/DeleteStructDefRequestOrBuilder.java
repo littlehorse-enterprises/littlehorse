@@ -8,16 +8,28 @@ public interface DeleteStructDefRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the StructDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the StructDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.StructDefId getId();
   /**
+   * <pre>
+   * The ID of the StructDef to delete.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getIdOrBuilder();

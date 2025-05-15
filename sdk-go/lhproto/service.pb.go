@@ -999,11 +999,13 @@ func (x *DeleteTaskDefRequest) GetId() *TaskDefId {
 	return nil
 }
 
+// Deletes a StructDef.
 type DeleteStructDefRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the StructDef to delete.
 	Id *StructDefId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 

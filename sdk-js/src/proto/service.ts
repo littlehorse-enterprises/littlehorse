@@ -351,7 +351,9 @@ export interface DeleteTaskDefRequest {
   id: TaskDefId | undefined;
 }
 
+/** Deletes a StructDef. */
 export interface DeleteStructDefRequest {
+  /** The ID of the StructDef to delete. */
   id: StructDefId | undefined;
 }
 

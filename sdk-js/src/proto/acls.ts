@@ -42,6 +42,7 @@ export enum ACLResource {
   ACL_TASK_WORKER_GROUP = "ACL_TASK_WORKER_GROUP",
   /** ACL_WORKFLOW_EVENT - Refers to `WorkflowEventDef` and `WorkflowEvent` */
   ACL_WORKFLOW_EVENT = "ACL_WORKFLOW_EVENT",
+  /** ACL_STRUCT - Refers to `StructDef` and `Struct` */
   ACL_STRUCT = "ACL_STRUCT",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
