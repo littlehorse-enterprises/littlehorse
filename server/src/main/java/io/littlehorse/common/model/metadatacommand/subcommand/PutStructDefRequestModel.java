@@ -20,6 +20,7 @@ import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefRequest> {
 
@@ -85,7 +86,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
                 validateFullyCompatibleSchema(newSpec, oldSpec);
                 break;
             case NO_SCHEMA_UPDATES:
-                throw new LHApiException(Status.ALREADY_EXISTS, "StructDef already exists.");
+                throw new LHApiException(Status.INVALID_ARGUMENT, "StructDef [%s] already exists and cannot be updated with the selected compatiblity type NO_SCHEMA_UPDATES.".formatted(name));
             case UNRECOGNIZED:
             default:
                 break;
@@ -97,11 +98,14 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
         if (changedFields.isEmpty()) return;
 
-        StringBuilder errorMessage = new StringBuilder();
+        StringBuilder errorMessage = new StringBuilder("Incompatible schema evolution on field(s): ");
 
-        for (Entry<String, StructFieldDefModel> changedField : changedFields) {
-            errorMessage.append(String.format("Incompatible schema evolution on field: %s\n", changedField.getKey()));
-        }
+        String fieldNames = changedFields.stream()
+                             .map(Entry::getKey)
+                             .map((keyStr) ->  "[%s]".formatted(keyStr))
+                             .collect(Collectors.joining(", "));
+
+        errorMessage.append(fieldNames);
 
         throw new LHApiException(Status.INVALID_ARGUMENT, errorMessage.toString());
     }
