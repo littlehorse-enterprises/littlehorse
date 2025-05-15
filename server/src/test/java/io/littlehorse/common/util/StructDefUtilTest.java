@@ -128,6 +128,19 @@ public class StructDefUtilTest {
                 .isEqualTo(1);
     }
 
+    @Test
+    public void testBreakingChangesWhenRemovingDefaultFromRequiredField() {
+        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 5));
+        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
+
+        StructDefModel oldStructDefModel = StructDefModel.fromProto(oldStructDef, null);
+        StructDefModel newStructDefModel = StructDefModel.fromProto(newStructDef, null);
+
+        assertThat(StructDefUtil.getBreakingChanges(newStructDefModel, oldStructDefModel)
+                        .size())
+                .isEqualTo(1);
+    }
+
     /**
      * A helper method for making StructFieldDefs that are optional
      *

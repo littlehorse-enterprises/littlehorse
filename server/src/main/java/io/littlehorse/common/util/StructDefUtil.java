@@ -3,7 +3,6 @@ package io.littlehorse.common.util;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.StructDef;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,22 +62,25 @@ public class StructDefUtil {
     }
 
     private static List<Entry<String, StructFieldDefModel>> getChangedFields(
-            Map<String, StructFieldDefModel> newRequiredFields, Map<String, StructFieldDefModel> oldRequiredFields) {
+            Map<String, StructFieldDefModel> newFields, Map<String, StructFieldDefModel> oldFields) {
         List<Entry<String, StructFieldDefModel>> incompatibleFields = new ArrayList<>();
 
-        for (Entry<String, StructFieldDefModel> field : oldRequiredFields.entrySet()) {
+        for (String oldFieldName : oldFields.keySet()) {
             // If required field was removed...
-            if (!newRequiredFields.containsKey(field.getKey())) {
-                incompatibleFields.add(field);
+            if (!newFields.containsKey(oldFieldName)) {
+                incompatibleFields.add(Map.entry(oldFieldName, oldFields.get(oldFieldName)));
             } else {
-                // Check type compatibility
-                TypeDefinitionModel oldFieldType = field.getValue().getFieldType();
-                TypeDefinitionModel newFieldType =
-                        newRequiredFields.get(field.getKey()).getFieldType();
+                StructFieldDefModel oldField = oldFields.get(oldFieldName);
+                StructFieldDefModel newField = newFields.get(oldFieldName);
 
                 // If the TypeDefinition changes...
-                if (!oldFieldType.equals(newFieldType)) {
-                    incompatibleFields.add(field);
+                if (!oldField.getFieldType().equals(newField.getFieldType())) {
+                    incompatibleFields.add(Map.entry(oldFieldName, oldField));
+                }
+
+                // If default value is removed...
+                if (oldField.hasDefaultValue() && !newField.hasDefaultValue()) {
+                    incompatibleFields.add(Map.entry(oldFieldName, oldField));
                 }
             }
         }
@@ -91,12 +93,13 @@ public class StructDefUtil {
         List<Entry<String, StructFieldDefModel>> incompatibleFields = new ArrayList<>();
 
         // Check for new fields in new StructDef
-        for (Entry<String, StructFieldDefModel> field : newRequiredFields.entrySet()) {
+        for (String newFieldName : newRequiredFields.keySet()) {
             // If new required field was added
-            if (!oldRequiredFields.containsKey(field.getKey())) {
+            if (!oldRequiredFields.containsKey(newFieldName)) {
                 // If new required field does not have a default value
-                if (!field.getValue().hasDefaultValue()) {
-                    incompatibleFields.add(field);
+                StructFieldDefModel newField = newRequiredFields.get(newFieldName);
+                if (!newField.hasDefaultValue()) {
+                    incompatibleFields.add(Map.entry(newFieldName, newField));
                 }
             }
         }

@@ -65,23 +65,24 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
         StructDefModel oldVersion = context.service().getStructDef(name, null);
 
-        // TODO: Bump version
         if (oldVersion != null) {
             if (StructDefUtil.equals(spec, oldVersion)) {
                 return oldVersion.toProto().build();
             }
+
+            verifyUpdateType(allowedUpdateType, spec, oldVersion);
+            spec.getObjectId().setVersion(oldVersion.getObjectId().getVersion()+1);
         }
 
-        verifyUpdateType(allowedUpdateType, spec, oldVersion);
         metadataManager.put(spec);
-        return structDef.toProto().build();
+        return spec.toProto().build();
     }
 
     private void verifyUpdateType(
-            AllowedStructDefUpdateType allowedUpdateType, StructDefModel spec, StructDefModel oldSpec) {
+            AllowedStructDefUpdateType allowedUpdateType, StructDefModel newSpec, StructDefModel oldSpec) {
         switch (allowedUpdateType) {
             case FULLY_COMPATIBLE_SCHEMA_UPDATES:
-                validateFullyCompatibleSchema(spec, oldSpec);
+                validateFullyCompatibleSchema(newSpec, oldSpec);
                 break;
             case NO_SCHEMA_UPDATES:
                 throw new LHApiException(Status.ALREADY_EXISTS, "StructDef already exists.");
@@ -91,8 +92,8 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         }
     }
 
-    private void validateFullyCompatibleSchema(StructDefModel spec, StructDefModel oldSpec) {
-        List<Entry<String, StructFieldDefModel>> changedFields = StructDefUtil.getBreakingChanges(spec, oldSpec);
+    private void validateFullyCompatibleSchema(StructDefModel newSpec, StructDefModel oldSpec) {
+        List<Entry<String, StructFieldDefModel>> changedFields = StructDefUtil.getBreakingChanges(newSpec, oldSpec);
 
         if (changedFields.isEmpty()) return;
 

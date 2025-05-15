@@ -100,4 +100,8 @@ public class StructDefModel extends MetadataGetable<StructDef> {
     public Class<StructDef> getProtoBaseClass() {
         return StructDef.class;
     }
+
+    public void bumpVersion() {
+        id.setVersion(id.getVersion() + 1);
+    }
 }

@@ -4,14 +4,20 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
+import lombok.Setter;
 
 public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructDefModel> {
 
     private String name;
+
+    @Getter
+    @Setter
     private int version;
 
     public StructDefIdModel() {}
@@ -41,7 +47,7 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
 
     @Override
     public String toString() {
-        return name;
+        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
     }
 
     @Override
