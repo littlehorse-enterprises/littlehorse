@@ -661,7 +661,7 @@ func (w *WfRunVariable) withAccessLevel(accessLevel lhproto.WfRunVariableAccessL
 	return *w
 }
 
-func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
+func (w *WfRunVariable) jsonPathImpl(path string) *WfRunVariable {
 	if w.jsonPath != nil {
 		w.thread.throwError(
 			errors.New("Variable " + w.Name + " was jsonpath'ed twice!"),
@@ -672,10 +672,10 @@ func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
 			"Cannot jsonpath on var of type " + w.VarType.String(),
 		))
 	}
-	return WfRunVariable{
+	return &WfRunVariable{
 		Name:     w.Name,
 		thread:   w.thread,
-		VarType:  nil,
+		VarType:  w.VarType,
 		jsonPath: &path,
 	}
 }

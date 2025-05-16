@@ -2,6 +2,7 @@ package littlehorse
 
 import (
 	"errors"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
@@ -225,7 +226,7 @@ func (w *WfRunVariable) WithDefault(defaultValue interface{}) *WfRunVariable {
 	return w.withDefaultImpl(defaultValue)
 }
 
-func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
+func (w *WfRunVariable) JsonPath(path string) *WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
