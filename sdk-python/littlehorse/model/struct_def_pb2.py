@@ -17,7 +17,7 @@ import littlehorse.model.variable_pb2 as variable__pb2
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10struct_def.proto\x12\x0blittlehorse\x1a\x13\x63ommon_wfspec.proto\x1a\x0fobject_id.proto\x1a\x0evariable.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbd\x01\n\tStructDef\x12$\n\x02id\x18\x01 \x01(\x0b\x32\x18.littlehorse.StructDefId\x12\x18\n\x0b\x64\x65scription\x18\x02 \x01(\tH\x00\x88\x01\x01\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\nstruct_def\x18\x04 \x01(\x0b\x32\x1c.littlehorse.InlineStructDefB\x0e\n\x0c_description\"\x97\x01\n\x0fInlineStructDef\x12\x38\n\x06\x66ields\x18\x01 \x03(\x0b\x32(.littlehorse.InlineStructDef.FieldsEntry\x1aJ\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.littlehorse.StructFieldDef:\x02\x38\x01\"\xa3\x01\n\x0eStructFieldDef\x12\x10\n\x08optional\x18\x02 \x01(\x08\x12/\n\nfield_type\x18\x03 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\x12\x36\n\rdefault_value\x18\x04 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x00\x88\x01\x01\x42\x10\n\x0e_default_valueJ\x04\x08\x01\x10\x02\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10struct_def.proto\x12\x0blittlehorse\x1a\x13\x63ommon_wfspec.proto\x1a\x0fobject_id.proto\x1a\x0evariable.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbd\x01\n\tStructDef\x12$\n\x02id\x18\x01 \x01(\x0b\x32\x18.littlehorse.StructDefId\x12\x18\n\x0b\x64\x65scription\x18\x02 \x01(\tH\x00\x88\x01\x01\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\nstruct_def\x18\x04 \x01(\x0b\x32\x1c.littlehorse.InlineStructDefB\x0e\n\x0c_description\"\x97\x01\n\x0fInlineStructDef\x12\x38\n\x06\x66ields\x18\x01 \x03(\x0b\x32(.littlehorse.InlineStructDef.FieldsEntry\x1aJ\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.littlehorse.StructFieldDef:\x02\x38\x01\"\x8c\x01\n\x0eStructFieldDef\x12\x10\n\x08optional\x18\x02 \x01(\x08\x12/\n\nfield_type\x18\x03 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\x12\x31\n\rdefault_value\x18\x04 \x01(\x0b\x32\x1a.littlehorse.VariableValueJ\x04\x08\x01\x10\x02\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,5 +35,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_start=390
   _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_end=464
   _globals['_STRUCTFIELDDEF']._serialized_start=467
-  _globals['_STRUCTFIELDDEF']._serialized_end=630
+  _globals['_STRUCTFIELDDEF']._serialized_end=607
 # @@protoc_insertion_point(module_scope)

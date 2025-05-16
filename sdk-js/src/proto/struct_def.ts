@@ -48,11 +48,8 @@ export interface StructFieldDef {
   /** Whether the field is optional / nullable. */
   optional: boolean;
   /** The type of the field. */
-  fieldType:
-    | TypeDefinition
-    | undefined;
-  /** The default value of the field, which should match the Field Type. */
-  defaultValue?: VariableValue | undefined;
+  fieldType: TypeDefinition | undefined;
+  defaultValue: VariableValue | undefined;
 }
 
 function createBaseStructDef(): StructDef {

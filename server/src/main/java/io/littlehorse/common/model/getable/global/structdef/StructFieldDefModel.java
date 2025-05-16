@@ -25,10 +25,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     public StructFieldDef.Builder toProto() {
         StructFieldDef.Builder out =
                 StructFieldDef.newBuilder().setOptional(this.isOptional).setFieldType(this.fieldType.toProto());
-
-        if (defaultValue != null) {
-            out.setDefaultValue(defaultValue.toProto());
-        }
+        out.setDefaultValue(defaultValue.toProto());
 
         return out;
     }
@@ -38,9 +35,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         StructFieldDef proto = (StructFieldDef) p;
         isOptional = proto.getOptional();
         fieldType = TypeDefinitionModel.fromProto(proto.getFieldType(), context);
-        if (proto.hasDefaultValue()) {
-            defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
-        }
+        defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
     }
 
     @Override
@@ -49,7 +44,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     }
 
     public boolean hasDefaultValue() {
-        return defaultValue != null;
+        return !defaultValue.isNull();
     }
 
     public boolean isRequired() {
@@ -58,7 +53,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     public void validate() {
         // Validates field type against default value
-        if (defaultValue != null && !this.fieldType.isCompatibleWith(defaultValue)) {
+        if (!defaultValue.isNull() && !this.fieldType.isCompatibleWith(defaultValue)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     MessageFormat.format(

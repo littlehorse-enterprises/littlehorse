@@ -42,7 +42,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.StructFieldDef.class, io.littlehorse.sdk.common.proto.StructFieldDef.Builder.class);
   }
 
-  private int bitField0_;
   public static final int OPTIONAL_FIELD_NUMBER = 2;
   private boolean optional_ = false;
   /**
@@ -99,23 +98,15 @@ private static final long serialVersionUID = 0L;
   public static final int DEFAULT_VALUE_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.VariableValue defaultValue_;
   /**
-   * <pre>
-   * The default value of the field, which should match the Field Type.
-   * </pre>
-   *
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>.littlehorse.VariableValue default_value = 4;</code>
    * @return Whether the defaultValue field is set.
    */
   @java.lang.Override
   public boolean hasDefaultValue() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return defaultValue_ != null;
   }
   /**
-   * <pre>
-   * The default value of the field, which should match the Field Type.
-   * </pre>
-   *
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>.littlehorse.VariableValue default_value = 4;</code>
    * @return The defaultValue.
    */
   @java.lang.Override
@@ -123,11 +114,7 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
   /**
-   * <pre>
-   * The default value of the field, which should match the Field Type.
-   * </pre>
-   *
-   * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+   * <code>.littlehorse.VariableValue default_value = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder() {
@@ -154,7 +141,7 @@ private static final long serialVersionUID = 0L;
     if (fieldType_ != null) {
       output.writeMessage(3, getFieldType());
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (defaultValue_ != null) {
       output.writeMessage(4, getDefaultValue());
     }
     getUnknownFields().writeTo(output);
@@ -174,7 +161,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getFieldType());
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (defaultValue_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getDefaultValue());
     }
@@ -350,20 +337,13 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.StructFieldDef.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getFieldTypeFieldBuilder();
-        getDefaultValueFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
@@ -421,14 +401,11 @@ private static final long serialVersionUID = 0L;
             ? fieldType_
             : fieldTypeBuilder_.build();
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.defaultValue_ = defaultValueBuilder_ == null
             ? defaultValue_
             : defaultValueBuilder_.build();
-        to_bitField0_ |= 0x00000001;
       }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -749,22 +726,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> defaultValueBuilder_;
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      * @return Whether the defaultValue field is set.
      */
     public boolean hasDefaultValue() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      * @return The defaultValue.
      */
     public io.littlehorse.sdk.common.proto.VariableValue getDefaultValue() {
@@ -775,11 +744,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      */
     public Builder setDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (defaultValueBuilder_ == null) {
@@ -795,11 +760,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      */
     public Builder setDefaultValue(
         io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
@@ -813,11 +774,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      */
     public Builder mergeDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (defaultValueBuilder_ == null) {
@@ -836,11 +793,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      */
     public Builder clearDefaultValue() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -853,11 +806,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getDefaultValueBuilder() {
       bitField0_ |= 0x00000004;
@@ -865,11 +814,7 @@ private static final long serialVersionUID = 0L;
       return getDefaultValueFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder() {
       if (defaultValueBuilder_ != null) {
@@ -880,11 +825,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The default value of the field, which should match the Field Type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.VariableValue default_value = 4;</code>
+     * <code>.littlehorse.VariableValue default_value = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
