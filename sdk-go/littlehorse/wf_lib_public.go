@@ -57,6 +57,12 @@ type TaskNodeOutput struct {
 	parent *WorkflowThread
 }
 
+type ExternalEventNodeOutput struct {
+	Output NodeOutput
+	node   *lhproto.Node
+	parent *WorkflowThread
+}
+
 type UserTaskOutput struct {
 	Output NodeOutput
 	thread *WorkflowThread
@@ -114,8 +120,13 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
-func (n *NodeOutput) Timeout(timeout int64) *NodeOutput {
-	n.thread.addTimeoutToExtEvt(n, timeout)
+func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
+	n.parent.addTimeoutToExtEvtNode(n, timeout)
+	return n
+}
+
+func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
+	n.parent.addTimeoutToTaskNode(n, timeout)
 	return n
 }
 
@@ -600,7 +611,7 @@ func (t *WorkflowThread) ReassignUserTaskOnDeadline(
 	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
 
-func (t *WorkflowThread) WaitForEvent(eventName string) *NodeOutput {
+func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput {
 	return t.waitForEvent(eventName)
 }
 
