@@ -91,7 +91,7 @@ message StructFieldDef {
   TypeDefinition field_type = 3;
   
   // The default value of the field, which should match the Field Type.
-  optional VariableValue default_value = 4;
+  VariableValue default_value = 4;
 }
 
 // A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
