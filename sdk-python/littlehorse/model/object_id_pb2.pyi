@@ -22,6 +22,14 @@ class TaskDefId(_message.Message):
     name: str
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
+class StructDefId(_message.Message):
+    __slots__ = ["name", "version"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    version: int
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
+
 class ExternalEventDefId(_message.Message):
     __slots__ = ["name", "version"]
     NAME_FIELD_NUMBER: _ClassVar[int]

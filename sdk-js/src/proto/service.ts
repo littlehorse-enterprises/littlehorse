@@ -31,6 +31,7 @@ import {
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
+  StructDefId,
   TaskDefId,
   TaskRunId,
   TaskWorkerGroupId,
@@ -44,6 +45,7 @@ import {
   WorkflowEventId,
 } from "./object_id";
 import { ScheduledWfRun } from "./scheduled_wf_run";
+import { InlineStructDef, StructDef } from "./struct_def";
 import { TaskDef } from "./task_def";
 import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
 import {
@@ -178,6 +180,71 @@ export interface PutTaskDefRequest {
   returnType: ReturnType | undefined;
 }
 
+/** Creates a new StructDef. */
+export interface PutStructDefRequest {
+  /** The name of the StructDef. */
+  name: string;
+  /** The descripton of the StructDef. */
+  description?:
+    | string
+    | undefined;
+  /** The actual schema for the StructDef. */
+  structDef:
+    | InlineStructDef
+    | undefined;
+  /**
+   * If both of the following are true: <br/>
+   * - A `StructDef` with the specified `name` already exists, AND <br/>
+   * - The `InlineStructDef` is different <br/>
+   *
+   * Then the request will be accepted or rejected based on the value of the
+   * allowed_update_types.
+   */
+  allowedUpdates: PutStructDefRequest_AllowedStructDefUpdateType;
+}
+
+export enum PutStructDefRequest_AllowedStructDefUpdateType {
+  /** NO_SCHEMA_UPDATES - No updates are allowed. */
+  NO_SCHEMA_UPDATES = "NO_SCHEMA_UPDATES",
+  /**
+   * FULLY_COMPATIBLE_SCHEMA_UPDATES - Allowed to make fully compatible (both backward-and-forward compatible)
+   * changes to the `struct_def` in this request.
+   */
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = "FULLY_COMPATIBLE_SCHEMA_UPDATES",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function putStructDefRequest_AllowedStructDefUpdateTypeFromJSON(
+  object: any,
+): PutStructDefRequest_AllowedStructDefUpdateType {
+  switch (object) {
+    case 0:
+    case "NO_SCHEMA_UPDATES":
+      return PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES;
+    case 1:
+    case "FULLY_COMPATIBLE_SCHEMA_UPDATES":
+      return PutStructDefRequest_AllowedStructDefUpdateType.FULLY_COMPATIBLE_SCHEMA_UPDATES;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return PutStructDefRequest_AllowedStructDefUpdateType.UNRECOGNIZED;
+  }
+}
+
+export function putStructDefRequest_AllowedStructDefUpdateTypeToNumber(
+  object: PutStructDefRequest_AllowedStructDefUpdateType,
+): number {
+  switch (object) {
+    case PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES:
+      return 0;
+    case PutStructDefRequest_AllowedStructDefUpdateType.FULLY_COMPATIBLE_SCHEMA_UPDATES:
+      return 1;
+    case PutStructDefRequest_AllowedStructDefUpdateType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /** Creates a WorkflowEventDef */
 export interface PutWorkflowEventDefRequest {
   /** The name of the resulting WorkflowEventDef. */
@@ -282,6 +349,12 @@ export interface DeleteWfRunRequest {
 export interface DeleteTaskDefRequest {
   /** The ID of the TaskDef to delete. */
   id: TaskDefId | undefined;
+}
+
+/** Deletes a StructDef. */
+export interface DeleteStructDefRequest {
+  /** The ID of the StructDef to delete. */
+  id: StructDefId | undefined;
 }
 
 /** Deletes a UserTaskDef. */
@@ -1823,6 +1896,91 @@ export const PutTaskDefRequest = {
   },
 };
 
+function createBasePutStructDefRequest(): PutStructDefRequest {
+  return {
+    name: "",
+    description: undefined,
+    structDef: undefined,
+    allowedUpdates: PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES,
+  };
+}
+
+export const PutStructDefRequest = {
+  encode(message: PutStructDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.structDef !== undefined) {
+      InlineStructDef.encode(message.structDef, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.allowedUpdates !== PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES) {
+      writer.uint32(32).int32(putStructDefRequest_AllowedStructDefUpdateTypeToNumber(message.allowedUpdates));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutStructDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutStructDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.structDef = InlineStructDef.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.allowedUpdates = putStructDefRequest_AllowedStructDefUpdateTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutStructDefRequest>): PutStructDefRequest {
+    return PutStructDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutStructDefRequest>): PutStructDefRequest {
+    const message = createBasePutStructDefRequest();
+    message.name = object.name ?? "";
+    message.description = object.description ?? undefined;
+    message.structDef = (object.structDef !== undefined && object.structDef !== null)
+      ? InlineStructDef.fromPartial(object.structDef)
+      : undefined;
+    message.allowedUpdates = object.allowedUpdates ?? PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES;
+    return message;
+  },
+};
+
 function createBasePutWorkflowEventDefRequest(): PutWorkflowEventDefRequest {
   return { name: "", contentType: undefined };
 }
@@ -2308,6 +2466,51 @@ export const DeleteTaskDefRequest = {
   fromPartial(object: DeepPartial<DeleteTaskDefRequest>): DeleteTaskDefRequest {
     const message = createBaseDeleteTaskDefRequest();
     message.id = (object.id !== undefined && object.id !== null) ? TaskDefId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteStructDefRequest(): DeleteStructDefRequest {
+  return { id: undefined };
+}
+
+export const DeleteStructDefRequest = {
+  encode(message: DeleteStructDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      StructDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteStructDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteStructDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = StructDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteStructDefRequest>): DeleteStructDefRequest {
+    return DeleteStructDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteStructDefRequest>): DeleteStructDefRequest {
+    const message = createBaseDeleteStructDefRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? StructDefId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -7820,6 +8023,34 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * Creates a new `StructDef``.
+     *
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     *
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     */
+    putStructDef: {
+      name: "PutStructDef",
+      requestType: PutStructDefRequest,
+      requestStream: false,
+      responseType: StructDef,
+      responseStream: false,
+      options: {},
+    },
+    /** Get a StructDef. */
+    getStructDef: {
+      name: "GetStructDef",
+      requestType: StructDefId,
+      requestStream: false,
+      responseType: StructDef,
+      responseStream: false,
+      options: {},
+    },
     /** Creates a UserTaskDef. */
     putUserTaskDef: {
       name: "PutUserTaskDef",
@@ -8343,6 +8574,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a StructDef. */
+    deleteStructDef: {
+      name: "DeleteStructDef",
+      requestType: DeleteStructDefRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Deletes a WfSpec. */
     deleteWfSpec: {
       name: "DeleteWfSpec",
@@ -8529,6 +8769,20 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
+  /**
+   * Creates a new `StructDef``.
+   *
+   * Note that this request is idempotent: if you
+   * make a request to create a `StructDef` identical to the currently-created
+   * one with the same `name`, no new `StructDef` will be created. This is the
+   * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+   *
+   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+   * enum within the `PutStructDefRequest`.
+   */
+  putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
+  /** Get a StructDef. */
+  getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: PutUserTaskDefRequest,
@@ -8799,6 +9053,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   deleteWfRun(request: DeleteWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeleteTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /** Deletes a StructDef. */
+  deleteStructDef(request: DeleteStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeleteWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a UserTaskDef. */
@@ -8899,6 +9155,20 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
+  /**
+   * Creates a new `StructDef``.
+   *
+   * Note that this request is idempotent: if you
+   * make a request to create a `StructDef` identical to the currently-created
+   * one with the same `name`, no new `StructDef` will be created. This is the
+   * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+   *
+   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+   * enum within the `PutStructDefRequest`.
+   */
+  putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
+  /** Get a StructDef. */
+  getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: DeepPartial<PutUserTaskDefRequest>,
@@ -9175,6 +9445,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   deleteWfRun(request: DeepPartial<DeleteWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeepPartial<DeleteTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /** Deletes a StructDef. */
+  deleteStructDef(request: DeepPartial<DeleteStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeepPartial<DeleteWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a UserTaskDef. */
