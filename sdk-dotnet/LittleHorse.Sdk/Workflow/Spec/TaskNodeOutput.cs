@@ -45,7 +45,7 @@ public class TaskNodeOutput : NodeOutput
     }
     
     /// <summary>
-    /// Adds a timeout to a Node. Valid on TaskRuns and ExternalEvents.
+    /// Adds a timeout to a Node.
     /// </summary>
     /// <param name="timeoutSeconds">
     /// The timeout length.

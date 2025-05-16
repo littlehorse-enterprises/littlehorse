@@ -1,13 +1,8 @@
 namespace LittleHorse.Sdk.Workflow.Spec;
 
 /// <summary>
-/// The <c>WaitForThreadsNodeOutput</c> class represents a specialized NodeOutput
-/// used to manage parallel thread executions and control their behavior during
-/// workflow execution.
-///
-/// When using this interface, you can set a policy that determines how the
-/// node should handle waiting for threads' parallel executions:
-/// 
+/// The <c>ExternalEventNodeOutput</c> class represents a specialized NodeOutput.
+/// It allows for setting timeouts and other configurations specific to external events outputs.
 /// </summary>
 public class ExternalEventNodeOutput: NodeOutput
 {
@@ -22,7 +17,7 @@ public class ExternalEventNodeOutput: NodeOutput
     }
     
     /// <summary>
-    /// Adds a timeout to a Node. Valid on TaskRuns and ExternalEvents.
+    /// Adds a timeout to a Node.
     /// </summary>
     /// <param name="timeoutSeconds">
     /// The timeout length.
