@@ -1144,10 +1144,10 @@ func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *Ta
 	node.GetTask().ExponentialBackoff = policy
 }
 
-func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvnodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
+func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
-	node := t.spec.Nodes[extEvnodeOutput.Output.nodeName]
+	node := t.spec.Nodes[extEvNodeOutput.Output.nodeName]
 	node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
 		JsonPath: nil,
 		Source: &lhproto.VariableAssignment_LiteralValue{
