@@ -18,6 +18,8 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +34,7 @@ public class OneTaskQueueTest {
     private final PollTaskRequestObserver mockClient = mock(Answers.RETURNS_DEEP_STUBS);
     private final ScheduledTaskModel mockTask = mock(Answers.RETURNS_DEEP_STUBS);
     private final OneTaskQueue taskQueue = new OneTaskQueue(
-            taskName, taskQueueManager, Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
+            taskName, taskQueueManager, "test", Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
     private final Command command = commandProto();
     private final TaskId streamsTaskId = TaskId.parse("0_2");
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
@@ -54,18 +56,20 @@ public class OneTaskQueueTest {
 
     @Test
     public void shouldEnqueueScheduledTask() {
-        taskQueue.onTaskScheduled(streamsTaskId, mockTask);
+        taskQueue.onTaskScheduled(streamsTaskId, mockTask, mock());
         verify(taskQueueManager, never()).itsAMatch(any(), any());
-        taskQueue.onPollRequest(mockClient, requestContext);
+        taskQueue.onPollRequest(mockClient, requestContext).join();
         verify(taskQueueManager, times(1)).itsAMatch(mockTask, mockClient);
     }
 
     @Test
     public void shouldRememberPendingClient() {
-        taskQueue.onPollRequest(mockClient, requestContext);
-        verifyNoInteractions(processorContext.getableManager());
-        verify(taskQueueManager, never()).itsAMatch(any(), any());
-        taskQueue.onTaskScheduled(streamsTaskId, mockTask);
+        try (ExecutorService executor = Executors.newFixedThreadPool(1)) {
+            taskQueue.onPollRequest(mockClient, requestContext);
+            verifyNoInteractions(processorContext.getableManager());
+            verify(taskQueueManager, never()).itsAMatch(any(), any());
+            taskQueue.onTaskScheduled(streamsTaskId, mockTask, executor);
+        }
         verify(taskQueueManager, times(1)).itsAMatch(same(mockTask), same(mockClient));
     }
 
@@ -94,17 +98,17 @@ public class OneTaskQueueTest {
         processorContext.getCoreStore().put(task4);
         processorContext.endExecution();
         OneTaskQueue boundedQueue =
-                new OneTaskQueue(taskName, taskQueueManager, 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
+                new OneTaskQueue(taskName, taskQueueManager, "test", 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
 
-        boundedQueue.onTaskScheduled(streamsTaskId, task1);
-        boundedQueue.onTaskScheduled(streamsTaskId, task2);
-        boundedQueue.onTaskScheduled(streamsTaskId, task3);
-        boundedQueue.onTaskScheduled(streamsTaskId, task4);
+        boundedQueue.onTaskScheduled(streamsTaskId, task1, mock());
+        boundedQueue.onTaskScheduled(streamsTaskId, task2, mock());
+        boundedQueue.onTaskScheduled(streamsTaskId, task3, mock());
+        boundedQueue.onTaskScheduled(streamsTaskId, task4, mock());
 
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
+        boundedQueue.onPollRequest(mockClient, requestContext).join();
         InOrder inOrder = inOrder(taskQueueManager);
         inOrder.verify(taskQueueManager, times(4)).itsAMatch(any(), same(mockClient));
     }

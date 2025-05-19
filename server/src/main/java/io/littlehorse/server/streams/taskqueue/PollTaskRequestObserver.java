@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.concurrent.ExecutorService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,8 +38,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
+    private final String instanceName;
+    private final ExecutorService networkThreads;
 
     public PollTaskRequestObserver(
+            String instanceName,
             StreamObserver<PollTaskResponse> responseObserver,
             TaskQueueManager manager,
             TenantIdModel tenantId,
@@ -46,6 +50,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             LHServerConfig config,
+            ExecutorService networkThreads,
             RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
@@ -56,6 +61,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.config = config;
         this.clientId = null;
         this.requestContext = requestContext;
+        this.instanceName = instanceName;
+        this.networkThreads = networkThreads;
     }
 
     public String getTaskWorkerVersion() {
@@ -77,11 +84,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     @Override
     public void onError(Throwable t) {
         taskQueueManager.onRequestDisconnected(this, tenantId);
-        log.debug(
-                "Instance {}: Client {} disconnected from task queue {}",
-                taskQueueManager.getBackend().getInstanceName(),
-                clientId,
-                taskDefId);
+        log.debug("Instance {}: Client {} disconnected from task queue {}", instanceName, clientId, taskDefId);
     }
 
     @Override
@@ -108,13 +111,17 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         taskQueueManager.onRequestDisconnected(this, tenantId);
     }
 
-    RequestExecutionContext getFreshExecutionContext() {
+    public RequestExecutionContext getFreshExecutionContext() {
         return new RequestExecutionContext(principalId, tenantId, coreStoreProvider, metadataCache, config, false);
     }
 
     public void sendResponse(ScheduledTaskModel toExecute) {
-        PollTaskResponse response =
-                PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
-        responseObserver.onNext(response);
+        networkThreads.execute(() -> {
+            PollTaskResponse.Builder response = PollTaskResponse.newBuilder();
+            if (toExecute != null) {
+                response.setResult(toExecute.toProto());
+            }
+            responseObserver.onNext(response.build());
+        });
     }
 }

@@ -8,6 +8,11 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -36,12 +41,13 @@ public class OneTaskQueue {
     private final LinkedHashSet<QueueItem> pendingTasks;
     private final AtomicLong numberOfInMemoryTasks = new AtomicLong(0);
 
-    public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
+    public OneTaskQueue(
+            String taskDefName, TaskQueueManager parent, String instanceName, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
         this.parent = parent;
         this.capacity = capacity;
         this.tenantId = tenantId;
-        this.instanceName = parent.getBackend().getInstanceName();
+        this.instanceName = instanceName;
         this.pendingTasks = new LinkedHashSet<>();
     }
 
@@ -88,7 +94,7 @@ public class OneTaskQueue {
      *                        that was just
      *                        scheduled.
      */
-    public void onTaskScheduled(TaskId taskId, ScheduledTaskModel scheduledTask) {
+    public void onTaskScheduled(TaskId taskId, ScheduledTaskModel scheduledTask, ExecutorService networkThreads) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         // the pendingTaskIds queue/list must be empty.
@@ -113,7 +119,17 @@ public class OneTaskQueue {
             }
         });
         if (luckyClient != null) {
-            parent.itsAMatch(scheduledTask, luckyClient);
+            parent.itsAMatch(scheduledTask, luckyClient)
+                    .whenCompleteAsync(
+                            (empty, throwable) -> {
+                                if (throwable == null) {
+                                    luckyClient.sendResponse(scheduledTask);
+                                } else {
+                                    log.warn("Error sending response to client", throwable);
+                                    luckyClient.getResponseObserver().onError(throwable);
+                                }
+                            },
+                            networkThreads);
         }
     }
 
@@ -124,18 +140,27 @@ public class OneTaskQueue {
      *                        that talks to the
      *                        client who made the PollTaskRequest.
      */
-    public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
-
-        QueueItem nextItem = synchronizedBlock(() -> {
-            if (pendingTasks.isEmpty()) {
-                hungryClients.add(requestObserver);
-                return null;
+    public CompletableFuture<Void> onPollRequest(
+            PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
+        return CompletableFuture.runAsync(() -> {
+            QueueItem nextItem = synchronizedBlock(() -> {
+                if (pendingTasks.isEmpty()) {
+                    hungryClients.add(requestObserver);
+                    return null;
+                }
+                return pendingTasks.removeFirst();
+            });
+            if (nextItem != null) {
+                ScheduledTaskModel toExecute = nextItem.resolveTask(requestContext);
+                try {
+                    parent.itsAMatch(toExecute, requestObserver).get(60, TimeUnit.SECONDS);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    requestObserver.sendResponse(null);
+                    throw new RuntimeException(e);
+                }
+                requestObserver.sendResponse(toExecute);
             }
-            return pendingTasks.removeFirst();
         });
-        if (nextItem != null) {
-            parent.itsAMatch(nextItem.resolveTask(requestContext), requestObserver);
-        }
     }
 
     public void drainPartition(TaskId partitionToDrain) {

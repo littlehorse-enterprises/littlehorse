@@ -25,6 +25,7 @@ import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 public class BulkUpdateJobTest {
 
@@ -36,7 +37,8 @@ public class BulkUpdateJobTest {
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final TaskQueueManager queueManager = mock();
-    private final CommandProcessor processor = new CommandProcessor(lhConfig, server, metadataCache, queueManager);
+    private final CommandProcessor processor =
+            new CommandProcessor(lhConfig, server, metadataCache, queueManager, Mockito.mock());
     private final Command command = commandProto();
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
     private final TestProcessorExecutionContext testProcessorContext = TestProcessorExecutionContext.create(
@@ -59,7 +61,6 @@ public class BulkUpdateJobTest {
         getableManager.commit();
         processor.init(mockProcessor);
         processor.process(new Record<>("", command, 0L, testProcessorContext.getRecordMetadata()));
-        verify(server, never()).sendErrorToClient(anyString(), any());
     }
 
     private Command commandProto() {
