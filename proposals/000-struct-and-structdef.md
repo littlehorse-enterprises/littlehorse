@@ -84,14 +84,12 @@ message StructFieldDef {
   // The name of the field.
   string name = 1;
 
-  // Whether the field is optional / nullable.
-  bool optional = 2;
-
   // The type of the field.
-  TypeDefinition field_type = 3;
+  TypeDefinition field_type = 2;
   
-  // The default value of the field, which should match the Field Type.
-  VariableValue default_value = 4;
+  // The default value of the field, which should match the Field Type. If not
+  // provided, then the field is treated as required.
+  optional VariableValue default_value = 3;
 }
 
 // A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
