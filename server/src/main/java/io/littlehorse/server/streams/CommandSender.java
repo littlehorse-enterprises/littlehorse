@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
@@ -21,10 +20,13 @@ import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
@@ -74,42 +76,31 @@ public class CommandSender {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    public synchronized <T extends Message> CompletableFuture<T> doSendAndWaitForResponse(
+    public <T extends Message> CompletableFuture<T> doSendAndWaitForResponse(
             AbstractCommand<?> command, Class<T> responseType, RequestExecutionContext executionContext) {
         AuthorizationContext auth = executionContext.authorization();
         KeyQueryMetadata keyMetadata =
                 lookupPartitionKey.apply(storeName(command.getStore()), command.getPartitionKey());
         command.setCommandId(LHUtil.generateGuid());
-        CompletableFuture<Void> commandFuture = new CompletableFuture<>();
-        Callback callback = (meta, exn) -> {
-            if (exn == null) {
-                commandFuture.complete(null);
-            } else {
-                commandFuture.completeExceptionally(exn);
-            }
-        };
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(auth.tenantId(), auth.principalId());
-        CompletableFuture.runAsync(() -> {
-            commandProducer.send(
-                    command.getPartitionKey(),
-                    command,
-                    command.getTopic(serverConfig),
-                    callback,
-                    commandMetadata.toArray());
-        });
-        if (isLocalKey(keyMetadata)) {
-            CompletableFuture<Message> out = asyncWaiters.getOrRegisterFuture(
-                    command.getCommandId(),
-                    responseType,
-                    commandFuture.thenCompose(unused -> new CompletableFuture<>()));
-            return (CompletableFuture<T>) out;
-        } else {
-            WaitForCommandRequest request = WaitForCommandRequest.newBuilder()
-                    .setCommandId(command.getCommandId())
-                    .setPartition(keyMetadata.partition())
-                    .build();
-            return commandFuture.thenCompose(unused -> internalClient.remoteWaitForCommand(
-                    request, responseType, keyMetadata.activeHost(), executionContext));
+        try {
+            commandProducer
+                    .send(command.getPartitionKey(), command, command.getTopic(serverConfig), commandMetadata.toArray())
+                    .get(60, TimeUnit.SECONDS);
+            if (isLocalKey(keyMetadata)) {
+                CompletableFuture<Message> out = asyncWaiters.getOrRegisterFuture(
+                        command.getCommandId(), responseType, new CompletableFuture<>());
+                return (CompletableFuture<T>) out;
+            } else {
+                WaitForCommandRequest request = WaitForCommandRequest.newBuilder()
+                        .setCommandId(command.getCommandId())
+                        .setPartition(keyMetadata.partition())
+                        .build();
+                return internalClient.remoteWaitForCommand(
+                        request, responseType, keyMetadata.activeHost(), executionContext);
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            return CompletableFuture.failedFuture(e);
         }
     }
 
@@ -128,51 +119,20 @@ public class CommandSender {
 
     public synchronized void registerErrorAndNotifyWaitingThreads(String commandId, Throwable cause) {}
 
-    public CompletableFuture<Empty> doSend(AbstractCommand<?> command, AuthorizationContext auth) {
+    public CompletableFuture<RecordMetadata> doSend(AbstractCommand<?> command, AuthorizationContext auth) {
         TenantIdModel tenantId = auth.tenantId();
         PrincipalIdModel principalId = auth.principalId();
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        CompletableFuture<Empty> out = new CompletableFuture<>();
-        Callback kafkaProducerCallback = (meta, exn) -> {
-            if (exn == null) {
-                out.complete(Empty.getDefaultInstance());
-            } else {
-                out.completeExceptionally(exn);
-            }
-        };
-        CompletableFuture<Void> producerSend = CompletableFuture.runAsync(() -> {
-            commandProducer.send(
-                    command.getPartitionKey(),
-                    command,
-                    command.getTopic(serverConfig),
-                    kafkaProducerCallback,
-                    commandMetadata.toArray());
-        });
-
-        return producerSend.thenCompose(unused -> out);
+        return commandProducer.send(
+                command.getPartitionKey(), command, command.getTopic(serverConfig), commandMetadata.toArray());
     }
 
-    public CompletableFuture<Empty> doSend(TaskClaimEvent taskClaimEvent, AuthorizationContext auth) {
+    public CompletableFuture<RecordMetadata> doSend(TaskClaimEvent taskClaimEvent, AuthorizationContext auth) {
         CommandModel taskClaim = new CommandModel(taskClaimEvent);
         TenantIdModel tenantId = auth.tenantId();
         PrincipalIdModel principalId = auth.principalId();
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        CompletableFuture<Empty> out = new CompletableFuture<>();
-        Callback kafkaProducerCallback = (meta, exn) -> {
-            if (exn == null) {
-                out.complete(Empty.getDefaultInstance());
-            } else {
-                out.completeExceptionally(exn);
-            }
-        };
-        CompletableFuture<Void> producerSend = CompletableFuture.runAsync(() -> {
-            taskClaimProducer.send(
-                    taskClaim.getPartitionKey(),
-                    taskClaim,
-                    taskClaim.getTopic(serverConfig),
-                    kafkaProducerCallback,
-                    commandMetadata.toArray());
-        });
-        return producerSend.thenCompose(unused -> out);
+        return taskClaimProducer.send(
+                taskClaim.getPartitionKey(), taskClaim, taskClaim.getTopic(serverConfig), commandMetadata.toArray());
     }
 }

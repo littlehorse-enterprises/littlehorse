@@ -715,10 +715,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, executionContext);
         try {
             CommandModel command = new CommandModel(reqModel, new Date());
-            Empty out = commandSender
+            commandSender
                     .doSend(command, executionContext.authorization())
                     .get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
-            ctx.onNext(out);
+            ctx.onNext(Empty.newBuilder().build());
             ctx.onCompleted();
         } catch (Exception ex) {
             ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));

@@ -10,6 +10,7 @@ import io.grpc.ServerCallHandler;
 import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -73,6 +74,8 @@ public class RequestAuthorizer implements LHServerInterceptor {
             context = context.withValue(executionContextKey, requestContext);
         } catch (PermissionDeniedException ex) {
             call.close(Status.PERMISSION_DENIED.withDescription(ex.getMessage()), headers);
+        } catch (LHApiException ex) {
+            call.close(ex.getStatus().withDescription(ex.getMessage()), headers);
         }
         return Contexts.interceptCall(context, call, headers, next);
     }

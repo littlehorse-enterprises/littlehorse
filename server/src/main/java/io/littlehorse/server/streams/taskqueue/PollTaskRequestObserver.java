@@ -117,9 +117,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
 
     public void sendResponse(ScheduledTaskModel toExecute) {
         networkThreads.execute(() -> {
-            PollTaskResponse response =
-                    PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
-            responseObserver.onNext(response);
+            PollTaskResponse.Builder response = PollTaskResponse.newBuilder();
+            if (toExecute != null) {
+                response.setResult(toExecute.toProto());
+            }
+            responseObserver.onNext(response.build());
         });
     }
 }

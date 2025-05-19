@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams.taskqueue;
 
-import com.google.protobuf.Empty;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -16,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
@@ -64,7 +64,8 @@ public class TaskQueueManager {
         taskQueues.values().forEach(oneTaskQueue -> oneTaskQueue.drainPartition(partitionToDrain));
     }
 
-    public CompletableFuture<Empty> itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
+    public CompletableFuture<RecordMetadata> itsAMatch(
+            ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
         TaskClaimEvent taskClaimEvent =
                 new TaskClaimEvent(scheduledTask, luckyClient.getClientId(), luckyClient.getTaskWorkerVersion());
         return commandSender.doSend(

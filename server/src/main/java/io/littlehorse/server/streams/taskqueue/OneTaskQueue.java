@@ -9,7 +9,10 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -149,7 +152,12 @@ public class OneTaskQueue {
             });
             if (nextItem != null) {
                 ScheduledTaskModel toExecute = nextItem.resolveTask(requestContext);
-                parent.itsAMatch(toExecute, requestObserver).join();
+                try {
+                    parent.itsAMatch(toExecute, requestObserver).get(60, TimeUnit.SECONDS);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    requestObserver.sendResponse(null);
+                    throw new RuntimeException(e);
+                }
                 requestObserver.sendResponse(toExecute);
             }
         });

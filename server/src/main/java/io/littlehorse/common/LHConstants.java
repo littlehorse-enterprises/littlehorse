@@ -67,7 +67,7 @@ public class LHConstants {
     // Store key for metric cache
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
 
-    public static final Duration MAX_INCOMING_REQUEST_IDLE_TIME = Duration.ofSeconds(2);
+    public static final Duration MAX_INCOMING_REQUEST_IDLE_TIME = Duration.ofSeconds(60);
     public static final int MAX_TASKRUNS_IN_ONE_TASKQUEUE = 20_000;
 
     public static final String STRING_MASK = "*****";
