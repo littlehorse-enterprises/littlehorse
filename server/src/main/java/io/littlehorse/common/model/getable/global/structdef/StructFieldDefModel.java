@@ -14,8 +14,6 @@ import lombok.Getter;
 
 public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
-    private boolean isOptional;
-
     @Getter
     private TypeDefinitionModel fieldType;
 
@@ -23,9 +21,11 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     @Override
     public StructFieldDef.Builder toProto() {
-        StructFieldDef.Builder out =
-                StructFieldDef.newBuilder().setOptional(this.isOptional).setFieldType(this.fieldType.toProto());
-        out.setDefaultValue(defaultValue.toProto());
+        StructFieldDef.Builder out = StructFieldDef.newBuilder().setFieldType(this.fieldType.toProto());
+
+        if (defaultValue != null) {
+            out.setDefaultValue(defaultValue.toProto());
+        }
 
         return out;
     }
@@ -33,9 +33,11 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     @Override
     public void initFrom(Message p, ExecutionContext context) throws LHSerdeException {
         StructFieldDef proto = (StructFieldDef) p;
-        isOptional = proto.getOptional();
         fieldType = TypeDefinitionModel.fromProto(proto.getFieldType(), context);
-        defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
+
+        if (proto.hasDefaultValue()) {
+            defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
+        }
     }
 
     @Override
@@ -44,16 +46,16 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     }
 
     public boolean hasDefaultValue() {
-        return !defaultValue.isNull();
+        return defaultValue != null && !defaultValue.isNull();
     }
 
     public boolean isRequired() {
-        return !isOptional;
+        return defaultValue == null;
     }
 
     public void validate() {
         // Validates field type against default value
-        if (!defaultValue.isNull() && !this.fieldType.isCompatibleWith(defaultValue)) {
+        if (defaultValue != null && !defaultValue.isNull() && !this.fieldType.isCompatibleWith(defaultValue)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     MessageFormat.format(

@@ -54,13 +54,13 @@ public final class StructDefOuterClass {
       "eStructDef\0228\n\006fields\030\001 \003(\0132(.littlehorse" +
       ".InlineStructDef.FieldsEntry\032J\n\013FieldsEn" +
       "try\022\013\n\003key\030\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.little" +
-      "horse.StructFieldDef:\0028\001\"\214\001\n\016StructField" +
-      "Def\022\020\n\010optional\030\002 \001(\010\022/\n\nfield_type\030\003 \001(" +
-      "\0132\033.littlehorse.TypeDefinition\0221\n\rdefaul" +
-      "t_value\030\004 \001(\0132\032.littlehorse.VariableValu" +
-      "eJ\004\010\001\020\002BM\n\037io.littlehorse.sdk.common.pro" +
-      "toP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common" +
-      ".Protob\006proto3"
+      "horse.StructFieldDef:\0028\001\"\213\001\n\016StructField" +
+      "Def\022/\n\nfield_type\030\001 \001(\0132\033.littlehorse.Ty" +
+      "peDefinition\0226\n\rdefault_value\030\002 \001(\0132\032.li" +
+      "ttlehorse.VariableValueH\000\210\001\001B\020\n\016_default" +
+      "_valueBM\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -93,7 +93,7 @@ public final class StructDefOuterClass {
     internal_static_littlehorse_StructFieldDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_StructFieldDef_descriptor,
-        new java.lang.String[] { "Optional", "FieldType", "DefaultValue", });
+        new java.lang.String[] { "FieldType", "DefaultValue", "DefaultValue", });
     io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();

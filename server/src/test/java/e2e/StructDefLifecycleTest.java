@@ -20,7 +20,7 @@ public class StructDefLifecycleTest {
     private LittleHorseBlockingStub client;
 
     @Test
-    void shouldThrowErrorWhenEvolvingStructDefWithNoSchemaUpdates() {
+    void shouldThrowErrorWhenEvolvingStructDefWithNoSchemaUpdatesCompatibilityType() {
         // TODO: Re-implement tests with StructDef builder helpers developed in following PR.
         client.putStructDef(PutStructDefRequest.newBuilder()
                 .setName("car")
@@ -48,7 +48,6 @@ public class StructDefLifecycleTest {
                                 StructFieldDef.newBuilder()
                                         .setFieldType(
                                                 TypeDefinition.newBuilder().setType(VariableType.INT))
-                                        .setOptional(true)
                                         .build()))
                 .build();
 
@@ -87,7 +86,8 @@ public class StructDefLifecycleTest {
                                 StructFieldDef.newBuilder()
                                         .setFieldType(
                                                 TypeDefinition.newBuilder().setType(VariableType.INT))
-                                        .setOptional(true)
+                                        .setDefaultValue(
+                                                VariableValue.newBuilder().setInt(10))
                                         .build())
                         .putFields(
                                 "sold",

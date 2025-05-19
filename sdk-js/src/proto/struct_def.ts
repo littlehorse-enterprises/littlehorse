@@ -45,11 +45,15 @@ export interface InlineStructDef_FieldsEntry {
 
 /** A `SchemaFieldDef` defines a field inside a `StructDef`. */
 export interface StructFieldDef {
-  /** Whether the field is optional / nullable. */
-  optional: boolean;
   /** The type of the field. */
-  fieldType: TypeDefinition | undefined;
-  defaultValue: VariableValue | undefined;
+  fieldType:
+    | TypeDefinition
+    | undefined;
+  /**
+   * The default value of the field, which should match the Field Type. If not
+   * provided, then the field is treated as required.
+   */
+  defaultValue?: VariableValue | undefined;
 }
 
 function createBaseStructDef(): StructDef {
@@ -247,19 +251,16 @@ export const InlineStructDef_FieldsEntry = {
 };
 
 function createBaseStructFieldDef(): StructFieldDef {
-  return { optional: false, fieldType: undefined, defaultValue: undefined };
+  return { fieldType: undefined, defaultValue: undefined };
 }
 
 export const StructFieldDef = {
   encode(message: StructFieldDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.optional !== false) {
-      writer.uint32(16).bool(message.optional);
-    }
     if (message.fieldType !== undefined) {
-      TypeDefinition.encode(message.fieldType, writer.uint32(26).fork()).ldelim();
+      TypeDefinition.encode(message.fieldType, writer.uint32(10).fork()).ldelim();
     }
     if (message.defaultValue !== undefined) {
-      VariableValue.encode(message.defaultValue, writer.uint32(34).fork()).ldelim();
+      VariableValue.encode(message.defaultValue, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -271,22 +272,15 @@ export const StructFieldDef = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.optional = reader.bool();
-          continue;
-        case 3:
-          if (tag !== 26) {
+        case 1:
+          if (tag !== 10) {
             break;
           }
 
           message.fieldType = TypeDefinition.decode(reader, reader.uint32());
           continue;
-        case 4:
-          if (tag !== 34) {
+        case 2:
+          if (tag !== 18) {
             break;
           }
 
@@ -306,7 +300,6 @@ export const StructFieldDef = {
   },
   fromPartial(object: DeepPartial<StructFieldDef>): StructFieldDef {
     const message = createBaseStructFieldDef();
-    message.optional = object.optional ?? false;
     message.fieldType = (object.fieldType !== undefined && object.fieldType !== null)
       ? TypeDefinition.fromPartial(object.fieldType)
       : undefined;

@@ -64,21 +64,8 @@ public class StructDefUtilTest {
     }
 
     @Test
-    public void testNoBreakingChangesWhenRequiredFieldIsAddedWithDefault() {
-        StructDef oldStructDef = makeCarStructDef();
-        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 5));
-
-        StructDefModel oldStructDefModel = StructDefModel.fromProto(oldStructDef, null);
-        StructDefModel newStructDefModel = StructDefModel.fromProto(newStructDef, null);
-
-        assertThat(StructDefUtil.getBreakingChanges(newStructDefModel, oldStructDefModel)
-                        .size())
-                .isEqualTo(0);
-    }
-
-    @Test
     public void testBreakingChangesWhenRequiredFieldIsRemoved() {
-        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 5));
+        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
         StructDef newStructDef = makeCarStructDef();
 
         StructDefModel oldStructDefModel = StructDefModel.fromProto(oldStructDef, null);
@@ -92,7 +79,7 @@ public class StructDefUtilTest {
     @Test
     public void testNoBreakingChangesWhenOptionalFieldIsAdded() {
         StructDef oldStructDef = makeCarStructDef();
-        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, true));
+        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 5));
 
         StructDefModel oldStructDefModel = StructDefModel.fromProto(oldStructDef, null);
         StructDefModel newStructDefModel = StructDefModel.fromProto(newStructDef, null);
@@ -104,7 +91,7 @@ public class StructDefUtilTest {
 
     @Test
     public void testStructDefsAreCompatibleWhenOptionalFieldIsRemoved() {
-        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, true));
+        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 10));
         StructDef newStructDef = makeCarStructDef();
 
         StructDefModel oldStructDefModel = StructDefModel.fromProto(oldStructDef, null);
@@ -116,9 +103,9 @@ public class StructDefUtilTest {
     }
 
     @Test
-    public void testBreakingChangesWhenRequiredFieldTypeChanges() {
-        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
-        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.BOOL));
+    public void testBreakingChangesWhenChangingOptionalFieldToRequired() {
+        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 5));
+        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
 
         StructDefModel oldStructDefModel = StructDefModel.fromProto(oldStructDef, null);
         StructDefModel newStructDefModel = StructDefModel.fromProto(newStructDef, null);
@@ -129,9 +116,9 @@ public class StructDefUtilTest {
     }
 
     @Test
-    public void testBreakingChangesWhenRemovingDefaultFromRequiredField() {
-        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 5));
-        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
+    public void testBreakingChangesWhenRequiredFieldTypeChanges() {
+        StructDef oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
+        StructDef newStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.BOOL));
 
         StructDefModel oldStructDefModel = StructDefModel.fromProto(oldStructDef, null);
         StructDefModel newStructDefModel = StructDefModel.fromProto(newStructDef, null);
@@ -153,23 +140,6 @@ public class StructDefUtilTest {
                 name,
                 StructFieldDef.newBuilder()
                         .setFieldType(TypeDefinition.newBuilder().setType(type))
-                        .build());
-    }
-
-    /**
-     * A helper method for making StructFieldDefs that are optional
-     *
-     * @param name The name of the StructFieldDef
-     * @param type The field type of the StructFieldDef
-     * @param isOptional The optional configuration for the StructFieldDef
-     * @return An Entry where the key is the name of the field and the value is the StructFieldDef
-     */
-    private static Entry<String, StructFieldDef> makeStructField(String name, VariableType type, boolean isOptional) {
-        return Map.entry(
-                name,
-                StructFieldDef.newBuilder()
-                        .setFieldType(TypeDefinition.newBuilder().setType(type))
-                        .setOptional(isOptional)
                         .build());
     }
 

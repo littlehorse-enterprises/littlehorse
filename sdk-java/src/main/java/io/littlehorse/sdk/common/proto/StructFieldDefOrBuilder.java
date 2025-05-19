@@ -9,20 +9,10 @@ public interface StructFieldDefOrBuilder extends
 
   /**
    * <pre>
-   * Whether the field is optional / nullable.
-   * </pre>
-   *
-   * <code>bool optional = 2;</code>
-   * @return The optional.
-   */
-  boolean getOptional();
-
-  /**
-   * <pre>
    * The type of the field.
    * </pre>
    *
-   * <code>.littlehorse.TypeDefinition field_type = 3;</code>
+   * <code>.littlehorse.TypeDefinition field_type = 1;</code>
    * @return Whether the fieldType field is set.
    */
   boolean hasFieldType();
@@ -31,7 +21,7 @@ public interface StructFieldDefOrBuilder extends
    * The type of the field.
    * </pre>
    *
-   * <code>.littlehorse.TypeDefinition field_type = 3;</code>
+   * <code>.littlehorse.TypeDefinition field_type = 1;</code>
    * @return The fieldType.
    */
   io.littlehorse.sdk.common.proto.TypeDefinition getFieldType();
@@ -40,22 +30,37 @@ public interface StructFieldDefOrBuilder extends
    * The type of the field.
    * </pre>
    *
-   * <code>.littlehorse.TypeDefinition field_type = 3;</code>
+   * <code>.littlehorse.TypeDefinition field_type = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getFieldTypeOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableValue default_value = 4;</code>
+   * <pre>
+   * The default value of the field, which should match the Field Type. If not
+   * provided, then the field is treated as required.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue default_value = 2;</code>
    * @return Whether the defaultValue field is set.
    */
   boolean hasDefaultValue();
   /**
-   * <code>.littlehorse.VariableValue default_value = 4;</code>
+   * <pre>
+   * The default value of the field, which should match the Field Type. If not
+   * provided, then the field is treated as required.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue default_value = 2;</code>
    * @return The defaultValue.
    */
   io.littlehorse.sdk.common.proto.VariableValue getDefaultValue();
   /**
-   * <code>.littlehorse.VariableValue default_value = 4;</code>
+   * <pre>
+   * The default value of the field, which should match the Field Type. If not
+   * provided, then the field is treated as required.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue default_value = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();
 }

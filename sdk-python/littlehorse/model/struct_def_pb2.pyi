@@ -35,11 +35,9 @@ class InlineStructDef(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
-    __slots__ = ["optional", "field_type", "default_value"]
-    OPTIONAL_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["field_type", "default_value"]
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
-    optional: bool
     field_type: _common_wfspec_pb2.TypeDefinition
     default_value: _variable_pb2.VariableValue
-    def __init__(self, optional: bool = ..., field_type: _Optional[_Union[_common_wfspec_pb2.TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    def __init__(self, field_type: _Optional[_Union[_common_wfspec_pb2.TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
