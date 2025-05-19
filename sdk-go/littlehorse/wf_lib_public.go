@@ -2,6 +2,7 @@ package littlehorse
 
 import (
 	"errors"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
@@ -51,6 +52,12 @@ type NodeOutput struct {
 }
 
 type TaskNodeOutput struct {
+	Output NodeOutput
+	node   *lhproto.Node
+	parent *WorkflowThread
+}
+
+type ExternalEventNodeOutput struct {
 	Output NodeOutput
 	node   *lhproto.Node
 	parent *WorkflowThread
@@ -113,8 +120,13 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
-func (n *NodeOutput) Timeout(timeout int64) *NodeOutput {
-	n.thread.addTimeoutToExtEvt(n, timeout)
+func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
+	n.parent.addTimeoutToExtEvtNode(n, timeout)
+	return n
+}
+
+func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
+	n.parent.addTimeoutToTaskNode(n, timeout)
 	return n
 }
 
@@ -214,7 +226,7 @@ func (w *WfRunVariable) WithDefault(defaultValue interface{}) *WfRunVariable {
 	return w.withDefaultImpl(defaultValue)
 }
 
-func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
+func (w *WfRunVariable) JsonPath(path string) *WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
@@ -599,7 +611,7 @@ func (t *WorkflowThread) ReassignUserTaskOnDeadline(
 	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
 
-func (t *WorkflowThread) WaitForEvent(eventName string) *NodeOutput {
+func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput {
 	return t.waitForEvent(eventName)
 }
 

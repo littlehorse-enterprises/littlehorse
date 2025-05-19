@@ -1414,3 +1414,113 @@ func TestShouldCompileWorkflowWhenDoElseIfIsCalledAfterATask(t *testing.T) {
 	assert.Equal(t, expectedExitSinkNodeName, taskNodeA.GetOutgoingEdges()[0].GetSinkNodeName())
 	assert.Equal(t, "3-task-a-TASK", lastNopNode.GetOutgoingEdges()[0].GetSinkNodeName())
 }
+
+func TestShouldCompileWorkflowUsingWaitForEnventWithTimeOutAndMutatingItsExternalEventNodeOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		address := thread.DeclareStr("address")
+		extEventOutput := thread.WaitForEvent("verify-address").Timeout(10)
+		address.Assign(extEventOutput)
+		thread.Execute("task-a", address)
+	}, "my-workflow")
+
+	compiledWorkflow, err := wf.Compile()
+
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	externalEventNode := entrypoint.Nodes["1-verify-address-EXTERNAL_EVENT"]
+
+	expectedExternalEventNode := lhproto.Node{
+		Node: &lhproto.Node_ExternalEvent{
+			ExternalEvent: &lhproto.ExternalEventNode{
+				ExternalEventDefId: &lhproto.ExternalEventDefId{
+					Name: "verify-address",
+				},
+				TimeoutSeconds: &lhproto.VariableAssignment{
+					Source: &lhproto.VariableAssignment_LiteralValue{
+						LiteralValue: &lhproto.VariableValue{
+							Value: &lhproto.VariableValue_Int{Int: 10},
+						},
+					},
+				},
+			},
+		},
+		OutgoingEdges: []*lhproto.Edge{
+			{
+				SinkNodeName: "2-task-a-TASK",
+				VariableMutations: []*lhproto.VariableMutation{
+					{
+						LhsName:   "address",
+						Operation: lhproto.VariableMutationType_ASSIGN,
+						RhsValue: &lhproto.VariableMutation_RhsAssignment{
+							RhsAssignment: &lhproto.VariableAssignment{
+								Source: &lhproto.VariableAssignment_NodeOutput{
+									NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+										NodeName: "1-verify-address-EXTERNAL_EVENT",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	assert.Nil(t, err)
+	assert.True(t, proto.Equal(&expectedExternalEventNode, externalEventNode))
+}
+
+func TestShouldCompileWorkflowUsingTasktWithTimeOutAndMutatingItsTaskNodeOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		address := thread.DeclareStr("address")
+		taskOutput := thread.Execute("task-a", address).Timeout(15)
+		address.Assign(taskOutput)
+	}, "my-workflow")
+
+	compiledWorkflow, err := wf.Compile()
+
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	taskNode := entrypoint.Nodes["1-task-a-TASK"]
+
+	expectedTaskNode := lhproto.Node{
+		Node: &lhproto.Node_Task{
+			Task: &lhproto.TaskNode{
+				TaskToExecute: &lhproto.TaskNode_TaskDefId{
+					TaskDefId: &lhproto.TaskDefId{
+						Name: "task-a",
+					},
+				},
+				TimeoutSeconds: 15,
+				Variables: []*lhproto.VariableAssignment{
+					{
+						Source: &lhproto.VariableAssignment_VariableName{
+							VariableName: "address",
+						},
+					},
+				},
+			},
+		},
+		OutgoingEdges: []*lhproto.Edge{
+			{
+				SinkNodeName: "2-exit-EXIT",
+				VariableMutations: []*lhproto.VariableMutation{
+					{
+						LhsName:   "address",
+						Operation: lhproto.VariableMutationType_ASSIGN,
+						RhsValue: &lhproto.VariableMutation_RhsAssignment{
+							RhsAssignment: &lhproto.VariableAssignment{
+								Source: &lhproto.VariableAssignment_NodeOutput{
+									NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+										NodeName: "1-task-a-TASK",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	assert.Nil(t, err)
+	assert.True(t, proto.Equal(&expectedTaskNode, taskNode))
+}

@@ -331,8 +331,8 @@ public class WorkflowThread
     /// <param name="externalEventDefName">
     /// It is the type of ExternalEvent to wait for.
     /// </param>
-    /// <returns>A NodeOutput for this event.</returns>
-    public NodeOutput WaitForEvent(string externalEventDefName) 
+    /// <returns>A ExternalEventNodeOutput for this event.</returns>
+    public ExternalEventNodeOutput WaitForEvent(string externalEventDefName) 
     {
         CheckIfWorkflowThreadIsActive();
         var waitNode = new ExternalEventNode
@@ -343,7 +343,7 @@ public class WorkflowThread
         Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
-        return new NodeOutput(nodeName, this);
+        return new ExternalEventNodeOutput(nodeName, this);
     }
     
     /// <summary>
@@ -720,7 +720,7 @@ public class WorkflowThread
         return variableAssignment;
     }
     
-    internal void AddTimeoutToExtEvt(NodeOutput node, int timeoutSeconds) 
+    internal void AddTimeoutToExtEvtNode(ExternalEventNodeOutput node, int timeoutSeconds) 
     {
         CheckIfWorkflowThreadIsActive();
         Node newNode = FindNode(node.NodeName);
@@ -729,19 +729,16 @@ public class WorkflowThread
         {
             LiteralValue = new VariableValue { Int = timeoutSeconds }
         };
+        
+        newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
+    }
+    
+    internal void AddTimeoutToTaskNode(TaskNodeOutput node, int timeoutSeconds) 
+    {
+        CheckIfWorkflowThreadIsActive();
+        Node newNode = FindNode(node.NodeName);
 
-        if (newNode.NodeCase == Node.NodeOneofCase.Task)
-        {
-            newNode.Task.TimeoutSeconds = timeoutSeconds;
-        } 
-        else if (newNode.NodeCase == Node.NodeOneofCase.ExternalEvent) 
-        {
-            newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
-        } 
-        else 
-        {
-            throw new Exception("Timeouts are only supported on ExternalEvent and Task nodes.");
-        }
+        newNode.Task.TimeoutSeconds = timeoutSeconds;
     }
     
     internal void OverrideTaskExponentialBackoffPolicy(TaskNodeOutput node, ExponentialBackoffRetryPolicy policy)
@@ -939,7 +936,7 @@ public class WorkflowThread
     /// <param name="threadsToWaitFor">
     /// Set of SpawnedThread objects returned one or more calls to spawnThread.
     /// </param>
-    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    /// <returns>A WaitForThreadsNodeOutput that can be used for timeouts or exception handling. </returns>
     public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
     {
         CheckIfWorkflowThreadIsActive();
@@ -1128,7 +1125,7 @@ public class WorkflowThread
     /// <param name="condition">
     /// It is the condition to wait for.
     /// </param>
-    /// <returns>A handle to the NodeOutput, which may only be used for error handling since 
+    /// <returns>A handle to the WaitForConditionNodeOutput, which may only be used for error handling since 
     /// the output of this node is empty.
     /// </returns>
     public WaitForConditionNodeOutput WaitForCondition(WorkflowCondition condition)
