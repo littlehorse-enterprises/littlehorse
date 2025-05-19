@@ -60,18 +60,4 @@ public class NodeOutput
 
         return nodeOutput;
     }
-    
-    /// <summary>
-    /// Adds a timeout to a Node. Valid on TaskRuns and ExternalEvents.
-    /// </summary>
-    /// <param name="timeoutSeconds">
-    /// The timeout length.
-    /// </param>
-    /// <returns>The NodeOutput.</returns>
-    public NodeOutput WithTimeout(int timeoutSeconds) 
-    {
-        Parent.AddTimeoutToExtEvt(this, timeoutSeconds);
-        
-        return this;
-    }
 }
