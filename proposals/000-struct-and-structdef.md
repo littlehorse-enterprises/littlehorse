@@ -81,15 +81,12 @@ message StructField {
 
 // A `SchemaFieldDef` defines a field inside a `StructDef`.
 message StructFieldDef {
-  // The name of the field.
-  string name = 1;
-
   // The type of the field.
-  TypeDefinition field_type = 2;
+  TypeDefinition field_type = 1;
   
   // The default value of the field, which should match the Field Type. If not
   // provided, then the field is treated as required.
-  optional VariableValue default_value = 3;
+  optional VariableValue default_value = 2;
 }
 
 // A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
