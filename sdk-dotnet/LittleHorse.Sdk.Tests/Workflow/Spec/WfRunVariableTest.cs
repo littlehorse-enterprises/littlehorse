@@ -1,5 +1,6 @@
 using System;
 using LittleHorse.Sdk.Common.Proto;
+using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
 using Xunit;
@@ -81,5 +82,35 @@ public class WfRunVariableTest
             new WfRunVariable("test-var", expectedType, null!));
         
         Assert.Equal("Value cannot be null. (Parameter 'parent')", exception.Message);
+    }
+
+    [Theory]
+    [InlineData(VariableType.Str)]
+    [InlineData(VariableType.Int)]
+    [InlineData(VariableType.Double)]
+    [InlineData(VariableType.Bytes)]
+    [InlineData(VariableType.Bool)]
+    public void WfRunVariable_WithSearchableOn_NonJsonVariableTypes_ShouldThrowAnException(VariableType type)
+    {
+        string variableName = "test-var";
+        WfRunVariable testVar = new WfRunVariable(variableName, type, _parentWfThread);
+        var exception = Assert.Throws<LHMisconfigurationException>(() => 
+            testVar.SearchableOn("$.Content", type)
+            );
+
+        Assert.Equal($"Non-Json {variableName} variable contains jsonIndex.", exception.Message);
+    }
+    
+    [Fact]
+    public void WfRunVariable_WithSearchableOn_WrongJsonPath_ShouldThrowAnException()
+    {
+        string variableName = "test-var";
+        string fieldPath = "Content";
+        WfRunVariable testVar = new WfRunVariable(variableName, VariableType.JsonObj, _parentWfThread);
+        var exception = Assert.Throws<LHMisconfigurationException>(() => 
+            testVar.SearchableOn(fieldPath, VariableType.JsonObj)
+        );
+
+        Assert.Equal($"Invalid JsonPath: {fieldPath}", exception.Message);
     }
 }
