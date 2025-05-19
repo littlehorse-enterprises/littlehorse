@@ -117,7 +117,6 @@ public class WfThreadDoIfTest
     }
 
     [Fact]
-    [Obsolete("Obsolete test")]
     public void WfThread_WithIfElseStatement_ShouldCompileAnSpecAddingTaskNodesBothStatements()
     {
         const int leftHandSide = 1;
@@ -347,7 +346,7 @@ public class WfThreadDoIfTest
             VarDef = new VariableDef
             {
                 Name = "number-of-donuts",
-                Type = VariableType.Int
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
             },
             Required = true,
             AccessLevel = WfRunVariableAccessLevel.PrivateVar

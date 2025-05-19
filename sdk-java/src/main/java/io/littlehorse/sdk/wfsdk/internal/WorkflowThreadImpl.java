@@ -186,6 +186,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         // guaranteed that exatly one of userId or userGroup is not null
         UserTaskNode.Builder utNode = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
+        if (userId instanceof String && ((String) userId).trim().isEmpty()) {
+            throw new IllegalArgumentException("UserId can't be empty");
+        }
+
+        if (userGroup instanceof String && ((String) userGroup).trim().isEmpty()) {
+            throw new IllegalArgumentException("UserGroup can't be empty");
+        }
+
         if (userId != null) {
             VariableAssignment userIdAssn = assignVariable(userId);
             utNode.setUserId(userIdAssn);

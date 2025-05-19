@@ -10,7 +10,6 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.StoreableType;
@@ -37,7 +36,7 @@ public class GetableManager extends ReadOnlyGetableManager {
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final CommandModel command,
-            final ExecutionContext executionContext) {
+            final ProcessorExecutionContext executionContext) {
         super(store);
         this.store = store;
         this.command = command;

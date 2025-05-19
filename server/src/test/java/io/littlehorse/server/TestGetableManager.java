@@ -6,6 +6,7 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class TestGetableManager extends GetableManager {
@@ -20,7 +21,7 @@ public class TestGetableManager extends GetableManager {
             ProcessorContext<String, CommandProcessorOutput> ctx,
             LHServerConfig config,
             CommandModel currentCommand,
-            ExecutionContext executionContext) {
+            ProcessorExecutionContext executionContext) {
         super(coreStore, ctx, config, currentCommand, executionContext);
         this.executionContext = executionContext;
         this.currentCommand = currentCommand;
