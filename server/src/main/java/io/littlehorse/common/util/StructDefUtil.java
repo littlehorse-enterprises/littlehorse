@@ -78,11 +78,6 @@ public class StructDefUtil {
                 if (!oldField.getFieldType().equals(newField.getFieldType())) {
                     incompatibleFields.add(Map.entry(oldFieldName, oldField));
                 }
-
-                // If default value is removed...
-                if (oldField.hasDefaultValue() && !newField.hasDefaultValue()) {
-                    incompatibleFields.add(Map.entry(oldFieldName, oldField));
-                }
             }
         }
 
@@ -99,9 +94,7 @@ public class StructDefUtil {
             if (!oldRequiredFields.containsKey(newFieldName)) {
                 // If new required field does not have a default value
                 StructFieldDefModel newField = newRequiredFields.get(newFieldName);
-                if (!newField.hasDefaultValue()) {
-                    incompatibleFields.add(Map.entry(newFieldName, newField));
-                }
+                incompatibleFields.add(Map.entry(newFieldName, newField));
             }
         }
 
