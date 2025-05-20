@@ -41,11 +41,7 @@ func NewTaskSignature(taskFunc interface{}) (*TaskFuncSignature, error) {
 	for i := 0; i < fnType.NumIn(); i++ {
 		argType := fnType.In(i)
 		argName := fnType.In(i).Name()
-		if argType.Name() == "WorkerContext" {
-			if argType.Kind() != reflect.Ptr {
-				return nil, errors.New("worker context parameter must be a pointer")
-			}
-
+		if argType.Kind() == reflect.Ptr && argType.Elem().Name() == "WorkerContext" {
 			if i+1 != fnType.NumIn() {
 				return nil, errors.New(
 					"can only have worker context as the last parameter",
@@ -54,13 +50,15 @@ func NewTaskSignature(taskFunc interface{}) (*TaskFuncSignature, error) {
 				out.hasWorkerContextAtEnd = true
 				continue
 			}
+		} else if argType.Name() == "WorkerContext" {
+			return nil, errors.New("worker context parameter must be a pointer")
+		} else {
+			out.Args = append(out.Args, TaskFuncArg{
+				Name:     argName,
+				Type:     argType,
+				Position: int32(i),
+			})
 		}
-
-		out.Args = append(out.Args, TaskFuncArg{
-			Name:     argName,
-			Type:     argType,
-			Position: int32(i),
-		})
 	}
 
 	numOut := fnType.NumOut()
