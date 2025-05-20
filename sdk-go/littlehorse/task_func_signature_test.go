@@ -36,7 +36,7 @@ func TestNewTaskSignatureWithWorkerContext(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, len(taskSig.Args), 1)
 	assert.Equal(t, littlehorse.TaskFuncArg{Name: "string", Type: reflect.TypeOf(""), Position: 0}, taskSig.Args[0])
-	assert.Equal(t, reflect.TypeOf(""), taskSig.OutputType)
+	assert.Equal(t, reflect.TypeOf(""), *taskSig.OutputType)
 }
 
 func TestTaskSigThrowsErrorWithNonPointerWorkerContext(t *testing.T) {
