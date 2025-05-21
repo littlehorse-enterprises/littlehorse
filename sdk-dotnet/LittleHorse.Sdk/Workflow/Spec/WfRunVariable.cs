@@ -466,7 +466,7 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is LESS_THAN_EQ the provided rhs.
     /// </returns>
-    WorkflowCondition IsLessThanEq(object rhs)
+    public WorkflowCondition IsLessThanEq(object rhs)
     {
         return _parent.Condition(this, Comparator.LessThanEq, rhs);
     }
