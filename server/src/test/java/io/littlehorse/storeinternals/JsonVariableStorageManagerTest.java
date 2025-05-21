@@ -117,7 +117,7 @@ public class JsonVariableStorageManagerTest {
         storeWrapper =
                 TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS));
         getableManager = new GetableManager(
-                storeWrapper, mockProcessorContext, lhConfig, mock(), mock(Answers.RETURNS_DEEP_STUBS));
+                storeWrapper, mockProcessorContext, lhConfig, mock(), mock(Answers.RETURNS_DEEP_STUBS), null);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

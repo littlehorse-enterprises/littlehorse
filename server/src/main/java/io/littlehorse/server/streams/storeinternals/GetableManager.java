@@ -8,16 +8,15 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -29,26 +28,22 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
-    private final ExecutionContext ctx;
-    private TenantModel tenant;
+    private final ProcessorExecutionContext ctx;
+    private final OutputTopicConfigModel outputTopicConfig;
 
     public GetableManager(
             final TenantScopedStore store,
             final ProcessorContext<String, CommandProcessorOutput> streamsContext,
             final LHServerConfig config,
             final CommandModel command,
-            final ProcessorExecutionContext executionContext) {
+            final ProcessorExecutionContext executionContext,
+            final OutputTopicConfigModel outputTopicConfig) {
         super(store);
         this.store = store;
         this.command = command;
         this.tagStorageManager = new TagStorageManager(this.store, streamsContext, config, executionContext);
         this.ctx = executionContext;
-        try {
-            this.tenant = ctx.metadataManager().get(ctx.authorization().tenantId());
-        } catch (ClassCastException e) {
-            // Unit tests are stupid
-            log.warn("Can't cast a mock", e);
-        }
+        this.outputTopicConfig = outputTopicConfig;
     }
 
     /**
@@ -191,19 +186,18 @@ public class GetableManager extends ReadOnlyGetableManager {
     }
 
     private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(
-            TenantModel tenant, String storeableKey, GetableToStore<U, T> entity) {
+            String storeableKey, GetableToStore<U, T> entity) {
         if (entity.containsUpdate()) {
             T getable = entity.getObjectToStore();
             store.put(new StoredGetable<>(getable));
             tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
 
-            // The "tenant != null" check is to avoid a NPE when running unit tests
-            if (tenant != null && tenant.getOutputTopicConfig() != null && getable instanceof CoreOutputTopicGetable) {
+            if (outputTopicConfig != null && getable instanceof CoreOutputTopicGetable) {
                 CoreOutputTopicGetable<U> outputTopicCandidate = (CoreOutputTopicGetable<U>) getable;
                 U previouslyStoredProto = entity.getPreviouslyStoredProto();
 
                 if (outputTopicCandidate.shouldProduceToOutputTopic(
-                        previouslyStoredProto, ctx.metadataManager(), tenant.getOutputTopicConfig())) {
+                        previouslyStoredProto, ctx.metadataManager(), outputTopicConfig)) {
                     return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
                 }
             }
@@ -222,7 +216,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore entity = entry.getValue();
-            Optional<OutputTopicRecordModel> newRecord = processEntity(tenant, storeableKey, entity);
+            Optional<OutputTopicRecordModel> newRecord = processEntity(storeableKey, entity);
             if (newRecord.isPresent()) {
                 outputTopicRecords.add(newRecord.get());
             }
@@ -244,12 +238,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         });
 
         for (OutputTopicRecordModel record : outputTopicRecords) {
-            // I **really** don't like this, but if we force the GetableManager constructor to take in
-            // a ProcessorExecutionContext, we break all the unit tests (unit tests are stupid anyways).
-            // It should not be possible to create a GetableManager outside of the core streams
-            // processor, so I don't even know why this class was written to allow a generic
-            // ExecutionContext (my suspicion is that it was to allow for unit tests).
-            ctx.castOnSupport(ProcessorExecutionContext.class).forward(record, tenant.getId());
+            ctx.forward(record);
         }
 
         uncommittedChanges.clear();

@@ -58,6 +58,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final LHServer server;
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
+    private final TenantIdModel tenantId;
 
     public ProcessorExecutionContext(
             Command currentCommand,
@@ -72,7 +73,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.metadataCache = metadataCache;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
-        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
+        this.tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
                 ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =
@@ -118,7 +119,13 @@ public class ProcessorExecutionContext implements ExecutionContext {
         if (storageManager != null) {
             return storageManager;
         }
-        storageManager = new GetableManager(coreStore, processorContext, config, currentCommand, this);
+        storageManager = new GetableManager(
+                coreStore,
+                processorContext,
+                config,
+                currentCommand,
+                this,
+                metadataManager.get(tenantId).getOutputTopicConfig());
         return storageManager;
     }
 
@@ -168,8 +175,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
         return server.getAdvertisedHost(host, listenerName, InternalCallCredentials.forContext(this));
     }
 
-    public void forward(OutputTopicRecordModel thingToSend, TenantIdModel tenant) {
-        String topic = config.getExecutionOutputTopicName(tenant);
+    public void forward(OutputTopicRecordModel thingToSend) {
+        String topic = config.getExecutionOutputTopicName(authorization().tenantId());
         CommandProcessorOutput toForward =
                 new CommandProcessorOutput(topic, thingToSend, thingToSend.getPartitionKey());
         processorContext.forward(new Record<>(
