@@ -30,18 +30,25 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
     private final ExecutionContext ctx;
+    private TenantModel tenant;
 
     public GetableManager(
             final TenantScopedStore store,
-            final ProcessorContext<String, CommandProcessorOutput> ctx,
+            final ProcessorContext<String, CommandProcessorOutput> streamsContext,
             final LHServerConfig config,
             final CommandModel command,
             final ProcessorExecutionContext executionContext) {
         super(store);
         this.store = store;
         this.command = command;
-        this.tagStorageManager = new TagStorageManager(this.store, ctx, config, executionContext);
+        this.tagStorageManager = new TagStorageManager(this.store, streamsContext, config, executionContext);
         this.ctx = executionContext;
+        try {
+            this.tenant = ctx.metadataManager().get(ctx.authorization().tenantId());
+        } catch (ClassCastException e) {
+            // Unit tests are stupid
+            log.warn("Can't cast a mock", e);
+        }
     }
 
     /**
@@ -190,7 +197,8 @@ public class GetableManager extends ReadOnlyGetableManager {
             store.put(new StoredGetable<>(getable));
             tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
 
-            if (tenant.getOutputTopicConfig() != null && getable instanceof CoreOutputTopicGetable) {
+            // The "tenant != null" check is to avoid a NPE when running unit tests
+            if (tenant != null && tenant.getOutputTopicConfig() != null && getable instanceof CoreOutputTopicGetable) {
                 CoreOutputTopicGetable<U> outputTopicCandidate = (CoreOutputTopicGetable<U>) getable;
                 U previouslyStoredProto = entity.getPreviouslyStoredProto();
 
@@ -210,7 +218,6 @@ public class GetableManager extends ReadOnlyGetableManager {
     @SuppressWarnings("unchecked")
     public void commit() {
         List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
-        TenantModel tenant = ctx.metadataManager().get(ctx.authorization().tenantId());
 
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             String storeableKey = entry.getKey();
