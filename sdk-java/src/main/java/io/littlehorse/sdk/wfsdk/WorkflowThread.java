@@ -189,9 +189,8 @@ public interface WorkflowThread {
      *     is satisfied.
      * @param doElse is the block of ThreadSpec code to be executed if the provided
      *     WorkflowCondition is NOT satisfied.
-     * @deprecated Use {@link WorkflowThread#doIf(WorkflowCondition, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody body)} instead.
+     * @see WorkflowThread#doIf
      */
-    @Deprecated(forRemoval = true)
     void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
 
     /**

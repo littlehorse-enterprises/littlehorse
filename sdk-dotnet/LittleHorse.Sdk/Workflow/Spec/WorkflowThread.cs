@@ -34,7 +34,6 @@ public class WorkflowThread
     private ThreadRetentionPolicy? _retentionPolicy;
     
     internal bool IsActive { get; }
-    internal ThreadSpec Spec => _spec;
     
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
@@ -52,7 +51,7 @@ public class WorkflowThread
         Parent.Threads.Push(this);
         action.Invoke(this);
 
-        var lastNode = FindLastNode();
+        var lastNode = FindNode(LastNodeName);
         if (lastNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
@@ -80,16 +79,6 @@ public class WorkflowThread
         
         return _spec;
     }
-
-    private Node FindLastNode()
-    {
-        if (_spec.Nodes.Last().Key  != LastNodeName)
-        {
-            throw new ArgumentException("No node found.");
-        }
-
-        return _spec.Nodes[LastNodeName];
-    }
     
     internal Node FindNode(string nodeName)
     {
@@ -108,15 +97,11 @@ public class WorkflowThread
             throw new InvalidOperationException("Using an inactive thread");
         }
     }
-    
-    internal string AddNode(string name, Node.NodeOneofCase type, IMessage subNode, bool keepNodeName = false)
+
+    private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode)
     {
         CheckIfWorkflowThreadIsActive();
         string nextNodeName = GetNodeName(name, type);
-        if (keepNodeName)
-        {
-            nextNodeName = name;
-        }
         
         if (LastNodeName == null) 
         {
@@ -346,8 +331,8 @@ public class WorkflowThread
     /// <param name="externalEventDefName">
     /// It is the type of ExternalEvent to wait for.
     /// </param>
-    /// <returns>A NodeOutput for this event.</returns>
-    public NodeOutput WaitForEvent(string externalEventDefName) 
+    /// <returns>A ExternalEventNodeOutput for this event.</returns>
+    public ExternalEventNodeOutput WaitForEvent(string externalEventDefName) 
     {
         CheckIfWorkflowThreadIsActive();
         var waitNode = new ExternalEventNode
@@ -358,7 +343,7 @@ public class WorkflowThread
         Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
-        return new NodeOutput(nodeName, this);
+        return new ExternalEventNodeOutput(nodeName, this);
     }
     
     /// <summary>
@@ -445,7 +430,7 @@ public class WorkflowThread
         return AddVariable(name, VariableType.JsonObj);
     }
     
-    internal List<VariableMutation> CollectVariableMutations() 
+    private List<VariableMutation> CollectVariableMutations() 
     {
         var variablesFromIfBlock = new List<VariableMutation>();
         while (_variableMutations.Count > 0) 
@@ -471,6 +456,10 @@ public class WorkflowThread
     /// It is the block of ThreadSpec code to be executed if the provided
     /// WorkflowCondition is NOT satisfied.
     /// </param>
+    /// <remarks>
+    /// Use <see cref="WorkflowThread.DoIf(WorkflowCondition, System.Action{WorkflowThread})"/>
+    /// and <see cref="WorkflowIfStatement.DoElse(System.Action{WorkflowThread})"/> instead.
+    /// </remarks>
     public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
         WorkflowIfStatement ifResult = DoIf(condition, ifBody);
@@ -509,6 +498,79 @@ public class WorkflowThread
         });
         
         return new WorkflowIfStatement(this, firstNodeName, lastNodeName);
+    }
+    
+    internal void OrganizeEdgesForElseIfExecution(WorkflowIfStatement ifStatement, 
+        Action<WorkflowThread> body, WorkflowCondition? condition = null)
+    {
+        var firstNopNode = FindNode(ifStatement.FirstNopNodeName);
+        var elseEdge = GetLastRemovedEdgeFrom(firstNopNode);
+        var lastNodeNameOfParentThread = LastNodeName;
+    
+        body.Invoke(this);
+    
+        var lastNodeNameOfBody = LastNodeName;
+    
+        if (lastNodeNameOfParentThread == lastNodeNameOfBody)
+        {
+            var edge = GetNewEdge(ifStatement.LastNopNodeName, condition, CollectVariableMutations());
+            firstNopNode.OutgoingEdges.Add(edge);
+        }         
+        else
+        {
+            var lastNodeOfParentThread = FindNode(lastNodeNameOfParentThread);
+            var lastOutgoingEdge = GetLastRemovedEdgeFrom(lastNodeOfParentThread);
+            var firstNodeNameOfBody = lastOutgoingEdge.SinkNodeName;
+            var edge = GetNewEdge(firstNodeNameOfBody, condition, lastOutgoingEdge.VariableMutations);
+            firstNopNode.OutgoingEdges.Add(edge);
+            
+            var lastNodeOfBody = FindNode(lastNodeNameOfBody);
+            var edgeFromLastNodeOfBody = GetNewEdge(ifStatement.LastNopNodeName, null,
+                CollectVariableMutations());
+            lastNodeOfBody.OutgoingEdges.Add(edgeFromLastNodeOfBody);
+        }
+        
+        if (condition != null)
+        {
+            firstNopNode.OutgoingEdges.Add(elseEdge);
+        }
+        LastNodeName = lastNodeNameOfParentThread;
+    }
+    
+    private Edge GetLastRemovedEdgeFrom(Node node)
+    {
+        if (node.OutgoingEdges == null || node.OutgoingEdges.Count == 0)
+        {
+            throw new InvalidOperationException("No edges to remove.");
+        }
+
+        var index = node.OutgoingEdges.Count - 1;
+        var lastEdge = node.OutgoingEdges.ElementAt(index);
+        node.OutgoingEdges.Remove(lastEdge);
+        
+        return lastEdge;
+    }
+
+    private Edge GetNewEdge(string sinkNodeName, WorkflowCondition? condition, 
+        ICollection<VariableMutation> variableMutations)
+    {
+        if (condition != null)
+        {
+            var compiledCondition = condition.Compile();
+
+            return new Edge
+            {
+                SinkNodeName = sinkNodeName,
+                Condition = compiledCondition,
+                VariableMutations = { variableMutations }
+            };
+        }
+        
+        return new Edge
+        {
+            SinkNodeName = sinkNodeName,
+            VariableMutations = { variableMutations }
+        };
     }
 
     /// <summary>
@@ -658,7 +720,7 @@ public class WorkflowThread
         return variableAssignment;
     }
     
-    internal void AddTimeoutToExtEvt(NodeOutput node, int timeoutSeconds) 
+    internal void AddTimeoutToExtEvtNode(ExternalEventNodeOutput node, int timeoutSeconds) 
     {
         CheckIfWorkflowThreadIsActive();
         Node newNode = FindNode(node.NodeName);
@@ -667,19 +729,16 @@ public class WorkflowThread
         {
             LiteralValue = new VariableValue { Int = timeoutSeconds }
         };
+        
+        newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
+    }
+    
+    internal void AddTimeoutToTaskNode(TaskNodeOutput node, int timeoutSeconds) 
+    {
+        CheckIfWorkflowThreadIsActive();
+        Node newNode = FindNode(node.NodeName);
 
-        if (newNode.NodeCase == Node.NodeOneofCase.Task)
-        {
-            newNode.Task.TimeoutSeconds = timeoutSeconds;
-        } 
-        else if (newNode.NodeCase == Node.NodeOneofCase.ExternalEvent) 
-        {
-            newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
-        } 
-        else 
-        {
-            throw new Exception("Timeouts are only supported on ExternalEvent and Task nodes.");
-        }
+        newNode.Task.TimeoutSeconds = timeoutSeconds;
     }
     
     internal void OverrideTaskExponentialBackoffPolicy(TaskNodeOutput node, ExponentialBackoffRetryPolicy policy)
@@ -877,7 +936,7 @@ public class WorkflowThread
     /// <param name="threadsToWaitFor">
     /// Set of SpawnedThread objects returned one or more calls to spawnThread.
     /// </param>
-    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    /// <returns>A WaitForThreadsNodeOutput that can be used for timeouts or exception handling. </returns>
     public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
     {
         CheckIfWorkflowThreadIsActive();
@@ -1066,7 +1125,7 @@ public class WorkflowThread
     /// <param name="condition">
     /// It is the condition to wait for.
     /// </param>
-    /// <returns>A handle to the NodeOutput, which may only be used for error handling since 
+    /// <returns>A handle to the WaitForConditionNodeOutput, which may only be used for error handling since 
     /// the output of this node is empty.
     /// </returns>
     public WaitForConditionNodeOutput WaitForCondition(WorkflowCondition condition)
