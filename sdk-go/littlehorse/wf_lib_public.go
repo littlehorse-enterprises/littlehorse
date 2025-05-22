@@ -283,11 +283,11 @@ func (w *WfRunVariable) IsLessThanEq(rhs interface{}) *WorkflowCondition {
 }
 
 func (w *WfRunVariable) DoesContain(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_IN, rhs)
+	return w.thread.condition(rhs, lhproto.Comparator_IN, w)
 }
 
 func (w *WfRunVariable) DoesNotContain(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_NOT_IN, rhs)
+	return w.thread.condition(rhs, lhproto.Comparator_NOT_IN, w)
 }
 
 func (w *WfRunVariable) IsIn(rhs interface{}) *WorkflowCondition {

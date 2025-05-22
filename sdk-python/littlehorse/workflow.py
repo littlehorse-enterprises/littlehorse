@@ -649,10 +649,10 @@ class WfRunVariable:
         return self.parent.condition(self, Comparator.LESS_THAN, rhs)
 
     def does_contain(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.IN, rhs)
+        return self.parent.condition(rhs, Comparator.IN, self)
 
     def does_not_contain(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.NOT_IN, rhs)
+        return self.parent.condition(rhs, Comparator.NOT_IN, self)
 
     def is_in(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.IN, rhs)
