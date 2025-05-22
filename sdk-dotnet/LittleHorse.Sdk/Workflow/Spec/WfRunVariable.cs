@@ -136,7 +136,7 @@ public class WfRunVariable
     /// It is the JSON Path to the field that we are indexing.
     /// </param>
     /// /// <param name="fieldType">
-    /// It is the JSON Path to the field that we are indexing.
+    /// It is the type of the field we are indexing.
     /// </param>
     /// <returns>
     /// Same WfRunVariable instance
