@@ -19,7 +19,7 @@ export const getValidation = (type: string) => {
         if (Array.isArray(parsed)) {
           return true
         }
-        return 'Input must be an array of objects'
+        return 'Input must be an array'
       } catch {
         return 'Input must be valid JSON'
       }
