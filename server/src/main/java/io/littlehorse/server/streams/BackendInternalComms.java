@@ -84,7 +84,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -122,7 +121,10 @@ public class BackendInternalComms implements Closeable {
     private final ChannelCredentials clientCreds;
 
     private final Map<String, ManagedChannel> channels;
+
+    @Getter
     private final AsyncWaiters asyncWaiters;
+
     private final ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
@@ -191,12 +193,12 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private KeyQueryMetadata lookupPartitionKey(ObjectIdModel<?, ?, ?> id) {
+    public KeyQueryMetadata lookupPartitionKey(ObjectIdModel<?, ?, ?> id) {
         return lookupPartitionKey(
                 id.getStore().getStoreName(), id.getPartitionKey().get());
     }
 
-    private KeyQueryMetadata lookupPartitionKey(String storeName, String partitionKey) {
+    public KeyQueryMetadata lookupPartitionKey(String storeName, String partitionKey) {
         try {
             KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
                     storeName, partitionKey, Serdes.String().serializer());
@@ -237,16 +239,6 @@ public class BackendInternalComms implements Closeable {
                 throw new LHApiException(ex.getStatus(), ex.getMessage());
             }
         }
-    }
-
-    public ProducerCommandCallback createProducerCommandCallback(
-            AbstractCommand<?> command,
-            StreamObserver<WaitForCommandResponse> observer,
-            RequestExecutionContext requestCtx) {
-        Function<KeyQueryMetadata, LHInternalsStub> internalStub =
-                (meta) -> getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx));
-        return new ProducerCommandCallback(
-                observer, command, coreStreams, thisHost, internalStub, asyncWaiters, networkThreadPool);
     }
 
     public void waitForCommand(

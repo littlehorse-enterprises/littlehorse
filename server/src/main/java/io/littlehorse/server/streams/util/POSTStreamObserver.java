@@ -18,8 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class POSTStreamObserver<U extends Message> implements StreamObserver<WaitForCommandResponse> {
 
-    private StreamObserver<U> ctx;
-    private Class<U> responseCls;
+    private StreamObserver<? extends Message> ctx;
+    private Class<?> responseCls;
     private boolean shouldComplete;
     private final BackendInternalComms internalComms;
     private final AbstractCommand<?> command;
@@ -31,8 +31,8 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     private final ScheduledExecutorService retryExecutor;
 
     public POSTStreamObserver(
-            StreamObserver<U> responseObserver,
-            Class<U> responseCls,
+            StreamObserver<? extends Message> responseObserver,
+            Class<?> responseCls,
             boolean shouldComplete,
             BackendInternalComms internalComms,
             AbstractCommand<?> command,
@@ -93,6 +93,16 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private <U extends Message> U buildRespFromBytes2(ByteString bytes) {
+        try {
+            return (U) responseCls.getMethod("parseFrom", ByteString.class).invoke(null, bytes);
+        } catch (Exception exn) {
+            log.error(exn.getMessage(), exn);
+            throw new RuntimeException("Not possible");
+        }
+    }
+
     @Override
     public void onCompleted() {
         if (shouldComplete) {
@@ -108,7 +118,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     public void onNext(WaitForCommandResponse reply) {
         if (reply.hasResult()) {
             try {
-                ctx.onNext(buildRespFromBytes(reply.getResult()));
+                ctx.onNext(buildRespFromBytes2(reply.getResult()));
             } catch (IllegalStateException e) {
                 log.debug("Call already closed");
             }

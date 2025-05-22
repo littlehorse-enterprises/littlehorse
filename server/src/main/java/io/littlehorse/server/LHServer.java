@@ -28,7 +28,6 @@ import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
 import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
@@ -43,8 +42,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
@@ -109,7 +106,8 @@ public class LHServer {
                 internalComms.getCommandProducer(),
                 internalComms.getTaskClaimProducer(),
                 config.getStreamsSessionTimeout(),
-                config);
+                config,
+                internalComms.getAsyncWaiters());
         this.listeners =
                 config.getListeners().stream().map(this::createListener).toList();
     }
@@ -185,19 +183,9 @@ public class LHServer {
                 Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
                 networkThreadpool);
 
-        Callback callback = internalComms.createProducerCommandCallback(command, commandObserver, context);
-
         command.setCommandId(LHUtil.generateGuid());
-
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        internalComms
-                .getCommandProducer()
-                .send(
-                        command.getPartitionKey(),
-                        command,
-                        command.getTopic(config),
-                        callback,
-                        commandMetadata.toArray());
+        commandSender.doSend(
+                command, commandObserver, responseCls, shouldCompleteStream, principalId, tenantId, context);
     }
 
     private WfService getServiceFromContext() {
