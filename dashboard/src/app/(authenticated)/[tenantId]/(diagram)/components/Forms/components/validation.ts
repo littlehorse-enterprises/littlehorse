@@ -16,7 +16,7 @@ export const getValidation = (type: string) => {
       if (!value) return true
       try {
         const parsed = JSON.parse(value)
-        if (Array.isArray(parsed) && parsed.every(item => typeof item === 'object')) {
+        if (Array.isArray(parsed)) {
           return true
         }
         return 'Input must be an array of objects'
