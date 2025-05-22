@@ -1,6 +1,8 @@
 package littlehorse
 
 import (
+	"errors"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
@@ -55,6 +57,12 @@ type TaskNodeOutput struct {
 	parent *WorkflowThread
 }
 
+type ExternalEventNodeOutput struct {
+	Output NodeOutput
+	node   *lhproto.Node
+	parent *WorkflowThread
+}
+
 type UserTaskOutput struct {
 	Output NodeOutput
 	thread *WorkflowThread
@@ -89,6 +97,13 @@ type LHExpression struct {
 
 type LHErrorType string
 
+type WorkflowIfStatement struct {
+	firstNopNodeName string
+	lastNopNodeName  string
+	wasElseExecuted  bool
+	thread           *WorkflowThread
+}
+
 const (
 	ChildFailure      LHErrorType = "CHILD_FAILURE"
 	VarSubError       LHErrorType = "VAR_SUB_ERROR"
@@ -105,8 +120,13 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
-func (n *NodeOutput) Timeout(timeout int64) *NodeOutput {
-	n.thread.addTimeoutToExtEvt(n, timeout)
+func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
+	n.parent.addTimeoutToExtEvtNode(n, timeout)
+	return n
+}
+
+func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
+	n.parent.addTimeoutToTaskNode(n, timeout)
 	return n
 }
 
@@ -206,7 +226,7 @@ func (w *WfRunVariable) WithDefault(defaultValue interface{}) *WfRunVariable {
 	return w.withDefaultImpl(defaultValue)
 }
 
-func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
+func (w *WfRunVariable) JsonPath(path string) *WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
@@ -501,10 +521,24 @@ func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interfa
 
 type IfElseBody func(t *WorkflowThread)
 
-func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
-	t.doIf(cond, doIf)
+func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+	return t.doIf(cond, doIf)
 }
 
+func (s *WorkflowIfStatement) DoElseIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+	result := s.thread.doElseIf(*s, cond, doIf)
+	return &result
+}
+
+func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
+	if s.wasElseExecuted {
+		panic(errors.New("else block has already been executed, cannot add another else block"))
+	}
+	s.wasElseExecuted = true
+	s.thread.doElseIf(*s, nil, doElse)
+}
+
+// DoIfElse will be replaced by DoIf and DoElse
 func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
 	t.doIfElse(cond, doIf, doElse)
 }
@@ -577,7 +611,7 @@ func (t *WorkflowThread) ReassignUserTaskOnDeadline(
 	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
 
-func (t *WorkflowThread) WaitForEvent(eventName string) *NodeOutput {
+func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput {
 	return t.waitForEvent(eventName)
 }
 

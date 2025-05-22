@@ -43,4 +43,18 @@ public class TaskNodeOutput : NodeOutput
         Parent.OverrideTaskRetries(this, retries);
         return this;
     }
+    
+    /// <summary>
+    /// Adds a timeout to a Node.
+    /// </summary>
+    /// <param name="timeoutSeconds">
+    /// The timeout length.
+    /// </param>
+    /// <returns>The TaskNodeOutput.</returns>
+    public TaskNodeOutput WithTimeout(int timeoutSeconds) 
+    {
+        Parent.AddTimeoutToTaskNode(this, timeoutSeconds);
+        
+        return this;
+    }
 }
