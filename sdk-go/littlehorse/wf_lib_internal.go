@@ -494,6 +494,24 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
+	case *ExternalEventNodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.Output.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.Output.nodeName,
+				},
+			},
+		}
+	case ExternalEventNodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.Output.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.Output.nodeName,
+				},
+			},
+		}
 	case *LHExpression:
 		lhs, lhsErr := t.assignVariable(v.lhs)
 
@@ -605,8 +623,8 @@ func (w *WfRunVariable) withDefaultImpl(defaultValue interface{}) *WfRunVariable
 		if err != nil {
 			log.Fatal(err)
 		}
-		if *GetVarType(defaultVarVal) != *w.threadVarDef.VarDef.Type {
-			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.Type.String())
+		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.TypeDef.Type {
+			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.TypeDef.Type.String())
 		}
 		w.threadVarDef.VarDef.DefaultValue = defaultVarVal
 	}
@@ -634,7 +652,7 @@ func (w *WfRunVariable) searchableOnImpl(fieldPath string, fieldType lhproto.Var
 }
 
 func (w *WfRunVariable) maskedValueImpl() *WfRunVariable {
-	*w.threadVarDef.VarDef.MaskedValue = true
+	w.threadVarDef.VarDef.TypeDef.Masked = true
 	return w
 }
 
@@ -643,7 +661,7 @@ func (w *WfRunVariable) withAccessLevel(accessLevel lhproto.WfRunVariableAccessL
 	return *w
 }
 
-func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
+func (w *WfRunVariable) jsonPathImpl(path string) *WfRunVariable {
 	if w.jsonPath != nil {
 		w.thread.throwError(
 			errors.New("Variable " + w.Name + " was jsonpath'ed twice!"),
@@ -654,10 +672,10 @@ func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
 			"Cannot jsonpath on var of type " + w.VarType.String(),
 		))
 	}
-	return WfRunVariable{
+	return &WfRunVariable{
 		Name:     w.Name,
 		thread:   w.thread,
-		VarType:  nil,
+		VarType:  w.VarType,
 		jsonPath: &path,
 	}
 }
@@ -810,8 +828,8 @@ func (t *WorkflowThread) addVariable(
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &lhproto.VariableDef{
-		Type: &varType,
-		Name: name,
+		TypeDef: &lhproto.TypeDefinition{Type: varType},
+		Name:    name,
 	}
 
 	threadVarDef := &lhproto.ThreadVarDef{
@@ -1126,26 +1144,28 @@ func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *Ta
 	node.GetTask().ExponentialBackoff = policy
 }
 
-func (t *WorkflowThread) addTimeoutToExtEvt(nodeOutput *NodeOutput, timeoutSeconds int64) {
+func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
-	node := t.spec.Nodes[nodeOutput.nodeName]
-	if node.GetTask() != nil {
-		node.GetTask().TimeoutSeconds = int32(timeoutSeconds)
-	} else if node.GetExternalEvent() != nil {
-		node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
-			JsonPath: nil,
-			Source: &lhproto.VariableAssignment_LiteralValue{
-				LiteralValue: &lhproto.VariableValue{
-					Value: &lhproto.VariableValue_Int{
-						Int: int64(timeoutSeconds),
-					},
+	node := t.spec.Nodes[extEvNodeOutput.Output.nodeName]
+	node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
+		JsonPath: nil,
+		Source: &lhproto.VariableAssignment_LiteralValue{
+			LiteralValue: &lhproto.VariableValue{
+				Value: &lhproto.VariableValue_Int{
+					Int: int64(timeoutSeconds),
 				},
 			},
-		}
-	} else {
-		t.throwError(errors.New("timeouts are only supposed on ExternalEvent and Task nodes."))
+		},
 	}
+}
+
+func (t *WorkflowThread) addTimeoutToTaskNode(taskNodeOutput *TaskNodeOutput, timeoutSeconds int64) {
+	t.checkIfIsActive()
+
+	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
+
+	node.GetTask().TimeoutSeconds = int32(timeoutSeconds)
 }
 
 func (t *WorkflowThread) spawnThread(
@@ -1291,7 +1311,7 @@ func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) NodeOutput {
 	}
 }
 
-func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
+func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(eventName, "EXTERNAL_EVENT")
 
@@ -1301,10 +1321,14 @@ func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 		},
 	}
 
-	return &NodeOutput{
-		nodeName: nodeName,
-		jsonPath: nil,
-		thread:   t,
+	return &ExternalEventNodeOutput{
+		Output: NodeOutput{
+			nodeName: nodeName,
+			jsonPath: nil,
+			thread:   t,
+		},
+		node:   node,
+		parent: t,
 	}
 }
 
