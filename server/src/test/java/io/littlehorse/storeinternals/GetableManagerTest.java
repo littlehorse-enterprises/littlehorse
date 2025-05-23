@@ -8,6 +8,7 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -414,6 +415,16 @@ public class GetableManagerTest {
         assertThat(firstUnclaimedEvent).isNotNull();
         assertThat(firstUnclaimedEvent.getId().getGuid())
                 .isEqualTo(expectedEvent.getId().getGuid());
+    }
+
+    @Test
+    public void findScheduledTask() {
+        ScheduledTaskModel task1 = TestUtil.scheduledTaskModel("wf-1");
+        task1.setCreatedAt(new Date(new Date().getTime() + 2000L));
+        TaskRunModel taskRun1 = TestUtil.taskRun(task1.getTaskRunId(), task1.getTaskDefId());
+        localStoreWrapper.put(task1);
+        ScheduledTaskModel result = getableManager.getScheduledTask(taskRun1.getObjectId());
+        assertThat(result).isNotNull();
     }
 
     private static Stream<Arguments> provideNodeRunObjects() {
