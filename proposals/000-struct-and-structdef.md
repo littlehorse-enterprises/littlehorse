@@ -81,14 +81,12 @@ message StructField {
 
 // A `SchemaFieldDef` defines a field inside a `StructDef`.
 message StructFieldDef {
-  // The name of the field.
-  string name = 1;
-
-  // Whether the field is optional / nullable.
-  bool optional = 2;
-
   // The type of the field.
-  TypeDefinition field_type = 3;
+  TypeDefinition field_type = 1;
+  
+  // The default value of the field, which should match the Field Type. If not
+  // provided, then the field is treated as required.
+  optional VariableValue default_value = 2;
 }
 
 // A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
@@ -100,14 +98,17 @@ message StructDef {
   // Optionally description of the schema.
   optional string description = 2;
 
+  // When the `StructDef` was created.
+  google.protobuf.Timestamp created_at = 3;
+
   // The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
-  InlineStructDef struct_def = 3;
+  InlineStructDef struct_def = 4;
 }
 
 // An `InlineStructDef` is the actual representation of the Schema.
 message InlineStructDef {
   // The fields in this schema.
-  repeated StructFieldDef fields = 1;
+  map<string, StructFieldDef> fields = 1;
 }
 
 // Unique identifier for a `StructDef`.
@@ -234,8 +235,11 @@ message PutStructDefRequest {
   // The name of the `StructDef`.
   string name = 1;
 
+  // The description of the `StructDef`.
+  optional string description = 2;
+
   // The actual schema for the `StructDef`.
-  InlineStructDef struct_def = 2;
+  InlineStructDef struct_def = 3;
 
   // If both of the following are true: <br/>
   // - A `StructDef` with the specified `name` already exists, AND <br/>
@@ -243,7 +247,7 @@ message PutStructDefRequest {
   //
   // Then the request will be accepted or rejected based on the value of the
   // allowed_update_types.
-  AllowedStructDefUpdateType allowed_updates = 3;
+  AllowedStructDefUpdateType allowed_updates = 4;
 }
 
 service LittleHorse {
