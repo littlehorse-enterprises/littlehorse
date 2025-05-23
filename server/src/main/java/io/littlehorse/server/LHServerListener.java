@@ -46,6 +46,7 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -65,6 +66,7 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
@@ -72,6 +74,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEven
 import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
@@ -90,6 +93,7 @@ import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteStructDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
@@ -129,6 +133,7 @@ import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
+import io.littlehorse.sdk.common.proto.PutStructDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
@@ -161,6 +166,8 @@ import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
+import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskDefIdList;
@@ -425,7 +432,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         if (utd == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion()));
+                    "Couldn't find UserTaskDef %s version %d".formatted(req.getName(), req.getVersion()));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -440,6 +447,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(td.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
+    public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
+        StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
+        if (sd == null) {
+            throw new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find StructDef %s version %d".formatted(req.getName(), req.getVersion()));
+        } else {
+            ctx.onNext(sd.toProto().build());
             ctx.onCompleted();
         }
     }
@@ -484,6 +505,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putTaskDef(PutTaskDefRequest req, StreamObserver<TaskDef> ctx) {
         PutTaskDefRequestModel reqModel = LHSerializable.fromProto(req, PutTaskDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, TaskDef.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
+    public void putStructDef(PutStructDefRequest req, StreamObserver<StructDef> ctx) {
+        PutStructDefRequestModel reqModel =
+                LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, StructDef.class, true);
     }
 
     @Override
@@ -1026,6 +1055,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         DeleteWorkflowEventDefRequestModel dwedr =
                 LHSerializable.fromProto(req, DeleteWorkflowEventDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(dwedr), ctx, Empty.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
+    public void deleteStructDef(DeleteStructDefRequest req, StreamObserver<Empty> ctx) {
+        DeleteStructDefRequestModel dsdr =
+                LHSerializable.fromProto(req, DeleteStructDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(dsdr), ctx, Empty.class, true);
     }
 
     @Override
