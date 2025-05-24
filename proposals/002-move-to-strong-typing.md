@@ -144,7 +144,7 @@ This proposal proposes to:
 3. Remove all references to `JSON_OBJ` and related functionality from our documentation before 1.0 and replace with _equivalent and better_ functionality.
 4. Remove `declareJsonObj()`, `declareJsonArr()`, and `.jsonPath()` from the SDK's in LittleHorse 1.0.
 5. Ensure that the Server continues to support all `JSON_OBJ` functionality throughout `1.x`.
-6. Remove all `JSON_OBJ` referernces from our protobuf and server-side implementation in 2.0.
+6. Remove all `JSON_OBJ` references from our protobuf and server-side implementation in 2.0.
 
 ### Metrics
 
