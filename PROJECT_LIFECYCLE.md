@@ -82,7 +82,7 @@ As we gain more experience with this release strategy, we will introduce additio
 We already have an extensive suite of automated end-to-end tests which run on every commit. In order to codify compatibility, we will:
 
 * Publish an artifact that contains the _client-side_ code for the end-to-end test suite (for all non-experimental features) with each Minor Release. This will be called a "Regression Suite."
-* Run every Regresssion Suite from the current and previous Major Version against the newest Server release candidate.
+* Run every Regression Suite from the current and previous Major Version against the newest Server release candidate.
 
 In that way, we will have an automated way of enforcing that we can upgrade a Server without impacting Client Code within one Major Version's difference of the Server.
 
