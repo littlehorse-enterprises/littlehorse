@@ -121,7 +121,7 @@ We will replace the functionality as follows:
 
 1. Deprecate the `compileWfToJson()` method before 1.0 and remove it in 1.0, to be replaced with a method that requires a `LittleHorseBlockingStub`.
 2. Instead of using a `VariableAssignment.NodeOutputReference`, the SDK will transparently:
-   1. Fetch whatever information is needed about the previous `NodeOutput` from the LH Server, eg. the `TaksDef` or `ExternalEventDef` which has typing information.
+   1. Fetch whatever information is needed about the previous `NodeOutput` from the LH Server, eg. the `TaskDef` or `ExternalEventDef` which has typing information.
    2. Transparently create an internal variable with the appropriate `TypeDefinition`.
    3. Add a `VariableMutation` on the provided `NodeOutput` that saves the output.
    4. Pass that internal `Variable` in the resulting `VariableAssignment`.
