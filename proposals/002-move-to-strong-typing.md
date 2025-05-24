@@ -69,7 +69,7 @@ The only exception to this is that in a `ThreadVarDef` (that defines a `Variable
 
 We will:
 
-1. Provide utilities that facilitate and encourage the registration of `ExternalEventDef` and `WorkflowEventDef` resources _with propere typing information, and then deprecate un-typed `ExternalEventDef` and `WorkflowEventDef`'s in LittleHorse 2.0.
+1. Provide utilities that facilitate and encourage the registration of `ExternalEventDef` and `WorkflowEventDef` resources _with proper typing information, and then deprecate un-typed `ExternalEventDef` and `WorkflowEventDef`'s in LittleHorse 2.0.
 2. Deprecate the `VariableAssignment.NodeOutputReference` in 1.0 and remove it in 2.0.
 3. Deprecate `JSON_OBJ` and `JSON_ARR` when `StructDef` is ready (before 1.0), and remove it in 2.0.
 
