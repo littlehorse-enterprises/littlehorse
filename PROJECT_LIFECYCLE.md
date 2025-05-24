@@ -12,7 +12,7 @@ This Proposal defines what changes will be legal in Major, Minor, and Patch rele
 * **Minor Releases** contain new functionality with no breaking changes.
 * **Patch Releases** contain only bug fixes and no new functionality.
 
-Client Code is defined as code written by a user using our SDK's in Java, Go, Python, or C#. The "Server" is defined as the version of the physical LittleHorse Cluster that the Client Code talks to. Note that we release the SDK's and the Server together.
+Client Code is defined as code written by a user using our SDKs in Java, Go, Python, or C#. The "Server" is defined as the version of the physical LittleHorse Cluster that the Client Code talks to. Note that we release the SDKs and the Server together.
 
 We will follow Semantic Versioning with an eye towards the following goals:
 
