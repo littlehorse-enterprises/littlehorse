@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -20,7 +21,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,7 @@ public abstract class Workflow {
 
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
     protected int defaultSimpleRetries;
+    protected List<PutExternalEventDefRequest> externalEventsToRegister;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -53,6 +57,7 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
+        this.externalEventsToRegister = new ArrayList<>();
     }
 
     /**
@@ -259,9 +264,7 @@ public abstract class Workflow {
      *
      * @param client is an LHClient.
      */
-    public void registerWfSpec(LittleHorseBlockingStub client) {
-        log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
-    }
+    public abstract void registerWfSpec(LittleHorseBlockingStub client);
 
     /**
      * Writes out the PutWfSpecRequest in JSON form in a directory.

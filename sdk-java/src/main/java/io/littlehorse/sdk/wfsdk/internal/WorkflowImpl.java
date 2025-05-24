@@ -1,7 +1,10 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -9,9 +12,16 @@ import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Stack;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Slf4j
 public class WorkflowImpl extends Workflow {
 
     private PutWfSpecRequest compiledWorkflow;
@@ -29,6 +39,24 @@ public class WorkflowImpl extends Workflow {
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
         this.threads = new Stack<>();
+    }
+
+    @Override
+    public void registerWfSpec(LittleHorseBlockingStub client) {
+        // Must compile the workflow so that we can hydrate the externaleventdef's to create
+        PutWfSpecRequest wfRequest = compileWorkflow();
+
+        // Create externalEventDef's that the user wanted us to create
+        for (PutExternalEventDefRequest eed : externalEventsToRegister) {
+            log.info("Creating externalEventDef:\n {}", LHLibUtil.protoToJson(client.putExternalEventDef(eed)));
+        }
+
+        // Now we do the dancin'
+        log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(wfRequest)));
+    }
+
+    public void addExternalEventDefToRegister(PutExternalEventDefRequest req) {
+        externalEventsToRegister.add(req);
     }
 
     public Set<PutTaskDefRequest> compileTaskDefs() {
