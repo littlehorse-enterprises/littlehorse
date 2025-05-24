@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -22,7 +21,7 @@ import io.littlehorse.test.WorkflowVerifier;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@LHTest(externalEventNames = {ExternalEventTest.EVT_NAME, ExternalEventTest.IGNORED_EVT_NAME})
+@LHTest(externalEventNames = {ExternalEventTest.IGNORED_EVT_NAME})
 public class ExternalEventTest {
 
     public static final String EVT_NAME = "basic-test-event";
@@ -40,8 +39,11 @@ public class ExternalEventTest {
     @LHWorkflow("basic-external-event")
     public Workflow getBasicExternalEventWorkflow() {
         return Workflow.newWorkflow("basic-external-event", thread -> {
-            WfRunVariable evtOutput = thread.addVariable("evt-output", VariableType.STR);
-            thread.mutate(evtOutput, VariableMutationType.ASSIGN, thread.waitForEvent(EVT_NAME));
+            WfRunVariable evtOutput = thread.declareStr("evt-output");
+            thread.mutate(
+                    evtOutput,
+                    VariableMutationType.ASSIGN,
+                    thread.waitForEvent(EVT_NAME).registeredAs(String.class));
             thread.execute("basic-external-event-task", evtOutput);
         });
     }
