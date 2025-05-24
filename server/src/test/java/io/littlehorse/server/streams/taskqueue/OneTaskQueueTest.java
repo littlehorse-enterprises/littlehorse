@@ -6,6 +6,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.storeinternals.InMemoryGetableManager;
 import java.util.Date;
@@ -24,11 +25,14 @@ public class OneTaskQueueTest {
             taskName, taskQueueManager, Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
     private final TaskId streamsTaskId = TaskId.parse("0_2");
     private final RequestExecutionContext requestContext = mock();
-    private final InMemoryGetableManager getableManager = new InMemoryGetableManager(mock());
+    private final ProcessorExecutionContext mockProcessorContext = mock(Answers.RETURNS_DEEP_STUBS);
+    private InMemoryGetableManager getableManager;
 
     @BeforeEach
     public void setup() {
         when(mockClient.getTaskDefId()).thenReturn(taskName);
+        when(requestContext.getableManager(streamsTaskId)).thenReturn(getableManager);
+        getableManager = new InMemoryGetableManager(mockProcessorContext);
         when(requestContext.getableManager(streamsTaskId)).thenReturn(getableManager);
     }
 

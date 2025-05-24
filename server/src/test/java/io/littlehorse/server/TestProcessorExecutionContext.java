@@ -1,9 +1,11 @@
 package io.littlehorse.server;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -59,6 +61,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
                 processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), tenantId, this));
         this.clusterMetadataStore = Mockito.spy(ClusterScopedStore.newInstance(
                 processorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), this));
+        clusterMetadataStore.put(new StoredGetable<>(new TenantModel(tenantId)));
         getableManager = Mockito.spy(super.getableManager());
     }
 

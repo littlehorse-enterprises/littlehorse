@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.core.externalevent;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
@@ -21,7 +21,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
-public class ExternalEventModel extends CoreGetable<ExternalEvent> {
+public class ExternalEventModel extends CoreOutputTopicGetable<ExternalEvent> {
 
     private ExternalEventIdModel id;
     private Date createdAt;

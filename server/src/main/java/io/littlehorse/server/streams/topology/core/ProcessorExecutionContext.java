@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.LHServer;
@@ -28,6 +29,7 @@ import java.util.Set;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -56,6 +58,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final LHServer server;
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
+    private final TenantIdModel tenantId;
 
     public ProcessorExecutionContext(
             Command currentCommand,
@@ -70,7 +73,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.metadataCache = metadataCache;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
-        TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
+        this.tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
                 ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
         ReadOnlyTenantScopedStore tenantMetadataStore =
@@ -116,7 +119,13 @@ public class ProcessorExecutionContext implements ExecutionContext {
         if (storageManager != null) {
             return storageManager;
         }
-        storageManager = new GetableManager(coreStore, processorContext, config, currentCommand, this);
+        storageManager = new GetableManager(
+                coreStore,
+                processorContext,
+                config,
+                currentCommand,
+                this,
+                metadataManager.get(tenantId).getOutputTopicConfig());
         return storageManager;
     }
 
@@ -164,6 +173,14 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
     public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
         return server.getAdvertisedHost(host, listenerName, InternalCallCredentials.forContext(this));
+    }
+
+    public void forward(OutputTopicRecordModel thingToSend) {
+        String topic = config.getExecutionOutputTopicName(authorization().tenantId());
+        CommandProcessorOutput toForward =
+                new CommandProcessorOutput(topic, thingToSend, thingToSend.getPartitionKey());
+        processorContext.forward(new Record<>(
+                toForward.partitionKey, toForward, currentCommand.getTime().getTime()));
     }
 
     @Override

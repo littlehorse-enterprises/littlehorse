@@ -2,14 +2,18 @@ package io.littlehorse.server.streams.storeinternals;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
+import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -24,17 +28,22 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
+    private final ProcessorExecutionContext ctx;
+    private final OutputTopicConfigModel outputTopicConfig;
 
     public GetableManager(
             final TenantScopedStore store,
-            final ProcessorContext<String, CommandProcessorOutput> ctx,
+            final ProcessorContext<String, CommandProcessorOutput> streamsContext,
             final LHServerConfig config,
             final CommandModel command,
-            final ProcessorExecutionContext executionContext) {
+            final ProcessorExecutionContext executionContext,
+            final OutputTopicConfigModel outputTopicConfig) {
         super(store);
         this.store = store;
         this.command = command;
-        this.tagStorageManager = new TagStorageManager(this.store, ctx, config, executionContext);
+        this.tagStorageManager = new TagStorageManager(this.store, streamsContext, config, executionContext);
+        this.ctx = executionContext;
+        this.outputTopicConfig = outputTopicConfig;
     }
 
     /**
@@ -176,24 +185,60 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
     }
 
+    private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(
+            String storeableKey, GetableToStore<U, T> entity) {
+        if (entity.containsUpdate()) {
+            T getable = entity.getObjectToStore();
+            store.put(new StoredGetable<>(getable));
+            tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
+
+            if (outputTopicConfig != null && getable instanceof CoreOutputTopicGetable) {
+                CoreOutputTopicGetable<U> outputTopicCandidate = (CoreOutputTopicGetable<U>) getable;
+                U previouslyStoredProto = entity.getPreviouslyStoredProto();
+
+                if (outputTopicCandidate.shouldProduceToOutputTopic(
+                        previouslyStoredProto, ctx.metadataManager(), outputTopicConfig)) {
+                    return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
+                }
+            }
+        } else if (entity.isDeletion()) {
+            // Do a deletion!
+            store.delete(storeableKey, StoreableType.STORED_GETABLE);
+            tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
+        }
+        return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
     public void commit() {
+        List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
+
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             String storeableKey = entry.getKey();
-            GetableToStore<?, ?> entity = entry.getValue();
-
-            if (entity.containsUpdate()) {
-                // Actually put it in the key-value store.
-                // Note: we know this is a CoreGetable, but no need to cast, so
-                // we use AbstractGetable here.
-                AbstractGetable<?> getable = entity.getObjectToStore();
-                store.put(new StoredGetable<>(getable));
-                tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
-
-            } else if (entity.isDeletion()) {
-                // Do a deletion!
-                store.delete(storeableKey, StoreableType.STORED_GETABLE);
-                tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
+            GetableToStore entity = entry.getValue();
+            Optional<OutputTopicRecordModel> newRecord = processEntity(storeableKey, entity);
+            if (newRecord.isPresent()) {
+                outputTopicRecords.add(newRecord.get());
             }
+        }
+
+        // For any WfRun record, if the status is running, we want it to be the first
+        // in the list. Otherwise, we want the WfRun to be the last in the list.
+        outputTopicRecords.sort((o1, o2) -> {
+            CoreGetable<?> getable1 = o1.getSubrecord();
+            CoreGetable<?> getable2 = o2.getSubrecord();
+            if (getable1 instanceof WfRunModel) {
+                WfRunModel wfRun1 = (WfRunModel) getable1;
+                return wfRun1.getStatus() == LHStatus.RUNNING ? -1 : 1;
+            } else if (getable2 instanceof WfRunModel) {
+                WfRunModel wfRun2 = (WfRunModel) getable2;
+                return wfRun2.getStatus() == LHStatus.RUNNING ? 1 : -1;
+            }
+            return 0;
+        });
+
+        for (OutputTopicRecordModel record : outputTopicRecords) {
+            ctx.forward(record);
         }
 
         uncommittedChanges.clear();

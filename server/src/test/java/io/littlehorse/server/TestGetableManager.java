@@ -22,7 +22,7 @@ public class TestGetableManager extends GetableManager {
             LHServerConfig config,
             CommandModel currentCommand,
             ProcessorExecutionContext executionContext) {
-        super(coreStore, ctx, config, currentCommand, executionContext);
+        super(coreStore, ctx, config, currentCommand, executionContext, null);
         this.executionContext = executionContext;
         this.currentCommand = currentCommand;
         this.config = config;
