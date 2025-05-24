@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.rocksdb.RocksDB;
 
 @Slf4j
 public class RequestAuthorizer implements LHServerInterceptor {
@@ -40,12 +41,15 @@ public class RequestAuthorizer implements LHServerInterceptor {
     private final Context.Key<RequestExecutionContext> executionContextKey;
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
+    private final RocksDB db;
 
     public RequestAuthorizer(
             Context.Key<RequestExecutionContext> executionContextKey,
             MetadataCache metadataCache,
             CoreStoreProvider coreStoreProvider,
-            LHServerConfig lhConfig) {
+            LHServerConfig lhConfig,
+            RocksDB db) {
+        this.db = db;
         this.aclVerifier = new AclVerifier();
         this.executionContextKey = executionContextKey;
         this.coreStoreProvider = coreStoreProvider;
@@ -91,7 +95,8 @@ public class RequestAuthorizer implements LHServerInterceptor {
                 coreStoreProvider,
                 metadataCache,
                 lhConfig,
-                aclVerifier.doesServiceRequireClusterScopedResources(method));
+                aclVerifier.doesServiceRequireClusterScopedResources(method),
+                db);
     }
 
     private static class AclVerifier {

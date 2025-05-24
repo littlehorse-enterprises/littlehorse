@@ -13,6 +13,7 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.rocksdb.RocksDB;
 
 public class RepartitionExecutionContext implements ExecutionContext {
 
@@ -20,22 +21,25 @@ public class RepartitionExecutionContext implements ExecutionContext {
     private final ProcessorContext<Void, Void> repartitionContext;
     private final MetadataCache metadataCache;
     private final ReadOnlyMetadataManager metadataManager;
+    private final RocksDB db;
 
     public RepartitionExecutionContext(
             Headers recordHeaders,
             LHServerConfig lhConfig,
             ProcessorContext<Void, Void> repartitionContext,
-            MetadataCache metadataCache) {
+            MetadataCache metadataCache,
+            RocksDB db) {
 
+        this.db = db;
         this.repartitionContext = repartitionContext;
         this.metadataCache = metadataCache;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+                ReadOnlyClusterScopedStore.newInstance(/*nativeGlobalStore, */ this, db);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(/*nativeGlobalStore, */ tenantId, this, db);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
 
         this.lhConfig = lhConfig;

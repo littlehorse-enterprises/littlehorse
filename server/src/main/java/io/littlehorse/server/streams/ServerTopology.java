@@ -23,6 +23,7 @@ import org.apache.kafka.streams.processor.TopicNameExtractor;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
+import org.rocksdb.RocksDB;
 
 /*
  * There are multiple topologies here:
@@ -86,7 +87,8 @@ public class ServerTopology {
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
-            TaskQueueManager globalTaskQueueManager) {
+            TaskQueueManager globalTaskQueueManager,
+            RocksDB db) {
         Topology topo = new Topology();
 
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
@@ -113,7 +115,7 @@ public class ServerTopology {
                 config.getMetadataCmdTopicName() // source topic
                 );
         topo.addProcessor(
-                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, metadataCache), METADATA_SOURCE);
+                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, metadataCache, db), METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addSink(
@@ -133,7 +135,7 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 CORE_PROCESSOR,
-                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager),
+                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, db),
                 CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,

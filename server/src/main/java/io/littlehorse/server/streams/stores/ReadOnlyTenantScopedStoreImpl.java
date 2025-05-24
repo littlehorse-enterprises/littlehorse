@@ -2,8 +2,7 @@ package io.littlehorse.server.streams.stores;
 
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.rocksdb.RocksDB;
 
 /**
  * This class allows you to Read any Storeable object at the Tenant level. It does
@@ -12,7 +11,9 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 class ReadOnlyTenantScopedStoreImpl extends ReadOnlyBaseStoreImpl implements ReadOnlyTenantScopedStore {
 
     public ReadOnlyTenantScopedStoreImpl(
-            ReadOnlyKeyValueStore<String, Bytes> nativeStore, TenantIdModel tenantId, ExecutionContext ctx) {
-        super(nativeStore, tenantId, ctx);
+            /*ReadOnlyKeyValueStore<String, Bytes> nativeStore, */ TenantIdModel tenantId,
+            ExecutionContext ctx,
+            RocksDB db) {
+        super(/*nativeStore,*/ tenantId, ctx, db);
     }
 }

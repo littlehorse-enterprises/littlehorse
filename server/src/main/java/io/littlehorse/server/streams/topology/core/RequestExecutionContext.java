@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.rocksdb.RocksDB;
 
 public class RequestExecutionContext implements ExecutionContext {
 
@@ -33,6 +34,7 @@ public class RequestExecutionContext implements ExecutionContext {
     private final LHServerConfig lhConfig;
     private final CoreStoreProvider coreStoreProvider;
     private final boolean isRequestingClusterScopedResource;
+    private final RocksDB db;
 
     public RequestExecutionContext(
             PrincipalIdModel clientId,
@@ -40,7 +42,9 @@ public class RequestExecutionContext implements ExecutionContext {
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
-            boolean isRequestingClusterScopedResource) {
+            boolean isRequestingClusterScopedResource,
+            RocksDB db) {
+        this.db = db;
         if (tenantId == null) {
             tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         }
@@ -53,12 +57,12 @@ public class RequestExecutionContext implements ExecutionContext {
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = coreStoreProvider.getNativeGlobalStore();
         ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore = coreStoreProvider.nativeCoreStore();
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+                ReadOnlyClusterScopedStore.newInstance(/*nativeGlobalStore,*/ this, db);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(/*nativeGlobalStore, */ tenantId, this, db);
 
         ReadOnlyTenantScopedStore tenantCoreStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeCoreStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(/*nativeCoreStore, */ tenantId, this, db);
 
         this.readOnlyGetableManager = new ReadOnlyGetableManager(tenantCoreStore);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
@@ -81,7 +85,7 @@ public class RequestExecutionContext implements ExecutionContext {
         ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore =
                 coreStoreProvider.nativeCoreStore(streamsTaskId.partition());
         ReadOnlyTenantScopedStore tenantCoreStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeCoreStore, authorization.tenantId(), this);
+                ReadOnlyTenantScopedStore.newInstance(/*nativeCoreStore, */ authorization.tenantId(), this, db);
         return new ReadOnlyGetableManager(tenantCoreStore, streamsTaskId);
     }
 

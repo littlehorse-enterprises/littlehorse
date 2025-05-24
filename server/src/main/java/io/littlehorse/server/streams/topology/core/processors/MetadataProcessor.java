@@ -35,6 +35,7 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.rocksdb.RocksDB;
 
 /*
  * This is the processor that validates and processes commands to update metadata,
@@ -50,8 +51,10 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private KeyValueStore<String, Bytes> metadataStore;
+    private RocksDB db;
 
-    public MetadataProcessor(LHServerConfig config, LHServer server, MetadataCache metadataCache) {
+    public MetadataProcessor(LHServerConfig config, LHServer server, MetadataCache metadataCache, RocksDB db) {
+        this.db = db;
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
@@ -68,13 +71,13 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     private void maybeInitializeStartupResources() {
         BackgroundContext context = new BackgroundContext();
 
-        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(metadataStore, context);
+        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(/*metadataStore, */ context, db);
 
         InitializationLogModel storedInitializationLogModel =
                 clusterStore.get(InitializationLogModel.SERVER_INITIALIZED_KEY, InitializationLogModel.class);
 
-        TenantScopedStore tenantScopedStore =
-                TenantScopedStore.newInstance(metadataStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), context);
+        TenantScopedStore tenantScopedStore = TenantScopedStore.newInstance(
+                /*metadataStore, */ new TenantIdModel(LHConstants.DEFAULT_TENANT), context, db);
 
         MetadataManager metadataManager = new MetadataManager(clusterStore, tenantScopedStore, metadataCache);
 
@@ -113,6 +116,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         }
 
         // Otherwise, put the default implementation to the store and return it
+
         metadataManager.put(defaultTenantModel);
         log.info("Default Tenant put to store!");
 
@@ -180,6 +184,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     public MetadataCommandExecution buildContext(final Record<String, MetadataCommand> record) {
         Headers recordMetadata = record.headers();
-        return new MetadataCommandExecution(recordMetadata, ctx, metadataCache, config, record.value());
+        return new MetadataCommandExecution(recordMetadata, ctx, metadataCache, config, record.value(), db);
     }
 }

@@ -1,8 +1,7 @@
 package io.littlehorse.server.streams.stores;
 
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.rocksdb.RocksDB;
 
 /**
  * This class allows you to Read any Storeable object at the cluster level. It does
@@ -10,7 +9,8 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  */
 class ReadOnlyClusterScopedStoreImpl extends ReadOnlyBaseStoreImpl implements ReadOnlyClusterScopedStore {
 
-    public ReadOnlyClusterScopedStoreImpl(ReadOnlyKeyValueStore<String, Bytes> nativeStore, ExecutionContext ctx) {
-        super(nativeStore, ctx);
+    public ReadOnlyClusterScopedStoreImpl(
+            /*ReadOnlyKeyValueStore<String, Bytes> nativeStore, */ ExecutionContext ctx, RocksDB db) {
+        super(/*nativeStore, */ ctx, db);
     }
 }

@@ -105,6 +105,7 @@ import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.rocksdb.RocksDB;
 
 @Slf4j
 public class BackendInternalComms implements Closeable {
@@ -129,6 +130,8 @@ public class BackendInternalComms implements Closeable {
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
     private final Executor networkThreadPool;
 
+    private final RocksDB db;
+
     public BackendInternalComms(
             LHServerConfig config,
             KafkaStreams coreStreams,
@@ -136,7 +139,9 @@ public class BackendInternalComms implements Closeable {
             ScheduledExecutorService networkThreadPool,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
-            CoreStoreProvider coreStoreProvider) {
+            CoreStoreProvider coreStoreProvider,
+            RocksDB db) {
+        this.db = db;
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -161,7 +166,7 @@ public class BackendInternalComms implements Closeable {
                 .executor(networkThreadPool)
                 .addService(new InterBrokerCommServer())
                 .intercept(new GlobalExceptionHandler())
-                .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config))
+                .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config, db))
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
@@ -401,10 +406,10 @@ public class BackendInternalComms implements Closeable {
     }
 
     private ReadOnlyTenantScopedStore getStore(Integer specificPartition, String storeName) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
+        //        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
         RequestExecutionContext requestContext = executionContext();
         AuthorizationContext authContext = requestContext.authorization();
-        return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext);
+        return ReadOnlyTenantScopedStore.newInstance(/*rawStore, */ authContext.tenantId(), requestContext, db);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
@@ -1047,30 +1052,30 @@ public class BackendInternalComms implements Closeable {
 
     private LHKeyValueIterator<Tag> createTagIterator(
             String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
+        //        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
-                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
+                    ReadOnlyClusterScopedStore.newInstance(/*rawStore, */ executionContext(), db);
             return clusterStore.range(startKey, endKey, Tag.class);
         } else {
             TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
-                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
+                    ReadOnlyTenantScopedStore.newInstance(/*rawStore, */ currentTenantId, executionContext(), db);
             return tenantStore.range(startKey, endKey, Tag.class);
         }
     }
 
     private LHKeyValueIterator<?> createObjectIdIteratorGlobalStore(
             String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
+        //        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
-                    ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
+                    ReadOnlyClusterScopedStore.newInstance(/*rawStore, */ executionContext(), db);
             return clusterStore.range(startKey, endKey, StoredGetable.class);
         } else {
             TenantIdModel currentTenantId = executionContext().authorization().tenantId();
             ReadOnlyTenantScopedStore tenantStore =
-                    ReadOnlyTenantScopedStore.newInstance(rawStore, currentTenantId, executionContext());
+                    ReadOnlyTenantScopedStore.newInstance(/*rawStore, */ currentTenantId, executionContext(), db);
             return tenantStore.range(startKey, endKey, StoredGetable.class);
         }
     }

@@ -5,8 +5,8 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.KeyValueStore;
+import org.rocksdb.RocksDB;
+import org.rocksdb.RocksDBException;
 
 /**
  * Package-private class that allows you to read and write storeables at either
@@ -15,15 +15,20 @@ import org.apache.kafka.streams.state.KeyValueStore;
 @Slf4j
 abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore {
 
-    private final KeyValueStore<String, Bytes> nativeStore;
+    private final RocksDB db;
+    //    private final KeyValueStore<String, Bytes> nativeStore;
 
-    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, TenantIdModel tenantId, ExecutionContext context) {
-        super(nativeStore, tenantId, context);
-        this.nativeStore = nativeStore;
+    BaseStoreImpl(
+            /*KeyValueStore<String, Bytes> nativeStore, */ TenantIdModel tenantId,
+            ExecutionContext context,
+            RocksDB db) {
+        super(/*nativeStore, */ tenantId, context, db);
+        //        this.nativeStore = nativeStore;
+        this.db = db;
     }
 
-    BaseStoreImpl(KeyValueStore<String, Bytes> nativeStore, ExecutionContext context) {
-        this(nativeStore, null, context);
+    BaseStoreImpl(/*KeyValueStore<String, Bytes> nativeStore, */ ExecutionContext context, RocksDB db) {
+        this(/*nativeStore, */ null, context, db);
     }
 
     @Override
@@ -32,7 +37,12 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
         if (metadataCache != null) {
             metadataCache.evictCache(key);
         }
-        nativeStore.put(key, new Bytes(thing.toBytes()));
+        try {
+            db.put(key.getBytes(), thing.toBytes());
+        } catch (RocksDBException e) {
+            log.error("Failed to put key [{}] from rocksdb. Message: {}", key, e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -41,9 +51,11 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
         if (metadataCache != null) {
             metadataCache.evictCache(fullKey);
         }
-        Bytes delete = nativeStore.delete(fullKey);
-        if (delete == null) {
-            log.warn("Not deleted! " + fullKey);
+        try {
+            db.delete(fullKey.getBytes());
+        } catch (RocksDBException e) {
+            log.error("Failed to delete key [{}] from rocksdb. Message: {}", fullKey, e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 }

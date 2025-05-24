@@ -4,16 +4,17 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Iterator;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.state.KeyValueIterator;
 
 public class LHKeyValueIterator<T extends Storeable<?>> implements Iterator<LHIterKeyValue<T>>, AutoCloseable {
 
-    private KeyValueIterator<String, Bytes> rawIter;
+    private KeyValueIterator<Bytes, byte[]> rawIter;
     private Class<T> cls;
     private ExecutionContext executionContext;
 
     public LHKeyValueIterator(
-            KeyValueIterator<String, Bytes> rawIter, Class<T> cls, ExecutionContext executionContext) {
+            KeyValueIterator<Bytes, byte[]> rawIter, Class<T> cls, ExecutionContext executionContext) {
         this.cls = cls;
         this.rawIter = rawIter;
         this.executionContext = executionContext;
@@ -26,7 +27,8 @@ public class LHKeyValueIterator<T extends Storeable<?>> implements Iterator<LHIt
 
     @Override
     public LHIterKeyValue<T> next() {
-        return new LHIterKeyValue<>(rawIter.next(), cls, executionContext);
+        KeyValue<Bytes, byte[]> next = rawIter.next();
+        return new LHIterKeyValue<>(new KeyValue<>(next.key.toString(), Bytes.wrap(next.value)), cls, executionContext);
     }
 
     public void close() {

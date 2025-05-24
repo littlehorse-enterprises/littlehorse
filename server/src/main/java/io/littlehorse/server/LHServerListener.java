@@ -267,6 +267,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
+import org.rocksdb.RocksDB;
 
 /**
  * This class provides the implementation for public RPCs.
@@ -285,6 +286,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final ScheduledExecutorService networkThreadpool;
     private final String listenerName;
     private final CommandSender commandSender;
+    private final RocksDB db;
 
     private Server grpcListener;
 
@@ -301,11 +303,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
             Context.Key<RequestExecutionContext> contextKey,
-            CommandSender commandSender) {
+            CommandSender commandSender,
+            RocksDB db) {
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
 
+        this.db = db;
         this.metadataCache = metadataCache;
         this.serverConfig = listenerConfig.getConfig();
         this.taskQueueManager = taskQueueManager;
@@ -634,7 +638,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 coreStoreProvider,
                 metadataCache,
                 serverConfig,
-                requestContext());
+                requestContext(),
+                db);
     }
 
     @Override

@@ -14,6 +14,7 @@ import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Objects;
+import org.rocksdb.RocksDB;
 
 /**
  * ServerInterceptor to populate the RequestExecutionContext with the TenantId and PrincipalId
@@ -28,12 +29,15 @@ public class InternalAuthorizer implements LHServerInterceptor {
     private final CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
+    private final RocksDB db;
 
     public InternalAuthorizer(
             Context.Key<RequestExecutionContext> executionContextKey,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
-            LHServerConfig lhConfig) {
+            LHServerConfig lhConfig,
+            RocksDB db) {
+        this.db = db;
         this.executionContextKey = executionContextKey;
         this.coreStoreProvider = coreStoreProvider;
         this.metadataCache = metadataCache;
@@ -54,7 +58,7 @@ public class InternalAuthorizer implements LHServerInterceptor {
         Objects.requireNonNull(clientId);
         Objects.requireNonNull(tenantId);
         RequestExecutionContext requestContext =
-                new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig, false);
+                new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig, false, db);
         Context context = Context.current();
         context = context.withValue(executionContextKey, requestContext);
         return Contexts.interceptCall(context, call, headers, next);

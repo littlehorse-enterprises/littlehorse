@@ -14,6 +14,7 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.rocksdb.RocksDB;
 
 @Slf4j
 public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> {
@@ -37,6 +38,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
+    private RocksDB db;
 
     public PollTaskRequestObserver(
             StreamObserver<PollTaskResponse> responseObserver,
@@ -46,7 +48,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             LHServerConfig config,
-            RequestExecutionContext requestContext) {
+            RequestExecutionContext requestContext,
+            RocksDB db) {
+        this.db = db;
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.principalId = principalId;
@@ -109,7 +113,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     }
 
     RequestExecutionContext getFreshExecutionContext() {
-        return new RequestExecutionContext(principalId, tenantId, coreStoreProvider, metadataCache, config, false);
+        return new RequestExecutionContext(principalId, tenantId, coreStoreProvider, metadataCache, config, false, db);
     }
 
     public void sendResponse(ScheduledTaskModel toExecute) {

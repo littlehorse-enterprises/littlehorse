@@ -1,8 +1,7 @@
 package io.littlehorse.server.streams.stores;
 
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.state.KeyValueStore;
+import org.rocksdb.RocksDB;
 
 /**
  * This class allows you to Read or Write any Storeable object at the cluster level.
@@ -10,7 +9,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
  */
 class ClusterScopedStoreImpl extends BaseStoreImpl implements ClusterScopedStore {
 
-    public ClusterScopedStoreImpl(KeyValueStore<String, Bytes> nativeStore, ExecutionContext ctx) {
-        super(nativeStore, ctx);
+    public ClusterScopedStoreImpl(/*KeyValueStore<String, Bytes> nativeStore, */ ExecutionContext ctx, RocksDB db) {
+        super(/*nativeStore, */ ctx, db);
     }
 }

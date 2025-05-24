@@ -30,6 +30,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.rocksdb.RocksDB;
 
 /**
  * Execution context used in the Core Sub-Topology. This is the processor where the real work of
@@ -57,6 +58,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
 
+    private RocksDB db;
+
     public ProcessorExecutionContext(
             Command currentCommand,
             Headers recordHeaders,
@@ -64,24 +67,26 @@ public class ProcessorExecutionContext implements ExecutionContext {
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
-            LHServer server) {
+            LHServer server,
+            RocksDB db) {
 
+        this.db = db;
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
-                ReadOnlyClusterScopedStore.newInstance(nativeGlobalStore, this);
+                ReadOnlyClusterScopedStore.newInstance(/*nativeGlobalStore, */ this, db);
         ReadOnlyTenantScopedStore tenantMetadataStore =
-                ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
+                ReadOnlyTenantScopedStore.newInstance(/*nativeGlobalStore, */ tenantId, this, db);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
 
         this.config = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordHeaders;
         this.server = server;
-        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
+        this.coreStore = TenantScopedStore.newInstance(/*nativeCoreStore(), */ tenantId, this, db);
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);

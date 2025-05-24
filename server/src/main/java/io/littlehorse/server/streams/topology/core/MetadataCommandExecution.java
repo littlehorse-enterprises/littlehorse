@@ -22,6 +22,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.rocksdb.RocksDB;
 
 public class MetadataCommandExecution implements ExecutionContext {
 
@@ -37,14 +38,15 @@ public class MetadataCommandExecution implements ExecutionContext {
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
-            MetadataCommand currentCommand) {
+            MetadataCommand currentCommand,
+            RocksDB db) {
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
-                ClusterScopedStore.newInstance(nativeMetadataStore, this),
-                TenantScopedStore.newInstance(
-                        nativeMetadataStore, HeadersUtil.tenantIdFromMetadata(recordMetadata), this),
+                ClusterScopedStore.newInstance(/*nativeMetadataStore, */ this, db),
+                TenantScopedStore.newInstance(/*
+                        nativeMetadataStore, */ HeadersUtil.tenantIdFromMetadata(recordMetadata), this, db),
                 metadataCache);
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.authContext = this.authContextFor(

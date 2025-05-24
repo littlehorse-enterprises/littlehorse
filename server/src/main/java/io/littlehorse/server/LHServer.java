@@ -48,6 +48,9 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
+import org.rocksdb.Options;
+import org.rocksdb.RocksDB;
+import org.rocksdb.RocksDBException;
 
 @Slf4j
 public class LHServer {
@@ -66,12 +69,22 @@ public class LHServer {
     private final ScheduledExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
     private final CommandSender commandSender;
+    private RocksDB db;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
     }
 
     public LHServer(LHServerConfig config) throws LHMisconfigurationException {
+
+        RocksDB.loadLibrary();
+        final Options options = new Options().setCreateIfMissing(true);
+        try {
+            db = RocksDB.open(options, "./rocksdb");
+        } catch (RocksDBException e) {
+            throw new RuntimeException(e);
+        }
+
         this.metadataCache = new MetadataCache();
         this.config = config;
         this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
@@ -83,7 +96,7 @@ public class LHServer {
             overrideStreamsProcessId("timer");
         }
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
+                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, db),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
 
@@ -98,7 +111,7 @@ public class LHServer {
 
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider, db);
 
         // Health Server Setup
         this.healthService =
@@ -124,10 +137,11 @@ public class LHServer {
                 metadataCache,
                 List.of(
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
-                        new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
+                        new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config, db),
                         listenerConfig.getRequestAuthenticator()),
                 contextKey,
-                commandSender);
+                commandSender,
+                db);
     }
 
     public String getInstanceName() {

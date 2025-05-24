@@ -19,7 +19,6 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
-import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -38,12 +37,11 @@ import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
+import org.rocksdb.RocksDB;
 
 @Slf4j
 public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
@@ -54,9 +52,11 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
 
-    private KeyValueStore<String, Bytes> nativeStore;
-    private KeyValueStore<String, Bytes> globalStore;
+    //    private KeyValueStore<String, Bytes> nativeStore;
+    //    private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
+
+    private RocksDB db;
 
     private final LHProcessingExceptionHandler exceptionHandler;
 
@@ -64,7 +64,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
-            TaskQueueManager globalTaskQueueManager) {
+            TaskQueueManager globalTaskQueueManager,
+            RocksDB db) {
+        this.db = db;
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
@@ -75,8 +77,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     @Override
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
-        this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
-        this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
+        //        this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
+        //        this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
@@ -118,7 +120,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         Headers metadataHeaders = commandRecord.headers();
         Command commandToProcess = commandRecord.value();
         return new ProcessorExecutionContext(
-                commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
+                commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server, db);
     }
 
     public void onPartitionClaimed() {
@@ -127,7 +129,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         }
         partitionIsClaimed = true;
         server.drainPartitionTaskQueue(ctx.taskId());
-        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
+        ClusterScopedStore clusterStore =
+                ClusterScopedStore.newInstance(/*this.globalStore, */ new BackgroundContext(), this.db);
         rehydrateTenant(new TenantModel(LHConstants.DEFAULT_TENANT));
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
                 GetableClassEnum.TENANT.getNumber() + "/",
@@ -142,7 +145,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private void rehydrateTenant(TenantModel tenant) {
         TenantScopedStore coreDefaultStore =
-                TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
+                TenantScopedStore.newInstance(/*this.nativeStore, */ tenant.getId(), new BackgroundContext(), this.db);
         try (LHKeyValueIterator<ScheduledTaskModel> iter = coreDefaultStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
@@ -161,8 +164,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardMetricsUpdates(long timestamp) {
-        ClusterScopedStore coreDefaultStore =
-                ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
+        ClusterScopedStore coreDefaultStore = ClusterScopedStore.newInstance(
+                /*ctx.getStateStore(ServerTopology.CORE_STORE), */ new BackgroundContext(), db);
         PartitionMetricsModel metricsOnCurrentPartition =
                 coreDefaultStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class);
 
