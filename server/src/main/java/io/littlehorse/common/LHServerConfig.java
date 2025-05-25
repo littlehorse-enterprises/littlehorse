@@ -363,11 +363,11 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public static String getExecutionOutputTopicName(String clusterId, TenantIdModel tenantId) {
-        return clusterId + "--" + tenantId.toString() + "--execution";
+        return clusterId + "_" + tenantId.toString() + "_execution";
     }
 
     public static String getMetadataOutputTopicName(String clusterId, TenantIdModel tenantId) {
-        return clusterId + "--" + tenantId.toString() + "--metadata";
+        return clusterId + "_" + tenantId.toString() + "_metadata";
     }
 
     public String getExecutionOutputTopicName(TenantIdModel tenant) {
@@ -383,11 +383,8 @@ public class LHServerConfig extends ConfigBase {
         String metadataTopicName = getMetadataOutputTopicName(tenant.getId());
 
         // metadata topic is compacted
-        HashMap<String, String> compactedTopicConfig = new HashMap<>() {
-            {
-                put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
-            }
-        };
+        Map<String, String> compactedTopicConfig =
+                Map.of(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
 
         return Pair.of(
                 new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),

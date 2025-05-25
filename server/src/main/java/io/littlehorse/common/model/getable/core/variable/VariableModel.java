@@ -69,9 +69,8 @@ public class VariableModel extends CoreOutputTopicGetable<Variable> {
 
     public WfSpecModel getWfSpec(ReadOnlyMetadataManager metadataManager) {
         if (wfSpec == null) {
-            wfSpec = executionContext
-                    .metadataManager()
-                    .get(new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
+            wfSpec = metadataManager.get(
+                    new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
         }
         return wfSpec;
     }

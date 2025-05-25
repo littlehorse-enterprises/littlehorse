@@ -99,8 +99,8 @@ public class OutputTopicExample {
 
         KafkaConsumer<String, OutputTopicRecord> consumer = new KafkaConsumer<>(kafkaProps);
 
-        String outputTopicName = "my-cluster--default--execution";
-        String metadataOutputTopicName = "my-cluster--default--metadata";
+        String outputTopicName = "my-cluster_default_execution";
+        String metadataOutputTopicName = "my-cluster_default_metadata";
         consumer.subscribe(List.of(outputTopicName, metadataOutputTopicName));
 
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::close));
