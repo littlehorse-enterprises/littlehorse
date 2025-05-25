@@ -279,7 +279,7 @@ There aren't significant performance considerations from this proposal beyond th
 
 ## Future Work
 
-All of the following ideas came to me while writing this prroposal, and many of them were originally part of this proposal. However, I think they are best left to future work.
+All of the following ideas came to me while writing this proposal, and many of them were originally part of this proposal. However, I think they are best left to future work.
 
 ### Strongly-Typed Exceptions
 
