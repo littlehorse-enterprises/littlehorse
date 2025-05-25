@@ -103,7 +103,7 @@ If we weren't deprecating everything `.jsonPath()`, it would look as follows:
 
 ```java
 ChildWorkflowNodeOutput child1Handle = wf.runChildAsync("some-wfspec", Map.of());
-ChildWorkflowNodeOutput child2Handle = wf.runChildAsync("annother-wfspec", Map.of());
+ChildWorkflowNodeOutput child2Handle = wf.runChildAsync("another-wfspec", Map.of());
 
 WfRunVariable child1Output = wf.declareStr("child-1-result");
 WfRunVariable child2Output = wf.declareStr("child-2-result");
