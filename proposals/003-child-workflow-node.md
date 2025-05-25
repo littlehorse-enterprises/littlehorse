@@ -298,7 +298,7 @@ Once the `StructDef` implementation is finished, we'll have multiple well-known 
 * The output of a `WaitForChildWfsNodeRun`
 * A `VariableValue` containing a `WfRun`.
 
-Each of these structures has multiple fields, and we know the names and paths of those fields. We may want to accesss an individual field inside the WfSpec DSL. We should add a way to do that. Perhaps something like:
+Each of these structures has multiple fields, and we know the names and paths of those fields. We may want to access an individual field inside the WfSpec DSL. We should add a way to do that. Perhaps something like:
 
 ```
 StructVariable myStruct = wf.declareStruct("some-struct", Car.class);
