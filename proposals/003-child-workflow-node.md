@@ -43,7 +43,7 @@ The most simple case is in which we have a single `NodeRun` which launches a chi
 
 ```java
 WfRunVariable customerId = wf.declareStr("customer-id");
-WfRunVariable paymentMethodId = wf.declareStr("payment-method")
+WfRunVariable paymentMethodId = wf.declareStr("payment-method");
 
 NodeOutput childOutput = wf.runChildWf("request-new-credit-card", Map.of("user-id", customerId));
 paymentMethod.assign(childOutput);
