@@ -3,30 +3,23 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
-import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.Date;
 import java.util.List;
 import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.rocksdb.RocksDB;
 
 public class MetadataCommandExecution implements ExecutionContext {
 
-    private final ProcessorContext<String, CommandProcessorOutput> processorContext;
+    //    private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
     private final AuthorizationContext authContext;
     private MetadataManager metadataManager;
@@ -35,14 +28,14 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     public MetadataCommandExecution(
             Headers recordMetadata,
-            ProcessorContext<String, CommandProcessorOutput> processorContext,
+            //            ProcessorContext<String, CommandProcessorOutput> processorContext,
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommand currentCommand,
             RocksDB db) {
-        this.processorContext = processorContext;
+        //        this.processorContext = processorContext;
         this.metadataCache = metadataCache;
-        KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
+        //        KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ClusterScopedStore.newInstance(/*nativeMetadataStore, */ this, db),
                 TenantScopedStore.newInstance(/*
@@ -79,26 +72,27 @@ public class MetadataCommandExecution implements ExecutionContext {
     }
 
     public void forward(CoreSubCommand<?> coreCommand) {
-        CommandModel commandModel = new CommandModel(coreCommand, new Date());
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = coreCommand.getPartitionKey();
-        cpo.topic = this.lhConfig.getCoreCmdTopicName();
-        cpo.payload = commandModel;
-        TenantIdModel tenantId = authorization().tenantId();
-        PrincipalIdModel principalId = authorization().principalId();
-
-        Record<String, CommandProcessorOutput> out = new Record<>(
-                cpo.partitionKey,
-                cpo,
-                System.currentTimeMillis(),
-                HeadersUtil.metadataHeadersFor(tenantId, principalId));
-
-        this.processorContext.forward(out);
+        // TODO: Mateo - Solve this because forward is being used
+        //        CommandModel commandModel = new CommandModel(coreCommand, new Date());
+        //        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        //        cpo.partitionKey = coreCommand.getPartitionKey();
+        //        cpo.topic = this.lhConfig.getCoreCmdTopicName();
+        //        cpo.payload = commandModel;
+        //        TenantIdModel tenantId = authorization().tenantId();
+        //        PrincipalIdModel principalId = authorization().principalId();
+        //
+        //        Record<String, CommandProcessorOutput> out = new Record<>(
+        //                cpo.partitionKey,
+        //                cpo,
+        //                System.currentTimeMillis(),
+        //                HeadersUtil.metadataHeadersFor(tenantId, principalId));
+        //
+        //        this.processorContext.forward(out);
     }
 
-    private KeyValueStore<String, Bytes> nativeMetadataStore() {
-        return processorContext.getStateStore(ServerTopology.METADATA_STORE);
-    }
+    //    private KeyValueStore<String, Bytes> nativeMetadataStore() {
+    //        return processorContext.getStateStore(ServerTopology.METADATA_STORE);
+    //    }
 
     private AuthorizationContext authContextFor(TenantIdModel tenantId, PrincipalIdModel principalId) {
         // We will need to pass list of acls and isAdmin argument in order to implement

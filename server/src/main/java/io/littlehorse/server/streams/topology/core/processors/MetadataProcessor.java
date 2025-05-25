@@ -184,6 +184,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     public MetadataCommandExecution buildContext(final Record<String, MetadataCommand> record) {
         Headers recordMetadata = record.headers();
-        return new MetadataCommandExecution(recordMetadata, ctx, metadataCache, config, record.value(), db);
+        return new MetadataCommandExecution(recordMetadata, /*ctx, */ metadataCache, config, record.value(), db);
     }
 }

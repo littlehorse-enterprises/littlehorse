@@ -252,6 +252,7 @@ import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -757,7 +758,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_TENANT, actions = ACLAction.WRITE_METADATA)
     public void putTenant(PutTenantRequest req, StreamObserver<Tenant> ctx) {
         PutTenantRequestModel reqModel = LHSerializable.fromProto(req, PutTenantRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Tenant.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -1141,6 +1142,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 requestContext.authorization().principalId(),
                 requestContext.authorization().tenantId(),
                 requestContext);
+    }
+
+    private <RC extends Message> void processMetadataCommand(
+            MetadataCommandModel command, StreamObserver<RC> responseObserver) {
+        RequestExecutionContext requestContext = requestContext();
+        var principalId = requestContext.authorization().principalId();
+        var tenantId = requestContext.authorization().tenantId();
+        command.setCommandId(LHUtil.generateGuid());
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+        MetadataCommandExecution commandExecution = new MetadataCommandExecution(
+                commandMetadata, metadataCache, serverConfig, command.toProto().build(), db);
+        Message response = command.process(commandExecution);
+        responseObserver.onNext((RC) response);
+        responseObserver.onCompleted();
     }
 
     private WfService getServiceFromContext() {
