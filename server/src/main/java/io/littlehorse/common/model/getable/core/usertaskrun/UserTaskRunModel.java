@@ -7,6 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
@@ -60,7 +61,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Getter
 @Setter
-public class UserTaskRunModel extends CoreOutputTopicGetable<UserTaskRun> {
+public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOutputTopicGetable<UserTaskRun> {
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;

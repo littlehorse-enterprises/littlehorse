@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.events;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -22,7 +23,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
-public class WorkflowEventModel extends CoreOutputTopicGetable<WorkflowEvent> {
+public class WorkflowEventModel extends CoreGetable<WorkflowEvent> implements CoreOutputTopicGetable<WorkflowEvent> {
 
     private WorkflowEventIdModel id;
     private VariableValueModel content;

@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -45,7 +46,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class TaskRunModel extends CoreOutputTopicGetable<TaskRun> {
+public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopicGetable<TaskRun> {
 
     private TaskRunIdModel id;
     private List<TaskAttemptModel> attempts;

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.outputtopic;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -40,7 +41,7 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
 
     public OutputTopicRecordModel(CoreOutputTopicGetable<?> thing, Date time) {
         this.timestamp = LHLibUtil.fromDate(time);
-        setThing(thing);
+        setPayload(thing);
     }
 
     @Override
@@ -116,7 +117,7 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         return getSubrecord().getPartitionKey().get();
     }
 
-    public CoreOutputTopicGetable<?> getSubrecord() {
+    public CoreGetable<?> getSubrecord() {
         switch (payloadCase) {
             case WF_RUN:
                 return wfRun;
@@ -135,7 +136,7 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         throw new IllegalStateException("Forgot to add new output topic record type here");
     }
 
-    public void setThing(CoreOutputTopicGetable<?> thing) {
+    public void setPayload(CoreOutputTopicGetable<?> thing) {
         if (thing == null) {
             throw new IllegalArgumentException();
         }

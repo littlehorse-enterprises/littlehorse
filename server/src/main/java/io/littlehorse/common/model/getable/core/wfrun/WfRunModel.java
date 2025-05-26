@@ -10,6 +10,7 @@ import io.littlehorse.common.exceptions.MissingThreadRunException;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -66,7 +67,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Setter
 @Getter
-public class WfRunModel extends CoreOutputTopicGetable<WfRun> {
+public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGetable<WfRun> {
 
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
