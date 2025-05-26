@@ -3,7 +3,9 @@ package io.littlehorse.server.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Iterables;
@@ -98,6 +100,19 @@ public class RequestAuthorizerTest {
                 .containsExactly(
                         inMemoryAnonymousPrincipal.getGlobalAcls().getAcls().toArray(new ServerACLModel[0]));
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
+    }
+
+    @Test
+    public void supportServerInitialization() {
+        when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("principal-id");
+        ArgumentCaptor<Status> statusArgumentCaptor = ArgumentCaptor.forClass(Status.class);
+        metadataManager.delete(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
+        startCall();
+        assertThat(contextKey.get()).isNull();
+        verify(mockCall).close(statusArgumentCaptor.capture(), same(mockMetadata));
+        Status requestStatus = statusArgumentCaptor.getValue();
+        assertThat(requestStatus.getCode()).isEqualTo(Status.Code.UNAVAILABLE);
+        assertThat(requestStatus.getDescription()).isEqualTo("Server Initializing");
     }
 
     @Test
