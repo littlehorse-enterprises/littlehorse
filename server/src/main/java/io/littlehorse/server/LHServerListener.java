@@ -387,7 +387,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
         PutPrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, PutPrincipalRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Principal.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -395,7 +395,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deletePrincipal(DeletePrincipalRequest req, StreamObserver<Empty> ctx) {
         DeletePrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, DeletePrincipalRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -488,7 +488,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void putTaskDef(PutTaskDefRequest req, StreamObserver<TaskDef> ctx) {
         PutTaskDefRequestModel reqModel = LHSerializable.fromProto(req, PutTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, TaskDef.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -496,7 +496,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putWorkflowEventDef(PutWorkflowEventDefRequest req, StreamObserver<WorkflowEventDef> ctx) {
         PutWorkflowEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutWorkflowEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, WorkflowEventDef.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -512,7 +512,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putExternalEventDef(PutExternalEventDefRequest req, StreamObserver<ExternalEventDef> ctx) {
         PutExternalEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutExternalEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, ExternalEventDef.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -520,7 +520,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putUserTaskDef(PutUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
         PutUserTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutUserTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, UserTaskDef.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -576,7 +576,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void migrateWfSpec(MigrateWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         MigrateWfSpecRequestModel reqModel =
                 LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -991,7 +991,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteWfSpec(DeleteWfSpecRequest req, StreamObserver<Empty> ctx) {
         DeleteWfSpecRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteWfSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -999,7 +999,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteTaskDef(DeleteTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -1015,7 +1015,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteUserTaskDef(DeleteUserTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteUserTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteUserTaskDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
+        processMetadataCommand(new MetadataCommandModel(reqModel), ctx);
     }
 
     @Override
@@ -1023,7 +1023,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteExternalEventDef(DeleteExternalEventDefRequest req, StreamObserver<Empty> ctx) {
         DeleteExternalEventDefRequestModel deedr =
                 LHSerializable.fromProto(req, DeleteExternalEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(deedr), ctx, Empty.class, true);
+        processMetadataCommand(new MetadataCommandModel(deedr), ctx);
     }
 
     @Override
@@ -1031,7 +1031,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteWorkflowEventDef(DeleteWorkflowEventDefRequest req, StreamObserver<Empty> ctx) {
         DeleteWorkflowEventDefRequestModel dwedr =
                 LHSerializable.fromProto(req, DeleteWorkflowEventDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(dwedr), ctx, Empty.class, true);
+        processMetadataCommand(new MetadataCommandModel(dwedr), ctx);
     }
 
     @Override
