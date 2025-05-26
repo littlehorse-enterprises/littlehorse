@@ -45,7 +45,7 @@ public class ExternalEventTypingTest {
         assertThatThrownBy(() -> {
                     client.putExternalEvent(PutExternalEventRequest.newBuilder()
                             .setExternalEventDefId(
-                                    ExternalEventDefId.newBuilder().setName("typed-external-event"))
+                                    ExternalEventDefId.newBuilder().setName("typed-as-int"))
                             .setWfRunId(id)
                             .setContent(LHLibUtil.objToVarVal("not-an-integer"))
                             .build());
@@ -53,7 +53,8 @@ public class ExternalEventTypingTest {
                 .matches(exn -> {
                     return exn instanceof StatusRuntimeException
                             && ((StatusRuntimeException) exn).getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && exn.getMessage().toLowerCase().contains("typed-external-event");
+                            && exn.getMessage().toLowerCase().contains("typed-as-int")
+                            && exn.getMessage().toLowerCase().contains("invalid type");
                 });
     }
 
