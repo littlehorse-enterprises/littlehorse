@@ -46,7 +46,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "8.5.1",
     "input-otp": "1.4.1",
-    "littlehorse-client": "~/projects/littlehorse-enterprises/littlehorse/sdk-js",
+    "littlehorse-client": "file://../sdk-js",
     "lucide-react": "^0.454.0",
     "next": "15.2.4",
     "next-auth": "^5.0.0-beta.28",
