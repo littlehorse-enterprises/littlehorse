@@ -92,7 +92,7 @@ public class GetableManagerTest {
     void setup() {
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
-                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
+                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
