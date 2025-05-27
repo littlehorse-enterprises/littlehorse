@@ -9,6 +9,8 @@
     - [Failure Propagation](#failure-propagation)
   - [The Details](#the-details)
     - [Partitioning and Parent-Child Relationship](#partitioning-and-parent-child-relationship)
+    - [Note on `ParentWfSpecReference`](#note-on-parentwfspecreference)
+    - [Circular Dependenciess](#circular-dependenciess)
     - [`WfSpec` Versioning](#wfspec-versioning)
     - [Protobuf Structure](#protobuf-structure)
       - [ThreadRun Output](#threadrun-output)
@@ -95,6 +97,10 @@ foo.assign(childOutput);
 
 The `waitForChildWf()` call returns a regular `NodeOutput` that can be used to add `.timeoutSeconds()` or to mutate variables or to catch exceptions.
 
+Unlike `ThreadRun`s, if you do not explicitly wait for a child `WfRun` to complete, the parent can still complete.
+
+This is because a Java program waits for threads to finish but if you `fork()` a child process off, the parent can complete with or without waiting for the child to complete.
+
 ### Waiting for Multiple Children
 
 We will need a follow-up proposal to properly design the capabilities to wait for multiple children at once. Currently, the `waitForThreads()` implementation forces users to use `.jsonPath()` if they wish to see the outputs of the child `ThreadRun`s. We have an ongoing effort to deprecate `.jsonPath()`. Once we find a better equivalent, we can extend this feature.
@@ -143,6 +149,26 @@ There is no need to send any extra commands to the repartition or timer topologi
 One thing we must do: when the child terminates, we need to "wake up" the parent and call `advance()` on it. That means we should keep a flag somewhere on the protobuf of the child `WfRun` that says "hey wake up the parent please."
 
 A quick note: if you want to set the parent `WfRunId` in `rpc RunWf`, it only works if the child `WfSpec` has a reference to the parent `WfRun`. However, this feature will work without the parent reference. You can run any `WfSpec` as a child _unless_ the `WfSpec` you are running has a parent reference to a different `WfSpec` than the caller.
+
+### Note on `ParentWfSpecReference`
+
+Note that we've had the following in the `WfSpec` for a long time: 
+
+```proto
+  // Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the
+  // child of a WfRun belonging to the referenced WfSpec.
+  optional ParentWfSpecReference parent_wf_spec = 9;
+```
+
+This feature is separate from the `parent_wf_spec` feature. The `parent_wf_spec` reference is intended to allow child workflows to inherit variables from the parent.
+
+If a child `WfSpec` has a parent reference, then _only the specified parent may spawn the Child workflow through these nodes._ 
+
+However, if a child `WfSpec` has no parent reference, then _any_ `WfSpec` may spawn the child workflow so long as there are no circular dependencies.
+
+### Circular Dependenciess
+
+We will not permit circular dependencies in `WfSpec`'s. For example, if `foo` starts `bar`, and `bar` starts `baz`, then updating `baz` to include a "start workflow" node for `foo` is not allowed.
 
 ### `WfSpec` Versioning
 
