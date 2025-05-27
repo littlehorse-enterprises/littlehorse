@@ -11,6 +11,7 @@ import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
@@ -30,9 +31,11 @@ import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicy
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
 import io.littlehorse.sdk.common.proto.PendingInterrupt;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
@@ -41,6 +44,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
@@ -63,7 +67,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Setter
 @Getter
-public class WfRunModel extends CoreGetable<WfRun> {
+public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGetable<WfRun> {
 
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
@@ -193,6 +197,16 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     @Override
+    public boolean shouldProduceToOutputTopic(
+            WfRun previousValue, ReadOnlyMetadataManager metadataManager, OutputTopicConfigModel config) {
+        if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            return false;
+        }
+
+        return previousValue == null || previousValue.getStatus() != this.status;
+    }
+
+    @Override
     public WfRunIdModel getObjectId() {
         return id;
     }
@@ -206,6 +220,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         return getThreadRun(0).isRunning();
     }
 
+    @Override
     public WfRun.Builder toProto() {
         WfRun.Builder out = WfRun.newBuilder()
                 .setId(id.toProto())

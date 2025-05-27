@@ -20,12 +20,22 @@ public class MetadataManager extends ReadOnlyMetadataManager {
 
     private ClusterScopedStore clusterStore;
     private TenantScopedStore tenantStore;
+    private TenantScopedGetableCallback callback;
 
     public MetadataManager(
             ClusterScopedStore clusterStore, TenantScopedStore tenantStore, MetadataCache metadataCache) {
+        this(clusterStore, tenantStore, metadataCache, null);
+    }
+
+    public MetadataManager(
+            ClusterScopedStore clusterStore,
+            TenantScopedStore tenantStore,
+            MetadataCache metadataCache,
+            TenantScopedGetableCallback callback) {
         super(clusterStore, tenantStore, metadataCache);
         this.clusterStore = clusterStore;
         this.tenantStore = tenantStore;
+        this.callback = callback;
     }
 
     public <U extends Message, T extends ClusterMetadataGetable<U>> void put(T getable) {
@@ -63,6 +73,10 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         tenantStore.put(toStore);
         for (Tag tag : getable.getIndexEntries()) {
             tenantStore.put(tag);
+        }
+
+        if (this.callback != null) {
+            callback.observe(getable);
         }
     }
 
