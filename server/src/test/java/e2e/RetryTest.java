@@ -16,7 +16,6 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
-
 import org.junit.jupiter.api.Test;
 
 @LHTest
