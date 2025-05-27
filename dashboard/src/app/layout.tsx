@@ -1,25 +1,24 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { Toaster } from '@/components/ui/sonner'
+import type React from "react"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import Header from "@/components/layout/header"
+import { cn } from "@/utils/utils"
+import { AuthProvider } from "@/components/auth"
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: 'LittleHorse | Dashboard',
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
-  params?: { tenantId?: string }
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {children}
-        <Toaster position="top-center" richColors />
+      <body className={cn(inter.className, "flex flex-col h-screen")}>
+        <AuthProvider>
+          <Header />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
