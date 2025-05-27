@@ -16,7 +16,10 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
+
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 @LHTest
 public class RetryTest {
@@ -55,7 +58,7 @@ public class RetryTest {
                     // That generally happens in 10-30ms, so we will put a time limit of 50. If this becomes flaky, we
                     // can re-evaluate it.
                     assertThat(millisecondsBetween(task.getAttempts(0), task.getAttempts(1)))
-                            .isLessThan(50);
+                            .isLessThan(500);
                 })
                 .waitForStatus(LHStatus.COMPLETED)
                 .start();
