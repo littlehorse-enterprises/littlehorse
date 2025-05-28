@@ -1528,7 +1528,7 @@ class WorkflowThread:
             ),
         )
 
-    def complete(self):
+    def complete(self) -> None:
         """Adds an Exit Node, returning from the WorkflowThread early"""
         self._check_if_active()
         self.add_node("complete", ExitNode())
