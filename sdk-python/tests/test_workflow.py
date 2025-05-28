@@ -174,10 +174,7 @@ class TestWfRunVariable(unittest.TestCase):
             ThreadVarDef(
                 var_def=VariableDef(
                     name="my-var",
-                    type_def=TypeDefinition(
-                        type=VariableType.STR,
-                        masked=False
-                    )
+                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
                 ),
                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
             ),
@@ -188,10 +185,7 @@ class TestWfRunVariable(unittest.TestCase):
         expected_output = ThreadVarDef(
             var_def=VariableDef(
                 name="my-var",
-                type_def=TypeDefinition(
-                    type=VariableType.JSON_OBJ,
-                    masked=False
-                )
+                type_def=TypeDefinition(type=VariableType.JSON_OBJ, masked=False),
             ),
             access_level="PRIVATE_VAR",
         )
@@ -207,10 +201,7 @@ class TestWfRunVariable(unittest.TestCase):
         expected_output = ThreadVarDef(
             var_def=VariableDef(
                 name="my-var",
-                type_def=TypeDefinition(
-                    type=VariableType.STR,
-                    masked=False
-                )
+                type_def=TypeDefinition(type=VariableType.STR, masked=False),
             ),
             access_level="PRIVATE_VAR",
         )
@@ -222,10 +213,7 @@ class TestWfRunVariable(unittest.TestCase):
         expected_output = ThreadVarDef(
             var_def=VariableDef(
                 name="my-var",
-                type_def=TypeDefinition(
-                    type=VariableType.STR,
-                    masked=False
-                )
+                type_def=TypeDefinition(type=VariableType.STR, masked=False),
             ),
             access_level="INHERITED_VAR",
         )
@@ -246,9 +234,8 @@ class TestThreadBuilder(unittest.TestCase):
                         var_def=VariableDef(
                             name="input-name",
                             type_def=TypeDefinition(
-                                type=VariableType.STR,
-                                masked=False
-                            )
+                                type=VariableType.STR, masked=False
+                            ),
                         ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
@@ -1242,9 +1229,7 @@ class TestThreadBuilder(unittest.TestCase):
                 if_body=if_body_a,
                 else_body=else_body_c,
             )
-            if_statement.do_else(
-                body=if_body_b
-            )
+            if_statement.do_else(body=if_body_b)
 
         workflow = Workflow("test-wf", my_entrypoint)
 
@@ -1493,6 +1478,100 @@ class TestThreadBuilder(unittest.TestCase):
             compiled_last_nope_node.outgoing_edges[0].sink_node_name,
         )
 
+    def test_compile_wf_with_do_if_and_multiple_exit_nodes(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+        compiled_wf = workflow.compile()
+        entrypoint_thread = compiled_wf.thread_specs.get("entrypoint")
+
+        compiled_first_nop_node = entrypoint_thread.nodes.get("1-nop-NOP")
+        self.assertEqual(
+            compiled_first_nop_node,
+            Node(
+                nop=NopNode(),
+                outgoing_edges=[
+                    Edge(
+                        sink_node_name="2-complete-EXIT",
+                        condition=EdgeCondition(
+                            left=VariableAssignment(literal_value=VariableValue(int=5)),
+                            comparator=Comparator.GREATER_THAN,
+                            right=VariableAssignment(
+                                literal_value=VariableValue(int=4)
+                            ),
+                        ),
+                    ),
+                    Edge(sink_node_name="3-nop-NOP"),
+                ],
+            ),
+        )
+
+        compiled_complete_exit_node = entrypoint_thread.nodes.get("2-complete-EXIT")
+        self.assertEqual(compiled_complete_exit_node, Node(exit=ExitNode()))
+
+        compiled_last_exit_node = entrypoint_thread.nodes.get("4-exit-EXIT")
+        self.assertEqual(compiled_last_exit_node, Node(exit=ExitNode()))
+
+    def test_compile_wf_with_do_else_if_and_multiple_exit_nodes(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+
+            def if_body_b(body: WorkflowThread) -> None:
+                wf.execute("task-b")
+                body.complete()
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a).do_else_if(
+                wf.condition(10, Comparator.EQUALS, 11), if_body_b
+            )
+
+        workflow = Workflow("test-wf", my_entrypoint)
+        compiled_wf = workflow.compile()
+        entrypoint_thread = compiled_wf.thread_specs.get("entrypoint")
+
+        compiled_first_nop_node = entrypoint_thread.nodes.get("1-nop-NOP")
+        self.assertEqual(
+            compiled_first_nop_node,
+            Node(
+                nop=NopNode(),
+                outgoing_edges=[
+                    Edge(
+                        sink_node_name="2-complete-EXIT",
+                        condition=EdgeCondition(
+                            left=VariableAssignment(literal_value=VariableValue(int=5)),
+                            comparator=Comparator.GREATER_THAN,
+                            right=VariableAssignment(
+                                literal_value=VariableValue(int=4)
+                            ),
+                        ),
+                    ),
+                    Edge(
+                        sink_node_name="4-task-b-TASK",
+                        condition=EdgeCondition(
+                            left=VariableAssignment(
+                                literal_value=VariableValue(int=10)
+                            ),
+                            comparator=Comparator.EQUALS,
+                            right=VariableAssignment(
+                                literal_value=VariableValue(int=11)
+                            ),
+                        ),
+                    ),
+                    Edge(sink_node_name="3-nop-NOP"),
+                ],
+            ),
+        )
+
+        compiled_if_body_a_exit_node = entrypoint_thread.nodes.get("2-complete-EXIT")
+        self.assertEqual(compiled_if_body_a_exit_node, Node(exit=ExitNode()))
+
+        compiled_if_body_b_exit_node = entrypoint_thread.nodes.get("5-complete-EXIT")
+        self.assertEqual(compiled_if_body_b_exit_node, Node(exit=ExitNode()))
+
     def test_do_while(self):
         class MyClass:
             def my_condition(self, thread: WorkflowThread) -> None:
@@ -1652,9 +1731,8 @@ class TestThreadBuilder(unittest.TestCase):
                         var_def=VariableDef(
                             name="input-name",
                             type_def=TypeDefinition(
-                                type=VariableType.STR,
-                                masked=False
-                            )
+                                type=VariableType.STR, masked=False
+                            ),
                         ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     )
@@ -1821,9 +1899,8 @@ class TestThreadBuilder(unittest.TestCase):
                         var_def=VariableDef(
                             name="value",
                             type_def=TypeDefinition(
-                                type=VariableType.INT,
-                                masked=False
-                            )
+                                type=VariableType.INT, masked=False
+                            ),
                         ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
@@ -2420,9 +2497,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="input-name",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level="INHERITED_VAR",
                             ),
@@ -2458,9 +2534,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="input-name",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2496,9 +2571,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="input-name",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2660,9 +2734,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="grand-parent-var",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2670,9 +2743,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="1-son-thread-START_THREAD",
                                     type_def=TypeDefinition(
-                                        type=VariableType.INT,
-                                        masked=False
-                                    )
+                                        type=VariableType.INT, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2725,9 +2797,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="1-grandchild-thread-START_THREAD",
                                     type_def=TypeDefinition(
-                                        type=VariableType.INT,
-                                        masked=False
-                                    )
+                                        type=VariableType.INT, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             )
