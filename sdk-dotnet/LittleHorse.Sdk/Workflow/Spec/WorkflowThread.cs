@@ -124,6 +124,10 @@ public class WorkflowThread
             feederNode.OutgoingEdges.Add(edge);
             _spec.Nodes[LastNodeName] = feederNode;
         }
+        else
+        {
+            return LastNodeName;
+        }
 
         Node node = new Node();
         switch (type) 
@@ -525,9 +529,12 @@ public class WorkflowThread
             firstNopNode.OutgoingEdges.Add(edge);
             
             var lastNodeOfBody = FindNode(lastNodeNameOfBody);
-            var edgeFromLastNodeOfBody = GetNewEdge(ifStatement.LastNopNodeName, null,
-                CollectVariableMutations());
-            lastNodeOfBody.OutgoingEdges.Add(edgeFromLastNodeOfBody);
+            if (lastNodeOfBody.NodeCase != Node.NodeOneofCase.Exit)
+            {
+                var edgeFromLastNodeOfBody = GetNewEdge(ifStatement.LastNopNodeName, null,
+                    CollectVariableMutations());
+                lastNodeOfBody.OutgoingEdges.Add(edgeFromLastNodeOfBody);
+            }
         }
         
         if (condition != null)
