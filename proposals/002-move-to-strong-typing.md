@@ -90,7 +90,7 @@ Valid classes in Java will be:
 
 Other SDK's will provide equivalent functionality.
 
-We will then make the Server validate all variable mutations on `ExternalEventNode`s and also validate the declarations of the 
+We will then make the Server validate all variable mutations on `ExternalEventNode`s and also validate the declarations of the `INPUT` variable on interrupt handlers. A further proposal will be neeeded to validate `INPUT` variables for exception handler nodes.
 
 ### Deprecating `VariableAssignment.NodeOutputReference`
 
@@ -106,7 +106,7 @@ wf.execute("another-task", firstOutput);
 
 The current implementation has some problems:
 
-* **Performance**: it involves sequentially iterating through all previous `NodeRun`'s in the 
+* **Performance**: it involves sequentially iterating through all previous `NodeRun`'s in the `WfRun`, which takes time. At least it's not a RocksDB range scan, though.
 * **Archival**: we want to add the ability to archive/delete old `NodeRun`s automatically during a `WfRun` to save disk space. Imagine a `WfRun` that executes a loop every 30 seconds indefinitely—we have no need to keep the history forever; it could be useful to delete old `NodeRun`s 24 hours after they execute. Implementing such a retention policy could be complicated with the `NodeOutputReference`.
 * **Type Inference**: this behavior has issues with strong typing.
 
