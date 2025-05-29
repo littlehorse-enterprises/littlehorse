@@ -7,7 +7,9 @@ from littlehorse.config import LHConfig
 from littlehorse.model import (
     VariableType,
     Comparator,
-    VariableMutationType, PutUserTaskDefRequest, UserTaskField,
+    VariableMutationType,
+    PutUserTaskDefRequest,
+    UserTaskField,
 )
 from littlehorse.workflow import WorkflowThread, Workflow
 
@@ -67,6 +69,7 @@ def get_workflow() -> Workflow:
 
     return Workflow("parallel-approvals-v2", my_entrypoint)
 
+
 def get_user_task_approval_def() -> PutUserTaskDefRequest:
     return PutUserTaskDefRequest(
         name="approve-task",
@@ -76,9 +79,9 @@ def get_user_task_approval_def() -> PutUserTaskDefRequest:
                 description="Is the status completed for approval?",
                 display_name="Approval",
                 required=True,
-                type=VariableType.BOOL
+                type=VariableType.BOOL,
             )
-        ]
+        ],
     )
 
 
