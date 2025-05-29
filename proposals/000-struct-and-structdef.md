@@ -249,8 +249,8 @@ message PutStructDefRequest {
   // - The `InlineStructDef` is different <br/>
   //
   // Then the request will be accepted or rejected based on the value of the
-  // allowed_update_type.
-  StructDefCompatibilityType allowed_update_type = 4;
+  // allowed_updates type.
+  StructDefCompatibilityType allowed_updates = 4;
 }
 
 service LittleHorse {
