@@ -7,6 +7,7 @@
       - [`StructDef` Versioning](#structdef-versioning)
     - [Existing Protobuf](#existing-protobuf)
     - [`StructDef` Schema Evolution](#structdef-schema-evolution)
+      - [Validating `StructDef` Schema Evolution](#validating-structdef-schema-evolution)
     - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
   - [Client-Side Enhancements](#client-side-enhancements)
     - [Task Workers](#task-workers)
@@ -221,16 +222,18 @@ At first, we will allow only Fully-Compatible schema changes:
 Making a `PutStructDefRequest` with an identical `InlineStructDef` to what already exists will not cause a new Schema to be created. This follows the idempotence pattern already observed with all of our metadata Getables (including `WfSpec`, `UserTaskDef`, `TaskDef`, etc).
 
 ```proto
+// Compatibility types for StructDef evolution
+enum StructDefCompatibilityType {
+  // No updates are allowed.
+  NO_SCHEMA_UPDATES = 0;
+
+  // Allowed to make fully compatible (both backward-and-forward compatible)
+  // changes to the `struct_def` in this request.
+  FULLY_COMPATIBLE = 1;
+}
+
 // Request to create a new `StructDef`.
 message PutStructDefRequest {
-  enum AllowedStructDefUpdateType {
-    // No updates are allowed.
-    NO_SCHEMA_UPDATES = 0;
-
-    // Allowed to make fully compatible (both backward-and-forward compatible)
-    // changes to the `struct_def` in this request.
-    FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
-  }
 
   // The name of the `StructDef`.
   string name = 1;
@@ -246,8 +249,8 @@ message PutStructDefRequest {
   // - The `InlineStructDef` is different <br/>
   //
   // Then the request will be accepted or rejected based on the value of the
-  // allowed_update_types.
-  AllowedStructDefUpdateType allowed_updates = 4;
+  // allowed_update_type.
+  StructDefCompatibilityType allowed_update_type = 4;
 }
 
 service LittleHorse {
@@ -273,6 +276,45 @@ service LittleHorse {
 ```
 
 I (Colt) _do not like_ the idea of relaxing the allowed update types to introduce minorly-breaking changes in the `StructDef`. The reasons for this are beyond the scope of this proposal. However, I have designed the `PutStructDefRequest` to allow extending it to relax those compatibility restrictions if needed in the future.
+
+#### Validating `StructDef` Schema Evolution
+
+In addition to allowing users to set a compatibility type to be validated when putting a `StructDef`, we will also provide `StructDef` validation through a separate RPC `RPC ValidateStructDef`.
+
+`RPC ValidateStructDef` will perform the same compatibility checks used in `RPC PutStructDef`, but without the intent of putting a `StructDef` to the server. This will be a useful single source of truth for checking compatibility when designing `StructDef`s.
+
+```proto
+// Request to validate a `StructDef`.
+message ValidateStructDefRequest {
+  // The name of the `StructDef` you want to compare against that already exists on the server.
+  string name = 1;
+
+  // The new `StructDef` schema.
+  InlineStructDef struct_def = 2;
+
+
+  // The server will validate the new StructDef schema against
+  // the existing StructDef schema based on this compatibility type.
+  StructDefCompatibilityType compatibility_type = 3;
+}
+
+// Response indicating a successful validation.
+message ValidateStructDefResponse {
+  bool is_valid = 0;
+
+  // This message leaves room for returning additional information about the validation,
+  // like what `StructFieldDef` evolution(s) are invaild and why.
+}
+
+service LittleHorse {
+  // ...
+  
+  // Validate the schema of a new StructDef against an existing StructDef
+  rpc ValidateStructDef(ValidateStructDefRequest) returns (ValidateStructDefResponse) {}
+
+  // ...
+}
+```
 
 ### Interoperability with `JSON_OBJ`
 
