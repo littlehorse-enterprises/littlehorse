@@ -279,12 +279,12 @@ I (Colt) _do not like_ the idea of relaxing the allowed update types to introduc
 
 #### Validating `StructDef` Schema Evolution
 
-In addition to allowing users to set a compatibility type to be validated when putting a `StructDef`, we will also provide `StructDef` validation through a separate RPC `RPC ValidateStructDef`.
+In addition to allowing users to set a compatibility type to be validated when putting a `StructDef`, we will also provide `StructDef` validation through a separate RPC: `RPC ValidateStructDef`.
 
-`RPC ValidateStructDef` will perform the same compatibility checks used in `RPC PutStructDef`, but without the intent of putting a `StructDef` to the server. This will be a useful single source of truth for checking compatibility when designing `StructDef`s.
+`RPC ValidateStructDef` will perform the same compatibility checks used in `RPC PutStructDef`, but without the intent of putting a `StructDef` to the server. This make the server a useful single source of truth for checking compatibility when designing `StructDef`s.
 
 ```proto
-// Request to validate a `StructDef`.
+// Request to compare a new `StructDef` against an existing `StructDef` based on a compatibility type.
 message ValidateStructDefRequest {
   // The name of the `StructDef` you want to compare against that already exists on the server.
   string name = 1;
@@ -298,9 +298,9 @@ message ValidateStructDefRequest {
   StructDefCompatibilityType compatibility_type = 3;
 }
 
-// Response indicating a successful validation.
+// Response containing information about whether or not a new `StructDef` is compatible with an existing `StructDef`.
 message ValidateStructDefResponse {
-  bool is_valid = 0;
+  bool is_compatible = 0;
 
   // This message leaves room for returning additional information about the validation,
   // like what `StructFieldDef` evolution(s) are invaild and why.
@@ -309,7 +309,7 @@ message ValidateStructDefResponse {
 service LittleHorse {
   // ...
   
-  // Validate the schema of a new StructDef against an existing StructDef
+  // Validate the schema of a new `StructDef` against an existing `StructDef`
   rpc ValidateStructDef(ValidateStructDefRequest) returns (ValidateStructDefResponse) {}
 
   // ...
