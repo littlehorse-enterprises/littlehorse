@@ -8,14 +8,52 @@ public interface PutTenantRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the tenant to put
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
+   * <pre>
+   * The ID of the tenant to put
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
   com.google.protobuf.ByteString
       getIdBytes();
+
+  /**
+   * <pre>
+   * Configures the behavior of the Output Topic for this Tenant. If not set,
+   * then the OutputTopic is not considered to be enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+   * @return Whether the outputTopicConfig field is set.
+   */
+  boolean hasOutputTopicConfig();
+  /**
+   * <pre>
+   * Configures the behavior of the Output Topic for this Tenant. If not set,
+   * then the OutputTopic is not considered to be enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+   * @return The outputTopicConfig.
+   */
+  io.littlehorse.sdk.common.proto.OutputTopicConfig getOutputTopicConfig();
+  /**
+   * <pre>
+   * Configures the behavior of the Output Topic for this Tenant. If not set,
+   * then the OutputTopic is not considered to be enabled.
+   * </pre>
+   *
+   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder();
 }

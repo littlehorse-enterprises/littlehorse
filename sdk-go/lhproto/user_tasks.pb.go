@@ -228,7 +228,7 @@ type UserTaskField struct {
 	// The name of the field. When a UserTaskRun is completed, the NodeOutput is a
 	// single-level JSON_OBJ. Each key is the name of the field. Must be unique.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+	// The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
 	Type VariableType `protobuf:"varint,2,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
 	// Optional description which can be displayed by the User Task UI application.
 	// Does not affect WfRun execution.

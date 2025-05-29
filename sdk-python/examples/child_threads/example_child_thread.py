@@ -26,11 +26,14 @@ def entrypoint(wf: WorkflowThread) -> None:
         child_var = child.declare_int("child-var").with_default(34)
         parent_var.assign(child_var)
         node_output = child.execute("child-task", child_var)
+
         def grandchild_func(handler: WorkflowThread) -> None:
             child_child_var = handler.declare_int("child-child-var").with_default(21)
             child_var.assign(child_child_var)
             parent_var.assign(child_child_var)
+
         child.handle_error(node_output, grandchild_func)
+
     child_thread = wf.spawn_thread(child_func, "spawned-thread")
 
     wf.wait_for_threads(SpawnedThreads.from_list(child_thread))
@@ -40,11 +43,14 @@ def entrypoint(wf: WorkflowThread) -> None:
 async def get_child_task(number: int) -> None:
     raise Exception("Yikes")
 
+
 async def get_parent_task_1(number: int) -> None:
     print("hi from parent_task_1")
 
+
 async def get_parent_task_2() -> None:
     print("hi from parent_task_2")
+
 
 def get_workflow() -> Workflow:
     return Workflow("example-child-thread", entrypoint)

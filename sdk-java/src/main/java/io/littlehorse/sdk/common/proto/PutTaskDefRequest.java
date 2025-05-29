@@ -44,7 +44,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.PutTaskDefRequest.class, io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder.class);
   }
 
-  private int bitField0_;
   public static final int NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
@@ -158,42 +157,42 @@ private static final long serialVersionUID = 0L;
     return inputVars_.get(index);
   }
 
-  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.TaskDefOutputSchema outputSchema_;
+  public static final int RETURN_TYPE_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.ReturnType returnType_;
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Specifies the return type of the TaskDef.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
-   * @return Whether the outputSchema field is set.
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   * @return Whether the returnType field is set.
    */
   @java.lang.Override
-  public boolean hasOutputSchema() {
-    return ((bitField0_ & 0x00000001) != 0);
+  public boolean hasReturnType() {
+    return returnType_ != null;
   }
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Specifies the return type of the TaskDef.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
-   * @return The outputSchema.
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   * @return The returnType.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefOutputSchema getOutputSchema() {
-    return outputSchema_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : outputSchema_;
+  public io.littlehorse.sdk.common.proto.ReturnType getReturnType() {
+    return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
   }
   /**
    * <pre>
-   * Schema that validates the TaskDef's output
+   * Specifies the return type of the TaskDef.
    * </pre>
    *
-   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+   * <code>.littlehorse.ReturnType return_type = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getOutputSchemaOrBuilder() {
-    return outputSchema_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : outputSchema_;
+  public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder() {
+    return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -216,8 +215,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < inputVars_.size(); i++) {
       output.writeMessage(2, inputVars_.get(i));
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(3, getOutputSchema());
+    if (returnType_ != null) {
+      output.writeMessage(3, getReturnType());
     }
     getUnknownFields().writeTo(output);
   }
@@ -235,9 +234,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, inputVars_.get(i));
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (returnType_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getOutputSchema());
+        .computeMessageSize(3, getReturnType());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -258,10 +257,10 @@ private static final long serialVersionUID = 0L;
         .equals(other.getName())) return false;
     if (!getInputVarsList()
         .equals(other.getInputVarsList())) return false;
-    if (hasOutputSchema() != other.hasOutputSchema()) return false;
-    if (hasOutputSchema()) {
-      if (!getOutputSchema()
-          .equals(other.getOutputSchema())) return false;
+    if (hasReturnType() != other.hasReturnType()) return false;
+    if (hasReturnType()) {
+      if (!getReturnType()
+          .equals(other.getReturnType())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -280,9 +279,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + INPUT_VARS_FIELD_NUMBER;
       hash = (53 * hash) + getInputVarsList().hashCode();
     }
-    if (hasOutputSchema()) {
-      hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
-      hash = (53 * hash) + getOutputSchema().hashCode();
+    if (hasReturnType()) {
+      hash = (37 * hash) + RETURN_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getReturnType().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -407,20 +406,13 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.PutTaskDefRequest.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getInputVarsFieldBuilder();
-        getOutputSchemaFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
@@ -434,10 +426,10 @@ private static final long serialVersionUID = 0L;
         inputVarsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000002);
-      outputSchema_ = null;
-      if (outputSchemaBuilder_ != null) {
-        outputSchemaBuilder_.dispose();
-        outputSchemaBuilder_ = null;
+      returnType_ = null;
+      if (returnTypeBuilder_ != null) {
+        returnTypeBuilder_.dispose();
+        returnTypeBuilder_ = null;
       }
       return this;
     }
@@ -488,14 +480,11 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.outputSchema_ = outputSchemaBuilder_ == null
-            ? outputSchema_
-            : outputSchemaBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+        result.returnType_ = returnTypeBuilder_ == null
+            ? returnType_
+            : returnTypeBuilder_.build();
       }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -573,8 +562,8 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.hasOutputSchema()) {
-        mergeOutputSchema(other.getOutputSchema());
+      if (other.hasReturnType()) {
+        mergeReturnType(other.getReturnType());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -622,7 +611,7 @@ private static final long serialVersionUID = 0L;
             } // case 18
             case 26: {
               input.readMessage(
-                  getOutputSchemaFieldBuilder().getBuilder(),
+                  getReturnTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000004;
               break;
@@ -1066,50 +1055,50 @@ private static final long serialVersionUID = 0L;
       return inputVarsBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.TaskDefOutputSchema outputSchema_;
+    private io.littlehorse.sdk.common.proto.ReturnType returnType_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder> outputSchemaBuilder_;
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> returnTypeBuilder_;
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
-     * @return Whether the outputSchema field is set.
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     * @return Whether the returnType field is set.
      */
-    public boolean hasOutputSchema() {
+    public boolean hasReturnType() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
-     * @return The outputSchema.
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
+     * @return The returnType.
      */
-    public io.littlehorse.sdk.common.proto.TaskDefOutputSchema getOutputSchema() {
-      if (outputSchemaBuilder_ == null) {
-        return outputSchema_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : outputSchema_;
+    public io.littlehorse.sdk.common.proto.ReturnType getReturnType() {
+      if (returnTypeBuilder_ == null) {
+        return returnType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
       } else {
-        return outputSchemaBuilder_.getMessage();
+        return returnTypeBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    public Builder setOutputSchema(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
-      if (outputSchemaBuilder_ == null) {
+    public Builder setReturnType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (returnTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        outputSchema_ = value;
+        returnType_ = value;
       } else {
-        outputSchemaBuilder_.setMessage(value);
+        returnTypeBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000004;
       onChanged();
@@ -1117,17 +1106,17 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    public Builder setOutputSchema(
-        io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder builderForValue) {
-      if (outputSchemaBuilder_ == null) {
-        outputSchema_ = builderForValue.build();
+    public Builder setReturnType(
+        io.littlehorse.sdk.common.proto.ReturnType.Builder builderForValue) {
+      if (returnTypeBuilder_ == null) {
+        returnType_ = builderForValue.build();
       } else {
-        outputSchemaBuilder_.setMessage(builderForValue.build());
+        returnTypeBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000004;
       onChanged();
@@ -1135,22 +1124,22 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    public Builder mergeOutputSchema(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
-      if (outputSchemaBuilder_ == null) {
+    public Builder mergeReturnType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (returnTypeBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
-          outputSchema_ != null &&
-          outputSchema_ != io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance()) {
-          getOutputSchemaBuilder().mergeFrom(value);
+          returnType_ != null &&
+          returnType_ != io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance()) {
+          getReturnTypeBuilder().mergeFrom(value);
         } else {
-          outputSchema_ = value;
+          returnType_ = value;
         }
       } else {
-        outputSchemaBuilder_.mergeFrom(value);
+        returnTypeBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000004;
       onChanged();
@@ -1158,67 +1147,67 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    public Builder clearOutputSchema() {
+    public Builder clearReturnType() {
       bitField0_ = (bitField0_ & ~0x00000004);
-      outputSchema_ = null;
-      if (outputSchemaBuilder_ != null) {
-        outputSchemaBuilder_.dispose();
-        outputSchemaBuilder_ = null;
+      returnType_ = null;
+      if (returnTypeBuilder_ != null) {
+        returnTypeBuilder_.dispose();
+        returnTypeBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder getOutputSchemaBuilder() {
+    public io.littlehorse.sdk.common.proto.ReturnType.Builder getReturnTypeBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
-      return getOutputSchemaFieldBuilder().getBuilder();
+      return getReturnTypeFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getOutputSchemaOrBuilder() {
-      if (outputSchemaBuilder_ != null) {
-        return outputSchemaBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder() {
+      if (returnTypeBuilder_ != null) {
+        return returnTypeBuilder_.getMessageOrBuilder();
       } else {
-        return outputSchema_ == null ?
-            io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : outputSchema_;
+        return returnType_ == null ?
+            io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : returnType_;
       }
     }
     /**
      * <pre>
-     * Schema that validates the TaskDef's output
+     * Specifies the return type of the TaskDef.
      * </pre>
      *
-     * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+     * <code>.littlehorse.ReturnType return_type = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder> 
-        getOutputSchemaFieldBuilder() {
-      if (outputSchemaBuilder_ == null) {
-        outputSchemaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder>(
-                getOutputSchema(),
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> 
+        getReturnTypeFieldBuilder() {
+      if (returnTypeBuilder_ == null) {
+        returnTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder>(
+                getReturnType(),
                 getParentForChildren(),
                 isClean());
-        outputSchema_ = null;
+        returnType_ = null;
       }
-      return outputSchemaBuilder_;
+      return returnTypeBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

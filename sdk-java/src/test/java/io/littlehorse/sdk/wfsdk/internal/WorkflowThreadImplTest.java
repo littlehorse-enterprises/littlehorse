@@ -133,7 +133,7 @@ public class WorkflowThreadImplTest {
 
         VariableDef objVar = varDefs.get(1).getVarDef();
         assertThat(objVar.getDefaultValue()).isNotEqualTo(null);
-        assertEquals(objVar.getType(), VariableType.JSON_OBJ);
+        assertEquals(objVar.getTypeDef().getType(), VariableType.JSON_OBJ);
     }
 
     @Test
@@ -654,5 +654,29 @@ public class WorkflowThreadImplTest {
                 assertThrows(NullPointerException.class, () -> new WorkflowThreadImpl("my-thread", null, null));
 
         assertEquals("Parent workflow can not be null.", e.getMessage());
+    }
+
+    @Test()
+    public void shouldValidateEmptyUserNameOnUserTaskDefinition() {
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            Workflow.newWorkflow("my-wf", thread -> {
+                        thread.assignUserTask("some-usertaskdef", "", null);
+                    })
+                    .compileWorkflow();
+        });
+        Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(throwable.getMessage()).isEqualTo("UserId can't be empty");
+    }
+
+    @Test()
+    public void shouldValidateEmptyGroupNameOnUserTaskDefinition() {
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            Workflow.newWorkflow("my-wf", thread -> {
+                        thread.assignUserTask("some-usertaskdef", null, "");
+                    })
+                    .compileWorkflow();
+        });
+        Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(throwable.getMessage()).isEqualTo("UserGroup can't be empty");
     }
 }

@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -15,6 +16,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyM
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -44,7 +46,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class TaskRunModel extends CoreGetable<TaskRun> {
+public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopicGetable<TaskRun> {
 
     private TaskRunIdModel id;
     private List<TaskAttemptModel> attempts;
@@ -297,8 +299,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             return;
         }
         TaskDefModel taskDef = executionContext.metadataManager().get(taskDefId);
-        if (taskDef.getSchemaOutput() != null
-                && taskDef.getSchemaOutput().getValueDef().isMaskedValue()) {
+
+        Optional<TypeDefinitionModel> returnType = taskDef.getReturnType().getOutputType();
+        if (returnType.isPresent() && returnType.get().isMasked()) {
             attempt.setMaskedValue(true);
         }
 

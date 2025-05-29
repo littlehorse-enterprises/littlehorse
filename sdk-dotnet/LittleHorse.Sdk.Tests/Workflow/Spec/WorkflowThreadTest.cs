@@ -85,24 +85,24 @@ public class WorkflowThreadTest
         {
             Exit = new ExitNode()
         };
-        
+
         var strVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "str-test-variable",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
-        
+
         var intVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "int-test-variable",
-                Type = VariableType.Int,
-                DefaultValue = new VariableValue {Int = 5}
+                TypeDef = new TypeDefinition { Type = VariableType.Int },
+                DefaultValue = new VariableValue { Int = 5 }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -202,13 +202,13 @@ public class WorkflowThreadTest
         {
             Exit = new ExitNode()
         };
-        
+
         var threadVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "str-test-variable",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -297,13 +297,13 @@ public class WorkflowThreadTest
         {
             Exit = new ExitNode()
         };
-        
+
         var threadVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "name",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -465,19 +465,31 @@ public class WorkflowThreadTest
 
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "1-child-thread-1-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "1-child-thread-1-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
-        
+
         var threadVarDef2 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-child-thread-2-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-child-thread-2-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
-        
+
         var threadVarDef3 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "3-child-thread-3-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "3-child-thread-3-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
 
@@ -679,7 +691,11 @@ public class WorkflowThreadTest
 
         var threadVarDef = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "timeout", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "timeout",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         
@@ -750,7 +766,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "counter",
-                Type = VariableType.Int,
+                TypeDef = new TypeDefinition { Type = VariableType.Int },
                 DefaultValue = new VariableValue { Int = 2 }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
@@ -836,13 +852,13 @@ public class WorkflowThreadTest
         };
         
         var exit = new Node { Exit = new ExitNode() };
-        
+
         var threadVarDef1 = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "input",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -850,7 +866,8 @@ public class WorkflowThreadTest
         {
             VarDef = new VariableDef
             {
-                Name = "complex-data"
+                Name = "complex-data",
+                TypeDef = new TypeDefinition { Type = VariableType.JsonObj }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -987,7 +1004,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "task-name",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -996,7 +1013,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "input",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1005,7 +1022,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "complex-data",
-                Type = VariableType.JsonObj
+                TypeDef = new TypeDefinition { Type = VariableType.JsonObj }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1090,7 +1107,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "task-name",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1099,7 +1116,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "input",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1108,7 +1125,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "complex-data",
-                Type = VariableType.JsonObj
+                TypeDef = new TypeDefinition { Type = VariableType.JsonObj }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };

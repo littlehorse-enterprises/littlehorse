@@ -31,7 +31,7 @@ public interface UserTaskFieldOrBuilder extends
 
   /**
    * <pre>
-   * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+   * The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
    * </pre>
    *
    * <code>.littlehorse.VariableType type = 2;</code>
@@ -40,7 +40,7 @@ public interface UserTaskFieldOrBuilder extends
   int getTypeValue();
   /**
    * <pre>
-   * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+   * The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
    * </pre>
    *
    * <code>.littlehorse.VariableType type = 2;</code>
