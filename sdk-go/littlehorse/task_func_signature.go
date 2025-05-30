@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"reflect"
 	"strings"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 type TaskFuncArg struct {
@@ -43,19 +44,21 @@ func NewTaskSignature(taskFunc interface{}) (*TaskFuncSignature, error) {
 		if argType.Kind() == reflect.Ptr && argType.Elem().Name() == "WorkerContext" {
 			if i+1 != fnType.NumIn() {
 				return nil, errors.New(
-					"Can only have WorkerContext as the last parameter.",
+					"can only have worker context as the last parameter",
 				)
 			} else {
 				out.hasWorkerContextAtEnd = true
 				continue
 			}
+		} else if argType.Name() == "WorkerContext" {
+			return nil, errors.New("worker context parameter must be a pointer")
+		} else {
+			out.Args = append(out.Args, TaskFuncArg{
+				Name:     argName,
+				Type:     argType,
+				Position: int32(i),
+			})
 		}
-
-		out.Args = append(out.Args, TaskFuncArg{
-			Name:     argName,
-			Type:     argType,
-			Position: int32(i),
-		})
 	}
 
 	numOut := fnType.NumOut()

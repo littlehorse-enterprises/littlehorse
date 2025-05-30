@@ -5,6 +5,8 @@ import io.grpc.ChannelCredentials;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.RocksConfigSetter;
 import io.littlehorse.sdk.common.config.ConfigBase;
@@ -34,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -357,6 +360,35 @@ public class LHServerConfig extends ConfigBase {
     public int getOutputToppicPartitions() {
         return Integer.valueOf(String.class.cast(props.getOrDefault(
                 LHServerConfig.OUTPUT_TOPIC_PARTITIONS_KEY, String.valueOf(getClusterPartitions()))));
+    }
+
+    public static String getExecutionOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "_" + tenantId.toString() + "_execution";
+    }
+
+    public static String getMetadataOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "_" + tenantId.toString() + "_metadata";
+    }
+
+    public String getExecutionOutputTopicName(TenantIdModel tenant) {
+        return getExecutionOutputTopicName(getLHClusterId(), tenant);
+    }
+
+    public String getMetadataOutputTopicName(TenantIdModel tenant) {
+        return getMetadataOutputTopicName(getLHClusterId(), tenant);
+    }
+
+    public Pair<NewTopic, NewTopic> getOutputTopicsFor(TenantModel tenant) {
+        String executionTopicName = getExecutionOutputTopicName(tenant.getId());
+        String metadataTopicName = getMetadataOutputTopicName(tenant.getId());
+
+        // metadata topic is compacted
+        Map<String, String> compactedTopicConfig =
+                Map.of(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+
+        return Pair.of(
+                new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
+                new NewTopic(executionTopicName, getClusterPartitions(), getReplicationFactor()));
     }
 
     public String getKafkaGroupId(String component) {
@@ -852,7 +884,7 @@ public class LHServerConfig extends ConfigBase {
         // changelog (the WfRun, NodeRun, and TaskRun each are saved on the first two commands).
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
-        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "3000"));
+        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "500"));
         result.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
         result.put(
                 "statestore.cache.max.bytes",

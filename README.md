@@ -1,7 +1,7 @@
 # LittleHorse
 
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/site-badge.svg"/></a>
-<a href="https://littlehorse.io/learn"><img alt="littlehorse.io/docs/server/concepts" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
+<a href="https://littlehorse.io/docs/getting-started/quickstart"><img alt="littlehorse.io/docs/server/concepts" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
 <a href="https://littlehorse.io/docs"><img alt="littlehorse.io/docs" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/docs-badge.svg"/></a>
 [![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity/free)
 
@@ -72,7 +72,13 @@ To get started quickly with a basic workflow, try our quickstarts in [Java](http
 
 For documentation, visit [littlehorse.io/docs/server](https://www.littlehorse.io/docs/server).
 
-## Developing
+## About the Project
+
+### Lifecycle and Release Plan
+
+The LittleHorse Server plans to follow [Semantic Versioning](https://semver.org) after the release of version 1.0. You can find our (non-binding) project guidelines regarding our release schedule and deprecation strategy for after the 1.0 release in our [project lifecycle document](./PROJECT_LIFECYCLE.md). We plan to release version 1.0 in the 2025 calendar year.
+
+### Developing
 
 For information about developing LittleHorse, see the guide in our [local-dev README](./local-dev/README.md).
 

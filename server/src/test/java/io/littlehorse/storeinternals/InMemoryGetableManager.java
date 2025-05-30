@@ -3,12 +3,15 @@ package io.littlehorse.storeinternals;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.kafka.streams.processor.TaskId;
 
 /**
  * The InMemoryGetableManager class provides an in-memory implementation of the GetableManager.
@@ -37,14 +40,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryGetableManager extends GetableManager {
 
     private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new ConcurrentHashMap<>();
+    private final Map<String, ScheduledTaskModel> scheduledTasks = new ConcurrentHashMap<>();
 
     public InMemoryGetableManager(ProcessorExecutionContext executionContext) {
-        super(null, null, null, null, executionContext);
+        super(null, null, null, null, executionContext, null);
     }
 
     @Override
     public <U extends Message, T extends CoreGetable<U>> void put(T getable) throws IllegalStateException {
         buffer.put(getable.getObjectId(), getable);
+    }
+
+    public void put(ScheduledTaskModel scheduledTask) throws IllegalStateException {
+        scheduledTasks.put(scheduledTask.getStoreKey(), scheduledTask);
     }
 
     @Override
@@ -55,5 +63,15 @@ public class InMemoryGetableManager extends GetableManager {
     @Override
     public void commit() {
         // nothing to do
+    }
+
+    @Override
+    public ScheduledTaskModel getScheduledTask(String scheduledTaskId) {
+        return scheduledTasks.get(scheduledTaskId);
+    }
+
+    @Override
+    public Optional<TaskId> getSpecificTask() {
+        return Optional.of(TaskId.parse("0_0"));
     }
 }
