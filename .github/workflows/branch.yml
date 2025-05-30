@@ -16,6 +16,8 @@ on:
       - sdk-java/**
       - dashboard/**
       - canary/**
+    paths-ignore:
+      - '**.md'
 permissions:
   id-token: write
   contents: read
