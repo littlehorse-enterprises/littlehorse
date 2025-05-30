@@ -18,6 +18,20 @@ on:
       - canary/**
     paths-ignore:
       - '**.md'
+  pull_request:
+    paths:
+      - .github/workflows/branch.yml
+      - docker/dashboard/**
+      - docker/server/**
+      - docker/standalone/**
+      - docker/canary/**
+      - server/**
+      - schemas/**
+      - sdk-java/**
+      - dashboard/**
+      - canary/**
+    paths-ignore:
+      - '**.md'
 permissions:
   id-token: write
   contents: read

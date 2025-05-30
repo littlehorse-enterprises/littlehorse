@@ -3,9 +3,6 @@ run-name: Tests
 on:
   workflow_dispatch:
   pull_request:
-  push:
-    branches:
-      - master
     paths:
       - server/**
       - sdk-java/**
@@ -18,6 +15,9 @@ on:
       - test-utils-container/**
     paths-ignore:
       - '**.md'
+  push:
+    branches:
+      - master
 jobs:
   tests-sdk-java:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
