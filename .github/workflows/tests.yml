@@ -3,17 +3,6 @@ run-name: Tests
 on:
   workflow_dispatch:
   pull_request:
-    paths-ignore:
-      - '**.md'
-      - docker/
-      - docs/
-      - examples/
-      - gradle/
-      - img/
-      - lhctl/
-      - local-dev/
-      - proposals/
-      - schemas/
   push:
     branches:
       - master

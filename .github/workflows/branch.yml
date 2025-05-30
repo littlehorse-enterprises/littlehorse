@@ -16,18 +16,6 @@ on:
       - sdk-java/**
       - dashboard/**
       - canary/**
-  pull_request:
-    paths:
-      - .github/workflows/branch.yml
-      - docker/dashboard/**
-      - docker/server/**
-      - docker/standalone/**
-      - docker/canary/**
-      - server/**
-      - schemas/**
-      - sdk-java/**
-      - dashboard/**
-      - canary/**
 permissions:
   id-token: write
   contents: read
