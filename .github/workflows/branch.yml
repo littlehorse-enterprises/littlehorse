@@ -16,8 +16,6 @@ on:
       - sdk-java/**
       - dashboard/**
       - canary/**
-    paths-ignore:
-      - '**.md'
   pull_request:
     paths:
       - .github/workflows/branch.yml
@@ -30,8 +28,6 @@ on:
       - sdk-java/**
       - dashboard/**
       - canary/**
-    paths-ignore:
-      - '**.md'
 permissions:
   id-token: write
   contents: read
