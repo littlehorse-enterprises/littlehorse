@@ -27,6 +27,6 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 |:--:|:----------------------------------------------------------------------|-------------|--------------|
 | 000 | [`Struct` and `StructDef`](./000-struct-and-structdef.md) |Colt McNealy |[#880](https://github.com/littlehorse-enterprises/littlehorse/issues/880)|
 | 001 | [The Output Topic](./001-output-topic.md) | Colt McNealy | [#1304](https://github.com/littlehorse-enterprises/littlehorse/issues/1304) |
-| 002 | [Child Workflow Nodes](./002-child-workflow-node.md) | Colt McNealy | [#589
-](https://github.com/littlehorse-enterprises/littlehorse/issues/589) |
+| 002 | [Moving Towards Strong Typing](./002-move-to-strong-typing.md) | Colt McNealy | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543) |
+| 003 | [Native `RunWf` Nodes](./003-run-wf-node.md) | Colt McNealy | [#589](https://github.com/littlehorse-enterprises/littlehorse/issues/589) |
 

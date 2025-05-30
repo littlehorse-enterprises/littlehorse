@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
@@ -1201,5 +1202,281 @@ public class WorkflowThreadTest
             new WorkflowThread(null!, _action));
         
         Assert.Equal("Value cannot be null. (Parameter 'parent')", exception.Message);
+    }
+
+    [Fact]
+    public void WorkflowThread_UsingDoesContainAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var data = wf.DeclareJsonArr("data");
+            wf.DoIf(data.DoesContain("address"), body =>
+            {
+                body.Execute("add-address");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-add-address-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                Str = "address"
+                            }
+                        },
+                        Comparator = Comparator.In,
+                        Right = new VariableAssignment
+                        {
+                            VariableName = "data"
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+    
+    [Fact]
+    public void WorkflowThread_UsingDoesNotContainAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var data = wf.DeclareJsonArr("data");
+            wf.DoIf(data.DoesNotContain("address"), body =>
+            {
+                body.Execute("add-address");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-add-address-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                Str = "address"
+                            }
+                        },
+                        Comparator = Comparator.NotIn,
+                        Right = new VariableAssignment
+                        {
+                            VariableName = "data"
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+    
+    [Fact]
+    public void WorkflowThread_UsingInAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareStr("input");
+            wf.DoIf(input.IsIn(new List<string> {"A", "B", "C"}), body =>
+            {
+                body.Execute("task");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            VariableName = "input"
+                        },
+                        Comparator = Comparator.In,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                JsonArr = "[\"A\",\"B\",\"C\"]"
+                            }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+    
+    [Fact]
+    public void WorkflowThread_UsingNotInAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareStr("input");
+            wf.DoIf(input.IsNotIn(new List<string> {"A", "B", "C"}), body =>
+            {
+                body.Execute("task");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            VariableName = "input"
+                        },
+                        Comparator = Comparator.NotIn,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                JsonArr = "[\"A\",\"B\",\"C\"]"
+                            }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+
+    [Theory]
+    [InlineData(Comparator.LessThan, 23)]
+    [InlineData(Comparator.LessThanEq, 26)]
+    [InlineData(Comparator.GreaterThanEq, 5)]
+    [InlineData(Comparator.GreaterThan, 7)]
+    [InlineData(Comparator.Equals, 9)]
+    [InlineData(Comparator.NotEquals, 10000)]
+    public void WorkflowThread_UsingDifferentConditionals_ShouldCompile(Comparator comparator, int value)
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareInt("input");
+            wf.DoIf(wf.Condition(input, comparator, value), body =>
+            {
+                body.Execute("task");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            VariableName = "input"
+                        },
+                        Comparator = comparator,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                Int = value
+                            }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
     }
 }
