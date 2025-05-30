@@ -6,6 +6,16 @@ on:
   push:
     branches:
       - master
+    paths:
+      - server/**
+      - sdk-java/**
+      - sdk-python/**
+      - sdk-dotnet/**
+      - sdk-go/**
+      - dashboard/**
+      - canary/**
+      - test-utils/**
+      - test-utils-container/**
     paths-ignore:
       - '**.md'
 jobs:
