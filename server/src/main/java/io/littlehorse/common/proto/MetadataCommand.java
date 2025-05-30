@@ -63,6 +63,7 @@ private static final long serialVersionUID = 0L;
     PUT_TENANT(14),
     WORKFLOW_EVENT_DEF(15),
     DELETE_WORKFLOW_EVENT_DEF(16),
+    PUT_STRUCT_DEF(17),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -93,6 +94,7 @@ private static final long serialVersionUID = 0L;
         case 14: return PUT_TENANT;
         case 15: return WORKFLOW_EVENT_DEF;
         case 16: return DELETE_WORKFLOW_EVENT_DEF;
+        case 17: return PUT_STRUCT_DEF;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -596,6 +598,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance();
   }
 
+  public static final int PUT_STRUCT_DEF_FIELD_NUMBER = 17;
+  /**
+   * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+   * @return Whether the putStructDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutStructDef() {
+    return metadataCommandCase_ == 17;
+  }
+  /**
+   * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+   * @return The putStructDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutStructDefRequest getPutStructDef() {
+    if (metadataCommandCase_ == 17) {
+       return (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutStructDefRequestOrBuilder getPutStructDefOrBuilder() {
+    if (metadataCommandCase_ == 17) {
+       return (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -654,6 +687,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 16) {
       output.writeMessage(16, (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 17) {
+      output.writeMessage(17, (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -722,6 +758,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 16) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(16, (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 17) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(17, (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -802,6 +842,10 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteWorkflowEventDef()
             .equals(other.getDeleteWorkflowEventDef())) return false;
         break;
+      case 17:
+        if (!getPutStructDef()
+            .equals(other.getPutStructDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -876,6 +920,10 @@ private static final long serialVersionUID = 0L;
       case 16:
         hash = (37 * hash) + DELETE_WORKFLOW_EVENT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteWorkflowEventDef().hashCode();
+        break;
+      case 17:
+        hash = (37 * hash) + PUT_STRUCT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getPutStructDef().hashCode();
         break;
       case 0:
       default:
@@ -1060,6 +1108,9 @@ private static final long serialVersionUID = 0L;
       if (deleteWorkflowEventDefBuilder_ != null) {
         deleteWorkflowEventDefBuilder_.clear();
       }
+      if (putStructDefBuilder_ != null) {
+        putStructDefBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1163,6 +1214,10 @@ private static final long serialVersionUID = 0L;
       if (metadataCommandCase_ == 16 &&
           deleteWorkflowEventDefBuilder_ != null) {
         result.metadataCommand_ = deleteWorkflowEventDefBuilder_.build();
+      }
+      if (metadataCommandCase_ == 17 &&
+          putStructDefBuilder_ != null) {
+        result.metadataCommand_ = putStructDefBuilder_.build();
       }
     }
 
@@ -1269,6 +1324,10 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_WORKFLOW_EVENT_DEF: {
           mergeDeleteWorkflowEventDef(other.getDeleteWorkflowEventDef());
+          break;
+        }
+        case PUT_STRUCT_DEF: {
+          mergePutStructDef(other.getPutStructDef());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1404,6 +1463,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 16;
               break;
             } // case 130
+            case 138: {
+              input.readMessage(
+                  getPutStructDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 17;
+              break;
+            } // case 138
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3514,6 +3580,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 16;
       onChanged();
       return deleteWorkflowEventDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutStructDefRequest, io.littlehorse.sdk.common.proto.PutStructDefRequest.Builder, io.littlehorse.sdk.common.proto.PutStructDefRequestOrBuilder> putStructDefBuilder_;
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     * @return Whether the putStructDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutStructDef() {
+      return metadataCommandCase_ == 17;
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     * @return The putStructDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutStructDefRequest getPutStructDef() {
+      if (putStructDefBuilder_ == null) {
+        if (metadataCommandCase_ == 17) {
+          return (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 17) {
+          return putStructDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     */
+    public Builder setPutStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest value) {
+      if (putStructDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        putStructDefBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     */
+    public Builder setPutStructDef(
+        io.littlehorse.sdk.common.proto.PutStructDefRequest.Builder builderForValue) {
+      if (putStructDefBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        putStructDefBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     */
+    public Builder mergePutStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest value) {
+      if (putStructDefBuilder_ == null) {
+        if (metadataCommandCase_ == 17 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutStructDefRequest.newBuilder((io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 17) {
+          putStructDefBuilder_.mergeFrom(value);
+        } else {
+          putStructDefBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     */
+    public Builder clearPutStructDef() {
+      if (putStructDefBuilder_ == null) {
+        if (metadataCommandCase_ == 17) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 17) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        putStructDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutStructDefRequest.Builder getPutStructDefBuilder() {
+      return getPutStructDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutStructDefRequestOrBuilder getPutStructDefOrBuilder() {
+      if ((metadataCommandCase_ == 17) && (putStructDefBuilder_ != null)) {
+        return putStructDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 17) {
+          return (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutStructDefRequest put_struct_def = 17;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutStructDefRequest, io.littlehorse.sdk.common.proto.PutStructDefRequest.Builder, io.littlehorse.sdk.common.proto.PutStructDefRequestOrBuilder> 
+        getPutStructDefFieldBuilder() {
+      if (putStructDefBuilder_ == null) {
+        if (!(metadataCommandCase_ == 17)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
+        }
+        putStructDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PutStructDefRequest, io.littlehorse.sdk.common.proto.PutStructDefRequest.Builder, io.littlehorse.sdk.common.proto.PutStructDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 17;
+      onChanged();
+      return putStructDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

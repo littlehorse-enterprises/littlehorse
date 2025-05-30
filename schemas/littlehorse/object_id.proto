@@ -42,6 +42,15 @@ message TaskDefId {
   string name = 1;
 }
 
+// Unique identifier for a `StructDef`.
+message StructDefId {
+  // The name of the `StructDef`.
+  string name = 1;
+
+  // The version of the `StructDef`.
+  int32 version = 2;
+}
+
 // ID for ExternalEventDef
 message ExternalEventDefId {
   // ExternalEventDef's are uniquedly identified by their name and version.
