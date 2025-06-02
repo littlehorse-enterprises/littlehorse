@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.InitializationLog;
 import io.littlehorse.common.proto.MetadataCommand;
-import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.Tenant;
@@ -27,8 +26,10 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.topology.core.MetadataCommandException;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
@@ -51,12 +52,15 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     private ProcessorContext<String, CommandProcessorOutput> streamsContext;
     private KeyValueStore<String, Bytes> metadataStore;
+    private final AsyncWaiters asyncWaiters;
 
-    public MetadataProcessor(LHServerConfig config, LHServer server, MetadataCache metadataCache) {
+    public MetadataProcessor(
+            LHServerConfig config, LHServer server, MetadataCache metadataCache, AsyncWaiters asyncWaiters) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server);
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncWaiters);
+        this.asyncWaiters = asyncWaiters;
     }
 
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
@@ -159,13 +163,10 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         try {
             Message response = command.process(metadataContext);
             if (command.hasResponse() && command.getCommandId() != null) {
-                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCommandId(command.getCommandId())
-                        .setResultTime(LHUtil.fromDate(new Date()))
-                        .setResult(response.toByteString())
-                        .build();
 
-                server.onResponseReceived(command.getCommandId(), cmdReply);
+                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                        command.getCommandId(), Message.class, new CompletableFuture<>());
+                completable.complete(response);
 
                 // This allows us to set a larger commit interval for the Core Topology
                 // without affecting latency of updates to the metadata global store.

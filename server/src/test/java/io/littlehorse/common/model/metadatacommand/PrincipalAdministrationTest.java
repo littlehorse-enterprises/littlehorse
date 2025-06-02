@@ -32,6 +32,7 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
@@ -87,11 +88,12 @@ public class PrincipalAdministrationTest {
 
     private final ClusterScopedStore defaultStore =
             ClusterScopedStore.newInstance(nativeMetadataStore, executionContext);
+    private final AsyncWaiters asyncWaiters = mock(AsyncWaiters.class);
 
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters);
         defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
 
         PrincipalModel requester = new PrincipalModel();

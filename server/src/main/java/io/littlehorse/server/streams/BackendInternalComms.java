@@ -15,17 +15,19 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetObjectRequest;
 import io.littlehorse.common.proto.GetObjectResponse;
@@ -49,7 +51,6 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.GlobalExceptionHandler;
@@ -73,16 +74,20 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -138,12 +143,14 @@ public class BackendInternalComms implements Closeable {
             ScheduledExecutorService networkThreadPool,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
-            CoreStoreProvider coreStoreProvider) {
+            CoreStoreProvider coreStoreProvider,
+            AsyncWaiters asyncWaiters) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
         this.contextKey = contextKey;
         this.networkThreadPool = networkThreadPool;
+        this.asyncWaiters = asyncWaiters;
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;
@@ -169,7 +176,6 @@ public class BackendInternalComms implements Closeable {
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.commandProducer = config.getCommandProducer();
         this.taskClaimProducer = config.getTaskClaimProducer();
-        this.asyncWaiters = new AsyncWaiters(networkThreadPool);
     }
 
     public void start() throws IOException {
@@ -241,50 +247,8 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public void waitForCommand(
-            AbstractCommand<?> command,
-            StreamObserver<WaitForCommandResponse> observer,
-            RequestExecutionContext requestCtx) {
-        String storeName =
-                switch (command.getStore()) {
-                    case CORE -> ServerTopology.CORE_STORE;
-                    case METADATA -> ServerTopology.METADATA_STORE;
-                    case REPARTITION -> ServerTopology.CORE_REPARTITION_STORE;
-                    case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
-                };
-        KeyQueryMetadata meta = lookupPartitionKey(storeName, command.getPartitionKey());
-
-        /*
-         * As a prerequisite to this method being called, the command has already
-         * been recorded into the CoreCommand Kafka Topic (and ack'ed by all
-         * of the in-sync replicas).
-         */
-        if (meta.activeHost().equals(thisHost)) {
-            localWaitForCommand(command.getCommandId(), meta.partition(), observer);
-        } else {
-            WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
-                    .setCommandId(command.getCommandId())
-                    .setPartition(meta.partition())
-                    .build();
-            getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx))
-                    .waitForCommand(req, observer);
-        }
-    }
-
-    public void doWaitForWorkflowEvent(
-            AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx, RequestExecutionContext requestCtx) {
-        WfRunIdModel wfRunId = LHSerializable.fromProto(req.getWfRunId(), WfRunIdModel.class, requestCtx);
-        KeyQueryMetadata meta = lookupPartitionKey(wfRunId);
-
-        if (meta.activeHost().equals(thisHost)) {
-            localWaitForWfEvent(
-                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build(), ctx);
-        } else {
-            InternalWaitForWfEventRequest internalReq =
-                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build();
-            getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx))
-                    .waitForWfEvent(internalReq, ctx);
-        }
+    public boolean isLocalObject(KeyQueryMetadata metadata) {
+        return metadata.activeHost().equals(thisHost);
     }
 
     public Set<HostModel> getAllInternalHosts() {
@@ -352,29 +316,6 @@ public class BackendInternalComms implements Closeable {
 
     public LHProducer getTaskClaimProducer() {
         return taskClaimProducer;
-    }
-
-    public void onWorkflowEventThrown(WorkflowEventModel event, TenantIdModel tenantId) {
-        asyncWaiters.registerWorkflowEventHappened(event, tenantId);
-    }
-
-    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        asyncWaiters.registerCommandProcessed(commandId, response);
-    }
-
-    public void sendErrorToClientForCommand(String commandId, Throwable caught) {
-        asyncWaiters.markCommandFailed(commandId, caught);
-    }
-
-    private void localWaitForCommand(String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.registerObserverWaitingForCommand(commandId, partition, observer);
-        // Once the command has been recorded, we've got nothing to do: the
-        // CommandProcessor will notify the StreamObserver once the command is
-        // processed.
-    }
-
-    private void localWaitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer) {
-        asyncWaiters.registerObserverWaitingForWorkflowEvent(req, observer, executionContext());
     }
 
     public ReadOnlyKeyValueStore<String, Bytes> getRawStore(Integer specificPartition, String storeName) {
@@ -457,6 +398,20 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.handleRebalance(taskIds);
     }
 
+    public void onWorkflowEventThrown(Collection<WorkflowEventModel> eventsToThrow, TenantIdModel tenantId) {
+        Map<WfRunIdModel, List<WorkflowEventIdModel>> workflowEventGroups = new HashMap<>();
+        for (WorkflowEventModel workflowEvent : eventsToThrow) {
+            CompletableFuture<WorkflowEvent>[] toComplete = asyncWaiters.getOrRegisterFuture(
+                    tenantId,
+                    workflowEvent.getId().getWfRunId(),
+                    workflowEvent.getId().getWorkflowEventDefId());
+            List<WorkflowEventIdModel> events =
+                    workflowEventGroups.getOrDefault(workflowEvent.getId().getWfRunId(), new ArrayList<>());
+            events.add(workflowEvent.getId());
+            workflowEventGroups.put(workflowEvent.getId().getWfRunId(), events);
+        }
+    }
+
     /*
      * Implements the internal_server.proto service, which is used
      * for communication between the LH servers to do distributed lookups etc.
@@ -494,12 +449,56 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
-            localWaitForCommand(req.getCommandId(), req.getPartition(), ctx);
+            CompletableFuture<? extends Message> completable =
+                    asyncWaiters.getOrRegisterFuture(req.getCommandId(), Message.class, new CompletableFuture<>());
+            try {
+                ByteString byteString = completable
+                        .get(LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                        .toByteString();
+                ctx.onNext(WaitForCommandResponse.newBuilder()
+                        .setCommandId(req.getCommandId())
+                        .setResultTime(LHUtil.fromDate(new Date()))
+                        .setResult(byteString)
+                        .build());
+                ctx.onCompleted();
+            } catch (TimeoutException timeoutException) {
+                ctx.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                        "Command not processed within deadline: likely due to rebalance")));
+            } catch (ExecutionException exn) {
+                ctx.onError(exn.getCause());
+            } catch (Throwable t) {
+                ctx.onError(t);
+                log.error("Unexpected exception", t);
+            }
         }
 
         @Override
         public void waitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-            localWaitForWfEvent(req, ctx);
+            TenantIdModel tenantId = executionContext().authorization().tenantId();
+            WfRunIdModel wfRunId =
+                    LHSerializable.fromProto(req.getRequest().getWfRunId(), WfRunIdModel.class, executionContext());
+            List<WorkflowEventDefIdModel> workflowEventDefIds = req.getRequest().getEventDefIdsList().stream()
+                    .map(workflowEventDefId -> LHSerializable.fromProto(
+                            workflowEventDefId, WorkflowEventDefIdModel.class, executionContext()))
+                    .toList();
+            CompletableFuture<Object> futureEvent =
+                    CompletableFuture.anyOf(asyncWaiters.getOrRegisterFuture(tenantId, wfRunId, workflowEventDefIds));
+            try {
+                WorkflowEvent awaitedEvent =
+                        (WorkflowEvent) futureEvent.get(LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                ctx.onNext(awaitedEvent);
+                ctx.onCompleted();
+            } catch (TimeoutException timeoutException) {
+                ctx.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                        "Command not processed within deadline: likely due to rebalance")));
+            } catch (ExecutionException exn) {
+                ctx.onError(exn.getCause());
+            } catch (Throwable t) {
+                ctx.onError(t);
+                log.error("Unexpected exception", t);
+            }
+            ctx.onNext(WorkflowEvent.newBuilder().build());
+            ctx.onCompleted();
         }
 
         @Override

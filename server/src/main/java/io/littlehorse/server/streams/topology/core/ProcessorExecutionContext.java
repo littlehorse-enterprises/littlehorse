@@ -158,9 +158,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         if (metricsAggregator != null) {
             metricsAggregator.maybePersistState();
         }
-        for (WorkflowEventModel event : eventsToThrow) {
-            server.onEventThrown(event, authContext.tenantId());
-        }
+        server.onEventThrown(eventsToThrow, authContext.tenantId());
     }
 
     public CommandModel currentCommand() {

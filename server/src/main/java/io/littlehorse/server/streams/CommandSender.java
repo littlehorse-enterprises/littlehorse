@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
@@ -15,7 +16,6 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
-import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
@@ -23,20 +23,20 @@ import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
-import io.littlehorse.server.streams.util.POSTStreamObserver;
-import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiFunction;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 
+@Slf4j
 public class CommandSender {
 
     private final BackendInternalComms internalComms;
-    private final Duration successDurationTimeout;
     private final ScheduledExecutorService networkThreadpool;
     private final LHProducer commandProducer;
     private final LHProducer taskClaimProducer;
@@ -56,7 +56,6 @@ public class CommandSender {
         // Streams Session Timeout is how long it takes to notice that the server is down.
         // Then we need the rebalance to occur, and the new server must process the command.
         // So we give it a buffer of 10 additional seconds.
-        this.successDurationTimeout = Duration.ofMillis(streamsSessionTimeout).plusSeconds(10);
         this.networkThreadpool = networkThreadpool;
         this.commandProducer = commandProducer;
         this.taskClaimProducer = taskClaimProducer;
@@ -73,51 +72,29 @@ public class CommandSender {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    public void doSend(
+    public Future<Message> doSend(
             AbstractCommand<?> command,
-            StreamObserver<? extends Message> responseObserver,
             Class<?> responseCls,
-            boolean shouldCompleteStream,
             PrincipalIdModel principalId,
             TenantIdModel tenantId,
             RequestExecutionContext context) {
-        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                internalComms,
-                command,
-                context,
-                successDurationTimeout,
-                networkThreadpool);
 
         command.setCommandId(LHUtil.generateGuid());
 
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        commandProducer
+        return commandProducer
                 .send(command.getPartitionKey(), command, command.getTopic(serverConfig), commandMetadata.toArray())
-                .handleAsync(
-                        (recordMetadata, throwable) ->
-                                completeCommand(recordMetadata, throwable, context, commandObserver, command),
-                        networkThreadpool);
+                .thenCompose((recordMetadata) -> waitForCommand(command, responseCls, context));
     }
 
-    private RecordMetadata completeCommand(
-            RecordMetadata recordMetadata,
-            Throwable exception,
-            RequestExecutionContext requestContext,
-            StreamObserver<WaitForCommandResponse> commandObserver,
-            AbstractCommand<?> command) {
+    @SuppressWarnings("unchecked")
+    private <U extends Message> U buildRespFromBytes(ByteString bytes, Class<?> responseCls) {
         try {
-            if (exception != null) {
-                commandObserver.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-            } else {
-                waitForCommand(command, commandObserver, requestContext);
-            }
-        } catch (LHApiException ex) {
-            commandObserver.onError(ex);
+            return (U) responseCls.getMethod("parseFrom", ByteString.class).invoke(null, bytes);
+        } catch (Exception exn) {
+            log.error(exn.getMessage(), exn);
+            throw new RuntimeException("Not possible");
         }
-        return recordMetadata;
     }
 
     public CompletableFuture<RecordMetadata> doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
@@ -164,10 +141,8 @@ public class CommandSender {
                 .handleAsync(completeReportTask, networkThreadpool);
     }
 
-    private void waitForCommand(
-            AbstractCommand<?> command,
-            StreamObserver<WaitForCommandResponse> observer,
-            RequestExecutionContext context) {
+    private CompletableFuture<Message> waitForCommand(
+            AbstractCommand<?> command, Class<?> responseCls, RequestExecutionContext context) {
         String storeName =
                 switch (command.getStore()) {
                     case CORE -> ServerTopology.CORE_STORE;
@@ -178,15 +153,18 @@ public class CommandSender {
         KeyQueryMetadata meta = internalComms.lookupPartitionKey(storeName, command.getPartitionKey());
 
         if (meta.activeHost().equals(thisHost)) {
-            asyncWaiters.registerObserverWaitingForCommand(command.getCommandId(), meta.partition(), observer);
+            CompletableFuture<Message> futureResponse = new CompletableFuture<>();
+            asyncWaiters.put(command.getCommandId(), futureResponse);
+            return futureResponse;
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(command.getCommandId())
                     .setPartition(meta.partition())
                     .build();
-            LHInternalsGrpc.LHInternalsStub internalClient = internalComms.getInternalAsyncClient(
-                    meta.activeHost(), InternalCallCredentials.forContext(context));
-            internalClient.waitForCommand(req, observer);
+            LHInternalsGrpc.LHInternalsBlockingStub internalClient =
+                    internalComms.getInternalClient(meta.activeHost(), InternalCallCredentials.forContext(context));
+            return CompletableFuture.completedFuture(
+                    buildRespFromBytes(internalClient.waitForCommand(req).getResult(), responseCls));
         }
     }
 }
