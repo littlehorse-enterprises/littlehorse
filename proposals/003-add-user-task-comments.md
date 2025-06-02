@@ -15,13 +15,7 @@ In order to store details about a comment made on a `userTaskRun` we need to cre
 
 ### Option 1: Add comments through UserTaskRunEvents
 
-The first option is to create a new type of UserTaskRunEvent called `UTECommented` that will be used to store the comment details. 
-
-To list the comments for a `UserTaskRun`, we can use the `lhctl`. This will return the `UserTaskRun` object with the comments included in the `events` field.
-
-```bash
-`lhctl get userTaskRun <wfRunId> <userTaskGuid>`.
-```
+The first option is to create a new type of UserTaskRunEvent called `UTEComment` that will be used to store comment details.
 
 ```proto
 // This is the object storing the comment details of a `UserTaskRun`
@@ -46,7 +40,6 @@ message UTEDeleteComment {
 
 }
 ```
-
 
 ```proto
 message CommentUserTaskRunRequest{
@@ -101,6 +94,60 @@ message Command {
     }
 }
 
+```
+
+To list the comments for a `UserTaskRun`, we can use the `lhctl`. This will return the `UserTaskRun` object with the comments included in the `events` field.
+
+```bash
+`lhctl get userTaskRun <wfRunId> <userTaskGuid>`.
+```
+
+List of events in the `UserTaskRun` object will look like this:
+
+```json
+{
+  "events": [
+    {
+      "time": "2025-06-02T15:58:14.686Z",
+      "assigned": {
+        "newUserId": "anakin",
+        "newUserGroup": "testGroup"
+      }
+    },
+    {
+      "time": "2025-06-02T15:59:14.710Z",
+      "commented": {
+        "userCommentId": "4db2eff5-74a9-464a-be1b-2e22e341a086",
+        "userId": "anakin",
+        "comment": "This is a test comment",
+        "isEdited": false
+      }
+    },
+    {
+      "time": "2025-06-02T16:59:14.710Z",
+      "assigned": {
+        "oldUserId": "anakin",
+        "oldUserGroup": "testGroup",
+        "newUserGroup": "test2Group"
+      }
+    },
+    {
+      "time": "2025-06-02T17:00:01.710Z",
+      "commented": {
+        "userCommentId": "d46abb2d-96bf-4e16-a9b8-6966b8686e5e",
+        "userId": "mace",
+        "comment": "This is other test comment",
+        "isEdited": true
+      }
+    },
+    {
+      "time": "2025-06-02T17:40:14.710Z",
+      "comment_deleted": {
+        "user_comment_id": "4db2eff5-74a9-464a-be1b-2e22e341a086"
+      }
+    }
+  ]
+}
 ```
 
 ### Option 2: Add comments through a list of new objects in the UserTaskRun
