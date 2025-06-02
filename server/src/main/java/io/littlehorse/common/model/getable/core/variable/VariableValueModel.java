@@ -11,6 +11,7 @@ import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -110,6 +111,12 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         }
     }
 
+    public TypeDefinitionModel getTypeDefinition() {
+        // TODO: support `StructDef` here
+        return new TypeDefinitionModel(getType());
+    }
+
+    @Deprecated
     public VariableType getType() {
         return fromValueCase(type);
     }

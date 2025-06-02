@@ -7,11 +7,15 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +29,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private String variableName;
     private VariableValueModel rhsLiteralValue;
     private FormatStringModel formatString;
+
+    @Deprecated(forRemoval = true)
     private NodeOutputReferenceModel nodeOutputReference;
+
     private ExpressionModel expression;
 
     public Class<VariableAssignment> getProtoBaseClass() {
@@ -111,6 +118,43 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
         // TODO: extend this to support Struct and StructDef when we implement that.
         return canBeType(type.getType(), tspec);
+    }
+
+    public Optional<TypeDefinitionModel> resolveType(
+            ReadOnlyMetadataManager manager,
+            Map<String, ThreadVarDefModel> variableDefs,
+            TypeDefinitionModel nodeOutputType) throws LHApiException {
+        if (jsonPath != null) {
+            // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
+            // which is why we are killing JSONPath with fire
+            return Optional.empty();
+        }
+
+        switch (rhsSourceType) {
+            case VARIABLE_NAME:
+                return Optional.of(variableDefs.get(variableName).getVarDef().getTypeDef());
+            case LITERAL_VALUE:
+                return Optional.of(rhsLiteralValue.getTypeDefinition());
+            case FORMAT_STRING:
+                return Optional.of(new TypeDefinitionModel(VariableType.STR));
+            case NODE_OUTPUT:
+                // TODO: metric that warns users that they are using Bad Deprecated Features.
+                return Optional.ofNullable(nodeOutputType);
+            case EXPRESSION:
+                // can be a given type.
+                return expression.resolveTypeDefinition(manager, nodeOutputType, variableDefs);
+            case SOURCE_NOT_SET:
+                // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
+                // protobuf that does not set the source type. Instead of throwing an IllegalStateException
+                // we should throw an error that will get propagated back to the client.
+                //
+                // The problem with this is that in this scope we lack context about which node has the
+                // invalid VariableAssignment, so the client may have trouble determining the source. Still
+                // it is better to return INVALID_ARGUMENT than INTERNAL.
+                throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
+        }
+
+        return Optional.empty();
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {

@@ -232,7 +232,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
     public void validate(MetadataCommandExecution ctx) throws LHApiException {
         if (entrypointNodeName == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOITNT node!");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOINT node!");
         }
 
         boolean seenEntrypoint = false;
