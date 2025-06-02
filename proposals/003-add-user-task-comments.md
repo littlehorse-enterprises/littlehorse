@@ -29,6 +29,8 @@ message UTEComment {
 
 ```proto
 message CommentUserTaskRunRequest{
+  // The id of UserTaskRun to save.
+  UserTaskRunId user_task_run_id = 1;
 
   // The author of the comment being made on a UserTaskRun
   string user_id = 1;
@@ -37,7 +39,13 @@ message CommentUserTaskRunRequest{
   string comment = 2;
 }
 
+```
 
+```proto
+  oneof event {
+    // ...
+    UTECommented commented = 6;
+  }
 ```
 
 ```proto
@@ -50,7 +58,7 @@ Service Littlehorse {
  // ...
 }
 ```
-To enable the command in order to process a comment in the userTaskRun, it is necessary to add a new command request field
+To enable the command to process a comment in the userTaskRun, it is necessary to add a new command request field
 
 ```proto
 message Command {
