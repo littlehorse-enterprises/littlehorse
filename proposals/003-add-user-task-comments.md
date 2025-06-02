@@ -33,10 +33,10 @@ message CommentUserTaskRunRequest{
   UserTaskRunId user_task_run_id = 1;
 
   // The author of the comment being made on a UserTaskRun
-  string user_id = 1;
+  string user_id = 2;
 
   // The comment being made on a UserTaskRun
-  string comment = 2;
+  string comment = 3;
 }
 
 ```
