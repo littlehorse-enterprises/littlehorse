@@ -1,6 +1,6 @@
 "use client"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@littlehorse-enterprises/ui-library/tabs"
 import { LeftSidebarTabId } from "@/types/leftSidebarTabs"
 import { Dispatch, SetStateAction } from "react"
 

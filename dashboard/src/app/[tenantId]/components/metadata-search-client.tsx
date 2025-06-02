@@ -1,14 +1,14 @@
 "use client"
-import { useState } from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { search, SearchResponse } from "@/actions/search"
-import { SEARCH_LIMIT_DEFAULT, SEARCH_ENTITIES, SEARCH_LIMITS } from "@/lib/constants"
-import { SearchType } from "@/types/search"
-import useSWRInfinite from "swr/infinite"
 import { LoadMorePagination } from "@/components/ui/load-more-pagination"
-import { SearchHeader } from "./search-header"
-import { MetadataTable } from "./metadata-table"
+import { Tabs, TabsList, TabsTrigger } from "@littlehorse-enterprises/ui-library/tabs"
 import { useTypedParams } from "@/hooks/usePathnameParams"
+import { SEARCH_ENTITIES, SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/lib/constants"
+import { SearchType } from "@/types/search"
+import { useState } from "react"
+import useSWRInfinite from "swr/infinite"
+import { MetadataTable } from "./metadata-table"
+import { SearchHeader } from "./search-header"
 
 export function MetadataSearchClient() {
     const { tenantId } = useTypedParams()
@@ -62,4 +62,4 @@ export function MetadataSearchClient() {
             </Tabs>
         </>
     )
-} 
+}

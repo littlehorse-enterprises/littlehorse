@@ -5,7 +5,7 @@ export function buildNodeTree(nodes: ThreadSpec["nodes"]): TreeNode[] {
   if (!nodes) return [];
   const result: TreeNode[] = [];
 
-  Object.entries(nodes).forEach(([nodeId, node]) => {
+  Object.entries(nodes).forEach(([nodeId]) => {
     result.push({
       id: nodeId,
       label: nodeId,

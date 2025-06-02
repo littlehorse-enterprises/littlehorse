@@ -1,11 +1,11 @@
 "use client"
 
-import type React from "react"
-import { ChevronDown, ChevronRight, CheckCircle, XCircle, Loader2 } from "lucide-react"
-import { useState } from "react"
 import { TreeNode } from "@/types/buildNodeTree"
+import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from "lucide-react"
+import type React from "react"
+import { useState } from "react"
 
-export interface TreeNodeProps {
+export interface TreeNodeComponentProps {
     node: TreeNode
     isRoot?: boolean
     searchTerm: string
@@ -17,7 +17,7 @@ export function TreeNodeComponent({
     isRoot = false,
     searchTerm,
     selectedNodeRef,
-}: TreeNodeProps) {
+}: TreeNodeComponentProps) {
     // Check if this node or any of its children match the search term
     const [isExpanded, setIsExpanded] = useState(isRoot || !!searchTerm)
 
@@ -163,4 +163,4 @@ export function TreeNodeComponent({
             )}
         </div>
     )
-} 
+}

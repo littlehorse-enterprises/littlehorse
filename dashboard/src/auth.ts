@@ -1,7 +1,7 @@
+import { isTokenExpired, validateAccessToken } from "@/utils/authUtil";
 import NextAuth from "next-auth";
-import Keycloak from "next-auth/providers/keycloak";
 import "next-auth/jwt";
-import { validateAccessToken, isTokenExpired } from "@/utils/authUtil";
+import Keycloak from "next-auth/providers/keycloak";
 
 declare module "next-auth" {
   interface Session {
@@ -17,17 +17,19 @@ declare module "next-auth/jwt" {
   }
 }
 
+const OAUTH_ENABLED = process.env.KEYCLOAK_ISSUER_URI && process.env.KEYCLOAK_CLIENT_ID && process.env.KEYCLOAK_CLIENT_SECRET
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/api/signin",
   },
-  providers: process.env.LHD_OAUTH_ENABLED === "false" || !process.env.LHD_OAUTH_ENABLED ? [] : [
+  providers: OAUTH_ENABLED ? [
     Keycloak({
       issuer: process.env.KEYCLOAK_ISSUER_URI,
       clientId: process.env.KEYCLOAK_CLIENT_ID,
       clientSecret: process.env.KEYCLOAK_CLIENT_SECRET,
     }),
-  ],
+  ]: [],
   callbacks: {
     jwt({ token, account }) {
       if (account?.provider === "keycloak") {
@@ -42,9 +44,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async authorized({ auth }) {
-      if (process.env.LHD_OAUTH_ENABLED === "false" || !process.env.LHD_OAUTH_ENABLED) 
+      if (!OAUTH_ENABLED)
         return true;
-      
+
       const token = auth?.accessToken;
 
       return !!(

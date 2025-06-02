@@ -1,7 +1,7 @@
 "use client"
 
+import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { X } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 interface FilterResetButtonProps {
   onReset: () => void

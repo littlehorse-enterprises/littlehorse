@@ -1,23 +1,23 @@
 "use client"
 
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import SignOutButton from "../auth/signOutButton"
-import { Session } from "next-auth"
-import { Check } from "lucide-react"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
-import { getTenants } from "@/utils/getTenants"
-import { useState } from "react"
 import { useTypedParams } from "@/hooks/usePathnameParams"
+import { getTenants } from "@/utils/getTenants"
+import { Button } from "@littlehorse-enterprises/ui-library/button"
+import { Check } from "lucide-react"
+import { Session } from "next-auth"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import SignOutButton from "../auth/signOutButton"
 
 interface TenantHeaderProps {
     session: Session | null
@@ -71,11 +71,11 @@ export default function TenantHeader({ session }: TenantHeaderProps) {
                         ))}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600">
+                    <DropdownMenuItem>
                         <SignOutButton />
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
     )
-} 
+}

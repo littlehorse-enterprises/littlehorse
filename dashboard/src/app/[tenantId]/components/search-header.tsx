@@ -1,6 +1,6 @@
 "use client"
-import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
 
 interface SearchHeaderProps {
     prefix: string
@@ -24,4 +24,4 @@ export function SearchHeader({ prefix, onPrefixChange }: SearchHeaderProps) {
             </div>
         </div>
     )
-} 
+}

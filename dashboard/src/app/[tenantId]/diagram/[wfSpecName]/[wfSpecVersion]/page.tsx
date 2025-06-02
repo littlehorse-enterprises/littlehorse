@@ -15,10 +15,7 @@ export default async function DiagramPage({
 
     const client = await lhClient(tenantId);
     const wfSpec = await client.getWfSpec({ name: wfSpecName, majorVersion: majorVersion, revision: revision });
-    const wfRun = await client.getWfRun({ id: wfRunId });
-
-    console.log('wfSpec', wfSpec);
-    console.log('wfRun', wfRun);
+    const wfRun = wfRunId ? await client.getWfRun({ id: wfRunId }) : undefined;
 
     return <div className="h-full">
         <LeftSidebar wfSpec={wfSpec} wfRun={wfRun} />

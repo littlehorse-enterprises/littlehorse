@@ -27,12 +27,12 @@ export default async function RootLayout({
   const session = await auth()
 
   return (
-    <html lang="en" className="h-full">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} h-screen`}
       >
         <Header session={session} />
-        <main className="flex-1 overflow-hidden">
+        <main>
           {children}
         </main>
       </body>

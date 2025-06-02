@@ -1,6 +1,6 @@
 "use client"
-import { Button } from "@/components/ui/button"
 import { handleSignIn } from "@/actions/handleSignIn"
+import { Button } from "@littlehorse-enterprises/ui-library/button"
 
 export default function SignInButton() {
     return (
@@ -11,4 +11,4 @@ export default function SignInButton() {
             Sign In
         </Button>
     )
-} 
+}

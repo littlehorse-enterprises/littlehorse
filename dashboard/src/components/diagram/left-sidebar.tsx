@@ -1,13 +1,13 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+import SidebarExpandButton from "@/components/ui/sidebar-expand-button"
+import { LeftSidebarTabId } from "@/types/leftSidebarTabs"
+import { Button } from "@littlehorse-enterprises/ui-library/button"
+import { WfRun, WfSpec } from "littlehorse-client/proto"
 import { Play } from "lucide-react"
 import { useState } from "react"
-import SidebarExpandButton from "@/components/ui/sidebar-expand-button"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { WfRun, WfSpec } from "littlehorse-client/proto"
 import LeftSidebarTabs from "./left-sidebar-tabs"
-import { LeftSidebarTabId } from "@/types/leftSidebarTabs"
 import WfSpecTab from "./wf-spec-tab"
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
@@ -18,7 +18,7 @@ const tabDescriptions: Record<LeftSidebarTabId, string> = {
 
 interface LeftSidebarProps {
   wfSpec: WfSpec
-  wfRun: WfRun
+  wfRun?: WfRun
 }
 
 export default function LeftSidebar({

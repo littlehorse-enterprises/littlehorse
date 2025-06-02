@@ -1,7 +1,7 @@
 "use client"
 
+import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 interface SidebarExpandButtonProps {
   isExpanded: boolean

@@ -1,12 +1,13 @@
 "use client"
-import { Eye } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { useRouter } from "next/navigation"
 import { Ids, SearchResponse } from "@/actions/search"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useTypedParams } from "@/hooks/usePathnameParams"
 import { SearchType } from "@/types/search"
+import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { UserTaskDefId, WfSpecId } from "littlehorse-client/proto"
+import { Eye } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface MetadataTableProps {
     data: SearchResponse[] | undefined
@@ -16,16 +17,17 @@ interface MetadataTableProps {
 
 export function MetadataTable({ data, activeTab, isLoading }: MetadataTableProps) {
     const router = useRouter()
+    const { tenantId } = useTypedParams()
 
     function handleRowClick(name: string, majorVersion?: number, revision?: number) {
         if (activeTab === "WfSpec")
-            router.push(`/diagram/${name}?version=${majorVersion}.${revision}`)
+            router.push(`/${tenantId}/diagram/${name}/${majorVersion}.${revision}`)
         else if (activeTab === "TaskDef")
-            router.push(`/taskdef/${name}`)
+            router.push(`/${tenantId}/TaskDefs/${name}`)
         else if (activeTab === "UserTaskDef")
-            router.push(`/usertaskdef/${name}`)
+            router.push(`/${tenantId}/UserTaskDefs/${name}`)
         else if (activeTab === "ExternalEventDef")
-            router.push(`/externaleventdef/${name}`)
+            router.push(`/${tenantId}/ExternalEventDefs/${name}`)
     }
 
     return (
@@ -88,4 +90,4 @@ export function MetadataTable({ data, activeTab, isLoading }: MetadataTableProps
 
 function isOfType<T>(conditional: boolean, obj: unknown): obj is T {
     return conditional
-} 
+}
