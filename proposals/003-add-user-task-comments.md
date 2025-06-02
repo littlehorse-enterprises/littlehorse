@@ -26,13 +26,24 @@ To list the comments for a `UserTaskRun`, we can use the `lhctl`. This will retu
 ```proto
 // This is the object storing the comment details of a `UserTaskRun`
 message UTEComment {
+  // The id of the user comment
+  string user_comment_id = 1;
 
   // This is the id of the user 
-  string user_id = 1;
+  string user_id = 2;
 
   // This is the specific note/comment that a user wants to make 
   // on a `UserTask`
-  string comment = 2;
+  string comment = 3;
+
+  // Flag representing if this comment has been edited 
+  boolean isEdited = 4; 
+}
+
+message UTEDeleteComment {
+  // The id of the comment that will be deleted
+  string user_comment_id = 1;
+
 }
 ```
 
@@ -47,6 +58,13 @@ message CommentUserTaskRunRequest{
 
   // The comment being made on a UserTaskRun
   string comment = 3;
+
+  // Flag that represent whether a field has been edited
+  boolean isEdited = 4 ;
+}
+
+message DeleteCommentUserTaskRunRequest{
+  string user_comment_id = 1;
 }
 
 ```
@@ -54,7 +72,8 @@ message CommentUserTaskRunRequest{
 ```proto
   oneof event {
     // ...
-    UTECommented commented = 6;
+    UTEComment commented = 6;
+    UTEDeleteComment comment_deleted = 7;
   }
 ```
 
@@ -63,7 +82,8 @@ Service Littlehorse {
     // ...
 
     // Put the UserComment to correlating UserTask
-    rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (google.protobuf.Empty) {};
+    rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (CommentUserTaskRun) {};
+    rpc DeleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest) returns {google.protobuf.Empty}
 
  // ...
 }
@@ -77,6 +97,7 @@ message Command {
     oneof command {
         // ...
         CommentUserTaskRunRequest comment_user_task_run = 28;
+        DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 29;
     }
 }
 
