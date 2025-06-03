@@ -196,7 +196,7 @@ public class PrincipalAdministrationTest {
         MetadataCommandModel commandSent2 = sendCommand(putPrincipalRequest);
         CompletableFuture<Message> futureResponse =
                 asyncWaiters.getOrRegisterFuture(commandSent2.getCommandId(), Message.class, new CompletableFuture<>());
-        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(LHApiException.class);
+        assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(LHApiException.class);
     }
 
     @Test
@@ -274,8 +274,8 @@ public class PrincipalAdministrationTest {
                 asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
-                .isInstanceOf(LHApiException.class)
-                .hasMessage(
+                .hasCauseInstanceOf(LHApiException.class)
+                .hasRootCauseMessage(
                         "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
     }
 
@@ -290,8 +290,8 @@ public class PrincipalAdministrationTest {
                 asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
-                .isInstanceOf(LHApiException.class)
-                .hasMessage(
+                .hasCauseInstanceOf(LHApiException.class)
+                .hasRootCauseMessage(
                         "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
     }
 
@@ -310,8 +310,9 @@ public class PrincipalAdministrationTest {
                 asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
-                .isInstanceOf(LHApiException.class)
-                .hasMessage("PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_PRINCIPAL.");
+                .hasCauseInstanceOf(LHApiException.class)
+                .hasRootCauseMessage(
+                        "PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_PRINCIPAL.");
     }
 
     @Test
@@ -332,8 +333,8 @@ public class PrincipalAdministrationTest {
                 asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
-                .isInstanceOf(LHApiException.class)
-                .hasMessage("PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_TENANT.");
+                .hasCauseInstanceOf(LHApiException.class)
+                .hasRootCauseMessage("PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_TENANT.");
     }
 
     private PutPrincipalRequest principalRequestToProcess() {

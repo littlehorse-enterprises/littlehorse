@@ -1124,13 +1124,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 requestContext.authorization().tenantId(),
                 requestContext);
         try {
-
             Message response =
                     futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new RuntimeException(e);
+            responseObserver.onError(e.getCause());
+        } finally {
+            asyncWaiters.removeCommand(command.getCommandId());
         }
     }
 

@@ -101,10 +101,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         try {
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
+            CompletableFuture<Message> completable =
+                    asyncWaiters.getOrRegisterFuture(command.commandId, Message.class, new CompletableFuture<>());
             if (command.hasResponse() && command.getCommandId() != null) {
-                CompletableFuture<Message> completable =
-                        asyncWaiters.getOrRegisterFuture(command.commandId, Message.class, new CompletableFuture<>());
                 completable.complete(response);
+            } else {
+                completable.complete(null);
             }
         } catch (KafkaException ke) {
             throw ke;

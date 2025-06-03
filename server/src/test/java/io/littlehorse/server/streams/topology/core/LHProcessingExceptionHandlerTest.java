@@ -51,7 +51,7 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw cce;
         });
-        assertThatThrownBy(futureResponse::get).isInstanceOf(StatusRuntimeException.class);
+        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(StatusRuntimeException.class);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw cce;
         });
-        assertThatThrownBy(futureResponse::get).isInstanceOf(StatusRuntimeException.class);
+        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(StatusRuntimeException.class);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw mce;
         });
-        assertThatThrownBy(futureResponse::get).isInstanceOf(StatusRuntimeException.class);
+        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(StatusRuntimeException.class);
     }
 
     @Test
@@ -96,6 +96,6 @@ public class LHProcessingExceptionHandlerTest {
         exceptionHandler.tryRun(() -> {
             throw mce;
         });
-        assertThatThrownBy(futureResponse::get).isInstanceOf(StatusRuntimeException.class);
+        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(StatusRuntimeException.class);
     }
 }

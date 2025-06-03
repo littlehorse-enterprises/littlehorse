@@ -1,11 +1,15 @@
 package io.littlehorse.server.streams.util;
 
+import com.google.protobuf.Empty;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -15,8 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class AsyncWaitersTest {
-
-    private final AsyncWaiters asyncWaiters = new AsyncWaiters();
+    private final Duration removeCompletedAfter = Duration.ofMillis(2);
+    private final AsyncWaiters asyncWaiters = new AsyncWaiters(removeCompletedAfter);
     private final TenantIdModel tenantId = new TenantIdModel("test");
 
     @Test
@@ -37,5 +41,17 @@ class AsyncWaitersTest {
         List<WorkflowEvent> result =
                 Arrays.stream(orRegisterFuture).map(CompletableFuture::join).toList();
         Assertions.assertThat(result).isNotEmpty().hasSize(3);
+    }
+
+    @Test
+    public void shouldRemoveFutureWhenCompleted() throws Exception {
+        String commandId = UUID.randomUUID().toString();
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(commandId, Message.class, new CompletableFuture<>());
+        futureResponse.complete(Empty.newBuilder().build());
+        TimeUnit.MILLISECONDS.sleep(10);
+        CompletableFuture<Message> futureResponse2 =
+                asyncWaiters.getOrRegisterFuture(commandId, Message.class, new CompletableFuture<>());
+        Assertions.assertThat(futureResponse2).isNotSameAs(futureResponse).isNotCompleted();
     }
 }

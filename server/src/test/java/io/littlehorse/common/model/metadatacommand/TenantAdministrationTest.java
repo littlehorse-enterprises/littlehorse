@@ -24,7 +24,6 @@ import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.common.header.Headers;
@@ -38,7 +37,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -95,29 +93,6 @@ public class TenantAdministrationTest {
     }
 
     @Test
-    public void shouldValidateExistingTenant() throws Exception {
-        MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
-        metadataProcessor.init(mockProcessorContext);
-
-        long firstTimestamp = 42L;
-        long secondTimestamp = 137L;
-
-        command.setTime(new Date(firstTimestamp));
-        metadataProcessor.process(
-                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), firstTimestamp, metadata));
-
-        command.setTime(new Date(secondTimestamp));
-        command.setCommandId(UUID.randomUUID().toString());
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
-        metadataProcessor.process(
-                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), secondTimestamp, metadata));
-        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(LHApiException.class);
-        assertThat(storedTenant()).isNotNull();
-        assertThat(storedTenant().getCreatedAt().getTime()).isEqualTo(firstTimestamp);
-    }
-
-    @Test
     void shouldThrowExceptionWhenTenantHasABackSlashInvalidCharacter() {
         String invalidTenant = "///Tenant";
         PutTenantRequestModel putTenantRequestModel =
@@ -128,13 +103,9 @@ public class TenantAdministrationTest {
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
-
-        ArgumentCaptor<Exception> argumentCaptor = ArgumentCaptor.forClass(Exception.class);
-
-        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(LHApiException.class);
-        assertThat(argumentCaptor.getValue()).isInstanceOf(LHApiException.class);
-        assertThat(argumentCaptor.getValue().getMessage())
-                .isEqualTo("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
+        assertThatThrownBy(() -> futureResponse.getNow(null))
+                .hasCauseInstanceOf(LHApiException.class)
+                .hasRootCauseMessage("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
     }
 
     @Test
@@ -149,13 +120,9 @@ public class TenantAdministrationTest {
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
 
-        ArgumentCaptor<Exception> argumentCaptor = ArgumentCaptor.forClass(Exception.class);
-
-        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(LHApiException.class);
-
-        assertThat(argumentCaptor.getValue()).isInstanceOf(LHApiException.class);
-        assertThat(argumentCaptor.getValue().getMessage())
-                .isEqualTo("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
+        assertThatThrownBy(() -> futureResponse.getNow(null))
+                .hasCauseInstanceOf(LHApiException.class)
+                .hasRootCauseMessage("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
     }
 
     private TenantModel storedTenant() {

@@ -65,11 +65,10 @@ public class BulkUpdateJobTest {
         getableManager.commit();
         processor.init(mockProcessor);
         CompletableFuture<Message> futureResponse = new CompletableFuture<>();
-        when(asyncWaiters.getOrRegisterFuture(
-                        eq(command.getCommandId()), eq(Message.class), any(CompletableFuture.class)))
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId()), any(), any(CompletableFuture.class)))
                 .thenReturn(futureResponse);
         processor.process(new Record<>("", command, 0L, testProcessorContext.getRecordMetadata()));
-        Assertions.assertThat(futureResponse.get()).isNotNull();
+        Assertions.assertThat(futureResponse).isCompleted();
     }
 
     private Command commandProto() {
@@ -80,6 +79,9 @@ public class BulkUpdateJobTest {
                 .setEndKey(GetableClassEnum.WF_RUN_VALUE + "/~")
                 .setNoOp(job)
                 .build();
-        return Command.newBuilder().setBulkJob(bulkJob).build();
+        return Command.newBuilder()
+                .setCommandId(UUID.randomUUID().toString())
+                .setBulkJob(bulkJob)
+                .build();
     }
 }
