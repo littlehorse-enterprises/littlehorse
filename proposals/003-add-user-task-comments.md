@@ -63,7 +63,6 @@ message EditCommentUserTaskRunRequest {
   string comment = 3;
 }
 
-// When this request is called the flag is_deleted will change to true 
 message DeleteCommentUserTaskRunRequest {
   int16 user_comment_id = 1;
 }
@@ -71,12 +70,12 @@ message DeleteCommentUserTaskRunRequest {
 ```
 
 ```proto
-  oneof event {
+oneof event {
     // ...
     UTEComment commented = 6;
     UTEComment comment_edited = 7;
     UTEDeleteComment comment_deleted = 8;
-  }
+}
 ```
 
 ```proto
@@ -93,7 +92,7 @@ Service Littlehorse {
  // ...
 }
 ```
-To enable the command to process a comment in the userTaskRun, it is necessary to add a new command request field
+To enable the command to process a comment in the userTaskRun, it is necessary to add new command request fields
 
 ```proto
 message Command {
@@ -103,7 +102,7 @@ message Command {
         // ...
         CommentUserTaskRunRequest comment_user_task_run = 28;
         EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;
-        DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 29;
+        DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;
     }
 }
 
@@ -169,7 +168,7 @@ List of events in the `UserTaskRun` object will look like this:
 }
 ```
 
-`UserTaskRunEvents` should be append only. In order to sort UserComments the front end will have to lookup via `userCommentId` and sort by time. The most recent `UserTaskRunEvents`(UTEComment or UTECommentDeleted) will represent whether the Comment has been inserted, edited, or deleted. 
+`UserTaskRunEvents` should be append only. In order to sort UserComments the front end will have to lookup via `userCommentId` and sort by time. The most recent `UserTaskRunEvents`(UTEComment or UTECommentDeleted) will represent whether the comment has been inserted, edited, or deleted. 
 
 ## Rejected Options
 ### Option 2: Add comments through a list of new objects in the UserTaskRun
