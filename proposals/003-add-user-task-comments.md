@@ -80,8 +80,9 @@ message DeleteCommentUserTaskRunRequest{
 Service Littlehorse {
     // ...
 
-    // Put the UserComment to correlating UserTask
+    // Add or edit user comment depending on whether a user_comment_id is passed in 
     rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (CommentUserTaskRun) {};
+    // Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
     rpc DeleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest) returns {google.protobuf.Empty}
 
  // ...
@@ -126,7 +127,8 @@ List of events in the `UserTaskRun` object will look like this:
         "userCommentId": "4db2eff5-74a9-464a-be1b-2e22e341a086",
         "userId": "anakin",
         "comment": "This is a test comment",
-        "isEdited": false
+        "isEdited": false,
+        "isDeleted": true
       }
     },
     {
@@ -143,13 +145,14 @@ List of events in the `UserTaskRun` object will look like this:
         "userCommentId": "d46abb2d-96bf-4e16-a9b8-6966b8686e5e",
         "userId": "mace",
         "comment": "This is other test comment",
-        "isEdited": true
+        "isEdited": true,
+        "isDeleted": false
       }
     },
     {
       "time": "2025-06-02T17:40:14.710Z",
       "comment_deleted": {
-        "user_comment_id": "4db2eff5-74a9-464a-be1b-2e22e341a086"
+        "userCommentId": "4db2eff5-74a9-464a-be1b-2e22e341a086"
       }
     }
   ]
