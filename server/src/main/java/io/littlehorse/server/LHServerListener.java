@@ -46,6 +46,7 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -54,6 +55,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
@@ -82,6 +84,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.common.util.InlineStructDefUtil;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ACLAction;
@@ -187,6 +190,8 @@ import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunList;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
@@ -268,6 +273,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -514,6 +520,41 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, StructDef.class, true);
     }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
+    public void validateStructDefEvolution(
+            ValidateStructDefEvolutionRequest req, StreamObserver<ValidateStructDefEvolutionResponse> ctx) {
+        InlineStructDefModel newInlineStructDef =
+                LHSerializable.fromProto(req.getStructDef(), InlineStructDefModel.class, requestContext());
+        newInlineStructDef.validate();
+
+        StructDefIdModel sdId =
+                LHSerializable.fromProto(req.getStructDefId(), StructDefIdModel.class, requestContext());
+        StructDefModel existingStructDef = getServiceFromContext().getStructDef(sdId);
+
+        if (existingStructDef == null) {
+            ctx.onNext(ValidateStructDefEvolutionResponse.newBuilder()
+                    .setIsValid(true)
+                    .build());
+            ctx.onCompleted();
+        } else {
+            InlineStructDefModel oldInlineStructDef = existingStructDef.getStructDef();
+
+            Set<String> invalidFields = InlineStructDefUtil.getIncompatibleFields(
+                    req.getCompatibilityType(), newInlineStructDef, oldInlineStructDef);
+
+            System.out.println(invalidFields);
+
+            ValidateStructDefEvolutionResponse resp = ValidateStructDefEvolutionResponse.newBuilder()
+                    .setIsValid(invalidFields.isEmpty())
+                    .build();
+
+            ctx.onNext(resp);
+            ctx.onCompleted();
+        }
+    }
+    ;
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.WRITE_METADATA)

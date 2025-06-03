@@ -2,7 +2,6 @@ syntax = "proto3";
 package littlehorse;
 
 import "google/protobuf/timestamp.proto";
-import "object_id.proto";
 import "workflow_event.proto";
 import "user_tasks.proto";
 import "task_run.proto";

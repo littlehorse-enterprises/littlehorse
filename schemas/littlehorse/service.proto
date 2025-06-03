@@ -78,6 +78,9 @@ service LittleHorse {
   // Get a StructDef.
   rpc GetStructDef(StructDefId) returns (StructDef) {}
 
+  // Validate evolution of an existing `StructDef` into a new `StructDef`
+  rpc ValidateStructDefEvolution(ValidateStructDefEvolutionRequest) returns (ValidateStructDefEvolutionResponse) {}
+
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
 
@@ -375,15 +378,6 @@ message PutTaskDefRequest {
 
 // Creates a new StructDef.
 message PutStructDefRequest {
-  enum AllowedStructDefUpdateType {
-    // No updates are allowed.
-    NO_SCHEMA_UPDATES = 0;
-
-    // Allowed to make fully compatible (both backward-and-forward compatible)
-    // changes to the `struct_def` in this request.
-    FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
-  }
-
   // The name of the StructDef.
   string name = 1;
 
@@ -399,7 +393,36 @@ message PutStructDefRequest {
   //
   // Then the request will be accepted or rejected based on the value of the
   // allowed_update_types.
-  AllowedStructDefUpdateType allowed_updates = 4;
+  StructDefCompatibilityType allowed_updates = 4;
+}
+
+// Request to validate the evolution of an existing StructDef to a new StructDef
+// based on a compatibility type.
+message ValidateStructDefEvolutionRequest {
+  // The ID of the StructDef you want to compare against that already exists on the server.
+  StructDefId struct_def_id = 1;
+
+  // The new StructDef schema.
+  InlineStructDef struct_def = 2;
+
+  // The server will validate the new StructDef schema against
+  // the existing StructDef schema based on this compatibility type.
+  StructDefCompatibilityType compatibility_type = 3;
+}
+
+// Response detailing the validity of a StructDef evolution.
+message ValidateStructDefEvolutionResponse {
+  // Whether or not the StructDef evolution specified in the request is valid.
+  bool is_valid = 1;
+}
+
+enum StructDefCompatibilityType {
+  // No updates are allowed.
+  NO_SCHEMA_UPDATES = 0;
+
+  // Allowed to make fully compatible (both backward-and-forward compatible)
+  // changes to the `struct_def` in this request.
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
 }
 
 // Creates a WorkflowEventDef

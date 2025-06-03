@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import Long from "long";
-import { type CallContext, type CallOptions } from "nice-grpc-common";
+import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
@@ -123,6 +123,44 @@ export function allowedUpdateTypeToNumber(object: AllowedUpdateType): number {
   }
 }
 
+export enum StructDefCompatibilityType {
+  /** NO_SCHEMA_UPDATES - No updates are allowed. */
+  NO_SCHEMA_UPDATES = "NO_SCHEMA_UPDATES",
+  /**
+   * FULLY_COMPATIBLE_SCHEMA_UPDATES - Allowed to make fully compatible (both backward-and-forward compatible)
+   * changes to the `struct_def` in this request.
+   */
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = "FULLY_COMPATIBLE_SCHEMA_UPDATES",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function structDefCompatibilityTypeFromJSON(object: any): StructDefCompatibilityType {
+  switch (object) {
+    case 0:
+    case "NO_SCHEMA_UPDATES":
+      return StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+    case 1:
+    case "FULLY_COMPATIBLE_SCHEMA_UPDATES":
+      return StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return StructDefCompatibilityType.UNRECOGNIZED;
+  }
+}
+
+export function structDefCompatibilityTypeToNumber(object: StructDefCompatibilityType): number {
+  switch (object) {
+    case StructDefCompatibilityType.NO_SCHEMA_UPDATES:
+      return 0;
+    case StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES:
+      return 1;
+    case StructDefCompatibilityType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /** Returns the UserTaskDef with a given name and the highest version number. */
 export interface GetLatestUserTaskDefRequest {
   /** The name of the UserTaskDef to search for. */
@@ -200,49 +238,33 @@ export interface PutStructDefRequest {
    * Then the request will be accepted or rejected based on the value of the
    * allowed_update_types.
    */
-  allowedUpdates: PutStructDefRequest_AllowedStructDefUpdateType;
+  allowedUpdates: StructDefCompatibilityType;
 }
 
-export enum PutStructDefRequest_AllowedStructDefUpdateType {
-  /** NO_SCHEMA_UPDATES - No updates are allowed. */
-  NO_SCHEMA_UPDATES = "NO_SCHEMA_UPDATES",
+/**
+ * Request to validate the evolution of an existing StructDef to a new StructDef
+ * based on a compatibility type.
+ */
+export interface ValidateStructDefEvolutionRequest {
+  /** The ID of the StructDef you want to compare against that already exists on the server. */
+  structDefId:
+    | StructDefId
+    | undefined;
+  /** The new StructDef schema. */
+  structDef:
+    | InlineStructDef
+    | undefined;
   /**
-   * FULLY_COMPATIBLE_SCHEMA_UPDATES - Allowed to make fully compatible (both backward-and-forward compatible)
-   * changes to the `struct_def` in this request.
+   * The server will validate the new StructDef schema against
+   * the existing StructDef schema based on this compatibility type.
    */
-  FULLY_COMPATIBLE_SCHEMA_UPDATES = "FULLY_COMPATIBLE_SCHEMA_UPDATES",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  compatibilityType: StructDefCompatibilityType;
 }
 
-export function putStructDefRequest_AllowedStructDefUpdateTypeFromJSON(
-  object: any,
-): PutStructDefRequest_AllowedStructDefUpdateType {
-  switch (object) {
-    case 0:
-    case "NO_SCHEMA_UPDATES":
-      return PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES;
-    case 1:
-    case "FULLY_COMPATIBLE_SCHEMA_UPDATES":
-      return PutStructDefRequest_AllowedStructDefUpdateType.FULLY_COMPATIBLE_SCHEMA_UPDATES;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return PutStructDefRequest_AllowedStructDefUpdateType.UNRECOGNIZED;
-  }
-}
-
-export function putStructDefRequest_AllowedStructDefUpdateTypeToNumber(
-  object: PutStructDefRequest_AllowedStructDefUpdateType,
-): number {
-  switch (object) {
-    case PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES:
-      return 0;
-    case PutStructDefRequest_AllowedStructDefUpdateType.FULLY_COMPATIBLE_SCHEMA_UPDATES:
-      return 1;
-    case PutStructDefRequest_AllowedStructDefUpdateType.UNRECOGNIZED:
-    default:
-      return -1;
-  }
+/** Response detailing the validity of a StructDef evolution. */
+export interface ValidateStructDefEvolutionResponse {
+  /** Whether or not the StructDef evolution specified in the request is valid. */
+  isValid: boolean;
 }
 
 /** Creates a WorkflowEventDef */
@@ -1901,7 +1923,7 @@ function createBasePutStructDefRequest(): PutStructDefRequest {
     name: "",
     description: undefined,
     structDef: undefined,
-    allowedUpdates: PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES,
+    allowedUpdates: StructDefCompatibilityType.NO_SCHEMA_UPDATES,
   };
 }
 
@@ -1916,8 +1938,8 @@ export const PutStructDefRequest = {
     if (message.structDef !== undefined) {
       InlineStructDef.encode(message.structDef, writer.uint32(26).fork()).ldelim();
     }
-    if (message.allowedUpdates !== PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES) {
-      writer.uint32(32).int32(putStructDefRequest_AllowedStructDefUpdateTypeToNumber(message.allowedUpdates));
+    if (message.allowedUpdates !== StructDefCompatibilityType.NO_SCHEMA_UPDATES) {
+      writer.uint32(32).int32(structDefCompatibilityTypeToNumber(message.allowedUpdates));
     }
     return writer;
   },
@@ -1955,7 +1977,7 @@ export const PutStructDefRequest = {
             break;
           }
 
-          message.allowedUpdates = putStructDefRequest_AllowedStructDefUpdateTypeFromJSON(reader.int32());
+          message.allowedUpdates = structDefCompatibilityTypeFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1976,7 +1998,127 @@ export const PutStructDefRequest = {
     message.structDef = (object.structDef !== undefined && object.structDef !== null)
       ? InlineStructDef.fromPartial(object.structDef)
       : undefined;
-    message.allowedUpdates = object.allowedUpdates ?? PutStructDefRequest_AllowedStructDefUpdateType.NO_SCHEMA_UPDATES;
+    message.allowedUpdates = object.allowedUpdates ?? StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+    return message;
+  },
+};
+
+function createBaseValidateStructDefEvolutionRequest(): ValidateStructDefEvolutionRequest {
+  return {
+    structDefId: undefined,
+    structDef: undefined,
+    compatibilityType: StructDefCompatibilityType.NO_SCHEMA_UPDATES,
+  };
+}
+
+export const ValidateStructDefEvolutionRequest = {
+  encode(message: ValidateStructDefEvolutionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.structDefId !== undefined) {
+      StructDefId.encode(message.structDefId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.structDef !== undefined) {
+      InlineStructDef.encode(message.structDef, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.compatibilityType !== StructDefCompatibilityType.NO_SCHEMA_UPDATES) {
+      writer.uint32(24).int32(structDefCompatibilityTypeToNumber(message.compatibilityType));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ValidateStructDefEvolutionRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateStructDefEvolutionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.structDefId = StructDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.structDef = InlineStructDef.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.compatibilityType = structDefCompatibilityTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ValidateStructDefEvolutionRequest>): ValidateStructDefEvolutionRequest {
+    return ValidateStructDefEvolutionRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ValidateStructDefEvolutionRequest>): ValidateStructDefEvolutionRequest {
+    const message = createBaseValidateStructDefEvolutionRequest();
+    message.structDefId = (object.structDefId !== undefined && object.structDefId !== null)
+      ? StructDefId.fromPartial(object.structDefId)
+      : undefined;
+    message.structDef = (object.structDef !== undefined && object.structDef !== null)
+      ? InlineStructDef.fromPartial(object.structDef)
+      : undefined;
+    message.compatibilityType = object.compatibilityType ?? StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+    return message;
+  },
+};
+
+function createBaseValidateStructDefEvolutionResponse(): ValidateStructDefEvolutionResponse {
+  return { isValid: false };
+}
+
+export const ValidateStructDefEvolutionResponse = {
+  encode(message: ValidateStructDefEvolutionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.isValid !== false) {
+      writer.uint32(8).bool(message.isValid);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ValidateStructDefEvolutionResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateStructDefEvolutionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isValid = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ValidateStructDefEvolutionResponse>): ValidateStructDefEvolutionResponse {
+    return ValidateStructDefEvolutionResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ValidateStructDefEvolutionResponse>): ValidateStructDefEvolutionResponse {
+    const message = createBaseValidateStructDefEvolutionResponse();
+    message.isValid = object.isValid ?? false;
     return message;
   },
 };
@@ -8051,6 +8193,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+    validateStructDefEvolution: {
+      name: "ValidateStructDefEvolution",
+      requestType: ValidateStructDefEvolutionRequest,
+      requestStream: false,
+      responseType: ValidateStructDefEvolutionResponse,
+      responseStream: false,
+      options: {},
+    },
     /** Creates a UserTaskDef. */
     putUserTaskDef: {
       name: "PutUserTaskDef",
@@ -8783,6 +8934,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
   /** Get a StructDef. */
   getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
+  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  validateStructDefEvolution(
+    request: ValidateStructDefEvolutionRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ValidateStructDefEvolutionResponse>>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: PutUserTaskDefRequest,
@@ -9169,6 +9325,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
   /** Get a StructDef. */
   getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
+  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  validateStructDefEvolution(
+    request: DeepPartial<ValidateStructDefEvolutionRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ValidateStructDefEvolutionResponse>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: DeepPartial<PutUserTaskDefRequest>,

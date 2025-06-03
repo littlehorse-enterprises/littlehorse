@@ -6,27 +6,25 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
-import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
+import io.littlehorse.common.util.InlineStructDefUtil;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.common.util.StructDefUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
-import io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefRequest> {
 
     private String name;
     private InlineStructDefModel structDef;
-    private AllowedStructDefUpdateType allowedUpdateType;
+    private StructDefCompatibilityType allowedUpdateType;
 
     public PutStructDefRequestModel() {}
 
@@ -57,7 +55,12 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
     @Override
     public Message process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
-        this.validate();
+
+        if (!LHUtil.isValidLHName(name)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "StructDef name must be a valid hostname");
+        }
+
+        structDef.validate();
 
         StructDefModel spec = new StructDefModel(context);
         spec.setId(new StructDefIdModel(name, 0));
@@ -67,11 +70,11 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         StructDefModel oldVersion = context.service().getStructDef(name, null);
 
         if (oldVersion != null) {
-            if (StructDefUtil.equals(spec, oldVersion)) {
+            if (InlineStructDefUtil.equals(spec.getStructDef(), oldVersion.getStructDef())) {
                 return oldVersion.toProto().build();
             }
 
-            verifyUpdateType(allowedUpdateType, spec, oldVersion);
+            verifyUpdateType(allowedUpdateType, spec.getStructDef(), oldVersion.getStructDef());
             spec.getObjectId().setVersion(oldVersion.getObjectId().getVersion() + 1);
         }
 
@@ -80,50 +83,32 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
     }
 
     private void verifyUpdateType(
-            AllowedStructDefUpdateType allowedUpdateType, StructDefModel newSpec, StructDefModel oldSpec) {
+            StructDefCompatibilityType allowedUpdateType, InlineStructDefModel newSpec, InlineStructDefModel oldSpec) {
+        Set<String> changedFields = new HashSet<>();
+
         switch (allowedUpdateType) {
             case FULLY_COMPATIBLE_SCHEMA_UPDATES:
-                validateFullyCompatibleSchema(newSpec, oldSpec);
+                changedFields.addAll(InlineStructDefUtil.getIncompatibleFields(
+                        StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES, newSpec, oldSpec));
                 break;
             case NO_SCHEMA_UPDATES:
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "StructDef [%s] already exists and cannot be updated with the selected compatiblity type NO_SCHEMA_UPDATES."
-                                .formatted(name));
+                changedFields.addAll(InlineStructDefUtil.getIncompatibleFields(
+                        StructDefCompatibilityType.NO_SCHEMA_UPDATES, newSpec, oldSpec));
             case UNRECOGNIZED:
             default:
                 break;
         }
-    }
-
-    private void validateFullyCompatibleSchema(StructDefModel newSpec, StructDefModel oldSpec) {
-        List<Entry<String, StructFieldDefModel>> changedFields = StructDefUtil.getBreakingChanges(newSpec, oldSpec);
 
         if (changedFields.isEmpty()) return;
 
         StringBuilder errorMessage = new StringBuilder("Incompatible schema evolution on field(s): ");
-
-        String fieldNames = changedFields.stream()
-                .map(Entry::getKey)
-                .map((keyStr) -> "[%s]".formatted(keyStr))
-                .collect(Collectors.joining(", "));
-
-        errorMessage.append(fieldNames);
-
+        errorMessage.append(changedFields.toString());
         throw new LHApiException(Status.INVALID_ARGUMENT, errorMessage.toString());
     }
 
     @Override
     public Class<PutStructDefRequest> getProtoBaseClass() {
         return PutStructDefRequest.class;
-    }
-
-    public void validate() {
-        if (!LHUtil.isValidLHName(name)) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "StructDef name must be a valid hostname");
-        }
-
-        structDef.validate();
     }
 
     public static PutStructDefRequestModel fromProto(PutStructDefRequest p, ExecutionContext context) {

@@ -28,9 +28,16 @@ class AllowedUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     ALL_UPDATES: _ClassVar[AllowedUpdateType]
     MINOR_REVISION_UPDATES: _ClassVar[AllowedUpdateType]
     NO_UPDATES: _ClassVar[AllowedUpdateType]
+
+class StructDefCompatibilityType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    NO_SCHEMA_UPDATES: _ClassVar[StructDefCompatibilityType]
+    FULLY_COMPATIBLE_SCHEMA_UPDATES: _ClassVar[StructDefCompatibilityType]
 ALL_UPDATES: AllowedUpdateType
 MINOR_REVISION_UPDATES: AllowedUpdateType
 NO_UPDATES: AllowedUpdateType
+NO_SCHEMA_UPDATES: StructDefCompatibilityType
+FULLY_COMPATIBLE_SCHEMA_UPDATES: StructDefCompatibilityType
 
 class GetLatestUserTaskDefRequest(_message.Message):
     __slots__ = ["name"]
@@ -73,12 +80,6 @@ class PutTaskDefRequest(_message.Message):
 
 class PutStructDefRequest(_message.Message):
     __slots__ = ["name", "description", "struct_def", "allowed_updates"]
-    class AllowedStructDefUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = []
-        NO_SCHEMA_UPDATES: _ClassVar[PutStructDefRequest.AllowedStructDefUpdateType]
-        FULLY_COMPATIBLE_SCHEMA_UPDATES: _ClassVar[PutStructDefRequest.AllowedStructDefUpdateType]
-    NO_SCHEMA_UPDATES: PutStructDefRequest.AllowedStructDefUpdateType
-    FULLY_COMPATIBLE_SCHEMA_UPDATES: PutStructDefRequest.AllowedStructDefUpdateType
     NAME_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
@@ -86,8 +87,24 @@ class PutStructDefRequest(_message.Message):
     name: str
     description: str
     struct_def: _struct_def_pb2.InlineStructDef
-    allowed_updates: PutStructDefRequest.AllowedStructDefUpdateType
-    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[PutStructDefRequest.AllowedStructDefUpdateType, str]] = ...) -> None: ...
+    allowed_updates: StructDefCompatibilityType
+    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+
+class ValidateStructDefEvolutionRequest(_message.Message):
+    __slots__ = ["struct_def_id", "struct_def", "compatibility_type"]
+    STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
+    COMPATIBILITY_TYPE_FIELD_NUMBER: _ClassVar[int]
+    struct_def_id: _object_id_pb2.StructDefId
+    struct_def: _struct_def_pb2.InlineStructDef
+    compatibility_type: StructDefCompatibilityType
+    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., compatibility_type: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+
+class ValidateStructDefEvolutionResponse(_message.Message):
+    __slots__ = ["is_valid"]
+    IS_VALID_FIELD_NUMBER: _ClassVar[int]
+    is_valid: bool
+    def __init__(self, is_valid: bool = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
     __slots__ = ["name", "content_type"]

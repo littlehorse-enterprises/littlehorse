@@ -387,6 +387,37 @@ public final class LittleHorseGrpc {
     return getGetStructDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+      io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ValidateStructDefEvolution",
+      requestType = io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+      io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest, io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod;
+    if ((getValidateStructDefEvolutionMethod = LittleHorseGrpc.getValidateStructDefEvolutionMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getValidateStructDefEvolutionMethod = LittleHorseGrpc.getValidateStructDefEvolutionMethod) == null) {
+          LittleHorseGrpc.getValidateStructDefEvolutionMethod = getValidateStructDefEvolutionMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest, io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ValidateStructDefEvolution"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ValidateStructDefEvolution"))
+              .build();
+        }
+      }
+    }
+    return getValidateStructDefEvolutionMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutUserTaskDefRequest,
       io.littlehorse.sdk.common.proto.UserTaskDef> getPutUserTaskDefMethod;
 
@@ -2613,6 +2644,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    default void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getValidateStructDefEvolutionMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Creates a UserTaskDef.
      * </pre>
      */
@@ -3474,6 +3515,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4386,6 +4438,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getValidateStructDefEvolutionMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Creates a UserTaskDef.
      * </pre>
      */
@@ -5229,6 +5291,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> validateStructDefEvolution(
+        io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Creates a UserTaskDef.
      * </pre>
      */
@@ -5989,72 +6062,73 @@ public final class LittleHorseGrpc {
   private static final int METHODID_MIGRATE_WF_SPEC = 9;
   private static final int METHODID_PUT_STRUCT_DEF = 10;
   private static final int METHODID_GET_STRUCT_DEF = 11;
-  private static final int METHODID_PUT_USER_TASK_DEF = 12;
-  private static final int METHODID_GET_USER_TASK_DEF = 13;
-  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 14;
-  private static final int METHODID_RUN_WF = 15;
-  private static final int METHODID_SCHEDULE_WF = 16;
-  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 17;
-  private static final int METHODID_GET_SCHEDULED_WF_RUN = 18;
-  private static final int METHODID_GET_WF_RUN = 19;
-  private static final int METHODID_GET_USER_TASK_RUN = 20;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 21;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 22;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 23;
-  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 24;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 25;
-  private static final int METHODID_GET_NODE_RUN = 26;
-  private static final int METHODID_LIST_NODE_RUNS = 27;
-  private static final int METHODID_GET_TASK_RUN = 28;
-  private static final int METHODID_LIST_TASK_RUNS = 29;
-  private static final int METHODID_GET_VARIABLE = 30;
-  private static final int METHODID_LIST_VARIABLES = 31;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 32;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 33;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 34;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 35;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 36;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 37;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 38;
-  private static final int METHODID_SEARCH_WF_RUN = 39;
-  private static final int METHODID_SEARCH_NODE_RUN = 40;
-  private static final int METHODID_SEARCH_TASK_RUN = 41;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 42;
-  private static final int METHODID_SEARCH_VARIABLE = 43;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 44;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 45;
-  private static final int METHODID_SEARCH_TASK_DEF = 46;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 47;
-  private static final int METHODID_SEARCH_WF_SPEC = 48;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 49;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 50;
-  private static final int METHODID_SEARCH_TENANT = 51;
-  private static final int METHODID_SEARCH_PRINCIPAL = 52;
-  private static final int METHODID_REGISTER_TASK_WORKER = 53;
-  private static final int METHODID_REPORT_TASK = 54;
-  private static final int METHODID_STOP_WF_RUN = 55;
-  private static final int METHODID_RESUME_WF_RUN = 56;
-  private static final int METHODID_RESCUE_THREAD_RUN = 57;
-  private static final int METHODID_DELETE_WF_RUN = 58;
-  private static final int METHODID_DELETE_TASK_DEF = 59;
-  private static final int METHODID_DELETE_STRUCT_DEF = 60;
-  private static final int METHODID_DELETE_WF_SPEC = 61;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 62;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 63;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 64;
-  private static final int METHODID_DELETE_PRINCIPAL = 65;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 66;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 67;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 68;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 69;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 70;
-  private static final int METHODID_PUT_TENANT = 71;
-  private static final int METHODID_GET_TENANT = 72;
-  private static final int METHODID_PUT_PRINCIPAL = 73;
-  private static final int METHODID_GET_PRINCIPAL = 74;
-  private static final int METHODID_WHOAMI = 75;
-  private static final int METHODID_GET_SERVER_VERSION = 76;
-  private static final int METHODID_POLL_TASK = 77;
+  private static final int METHODID_VALIDATE_STRUCT_DEF_EVOLUTION = 12;
+  private static final int METHODID_PUT_USER_TASK_DEF = 13;
+  private static final int METHODID_GET_USER_TASK_DEF = 14;
+  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 15;
+  private static final int METHODID_RUN_WF = 16;
+  private static final int METHODID_SCHEDULE_WF = 17;
+  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 18;
+  private static final int METHODID_GET_SCHEDULED_WF_RUN = 19;
+  private static final int METHODID_GET_WF_RUN = 20;
+  private static final int METHODID_GET_USER_TASK_RUN = 21;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 22;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 23;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 24;
+  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 25;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 26;
+  private static final int METHODID_GET_NODE_RUN = 27;
+  private static final int METHODID_LIST_NODE_RUNS = 28;
+  private static final int METHODID_GET_TASK_RUN = 29;
+  private static final int METHODID_LIST_TASK_RUNS = 30;
+  private static final int METHODID_GET_VARIABLE = 31;
+  private static final int METHODID_LIST_VARIABLES = 32;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 33;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 34;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 35;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 36;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 37;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 38;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 39;
+  private static final int METHODID_SEARCH_WF_RUN = 40;
+  private static final int METHODID_SEARCH_NODE_RUN = 41;
+  private static final int METHODID_SEARCH_TASK_RUN = 42;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 43;
+  private static final int METHODID_SEARCH_VARIABLE = 44;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 45;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 46;
+  private static final int METHODID_SEARCH_TASK_DEF = 47;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 48;
+  private static final int METHODID_SEARCH_WF_SPEC = 49;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 50;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 51;
+  private static final int METHODID_SEARCH_TENANT = 52;
+  private static final int METHODID_SEARCH_PRINCIPAL = 53;
+  private static final int METHODID_REGISTER_TASK_WORKER = 54;
+  private static final int METHODID_REPORT_TASK = 55;
+  private static final int METHODID_STOP_WF_RUN = 56;
+  private static final int METHODID_RESUME_WF_RUN = 57;
+  private static final int METHODID_RESCUE_THREAD_RUN = 58;
+  private static final int METHODID_DELETE_WF_RUN = 59;
+  private static final int METHODID_DELETE_TASK_DEF = 60;
+  private static final int METHODID_DELETE_STRUCT_DEF = 61;
+  private static final int METHODID_DELETE_WF_SPEC = 62;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 63;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 64;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 65;
+  private static final int METHODID_DELETE_PRINCIPAL = 66;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 67;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 68;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 69;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 70;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 71;
+  private static final int METHODID_PUT_TENANT = 72;
+  private static final int METHODID_GET_TENANT = 73;
+  private static final int METHODID_PUT_PRINCIPAL = 74;
+  private static final int METHODID_GET_PRINCIPAL = 75;
+  private static final int METHODID_WHOAMI = 76;
+  private static final int METHODID_GET_SERVER_VERSION = 77;
+  private static final int METHODID_POLL_TASK = 78;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6120,6 +6194,10 @@ public final class LittleHorseGrpc {
         case METHODID_GET_STRUCT_DEF:
           serviceImpl.getStructDef((io.littlehorse.sdk.common.proto.StructDefId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef>) responseObserver);
+          break;
+        case METHODID_VALIDATE_STRUCT_DEF_EVOLUTION:
+          serviceImpl.validateStructDefEvolution((io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>) responseObserver);
           break;
         case METHODID_PUT_USER_TASK_DEF:
           serviceImpl.putUserTaskDef((io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) request,
@@ -6486,6 +6564,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.StructDefId,
               io.littlehorse.sdk.common.proto.StructDef>(
                 service, METHODID_GET_STRUCT_DEF)))
+        .addMethod(
+          getValidateStructDefEvolutionMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+              io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>(
+                service, METHODID_VALIDATE_STRUCT_DEF_EVOLUTION)))
         .addMethod(
           getPutUserTaskDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -7008,6 +7093,7 @@ public final class LittleHorseGrpc {
               .addMethod(getMigrateWfSpecMethod())
               .addMethod(getPutStructDefMethod())
               .addMethod(getGetStructDefMethod())
+              .addMethod(getValidateStructDefEvolutionMethod())
               .addMethod(getPutUserTaskDefMethod())
               .addMethod(getGetUserTaskDefMethod())
               .addMethod(getGetLatestUserTaskDefMethod())

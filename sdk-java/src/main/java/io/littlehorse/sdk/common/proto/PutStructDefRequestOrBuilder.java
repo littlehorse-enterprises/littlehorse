@@ -93,7 +93,7 @@ public interface PutStructDefRequestOrBuilder extends
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+   * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
    * @return The enum numeric value on the wire for allowedUpdates.
    */
   int getAllowedUpdatesValue();
@@ -107,8 +107,8 @@ public interface PutStructDefRequestOrBuilder extends
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+   * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
    * @return The allowedUpdates.
    */
-  io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType getAllowedUpdates();
+  io.littlehorse.sdk.common.proto.StructDefCompatibilityType getAllowedUpdates();
 }

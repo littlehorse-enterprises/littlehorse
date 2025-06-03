@@ -108,6 +108,11 @@ class LittleHorseStub(object):
                 request_serializer=object__id__pb2.StructDefId.SerializeToString,
                 response_deserializer=struct__def__pb2.StructDef.FromString,
                 _registered_method=True)
+        self.ValidateStructDefEvolution = channel.unary_unary(
+                '/littlehorse.LittleHorse/ValidateStructDefEvolution',
+                request_serializer=service__pb2.ValidateStructDefEvolutionRequest.SerializeToString,
+                response_deserializer=service__pb2.ValidateStructDefEvolutionResponse.FromString,
+                _registered_method=True)
         self.PutUserTaskDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutUserTaskDef',
                 request_serializer=service__pb2.PutUserTaskDefRequest.SerializeToString,
@@ -536,6 +541,13 @@ class LittleHorseServicer(object):
 
     def GetStructDef(self, request, context):
         """Get a StructDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ValidateStructDefEvolution(self, request, context):
+        """Validate evolution of an existing `StructDef` into a new `StructDef`
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1113,6 +1125,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetStructDef,
                     request_deserializer=object__id__pb2.StructDefId.FromString,
                     response_serializer=struct__def__pb2.StructDef.SerializeToString,
+            ),
+            'ValidateStructDefEvolution': grpc.unary_unary_rpc_method_handler(
+                    servicer.ValidateStructDefEvolution,
+                    request_deserializer=service__pb2.ValidateStructDefEvolutionRequest.FromString,
+                    response_serializer=service__pb2.ValidateStructDefEvolutionResponse.SerializeToString,
             ),
             'PutUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutUserTaskDef,
@@ -1769,6 +1786,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetStructDef',
             object__id__pb2.StructDefId.SerializeToString,
             struct__def__pb2.StructDef.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ValidateStructDefEvolution(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ValidateStructDefEvolution',
+            service__pb2.ValidateStructDefEvolutionRequest.SerializeToString,
+            service__pb2.ValidateStructDefEvolutionResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -10,8 +10,10 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.text.MessageFormat;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode(callSuper = false)
 public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     @Getter

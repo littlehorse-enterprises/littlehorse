@@ -14,6 +14,7 @@ import lombok.Setter;
 
 public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructDefModel> {
 
+    @Getter
     private String name;
 
     @Getter

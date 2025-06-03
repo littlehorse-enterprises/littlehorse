@@ -45,132 +45,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.PutStructDefRequest.class, io.littlehorse.sdk.common.proto.PutStructDefRequest.Builder.class);
   }
 
-  /**
-   * Protobuf enum {@code littlehorse.PutStructDefRequest.AllowedStructDefUpdateType}
-   */
-  public enum AllowedStructDefUpdateType
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <pre>
-     * No updates are allowed.
-     * </pre>
-     *
-     * <code>NO_SCHEMA_UPDATES = 0;</code>
-     */
-    NO_SCHEMA_UPDATES(0),
-    /**
-     * <pre>
-     * Allowed to make fully compatible (both backward-and-forward compatible)
-     * changes to the `struct_def` in this request.
-     * </pre>
-     *
-     * <code>FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;</code>
-     */
-    FULLY_COMPATIBLE_SCHEMA_UPDATES(1),
-    UNRECOGNIZED(-1),
-    ;
-
-    /**
-     * <pre>
-     * No updates are allowed.
-     * </pre>
-     *
-     * <code>NO_SCHEMA_UPDATES = 0;</code>
-     */
-    public static final int NO_SCHEMA_UPDATES_VALUE = 0;
-    /**
-     * <pre>
-     * Allowed to make fully compatible (both backward-and-forward compatible)
-     * changes to the `struct_def` in this request.
-     * </pre>
-     *
-     * <code>FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;</code>
-     */
-    public static final int FULLY_COMPATIBLE_SCHEMA_UPDATES_VALUE = 1;
-
-
-    public final int getNumber() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
-      }
-      return value;
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static AllowedStructDefUpdateType valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     */
-    public static AllowedStructDefUpdateType forNumber(int value) {
-      switch (value) {
-        case 0: return NO_SCHEMA_UPDATES;
-        case 1: return FULLY_COMPATIBLE_SCHEMA_UPDATES;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<AllowedStructDefUpdateType>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        AllowedStructDefUpdateType> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<AllowedStructDefUpdateType>() {
-            public AllowedStructDefUpdateType findValueByNumber(int number) {
-              return AllowedStructDefUpdateType.forNumber(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
-      return getDescriptor().getValues().get(ordinal());
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDescriptor().getEnumTypes().get(0);
-    }
-
-    private static final AllowedStructDefUpdateType[] VALUES = values();
-
-    public static AllowedStructDefUpdateType valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      if (desc.getIndex() == -1) {
-        return UNRECOGNIZED;
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int value;
-
-    private AllowedStructDefUpdateType(int value) {
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:littlehorse.PutStructDefRequest.AllowedStructDefUpdateType)
-  }
-
   private int bitField0_;
   public static final int NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
@@ -328,7 +202,7 @@ private static final long serialVersionUID = 0L;
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+   * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
    * @return The enum numeric value on the wire for allowedUpdates.
    */
   @java.lang.Override public int getAllowedUpdatesValue() {
@@ -344,12 +218,12 @@ private static final long serialVersionUID = 0L;
    * allowed_update_types.
    * </pre>
    *
-   * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+   * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
    * @return The allowedUpdates.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType getAllowedUpdates() {
-    io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType result = io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.forNumber(allowedUpdates_);
-    return result == null ? io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.StructDefCompatibilityType getAllowedUpdates() {
+    io.littlehorse.sdk.common.proto.StructDefCompatibilityType result = io.littlehorse.sdk.common.proto.StructDefCompatibilityType.forNumber(allowedUpdates_);
+    return result == null ? io.littlehorse.sdk.common.proto.StructDefCompatibilityType.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -375,7 +249,7 @@ private static final long serialVersionUID = 0L;
     if (structDef_ != null) {
       output.writeMessage(3, getStructDef());
     }
-    if (allowedUpdates_ != io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.NO_SCHEMA_UPDATES.getNumber()) {
+    if (allowedUpdates_ != io.littlehorse.sdk.common.proto.StructDefCompatibilityType.NO_SCHEMA_UPDATES.getNumber()) {
       output.writeEnum(4, allowedUpdates_);
     }
     getUnknownFields().writeTo(output);
@@ -397,7 +271,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getStructDef());
     }
-    if (allowedUpdates_ != io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.NO_SCHEMA_UPDATES.getNumber()) {
+    if (allowedUpdates_ != io.littlehorse.sdk.common.proto.StructDefCompatibilityType.NO_SCHEMA_UPDATES.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, allowedUpdates_);
     }
@@ -1133,7 +1007,7 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+     * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
      * @return The enum numeric value on the wire for allowedUpdates.
      */
     @java.lang.Override public int getAllowedUpdatesValue() {
@@ -1149,7 +1023,7 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+     * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
      * @param value The enum numeric value on the wire for allowedUpdates to set.
      * @return This builder for chaining.
      */
@@ -1169,13 +1043,13 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+     * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
      * @return The allowedUpdates.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType getAllowedUpdates() {
-      io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType result = io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.forNumber(allowedUpdates_);
-      return result == null ? io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.StructDefCompatibilityType getAllowedUpdates() {
+      io.littlehorse.sdk.common.proto.StructDefCompatibilityType result = io.littlehorse.sdk.common.proto.StructDefCompatibilityType.forNumber(allowedUpdates_);
+      return result == null ? io.littlehorse.sdk.common.proto.StructDefCompatibilityType.UNRECOGNIZED : result;
     }
     /**
      * <pre>
@@ -1187,11 +1061,11 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+     * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
      * @param value The allowedUpdates to set.
      * @return This builder for chaining.
      */
-    public Builder setAllowedUpdates(io.littlehorse.sdk.common.proto.PutStructDefRequest.AllowedStructDefUpdateType value) {
+    public Builder setAllowedUpdates(io.littlehorse.sdk.common.proto.StructDefCompatibilityType value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -1210,7 +1084,7 @@ private static final long serialVersionUID = 0L;
      * allowed_update_types.
      * </pre>
      *
-     * <code>.littlehorse.PutStructDefRequest.AllowedStructDefUpdateType allowed_updates = 4;</code>
+     * <code>.littlehorse.StructDefCompatibilityType allowed_updates = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearAllowedUpdates() {

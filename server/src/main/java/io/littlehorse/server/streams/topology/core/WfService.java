@@ -104,6 +104,10 @@ public class WfService {
         return findStructDef.get();
     }
 
+    public StructDefModel getStructDef(StructDefIdModel id) {
+        return getStructDef(id.getName(), id.getVersion());
+    }
+
     public TaskDefModel getTaskDef(String name) {
         /*TaskDefIdModel id = new TaskDefIdModel(name);
         Supplier<TaskDef> findTaskDef = () -> {
