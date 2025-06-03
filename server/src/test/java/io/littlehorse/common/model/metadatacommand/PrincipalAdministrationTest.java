@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.metadatacommand;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+import com.google.protobuf.Message;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -38,6 +37,7 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -49,7 +49,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -88,7 +87,7 @@ public class PrincipalAdministrationTest {
 
     private final ClusterScopedStore defaultStore =
             ClusterScopedStore.newInstance(nativeMetadataStore, executionContext);
-    private final AsyncWaiters asyncWaiters = mock(AsyncWaiters.class);
+    private final AsyncWaiters asyncWaiters = new AsyncWaiters();
 
     @BeforeEach
     public void setup() {
@@ -190,12 +189,14 @@ public class PrincipalAdministrationTest {
     @Test
     public void shouldPreventPrincipalOverwriteIfItIsNotMarkedToOverwrite() {
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
-        sendCommand(putPrincipalRequest);
+        MetadataCommandModel commandSent1 = sendCommand(putPrincipalRequest);
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(false);
         metadataCache.clear();
-        MetadataCommandModel command = sendCommand(putPrincipalRequest);
-        verify(server).sendErrorToClient(eq(command.getCommandId()), any());
+        MetadataCommandModel commandSent2 = sendCommand(putPrincipalRequest);
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(commandSent2.getCommandId(), Message.class, new CompletableFuture<>());
+        assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(LHApiException.class);
     }
 
     @Test
@@ -234,8 +235,10 @@ public class PrincipalAdministrationTest {
         requester.getPerTenantAcls().clear();
         requester.setGlobalAcls(TestUtil.singleAdminAcl("tyler"));
         defaultStore.put(new StoredGetable<>(requester));
-        sendCommand(putPrincipalRequest);
-        verify(server, never()).sendErrorToClient(any(), any());
+        MetadataCommandModel commandSent = sendCommand(putPrincipalRequest);
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(commandSent.getCommandId(), Message.class, new CompletableFuture<>());
+        assertThat(futureResponse.getNow(null)).isNotNull();
     }
 
     @Test
@@ -253,8 +256,11 @@ public class PrincipalAdministrationTest {
         defaultStore.put(new StoredGetable<>(requester));
 
         putPrincipalRequest.getPerTenantAcls().clear();
-        sendCommand(putPrincipalRequest);
-        verify(server, never()).sendErrorToClient(any(), any());
+
+        MetadataCommandModel commandSent = sendCommand(putPrincipalRequest);
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(commandSent.getCommandId(), Message.class, new CompletableFuture<>());
+        assertThat(futureResponse.getNow(null)).isNotNull();
     }
 
     @Test
@@ -264,12 +270,9 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithTenantResource()));
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 
-        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
-
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
-
-        Exception thrown = exceptionArgumentCaptor.getValue();
-        assertThat(thrown)
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage(
@@ -283,12 +286,9 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithPrincipalResource()));
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 
-        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
-
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
-
-        Exception thrown = exceptionArgumentCaptor.getValue();
-        assertThat(thrown)
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage(
@@ -306,12 +306,9 @@ public class PrincipalAdministrationTest {
 
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 
-        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
-
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
-
-        Exception thrown = exceptionArgumentCaptor.getValue();
-        assertThat(thrown)
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage("PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_PRINCIPAL.");
@@ -331,12 +328,9 @@ public class PrincipalAdministrationTest {
 
         MetadataCommandModel command = sendCommand(putTenantRequest);
 
-        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
-
-        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
-
-        Exception thrown = exceptionArgumentCaptor.getValue();
-        assertThat(thrown)
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage("PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_TENANT.");

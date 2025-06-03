@@ -1,12 +1,8 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
@@ -21,8 +17,10 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -61,6 +59,8 @@ public class PutWorkflowEventDefRequestModelTest {
     @Mock
     private LHServer server;
 
+    private final AsyncWaiters asyncWaiters = new AsyncWaiters();
+
     private final MetadataCache metadataCache = new MetadataCache();
     private final String tenantId = LHConstants.DEFAULT_TENANT;
     private TestMetadataManager metadataManager;
@@ -68,7 +68,7 @@ public class PutWorkflowEventDefRequestModelTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters);
         metadataManager = TestMetadataManager.create(nativeMetadataStore, tenantId, executionContext);
     }
 
@@ -84,13 +84,18 @@ public class PutWorkflowEventDefRequestModelTest {
         sendCommand(putWorkflowEventDef);
         WorkflowEventDefModel storedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-created"));
         Assertions.assertThat(storedEventDef).isNotNull();
-        sendCommand(new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.INT)));
-        verify(server, times(1)).sendErrorToClient(anyString(), any());
+        MetadataCommandModel commandSent =
+                sendCommand(new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.INT)));
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(commandSent.getCommandId(), Message.class, new CompletableFuture<>());
+        Assertions.assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(IllegalArgumentException.class);
         PutWorkflowEventDefRequestModel userUpdatedCommand =
                 new PutWorkflowEventDefRequestModel("user-updated", new ReturnTypeModel(VariableType.STR));
         reset(server);
-        sendCommand(userUpdatedCommand);
-        verify(server, never()).sendErrorToClient(anyString(), any());
+        MetadataCommandModel commandSent2 = sendCommand(userUpdatedCommand);
+        CompletableFuture<Message> futureResponse2 =
+                asyncWaiters.getOrRegisterFuture(commandSent2.getCommandId(), Message.class, new CompletableFuture<>());
+        Assertions.assertThat(futureResponse2.getNow(null)).isNotNull();
         WorkflowEventDefModel userUpdatedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-updated"));
         Assertions.assertThat(userUpdatedEventDef).isNotNull();
     }
