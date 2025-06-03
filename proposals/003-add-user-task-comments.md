@@ -33,8 +33,6 @@ message UTEComment {
   // Flag representing if this comment has been edited 
   boolean is_edited = 4; 
 
-  // Flag representing if this comment has been deleted 
-  boolean is_deleted = 5
 }
 
 message UTEDeleteComment {
@@ -127,8 +125,7 @@ List of events in the `UserTaskRun` object will look like this:
         "userCommentId": "4db2eff5-74a9-464a-be1b-2e22e341a086",
         "userId": "anakin",
         "comment": "This is a test comment",
-        "isEdited": false,
-        "isDeleted": true
+        "isEdited": false
       }
     },
     {
@@ -145,8 +142,7 @@ List of events in the `UserTaskRun` object will look like this:
         "userCommentId": "d46abb2d-96bf-4e16-a9b8-6966b8686e5e",
         "userId": "mace",
         "comment": "This is other test comment",
-        "isEdited": true,
-        "isDeleted": false
+        "isEdited": false
       }
     },
     {
@@ -154,10 +150,22 @@ List of events in the `UserTaskRun` object will look like this:
       "comment_deleted": {
         "userCommentId": "4db2eff5-74a9-464a-be1b-2e22e341a086"
       }
-    }
+    },
+     {
+      "time": "2025-06-02T17:00:01.710Z",
+      "commented": {
+        "userCommentId": "d46abb2d-96bf-4e16-a9b8-6966b8686e5e",
+        "userId": "mace",
+        "comment": "This is other test comment",
+        "isEdited": true
+      }
+    },
   ]
 }
 ```
+
+`UserTaskRunEvents` should be append only. In order to sort UserComments the front end will have to lookup via `userCommentId` and sort by time. The most recent `UserTaskRunEvents`(UTEComment or UTECommentDeleted) will represent whether the Comment has been inserted,edited, or deleted . 
+
 
 ### Option 2: Add comments through a list of new objects in the UserTaskRun
 It is possible to add comments through a new object which can be added as a repeated field in the `UserTaskRun` object. 
