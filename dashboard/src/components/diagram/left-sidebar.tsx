@@ -6,9 +6,11 @@ import { LeftSidebarTabId } from "@/types/leftSidebarTabs"
 import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { WfRun, WfSpec } from "littlehorse-client/proto"
 import { Play } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import LeftSidebarTabs from "./left-sidebar-tabs"
 import WfSpecTab from "./wf-spec-tab"
+import WfRunTab from "./wf-run-tab"
+import { SelectionProvider } from "@/components/context/selection-context"
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
   WfSpec: "Workflow Specification",
@@ -27,6 +29,15 @@ export default function LeftSidebar({
 }: LeftSidebarProps) {
   const [activeTab, setActiveTab] = useState<LeftSidebarTabId>("WfSpec")
   const [isExpanded, setExpanded] = useState(false)
+
+  // Auto-expand sidebar when tab is WfRuns or ScheduledWfRuns
+  useEffect(() => {
+    if (activeTab === "WfRuns" || activeTab === "ScheduledWfRuns") {
+      setExpanded(true)
+    } else if (activeTab === "WfSpec") {
+      setExpanded(false)
+    }
+  }, [activeTab])
 
   return (
     <div
@@ -63,16 +74,26 @@ export default function LeftSidebar({
       <LeftSidebarTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Tab Content */}
-      <div>
-        <div className="flex flex-col flex-1 overflow-hidden">
+      <SelectionProvider>
+        <div className="flex-1 flex flex-col overflow-hidden">
           <div className="border-b border-gray-200 p-2 text-xs text-[#656565]">
             <span className="font-medium">{tabDescriptions[activeTab]}</span>
           </div>
-          {activeTab === "WfSpec" && (
-            <WfSpecTab wfSpec={wfSpec} wfRun={wfRun} />
-          )}
+          <div className="flex-1 overflow-auto">
+            {activeTab === "WfSpec" && (
+              <WfSpecTab wfSpec={wfSpec} wfRun={wfRun} />
+            )}
+            {activeTab === "WfRuns" && (
+              <WfRunTab />
+            )}
+            {activeTab === "ScheduledWfRuns" && (
+              <div className="p-4 text-center text-gray-500">
+                Scheduled Workflow Runs content coming soon...
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </SelectionProvider>
 
       {/* Run Workflow Button */}
       <div className="border-t border-gray-200 p-4 mt-auto">

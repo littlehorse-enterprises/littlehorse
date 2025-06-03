@@ -17,7 +17,7 @@ interface LeftSidebarTabsProps {
 
 export default function LeftSidebarTabs({ activeTab, setActiveTab }: LeftSidebarTabsProps) {
   return (
-    <div className="border-b border-gray-200 px-2 py-1">
+    <div className="border-b border-gray-200 px-2 py-1 h-10">
       {/* type casting with "as" here is fine because we know that the value is a valid LeftSidebarTabId and it will never not be */}
       <Tabs value={activeTab} onValueChange={(value: string) => setActiveTab(value as LeftSidebarTabId)} className="w-full">
         <TabsList className="w-full h-8 bg-transparent">

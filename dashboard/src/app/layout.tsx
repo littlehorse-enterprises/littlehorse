@@ -32,7 +32,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} h-screen`}
       >
         <Header session={session} />
-        <main>
+        <main className="h-[calc(100vh-64px)]">
           {children}
         </main>
       </body>
