@@ -7,6 +7,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
+import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -18,13 +19,141 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.time.Duration;
+import java.util.UUID;
 import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @LHTest
 public class StructDefLifecycleTest {
     private LittleHorseBlockingStub client;
+
+    @Test
+    void shouldBumpVersionWhenPuttingCompatibleStructDefChanges() {
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName("car-0")
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                        .build()))
+                .build());
+
+        waitForStructDef("car-0", 0);
+
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName("car-0")
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                        .build())
+                        .putFields(
+                                "year",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.INT))
+                                        .setDefaultValue(
+                                                VariableValue.newBuilder().setInt(1970))
+                                        .build()))
+                .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                .build());
+
+        waitForStructDef("car-0", 1);
+    }
+
+    @Test
+    void shouldNotBumpVersionWhenPuttingIncompatibleStructDefChanges() {
+        String structDefName = UUID.randomUUID().toString();
+
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                        .build()))
+                .build());
+
+        waitForStructDef(structDefName, 0);
+
+        assertThatThrownBy(() -> {
+                    client.putStructDef(PutStructDefRequest.newBuilder()
+                            .setName(structDefName)
+                            .setStructDef(InlineStructDef.newBuilder()
+                                    .putFields(
+                                            "model",
+                                            StructFieldDef.newBuilder()
+                                                    .setFieldType(TypeDefinition.newBuilder()
+                                                            .setType(VariableType.STR))
+                                                    .build())
+                                    .putFields(
+                                            "year",
+                                            StructFieldDef.newBuilder()
+                                                    .setFieldType(TypeDefinition.newBuilder()
+                                                            .setType(VariableType.INT))
+                                                    .build()))
+                            .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                            .build());
+                })
+                .isInstanceOf(StatusRuntimeException.class);
+
+        assertThatThrownBy(() -> {
+                    waitForStructDef(structDefName, 1);
+                })
+                .isInstanceOf(ConditionTimeoutException.class);
+    }
+
+    @Test
+    void shouldReturnLatestVersionWhenFetchingStructDefIdWithNullVersion() {
+        String structDefName = UUID.randomUUID().toString();
+
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                        .build()))
+                .build());
+
+        waitForStructDef(structDefName, 0);
+
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                        .build())
+                        .putFields(
+                                "year",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.INT))
+                                        .setDefaultValue(
+                                                VariableValue.newBuilder().setInt(1970))
+                                        .build()))
+                .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                .build());
+
+        waitForStructDef(structDefName, 1);
+
+        StructDef latestStructDef = client.getStructDef(
+                StructDefId.newBuilder().setName(structDefName).build());
+        assertThat(latestStructDef.getId().getVersion()).isEqualTo(1);
+    }
 
     @Nested
     class NoSchemaUpdatesEvolutionTest {
@@ -62,7 +191,8 @@ public class StructDefLifecycleTest {
 
             assertThatThrownBy(() -> client.putStructDef(updatedStructDef))
                     .isInstanceOf(StatusRuntimeException.class)
-                    .hasMessage("INVALID_ARGUMENT: Incompatible schema evolution on field(s): [year]");
+                    .hasMessage(
+                            "INVALID_ARGUMENT: Incompatible StructDef evolution on field(s): [year] using NO_SCHEMA_UPDATES compatibility type");
         }
 
         @Test
@@ -78,7 +208,7 @@ public class StructDefLifecycleTest {
                                             .build()))
                     .build());
 
-            waitForStructDef("car-4");
+            waitForStructDef("car-4", 0);
 
             ValidateStructDefEvolutionResponse resp =
                     client.validateStructDefEvolution(ValidateStructDefEvolutionRequest.newBuilder()
@@ -117,7 +247,7 @@ public class StructDefLifecycleTest {
                                             .build()))
                     .build());
 
-            waitForStructDef("car-4");
+            waitForStructDef("car-4", 0);
 
             ValidateStructDefEvolutionResponse resp =
                     client.validateStructDefEvolution(ValidateStructDefEvolutionRequest.newBuilder()
@@ -225,7 +355,8 @@ public class StructDefLifecycleTest {
 
             assertThatThrownBy(() -> client.putStructDef(updatedStructDef))
                     .isInstanceOf(StatusRuntimeException.class)
-                    .hasMessage("INVALID_ARGUMENT: Incompatible schema evolution on field(s): [year, model, is-sold]");
+                    .hasMessage(
+                            "INVALID_ARGUMENT: Incompatible StructDef evolution on field(s): [year, model, is-sold] using FULLY_COMPATIBLE_SCHEMA_UPDATES compatibility type");
         }
 
         @Test
@@ -241,7 +372,7 @@ public class StructDefLifecycleTest {
                                             .build()))
                     .build());
 
-            waitForStructDef("car-5");
+            waitForStructDef("car-5", 0);
 
             ValidateStructDefEvolutionResponse resp =
                     client.validateStructDefEvolution(ValidateStructDefEvolutionRequest.newBuilder()
@@ -280,7 +411,7 @@ public class StructDefLifecycleTest {
                                             .build()))
                     .build());
 
-            waitForStructDef("car-6");
+            waitForStructDef("car-6", 0);
 
             ValidateStructDefEvolutionResponse resp =
                     client.validateStructDefEvolution(ValidateStructDefEvolutionRequest.newBuilder()
@@ -305,12 +436,17 @@ public class StructDefLifecycleTest {
         }
     }
 
-    private void waitForStructDef(String name) {
+    private void waitForStructDef(String name, Integer version) {
         Awaitility.await()
                 .atMost(Duration.ofSeconds(2))
                 .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                 .until(() -> {
-                    client.getStructDef(StructDefId.newBuilder().setName(name).build());
+                    StructDefId.Builder structDefId = StructDefId.newBuilder().setName(name);
+                    if (version != null) {
+                        structDefId.setVersion(version);
+                    }
+                    StructDef structDef = client.getStructDef(structDefId.build());
+                    System.out.println(structDef.getId());
                     return true;
                 });
     }

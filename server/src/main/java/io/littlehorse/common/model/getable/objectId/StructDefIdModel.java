@@ -25,6 +25,7 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
 
     public StructDefIdModel(String name, int version) {
         this.name = name;
+        this.version = version;
     }
 
     @Override
@@ -53,7 +54,9 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
 
     @Override
     public void initFromString(String key) {
-        name = key;
+        String[] split = key.split("/");
+        name = split[0];
+        version = Integer.valueOf(split[1]);
     }
 
     @Override

@@ -36,10 +36,8 @@ public class InlineStructDefUtil {
             InlineStructDefModel oldStructDef) {
         switch (compatibilityType) {
             case FULLY_COMPATIBLE_SCHEMA_UPDATES:
-                System.out.println("Checking fully compatible...");
                 return getFullCompatibleBreakingChanges(newStructDef, oldStructDef);
             case NO_SCHEMA_UPDATES:
-                System.out.println("Checking no compatible...");
                 return getNoSchemaUpdatesBreakingChanges(newStructDef, oldStructDef);
             case UNRECOGNIZED:
             default:
@@ -108,7 +106,6 @@ public class InlineStructDefUtil {
         for (String oldFieldName : oldFields.keySet()) {
             // If required field was removed...
             if (!newFields.containsKey(oldFieldName)) {
-                System.out.println("Required field removed");
                 incompatibleFields.add(oldFieldName);
             } else {
                 StructFieldDefModel oldField = oldFields.get(oldFieldName);
@@ -133,7 +130,6 @@ public class InlineStructDefUtil {
             // If new required field was added
             if (!oldRequiredFields.containsKey(newFieldName)) {
                 // If new required field does not have a default value
-                System.out.println("New field does not have default value");
                 incompatibleFields.add(newFieldName);
             }
         }

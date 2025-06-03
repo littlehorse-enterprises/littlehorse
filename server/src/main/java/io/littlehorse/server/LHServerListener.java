@@ -461,6 +461,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
         StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
+
         if (sd == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,

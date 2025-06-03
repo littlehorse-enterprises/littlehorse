@@ -101,7 +101,7 @@ public class StructDefModel extends MetadataGetable<StructDef> {
         return StructDef.class;
     }
 
-    public void bumpVersion() {
-        id.setVersion(id.getVersion() + 1);
+    public void bumpVersion(int oldVersion) {
+        id.setVersion(oldVersion + 1);
     }
 }

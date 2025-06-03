@@ -75,7 +75,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             }
 
             verifyUpdateType(allowedUpdateType, spec.getStructDef(), oldVersion.getStructDef());
-            spec.getObjectId().setVersion(oldVersion.getObjectId().getVersion() + 1);
+            spec.bumpVersion(oldVersion.getObjectId().getVersion());
         }
 
         metadataManager.put(spec);
@@ -101,8 +101,9 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
         if (changedFields.isEmpty()) return;
 
-        StringBuilder errorMessage = new StringBuilder("Incompatible schema evolution on field(s): ");
+        StringBuilder errorMessage = new StringBuilder("Incompatible StructDef evolution on field(s): ");
         errorMessage.append(changedFields.toString());
+        errorMessage.append(String.format(" using %s compatibility type", allowedUpdateType.toString()));
         throw new LHApiException(Status.INVALID_ARGUMENT, errorMessage.toString());
     }
 
