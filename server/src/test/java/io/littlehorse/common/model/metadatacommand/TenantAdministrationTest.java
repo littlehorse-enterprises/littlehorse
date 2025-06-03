@@ -24,6 +24,7 @@ import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.common.header.Headers;
@@ -90,6 +91,29 @@ public class TenantAdministrationTest {
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
         assertThat(storedTenant()).isNotNull();
         assertThat(storedTenant().getObjectId()).isNotNull();
+    }
+
+    @Test
+    public void shouldUpdateExistingTenant() {
+        MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
+        metadataProcessor.init(mockProcessorContext);
+
+        long firstTimestamp = 42L;
+        long secondTimestamp = 137L;
+
+        command.setTime(new Date(firstTimestamp));
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), firstTimestamp, metadata));
+
+        command.setTime(new Date(secondTimestamp));
+        command.setCommandId(UUID.randomUUID().toString());
+        CompletableFuture<Message> futureResponse =
+                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), secondTimestamp, metadata));
+        assertThat(futureResponse).isCompleted();
+        assertThat(storedTenant()).isNotNull();
+        assertThat(storedTenant().getCreatedAt().getTime()).isEqualTo(firstTimestamp);
     }
 
     @Test
