@@ -31,7 +31,10 @@ message UTEComment {
   string comment = 3;
 
   // Flag representing if this comment has been edited 
-  boolean isEdited = 4; 
+  boolean is_edited = 4; 
+
+  // Flag representing if this comment has been deleted 
+  boolean is_deleted = 5
 }
 
 message UTEDeleteComment {
@@ -52,10 +55,13 @@ message CommentUserTaskRunRequest{
   // The comment being made on a UserTaskRun
   string comment = 3;
 
-  // Flag that represent whether a field has been edited
-  boolean isEdited = 4 ;
+  // This the id of a individual user comment , if it is passed in the
+  // the corresponding comment will be updated and the flag is_edited will be set to true 
+  optional string user_comment_id = 4 ;
+
 }
 
+// When this request is called the flag is_deleted will change to true 
 message DeleteCommentUserTaskRunRequest{
   string user_comment_id = 1;
 }
