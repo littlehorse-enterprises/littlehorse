@@ -19,7 +19,7 @@ The first option is to create a new type of UserTaskRunEvent called `UTEComment`
 
 ```proto
 // This is the object storing the comment details of a `UserTaskRun`
-message UTEComment {
+message UTECommented {
   // The id of the user comment
   int16 user_comment_id = 1;
 
@@ -31,7 +31,7 @@ message UTEComment {
   string comment = 3; 
 }
 
-message UTEDeleteComment {
+message UTECommentDeleted {
   // The id of the comment that will be deleted
   int16 user_comment_id = 1;
 }
@@ -39,31 +39,32 @@ message UTEDeleteComment {
 
 ```proto
 message CommentUserTaskRunRequest {
-  // The id of UserTaskRun to save.
+  // The id of `UserTaskRun` to save.
   UserTaskRunId user_task_run_id = 1;
 
-  // The author of the comment being made on a UserTaskRun
+  // The author of the comment being made on a `UserTaskRun`
   string user_id = 2;
 
-  // The comment being made on a UserTaskRun
+  // The comment being made on a `UserTaskRun`
   string comment = 3;
 }
 
 message EditCommentUserTaskRunRequest {
-  // This the id of a individual user comment
-  int16 user_comment_id = 4 ;
+  // This the id of a individual `userComment`
+  int16 user_comment_id = 1;
   
-  // The id of UserTaskRun to save.
-  UserTaskRunId user_task_run_id = 1;
+  // The id of `UserTaskRun` to save.
+  UserTaskRunId user_task_run_id = 2;
 
-  // The author of the comment being made on a UserTaskRun
-  string user_id = 2;
+  // The author of the comment being made on a `UserTaskRun`
+  string user_id = 3;
 
-  // The comment being made on a UserTaskRun
-  string comment = 3;
+  // The comment being made on a `UserTaskRun`
+  string comment = 4;
 }
 
 message DeleteCommentUserTaskRunRequest {
+  // This is the id of the `userComment` to be deleted
   int16 user_comment_id = 1;
 }
 
@@ -72,9 +73,15 @@ message DeleteCommentUserTaskRunRequest {
 ```proto
 oneof event {
     // ...
-    UTEComment commented = 6;
-    UTEComment comment_edited = 7;
-    UTEDeleteComment comment_deleted = 8;
+
+    // Denotes that there was a comment on a `userTaskRun`
+    UTECommented comment_added = 6;
+
+    // Denotes that a comment on a `userTaskRun` has been edited
+    UTECommented comment_edited = 7;
+
+    // Denotes that a comment on a `userTaskRun` was deleted
+    UTECommentDeleted comment_deleted = 8;
 }
 ```
 
@@ -82,12 +89,14 @@ oneof event {
 Service Littlehorse {
     // ...
 
-    // Add user comment depending on whether a user_comment_id is passed in 
-    rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (CommentUserTaskRun) {};
-    // Edit user comment depending on whether a user_comment_id is passed in 
-    rpc EditCommentUserTaskRun(EditCommentUserTaskRunRequest) returns (CommentUserTaskRun) {};
-    // Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
-    rpc DeleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest) returns {google.protobuf.Empty}
+  // Add user comment depending on whether a user_comment_id is passed in 
+  rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (UserTaskEvent) {};
+
+  // Edit user comment depending on whether a user_comment_id is passed in 
+  rpc EditCommentUserTaskRun(EditCommentUserTaskRunRequest) returns (UserTaskEvent) {};
+
+  // Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+  rpc DeleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest) returns (google.protobuf.Empty) {};
 
  // ...
 }
@@ -171,6 +180,11 @@ List of events in the `UserTaskRun` object will look like this:
 `UserTaskRunEvents` should be append only. In order to sort UserComments the front end will have to lookup via `userCommentId` and sort by time. The most recent `UserTaskRunEvents`(UTEComment or UTECommentDeleted) will represent whether the comment has been inserted, edited, or deleted. 
 
 ## Rejected Options
+This option was reject because of additional complexities that would be needed inorder to implement. 
+We want Comments to be tightly coupled with a individual `userTaskRun`. LittleHorse main focus is centered around workflows, not
+messaging systems.
+Keeping comments tightly coupled to `userTaskRuns` as `UserTaskEvents` reduces complexity while additionally maintaining an append 
+only log of events. 
 ### Option 2: Add comments through a list of new objects in the UserTaskRun
 It is possible to add comments through a new object which can be added as a repeated field in the `UserTaskRun` object. 
 This allows for more flexibility in managing comments, as they can be created, updated, and deleted independently of the `UserTaskRunEvents`.
