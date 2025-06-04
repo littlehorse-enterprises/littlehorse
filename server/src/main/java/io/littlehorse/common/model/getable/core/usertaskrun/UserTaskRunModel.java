@@ -65,6 +65,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
+    private Integer commentIdCounter = 0;
 
     private List<UserTaskEventModel> events = new ArrayList<>();
 

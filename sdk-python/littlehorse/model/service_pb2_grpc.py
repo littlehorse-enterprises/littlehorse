@@ -167,6 +167,21 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ListUserTaskRunRequest.SerializeToString,
                 response_deserializer=service__pb2.UserTaskRunList.FromString,
                 _registered_method=True)
+        self.CommentUserTaskRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/CommentUserTaskRun',
+                request_serializer=user__tasks__pb2.CommentUserTaskRunRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskEvent.FromString,
+                _registered_method=True)
+        self.EditCommentUserTaskRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/EditCommentUserTaskRun',
+                request_serializer=user__tasks__pb2.EditCommentUserTaskRunRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskEvent.FromString,
+                _registered_method=True)
+        self.DeleteCommentUserTaskRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteCommentUserTaskRun',
+                request_serializer=user__tasks__pb2.DeleteCommentUserTaskRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
         self.GetNodeRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetNodeRun',
                 request_serializer=object__id__pb2.NodeRunId.SerializeToString,
@@ -617,6 +632,27 @@ class LittleHorseServicer(object):
     def ListUserTaskRuns(self, request, context):
         """Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
         to model an entity.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CommentUserTaskRun(self, request, context):
+        """Add user comment depending on whether a user_comment_id is passed in 
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EditCommentUserTaskRun(self, request, context):
+        """Edit user comment depending on whether a user_comment_id is passed in 
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteCommentUserTaskRun(self, request, context):
+        """Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1128,6 +1164,21 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ListUserTaskRuns,
                     request_deserializer=service__pb2.ListUserTaskRunRequest.FromString,
                     response_serializer=service__pb2.UserTaskRunList.SerializeToString,
+            ),
+            'CommentUserTaskRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.CommentUserTaskRun,
+                    request_deserializer=user__tasks__pb2.CommentUserTaskRunRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskEvent.SerializeToString,
+            ),
+            'EditCommentUserTaskRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.EditCommentUserTaskRun,
+                    request_deserializer=user__tasks__pb2.EditCommentUserTaskRunRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskEvent.SerializeToString,
+            ),
+            'DeleteCommentUserTaskRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteCommentUserTaskRun,
+                    request_deserializer=user__tasks__pb2.DeleteCommentUserTaskRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'GetNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetNodeRun,
@@ -2033,6 +2084,87 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ListUserTaskRuns',
             service__pb2.ListUserTaskRunRequest.SerializeToString,
             service__pb2.UserTaskRunList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CommentUserTaskRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/CommentUserTaskRun',
+            user__tasks__pb2.CommentUserTaskRunRequest.SerializeToString,
+            user__tasks__pb2.UserTaskEvent.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def EditCommentUserTaskRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/EditCommentUserTaskRun',
+            user__tasks__pb2.EditCommentUserTaskRunRequest.SerializeToString,
+            user__tasks__pb2.UserTaskEvent.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteCommentUserTaskRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteCommentUserTaskRun',
+            user__tasks__pb2.DeleteCommentUserTaskRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,

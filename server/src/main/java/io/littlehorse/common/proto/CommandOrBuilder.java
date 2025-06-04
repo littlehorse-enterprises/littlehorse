@@ -399,5 +399,50 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder();
 
+  /**
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * @return Whether the commentUserTaskRun field is set.
+   */
+  boolean hasCommentUserTaskRun();
+  /**
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * @return The commentUserTaskRun.
+   */
+  io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest getCommentUserTaskRun();
+  /**
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   */
+  io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder getCommentUserTaskRunOrBuilder();
+
+  /**
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * @return Whether the editCommentUserTaskRun field is set.
+   */
+  boolean hasEditCommentUserTaskRun();
+  /**
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * @return The editCommentUserTaskRun.
+   */
+  io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getEditCommentUserTaskRun();
+  /**
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   */
+  io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder getEditCommentUserTaskRunOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * @return Whether the deleteCommentUserTaskRun field is set.
+   */
+  boolean hasDeleteCommentUserTaskRun();
+  /**
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * @return The deleteCommentUserTaskRun.
+   */
+  io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDeleteCommentUserTaskRun();
+  /**
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder getDeleteCommentUserTaskRunOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

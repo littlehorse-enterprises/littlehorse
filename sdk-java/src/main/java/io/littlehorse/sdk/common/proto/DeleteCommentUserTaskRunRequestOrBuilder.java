@@ -3,13 +3,13 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface CancelUserTaskRunRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.CancelUserTaskRunRequest)
+public interface DeleteCommentUserTaskRunRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.DeleteCommentUserTaskRunRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**
    * <pre>
-   * The id of the `UserTaskRun` to cancel.
+   * The id of UserTaskRun to delete a comment
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -18,7 +18,7 @@ public interface CancelUserTaskRunRequestOrBuilder extends
   boolean hasUserTaskRunId();
   /**
    * <pre>
-   * The id of the `UserTaskRun` to cancel.
+   * The id of UserTaskRun to delete a comment
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -27,10 +27,20 @@ public interface CancelUserTaskRunRequestOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
    * <pre>
-   * The id of the `UserTaskRun` to cancel.
+   * The id of UserTaskRun to delete a comment
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();
+
+  /**
+   * <pre>
+   * The id of the comment you are deleting
+   * </pre>
+   *
+   * <code>int32 user_comment_id = 2;</code>
+   * @return The userCommentId.
+   */
+  int getUserCommentId();
 }
