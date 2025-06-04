@@ -4,28 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
-import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.BulkUpdateJobModel;
-import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
-import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
-import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
-import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
+import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.proto.Command;
@@ -62,6 +41,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public TriggeredTaskRun triggeredTaskRun;
     private DeadlineReassignUserTaskModel reassignUserTask;
     private CancelUserTaskRunRequestModel cancelUserTaskRun;
+    private CommentUserTaskRunRequestModel commentUserTaskRun;
     private TaskAttemptRetryReadyModel taskAttemptRetryReady;
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
@@ -143,6 +123,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case CANCEL_USER_TASK:
                 out.setCancelUserTask(cancelUserTaskRun.toProto());
+                break;
+            case COMMENT_USER_TASK_RUN:
+                out.setCommentUserTaskRun(commentUserTaskRun.toProto());
                 break;
             case BULK_JOB:
                 out.setBulkJob(bulkJob.toProto());
@@ -237,6 +220,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 cancelUserTaskRun =
                         LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class, context);
                 break;
+            case COMMENT_USER_TASK_RUN:
+                commentUserTaskRun =
+                        LHSerializable.fromProto(p.getCommentUserTaskRun(), CommentUserTaskRunRequestModel.class, context);
+                break;
             case BULK_JOB:
                 bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);
                 break;
@@ -308,6 +295,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return reassignUserTask;
             case CANCEL_USER_TASK:
                 return cancelUserTaskRun;
+            case COMMENT_USER_TASK_RUN:
+                return commentUserTaskRun;
             case BULK_JOB:
                 return bulkJob;
             case TASK_ATTEMPT_RETRY_READY:
@@ -379,6 +368,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(CancelUserTaskRunRequestModel.class)) {
             type = CommandCase.CANCEL_USER_TASK;
             cancelUserTaskRun = (CancelUserTaskRunRequestModel) cmd;
+        } else if (cls.equals(CommentUserTaskRunRequestModel.class)) {
+            type = CommandCase.COMMAND_NOT_SET;
+            commentUserTaskRun = (CommentUserTaskRunRequestModel) cmd;
         } else if (cls.equals(BulkUpdateJobModel.class)) {
             type = CommandCase.BULK_JOB;
             bulkJob = (BulkUpdateJobModel) cmd;

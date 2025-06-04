@@ -10,6 +10,7 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest;
@@ -17,18 +18,16 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+import java.util.Date;
+
 @Getter
 @Setter
-public class CommentUserTaskRunModel extends CoreSubCommand<CommentUserTaskRunRequest> {
+public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
-
     private String userId ;
-    private String comment ; 
-
+    private String comment ;
 
     @Override
     public boolean hasResponse() {
@@ -61,8 +60,14 @@ public class CommentUserTaskRunModel extends CoreSubCommand<CommentUserTaskRunRe
 
         utr.getEvents().add(new UserTaskEventModel(commentedEvent, executionContext.currentCommand().getTime()));
 
-        return commentedEvent.toProto().build();
+        WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
+        if (wfRunModel == null) {
+            throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
+        }
 
+        wfRunModel.advance(new Date());
+
+        return commentedEvent.toProto().build();
     }
 
     @Override
@@ -91,5 +96,4 @@ public class CommentUserTaskRunModel extends CoreSubCommand<CommentUserTaskRunRe
     public Class<CommentUserTaskRunRequest> getProtoBaseClass() {
        return CommentUserTaskRunRequest.class;
     }
-    
 }

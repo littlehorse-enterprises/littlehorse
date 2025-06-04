@@ -19,21 +19,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.CommentUserTaskRunModel;
-import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
-import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -449,8 +435,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
     public void commentUserTaskRun(CommentUserTaskRunRequest req , StreamObserver<UserTaskEvent> ctx){
-        CommentUserTaskRunModel reqModel = 
-            LHSerializable.fromProto(req, CommentUserTaskRunModel.class, requestContext());
+        CommentUserTaskRunRequestModel reqModel =
+            LHSerializable.fromProto(req, CommentUserTaskRunRequestModel.class, requestContext());
         
         processCommand(new CommandModel(reqModel), ctx, UserTaskEvent.class, true);
     }
