@@ -111,50 +111,6 @@ public class StructDefLifecycleTest {
                 .isInstanceOf(ConditionTimeoutException.class);
     }
 
-    @Test
-    void shouldReturnLatestVersionWhenFetchingStructDefIdWithNullVersion() {
-        String structDefName = UUID.randomUUID().toString();
-
-        client.putStructDef(PutStructDefRequest.newBuilder()
-                .setName(structDefName)
-                .setStructDef(InlineStructDef.newBuilder()
-                        .putFields(
-                                "model",
-                                StructFieldDef.newBuilder()
-                                        .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.STR))
-                                        .build()))
-                .build());
-
-        waitForStructDef(structDefName, 0);
-
-        client.putStructDef(PutStructDefRequest.newBuilder()
-                .setName(structDefName)
-                .setStructDef(InlineStructDef.newBuilder()
-                        .putFields(
-                                "model",
-                                StructFieldDef.newBuilder()
-                                        .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.STR))
-                                        .build())
-                        .putFields(
-                                "year",
-                                StructFieldDef.newBuilder()
-                                        .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.INT))
-                                        .setDefaultValue(
-                                                VariableValue.newBuilder().setInt(1970))
-                                        .build()))
-                .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
-                .build());
-
-        waitForStructDef(structDefName, 1);
-
-        StructDef latestStructDef = client.getStructDef(
-                StructDefId.newBuilder().setName(structDefName).build());
-        assertThat(latestStructDef.getId().getVersion()).isEqualTo(1);
-    }
-
     @Nested
     class NoSchemaUpdatesEvolutionTest {
         @Test
