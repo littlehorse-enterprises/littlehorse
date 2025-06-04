@@ -1,4 +1,5 @@
 import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
+import WorkflowDiagram from "@/components/diagram/workflow-diagram";
 import { lhClient } from "@/lib/lhClient";
 import { PageParams } from "@/types/PageParams";
 
@@ -17,7 +18,12 @@ export default async function DiagramPage({
     const wfSpec = await client.getWfSpec({ name: wfSpecName, majorVersion: majorVersion, revision: revision });
     const wfRun = wfRunId ? await client.getWfRun({ id: wfRunId }) : undefined;
 
-    return <div className="h-full">
-        <LeftSidebar wfSpec={wfSpec} wfRun={wfRun} />
-    </div>;
+    return (
+        <div className="h-full flex">
+            <LeftSidebar wfSpec={wfSpec} wfRun={wfRun} />
+            <div className="flex-1">
+                <WorkflowDiagram />
+            </div>
+        </div>
+    );
 }
