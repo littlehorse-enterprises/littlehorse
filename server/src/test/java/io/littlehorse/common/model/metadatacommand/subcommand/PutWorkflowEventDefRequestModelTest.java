@@ -5,6 +5,7 @@ import static org.mockito.Mockito.reset;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
@@ -88,7 +89,7 @@ public class PutWorkflowEventDefRequestModelTest {
                 sendCommand(new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.INT)));
         CompletableFuture<Message> futureResponse =
                 asyncWaiters.getOrRegisterFuture(commandSent.getCommandId(), Message.class, new CompletableFuture<>());
-        Assertions.assertThatThrownBy(() -> futureResponse.getNow(null)).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(LHApiException.class);
         PutWorkflowEventDefRequestModel userUpdatedCommand =
                 new PutWorkflowEventDefRequestModel("user-updated", new ReturnTypeModel(VariableType.STR));
         reset(server);
