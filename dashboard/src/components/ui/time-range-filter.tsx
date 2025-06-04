@@ -1,6 +1,6 @@
 "use client"
 
-import { TIME_RANGES } from "@/components/flow/mock-data"
+import { TIME_RANGES } from "@/lib/constants"
 import { Clock } from "lucide-react"
 import { useState } from "react"
 

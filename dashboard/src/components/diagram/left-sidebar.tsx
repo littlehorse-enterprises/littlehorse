@@ -10,6 +10,7 @@ import { useState, useEffect } from "react"
 import LeftSidebarTabs from "./left-sidebar-tabs"
 import WfSpecTab from "./wf-spec-tab"
 import WfRunTab from "./wf-run-tab"
+import ScheduledWfRunsTab from "@/components/sidebar/scheduled-wf-runs-tab"
 import { SelectionProvider } from "@/components/context/selection-context"
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
@@ -87,9 +88,7 @@ export default function LeftSidebar({
               <WfRunTab />
             )}
             {activeTab === "ScheduledWfRuns" && (
-              <div className="p-4 text-center text-gray-500">
-                Scheduled Workflow Runs content coming soon...
-              </div>
+              <ScheduledWfRunsTab />
             )}
           </div>
         </div>
