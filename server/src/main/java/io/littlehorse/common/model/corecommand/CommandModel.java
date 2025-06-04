@@ -369,7 +369,7 @@ public class CommandModel extends AbstractCommand<Command> {
             type = CommandCase.CANCEL_USER_TASK;
             cancelUserTaskRun = (CancelUserTaskRunRequestModel) cmd;
         } else if (cls.equals(CommentUserTaskRunRequestModel.class)) {
-            type = CommandCase.COMMAND_NOT_SET;
+            type = CommandCase.COMMENT_USER_TASK_RUN;
             commentUserTaskRun = (CommentUserTaskRunRequestModel) cmd;
         } else if (cls.equals(BulkUpdateJobModel.class)) {
             type = CommandCase.BULK_JOB;
