@@ -2,6 +2,9 @@ import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
 import WorkflowDiagram from "@/components/diagram/workflow-diagram";
 import { lhClient } from "@/lib/lhClient";
 import { PageParams } from "@/types/PageParams";
+import { extractNodeData, extractEdgeData } from "@/lib/data-extraction";
+import { type Node, type Edge } from "@xyflow/react";
+import { getWfRunDetails } from "@/actions/getWfRun";
 
 export default async function DiagramPage({
     params,
@@ -16,13 +19,36 @@ export default async function DiagramPage({
 
     const client = await lhClient(tenantId);
     const wfSpec = await client.getWfSpec({ name: wfSpecName, majorVersion: majorVersion, revision: revision });
-    const wfRun = wfRunId ? await client.getWfRun({ id: wfRunId }) : undefined;
+    const wfRunDetails = wfRunId ? await getWfRunDetails({ wfRunId: { id: wfRunId }, tenantId: tenantId }) : undefined;
+
+    // Extract nodes and edges from the workflow data
+    let extractedNodes: Node[] = [];
+    let extractedEdges: Edge[] = [];
+
+    try {
+        if (wfRunDetails) {
+            extractedNodes = extractNodeData(wfSpec, wfRunDetails);
+            extractedEdges = extractEdgeData(wfSpec);
+        } else if (wfSpec) {
+            // todo : need to support wfSpec only display
+            extractedNodes = extractNodeData(wfSpec, wfSpecData);
+            extractedEdges = extractEdgeData(wfSpec);
+        }
+    } catch (error) {
+        console.warn("Error extracting workflow data:", error);
+        // Fall back to empty arrays if extraction fails
+        extractedNodes = [];
+        extractedEdges = [];
+    }
 
     return (
         <div className="h-full flex">
-            <LeftSidebar wfSpec={wfSpec} wfRun={wfRun} />
+            <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
             <div className="flex-1">
-                <WorkflowDiagram />
+                <WorkflowDiagram
+                    nodes={extractedNodes}
+                    edges={extractedEdges}
+                />
             </div>
         </div>
     );
