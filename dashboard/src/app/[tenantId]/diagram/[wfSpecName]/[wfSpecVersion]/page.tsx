@@ -1,4 +1,4 @@
-import LeftSidebar from "@/components/diagram/left-sidebar";
+import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
 import { lhClient } from "@/lib/lhClient";
 import { PageParams } from "@/types/PageParams";
 

@@ -3,7 +3,7 @@
 import { Clock } from "lucide-react"
 import { DataTable } from "@/components/ui/data-table"
 import type { ColumnDef } from "@tanstack/react-table"
-import { useState, useMemo, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { ScheduledWfRun } from "littlehorse-client/proto"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
 import { getScheduledWfRunsFromIds } from "@/actions/getScheduledWfRunsFromIds"

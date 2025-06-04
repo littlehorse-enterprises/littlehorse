@@ -8,9 +8,9 @@ import { WfRun, WfSpec } from "littlehorse-client/proto"
 import { Play } from "lucide-react"
 import { useState, useEffect } from "react"
 import LeftSidebarTabs from "./left-sidebar-tabs"
-import WfSpecTab from "./wf-spec-tab"
-import WfRunTab from "./wf-run-tab"
-import ScheduledWfRunsTab from "@/components/sidebar/scheduled-wf-runs-tab"
+import WfSpecTab from "../wf-spec-tab"
+import WfRunTab from "../wf-run-tab"
+import ScheduledWfRunsTab from "@/components/diagram/left-sidebar/scheduled-wf-runs-tab"
 import { SelectionProvider } from "@/components/context/selection-context"
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
@@ -66,7 +66,7 @@ export default function LeftSidebar({
                 : "text-emerald-600 bg-emerald-100"
               } hover:bg-[#c5d0ff]/90`}
           >
-            {wfRun?.status}
+            {wfSpec?.status ?? wfRun?.status}
           </Badge>
         </div>
       </div>
