@@ -39,7 +39,7 @@ message UTECommentDeleted {
 
 ```proto
 message CommentUserTaskRunRequest {
-  // The id of `UserTaskRun` to save.
+  // The id of `UserTaskRun` to save a comment 
   UserTaskRunId user_task_run_id = 1;
 
   // The author of the comment being made on a `UserTaskRun`
@@ -53,7 +53,7 @@ message EditCommentUserTaskRunRequest {
   // This the id of a individual `userComment`
   int16 user_comment_id = 1;
   
-  // The id of `UserTaskRun` to save.
+  // The id of `UserTaskRun` to edit comment
   UserTaskRunId user_task_run_id = 2;
 
   // The author of the comment being made on a `UserTaskRun`
@@ -64,6 +64,9 @@ message EditCommentUserTaskRunRequest {
 }
 
 message DeleteCommentUserTaskRunRequest {
+  // The id of `UserTaskRun` to delete a comment
+  UserTaskRunId user_task_run_id = 2;
+
   // This is the id of the `userComment` to be deleted
   int16 user_comment_id = 1;
 }
