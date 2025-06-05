@@ -147,7 +147,7 @@ List of events in the `UserTaskRun` object will look like this:
     },
     {
       "time": "2025-06-02T15:59:14.710Z",
-      "commented": {
+      "commentAdded": {
         "userCommentId": 0,
         "userId": "anakin",
         "comment": "This is a test comment"
@@ -163,7 +163,7 @@ List of events in the `UserTaskRun` object will look like this:
     },
     {
       "time": "2025-06-02T17:00:01.710Z",
-      "commented": {
+      "commentAdded": {
         "userCommentId": 1,
         "userId": "mace",
         "comment": "This is other test comment"
