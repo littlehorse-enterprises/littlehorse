@@ -2,12 +2,10 @@
 import { Ids, SearchResponse } from "@/actions/search"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useTypedParams } from "@/hooks/usePathnameParams"
-import { SearchType } from "@/types/search"
 import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { UserTaskDefId, WfSpecId } from "littlehorse-client/proto"
 import { Eye } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 
 interface MetadataTableProps {
     data: SearchResponse[] | undefined
@@ -17,8 +15,7 @@ interface MetadataTableProps {
 
 export function MetadataTable({ data, activeTab, isLoading }: MetadataTableProps) {
     const router = useRouter()
-    const { tenantId } = useTypedParams()
-
+    const tenantId = useParams().tenantId as string
     function handleRowClick(name: string, majorVersion?: number, revision?: number) {
         if (activeTab === "WfSpec")
             router.push(`/${tenantId}/diagram/${name}/${majorVersion}.${revision}`)

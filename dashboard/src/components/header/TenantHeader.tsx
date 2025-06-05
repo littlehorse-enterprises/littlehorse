@@ -2,7 +2,6 @@
 
 import { handleSignOut } from "@/actions/handleSignOut"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
-import { useTypedParams } from "@/hooks/usePathnameParams"
 import { getTenants } from "@/utils/getTenants"
 import { Button } from "@littlehorse-enterprises/ui-library/button"
 import {
@@ -16,7 +15,7 @@ import {
 } from "@littlehorse-enterprises/ui-library/dropdown-menu"
 import { Check } from "lucide-react"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
 
@@ -24,7 +23,7 @@ import { useState } from "react"
 export default function TenantHeader() {
     const router = useRouter()
     const {data: session} = useSession()
-    const { tenantId } = useTypedParams()
+    const tenantId = useParams().tenantId as string
     const [currentTenant, setCurrentTenant] = useState<string | null>(tenantId)
 
     const { data: principal } = useExecuteRPCWithSWR("whoami", {})

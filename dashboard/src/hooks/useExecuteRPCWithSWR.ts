@@ -1,17 +1,17 @@
-import useSWR from "swr";
+import { executeRpc } from "@/actions/executeRPC";
 import {
   LHMethodParamType,
   LHMethodReturnType,
   LittleHorseMethodRPCName,
 } from "@/types/executeRPCTypes";
-import { executeRpc } from "@/actions/executeRPC";
-import { useTypedParams } from "./usePathnameParams";
+import { useParams } from "next/navigation";
+import useSWR from "swr";
 
 export function useExecuteRPCWithSWR<M extends LittleHorseMethodRPCName>(
   methodName: M,
   request: LHMethodParamType<M>
 ) {
-  const { tenantId } = useTypedParams();
+  const tenantId  = useParams().tenantId as string;
 
   return useSWR<LHMethodReturnType<M>>([methodName, request], async () => {
     return await executeRpc(methodName, request, tenantId);

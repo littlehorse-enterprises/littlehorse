@@ -7,10 +7,10 @@ import { useState, useEffect } from "react"
 import { ScheduledWfRun } from "littlehorse-client/proto"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
 import { getScheduledWfRunsFromIds } from "@/actions/getScheduledWfRunsFromIds"
-import { useTypedParams } from "@/hooks/usePathnameParams"
+import { useParams } from "next/navigation"
 
 export default function ScheduledWfRunsTab() {
-    const { tenantId } = useTypedParams()
+    const tenantId = useParams().tenantId as string
     const [scheduledWfRuns, setScheduledWfRuns] = useState<ScheduledWfRun[]>([])
 
     const { data: scheduledWfRunsData } = useExecuteRPCWithSWR("searchScheduledWfRun", {

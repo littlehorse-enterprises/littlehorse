@@ -1,17 +1,17 @@
 "use client"
 import { search, SearchResponse } from "@/actions/search"
 import { LoadMorePagination } from "@/components/ui/load-more-pagination"
-import { Tabs, TabsList, TabsTrigger } from "@littlehorse-enterprises/ui-library/tabs"
-import { useTypedParams } from "@/hooks/usePathnameParams"
 import { SEARCH_ENTITIES, SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/lib/constants"
 import { SearchType } from "@/types/search"
+import { Tabs, TabsList, TabsTrigger } from "@littlehorse-enterprises/ui-library/tabs"
+import { useParams } from "next/navigation"
 import { useState } from "react"
 import useSWRInfinite from "swr/infinite"
 import { MetadataTable } from "./metadata-table"
 import { SearchHeader } from "./search-header"
 
 export function MetadataSearchClient() {
-    const { tenantId } = useTypedParams()
+    const tenantId = useParams().tenantId as string
     const [activeTab, setActiveTab] = useState<SearchType>("WfSpec")
     const [prefix, setPrefix] = useState("")
     const [limit, setLimit] = useState<number>(SEARCH_LIMIT_DEFAULT)

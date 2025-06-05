@@ -1,26 +1,26 @@
 "use client"
 
-import { CheckCircle, XCircle, Loader2, Clock } from "lucide-react"
+import { getWfRunsFromIds } from "@/actions/getWfRunsFromIds"
 import { DataTable } from "@/components/ui/data-table"
-import type { ColumnDef } from "@tanstack/react-table"
 import { DropdownFilter } from "@/components/ui/dropdown-filter"
 import { FilterResetButton } from "@/components/ui/filter-reset-button"
-import { useState, useMemo, useEffect } from "react"
-import { WfRun } from "littlehorse-client/proto"
-import { useRouter } from "next/navigation"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
-import { getWfRunsFromIds } from "@/actions/getWfRunsFromIds"
-import { useTypedParams } from "@/hooks/usePathnameParams"
 import {
-    TIME_RANGE_OPTIONS,
-    TIME_RANGE_MINUTES,
-    MINUTES_TO_TIME_RANGE,
-    STATUS_OPTIONS
+  MINUTES_TO_TIME_RANGE,
+  STATUS_OPTIONS,
+  TIME_RANGE_MINUTES,
+  TIME_RANGE_OPTIONS
 } from "@/lib/constants"
+import type { ColumnDef } from "@tanstack/react-table"
+import { WfRun } from "littlehorse-client/proto"
+import { CheckCircle, Clock, Loader2, XCircle } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
 
 export default function WfRunTab() {
     const router = useRouter()
-    const { tenantId, wfSpecName } = useTypedParams()
+    const tenantId = useParams().tenantId as string
+    const wfSpecName = useParams().wfSpecName as string
     const [statusFilter, setStatusFilter] = useState<string[]>([])
     const [timeRangeFilter, setTimeRangeFilter] = useState<number | null>(null)
     const [wfRuns, setWfRuns] = useState<WfRun[]>([])
