@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 
 import io.grpc.Status;
@@ -20,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,7 +37,7 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         if (userTaskRunId == null){
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
         }
@@ -54,11 +56,23 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }   
 
-        Integer commentIdCounter = utr.getCommentIdCounter();
-        UTECommentedModel commentedEvent = new UTECommentedModel(userId, comment, commentIdCounter);
-        utr.setCommentIdCounter(commentIdCounter + 1);
+        // Integer commentIdCounter = utr.getCommentIdCounter();
+        // UTECommentedModel commentedEvent = new UTECommentedModel(userId, comment, commentIdCounter);
+        // utr.setCommentIdCounter(commentIdCounter + 1);
 
-        utr.getEvents().add(new UserTaskEventModel(commentedEvent, executionContext.currentCommand().getTime()));
+        // System.out.println("CommentedEvent : " + commentedEvent.getUserId() + " " +  commentedEvent.getComment());
+        // UserTaskEventModel ute =  new UserTaskEventModel(commentedEvent, executionContext.currentCommand().getTime());
+        // System.out.println("UTE to json " + ute.toJson());
+        // System.out.println("UTE commented to json:" + ute.getCommented().toJson());
+        // List<UserTaskEventModel> list = utr.getEvents();
+        // list.add(ute);
+        // utr.setEvents(list);
+        // System.out.println("list size " + list.size());
+        // System.out.println("the first comment in json:" + list.get(1).toJson());
+        System.out.println("Size of list b4" + utr.getEvents().size());
+        utr.commented(userId, comment);
+        System.out.println("Size of list after" + utr.getEvents().size());
+
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
         if (wfRunModel == null) {
@@ -67,7 +81,7 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
 
         wfRunModel.advance(new Date());
 
-        return commentedEvent.toProto().build();
+        return Empty.getDefaultInstance();
     }
 
     @Override

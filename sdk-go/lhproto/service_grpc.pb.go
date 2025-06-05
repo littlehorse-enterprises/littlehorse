@@ -180,7 +180,7 @@ type LittleHorseClient interface {
 	// to model an entity.
 	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
 	// Add user comment depending on whether a user_comment_id is passed in
-	CommentUserTaskRun(ctx context.Context, in *CommentUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskEvent, error)
+	CommentUserTaskRun(ctx context.Context, in *CommentUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Edit user comment depending on whether a user_comment_id is passed in
 	EditCommentUserTaskRun(ctx context.Context, in *EditCommentUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskEvent, error)
 	// Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
@@ -540,8 +540,8 @@ func (c *littleHorseClient) ListUserTaskRuns(ctx context.Context, in *ListUserTa
 	return out, nil
 }
 
-func (c *littleHorseClient) CommentUserTaskRun(ctx context.Context, in *CommentUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskEvent, error) {
-	out := new(UserTaskEvent)
+func (c *littleHorseClient) CommentUserTaskRun(ctx context.Context, in *CommentUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_CommentUserTaskRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1128,7 +1128,7 @@ type LittleHorseServer interface {
 	// to model an entity.
 	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
 	// Add user comment depending on whether a user_comment_id is passed in
-	CommentUserTaskRun(context.Context, *CommentUserTaskRunRequest) (*UserTaskEvent, error)
+	CommentUserTaskRun(context.Context, *CommentUserTaskRunRequest) (*emptypb.Empty, error)
 	// Edit user comment depending on whether a user_comment_id is passed in
 	EditCommentUserTaskRun(context.Context, *EditCommentUserTaskRunRequest) (*UserTaskEvent, error)
 	// Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
@@ -1341,7 +1341,7 @@ func (UnimplementedLittleHorseServer) SaveUserTaskRunProgress(context.Context, *
 func (UnimplementedLittleHorseServer) ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserTaskRuns not implemented")
 }
-func (UnimplementedLittleHorseServer) CommentUserTaskRun(context.Context, *CommentUserTaskRunRequest) (*UserTaskEvent, error) {
+func (UnimplementedLittleHorseServer) CommentUserTaskRun(context.Context, *CommentUserTaskRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommentUserTaskRun not implemented")
 }
 func (UnimplementedLittleHorseServer) EditCommentUserTaskRun(context.Context, *EditCommentUserTaskRunRequest) (*UserTaskEvent, error) {

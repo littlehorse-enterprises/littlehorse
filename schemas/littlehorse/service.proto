@@ -127,7 +127,7 @@ service LittleHorse {
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
   // Add user comment depending on whether a user_comment_id is passed in 
-  rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (UserTaskEvent) {};
+  rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (google.protobuf.Empty) {};
 
   // Edit user comment depending on whether a user_comment_id is passed in 
   rpc EditCommentUserTaskRun(EditCommentUserTaskRunRequest) returns (UserTaskEvent) {};

@@ -9,6 +9,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
+import io.littlehorse.common.model.corecommand.subcommand.CommentUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
 import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
@@ -16,6 +17,7 @@ import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEAssignedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECancelledModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -126,7 +128,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         if (notes != null) out.setNotes(notes);
 
         for (UserTaskEventModel event : events) {
+            System.out.println(event.toJson());
             out.addEvents(event.toProto());
+            System.out.println(out.getEvents(out.getEventsCount()-1).toString());
         }
         for (Map.Entry<String, VariableValueModel> result : results.entrySet()) {
             out.putResults(result.getKey(), result.getValue().toProto().build());
@@ -313,6 +317,14 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         ThreadRunModel currentThreadRun = this.getNodeRun().getThreadRun();
         String failureName = this.getUtNode().assignExceptionNameVariable(currentThreadRun);
         failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
+    }
+
+    public void commented(String userId, String comment){
+        this.events.add(new UserTaskEventModel(
+            new UTECommentedModel(userId, comment,  commentIdCounter ),
+                processorContext.currentCommand().getTime())
+        );
+        commentIdCounter +=1 ;
     }
 
     public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx)

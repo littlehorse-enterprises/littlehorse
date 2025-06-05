@@ -170,7 +170,7 @@ class LittleHorseStub(object):
         self.CommentUserTaskRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/CommentUserTaskRun',
                 request_serializer=user__tasks__pb2.CommentUserTaskRunRequest.SerializeToString,
-                response_deserializer=user__tasks__pb2.UserTaskEvent.FromString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
         self.EditCommentUserTaskRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/EditCommentUserTaskRun',
@@ -1168,7 +1168,7 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'CommentUserTaskRun': grpc.unary_unary_rpc_method_handler(
                     servicer.CommentUserTaskRun,
                     request_deserializer=user__tasks__pb2.CommentUserTaskRunRequest.FromString,
-                    response_serializer=user__tasks__pb2.UserTaskEvent.SerializeToString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'EditCommentUserTaskRun': grpc.unary_unary_rpc_method_handler(
                     servicer.EditCommentUserTaskRun,
@@ -2110,7 +2110,7 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/CommentUserTaskRun',
             user__tasks__pb2.CommentUserTaskRunRequest.SerializeToString,
-            user__tasks__pb2.UserTaskEvent.FromString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,

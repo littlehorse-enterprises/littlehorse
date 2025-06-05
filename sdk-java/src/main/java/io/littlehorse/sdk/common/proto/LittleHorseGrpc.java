@@ -760,28 +760,28 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest,
-      io.littlehorse.sdk.common.proto.UserTaskEvent> getCommentUserTaskRunMethod;
+      com.google.protobuf.Empty> getCommentUserTaskRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "CommentUserTaskRun",
       requestType = io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.UserTaskEvent.class,
+      responseType = com.google.protobuf.Empty.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest,
-      io.littlehorse.sdk.common.proto.UserTaskEvent> getCommentUserTaskRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskEvent> getCommentUserTaskRunMethod;
+      com.google.protobuf.Empty> getCommentUserTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, com.google.protobuf.Empty> getCommentUserTaskRunMethod;
     if ((getCommentUserTaskRunMethod = LittleHorseGrpc.getCommentUserTaskRunMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getCommentUserTaskRunMethod = LittleHorseGrpc.getCommentUserTaskRunMethod) == null) {
           LittleHorseGrpc.getCommentUserTaskRunMethod = getCommentUserTaskRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskEvent>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CommentUserTaskRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.UserTaskEvent.getDefaultInstance()))
+                  com.google.protobuf.Empty.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CommentUserTaskRun"))
               .build();
         }
@@ -2749,7 +2749,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     default void commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent> responseObserver) {
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCommentUserTaskRunMethod(), responseObserver);
     }
 
@@ -3620,7 +3620,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     public void commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent> responseObserver) {
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getCommentUserTaskRunMethod(), getCallOptions()), request, responseObserver);
     }
@@ -4509,7 +4509,7 @@ public final class LittleHorseGrpc {
      * Add user comment depending on whether a user_comment_id is passed in 
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskEvent commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request) {
+    public com.google.protobuf.Empty commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getCommentUserTaskRunMethod(), getCallOptions(), request);
     }
@@ -5358,7 +5358,7 @@ public final class LittleHorseGrpc {
      * Add user comment depending on whether a user_comment_id is passed in 
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskEvent> commentUserTaskRun(
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> commentUserTaskRun(
         io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getCommentUserTaskRunMethod(), getCallOptions()), request);
@@ -6147,7 +6147,7 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_COMMENT_USER_TASK_RUN:
           serviceImpl.commentUserTaskRun((io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_EDIT_COMMENT_USER_TASK_RUN:
           serviceImpl.editCommentUserTaskRun((io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) request,
@@ -6551,7 +6551,7 @@ public final class LittleHorseGrpc {
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest,
-              io.littlehorse.sdk.common.proto.UserTaskEvent>(
+              com.google.protobuf.Empty>(
                 service, METHODID_COMMENT_USER_TASK_RUN)))
         .addMethod(
           getEditCommentUserTaskRunMethod(),

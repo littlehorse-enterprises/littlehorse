@@ -5,9 +5,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
-import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted;
-import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented;
-import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Data;
@@ -101,6 +98,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
                 break;
             case COMMENT_DELETED:
                 out.setCommentDeleted(commentDeleted.toProto());
+                break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");
             
