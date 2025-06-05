@@ -93,7 +93,7 @@ public enum ACLResource
   ACL_WORKFLOW_EVENT(8),
   /**
    * <pre>
-   * Refers to `StructDef` and `Struct`
+   * Refers to `StructDef`
    * </pre>
    *
    * <code>ACL_STRUCT = 9;</code>
@@ -183,7 +183,7 @@ public enum ACLResource
   public static final int ACL_WORKFLOW_EVENT_VALUE = 8;
   /**
    * <pre>
-   * Refers to `StructDef` and `Struct`
+   * Refers to `StructDef`
    * </pre>
    *
    * <code>ACL_STRUCT = 9;</code>

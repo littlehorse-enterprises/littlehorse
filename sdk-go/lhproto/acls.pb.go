@@ -50,7 +50,7 @@ const (
 	ACLResource_ACL_TASK_WORKER_GROUP ACLResource = 7
 	// Refers to `WorkflowEventDef` and `WorkflowEvent`
 	ACLResource_ACL_WORKFLOW_EVENT ACLResource = 8
-	// Refers to `StructDef` and `Struct`
+	// Refers to `StructDef`
 	ACLResource_ACL_STRUCT ACLResource = 9
 )
 

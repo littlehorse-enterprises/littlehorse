@@ -118,7 +118,7 @@ enum ACLResource {
     // Refers to `WorkflowEventDef` and `WorkflowEvent`
     ACL_WORKFLOW_EVENT = 8;
 
-    // Refers to `StructDef` and `Struct`
+    // Refers to `StructDef`
     ACL_STRUCT = 9;
 }
 
