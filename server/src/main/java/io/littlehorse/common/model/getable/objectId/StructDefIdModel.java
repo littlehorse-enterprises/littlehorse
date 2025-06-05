@@ -68,4 +68,8 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
     public Class<StructDefId> getProtoBaseClass() {
         return StructDefId.class;
     }
+
+    public StructDefIdModel bumpVersion() {
+        return new StructDefIdModel(name, version + 1);
+    }
 }
