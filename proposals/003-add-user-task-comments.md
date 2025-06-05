@@ -18,6 +18,13 @@ In order to store details about a comment made on a `userTaskRun` we need to cre
 The first option is to create a new type of UserTaskRunEvent called `UTEComment` that will be used to store comment details.
 
 ```proto
+message UserTaskRun {
+ // ...
+ 
+ // The number of comments that have been made on this UserTaskRun.
+  int32 comment_id_count = 13;
+}
+
 // This is the object storing the comment details of a `UserTaskRun`
 message UTECommented {
   // The id of the user comment
