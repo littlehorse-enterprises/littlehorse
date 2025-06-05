@@ -404,4 +404,65 @@ public class WorkflowIfStatementTest
         Assert.Equal(expectedExitSinkNodeName, taskNodeC.OutgoingEdges[0].SinkNodeName);
         Assert.Equal("4-task-c-TASK", lastNopNode.OutgoingEdges[0].SinkNodeName);
     }
+
+    [Fact]
+    public void WorkflowThread_WithIfElseAndComplete_ShouldCreateACompleteExitNodeAndReturnInTheLastNopNode()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        
+        void MyEntrypoint(WorkflowThread thread)
+        {
+            var test = thread.DeclareInt("test");
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
+                body =>
+                {
+                    body.Complete();
+                    test.Assign(10);
+                    body.Execute("task-a");
+                });
+            ifStatement.DoElse(body => body.Execute("task-b"));
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var startNopNode = compiledWfThread.Nodes["1-nop-NOP"];
+        var completeNode = compiledWfThread.Nodes["2-complete-EXIT"];
+        var taskNodeB = compiledWfThread.Nodes["3-task-b-TASK"];
+        var lastNopNode = compiledWfThread.Nodes["4-nop-NOP"];
+
+        Assert.Equal(new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-complete-EXIT",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue { Int = 5 }
+                        },
+                        Comparator = Comparator.GreaterThanEq,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue { Int = 9 }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-task-b-TASK"
+                }
+            }
+        }, startNopNode);
+        
+        Assert.True(completeNode.OutgoingEdges.Count == 0);
+        Assert.Equal("4-nop-NOP", taskNodeB.OutgoingEdges[0].SinkNodeName);
+        Assert.Equal("5-exit-EXIT", lastNopNode.OutgoingEdges[0].SinkNodeName);
+    }
 }
