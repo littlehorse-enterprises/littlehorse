@@ -667,8 +667,10 @@ class WfRunVariable:
         if last_thread.is_active:
             active_thread = last_thread
 
-        if last_thread._last_node().node_case == NodeCase.EXIT: 
-            raise TypeError("You cannot assign a variable in a given thread after the thread has completed.")
+        if last_thread._last_node().node_case == NodeCase.EXIT:
+            raise TypeError(
+                "You cannot assign a variable in a given thread after the thread has completed."
+            )
 
         active_thread.mutate(self, VariableMutationType.ASSIGN, rhs)
 
@@ -1799,8 +1801,10 @@ class WorkflowThread:
         """
         self._check_if_active()
 
-        if (len(self._nodes) > 0 and self._last_node().node_case == NodeCase.EXIT):
-            raise TypeError("You cannot add a variable in a given thread after the thread has completed.")
+        if len(self._nodes) > 0 and self._last_node().node_case == NodeCase.EXIT:
+            raise TypeError(
+                "You cannot add a variable in a given thread after the thread has completed."
+            )
 
         for var in self._wf_run_variables:
             if var.name == variable_name:
@@ -1854,7 +1858,7 @@ class WorkflowThread:
 
         if len(self._nodes) == 0 and node_type != NodeCase.ENTRYPOINT:
             raise TypeError("The first node should be a EntrypointNode")
-        
+
         if len(self._nodes) > 0:
             last_node = self._last_node()
 
@@ -1868,7 +1872,9 @@ class WorkflowThread:
                 )
                 self._last_node_condition = None
             elif node_type != NodeCase.NOP:
-                raise TypeError(f"You cannot add a Node in a given thread after the thread has completed.")
+                raise TypeError(
+                    f"You cannot add a Node in a given thread after the thread has completed."
+                )
 
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
         self._last_node_name = next_node_name
