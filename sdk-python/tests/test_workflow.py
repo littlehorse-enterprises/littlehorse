@@ -1478,6 +1478,49 @@ class TestThreadBuilder(unittest.TestCase):
             compiled_last_nope_node.outgoing_edges[0].sink_node_name,
         )
 
+    def test_wf_raises_error_when_adding_node_after_completing_thread(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+                body.execute("greet")
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(TypeError):
+            workflow.compile()
+
+    def test_wf_raises_error_when_mutating_variable_after_completing_thread(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("name")
+
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+                my_var.assign("hello")
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(TypeError):
+            workflow.compile()
+
+    def test_wf_raises_error_when_adding_variable_after_completing_thread(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("name")
+
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+                body.declare_str("test-var")
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(TypeError):
+            workflow.compile()
+
     def test_compile_wf_with_do_if_and_multiple_exit_nodes(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
             def if_body_a(body: WorkflowThread) -> None:
