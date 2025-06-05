@@ -15,17 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@littlehorse-enterprises/ui-library/dropdown-menu"
 import { Check } from "lucide-react"
-import { Session } from "next-auth"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
-interface TenantHeaderProps {
-    session: Session | null
-}
 
 // this exists because the path can't be obtained from the server component layout
-export default function TenantHeader({ session }: TenantHeaderProps) {
+export default function TenantHeader() {
     const router = useRouter()
+    const {data: session} = useSession()
     const { tenantId } = useTypedParams()
     const [currentTenant, setCurrentTenant] = useState<string | null>(tenantId)
 

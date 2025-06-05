@@ -1,13 +1,14 @@
-import Image from "next/image"
-import Link from "next/link"
-import TenantHeader from "./TenantHeader"
-import { Session } from "next-auth"
+"use client";
 
-interface HeaderProps {
-  session: Session | null
-}
+import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import TenantHeader from "./TenantHeader";
 
-export default function Header({ session }: HeaderProps) {
+
+export default function Header() {
+  const tenantId = useParams().tenantId as string;
+
   return (
     <header className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
       <div className="flex items-center space-x-8">
@@ -24,7 +25,7 @@ export default function Header({ session }: HeaderProps) {
 
         <nav className="flex space-x-8">
           <Link
-            href="/dashboard"
+            href={`/${tenantId}`}
             className="hover:text-[#3b81f5] text-[#656565]"
           >
             Dashboard
@@ -38,7 +39,7 @@ export default function Header({ session }: HeaderProps) {
         </nav>
       </div>
 
-      <TenantHeader session={session} />
+      <TenantHeader />
     </header>
   )
 }
