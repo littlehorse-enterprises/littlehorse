@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import Long from "long";
-import { type CallContext, type CallOptions } from "nice-grpc-common";
+import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
@@ -49,9 +49,13 @@ import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } f
 import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
+  CommentUserTaskRunRequest,
   CompleteUserTaskRunRequest,
+  DeleteCommentUserTaskRunRequest,
+  EditCommentUserTaskRunRequest,
   SaveUserTaskRunProgressRequest,
   UserTaskDef,
+  UserTaskEvent,
   UserTaskField,
   UserTaskRun,
   UserTaskRunStatus,
@@ -7981,6 +7985,33 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Add user comment depending on whether a user_comment_id is passed in */
+    commentUserTaskRun: {
+      name: "CommentUserTaskRun",
+      requestType: CommentUserTaskRunRequest,
+      requestStream: false,
+      responseType: UserTaskEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Edit user comment depending on whether a user_comment_id is passed in */
+    editCommentUserTaskRun: {
+      name: "EditCommentUserTaskRun",
+      requestType: EditCommentUserTaskRunRequest,
+      requestStream: false,
+      responseType: UserTaskEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes a comment logically inorder to mantain a historical log of UserTaskEvents */
+    deleteCommentUserTaskRun: {
+      name: "DeleteCommentUserTaskRun",
+      requestType: DeleteCommentUserTaskRunRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Gets a specific NodeRun. */
     getNodeRun: {
       name: "GetNodeRun",
@@ -8619,6 +8650,21 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListUserTaskRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskRunList>>;
+  /** Add user comment depending on whether a user_comment_id is passed in */
+  commentUserTaskRun(
+    request: CommentUserTaskRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskEvent>>;
+  /** Edit user comment depending on whether a user_comment_id is passed in */
+  editCommentUserTaskRun(
+    request: EditCommentUserTaskRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskEvent>>;
+  /** Deletes a comment logically inorder to mantain a historical log of UserTaskEvents */
+  deleteCommentUserTaskRun(
+    request: DeleteCommentUserTaskRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: NodeRunId, context: CallContext & CallContextExt): Promise<DeepPartial<NodeRun>>;
   /** Lists all NodeRun's for a specific WfRun. */
@@ -8989,6 +9035,21 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskRunList>;
+  /** Add user comment depending on whether a user_comment_id is passed in */
+  commentUserTaskRun(
+    request: DeepPartial<CommentUserTaskRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskEvent>;
+  /** Edit user comment depending on whether a user_comment_id is passed in */
+  editCommentUserTaskRun(
+    request: DeepPartial<EditCommentUserTaskRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskEvent>;
+  /** Deletes a comment logically inorder to mantain a historical log of UserTaskEvents */
+  deleteCommentUserTaskRun(
+    request: DeepPartial<DeleteCommentUserTaskRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: DeepPartial<NodeRunId>, options?: CallOptions & CallOptionsExt): Promise<NodeRun>;
   /** Lists all NodeRun's for a specific WfRun. */

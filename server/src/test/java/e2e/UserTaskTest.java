@@ -448,6 +448,32 @@ public class UserTaskTest {
                 .start();
     }
 
+    @Test
+    void shouldCreateAWorkflowAssigningAUserTaskAndAddACommentToIt() {
+        String workflowName = "comment-on-user-task-run-workflow";
+        String comment = "This is a comment.";
+        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow)
+                .waitForStatus(RUNNING)
+                .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
+                    UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
+                    UserTaskEvent userTaskEvent = userTaskRun.getEventsList().getLast();
+                    UserTaskEvent.UTECommented uteCommented = userTaskEvent.getCommentAdded();
+
+                    Assertions.assertThat(uteCommented.getUserCommentId()).isEqualTo(0);
+                    Assertions.assertThat(uteCommented.getUserId()).isEqualTo(TEST_USER_ID);
+                    Assertions.assertThat(uteCommented.getComment()).isEqualTo(comment);
+                    Assertions.assertThat(userTaskRun.getCommentIdCount()).isEqualTo(1);
+                })
+                .start();
+    }
+
     @LHWorkflow("deadline-reassignment-workflow")
     public Workflow buildDeadlineReassignmentWorkflow() {
         return new WorkflowImpl("deadline-reassignment-workflow", entrypointThread -> {

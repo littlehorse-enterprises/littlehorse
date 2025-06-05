@@ -759,6 +759,99 @@ public final class LittleHorseGrpc {
     return getListUserTaskRunsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest,
+      io.littlehorse.sdk.common.proto.UserTaskEvent> getCommentUserTaskRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CommentUserTaskRun",
+      requestType = io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.UserTaskEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest,
+      io.littlehorse.sdk.common.proto.UserTaskEvent> getCommentUserTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskEvent> getCommentUserTaskRunMethod;
+    if ((getCommentUserTaskRunMethod = LittleHorseGrpc.getCommentUserTaskRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getCommentUserTaskRunMethod = LittleHorseGrpc.getCommentUserTaskRunMethod) == null) {
+          LittleHorseGrpc.getCommentUserTaskRunMethod = getCommentUserTaskRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CommentUserTaskRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.UserTaskEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CommentUserTaskRun"))
+              .build();
+        }
+      }
+    }
+    return getCommentUserTaskRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest,
+      io.littlehorse.sdk.common.proto.UserTaskEvent> getEditCommentUserTaskRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "EditCommentUserTaskRun",
+      requestType = io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.UserTaskEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest,
+      io.littlehorse.sdk.common.proto.UserTaskEvent> getEditCommentUserTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskEvent> getEditCommentUserTaskRunMethod;
+    if ((getEditCommentUserTaskRunMethod = LittleHorseGrpc.getEditCommentUserTaskRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getEditCommentUserTaskRunMethod = LittleHorseGrpc.getEditCommentUserTaskRunMethod) == null) {
+          LittleHorseGrpc.getEditCommentUserTaskRunMethod = getEditCommentUserTaskRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "EditCommentUserTaskRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.UserTaskEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("EditCommentUserTaskRun"))
+              .build();
+        }
+      }
+    }
+    return getEditCommentUserTaskRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest,
+      com.google.protobuf.Empty> getDeleteCommentUserTaskRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteCommentUserTaskRun",
+      requestType = io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest,
+      com.google.protobuf.Empty> getDeleteCommentUserTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest, com.google.protobuf.Empty> getDeleteCommentUserTaskRunMethod;
+    if ((getDeleteCommentUserTaskRunMethod = LittleHorseGrpc.getDeleteCommentUserTaskRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteCommentUserTaskRunMethod = LittleHorseGrpc.getDeleteCommentUserTaskRunMethod) == null) {
+          LittleHorseGrpc.getDeleteCommentUserTaskRunMethod = getDeleteCommentUserTaskRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteCommentUserTaskRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteCommentUserTaskRun"))
+              .build();
+        }
+      }
+    }
+    return getDeleteCommentUserTaskRunMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.NodeRunId,
       io.littlehorse.sdk.common.proto.NodeRun> getGetNodeRunMethod;
 
@@ -2652,6 +2745,36 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Add user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    default void commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCommentUserTaskRunMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Edit user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    default void editCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getEditCommentUserTaskRunMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * </pre>
+     */
+    default void deleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteCommentUserTaskRunMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Gets a specific NodeRun.
      * </pre>
      */
@@ -3489,6 +3612,39 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getListUserTaskRunsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Add user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    public void commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCommentUserTaskRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Edit user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    public void editCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getEditCommentUserTaskRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * </pre>
+     */
+    public void deleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteCommentUserTaskRunMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4350,6 +4506,36 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Add user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEvent commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCommentUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Edit user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEvent editCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getEditCommentUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteCommentUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Gets a specific NodeRun.
      * </pre>
      */
@@ -5169,6 +5355,39 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Add user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskEvent> commentUserTaskRun(
+        io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getCommentUserTaskRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Edit user comment depending on whether a user_comment_id is passed in 
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskEvent> editCommentUserTaskRun(
+        io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getEditCommentUserTaskRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteCommentUserTaskRun(
+        io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteCommentUserTaskRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Gets a specific NodeRun.
      * </pre>
      */
@@ -5758,57 +5977,60 @@ public final class LittleHorseGrpc {
   private static final int METHODID_CANCEL_USER_TASK_RUN = 21;
   private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 22;
   private static final int METHODID_LIST_USER_TASK_RUNS = 23;
-  private static final int METHODID_GET_NODE_RUN = 24;
-  private static final int METHODID_LIST_NODE_RUNS = 25;
-  private static final int METHODID_GET_TASK_RUN = 26;
-  private static final int METHODID_LIST_TASK_RUNS = 27;
-  private static final int METHODID_GET_VARIABLE = 28;
-  private static final int METHODID_LIST_VARIABLES = 29;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 30;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 31;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 32;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 33;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 34;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 35;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 36;
-  private static final int METHODID_SEARCH_WF_RUN = 37;
-  private static final int METHODID_SEARCH_NODE_RUN = 38;
-  private static final int METHODID_SEARCH_TASK_RUN = 39;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 40;
-  private static final int METHODID_SEARCH_VARIABLE = 41;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 42;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 43;
-  private static final int METHODID_SEARCH_TASK_DEF = 44;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 45;
-  private static final int METHODID_SEARCH_WF_SPEC = 46;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 47;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 48;
-  private static final int METHODID_SEARCH_TENANT = 49;
-  private static final int METHODID_SEARCH_PRINCIPAL = 50;
-  private static final int METHODID_REGISTER_TASK_WORKER = 51;
-  private static final int METHODID_REPORT_TASK = 52;
-  private static final int METHODID_STOP_WF_RUN = 53;
-  private static final int METHODID_RESUME_WF_RUN = 54;
-  private static final int METHODID_RESCUE_THREAD_RUN = 55;
-  private static final int METHODID_DELETE_WF_RUN = 56;
-  private static final int METHODID_DELETE_TASK_DEF = 57;
-  private static final int METHODID_DELETE_WF_SPEC = 58;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 59;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 60;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 61;
-  private static final int METHODID_DELETE_PRINCIPAL = 62;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 63;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 64;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 65;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 66;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 67;
-  private static final int METHODID_PUT_TENANT = 68;
-  private static final int METHODID_GET_TENANT = 69;
-  private static final int METHODID_PUT_PRINCIPAL = 70;
-  private static final int METHODID_GET_PRINCIPAL = 71;
-  private static final int METHODID_WHOAMI = 72;
-  private static final int METHODID_GET_SERVER_VERSION = 73;
-  private static final int METHODID_POLL_TASK = 74;
+  private static final int METHODID_COMMENT_USER_TASK_RUN = 24;
+  private static final int METHODID_EDIT_COMMENT_USER_TASK_RUN = 25;
+  private static final int METHODID_DELETE_COMMENT_USER_TASK_RUN = 26;
+  private static final int METHODID_GET_NODE_RUN = 27;
+  private static final int METHODID_LIST_NODE_RUNS = 28;
+  private static final int METHODID_GET_TASK_RUN = 29;
+  private static final int METHODID_LIST_TASK_RUNS = 30;
+  private static final int METHODID_GET_VARIABLE = 31;
+  private static final int METHODID_LIST_VARIABLES = 32;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 33;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 34;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 35;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 36;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 37;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 38;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 39;
+  private static final int METHODID_SEARCH_WF_RUN = 40;
+  private static final int METHODID_SEARCH_NODE_RUN = 41;
+  private static final int METHODID_SEARCH_TASK_RUN = 42;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 43;
+  private static final int METHODID_SEARCH_VARIABLE = 44;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 45;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 46;
+  private static final int METHODID_SEARCH_TASK_DEF = 47;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 48;
+  private static final int METHODID_SEARCH_WF_SPEC = 49;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 50;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 51;
+  private static final int METHODID_SEARCH_TENANT = 52;
+  private static final int METHODID_SEARCH_PRINCIPAL = 53;
+  private static final int METHODID_REGISTER_TASK_WORKER = 54;
+  private static final int METHODID_REPORT_TASK = 55;
+  private static final int METHODID_STOP_WF_RUN = 56;
+  private static final int METHODID_RESUME_WF_RUN = 57;
+  private static final int METHODID_RESCUE_THREAD_RUN = 58;
+  private static final int METHODID_DELETE_WF_RUN = 59;
+  private static final int METHODID_DELETE_TASK_DEF = 60;
+  private static final int METHODID_DELETE_WF_SPEC = 61;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 62;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 63;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 64;
+  private static final int METHODID_DELETE_PRINCIPAL = 65;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 66;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 67;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 68;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 69;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 70;
+  private static final int METHODID_PUT_TENANT = 71;
+  private static final int METHODID_GET_TENANT = 72;
+  private static final int METHODID_PUT_PRINCIPAL = 73;
+  private static final int METHODID_GET_PRINCIPAL = 74;
+  private static final int METHODID_WHOAMI = 75;
+  private static final int METHODID_GET_SERVER_VERSION = 76;
+  private static final int METHODID_POLL_TASK = 77;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -5922,6 +6144,18 @@ public final class LittleHorseGrpc {
         case METHODID_LIST_USER_TASK_RUNS:
           serviceImpl.listUserTaskRuns((io.littlehorse.sdk.common.proto.ListUserTaskRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList>) responseObserver);
+          break;
+        case METHODID_COMMENT_USER_TASK_RUN:
+          serviceImpl.commentUserTaskRun((io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent>) responseObserver);
+          break;
+        case METHODID_EDIT_COMMENT_USER_TASK_RUN:
+          serviceImpl.editCommentUserTaskRun((io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskEvent>) responseObserver);
+          break;
+        case METHODID_DELETE_COMMENT_USER_TASK_RUN:
+          serviceImpl.deleteCommentUserTaskRun((io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_GET_NODE_RUN:
           serviceImpl.getNodeRun((io.littlehorse.sdk.common.proto.NodeRunId) request,
@@ -6312,6 +6546,27 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ListUserTaskRunRequest,
               io.littlehorse.sdk.common.proto.UserTaskRunList>(
                 service, METHODID_LIST_USER_TASK_RUNS)))
+        .addMethod(
+          getCommentUserTaskRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest,
+              io.littlehorse.sdk.common.proto.UserTaskEvent>(
+                service, METHODID_COMMENT_USER_TASK_RUN)))
+        .addMethod(
+          getEditCommentUserTaskRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest,
+              io.littlehorse.sdk.common.proto.UserTaskEvent>(
+                service, METHODID_EDIT_COMMENT_USER_TASK_RUN)))
+        .addMethod(
+          getDeleteCommentUserTaskRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_COMMENT_USER_TASK_RUN)))
         .addMethod(
           getGetNodeRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6741,6 +6996,9 @@ public final class LittleHorseGrpc {
               .addMethod(getCancelUserTaskRunMethod())
               .addMethod(getSaveUserTaskRunProgressMethod())
               .addMethod(getListUserTaskRunsMethod())
+              .addMethod(getCommentUserTaskRunMethod())
+              .addMethod(getEditCommentUserTaskRunMethod())
+              .addMethod(getDeleteCommentUserTaskRunMethod())
               .addMethod(getGetNodeRunMethod())
               .addMethod(getListNodeRunsMethod())
               .addMethod(getGetTaskRunMethod())

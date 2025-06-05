@@ -50,7 +50,7 @@ class UserTaskField(_message.Message):
     def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., description: _Optional[str] = ..., display_name: _Optional[str] = ..., required: bool = ...) -> None: ...
 
 class UserTaskRun(_message.Message):
-    __slots__ = ["id", "user_task_def_id", "user_group", "user_id", "results", "status", "events", "notes", "scheduled_time", "node_run_id", "epoch"]
+    __slots__ = ["id", "user_task_def_id", "user_group", "user_id", "results", "status", "events", "notes", "scheduled_time", "node_run_id", "epoch", "comment_id_count"]
     class ResultsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -69,6 +69,7 @@ class UserTaskRun(_message.Message):
     SCHEDULED_TIME_FIELD_NUMBER: _ClassVar[int]
     NODE_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     EPOCH_FIELD_NUMBER: _ClassVar[int]
+    COMMENT_ID_COUNT_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.UserTaskRunId
     user_task_def_id: _object_id_pb2.UserTaskDefId
     user_group: str
@@ -80,7 +81,8 @@ class UserTaskRun(_message.Message):
     scheduled_time: _timestamp_pb2.Timestamp
     node_run_id: _object_id_pb2.NodeRunId
     epoch: int
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., user_group: _Optional[str] = ..., user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., status: _Optional[_Union[UserTaskRunStatus, str]] = ..., events: _Optional[_Iterable[_Union[UserTaskEvent, _Mapping]]] = ..., notes: _Optional[str] = ..., scheduled_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., epoch: _Optional[int] = ...) -> None: ...
+    comment_id_count: int
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., user_group: _Optional[str] = ..., user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., status: _Optional[_Union[UserTaskRunStatus, str]] = ..., events: _Optional[_Iterable[_Union[UserTaskEvent, _Mapping]]] = ..., notes: _Optional[str] = ..., scheduled_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., epoch: _Optional[int] = ..., comment_id_count: _Optional[int] = ...) -> None: ...
 
 class AssignUserTaskRunRequest(_message.Message):
     __slots__ = ["user_task_run_id", "override_claim", "user_group", "user_id"]
@@ -142,6 +144,36 @@ class CancelUserTaskRunRequest(_message.Message):
     user_task_run_id: _object_id_pb2.UserTaskRunId
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ...) -> None: ...
 
+class CommentUserTaskRunRequest(_message.Message):
+    __slots__ = ["user_task_run_id", "user_id", "comment"]
+    USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    USER_ID_FIELD_NUMBER: _ClassVar[int]
+    COMMENT_FIELD_NUMBER: _ClassVar[int]
+    user_task_run_id: _object_id_pb2.UserTaskRunId
+    user_id: str
+    comment: str
+    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_id: _Optional[str] = ..., comment: _Optional[str] = ...) -> None: ...
+
+class EditCommentUserTaskRunRequest(_message.Message):
+    __slots__ = ["user_comment_id", "user_task_run_id", "user_id", "comment"]
+    USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]
+    USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    USER_ID_FIELD_NUMBER: _ClassVar[int]
+    COMMENT_FIELD_NUMBER: _ClassVar[int]
+    user_comment_id: int
+    user_task_run_id: _object_id_pb2.UserTaskRunId
+    user_id: str
+    comment: str
+    def __init__(self, user_comment_id: _Optional[int] = ..., user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_id: _Optional[str] = ..., comment: _Optional[str] = ...) -> None: ...
+
+class DeleteCommentUserTaskRunRequest(_message.Message):
+    __slots__ = ["user_task_run_id", "user_comment_id"]
+    USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]
+    user_task_run_id: _object_id_pb2.UserTaskRunId
+    user_comment_id: int
+    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_comment_id: _Optional[int] = ...) -> None: ...
+
 class UserTaskTriggerReference(_message.Message):
     __slots__ = ["node_run_id", "user_task_event_number", "user_id", "user_group"]
     NODE_RUN_ID_FIELD_NUMBER: _ClassVar[int]
@@ -155,7 +187,7 @@ class UserTaskTriggerReference(_message.Message):
     def __init__(self, node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., user_task_event_number: _Optional[int] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ...) -> None: ...
 
 class UserTaskEvent(_message.Message):
-    __slots__ = ["time", "task_executed", "assigned", "cancelled", "saved"]
+    __slots__ = ["time", "task_executed", "assigned", "cancelled", "saved", "comment_added", "comment_edited", "comment_deleted"]
     class UTECancelled(_message.Message):
         __slots__ = ["message"]
         MESSAGE_FIELD_NUMBER: _ClassVar[int]
@@ -191,14 +223,34 @@ class UserTaskEvent(_message.Message):
         new_user_id: str
         new_user_group: str
         def __init__(self, old_user_id: _Optional[str] = ..., old_user_group: _Optional[str] = ..., new_user_id: _Optional[str] = ..., new_user_group: _Optional[str] = ...) -> None: ...
+    class UTECommented(_message.Message):
+        __slots__ = ["user_comment_id", "user_id", "comment"]
+        USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]
+        USER_ID_FIELD_NUMBER: _ClassVar[int]
+        COMMENT_FIELD_NUMBER: _ClassVar[int]
+        user_comment_id: int
+        user_id: str
+        comment: str
+        def __init__(self, user_comment_id: _Optional[int] = ..., user_id: _Optional[str] = ..., comment: _Optional[str] = ...) -> None: ...
+    class UTECommentDeleted(_message.Message):
+        __slots__ = ["user_comment_id"]
+        USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]
+        user_comment_id: int
+        def __init__(self, user_comment_id: _Optional[int] = ...) -> None: ...
     TIME_FIELD_NUMBER: _ClassVar[int]
     TASK_EXECUTED_FIELD_NUMBER: _ClassVar[int]
     ASSIGNED_FIELD_NUMBER: _ClassVar[int]
     CANCELLED_FIELD_NUMBER: _ClassVar[int]
     SAVED_FIELD_NUMBER: _ClassVar[int]
+    COMMENT_ADDED_FIELD_NUMBER: _ClassVar[int]
+    COMMENT_EDITED_FIELD_NUMBER: _ClassVar[int]
+    COMMENT_DELETED_FIELD_NUMBER: _ClassVar[int]
     time: _timestamp_pb2.Timestamp
     task_executed: UserTaskEvent.UTETaskExecuted
     assigned: UserTaskEvent.UTEAssigned
     cancelled: UserTaskEvent.UTECancelled
     saved: UserTaskEvent.UTESaved
-    def __init__(self, time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_executed: _Optional[_Union[UserTaskEvent.UTETaskExecuted, _Mapping]] = ..., assigned: _Optional[_Union[UserTaskEvent.UTEAssigned, _Mapping]] = ..., cancelled: _Optional[_Union[UserTaskEvent.UTECancelled, _Mapping]] = ..., saved: _Optional[_Union[UserTaskEvent.UTESaved, _Mapping]] = ...) -> None: ...
+    comment_added: UserTaskEvent.UTECommented
+    comment_edited: UserTaskEvent.UTECommented
+    comment_deleted: UserTaskEvent.UTECommentDeleted
+    def __init__(self, time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_executed: _Optional[_Union[UserTaskEvent.UTETaskExecuted, _Mapping]] = ..., assigned: _Optional[_Union[UserTaskEvent.UTEAssigned, _Mapping]] = ..., cancelled: _Optional[_Union[UserTaskEvent.UTECancelled, _Mapping]] = ..., saved: _Optional[_Union[UserTaskEvent.UTESaved, _Mapping]] = ..., comment_added: _Optional[_Union[UserTaskEvent.UTECommented, _Mapping]] = ..., comment_edited: _Optional[_Union[UserTaskEvent.UTECommented, _Mapping]] = ..., comment_deleted: _Optional[_Union[UserTaskEvent.UTECommentDeleted, _Mapping]] = ...) -> None: ...

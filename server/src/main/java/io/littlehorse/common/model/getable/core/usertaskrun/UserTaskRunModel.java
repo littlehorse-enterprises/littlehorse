@@ -16,6 +16,7 @@ import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEAssignedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECancelledModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -65,6 +66,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
+    private int commentIdCount;
 
     private List<UserTaskEventModel> events = new ArrayList<>();
 
@@ -100,6 +102,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
         this.epoch = 0;
+        this.commentIdCount = 0;
         this.userTaskNode = userTaskNode;
         this.executionContext = processorContext;
         this.processorContext = processorContext;
@@ -131,6 +134,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             out.putResults(result.getKey(), result.getValue().toProto().build());
         }
         out.setEpoch(this.epoch);
+        out.setCommentIdCount(commentIdCount);
 
         return out;
     }
@@ -161,6 +165,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
         this.epoch = p.getEpoch();
+        this.commentIdCount = p.getCommentIdCount();
         this.executionContext = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
@@ -312,6 +317,15 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         ThreadRunModel currentThreadRun = this.getNodeRun().getThreadRun();
         String failureName = this.getUtNode().assignExceptionNameVariable(currentThreadRun);
         failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
+    }
+
+    public UserTaskEventModel comment(String userId, String comment) {
+        UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
+                new UTECommentedModel(userId, comment, commentIdCount++),
+                processorContext.currentCommand().getTime());
+        this.events.add(userTaskEventModel);
+
+        return userTaskEventModel;
     }
 
     public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx)
