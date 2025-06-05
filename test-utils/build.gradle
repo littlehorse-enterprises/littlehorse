@@ -52,7 +52,6 @@ tasks.register('sourcesJar', Jar) {
 }
 
 publishing {
-
     publications {
         mavenJava(MavenPublication) {
             groupId = group

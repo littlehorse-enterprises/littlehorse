@@ -7,6 +7,16 @@ WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 cd "$WORK_DIR"
 
+verify_java_version(){
+    java_version="$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')"
+    java_major_version=${java_version:0:2}
+
+    if [ "11" != "$java_major_version" ]; then
+        echo "Change to Java 11 firsts"
+        exit 1
+    fi
+}
+
 publish_maven() {
     read -p "This script should only be used in special situations. Do you want to continue? [yes/no] " answer
 
@@ -39,13 +49,24 @@ publish_maven() {
 
     export ORG_GRADLE_PROJECT_signingKey="$(<$signingKey)"
     export ORG_GRADLE_PROJECT_signingPassword="$signingPassword"
-    export ORG_GRADLE_PROJECT_ossrhUsername="$ossrhUsername"
-    export ORG_GRADLE_PROJECT_ossrhPassword="$ossrhPassword"
+    export ORG_GRADLE_PROJECT_sonatypeUsername="$ossrhUsername"
+    export ORG_GRADLE_PROJECT_sonatypePassword="$ossrhPassword"
 
-    ./gradlew sdk-java:publish test-utils:publish test-utils-container:publish canary:publish server:publish
+    ./gradlew \
+      sdk-java:publishToSonatype \
+      test-utils:publishToSonatype \
+      test-utils-container:publishToSonatype \
+      closeSonatypeStagingRepository
+
+    echo "This is a manual step. Go to https://central.sonatype.com and to publish."
 }
 
 case $1 in
---maven) publish_maven ;;
-*) echo "Invalid option." ;;
+--maven)
+  verify_java_version
+  publish_maven
+;;
+*)
+  echo "Invalid option."
+;;
 esac
