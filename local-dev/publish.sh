@@ -12,7 +12,7 @@ verify_java_version(){
     java_major_version=${java_version:0:2}
 
     if [ "11" != "$java_major_version" ]; then
-        echo "Change to Java 11 firsts"
+        echo "Change to Java 11 first"
         exit 1
     fi
 }
