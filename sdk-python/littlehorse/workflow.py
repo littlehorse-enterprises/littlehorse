@@ -667,11 +667,6 @@ class WfRunVariable:
         if last_thread.is_active:
             active_thread = last_thread
 
-        if last_thread._last_node().node_case == NodeCase.EXIT:
-            raise TypeError(
-                "You cannot assign a variable in a given thread after the thread has completed."
-            )
-
         active_thread.mutate(self, VariableMutationType.ASSIGN, rhs)
 
     def add(self, other: Any) -> LHExpression:
@@ -1752,6 +1747,12 @@ class WorkflowThread:
             use the output of a Node Run to mutate variables).
         """
         self._check_if_active()
+
+        if self._last_node().node_case == NodeCase.EXIT:
+            raise TypeError(
+                "You cannot mutate a variable in a given thread after the thread has completed."
+            )
+
         node_output: Optional[VariableMutation.NodeOutputSource] = None
         literal_value: Optional[VariableValue] = None
         rhs_assignment = to_variable_assignment(right_hand)
