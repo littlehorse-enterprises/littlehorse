@@ -30,6 +30,28 @@ public class StructDefLifecycleTest {
     private LittleHorseBlockingStub client;
 
     @Test
+    void shouldStoreStructDefDescription() {
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName("car-11")
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                        .build()))
+                .setDescription("This StructDef describes a car")
+                .build());
+
+        waitForStructDef("car-11", null);
+
+        StructDef structDef =
+                client.getStructDef(StructDefId.newBuilder().setName("car-11").build());
+
+        assertThat(structDef.getDescription()).isEqualTo("This StructDef describes a car");
+    }
+
+    @Test
     void shouldBumpVersionWhenPuttingCompatibleStructDefChanges() {
         client.putStructDef(PutStructDefRequest.newBuilder()
                 .setName("car-0")

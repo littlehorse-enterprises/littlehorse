@@ -23,6 +23,7 @@ import java.util.Set;
 public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefRequest> {
 
     private String name;
+    private String description;
     private InlineStructDefModel structDef;
     private StructDefCompatibilityType allowedUpdateType;
 
@@ -35,6 +36,10 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
                 .setStructDef(structDef.toProto())
                 .setAllowedUpdates(allowedUpdateType);
 
+        if (description != null) {
+            out.setDescription(description);
+        }
+
         return out;
     }
 
@@ -45,6 +50,10 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         name = proto.getName();
         structDef = LHSerializable.fromProto(proto.getStructDef(), InlineStructDefModel.class, context);
         allowedUpdateType = proto.getAllowedUpdates();
+
+        if (proto.hasDescription()) {
+            description = proto.getDescription();
+        }
     }
 
     @Override
@@ -66,6 +75,10 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         spec.setId(new StructDefIdModel(name, 0));
         spec.setStructDef(structDef);
         spec.setCreatedAt(new Date());
+
+        if (description != null) {
+            spec.setDescription(description);
+        }
 
         StructDefModel oldVersion = context.service().getStructDef(name, null);
 
