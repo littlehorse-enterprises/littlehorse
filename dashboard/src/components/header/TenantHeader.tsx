@@ -1,5 +1,10 @@
 "use client"
 
+import { handleSignOut } from "@/actions/handleSignOut"
+import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
+import { useTypedParams } from "@/hooks/usePathnameParams"
+import { getTenants } from "@/utils/getTenants"
+import { Button } from "@littlehorse-enterprises/ui-library/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,15 +14,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@littlehorse-enterprises/ui-library/dropdown-menu"
-import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
-import { useTypedParams } from "@/hooks/usePathnameParams"
-import { getTenants } from "@/utils/getTenants"
-import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { Check } from "lucide-react"
 import { Session } from "next-auth"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import SignOutButton from "../auth/signOutButton"
 
 interface TenantHeaderProps {
     session: Session | null
@@ -71,8 +71,8 @@ export default function TenantHeader({ session }: TenantHeaderProps) {
                         ))}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <SignOutButton />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      Sign Out
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
