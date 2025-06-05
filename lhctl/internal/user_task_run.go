@@ -380,13 +380,11 @@ func getUserTaskDef(
 func getUserTaskRun(
 	cmd *cobra.Command, wfRunId, userTaskGuid string, client *lhproto.LittleHorseClient,
 ) (*lhproto.UserTaskRun, error) {
-	fmt.Println("HELLLLOOOOOOO")
 	resp, err := (*client).GetUserTaskRun(requestContext(cmd), &lhproto.UserTaskRunId{
 		WfRunId:      littlehorse.StrToWfRunId(wfRunId),
 		UserTaskGuid: userTaskGuid,
 	})
 
-	fmt.Println("THis is response of getUserTaskRun events ", resp.Events[1].GetEvent())
 	if err != nil {
 		return nil, err
 	}
