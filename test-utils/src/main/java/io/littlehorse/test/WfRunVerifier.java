@@ -21,7 +21,6 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.*;
-
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;

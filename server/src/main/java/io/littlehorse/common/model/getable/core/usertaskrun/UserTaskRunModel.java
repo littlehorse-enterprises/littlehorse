@@ -319,7 +319,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
     }
 
-    public UserTaskEventModel comment(String userId, String comment){
+    public UserTaskEventModel comment(String userId, String comment) {
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
                 new UTECommentedModel(userId, comment, commentIdCount++),
                 processorContext.currentCommand().getTime());

@@ -21,9 +21,8 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
     private UTECancelledModel cancelled;
     private UTESavedModel saved;
     private UTECommentedModel commented;
-    private UTECommentDeletedModel commentDeleted ;
-    private UTECommentEditedModel commentEdited ; 
-    
+    private UTECommentDeletedModel commentDeleted;
+    private UTECommentEditedModel commentEdited;
 
     public UserTaskEventModel() {}
 
@@ -51,24 +50,23 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
         this.type = EventCase.ASSIGNED;
     }
 
-    public UserTaskEventModel(UTECommentedModel comment , Date time ) {
+    public UserTaskEventModel(UTECommentedModel comment, Date time) {
         this.commented = comment;
-        this.time = time ;
+        this.time = time;
         this.type = EventCase.COMMENT_ADDED;
     }
 
-     public UserTaskEventModel(UTECommentDeletedModel commentDeleted, Date time ) {
+    public UserTaskEventModel(UTECommentDeletedModel commentDeleted, Date time) {
         this.commentDeleted = commentDeleted;
-        this.time = time ;
+        this.time = time;
         this.type = EventCase.COMMENT_DELETED;
     }
 
-     public UserTaskEventModel(UTECommentEditedModel commentEdited , Date time ) {
+    public UserTaskEventModel(UTECommentEditedModel commentEdited, Date time) {
         this.commentEdited = commentEdited;
-        this.time = time ;
+        this.time = time;
         this.type = EventCase.COMMENT_EDITED;
     }
-
 
     public Class<UserTaskEvent> getProtoBaseClass() {
         return UserTaskEvent.class;
@@ -101,8 +99,6 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");
-            
-
         }
         return out;
     }

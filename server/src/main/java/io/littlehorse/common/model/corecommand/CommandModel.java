@@ -221,8 +221,8 @@ public class CommandModel extends AbstractCommand<Command> {
                         LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class, context);
                 break;
             case COMMENT_USER_TASK_RUN:
-                commentUserTaskRun =
-                        LHSerializable.fromProto(p.getCommentUserTaskRun(), CommentUserTaskRunRequestModel.class, context);
+                commentUserTaskRun = LHSerializable.fromProto(
+                        p.getCommentUserTaskRun(), CommentUserTaskRunRequestModel.class, context);
                 break;
             case BULK_JOB:
                 bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);

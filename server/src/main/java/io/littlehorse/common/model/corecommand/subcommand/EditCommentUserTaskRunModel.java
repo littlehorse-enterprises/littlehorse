@@ -3,7 +3,6 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.Builder;
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -48,5 +47,4 @@ public class EditCommentUserTaskRunModel extends CoreSubCommand<EditCommentUserT
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProtoBaseClass'");
     }
-    
 }
