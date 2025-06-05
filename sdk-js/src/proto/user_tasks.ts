@@ -181,6 +181,8 @@ export interface UserTaskRun {
    * tasks.
    */
   epoch: number;
+  /** The number of comments that have been made on this UserTaskRun. */
+  commentIdCount: number;
 }
 
 export interface UserTaskRun_ResultsEntry {
@@ -673,6 +675,7 @@ function createBaseUserTaskRun(): UserTaskRun {
     scheduledTime: undefined,
     nodeRunId: undefined,
     epoch: 0,
+    commentIdCount: 0,
   };
 }
 
@@ -710,6 +713,9 @@ export const UserTaskRun = {
     }
     if (message.epoch !== 0) {
       writer.uint32(96).int32(message.epoch);
+    }
+    if (message.commentIdCount !== 0) {
+      writer.uint32(104).int32(message.commentIdCount);
     }
     return writer;
   },
@@ -801,6 +807,13 @@ export const UserTaskRun = {
 
           message.epoch = reader.int32();
           continue;
+        case 13:
+          if (tag !== 104) {
+            break;
+          }
+
+          message.commentIdCount = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -838,6 +851,7 @@ export const UserTaskRun = {
       ? NodeRunId.fromPartial(object.nodeRunId)
       : undefined;
     message.epoch = object.epoch ?? 0;
+    message.commentIdCount = object.commentIdCount ?? 0;
     return message;
   },
 };

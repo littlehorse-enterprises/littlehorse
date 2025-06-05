@@ -117,6 +117,9 @@ message UserTaskRun {
   // updated or re-assigned. Used internally to implement automated reassignment and reminder
   // tasks.
   int32 epoch = 12;
+
+  // The number of comments that have been made on this UserTaskRun.
+  int32 comment_id_count = 13;
 }
 
 // Re-Assigns a UserTaskRun to a specific userId or userGroup.

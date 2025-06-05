@@ -388,4 +388,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * @return The epoch.
    */
   int getEpoch();
+
+  /**
+   * <pre>
+   * The number of comments that have been made on this UserTaskRun.
+   * </pre>
+   *
+   * <code>int32 comment_id_count = 13;</code>
+   * @return The commentIdCount.
+   */
+  int getCommentIdCount();
 }

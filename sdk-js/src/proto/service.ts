@@ -7990,7 +7990,7 @@ export const LittleHorseDefinition = {
       name: "CommentUserTaskRun",
       requestType: CommentUserTaskRunRequest,
       requestStream: false,
-      responseType: Empty,
+      responseType: UserTaskEvent,
       responseStream: false,
       options: {},
     },
@@ -8654,7 +8654,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   commentUserTaskRun(
     request: CommentUserTaskRunRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
+  ): Promise<DeepPartial<UserTaskEvent>>;
   /** Edit user comment depending on whether a user_comment_id is passed in */
   editCommentUserTaskRun(
     request: EditCommentUserTaskRunRequest,
@@ -9039,7 +9039,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   commentUserTaskRun(
     request: DeepPartial<CommentUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
+  ): Promise<UserTaskEvent>;
   /** Edit user comment depending on whether a user_comment_id is passed in */
   editCommentUserTaskRun(
     request: DeepPartial<EditCommentUserTaskRunRequest>,

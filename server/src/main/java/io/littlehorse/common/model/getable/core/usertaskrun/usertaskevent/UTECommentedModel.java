@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent;
 
 
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -34,11 +33,8 @@ public class UTECommentedModel extends LHSerializable<UTECommented>{
     public UTECommented.Builder toProto() {
         UTECommented.Builder out = UTECommented.newBuilder();
         if (userCommentId != null) out.setUserCommentId(userCommentId);
-        System.out.println("usercommentId to proto " + out.getUserCommentId());
         if (userId != null ) out.setUserId(userId);
-        System.out.println("userID to proto " + out.getUserId());
         if (comment != null) out. setComment(comment);
-        System.out.println("comment to proto " + out.getComment());
         return out; 
     }
 
