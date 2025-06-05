@@ -72,7 +72,6 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         structDef.validate();
 
         StructDefModel spec = new StructDefModel(context);
-        spec.setId(new StructDefIdModel(name, 0));
         spec.setStructDef(structDef);
         spec.setCreatedAt(new Date());
 
@@ -80,15 +79,17 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             spec.setDescription(description);
         }
 
-        StructDefModel oldVersion = context.service().getStructDef(name, null);
+        StructDefModel latestVersion = context.service().getStructDef(name, null);
 
-        if (oldVersion != null) {
-            if (InlineStructDefUtil.equals(spec.getStructDef(), oldVersion.getStructDef())) {
-                return oldVersion.toProto().build();
+        if (latestVersion == null) {
+            spec.setId(new StructDefIdModel(name, 0));
+        } else {
+            if (InlineStructDefUtil.equals(spec.getStructDef(), latestVersion.getStructDef())) {
+                return latestVersion.toProto().build();
             }
 
-            verifyUpdateType(allowedUpdateType, spec.getStructDef(), oldVersion.getStructDef());
-            spec.bumpVersion(oldVersion.getObjectId().getVersion());
+            verifyUpdateType(allowedUpdateType, spec.getStructDef(), latestVersion.getStructDef());
+            spec.setId(latestVersion.getObjectId().bumpVersion());
         }
 
         metadataManager.put(spec);
