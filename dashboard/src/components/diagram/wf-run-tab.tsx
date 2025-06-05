@@ -20,13 +20,13 @@ import {
 
 export default function WfRunTab() {
     const router = useRouter()
-    const { tenantId } = useTypedParams()
+    const { tenantId, wfSpecName } = useTypedParams()
     const [statusFilter, setStatusFilter] = useState<string[]>([])
     const [timeRangeFilter, setTimeRangeFilter] = useState<number | null>(null)
     const [wfRuns, setWfRuns] = useState<WfRun[]>([])
 
     const { data: wfRunsData } = useExecuteRPCWithSWR("searchWfRun", {
-        wfSpecName: "example-basic",
+        wfSpecName,
         variableFilters: []
     })
 
@@ -221,8 +221,8 @@ export default function WfRunTab() {
                 <FilterResetButton onReset={resetFilters} isActive={hasActiveFilters} />
             </div>
 
-            <DataTable columns={columns} data={filteredData} idField="id" onRowClick={(e: WfRun) => {
-                router.push(`/diagram/${e.wfSpecId?.name}?version=${String(e.wfSpecId?.majorVersion)}.${String(e.wfSpecId?.revision)}&wfRunId=${e.id?.id}`)
+            <DataTable columns={columns} data={filteredData} idField="id" onRowClick={(wfRun: WfRun) => {
+                router.push(`/${tenantId}/diagram/${wfRun.wfSpecId?.name}/${wfRun.wfSpecId?.majorVersion}.${wfRun.wfSpecId?.revision}?wfRunId=${wfRun.id?.id}`)
             }} />
         </div>
     )
