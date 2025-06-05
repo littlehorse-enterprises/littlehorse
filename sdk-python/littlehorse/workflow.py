@@ -1874,7 +1874,7 @@ class WorkflowThread:
                 self._last_node_condition = None
             elif node_type != NodeCase.NOP:
                 raise TypeError(
-                    f"You cannot add a Node in a given thread after the thread has completed."
+                    "You cannot add a Node in a given thread after the thread has completed."
                 )
 
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))

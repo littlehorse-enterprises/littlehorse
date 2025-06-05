@@ -1508,8 +1508,6 @@ class TestThreadBuilder(unittest.TestCase):
 
     def test_wf_raises_error_when_adding_variable_after_completing_thread(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
-            my_var = wf.declare_str("name")
-
             def if_body_a(body: WorkflowThread) -> None:
                 body.complete()
                 body.declare_str("test-var")
@@ -2079,41 +2077,59 @@ class TestThreadBuilder(unittest.TestCase):
     def test_should_compile_a_wf_with_does_contain_condition_comparing_variables(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.declare_str("my-var")
-            thread.do_if(my_var.does_contain("this-value"), lambda wf: wf.execute("task"))
-
+            thread.do_if(
+                my_var.does_contain("this-value"), lambda wf: wf.execute("task")
+            )
 
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.IN,
-                                                         left=VariableAssignment(
-                                                             literal_value=VariableValue(str="this-value")),
-                                                         right=VariableAssignment(variable_name="my-var"))),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.IN,
+                        left=VariableAssignment(
+                            literal_value=VariableValue(str="this-value")
+                        ),
+                        right=VariableAssignment(variable_name="my-var"),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
 
-    def test_should_compile_a_wf_with_does_not_contain_condition_comparing_variables(self):
+    def test_should_compile_a_wf_with_does_not_contain_condition_comparing_variables(
+        self,
+    ):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.declare_str("my-var")
-            thread.do_if(my_var.does_not_contain("this-value"), lambda wf: wf.execute("task"))
-
+            thread.do_if(
+                my_var.does_not_contain("this-value"), lambda wf: wf.execute("task")
+            )
 
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.NOT_IN,
-                                                         left=VariableAssignment(
-                                                             literal_value=VariableValue(str="this-value")),
-                                                         right=VariableAssignment(variable_name="my-var"))),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.NOT_IN,
+                        left=VariableAssignment(
+                            literal_value=VariableValue(str="this-value")
+                        ),
+                        right=VariableAssignment(variable_name="my-var"),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
@@ -2123,18 +2139,24 @@ class TestThreadBuilder(unittest.TestCase):
             my_var = thread.declare_str("my-var")
             thread.do_if(my_var.is_in(["A", "B", "C"]), lambda wf: wf.execute("task"))
 
-
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.IN,
-                                                         left=VariableAssignment(variable_name="my-var"),
-                                                         right=VariableAssignment(
-                                                             literal_value=VariableValue(json_arr="[\"A\", \"B\", \"C\"]"))),),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.IN,
+                        left=VariableAssignment(variable_name="my-var"),
+                        right=VariableAssignment(
+                            literal_value=VariableValue(json_arr='["A", "B", "C"]')
+                        ),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
@@ -2142,20 +2164,28 @@ class TestThreadBuilder(unittest.TestCase):
     def test_should_compile_a_wf_with_not_in_condition_comparing_variables(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.declare_str("my-var")
-            thread.do_if(my_var.is_not_in(["A", "B", "C"]), lambda wf: wf.execute("task"))
+            thread.do_if(
+                my_var.is_not_in(["A", "B", "C"]), lambda wf: wf.execute("task")
+            )
 
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.NOT_IN,
-                                                         left=VariableAssignment(variable_name="my-var"),
-                                                         right=VariableAssignment(
-                                                             literal_value=VariableValue(
-                                                                 json_arr="[\"A\", \"B\", \"C\"]"))), ),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.NOT_IN,
+                        left=VariableAssignment(variable_name="my-var"),
+                        right=VariableAssignment(
+                            literal_value=VariableValue(json_arr='["A", "B", "C"]')
+                        ),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
