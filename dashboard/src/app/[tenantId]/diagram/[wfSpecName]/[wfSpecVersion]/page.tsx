@@ -1,10 +1,10 @@
+import { getWfRunDetails } from "@/actions/getWfRun";
 import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
 import WorkflowDiagram from "@/components/diagram/workflow-diagram";
+import { extractEdgeData, extractNodeData } from "@/lib/data-extraction";
 import { lhClient } from "@/lib/lhClient";
 import { PageParams } from "@/types/PageParams";
-import { extractNodeData, extractEdgeData } from "@/lib/data-extraction";
-import { type Node, type Edge } from "@xyflow/react";
-import { getWfRunDetails } from "@/actions/getWfRun";
+import { type Edge, type Node } from "@xyflow/react";
 
 export default async function DiagramPage({
     params,
@@ -30,8 +30,8 @@ export default async function DiagramPage({
             extractedNodes = extractNodeData(wfSpec, wfRunDetails);
             extractedEdges = extractEdgeData(wfSpec);
         } else if (wfSpec) {
-            // todo : need to support wfSpec only display
-            extractedNodes = extractNodeData(wfSpec, wfSpecData);
+            // TODO: need to support wfSpec only display
+            // extractedNodes = extractNodeData(wfSpec, wfSpecData);
             extractedEdges = extractEdgeData(wfSpec);
         }
     } catch (error) {

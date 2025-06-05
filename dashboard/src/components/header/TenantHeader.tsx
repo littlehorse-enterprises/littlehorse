@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@littlehorse-enterprises/ui-library/dropdown-menu"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
 import { useTypedParams } from "@/hooks/usePathnameParams"
 import { getTenants } from "@/utils/getTenants"
