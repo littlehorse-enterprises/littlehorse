@@ -211,7 +211,7 @@ I propose that we follow the lower `camelCase` convention for `StructDef` Field 
 - The field name must start with a lowercase letter
   - Why no numbers? Java, Python, Go, class attributes cannot start with numbers
 - Subsequent characters must match the ranges `A-Z`, `A-Z`, and `0-9`
-  - Why no underscores? We want Java, .NET, and Go users to design compatible fields without breaking their individual language naming conventions. Since underscores are typically only used in constants in Java, and private member variables in `C# `, this character breaks support for these languages. Sorry Python, you can keep your `snake_case`, we will just convert them to `camelCase` during the `StructDef` compilation process.
+  - Why no underscores? We want Java, .NET, and Go users to design compatible fields without breaking their individual language naming conventions. Since underscores are typically only used in constants in Java, and private member variables in `C#`, this character breaks support for these languages. Sorry Python, you can keep your `snake_case`, we will just convert them to `camelCase` during the `StructDef` compilation process.
 - For our case, field names will be `case insensitive`.
   - Why? This is because we'll be doing some magic on the Python side to convert lower `snake_case` to lower `camelCase`, and we don't want to users to worry about capitalization.
 
@@ -221,6 +221,6 @@ It was proposed that we use `snake_case` instead of `camelCase`, but I dislike t
 
 Why? Well, as you can tell so far, there is some magic going on in the Python SDK for converting `snake_case` to `camelCase`. Compared to `C#` and `Go`, this is the "hardest" convention to convert to `camelCase`, and even then it is a trivial task.
 
-Alternatively, if we use `snake_case` as the standard, then every other SDK will need to convert from their respect lower `camelCase` or `PascalCase` standards, adding underscores in between lower and uppercase letters and creating some unpredictable edge cases. What happens when a number and a letter are side by side? For example, the `vinNumberISO3779` field from earlier could be converted to `vin_number_iso_3779` or `vin_number_iso3779`, depending on who you ask.
+Alternatively, if we use `snake_case` as the standard, then every other SDK will need to convert from their respected lower `camelCase` or `PascalCase` standards, adding underscores in between lower and uppercase letters and creating some unpredictable edge cases. What happens when a number and a letter are side by side? For example, the `vinNumberISO3779` field from earlier could be converted to `vin_number_iso_3779` or `vin_number_iso3779`, depending on who you ask.
 
 I think it is easier to use lower `camelCase`, which Java, Go, and .NET support to a large degree, over `snake_case`. I also think it is easier and more straight-forward to convert from `snake_case` to `camelCase` than vice-versa.
