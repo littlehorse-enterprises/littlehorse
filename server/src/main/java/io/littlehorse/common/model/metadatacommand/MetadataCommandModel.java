@@ -12,6 +12,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecReques
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
@@ -39,6 +40,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private MetadataCommandCase type;
     private PutWfSpecRequestModel putWfSpecRequest;
     private PutTaskDefRequestModel putTaskDefRequest;
+    private PutStructDefRequestModel putStructDefRequest;
     private PutExternalEventDefRequestModel putExternalEventDefRequest;
     private DeleteWfSpecRequestModel deleteWfSpec;
     private DeleteTaskDefRequestModel deleteTaskDef;
@@ -82,6 +84,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case PUT_TASK_DEF:
                 out.setPutTaskDef(putTaskDefRequest.toProto());
+                break;
+            case PUT_STRUCT_DEF:
+                out.setPutStructDef(putStructDefRequest.toProto());
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
                 out.setPutExternalEventDef(putExternalEventDefRequest.toProto());
@@ -139,6 +144,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case PUT_TASK_DEF:
                 putTaskDefRequest = PutTaskDefRequestModel.fromProto(p.getPutTaskDef(), context);
                 break;
+            case PUT_STRUCT_DEF:
+                putStructDefRequest = PutStructDefRequestModel.fromProto(p.getPutStructDef(), context);
+                break;
             case PUT_EXTERNAL_EVENT_DEF:
                 putExternalEventDefRequest =
                         PutExternalEventDefRequestModel.fromProto(p.getPutExternalEventDef(), context);
@@ -191,6 +199,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putWfSpecRequest;
             case PUT_TASK_DEF:
                 return putTaskDefRequest;
+            case PUT_STRUCT_DEF:
+                return putStructDefRequest;
             case PUT_EXTERNAL_EVENT_DEF:
                 return putExternalEventDefRequest;
             case DELETE_EXTERNAL_EVENT_DEF:
@@ -223,6 +233,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         if (cls.equals(PutTaskDefRequestModel.class)) {
             type = MetadataCommandCase.PUT_TASK_DEF;
             putTaskDefRequest = (PutTaskDefRequestModel) cmd;
+        } else if (cls.equals(PutStructDefRequestModel.class)) {
+            type = MetadataCommandCase.PUT_STRUCT_DEF;
+            putStructDefRequest = (PutStructDefRequestModel) cmd;
         } else if (cls.equals(PutExternalEventDefRequestModel.class)) {
             type = MetadataCommandCase.PUT_EXTERNAL_EVENT_DEF;
             putExternalEventDefRequest = (PutExternalEventDefRequestModel) cmd;

@@ -78,7 +78,7 @@ public final class Storage {
       "\022\026\n\022TASK_METRIC_UPDATE\020\003\022\014\n\010LH_TIMER\020\004\022\007" +
       "\n\003TAG\020\005\022\025\n\021PARTITION_METRICS\020\006\022\021\n\rMETRIC" +
       "_WINDOW\020\007\022\026\n\022INITIALIZATION_LOG\020\010\022\032\n\026WFR" +
-      "UN_STORED_INVENTORY\020\t*\324\002\n\020GetableClassEn" +
+      "UN_STORED_INVENTORY\020\t*\344\002\n\020GetableClassEn" +
       "um\022\014\n\010TASK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DEF\020\001" +
       "\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022" +
       "\014\n\010VARIABLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020TAS" +
@@ -87,8 +87,9 @@ public final class Storage {
       "\n\010TASK_RUN\020\013\022\021\n\rUSER_TASK_RUN\020\014\022\r\n\tPRINC" +
       "IPAL\020\r\022\n\n\006TENANT\020\016\022\026\n\022WORKFLOW_EVENT_DEF" +
       "\020\017\022\022\n\016WORKFLOW_EVENT\020\020\022\024\n\020SCHEDULED_WF_R" +
-      "UN\020\021*\033\n\016TagStorageType\022\t\n\005LOCAL\020\000B\037\n\033io." +
-      "littlehorse.common.protoP\001b\006proto3"
+      "UN\020\021\022\016\n\nSTRUCT_DEF\020\022*\033\n\016TagStorageType\022\t" +
+      "\n\005LOCAL\020\000B\037\n\033io.littlehorse.common.proto" +
+      "P\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

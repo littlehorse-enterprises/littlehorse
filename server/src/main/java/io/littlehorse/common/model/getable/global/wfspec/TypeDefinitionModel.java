@@ -59,6 +59,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         return false;
     }
 
+    public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {
+        TypeDefinitionModel out = new TypeDefinitionModel();
+        out.initFrom(proto, context);
+        return out;
+    }
+
     public boolean isJson() {
         return type == VariableType.JSON_ARR || type == VariableType.JSON_OBJ;
     }

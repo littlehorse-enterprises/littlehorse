@@ -42,6 +42,8 @@ export enum ACLResource {
   ACL_TASK_WORKER_GROUP = "ACL_TASK_WORKER_GROUP",
   /** ACL_WORKFLOW_EVENT - Refers to `WorkflowEventDef` and `WorkflowEvent` */
   ACL_WORKFLOW_EVENT = "ACL_WORKFLOW_EVENT",
+  /** ACL_STRUCT - Refers to `StructDef` */
+  ACL_STRUCT = "ACL_STRUCT",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -74,6 +76,9 @@ export function aCLResourceFromJSON(object: any): ACLResource {
     case 8:
     case "ACL_WORKFLOW_EVENT":
       return ACLResource.ACL_WORKFLOW_EVENT;
+    case 9:
+    case "ACL_STRUCT":
+      return ACLResource.ACL_STRUCT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -101,6 +106,8 @@ export function aCLResourceToNumber(object: ACLResource): number {
       return 7;
     case ACLResource.ACL_WORKFLOW_EVENT:
       return 8;
+    case ACLResource.ACL_STRUCT:
+      return 9;
     case ACLResource.UNRECOGNIZED:
     default:
       return -1;
