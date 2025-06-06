@@ -53,12 +53,14 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
-          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
-        run: ./gradlew sdk-java:publish test-utils:publish test-utils-container:publish
-
-      - name: Information
-        run: echo "::warning title=Do not forget to release the java package at Maven Central::Login at https://s01.oss.sonatype.org/"
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: >
+          ./gradlew
+          sdk-java:publishToSonatype
+          test-utils:publishToSonatype
+          test-utils-container:publishToSonatype
+          closeAndReleaseSonatypeStagingRepository
 
   publish-java-server:
     runs-on: ubuntu-latest
@@ -87,12 +89,13 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
-          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
-        run: ./gradlew server:publish canary:publish
-
-      - name: Information
-        run: echo "::warning title=Do not forget to release the java package at Maven Central::Login at https://s01.oss.sonatype.org/"
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: >
+          ./gradlew
+          server:publishToSonatype
+          canary:publishToSonatype
+          closeAndReleaseSonatypeStagingRepository
 
   publish-sdk-python:
     runs-on: ubuntu-latest
