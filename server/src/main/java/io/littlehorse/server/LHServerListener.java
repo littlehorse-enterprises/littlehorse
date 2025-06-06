@@ -262,8 +262,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
@@ -284,7 +284,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final BackendInternalComms internalComms;
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
-    private final ScheduledExecutorService networkThreadpool;
     private final String listenerName;
     private final CommandSender commandSender;
     private final Duration successDurationTimeout;
@@ -301,7 +300,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ServerListenerConfig listenerConfig,
             TaskQueueManager taskQueueManager,
             BackendInternalComms internalComms,
-            ScheduledExecutorService networkThreadPool,
+            ExecutorService networkThreadPool,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
@@ -317,7 +316,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.metadataCache = metadataCache;
         this.serverConfig = listenerConfig.getConfig();
         this.taskQueueManager = taskQueueManager;
-        this.networkThreadpool = networkThreadPool;
         this.coreStoreProvider = coreStoreProvider;
         this.internalComms = internalComms;
         this.listenerName = listenerConfig.getName();
@@ -1025,11 +1023,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CompletableFuture<Object> firstMatchingEvent = CompletableFuture.anyOf(asyncWaiters.getOrRegisterFuture(
                     requestContext().authorization().tenantId(), wfRunId, eventDefIds));
             try {
-                WorkflowEvent event = (WorkflowEvent) firstMatchingEvent.get();
+                WorkflowEvent event = (WorkflowEvent) firstMatchingEvent.get(
+                        LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
                 ctx.onNext(event);
                 ctx.onCompleted();
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
+            } catch (TimeoutException e) {
+                ctx.onError(new LHApiException(Status.DEADLINE_EXCEEDED));
             }
         } else {
             WorkflowEvent workflowEvent =
@@ -1116,6 +1117,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
      */
     private <AC extends Message, RC extends Message> void processCommand(
             AbstractCommand<AC> command, StreamObserver<RC> responseObserver, Class<RC> responseCls) {
+        command.setCommandId(LHUtil.generateGuid());
         RequestExecutionContext requestContext = requestContext();
         Future<Message> futureResponse = commandSender.doSend(
                 command,
@@ -1124,12 +1126,24 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 requestContext.authorization().tenantId(),
                 requestContext);
         try {
+            log.info(
+                    "Waiting for command {} to be processed on completable {}", command.getCommandId(), futureResponse);
             Message response =
                     futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            responseObserver.onError(e.getCause());
+        } catch (InterruptedException | ExecutionException e) {
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            log.error("Failed to process command %s".formatted(command), cause);
+            responseObserver.onError(cause);
+        } catch (TimeoutException e) {
+            log.error("Timingout for command id %s with completable %s"
+                    .formatted(command.getCommandId(), futureResponse.toString()));
+            responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                    "Could not process command in time id: %s".formatted(command.getCommandId()))));
+        } catch (Throwable e) {
+            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
+            log.error("Failed processing command", e);
         } finally {
             asyncWaiters.removeCommand(command.getCommandId());
         }

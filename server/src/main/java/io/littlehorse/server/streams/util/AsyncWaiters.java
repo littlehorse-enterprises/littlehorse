@@ -9,17 +9,23 @@ import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.TaskId;
 
+@Slf4j
 public class AsyncWaiters {
 
     private final ConcurrentHashMap<String, FutureResponseAndWaitingClient> responses = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<WorkflowEventDefIdAndTenant, CompletableFuture<WorkflowEvent>> workflowEvents =
-            new ConcurrentHashMap<>();
+    private final Map<WorkflowEventDefIdAndTenant, CompletableFuture<WorkflowEvent>> workflowEvents =
+            Collections.synchronizedMap(new WeakHashMap<>());
     private final long removeCompletedAfter;
     private final TimeUnit timeUnit;
 
@@ -30,10 +36,6 @@ public class AsyncWaiters {
     public AsyncWaiters(Duration removeCompletedAfter) {
         this.removeCompletedAfter = removeCompletedAfter.toMillis();
         this.timeUnit = TimeUnit.MILLISECONDS;
-    }
-
-    public void put(String commandId, CompletableFuture<Message> completable) {
-        responses.put(commandId, createFuture(commandId, completable));
     }
 
     public CompletableFuture<Message> getOrRegisterFuture(
@@ -64,6 +66,11 @@ public class AsyncWaiters {
                 .toArray(CompletableFuture[]::new);
     }
 
+    public CompletableFuture<WorkflowEvent> getOrRegisterFuture(
+            TenantIdModel tenantId, WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId) {
+        return getOrRegisterFuture(wfRunId, eventDefId, tenantId, new CompletableFuture<>());
+    }
+
     public CompletableFuture<WorkflowEvent>[] getOrRegisterFuture(
             TenantIdModel tenantId, WfRunIdModel wfRunId, Collection<WorkflowEventDefIdModel> eventDefIds) {
         return getOrRegisterFuture(tenantId, wfRunId, eventDefIds.toArray(WorkflowEventDefIdModel[]::new));
@@ -81,15 +88,25 @@ public class AsyncWaiters {
     }
 
     private FutureResponseAndWaitingClient createFuture(String commandId, CompletableFuture<Message> completable) {
+        Objects.requireNonNull(commandId);
+        Objects.requireNonNull(completable);
         CompletableFuture<FutureResponseAndWaitingClient> waitingClient = new CompletableFuture<>()
                 .orTimeout(removeCompletedAfter, timeUnit)
-                .handle((o, throwable) -> responses.remove(commandId));
+                .handle((o, throwable) -> {
+                    var out = responses.remove(commandId);
+                    log.info("Removed response for commandId: {}", commandId);
+                    return out;
+                });
         return new FutureResponseAndWaitingClient(completable, waitingClient);
     }
 
     private FutureResponseAndWaitingClient getOrRegisterFutureAndWaitingClient(
             String commandId, Class<?> responseType, CompletableFuture<Message> completable) {
-        return responses.computeIfAbsent(commandId, s -> createFuture(commandId, completable));
+        Objects.requireNonNull(commandId);
+        Objects.requireNonNull(completable);
+        var out = responses.computeIfAbsent(commandId, s -> createFuture(commandId, completable));
+        log.info("Created response completable for commandId: {} completable: {}", commandId, out.completable());
+        return out;
     }
 
     private record WorkflowEventDefIdAndTenant(

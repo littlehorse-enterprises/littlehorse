@@ -27,7 +27,6 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
-import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetObjectRequest;
 import io.littlehorse.common.proto.GetObjectResponse;
@@ -84,8 +83,7 @@ import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiPredicate;
@@ -134,13 +132,11 @@ public class BackendInternalComms implements Closeable {
 
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
-    private final Executor networkThreadPool;
 
     public BackendInternalComms(
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
-            ScheduledExecutorService networkThreadPool,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
             CoreStoreProvider coreStoreProvider,
@@ -149,7 +145,6 @@ public class BackendInternalComms implements Closeable {
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
         this.contextKey = contextKey;
-        this.networkThreadPool = networkThreadPool;
         this.asyncWaiters = asyncWaiters;
         otherHosts = new ConcurrentHashMap<>();
 
@@ -167,7 +162,7 @@ public class BackendInternalComms implements Closeable {
                 .keepAliveTimeout(3, TimeUnit.SECONDS)
                 .permitKeepAliveTime(10, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
-                .executor(networkThreadPool)
+                .executor(Executors.newVirtualThreadPerTaskExecutor())
                 .addService(new InterBrokerCommServer())
                 .intercept(new GlobalExceptionHandler())
                 .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config))
@@ -367,11 +362,11 @@ public class BackendInternalComms implements Closeable {
             if (clientCreds == null) {
                 channel = ManagedChannelBuilder.forAddress(host.host(), host.port())
                         .usePlaintext()
-                        .executor(networkThreadPool)
+                        .executor(Executors.newVirtualThreadPerTaskExecutor())
                         .build();
             } else {
                 channel = Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
-                        .executor(networkThreadPool)
+                        .executor(Executors.newVirtualThreadPerTaskExecutor())
                         .build();
             }
             channels.put(key, channel);
@@ -399,16 +394,12 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void onWorkflowEventThrown(Collection<WorkflowEventModel> eventsToThrow, TenantIdModel tenantId) {
-        Map<WfRunIdModel, List<WorkflowEventIdModel>> workflowEventGroups = new HashMap<>();
         for (WorkflowEventModel workflowEvent : eventsToThrow) {
-            CompletableFuture<WorkflowEvent>[] toComplete = asyncWaiters.getOrRegisterFuture(
+            CompletableFuture<WorkflowEvent> toComplete = asyncWaiters.getOrRegisterFuture(
                     tenantId,
                     workflowEvent.getId().getWfRunId(),
                     workflowEvent.getId().getWorkflowEventDefId());
-            List<WorkflowEventIdModel> events =
-                    workflowEventGroups.getOrDefault(workflowEvent.getId().getWfRunId(), new ArrayList<>());
-            events.add(workflowEvent.getId());
-            workflowEventGroups.put(workflowEvent.getId().getWfRunId(), events);
+            toComplete.complete(workflowEvent.toProto().build());
         }
     }
 

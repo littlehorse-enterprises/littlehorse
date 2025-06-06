@@ -96,13 +96,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),
                 command.type,
-                command.commandId,
+                command.getCommandId(),
                 command.getPartitionKey());
         try {
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
             CompletableFuture<Message> completable =
-                    asyncWaiters.getOrRegisterFuture(command.commandId, Message.class, new CompletableFuture<>());
+                    asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
             if (command.hasResponse() && command.getCommandId() != null) {
                 completable.complete(response);
             } else {

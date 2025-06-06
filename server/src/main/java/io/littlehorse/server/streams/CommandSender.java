@@ -17,15 +17,14 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -37,7 +36,7 @@ import org.apache.kafka.streams.state.HostInfo;
 public class CommandSender {
 
     private final BackendInternalComms internalComms;
-    private final ScheduledExecutorService networkThreadpool;
+    private final ExecutorService networkThreadpool;
     private final LHProducer commandProducer;
     private final LHProducer taskClaimProducer;
     private final LHServerConfig serverConfig;
@@ -46,7 +45,7 @@ public class CommandSender {
 
     public CommandSender(
             BackendInternalComms internalComms,
-            ScheduledExecutorService networkThreadpool,
+            ExecutorService networkThreadpool,
             LHProducer commandProducer,
             LHProducer taskClaimProducer,
             long streamsSessionTimeout,
@@ -78,8 +77,6 @@ public class CommandSender {
             PrincipalIdModel principalId,
             TenantIdModel tenantId,
             RequestExecutionContext context) {
-
-        command.setCommandId(LHUtil.generateGuid());
 
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         return commandProducer
@@ -153,9 +150,7 @@ public class CommandSender {
         KeyQueryMetadata meta = internalComms.lookupPartitionKey(storeName, command.getPartitionKey());
 
         if (meta.activeHost().equals(thisHost)) {
-            CompletableFuture<Message> futureResponse = new CompletableFuture<>();
-            asyncWaiters.put(command.getCommandId(), futureResponse);
-            return futureResponse;
+            return asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(command.getCommandId())

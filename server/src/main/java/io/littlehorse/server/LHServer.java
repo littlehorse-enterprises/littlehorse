@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
@@ -53,7 +53,7 @@ public class LHServer {
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
-    private final ScheduledExecutorService networkThreadpool;
+    private final ExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
     private final CommandSender commandSender;
     private final LHInternalClient lhInternalClient;
@@ -66,7 +66,7 @@ public class LHServer {
     public LHServer(LHServerConfig config) throws LHMisconfigurationException {
         this.metadataCache = new MetadataCache();
         this.config = config;
-        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
+        this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
         this.lhInternalClient = new LHInternalClient(config.getInternalClientCreds(), this.networkThreadpool);
         // Kafka Streams Setup
@@ -90,14 +90,7 @@ public class LHServer {
 
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
-                config,
-                coreStreams,
-                timerStreams,
-                networkThreadpool,
-                metadataCache,
-                contextKey,
-                coreStoreProvider,
-                asyncWaiters);
+                config, coreStreams, timerStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
 
         // Health Server Setup
         this.healthService =
@@ -110,16 +103,17 @@ public class LHServer {
                 config.getStreamsSessionTimeout(),
                 config,
                 internalComms.getAsyncWaiters());
-        this.listeners =
-                config.getListeners().stream().map(this::createListener).toList();
+        this.listeners = config.getListeners().stream()
+                .map(s -> this.createListener(s, networkThreadpool))
+                .toList();
     }
 
-    private LHServerListener createListener(ServerListenerConfig listenerConfig) {
+    private LHServerListener createListener(ServerListenerConfig listenerConfig, ExecutorService networkThreads) {
         return new LHServerListener(
                 listenerConfig,
                 taskQueueManager,
                 internalComms,
-                networkThreadpool,
+                networkThreads,
                 coreStoreProvider,
                 metadataCache,
                 List.of(
