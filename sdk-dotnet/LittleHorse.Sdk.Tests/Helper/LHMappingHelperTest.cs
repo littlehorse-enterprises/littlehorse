@@ -299,6 +299,50 @@ public class LHMappingHelperTest
         Assert.Equal("{}", result.JsonObj);
     }
     
+    [Fact]
+    public void LHHelper_WithAsyncTaskString_ShouldReturnLHStringVariableValue()
+    {
+        string expectedString = "This is a test string";
+        Task<string> asyncTask = Task.FromResult(expectedString);
+        
+        var result = LHMappingHelper.ObjectToVariableValue(asyncTask);
+        
+        Assert.Equal(expectedString, result.Str);
+    }
+    
+    [Fact]
+    public void LHHelper_WithAsyncTaskInteger_ShouldReturnLHIntegerVariableValue()
+    {
+        int expectedValue = 42;
+        Task<int> asyncTask = Task.FromResult(expectedValue);
+        
+        var result = LHMappingHelper.ObjectToVariableValue(asyncTask);
+        
+        Assert.Equal(expectedValue, result.Int);
+    }
+    
+    [Fact]
+    public void LHHelper_WithAsyncTaskDouble_ShouldReturnLHDoubleVariableValue()
+    {
+        double expectedValue = 23.90;
+        Task<double> asyncTask = Task.FromResult(expectedValue);
+        
+        var result = LHMappingHelper.ObjectToVariableValue(asyncTask);
+        
+        Assert.Equal(expectedValue, result.Double);
+    }
+    
+    [Fact]
+    public void LHHelper_WithAsyncTaskCustomObject_ShouldReturnLHJsonVariableValue()
+    {
+        var car = new Car {Id = 1, Cost = 134.45E-2f};
+        Task<Car> asyncTask = Task.FromResult(car);
+        
+        var result = LHMappingHelper.ObjectToVariableValue(asyncTask);
+        
+        Assert.Equal(car.ToString(), result.JsonObj);
+    }
+    
     private async Task TestAsyncMethod()
     {
         await Task.Delay(11);

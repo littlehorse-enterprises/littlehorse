@@ -6,6 +6,11 @@ public class Car
 {
     public int Id { get; set; }
     public float Cost { get; set; }
+    
+    public override string ToString()
+    {
+        return $"{{\"Id\":{Id},\"Cost\":{Cost}}}";
+    }
 }
 
 public class Person
