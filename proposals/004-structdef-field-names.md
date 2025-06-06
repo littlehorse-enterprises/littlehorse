@@ -217,8 +217,8 @@ I propose that we follow the lower `camelCase` convention for `StructDef` Field 
 
 It was proposed that we use `snake_case` instead of `camelCase`, but I dislike that idea.
 
-Why? Well, as you can tell so far, there is some magic going on in the Python SDK for converting `snake_case` to `camelCase`. Compared to `C#` and `Go`, this is the "hardest" SDK to convert to `camelCase`, and even then it is a trivial task.
+Why? Well, as you can tell so far, there is some magic going on in the Python SDK for converting `snake_case` to `camelCase`. Compared to `C#` and `Go`, this is the "hardest" convention to convert to `camelCase`, and even then it is a trivial task.
 
-Alternatively, if we use `snake_case` as the standard, then every other SDK will need to convert from their respect lower `camelCase` or `PascalCase` standards, adding underscores in between lower and uppercase letters and creating some unpredictable edge cases when a number and a letter are side by side. For example, the `vinNumberISO3779` field from earlier could be converted to `vin_number_iso_3779` or `vin_number_iso3779`, depending on who you ask.
+Alternatively, if we use `snake_case` as the standard, then every other SDK will need to convert from their respect lower `camelCase` or `PascalCase` standards, adding underscores in between lower and uppercase letters and creating some unpredictable edge cases. What happens when a number and a letter are side by side? For example, the `vinNumberISO3779` field from earlier could be converted to `vin_number_iso_3779` or `vin_number_iso3779`, depending on who you ask.
 
 I think it is easier to use lower `camelCase`, which Java, Go, and .NET support to a large degree, over `snake_case`. I also think it is easier and more straight-forward to convert from `snake_case` to `camelCase` than vice-versa.
