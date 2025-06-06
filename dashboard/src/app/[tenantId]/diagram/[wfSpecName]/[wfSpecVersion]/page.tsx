@@ -3,13 +3,23 @@ import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
 import WorkflowDiagram from "@/components/diagram/workflow-diagram";
 import { extractEdgeData, extractNodeData } from "@/lib/data-extraction";
 import { lhClient } from "@/lib/lhClient";
-import { PageParams } from "@/types/PageParams";
 import { type Edge, type Node } from "@xyflow/react";
+
+interface DiagramPageProps {
+    params: Promise<{
+        tenantId: string;
+        wfSpecName: string;
+        wfSpecVersion: string;
+    }>;
+    searchParams: Promise<{
+        wfRunId?: string;
+    }>;
+}
 
 export default async function DiagramPage({
     params,
     searchParams
-}: PageParams) {
+}: DiagramPageProps) {
     const { tenantId, wfSpecName, wfSpecVersion } = (await params);
     const { wfRunId } = (await searchParams);
 
@@ -31,7 +41,7 @@ export default async function DiagramPage({
             extractedEdges = extractEdgeData(wfSpec);
         } else if (wfSpec) {
             // TODO: need to support wfSpec only display
-            // extractedNodes = extractNodeData(wfSpec, wfSpecData);
+            extractedNodes = extractNodeData(wfSpec);
             extractedEdges = extractEdgeData(wfSpec);
         }
     } catch (error) {

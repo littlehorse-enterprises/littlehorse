@@ -2,14 +2,16 @@
 
 import { WfRunDetails } from '@/types/wfRunDetails';
 import { type Node, type Edge, MarkerType } from '@xyflow/react';
-import { NodeRun, WfSpec, Edge as LHEdge } from 'littlehorse-client/proto';
+import { NodeRun, WfSpec, Edge as LHEdge, ThreadSpec } from 'littlehorse-client/proto';
 
 
-export function extractNodeData(wfSpec: WfSpec, wfRunDetails: WfRunDetails): Node[] {
+export function extractNodeData(wfSpec: WfSpec, wfRunDetails?: WfRunDetails): Node[] {
   const allNodeNames = new Set<string>();
 
-  wfRunDetails.nodeRuns?.forEach(nodeRun => {
-    allNodeNames.add(nodeRun.nodeName);
+  Object.values(wfSpec.threadSpecs).forEach((threadSpec: ThreadSpec) => {
+    Object.keys(threadSpec.nodes).forEach(nodeName => {
+      allNodeNames.add(nodeName);
+    });
   });
 
   if (wfSpec && wfSpec.threadSpecs && wfSpec.entrypointThreadName) {
@@ -22,7 +24,7 @@ export function extractNodeData(wfSpec: WfSpec, wfRunDetails: WfRunDetails): Nod
   }
 
   const nodes = Array.from(allNodeNames).map(nodeName => {
-    const nodeRun = wfRunDetails.nodeRuns?.find(nr => nr.nodeName === nodeName);
+    const nodeRun = wfRunDetails?.nodeRuns?.find(nr => nr.nodeName === nodeName);
 
     let status = 'pending';
     if (nodeRun) {
