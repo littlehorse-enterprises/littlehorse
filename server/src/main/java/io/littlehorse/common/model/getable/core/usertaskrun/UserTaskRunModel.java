@@ -16,6 +16,7 @@ import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEAssignedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECancelledModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentEditedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
@@ -325,6 +326,14 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                 processorContext.currentCommand().getTime());
         this.events.add(userTaskEventModel);
 
+        return userTaskEventModel;
+    }
+
+    public UserTaskEventModel editComment(String userId, String comment , Integer userCommentId){
+        UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
+            new UTECommentEditedModel(userCommentId, userId, comment),
+            processorContext.currentCommand().getTime());
+        this.events.addLast(userTaskEventModel);
         return userTaskEventModel;
     }
 

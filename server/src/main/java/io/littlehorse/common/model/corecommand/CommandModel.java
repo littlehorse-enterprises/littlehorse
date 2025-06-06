@@ -42,6 +42,8 @@ public class CommandModel extends AbstractCommand<Command> {
     private DeadlineReassignUserTaskModel reassignUserTask;
     private CancelUserTaskRunRequestModel cancelUserTaskRun;
     private CommentUserTaskRunRequestModel commentUserTaskRun;
+    private EditCommentUserTaskRunRequestModel editCommentUserTaskRun;
+    private DeleteCommentUserTaskRunRequestModel deleteCommentUserTaskRun;
     private TaskAttemptRetryReadyModel taskAttemptRetryReady;
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
@@ -126,6 +128,12 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case COMMENT_USER_TASK_RUN:
                 out.setCommentUserTaskRun(commentUserTaskRun.toProto());
+                break;
+            case EDIT_COMMENT_USER_TASK_RUN:
+                out.setEditCommentUserTaskRun(editCommentUserTaskRun.toProto());
+                break;
+            case DELETE_COMMENT_USER_TASK_RUN:
+                out.setDeleteCommentUserTaskRun(deleteCommentUserTaskRun.toProto());
                 break;
             case BULK_JOB:
                 out.setBulkJob(bulkJob.toProto());
@@ -224,6 +232,14 @@ public class CommandModel extends AbstractCommand<Command> {
                 commentUserTaskRun = LHSerializable.fromProto(
                         p.getCommentUserTaskRun(), CommentUserTaskRunRequestModel.class, context);
                 break;
+            case EDIT_COMMENT_USER_TASK_RUN:
+                editCommentUserTaskRun = LHSerializable.fromProto(
+                    p.getEditCommentUserTaskRun(), EditCommentUserTaskRunRequestModel.class, context);
+                break;
+            case DELETE_COMMENT_USER_TASK_RUN:
+                deleteCommentUserTaskRun = LHSerializable.fromProto(
+                    p.getDeleteCommentUserTaskRun(), DeleteCommentUserTaskRunRequestModel.class, context);
+                break;
             case BULK_JOB:
                 bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);
                 break;
@@ -297,6 +313,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 return cancelUserTaskRun;
             case COMMENT_USER_TASK_RUN:
                 return commentUserTaskRun;
+            case EDIT_COMMENT_USER_TASK_RUN:
+                return editCommentUserTaskRun;
+            case DELETE_COMMENT_USER_TASK_RUN:
+                return deleteCommentUserTaskRun;
             case BULK_JOB:
                 return bulkJob;
             case TASK_ATTEMPT_RETRY_READY:
@@ -371,7 +391,13 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(CommentUserTaskRunRequestModel.class)) {
             type = CommandCase.COMMENT_USER_TASK_RUN;
             commentUserTaskRun = (CommentUserTaskRunRequestModel) cmd;
-        } else if (cls.equals(BulkUpdateJobModel.class)) {
+        } else if (cls.equals(EditCommentUserTaskRunRequestModel.class)){
+            type = CommandCase.EDIT_COMMENT_USER_TASK_RUN;
+            editCommentUserTaskRun = (EditCommentUserTaskRunRequestModel) cmd;
+        }else if (cls.equals(DeleteCommentUserTaskRunRequestModel.class)){
+            type = CommandCase.DELETE_COMMENT_USER_TASK_RUN;
+            deleteCommentUserTaskRun = (DeleteCommentUserTaskRunRequestModel) cmd;
+        }else if (cls.equals(BulkUpdateJobModel.class)) {
             type = CommandCase.BULK_JOB;
             bulkJob = (BulkUpdateJobModel) cmd;
         } else if (cls.equals(TaskAttemptRetryReadyModel.class)) {

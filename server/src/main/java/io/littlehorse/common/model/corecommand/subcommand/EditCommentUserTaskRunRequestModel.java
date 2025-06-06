@@ -1,6 +1,10 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import java.util.Date;
+
+
 import com.google.protobuf.Message;
+
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
@@ -11,19 +15,18 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTa
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.UserTaskEvent;
+import io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.Date;
 
 
 
-public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTaskRunRequest> {
+public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditCommentUserTaskRunRequest> {
 
+    private Integer userCommentId ; 
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
-    private String comment;
+    private String comment ;
 
     @Override
     public boolean hasResponse() {
@@ -31,26 +34,26 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
     }
 
     @Override
-    public UserTaskEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        if (userTaskRunId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
+    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        if(userCommentId == null){
+            throw new LHApiException(Status.INVALID_ARGUMENT , "The User Comment Id must be provided.");
         }
 
-        if (userId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided.");
+        if(userId == null){
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The User Id must be provided");
         }
 
-        if (comment == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The comment must be provided.");
+        if (comment == null){
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The comment must be provided");
+        }
+
+        if (userTaskRunId == null){
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId can not be null");
         }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
 
-        if (utr == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
-        }
-
-        UserTaskEventModel userTaskEventModel = utr.comment(userId, comment);
+        UserTaskEventModel ute = utr.editComment(userId, comment, userCommentId);
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
         if (wfRunModel == null) {
@@ -59,7 +62,8 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
 
         wfRunModel.advance(new Date());
 
-        return userTaskEventModel.toProto().build();
+        return ute.toProto().build();
+
     }
 
     @Override
@@ -68,24 +72,27 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
     }
 
     @Override
-    public CommentUserTaskRunRequest.Builder toProto() {
-        CommentUserTaskRunRequest.Builder out = CommentUserTaskRunRequest.newBuilder();
-        out.setUserTaskRunId(userTaskRunId.toProto());
-        out.setUserId(userId);
-        out.setComment(comment);
-        return out;
+    public EditCommentUserTaskRunRequest.Builder toProto() {
+        EditCommentUserTaskRunRequest.Builder out = EditCommentUserTaskRunRequest.newBuilder();
+        if (userCommentId != null)  out.setUserCommentId(userCommentId);
+        if (userTaskRunId != null) out.setUserTaskRunId(userTaskRunId.toProto());
+        if (userId != null ) out.setUserId(userId);
+        if (comment != null) out.setComment(comment);
+        return out ;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        CommentUserTaskRunRequest p = (CommentUserTaskRunRequest) proto;
+        EditCommentUserTaskRunRequest p = (EditCommentUserTaskRunRequest) proto;
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         userId = p.getUserId();
         comment = p.getComment();
+        userCommentId = p.getUserCommentId();
     }
 
     @Override
-    public Class<CommentUserTaskRunRequest> getProtoBaseClass() {
-        return CommentUserTaskRunRequest.class;
+    public Class<EditCommentUserTaskRunRequest> getProtoBaseClass() {
+        return EditCommentUserTaskRunRequest.class;
+        
     }
 }
