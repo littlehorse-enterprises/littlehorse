@@ -15,6 +15,7 @@ const SelectionContext = createContext<SelectionContextValue | undefined>(undefi
 
 export function SelectionProvider({ children }: SelectionProviderProps) {
     const [selectedId, setSelectedId] = useState<string | null>(null)
+    console.log("selectedId", selectedId)
 
     return (
         <SelectionContext.Provider value={{ selectedId, setSelectedId }}>

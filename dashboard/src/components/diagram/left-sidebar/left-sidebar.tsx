@@ -1,6 +1,4 @@
 "use client"
-
-import { SelectionProvider } from "@/components/context/selection-context"
 import ScheduledWfRunsTab from "@/components/diagram/left-sidebar/scheduled-wf-runs-tab"
 import { Badge } from "@/components/ui/badge"
 import SidebarExpandButton from "@/components/ui/sidebar-expand-button"
@@ -77,7 +75,7 @@ export default function LeftSidebar({
               aria-label="Hide sidebar"
             >
               {/* Use left chevron to indicate hide */}
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#656565" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#656565" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
           </div>
         )}
@@ -107,24 +105,22 @@ export default function LeftSidebar({
         <LeftSidebarTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Tab Content */}
-        <SelectionProvider>
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="border-b border-gray-200 p-2 text-xs text-[#656565]">
-              <span className="font-medium">{tabDescriptions[activeTab]}</span>
-            </div>
-            <div className="flex-1 overflow-auto">
-              {activeTab === "WfSpec" && (
-                <WfSpecTab wfSpec={wfSpec} wfRun={wfRun} />
-              )}
-              {activeTab === "WfRuns" && (
-                <WfRunTab />
-              )}
-              {activeTab === "ScheduledWfRuns" && (
-                <ScheduledWfRunsTab />
-              )}
-            </div>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="border-b border-gray-200 p-2 text-xs text-[#656565]">
+            <span className="font-medium">{tabDescriptions[activeTab]}</span>
           </div>
-        </SelectionProvider>
+          <div className="flex-1 overflow-auto">
+            {activeTab === "WfSpec" && (
+              <WfSpecTab wfSpec={wfSpec} wfRun={wfRun} />
+            )}
+            {activeTab === "WfRuns" && (
+              <WfRunTab />
+            )}
+            {activeTab === "ScheduledWfRuns" && (
+              <ScheduledWfRunsTab />
+            )}
+          </div>
+        </div>
 
         {/* Run Workflow Button */}
         <div className="border-t border-gray-200 p-4 mt-auto">

@@ -4,6 +4,8 @@ import WorkflowDiagram from "@/components/diagram/workflow-diagram";
 import { extractEdgeData, extractNodeData } from "@/lib/data-extraction";
 import { lhClient } from "@/lib/lhClient";
 import { type Edge, type Node } from "@xyflow/react";
+import { SelectionProvider } from "@/components/context/selection-context";
+import { WfRunDetails } from "@/types/wfRunDetails";
 
 interface DiagramPageProps {
     params: Promise<{
@@ -20,46 +22,31 @@ export default async function DiagramPage({
     params,
     searchParams
 }: DiagramPageProps) {
-    const { tenantId, wfSpecName, wfSpecVersion } = (await params);
-    const { wfRunId } = (await searchParams);
-
-    const splitVersion = wfSpecVersion.split('.');
-    const majorVersion = parseInt(splitVersion[0]);
-    const revision = parseInt(splitVersion[1]);
+    const { tenantId, wfSpecName, wfSpecVersion } = await params;
+    const { wfRunId } = await searchParams;
 
     const client = await lhClient(tenantId);
-    const wfSpec = await client.getWfSpec({ name: wfSpecName, majorVersion: majorVersion, revision: revision });
-    const wfRunDetails = wfRunId ? await getWfRunDetails({ wfRunId: { id: wfRunId }, tenantId: tenantId }) : undefined;
+    const splitVersion = wfSpecVersion.split('.');
+    const wfSpec = await client.getWfSpec({
+        name: wfSpecName,
+        majorVersion: parseInt(splitVersion[0]),
+        revision: parseInt(splitVersion[1])
+    });
 
-    // Extract nodes and edges from the workflow data
-    let extractedNodes: Node[] = [];
-    let extractedEdges: Edge[] = [];
-
-    try {
-        if (wfRunDetails) {
-            extractedNodes = extractNodeData(wfSpec, wfRunDetails);
-            extractedEdges = extractEdgeData(wfSpec);
-        } else if (wfSpec) {
-            // TODO: need to support wfSpec only display
-            extractedNodes = extractNodeData(wfSpec);
-            extractedEdges = extractEdgeData(wfSpec);
-        }
-    } catch (error) {
-        console.warn("Error extracting workflow data:", error);
-        // Fall back to empty arrays if extraction fails
-        extractedNodes = [];
-        extractedEdges = [];
+    let wfRunDetails: WfRunDetails | undefined;
+    if (wfRunId) {
+        wfRunDetails = await getWfRunDetails({ wfRunId: { id: wfRunId }, tenantId });
     }
 
+    const nodes: Node[] = extractNodeData(wfSpec, wfRunDetails);
+    const edges: Edge[] = extractEdgeData(wfSpec);
+
     return (
-        <div className="h-full flex">
-            <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
-            <div className="flex-1">
-                <WorkflowDiagram
-                    nodes={extractedNodes}
-                    edges={extractedEdges}
-                />
+        <SelectionProvider>
+            <div className="flex h-screen">
+                <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
+                <WorkflowDiagram nodes={nodes} edges={edges} />
             </div>
-        </div>
+        </SelectionProvider>
     );
 }

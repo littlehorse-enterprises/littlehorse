@@ -17,6 +17,7 @@ import '@xyflow/react/dist/style.css';
 import TaskNode from '@/components/flow/task-node';
 import { mockNodes, mockEdges } from '@/lib/mock-data';
 import { getLayoutedElements } from '@/lib/layout-utils';
+import { useSelection } from '../context/selection-context';
 
 // Define custom node types
 const nodeTypes: NodeTypes = {
@@ -36,6 +37,7 @@ export default function WorkflowDiagram({
 }: WorkflowDiagramProps) {
     const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+    const { selectedId, setSelectedId } = useSelection();
 
     // Use custom nodes/edges if provided, otherwise use mock data
     const sourceNodes = customNodes || mockNodes;
@@ -55,9 +57,19 @@ export default function WorkflowDiagram({
         applyLayout();
     }, [sourceNodes, sourceEdges, setNodes, setEdges]);
 
+    // Update node selection when selectedId changes
+    useEffect(() => {
+        setNodes((nds) =>
+            nds.map((node) => ({
+                ...node,
+                selected: node.id === selectedId
+            }))
+        );
+    }, [selectedId, setNodes]);
+
     const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-        console.log('Node clicked:', node.id);
-    }, []);
+        setSelectedId(node.id);
+    }, [setSelectedId]);
 
     return (
         <div className={`h-full w-full ${className}`}>
@@ -73,6 +85,7 @@ export default function WorkflowDiagram({
                 nodesDraggable={false}
                 nodesConnectable={false}
                 connectOnClick={false}
+                onPaneClick={() => setSelectedId(null)}
             >
                 <Controls />
                 <MiniMap />

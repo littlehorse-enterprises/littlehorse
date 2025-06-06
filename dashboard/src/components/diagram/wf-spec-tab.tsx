@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { WfSpec, WfRun } from "littlehorse-client/proto"
 import { buildNodeTree } from "@/utils/buildNodeTree"
 import { sortNodeTree } from "@/utils/sortNodeTree"
@@ -15,7 +15,6 @@ interface WfSpecTabProps {
 export default function WfSpecTab({ wfSpec }: WfSpecTabProps) {
   const nodes = wfSpec.threadSpecs.entrypoint.nodes
   const [searchTerm, setSearchTerm] = useState("")
-  const selectedNodeRef = useRef<HTMLDivElement>(null)
 
   const nodeTree = buildNodeTree(nodes)
   const sortedNodeTree = sortNodeTree(nodeTree)
@@ -36,7 +35,6 @@ export default function WfSpecTab({ wfSpec }: WfSpecTabProps) {
               node={node}
               isRoot
               searchTerm={searchTerm}
-              selectedNodeRef={selectedNodeRef}
             />
           </div>
         ))}

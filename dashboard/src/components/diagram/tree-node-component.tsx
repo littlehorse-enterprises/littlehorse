@@ -3,66 +3,44 @@
 import { TreeNode } from "@/types/buildNodeTree"
 import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from "lucide-react"
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
+import { useSelection } from "../context/selection-context"
 
-export interface TreeNodeComponentProps {
+interface TreeNodeComponentProps {
     node: TreeNode
     isRoot?: boolean
     searchTerm: string
-    selectedNodeRef: React.RefObject<HTMLDivElement | null>
 }
 
 export function TreeNodeComponent({
     node,
     isRoot = false,
     searchTerm,
-    selectedNodeRef,
 }: TreeNodeComponentProps) {
-    // Check if this node or any of its children match the search term
-    const [isExpanded, setIsExpanded] = useState(isRoot || !!searchTerm)
-
-    const matchesSearch = (node: TreeNode, term: string): boolean => {
-        if (!term) return true
-
-        const nodeMatches = node.label.toLowerCase().includes(term.toLowerCase())
-
-        if (nodeMatches) return true
-
-        // Check if any children match
-        return node.children.some((child) => matchesSearch(child, term))
-    }
-
-    const nodeMatches = matchesSearch(node, searchTerm)
-
-    // Don't render if this node and none of its children match the search
-    if (searchTerm && !nodeMatches) return null
-
-    // Auto-expand if we're searching or if this is the root
-
-    // Update expanded state when search term changes
-    // useEffect(() => {
-    //   if (searchTerm) {
-    //     setIsExpanded(true)
-    //   } else if (!isRoot) {
-    //     setIsExpanded(false)
-    //   }
-    // }, [searchTerm, isRoot])
-
-    // // Auto-expand parent nodes when a child is selected
-    // useEffect(() => {
-    //   if (selectedNodeId) {
-    //     const isChildSelected = (node: TreeNode, id: string): boolean => {
-    //       if (node.id === id) return true
-    //       return node.children.some((child) => isChildSelected(child, id))
-    //     }
-
-    //     if (isChildSelected(node, selectedNodeId)) {
-    //       setIsExpanded(true)
-    //     }
-    //   }
-    // }, [selectedNodeId, node])
-
+    const [isExpanded, setIsExpanded] = useState(isRoot)
     const hasChildren = node.children && node.children.length > 0
+    const { selectedId, setSelectedId } = useSelection()
+    const isSelected = useMemo(() => selectedId === node.id, [selectedId, node.id])
+
+    // Expand parent nodes when a child is selected
+    useEffect(() => {
+        if (hasChildren && node.children.some(child => child.id === selectedId)) {
+            setIsExpanded(true)
+        }
+    }, [selectedId, hasChildren, node.children])
+
+    // Auto-expand when search term is present and node matches
+    useEffect(() => {
+        if (searchTerm && !isExpanded) {
+            const nodeMatches = node.label.toLowerCase().includes(searchTerm.toLowerCase())
+            const childMatches = node.children?.some(child =>
+                child.label.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            if (nodeMatches || childMatches) {
+                setIsExpanded(true)
+            }
+        }
+    }, [searchTerm, node, isExpanded])
 
     const getNodeTypeFromLabel = (label: string): string => {
         if (label.includes('ENTRYPOINT')) return "ENTRYPOINT"
@@ -98,6 +76,10 @@ export function TreeNodeComponent({
         setIsExpanded(!isExpanded)
     }
 
+    const handleClick = () => {
+        setSelectedId(node.id)
+    }
+
     // Highlight text that matches search term
     const highlightMatch = (text: string, term: string) => {
         if (!term) return text
@@ -114,37 +96,38 @@ export function TreeNodeComponent({
                         </span>
                     ) : (
                         part
-                    ),
+                    )
                 )}
             </>
         )
     }
 
-    // Extract the middle part of the node name
-    const extractNodeName = (fullName: string): string => {
-        const match = RegExp(/^[^-]+-(.+)-[^-]+$/).exec(fullName);
-        return match?.[1] || fullName;
-    }
-
     return (
         <div className="select-none">
             <div
-                // ref={selectedNodeId === node.id ? selectedNodeRef : undefined}
-                className={`flex items-center py-1 px-1 gap-1 rounded cursor-pointer text-xs hover:bg-gray-100 ${/* selectedNodeId === node.id ? "bg-blue-50 text-blue-700" : "" */ ""
-                    }`}
+                className={`flex items-center py-1.5 px-2 gap-1.5 rounded-md cursor-pointer text-sm transition-colors
+                    ${isSelected ? "bg-blue-100 text-blue-900 ring-1 ring-blue-400" : "hover:bg-gray-100"}
+                    ${searchTerm && node.label.toLowerCase().includes(searchTerm.toLowerCase()) ? "bg-yellow-50" : ""}`}
                 style={{ paddingLeft: `${node.level * 12 + 4}px` }}
-            // onClick={handleSelect}
+                onClick={handleClick}
             >
-                {hasChildren ? (
-                    <span onClick={handleToggle} className="mr-1 flex items-center justify-center w-4 h-4">
-                        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                    </span>
-                ) : (
-                    <span className="mr-1 w-4" />
+                {hasChildren && (
+                    <button
+                        onClick={handleToggle}
+                        className="p-0.5 hover:bg-gray-200 rounded transition-colors"
+                    >
+                        {isExpanded ? (
+                            <ChevronDown className="h-4 w-4 text-gray-500" />
+                        ) : (
+                            <ChevronRight className="h-4 w-4 text-gray-500" />
+                        )}
+                    </button>
                 )}
-
+                {!hasChildren && <div className="w-5" />}
                 {getNodeStatusIcon()}
-                <span className="truncate">{highlightMatch(extractNodeName(node.label), searchTerm)}</span>
+                <div className="flex-1 truncate">
+                    {searchTerm ? highlightMatch(node.label, searchTerm) : node.label}
+                </div>
             </div>
 
             {isExpanded && hasChildren && (
@@ -153,10 +136,7 @@ export function TreeNodeComponent({
                         <TreeNodeComponent
                             key={child.id}
                             node={child}
-                            // onNodeSelect={onNodeSelect}
-                            // selectedNodeId={selectedNodeId}
                             searchTerm={searchTerm}
-                            selectedNodeRef={selectedNodeRef}
                         />
                     ))}
                 </div>
