@@ -77,6 +77,7 @@ The LittleHorse SDKs will allow users to set the name of a `StructDef` similarly
 Here are some examples of how this will work:
 
 **Java**
+
 In Java, we will use a class annotation with a `String name` parameter.
 
 ```java
@@ -87,6 +88,7 @@ public class Car {
 ```
 
 **Python**
+
 In Python, we will use a class decorator with a `str name` parameter:
 
 ```python
