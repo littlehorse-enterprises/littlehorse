@@ -5,12 +5,15 @@
     - [Motivation](#motivation)
   - [Decision](#decision)
     - [`StructDef` Names](#structdef-names)
+      - [Standard](#standard)
       - [RegEx](#regex)
       - [Why?](#why)
       - [Setting `StructDef` Names via SDKs](#setting-structdef-names-via-sdks)
     - [`StructDef` Field Names](#structdef-field-names)
-      - [Vision](#vision)
+      - [Background](#background-1)
       - [Concerns](#concerns)
+      - [Standard](#standard-1)
+      - [Rejected Alternatives](#rejected-alternatives)
 
 Author: Jacob Snarr
 
@@ -30,6 +33,8 @@ This proposal will decide naming conventions for named parts of `StructDef`s, in
 ## Decision
 
 ### `StructDef` Names
+
+#### Standard
 
 The name of a given `StructDef` will adhere to the LittleHorse Server Hostname standard, which says that:
 
@@ -124,13 +129,15 @@ public class Car
 
 ### `StructDef` Field Names
 
-#### Vision
+First things first, `StructDef` fields are not planned to be `Getable` objects in the server, so we do not have to follow the standard set for `StructDef` Names. Moving on...
 
-The name of all `StructDef` Fields will adhere to a common standard that all SDKs can support without breaking language conventions.
+#### Background
+
+The name of all `StructDef` Fields will adhere to a common standard that all SDKs can support or convert towards without breaking language conventions.
 
 This is important, because one of my core principles when designing and proof-reading our SDKs is that any user should be able to port code from one SDK to another without fuss. 
 
-For example, the following `StructDef` in Java should compile to the same `StructDef` protobuf message as the following `StructDef` in Python:
+For example, the following `StructDef` in Java and the following `StructDef` in Python should compile to the same `StructDef` protobuf message, converting the field names to common standard:
 
 **Java**
 ```java
@@ -158,7 +165,6 @@ class Car:
 {
   "id": {
     "name": "car",
-    "version": ...,
   },
   "struct_def": {
     "name": {
@@ -188,10 +194,31 @@ class Car:
 }
 ```
 
-As shown above, if we use `snake_case` as the default convention at the protobuf message level, the Java SDK should be able to convert to `snake_case` for full compatibility with an identical `StructDef` class written in Python. 
+As shown above, if we use `snake_case` as the default convention at the protobuf message level, the Java SDK should be able to convert to `snake_case` for full compatibility with an identical `StructDef` class written in Python. Vice-versa, if we use `camelCase` as the default convention at the protobuf message level, the Python SDK should be able to convert to `camelCase` for full compatibility with an identical `StructDef` class written in Java.
 
 #### Concerns
 
-Since we will be handling some of the conversion behind the scenes in order to support standard language naming conventions, the conversion should be straight forward and easy to understand.
+Since we will be handling some of the conversion ✨magic✨ behind the scenes in order to support standard language naming conventions, the conversion should be straight forward and easy to understand.
 
-A Java user should be able to take the attribute `vin_number_iso3779` from a Python class and should not have trouble porting the attribute name to the compatible Java field `vinNumberIso3779`. Our SDKs should support both styles for compiling to a common standard .
+A Java user should read the attribute `vin_number_iso3779` from a Python class and should not have trouble porting the attribute name to the compatible Java field (ex: `vinNumberIso3779`). Our SDKs should support both styles for compiling to a common standard. And this goes for all other languages as well. C# notably uses `PascalCase`, and `Go` uses `PascalCase` for public struct fields.
+
+#### Standard
+
+I propose that we follow the lower `camelCase` convention for `StructDef` Field names, meaning:
+
+- The field name must start with a lowercase letter
+  - Why no numbers? Java, Python, Go, class attributes cannot start with numbers
+- Subsequent characters must match the ranges `A-Z`, `A-Z`, and `0-9`
+  - Why no underscores? We want Java, .NET, and Go users to design compatible fields without breaking their individual language naming conventions. Since underscores are typically only used in constants in Java, and private member variables in `C# `, this character breaks support for these languages. Sorry Python, you can keep your `snake_case`, we will just convert them to `camelCase` during the `StructDef` compilation process.
+- For our case, field names will be `case insensitive`.
+  - Why? This is because we'll be doing some magic on the Python side to convert lower `snake_case` to lower `camelCase`, and we don't want to users to worry about capitalization.
+
+#### Rejected Alternatives
+
+It was proposed that we use `snake_case` instead of `camelCase`, but I dislike that idea.
+
+Why? Well, as you can tell so far, there is some magic going on in the Python SDK for converting `snake_case` to `camelCase`. Compared to `C#` and `Go`, this is the "hardest" SDK to convert to `camelCase`, and even then it is a trivial task.
+
+Alternatively, if we use `snake_case` as the standard, then every other SDK will need to convert from their respect lower `camelCase` or `PascalCase` standards, adding underscores in between lower and uppercase letters and creating some unpredictable edge cases when a number and a letter are side by side. For example, the `vinNumberISO3779` field from earlier could be converted to `vin_number_iso_3779` or `vin_number_iso3779`, depending on who you ask.
+
+I think it is easier to use lower `camelCase`, which Java, Go, and .NET support to a large degree, over `snake_case`. I also think it is easier and more straight-forward to convert from `snake_case` to `camelCase` than vice-versa.
