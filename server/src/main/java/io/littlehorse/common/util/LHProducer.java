@@ -44,7 +44,7 @@ public class LHProducer implements Closeable {
      */
     private CompletableFuture<RecordMetadata> sendRecord(ProducerRecord<String, Bytes> record) {
         CompletableFutureCallback out = new CompletableFutureCallback();
-        prod.send(record, out);
+        CompletableFuture.runAsync(() -> prod.send(record, out));
         return out;
     }
 
