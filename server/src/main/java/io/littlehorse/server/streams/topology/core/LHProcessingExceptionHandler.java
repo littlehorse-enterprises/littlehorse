@@ -1,7 +1,10 @@
 package io.littlehorse.server.streams.topology.core;
 
+import com.google.protobuf.Message;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.util.AsyncWaiters;
+import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.RecordTooLargeException;
@@ -12,9 +15,11 @@ import org.apache.kafka.common.errors.RecordTooLargeException;
 public class LHProcessingExceptionHandler {
 
     private final LHServer server;
+    private final AsyncWaiters asyncWaiters;
 
-    public LHProcessingExceptionHandler(LHServer server) {
+    public LHProcessingExceptionHandler(LHServer server, AsyncWaiters asyncWaiters) {
         this.server = server;
+        this.asyncWaiters = asyncWaiters;
     }
 
     public void tryRun(Runnable runnable) {
@@ -39,11 +44,9 @@ public class LHProcessingExceptionHandler {
                         commandException.getCause());
             }
             if (commandException.isNotifyClientOnError()) {
-                try {
-                    server.sendErrorToClient(commandException.getCommand().getCommandId(), commandException.getCause());
-                } catch (Exception e) {
-                    // Nothing to do
-                }
+                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                        commandException.getCommand().getCommandId(), Message.class, new CompletableFuture<>());
+                completable.completeExceptionally(commandException.getCause());
             }
         } catch (MetadataCommandException ex) {
             if (ex.isUserError()) {
@@ -58,7 +61,9 @@ public class LHProcessingExceptionHandler {
                         ex.getCause());
             }
             try {
-                server.sendErrorToClient(ex.getCommand().getCommandId(), ex.getCause());
+                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                        ex.getCommand().getCommandId(), Message.class, new CompletableFuture<>());
+                completable.completeExceptionally(ex.getCause());
             } catch (Exception e) {
                 // Nothing to do
             }

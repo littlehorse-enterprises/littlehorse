@@ -1,8 +1,8 @@
 package io.littlehorse.server.streams.util;
 
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,7 +22,7 @@ public class CommandWaiter {
     private Date arrivalTime;
 
     @Getter
-    private StreamObserver<WaitForCommandResponse> observer;
+    private CompletableFuture<WaitForCommandResponse> completableFuture;
 
     @Getter
     private final int commandPartition;
@@ -37,11 +37,11 @@ public class CommandWaiter {
         this.commandPartition = commandPartition;
     }
 
-    public boolean setObserverAndMaybeComplete(StreamObserver<WaitForCommandResponse> observer) {
+    public boolean setObserverAndMaybeComplete(CompletableFuture<WaitForCommandResponse> completableFuture) {
         try {
             lock.lock();
             if (alreadyCompleted.get()) return false;
-            this.observer = observer;
+            this.completableFuture = completableFuture;
             return this.maybeMatch();
         } finally {
             lock.unlock();
@@ -71,15 +71,14 @@ public class CommandWaiter {
     }
 
     private boolean maybeMatch() {
-        if (observer == null) return false;
+        if (completableFuture == null) return false;
         if (caughtException == null && response == null) return false;
 
         if (caughtException != null) {
             log.debug("Waiter for command {} is aborting client request due to command process failure", commandId);
-            observer.onError(caughtException);
+            completableFuture.completeExceptionally(caughtException);
         } else {
-            observer.onNext(response);
-            observer.onCompleted();
+            completableFuture.complete(response);
             log.debug("Sent response for command {}", commandId);
         }
         alreadyCompleted.set(true);
@@ -87,12 +86,11 @@ public class CommandWaiter {
     }
 
     public void handleMigration() {
-        if (observer != null) {
-            observer.onNext(WaitForCommandResponse.newBuilder()
+        if (completableFuture != null) {
+            completableFuture.complete(WaitForCommandResponse.newBuilder()
                     .setPartitionMigratedResponse(WaitForCommandResponse.PartitionMigratedResponse.newBuilder()
                             .build())
                     .build());
-            observer.onCompleted();
         }
     }
 }

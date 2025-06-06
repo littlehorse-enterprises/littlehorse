@@ -16,7 +16,7 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
         commandId = LHUtil.generateGuid();
     }
 
-    private String commandId;
+    protected String commandId;
 
     public abstract LHStoreType getStore();
 

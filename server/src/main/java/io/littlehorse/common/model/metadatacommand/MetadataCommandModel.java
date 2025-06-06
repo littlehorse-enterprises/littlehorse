@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
 
-    private String commandId;
     private Date time;
 
     private MetadataCommandCase type;
