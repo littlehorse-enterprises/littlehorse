@@ -95,6 +95,7 @@ message MetadataCommand {
         // TODO: DeleteTenant
 
         DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;
+        PutStructDefRequest put_struct_def = 17;
     }
 }
 
