@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
@@ -286,5 +287,20 @@ public class LHMappingHelperTest
             
             Assert.Equal(VariableType.JsonObj, result);
         }
+    }
+    
+    [Fact]
+    public void LHHelper_WithAsyncTaskObject_ShouldReturnLHJsonVariableValue()
+    {
+        Task asyncTask = TestAsyncMethod();
+        
+        var result = LHMappingHelper.ObjectToVariableValue(asyncTask);
+        
+        Assert.Equal("{}", result.JsonObj);
+    }
+    
+    private async Task TestAsyncMethod()
+    {
+        await Task.Delay(11);
     }
 }

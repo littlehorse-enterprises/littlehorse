@@ -90,35 +90,43 @@ namespace LittleHorse.Sdk.Helper
         /// </exception>
         public static VariableValue ObjectToVariableValue(object? obj)
         {
-            if (obj is VariableValue variableValue) return variableValue;
+            var objToAdd = obj;
+
+            if (obj is Task task)
+            {
+                objToAdd = task.GetType().GetProperty("Result")?.GetValue(task);
+            }
+
+            if (objToAdd is VariableValue variableValue) return variableValue;
 
             var result = new VariableValue();
-            if (obj == null) {}
-            else if (IsIntObject(obj))
+            
+            if (objToAdd == null) {}
+            else if (IsIntObject(objToAdd))
             {
-                result.Int = GetIntegralValue(obj);
+                result.Int = GetIntegralValue(objToAdd);
             }
-            else if (IsDoubleObject(obj))
+            else if (IsDoubleObject(objToAdd))
             {
-                result.Double = GetFloatingValue(obj);
+                result.Double = GetFloatingValue(objToAdd);
             }
-            else if (obj is string stringValue)
+            else if (objToAdd is string stringValue)
             {
                 result.Str = stringValue;
             }
-            else if (obj is bool boolValue)
+            else if (objToAdd is bool boolValue)
             {
                 result.Bool = boolValue;
             }
-            else if (obj is byte[] byteArray)
+            else if (objToAdd is byte[] byteArray)
             {
                 result.Bytes = ByteString.CopyFrom(byteArray);
             }
             else
             {
-                var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
+                var jsonStr = JsonHandler.ObjectSerializeToJson(objToAdd);
 
-                if (obj is IList)
+                if (objToAdd is IList)
                 {
                     result.JsonArr = jsonStr;
                 }
@@ -235,7 +243,7 @@ namespace LittleHorse.Sdk.Helper
                 || type.IsAssignableFrom(typeof(nuint));
         }
         
-        private static bool IsIntObject(object obj)
+        private static bool IsIntObject(object? obj)
         {
             return obj is sbyte or byte or short or ushort or int or uint or long or ulong or nint or nuint;
         }
