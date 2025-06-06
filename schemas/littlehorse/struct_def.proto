@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "common_wfspec.proto";
+import "object_id.proto";
+import "variable.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
+// that defines the structure and content of a variable value. It allows strong typing.
+message StructDef {
+  // The id of the `Schema`. This includes the version.
+  StructDefId id = 1;
+
+  // Optionally description of the schema.
+  optional string description = 2;
+
+  // When the StructDef was created.
+  google.protobuf.Timestamp created_at = 3;
+
+  // The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
+  InlineStructDef struct_def = 4;
+}
+
+// An `InlineStructDef` is the actual representation of the Schema.
+message InlineStructDef {
+  // The fields in this schema.
+  map<string, StructFieldDef> fields = 1;
+}
+
+// A `SchemaFieldDef` defines a field inside a `StructDef`.
+message StructFieldDef {
+  // The type of the field.
+  TypeDefinition field_type = 1;
+  
+  // The default value of the field, which should match the Field Type. If not
+   // provided, then the field is treated as required.
+  optional VariableValue default_value = 2;
+}
