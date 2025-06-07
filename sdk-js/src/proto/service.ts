@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import Long from "long";
-import { type CallContext, type CallOptions } from "nice-grpc-common";
+import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
@@ -21,11 +21,12 @@ import {
   taskStatusToNumber,
 } from "./common_enums";
 import { ReturnType, VariableDef } from "./common_wfspec";
-import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
+import { DataNugget, ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
+  DataNuggetId,
   ExternalEventDefId,
   ExternalEventId,
   NodeRunId,
@@ -260,10 +261,53 @@ export interface PutExternalEventRequest {
   nodeRunPosition?: number | undefined;
 }
 
+/** Request used to create a `DataNugget` or update its content. */
+export interface PutDataNuggetRequest {
+  /** The correlation key of the DataNugget. */
+  key: string;
+  /**
+   * The `ExternalEventDef` that is associated with this `DataNugget`. This is
+   * also the `ExternalEventDef` of any `ExternalEvent`s that are generated after
+   * this `DataNugget` is correlated to `WfRun`s.
+   */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * Note that a DataNuggetId is a three-part ID:
+   * 1. Key (correlation ID)
+   * 2. ExternalEventDef Name
+   * 3. A guid
+   * The guid from part 3) can be optionally provided to the PutDataNuggetRequest
+   * in order to make it idempotent. It is a best practice to do so.
+   */
+  guid?:
+    | string
+    | undefined;
+  /**
+   * The content of the DataNugget and any `ExternalEvent`s created after
+   * correlating this `DataNugget`.
+   */
+  content:
+    | VariableValue
+    | undefined;
+  /**
+   * If set, the current epoch of the `DataNugget` must match this number or else
+   * the request will fail with `FAILED_PRECONDITION`.
+   */
+  expectedEpoch?: number | undefined;
+}
+
 /** Deletes an ExternalEvent. */
 export interface DeleteExternalEventRequest {
   /** The ID of the ExternalEvent to delete. */
   id: ExternalEventId | undefined;
+}
+
+/** Deletes a DataNugget. */
+export interface DeleteDataNuggetRequest {
+  /** The ID of the DataNugget to delete. */
+  id: DataNuggetId | undefined;
 }
 
 /** Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist */
@@ -2132,6 +2176,99 @@ export const PutExternalEventRequest = {
   },
 };
 
+function createBasePutDataNuggetRequest(): PutDataNuggetRequest {
+  return { key: "", externalEventDefId: undefined, guid: undefined, content: undefined, expectedEpoch: undefined };
+}
+
+export const PutDataNuggetRequest = {
+  encode(message: PutDataNuggetRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.guid !== undefined) {
+      writer.uint32(26).string(message.guid);
+    }
+    if (message.content !== undefined) {
+      VariableValue.encode(message.content, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.expectedEpoch !== undefined) {
+      writer.uint32(40).int32(message.expectedEpoch);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutDataNuggetRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutDataNuggetRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.guid = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.content = VariableValue.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.expectedEpoch = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutDataNuggetRequest>): PutDataNuggetRequest {
+    return PutDataNuggetRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutDataNuggetRequest>): PutDataNuggetRequest {
+    const message = createBasePutDataNuggetRequest();
+    message.key = object.key ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.guid = object.guid ?? undefined;
+    message.content = (object.content !== undefined && object.content !== null)
+      ? VariableValue.fromPartial(object.content)
+      : undefined;
+    message.expectedEpoch = object.expectedEpoch ?? undefined;
+    return message;
+  },
+};
+
 function createBaseDeleteExternalEventRequest(): DeleteExternalEventRequest {
   return { id: undefined };
 }
@@ -2173,6 +2310,51 @@ export const DeleteExternalEventRequest = {
   fromPartial(object: DeepPartial<DeleteExternalEventRequest>): DeleteExternalEventRequest {
     const message = createBaseDeleteExternalEventRequest();
     message.id = (object.id !== undefined && object.id !== null) ? ExternalEventId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteDataNuggetRequest(): DeleteDataNuggetRequest {
+  return { id: undefined };
+}
+
+export const DeleteDataNuggetRequest = {
+  encode(message: DeleteDataNuggetRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      DataNuggetId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteDataNuggetRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteDataNuggetRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = DataNuggetId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteDataNuggetRequest>): DeleteDataNuggetRequest {
+    return DeleteDataNuggetRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteDataNuggetRequest>): DeleteDataNuggetRequest {
+    const message = createBaseDeleteDataNuggetRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? DataNuggetId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -8039,7 +8221,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Post an ExternalEvent. This RPC is highly useful for */
+    /** Post an ExternalEvent. */
     putExternalEvent: {
       name: "PutExternalEvent",
       requestType: PutExternalEventRequest,
@@ -8054,6 +8236,28 @@ export const LittleHorseDefinition = {
       requestType: ExternalEventId,
       requestStream: false,
       responseType: ExternalEvent,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
+     * for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
+     * will be created.
+     */
+    putDataNugget: {
+      name: "PutDataNugget",
+      requestType: PutDataNuggetRequest,
+      requestStream: false,
+      responseType: DataNugget,
+      responseStream: false,
+      options: {},
+    },
+    /** Get a specific DataNugget. */
+    getDataNugget: {
+      name: "GetDataNugget",
+      requestType: DataNuggetId,
+      requestStream: false,
+      responseType: DataNugget,
       responseStream: false,
       options: {},
     },
@@ -8238,7 +8442,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /**  */
+    /** Search for Principals. */
     searchPrincipal: {
       name: "SearchPrincipal",
       requestType: SearchPrincipalRequest,
@@ -8365,6 +8569,15 @@ export const LittleHorseDefinition = {
     deleteExternalEventDef: {
       name: "DeleteExternalEventDef",
       requestType: DeleteExternalEventDefRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes a DataNugget. */
+    deleteDataNugget: {
+      name: "DeleteDataNugget",
+      requestType: DeleteDataNuggetRequest,
       requestStream: false,
       responseType: Empty,
       responseStream: false,
@@ -8638,7 +8851,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListVariablesRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<VariableList>>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: PutExternalEventRequest,
     context: CallContext & CallContextExt,
@@ -8648,6 +8861,14 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ExternalEventId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /**
+   * Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
+   * for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
+   * will be created.
+   */
+  putDataNugget(request: PutDataNuggetRequest, context: CallContext & CallContextExt): Promise<DeepPartial<DataNugget>>;
+  /** Get a specific DataNugget. */
+  getDataNugget(request: DataNuggetId, context: CallContext & CallContextExt): Promise<DeepPartial<DataNugget>>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -8748,7 +8969,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<WorkflowEventDefIdList>>;
   /** Search for all available TenantIds for current Principal */
   searchTenant(request: SearchTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TenantIdList>>;
-  /**  */
+  /** Search for Principals. */
   searchPrincipal(
     request: SearchPrincipalRequest,
     context: CallContext & CallContextExt,
@@ -8809,6 +9030,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeleteExternalEventDefRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  /** Deletes a DataNugget. */
+  deleteDataNugget(
+    request: DeleteDataNuggetRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
   deleteWorkflowEventDef(
@@ -9008,7 +9234,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListVariablesRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<VariableList>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: DeepPartial<PutExternalEventRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -9018,6 +9244,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ExternalEventId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /**
+   * Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
+   * for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
+   * will be created.
+   */
+  putDataNugget(
+    request: DeepPartial<PutDataNuggetRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<DataNugget>;
+  /** Get a specific DataNugget. */
+  getDataNugget(request: DeepPartial<DataNuggetId>, options?: CallOptions & CallOptionsExt): Promise<DataNugget>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -9124,7 +9361,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchTenantRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<TenantIdList>;
-  /**  */
+  /** Search for Principals. */
   searchPrincipal(
     request: DeepPartial<SearchPrincipalRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -9185,6 +9422,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeepPartial<DeleteExternalEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  /** Deletes a DataNugget. */
+  deleteDataNugget(
+    request: DeepPartial<DeleteDataNuggetRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
   deleteWorkflowEventDef(

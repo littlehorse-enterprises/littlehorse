@@ -207,6 +207,16 @@ class LittleHorseStub(object):
                 request_serializer=object__id__pb2.ExternalEventId.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 _registered_method=True)
+        self.PutDataNugget = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutDataNugget',
+                request_serializer=service__pb2.PutDataNuggetRequest.SerializeToString,
+                response_deserializer=external__event__pb2.DataNugget.FromString,
+                _registered_method=True)
+        self.GetDataNugget = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetDataNugget',
+                request_serializer=object__id__pb2.DataNuggetId.SerializeToString,
+                response_deserializer=external__event__pb2.DataNugget.FromString,
+                _registered_method=True)
         self.AwaitWorkflowEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/AwaitWorkflowEvent',
                 request_serializer=service__pb2.AwaitWorkflowEventRequest.SerializeToString,
@@ -355,6 +365,11 @@ class LittleHorseStub(object):
         self.DeleteExternalEventDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteExternalEventDef',
                 request_serializer=service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.DeleteDataNugget = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteDataNugget',
+                request_serializer=service__pb2.DeleteDataNuggetRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
         self.DeleteWorkflowEventDef = channel.unary_unary(
@@ -667,7 +682,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEvent(self, request, context):
-        """Post an ExternalEvent. This RPC is highly useful for
+        """Post an ExternalEvent.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -675,6 +690,22 @@ class LittleHorseServicer(object):
 
     def GetExternalEvent(self, request, context):
         """Get a specific ExternalEvent.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutDataNugget(self, request, context):
+        """Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
+        for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
+        will be created.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetDataNugget(self, request, context):
+        """Get a specific DataNugget.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -816,7 +847,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SearchPrincipal(self, request, context):
-        """
+        """Search for Principals.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -910,6 +941,13 @@ class LittleHorseServicer(object):
 
     def DeleteExternalEventDef(self, request, context):
         """Deletes an ExternalEventDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteDataNugget(self, request, context):
+        """Deletes a DataNugget.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1169,6 +1207,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=object__id__pb2.ExternalEventId.FromString,
                     response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
             ),
+            'PutDataNugget': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutDataNugget,
+                    request_deserializer=service__pb2.PutDataNuggetRequest.FromString,
+                    response_serializer=external__event__pb2.DataNugget.SerializeToString,
+            ),
+            'GetDataNugget': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetDataNugget,
+                    request_deserializer=object__id__pb2.DataNuggetId.FromString,
+                    response_serializer=external__event__pb2.DataNugget.SerializeToString,
+            ),
             'AwaitWorkflowEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.AwaitWorkflowEvent,
                     request_deserializer=service__pb2.AwaitWorkflowEventRequest.FromString,
@@ -1317,6 +1365,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteExternalEventDef,
                     request_deserializer=service__pb2.DeleteExternalEventDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteDataNugget': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteDataNugget,
+                    request_deserializer=service__pb2.DeleteDataNuggetRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWorkflowEventDef': grpc.unary_unary_rpc_method_handler(
@@ -2260,6 +2313,60 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def PutDataNugget(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutDataNugget',
+            service__pb2.PutDataNuggetRequest.SerializeToString,
+            external__event__pb2.DataNugget.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetDataNugget(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetDataNugget',
+            object__id__pb2.DataNuggetId.SerializeToString,
+            external__event__pb2.DataNugget.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def AwaitWorkflowEvent(request,
             target,
             options=(),
@@ -3058,6 +3165,33 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/DeleteExternalEventDef',
             service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteDataNugget(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteDataNugget',
+            service__pb2.DeleteDataNuggetRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,

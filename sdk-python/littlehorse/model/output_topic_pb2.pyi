@@ -1,5 +1,4 @@
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
-import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
 import littlehorse.model.task_run_pb2 as _task_run_pb2

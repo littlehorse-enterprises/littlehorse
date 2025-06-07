@@ -146,11 +146,19 @@ service LittleHorse {
   // List all Variables from a WfRun.
   rpc ListVariables(ListVariablesRequest) returns (VariableList) {}
 
-  // Post an ExternalEvent. This RPC is highly useful for
+  // Post an ExternalEvent.
   rpc PutExternalEvent(PutExternalEventRequest) returns (ExternalEvent) {}
 
   // Get a specific ExternalEvent.
   rpc GetExternalEvent(ExternalEventId) returns (ExternalEvent) {}
+
+  // Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
+  // for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
+  // will be created.
+  rpc PutDataNugget(PutDataNuggetRequest) returns (DataNugget) {}
+
+  // Get a specific DataNugget.
+  rpc GetDataNugget(DataNuggetId) returns (DataNugget) {}
 
   // Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
   // WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -215,7 +223,7 @@ service LittleHorse {
   // Search for all available TenantIds for current Principal
   rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
 
-  //
+  // Search for Principals.
   rpc SearchPrincipal(SearchPrincipalRequest) returns (PrincipalIdList) {}
 
   // Used by the Task Worker to:
@@ -258,6 +266,8 @@ service LittleHorse {
   rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
   // Deletes an ExternalEventDef.
   rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
+  // Deletes a DataNugget.
+  rpc DeleteDataNugget(DeleteDataNuggetRequest) returns (google.protobuf.Empty) {}
 
   rpc DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
@@ -426,11 +436,45 @@ message PutExternalEventRequest {
   reserved 4, 8;
 }
 
+// Request used to create a `DataNugget` or update its content.
+message PutDataNuggetRequest {
+  // The correlation key of the DataNugget.
+  string key = 1;
+
+  // The `ExternalEventDef` that is associated with this `DataNugget`. This is
+  // also the `ExternalEventDef` of any `ExternalEvent`s that are generated after
+  // this `DataNugget` is correlated to `WfRun`s.
+  ExternalEventDefId external_event_def_id = 2;
+
+  // Note that a DataNuggetId is a three-part ID:
+  // 1. Key (correlation ID)
+  // 2. ExternalEventDef Name
+  // 3. A guid
+  // The guid from part 3) can be optionally provided to the PutDataNuggetRequest
+  // in order to make it idempotent. It is a best practice to do so.
+  optional string guid = 3;
+
+  // The content of the DataNugget and any `ExternalEvent`s created after
+  // correlating this `DataNugget`.
+  VariableValue content = 4;
+
+  // If set, the current epoch of the `DataNugget` must match this number or else
+  // the request will fail with `FAILED_PRECONDITION`.
+  optional int32 expected_epoch = 5;
+}
+
 // Deletes an ExternalEvent.
 message DeleteExternalEventRequest {
   // The ID of the ExternalEvent to delete.
   ExternalEventId id = 1;
 }
+
+// Deletes a DataNugget.
+message DeleteDataNuggetRequest {
+  // The ID of the DataNugget to delete.
+  DataNuggetId id = 1;
+}
+
 
 // Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
 message DeleteScheduledWfRunRequest {

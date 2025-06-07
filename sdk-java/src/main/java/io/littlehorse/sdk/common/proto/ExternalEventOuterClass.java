@@ -25,6 +25,16 @@ public final class ExternalEventOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ExternalEventDef_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_DataNuggetConfig_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_DataNuggetConfig_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_DataNugget_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_DataNugget_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -48,17 +58,26 @@ public final class ExternalEventOuterClass {
       "hread_run_number\030\004 \001(\005H\000\210\001\001\022\036\n\021node_run_" +
       "position\030\005 \001(\005H\001\210\001\001\022\017\n\007claimed\030\006 \001(\010B\024\n\022" +
       "_thread_run_numberB\024\n\022_node_run_position" +
-      "\"\201\002\n\020ExternalEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
+      "\"\330\002\n\020ExternalEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
       "lehorse.ExternalEventDefId\022.\n\ncreated_at" +
       "\030\002 \001(\0132\032.google.protobuf.Timestamp\022C\n\020re" +
       "tention_policy\030\003 \001(\0132).littlehorse.Exter" +
       "nalEventRetentionPolicy\0226\n\020type_informat" +
-      "ion\030\004 \001(\0132\027.littlehorse.ReturnTypeH\000\210\001\001B" +
-      "\023\n\021_type_information\"P\n\034ExternalEventRet" +
-      "entionPolicy\022\033\n\021seconds_after_put\030\001 \001(\003H" +
-      "\000B\023\n\021ext_evt_gc_policyBM\n\037io.littlehorse" +
-      ".sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleH" +
-      "orse.Sdk.Common.Protob\006proto3"
+      "ion\030\004 \001(\0132\027.littlehorse.ReturnTypeH\000\210\001\001\022" +
+      ">\n\022data_nugget_config\030\005 \001(\0132\035.littlehors" +
+      "e.DataNuggetConfigH\001\210\001\001B\023\n\021_type_informa" +
+      "tionB\025\n\023_data_nugget_config\"d\n\020DataNugge" +
+      "tConfig\022\030\n\013ttl_seconds\030\001 \001(\003H\000\210\001\001\022&\n\036del" +
+      "ete_after_first_correlation\030\002 \001(\010B\016\n\014_tt" +
+      "l_seconds\"\237\001\n\nDataNugget\022%\n\002id\030\001 \001(\0132\031.l" +
+      "ittlehorse.DataNuggetId\022.\n\ncreated_at\030\002 " +
+      "\001(\0132\032.google.protobuf.Timestamp\022+\n\007conte" +
+      "nt\030\003 \001(\0132\032.littlehorse.VariableValue\022\r\n\005" +
+      "epoch\030\004 \001(\005\"P\n\034ExternalEventRetentionPol" +
+      "icy\022\033\n\021seconds_after_put\030\001 \001(\003H\000B\023\n\021ext_" +
+      "evt_gc_policyBM\n\037io.littlehorse.sdk.comm" +
+      "on.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk." +
+      "Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -79,9 +98,21 @@ public final class ExternalEventOuterClass {
     internal_static_littlehorse_ExternalEventDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventDef_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "RetentionPolicy", "TypeInformation", "TypeInformation", });
-    internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor =
+        new java.lang.String[] { "Id", "CreatedAt", "RetentionPolicy", "TypeInformation", "DataNuggetConfig", "TypeInformation", "DataNuggetConfig", });
+    internal_static_littlehorse_DataNuggetConfig_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_DataNuggetConfig_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_DataNuggetConfig_descriptor,
+        new java.lang.String[] { "TtlSeconds", "DeleteAfterFirstCorrelation", "TtlSeconds", });
+    internal_static_littlehorse_DataNugget_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_littlehorse_DataNugget_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_DataNugget_descriptor,
+        new java.lang.String[] { "Id", "CreatedAt", "Content", "Epoch", });
+    internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_ExternalEventRetentionPolicy_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor,

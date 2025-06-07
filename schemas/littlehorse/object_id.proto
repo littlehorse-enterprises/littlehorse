@@ -100,6 +100,20 @@ message ExternalEventId {
   string guid = 3;
 }
 
+// ID for a DataNugget
+message DataNuggetId {
+  // The correlation ID for the DataNugget.
+  string correlation_id = 1;
+
+  // The ExternalEventDef for this DataNugget and any ExternalEvent's that are created
+  // by it.
+  ExternalEventDefId external_event_def_id = 2;
+
+  // A unique guid allowing for distinguishing this DataNugget from other events
+  // of the same ExternalEventDef and correlation ID.
+  string guid = 3;
+}
+
 // ID for a WfRun
 message WfRunId {
   // The ID for this WfRun instance.

@@ -185,12 +185,14 @@ class WaitForThreadsNode(_message.Message):
     def __init__(self, threads: _Optional[_Union[WaitForThreadsNode.ThreadsToWaitFor, _Mapping]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., per_thread_failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ...) -> None: ...
 
 class ExternalEventNode(_message.Message):
-    __slots__ = ["external_event_def_id", "timeout_seconds"]
+    __slots__ = ["external_event_def_id", "timeout_seconds", "correlation_id"]
     EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     TIMEOUT_SECONDS_FIELD_NUMBER: _ClassVar[int]
+    CORRELATION_ID_FIELD_NUMBER: _ClassVar[int]
     external_event_def_id: _object_id_pb2.ExternalEventDefId
     timeout_seconds: _common_wfspec_pb2.VariableAssignment
-    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., timeout_seconds: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    correlation_id: _common_wfspec_pb2.VariableAssignment
+    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., timeout_seconds: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., correlation_id: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class EntrypointNode(_message.Message):
     __slots__ = []

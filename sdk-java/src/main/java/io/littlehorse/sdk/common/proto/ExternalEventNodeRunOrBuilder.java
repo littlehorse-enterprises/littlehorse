@@ -97,4 +97,39 @@ public interface ExternalEventNodeRunOrBuilder extends
    * @return The timedOut.
    */
   boolean getTimedOut();
+
+  /**
+   * <pre>
+   * Correlation ID for the External Event Node to allow posting events by
+   * correlation (without knowing the WfRunId in advance). If not set,
+   * the ExternalEvent poster must know the WfRunId.
+   * </pre>
+   *
+   * <code>optional string correlation_id = 5;</code>
+   * @return Whether the correlationId field is set.
+   */
+  boolean hasCorrelationId();
+  /**
+   * <pre>
+   * Correlation ID for the External Event Node to allow posting events by
+   * correlation (without knowing the WfRunId in advance). If not set,
+   * the ExternalEvent poster must know the WfRunId.
+   * </pre>
+   *
+   * <code>optional string correlation_id = 5;</code>
+   * @return The correlationId.
+   */
+  java.lang.String getCorrelationId();
+  /**
+   * <pre>
+   * Correlation ID for the External Event Node to allow posting events by
+   * correlation (without knowing the WfRunId in advance). If not set,
+   * the ExternalEvent poster must know the WfRunId.
+   * </pre>
+   *
+   * <code>optional string correlation_id = 5;</code>
+   * @return The bytes for correlationId.
+   */
+  com.google.protobuf.ByteString
+      getCorrelationIdBytes();
 }

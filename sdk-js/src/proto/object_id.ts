@@ -109,6 +109,24 @@ export interface ExternalEventId {
   guid: string;
 }
 
+/** ID for a DataNugget */
+export interface DataNuggetId {
+  /** The correlation ID for the DataNugget. */
+  correlationId: string;
+  /**
+   * The ExternalEventDef for this DataNugget and any ExternalEvent's that are created
+   * by it.
+   */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * A unique guid allowing for distinguishing this DataNugget from other events
+   * of the same ExternalEventDef and correlation ID.
+   */
+  guid: string;
+}
+
 /** ID for a WfRun */
 export interface WfRunId {
   /** The ID for this WfRun instance. */
@@ -668,6 +686,75 @@ export const ExternalEventId = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.guid = object.guid ?? "";
+    return message;
+  },
+};
+
+function createBaseDataNuggetId(): DataNuggetId {
+  return { correlationId: "", externalEventDefId: undefined, guid: "" };
+}
+
+export const DataNuggetId = {
+  encode(message: DataNuggetId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.correlationId !== "") {
+      writer.uint32(10).string(message.correlationId);
+    }
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.guid !== "") {
+      writer.uint32(26).string(message.guid);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DataNuggetId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDataNuggetId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.correlationId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.guid = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DataNuggetId>): DataNuggetId {
+    return DataNuggetId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DataNuggetId>): DataNuggetId {
+    const message = createBaseDataNuggetId();
+    message.correlationId = object.correlationId ?? "";
     message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
       ? ExternalEventDefId.fromPartial(object.externalEventDefId)
       : undefined;

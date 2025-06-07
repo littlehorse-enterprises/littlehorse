@@ -503,6 +503,75 @@ func (x *ExternalEventId) GetGuid() string {
 	return ""
 }
 
+// ID for a DataNugget
+type DataNuggetId struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The correlation ID for the DataNugget.
+	CorrelationId string `protobuf:"bytes,1,opt,name=correlation_id,json=correlationId,proto3" json:"correlation_id,omitempty"`
+	// The ExternalEventDef for this DataNugget and any ExternalEvent's that are created
+	// by it.
+	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,2,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
+	// A unique guid allowing for distinguishing this DataNugget from other events
+	// of the same ExternalEventDef and correlation ID.
+	Guid string `protobuf:"bytes,3,opt,name=guid,proto3" json:"guid,omitempty"`
+}
+
+func (x *DataNuggetId) Reset() {
+	*x = DataNuggetId{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DataNuggetId) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DataNuggetId) ProtoMessage() {}
+
+func (x *DataNuggetId) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DataNuggetId.ProtoReflect.Descriptor instead.
+func (*DataNuggetId) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DataNuggetId) GetCorrelationId() string {
+	if x != nil {
+		return x.CorrelationId
+	}
+	return ""
+}
+
+func (x *DataNuggetId) GetExternalEventDefId() *ExternalEventDefId {
+	if x != nil {
+		return x.ExternalEventDefId
+	}
+	return nil
+}
+
+func (x *DataNuggetId) GetGuid() string {
+	if x != nil {
+		return x.Guid
+	}
+	return ""
+}
+
 // ID for a WfRun
 type WfRunId struct {
 	state         protoimpl.MessageState
@@ -518,7 +587,7 @@ type WfRunId struct {
 func (x *WfRunId) Reset() {
 	*x = WfRunId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[8]
+		mi := &file_object_id_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -531,7 +600,7 @@ func (x *WfRunId) String() string {
 func (*WfRunId) ProtoMessage() {}
 
 func (x *WfRunId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[8]
+	mi := &file_object_id_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -544,7 +613,7 @@ func (x *WfRunId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WfRunId.ProtoReflect.Descriptor instead.
 func (*WfRunId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{8}
+	return file_object_id_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *WfRunId) GetId() string {
@@ -579,7 +648,7 @@ type NodeRunId struct {
 func (x *NodeRunId) Reset() {
 	*x = NodeRunId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[9]
+		mi := &file_object_id_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -592,7 +661,7 @@ func (x *NodeRunId) String() string {
 func (*NodeRunId) ProtoMessage() {}
 
 func (x *NodeRunId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[9]
+	mi := &file_object_id_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -605,7 +674,7 @@ func (x *NodeRunId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NodeRunId.ProtoReflect.Descriptor instead.
 func (*NodeRunId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{9}
+	return file_object_id_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *NodeRunId) GetWfRunId() *WfRunId {
@@ -648,7 +717,7 @@ type WorkflowEventId struct {
 func (x *WorkflowEventId) Reset() {
 	*x = WorkflowEventId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[10]
+		mi := &file_object_id_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -661,7 +730,7 @@ func (x *WorkflowEventId) String() string {
 func (*WorkflowEventId) ProtoMessage() {}
 
 func (x *WorkflowEventId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[10]
+	mi := &file_object_id_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -674,7 +743,7 @@ func (x *WorkflowEventId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WorkflowEventId.ProtoReflect.Descriptor instead.
 func (*WorkflowEventId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{10}
+	return file_object_id_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *WorkflowEventId) GetWfRunId() *WfRunId {
@@ -714,7 +783,7 @@ type TaskRunId struct {
 func (x *TaskRunId) Reset() {
 	*x = TaskRunId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[11]
+		mi := &file_object_id_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -727,7 +796,7 @@ func (x *TaskRunId) String() string {
 func (*TaskRunId) ProtoMessage() {}
 
 func (x *TaskRunId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[11]
+	mi := &file_object_id_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -740,7 +809,7 @@ func (x *TaskRunId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskRunId.ProtoReflect.Descriptor instead.
 func (*TaskRunId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{11}
+	return file_object_id_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *TaskRunId) GetWfRunId() *WfRunId {
@@ -773,7 +842,7 @@ type UserTaskRunId struct {
 func (x *UserTaskRunId) Reset() {
 	*x = UserTaskRunId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[12]
+		mi := &file_object_id_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -786,7 +855,7 @@ func (x *UserTaskRunId) String() string {
 func (*UserTaskRunId) ProtoMessage() {}
 
 func (x *UserTaskRunId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[12]
+	mi := &file_object_id_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -799,7 +868,7 @@ func (x *UserTaskRunId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserTaskRunId.ProtoReflect.Descriptor instead.
 func (*UserTaskRunId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{12}
+	return file_object_id_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *UserTaskRunId) GetWfRunId() *WfRunId {
@@ -833,7 +902,7 @@ type TaskDefMetricsId struct {
 func (x *TaskDefMetricsId) Reset() {
 	*x = TaskDefMetricsId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[13]
+		mi := &file_object_id_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -846,7 +915,7 @@ func (x *TaskDefMetricsId) String() string {
 func (*TaskDefMetricsId) ProtoMessage() {}
 
 func (x *TaskDefMetricsId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[13]
+	mi := &file_object_id_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -859,7 +928,7 @@ func (x *TaskDefMetricsId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskDefMetricsId.ProtoReflect.Descriptor instead.
 func (*TaskDefMetricsId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{13}
+	return file_object_id_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *TaskDefMetricsId) GetWindowStart() *timestamppb.Timestamp {
@@ -900,7 +969,7 @@ type WfSpecMetricsId struct {
 func (x *WfSpecMetricsId) Reset() {
 	*x = WfSpecMetricsId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[14]
+		mi := &file_object_id_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -913,7 +982,7 @@ func (x *WfSpecMetricsId) String() string {
 func (*WfSpecMetricsId) ProtoMessage() {}
 
 func (x *WfSpecMetricsId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[14]
+	mi := &file_object_id_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -926,7 +995,7 @@ func (x *WfSpecMetricsId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WfSpecMetricsId.ProtoReflect.Descriptor instead.
 func (*WfSpecMetricsId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{14}
+	return file_object_id_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *WfSpecMetricsId) GetWindowStart() *timestamppb.Timestamp {
@@ -964,7 +1033,7 @@ type PrincipalId struct {
 func (x *PrincipalId) Reset() {
 	*x = PrincipalId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[15]
+		mi := &file_object_id_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -977,7 +1046,7 @@ func (x *PrincipalId) String() string {
 func (*PrincipalId) ProtoMessage() {}
 
 func (x *PrincipalId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[15]
+	mi := &file_object_id_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -990,7 +1059,7 @@ func (x *PrincipalId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PrincipalId.ProtoReflect.Descriptor instead.
 func (*PrincipalId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{15}
+	return file_object_id_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *PrincipalId) GetId() string {
@@ -1013,7 +1082,7 @@ type TenantId struct {
 func (x *TenantId) Reset() {
 	*x = TenantId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[16]
+		mi := &file_object_id_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1026,7 +1095,7 @@ func (x *TenantId) String() string {
 func (*TenantId) ProtoMessage() {}
 
 func (x *TenantId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[16]
+	mi := &file_object_id_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1039,7 +1108,7 @@ func (x *TenantId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantId.ProtoReflect.Descriptor instead.
 func (*TenantId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{16}
+	return file_object_id_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *TenantId) GetId() string {
@@ -1061,7 +1130,7 @@ type ScheduledWfRunId struct {
 func (x *ScheduledWfRunId) Reset() {
 	*x = ScheduledWfRunId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[17]
+		mi := &file_object_id_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1074,7 +1143,7 @@ func (x *ScheduledWfRunId) String() string {
 func (*ScheduledWfRunId) ProtoMessage() {}
 
 func (x *ScheduledWfRunId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[17]
+	mi := &file_object_id_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1087,7 +1156,7 @@ func (x *ScheduledWfRunId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduledWfRunId.ProtoReflect.Descriptor instead.
 func (*ScheduledWfRunId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{17}
+	return file_object_id_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ScheduledWfRunId) GetId() string {
@@ -1142,6 +1211,16 @@ var file_object_id_proto_rawDesc = []byte{
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
 	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x52, 0x07, 0x77, 0x66,
 	0x52, 0x75, 0x6e, 0x49, 0x64, 0x12, 0x52, 0x0a, 0x15, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61,
+	0x6c, 0x5f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x5f, 0x64, 0x65, 0x66, 0x5f, 0x69, 0x64, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
+	0x73, 0x65, 0x2e, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x44, 0x65, 0x66, 0x49, 0x64, 0x52, 0x12, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x44, 0x65, 0x66, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x67, 0x75, 0x69,
+	0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x67, 0x75, 0x69, 0x64, 0x22, 0x9d, 0x01,
+	0x0a, 0x0c, 0x44, 0x61, 0x74, 0x61, 0x4e, 0x75, 0x67, 0x67, 0x65, 0x74, 0x49, 0x64, 0x12, 0x25,
+	0x0a, 0x0e, 0x63, 0x6f, 0x72, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x63, 0x6f, 0x72, 0x72, 0x65, 0x6c, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x52, 0x0a, 0x15, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61,
 	0x6c, 0x5f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x5f, 0x64, 0x65, 0x66, 0x5f, 0x69, 0x64, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
 	0x73, 0x65, 0x2e, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74,
@@ -1238,7 +1317,7 @@ func file_object_id_proto_rawDescGZIP() []byte {
 	return file_object_id_proto_rawDescData
 }
 
-var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_object_id_proto_goTypes = []interface{}{
 	(*WfSpecId)(nil),              // 0: littlehorse.WfSpecId
 	(*TaskDefId)(nil),             // 1: littlehorse.TaskDefId
@@ -1248,41 +1327,43 @@ var file_object_id_proto_goTypes = []interface{}{
 	(*TaskWorkerGroupId)(nil),     // 5: littlehorse.TaskWorkerGroupId
 	(*VariableId)(nil),            // 6: littlehorse.VariableId
 	(*ExternalEventId)(nil),       // 7: littlehorse.ExternalEventId
-	(*WfRunId)(nil),               // 8: littlehorse.WfRunId
-	(*NodeRunId)(nil),             // 9: littlehorse.NodeRunId
-	(*WorkflowEventId)(nil),       // 10: littlehorse.WorkflowEventId
-	(*TaskRunId)(nil),             // 11: littlehorse.TaskRunId
-	(*UserTaskRunId)(nil),         // 12: littlehorse.UserTaskRunId
-	(*TaskDefMetricsId)(nil),      // 13: littlehorse.TaskDefMetricsId
-	(*WfSpecMetricsId)(nil),       // 14: littlehorse.WfSpecMetricsId
-	(*PrincipalId)(nil),           // 15: littlehorse.PrincipalId
-	(*TenantId)(nil),              // 16: littlehorse.TenantId
-	(*ScheduledWfRunId)(nil),      // 17: littlehorse.ScheduledWfRunId
-	(*timestamppb.Timestamp)(nil), // 18: google.protobuf.Timestamp
-	(MetricsWindowLength)(0),      // 19: littlehorse.MetricsWindowLength
+	(*DataNuggetId)(nil),          // 8: littlehorse.DataNuggetId
+	(*WfRunId)(nil),               // 9: littlehorse.WfRunId
+	(*NodeRunId)(nil),             // 10: littlehorse.NodeRunId
+	(*WorkflowEventId)(nil),       // 11: littlehorse.WorkflowEventId
+	(*TaskRunId)(nil),             // 12: littlehorse.TaskRunId
+	(*UserTaskRunId)(nil),         // 13: littlehorse.UserTaskRunId
+	(*TaskDefMetricsId)(nil),      // 14: littlehorse.TaskDefMetricsId
+	(*WfSpecMetricsId)(nil),       // 15: littlehorse.WfSpecMetricsId
+	(*PrincipalId)(nil),           // 16: littlehorse.PrincipalId
+	(*TenantId)(nil),              // 17: littlehorse.TenantId
+	(*ScheduledWfRunId)(nil),      // 18: littlehorse.ScheduledWfRunId
+	(*timestamppb.Timestamp)(nil), // 19: google.protobuf.Timestamp
+	(MetricsWindowLength)(0),      // 20: littlehorse.MetricsWindowLength
 }
 var file_object_id_proto_depIdxs = []int32{
 	1,  // 0: littlehorse.TaskWorkerGroupId.task_def_id:type_name -> littlehorse.TaskDefId
-	8,  // 1: littlehorse.VariableId.wf_run_id:type_name -> littlehorse.WfRunId
-	8,  // 2: littlehorse.ExternalEventId.wf_run_id:type_name -> littlehorse.WfRunId
+	9,  // 1: littlehorse.VariableId.wf_run_id:type_name -> littlehorse.WfRunId
+	9,  // 2: littlehorse.ExternalEventId.wf_run_id:type_name -> littlehorse.WfRunId
 	2,  // 3: littlehorse.ExternalEventId.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
-	8,  // 4: littlehorse.WfRunId.parent_wf_run_id:type_name -> littlehorse.WfRunId
-	8,  // 5: littlehorse.NodeRunId.wf_run_id:type_name -> littlehorse.WfRunId
-	8,  // 6: littlehorse.WorkflowEventId.wf_run_id:type_name -> littlehorse.WfRunId
-	4,  // 7: littlehorse.WorkflowEventId.workflow_event_def_id:type_name -> littlehorse.WorkflowEventDefId
-	8,  // 8: littlehorse.TaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
-	8,  // 9: littlehorse.UserTaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
-	18, // 10: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	19, // 11: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
-	1,  // 12: littlehorse.TaskDefMetricsId.task_def_id:type_name -> littlehorse.TaskDefId
-	18, // 13: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	19, // 14: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
-	0,  // 15: littlehorse.WfSpecMetricsId.wf_spec_id:type_name -> littlehorse.WfSpecId
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	2,  // 4: littlehorse.DataNuggetId.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
+	9,  // 5: littlehorse.WfRunId.parent_wf_run_id:type_name -> littlehorse.WfRunId
+	9,  // 6: littlehorse.NodeRunId.wf_run_id:type_name -> littlehorse.WfRunId
+	9,  // 7: littlehorse.WorkflowEventId.wf_run_id:type_name -> littlehorse.WfRunId
+	4,  // 8: littlehorse.WorkflowEventId.workflow_event_def_id:type_name -> littlehorse.WorkflowEventDefId
+	9,  // 9: littlehorse.TaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
+	9,  // 10: littlehorse.UserTaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
+	19, // 11: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	20, // 12: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	1,  // 13: littlehorse.TaskDefMetricsId.task_def_id:type_name -> littlehorse.TaskDefId
+	19, // 14: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	20, // 15: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	0,  // 16: littlehorse.WfSpecMetricsId.wf_spec_id:type_name -> littlehorse.WfSpecId
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_object_id_proto_init() }
@@ -1389,7 +1470,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WfRunId); i {
+			switch v := v.(*DataNuggetId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1401,7 +1482,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NodeRunId); i {
+			switch v := v.(*WfRunId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1413,7 +1494,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WorkflowEventId); i {
+			switch v := v.(*NodeRunId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1425,7 +1506,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskRunId); i {
+			switch v := v.(*WorkflowEventId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1437,7 +1518,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserTaskRunId); i {
+			switch v := v.(*TaskRunId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1449,7 +1530,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskDefMetricsId); i {
+			switch v := v.(*UserTaskRunId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1461,7 +1542,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WfSpecMetricsId); i {
+			switch v := v.(*TaskDefMetricsId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1473,7 +1554,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PrincipalId); i {
+			switch v := v.(*WfSpecMetricsId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1485,7 +1566,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TenantId); i {
+			switch v := v.(*PrincipalId); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1497,6 +1578,18 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TenantId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_object_id_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ScheduledWfRunId); i {
 			case 0:
 				return &v.state
@@ -1509,14 +1602,14 @@ func file_object_id_proto_init() {
 			}
 		}
 	}
-	file_object_id_proto_msgTypes[8].OneofWrappers = []interface{}{}
+	file_object_id_proto_msgTypes[9].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_object_id_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

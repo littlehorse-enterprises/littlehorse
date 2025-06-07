@@ -132,16 +132,18 @@ class WaitForThreadsRun(_message.Message):
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ...) -> None: ...
 
 class ExternalEventNodeRun(_message.Message):
-    __slots__ = ["external_event_def_id", "event_time", "external_event_id", "timed_out"]
+    __slots__ = ["external_event_def_id", "event_time", "external_event_id", "timed_out", "correlation_id"]
     EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     EVENT_TIME_FIELD_NUMBER: _ClassVar[int]
     EXTERNAL_EVENT_ID_FIELD_NUMBER: _ClassVar[int]
     TIMED_OUT_FIELD_NUMBER: _ClassVar[int]
+    CORRELATION_ID_FIELD_NUMBER: _ClassVar[int]
     external_event_def_id: _object_id_pb2.ExternalEventDefId
     event_time: _timestamp_pb2.Timestamp
     external_event_id: _object_id_pb2.ExternalEventId
     timed_out: bool
-    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., event_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., timed_out: bool = ...) -> None: ...
+    correlation_id: str
+    def __init__(self, external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., event_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., timed_out: bool = ..., correlation_id: _Optional[str] = ...) -> None: ...
 
 class SleepNodeRun(_message.Message):
     __slots__ = ["maturation_time", "matured"]
