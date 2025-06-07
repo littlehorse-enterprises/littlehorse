@@ -325,6 +325,99 @@ public final class LittleHorseGrpc {
     return getMigrateWfSpecMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutStructDefRequest,
+      io.littlehorse.sdk.common.proto.StructDef> getPutStructDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutStructDef",
+      requestType = io.littlehorse.sdk.common.proto.PutStructDefRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.StructDef.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutStructDefRequest,
+      io.littlehorse.sdk.common.proto.StructDef> getPutStructDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutStructDefRequest, io.littlehorse.sdk.common.proto.StructDef> getPutStructDefMethod;
+    if ((getPutStructDefMethod = LittleHorseGrpc.getPutStructDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutStructDefMethod = LittleHorseGrpc.getPutStructDefMethod) == null) {
+          LittleHorseGrpc.getPutStructDefMethod = getPutStructDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutStructDefRequest, io.littlehorse.sdk.common.proto.StructDef>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutStructDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutStructDef"))
+              .build();
+        }
+      }
+    }
+    return getPutStructDefMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StructDefId,
+      io.littlehorse.sdk.common.proto.StructDef> getGetStructDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetStructDef",
+      requestType = io.littlehorse.sdk.common.proto.StructDefId.class,
+      responseType = io.littlehorse.sdk.common.proto.StructDef.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StructDefId,
+      io.littlehorse.sdk.common.proto.StructDef> getGetStructDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDef> getGetStructDefMethod;
+    if ((getGetStructDefMethod = LittleHorseGrpc.getGetStructDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetStructDefMethod = LittleHorseGrpc.getGetStructDefMethod) == null) {
+          LittleHorseGrpc.getGetStructDefMethod = getGetStructDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDef>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetStructDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetStructDef"))
+              .build();
+        }
+      }
+    }
+    return getGetStructDefMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+      io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ValidateStructDefEvolution",
+      requestType = io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+      io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest, io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod;
+    if ((getValidateStructDefEvolutionMethod = LittleHorseGrpc.getValidateStructDefEvolutionMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getValidateStructDefEvolutionMethod = LittleHorseGrpc.getValidateStructDefEvolutionMethod) == null) {
+          LittleHorseGrpc.getValidateStructDefEvolutionMethod = getValidateStructDefEvolutionMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest, io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ValidateStructDefEvolution"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ValidateStructDefEvolution"))
+              .build();
+        }
+      }
+    }
+    return getValidateStructDefEvolutionMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutUserTaskDefRequest,
       io.littlehorse.sdk.common.proto.UserTaskDef> getPutUserTaskDefMethod;
 
@@ -1906,6 +1999,37 @@ public final class LittleHorseGrpc {
     return getDeleteTaskDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteStructDefRequest,
+      com.google.protobuf.Empty> getDeleteStructDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteStructDef",
+      requestType = io.littlehorse.sdk.common.proto.DeleteStructDefRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteStructDefRequest,
+      com.google.protobuf.Empty> getDeleteStructDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteStructDefRequest, com.google.protobuf.Empty> getDeleteStructDefMethod;
+    if ((getDeleteStructDefMethod = LittleHorseGrpc.getDeleteStructDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteStructDefMethod = LittleHorseGrpc.getDeleteStructDefMethod) == null) {
+          LittleHorseGrpc.getDeleteStructDefMethod = getDeleteStructDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteStructDefRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteStructDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteStructDef"))
+              .build();
+        }
+      }
+    }
+    return getDeleteStructDefMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfSpecRequest,
       com.google.protobuf.Empty> getDeleteWfSpecMethod;
 
@@ -2587,6 +2711,42 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    default void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get a StructDef.
+     * </pre>
+     */
+    default void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    default void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getValidateStructDefEvolutionMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Creates a UserTaskDef.
      * </pre>
      */
@@ -3141,6 +3301,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a StructDef.
+     * </pre>
+     */
+    default void deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -3445,6 +3615,45 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getMigrateWfSpecMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    public void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get a StructDef.
+     * </pre>
+     */
+    public void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4054,6 +4263,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a StructDef.
+     * </pre>
+     */
+    public void deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -4354,6 +4574,42 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfSpec migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getMigrateWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get a StructDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getValidateStructDefEvolutionMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4901,6 +5157,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a StructDef.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -5194,6 +5460,45 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getMigrateWfSpecMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> putStructDef(
+        io.littlehorse.sdk.common.proto.PutStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Get a StructDef.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> getStructDef(
+        io.littlehorse.sdk.common.proto.StructDefId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> validateStructDefEvolution(
+        io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5791,6 +6096,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a StructDef.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteStructDef(
+        io.littlehorse.sdk.common.proto.DeleteStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -5983,74 +6299,78 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_WF_SPEC = 7;
   private static final int METHODID_GET_LATEST_WF_SPEC = 8;
   private static final int METHODID_MIGRATE_WF_SPEC = 9;
-  private static final int METHODID_PUT_USER_TASK_DEF = 10;
-  private static final int METHODID_GET_USER_TASK_DEF = 11;
-  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 12;
-  private static final int METHODID_RUN_WF = 13;
-  private static final int METHODID_SCHEDULE_WF = 14;
-  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 15;
-  private static final int METHODID_GET_SCHEDULED_WF_RUN = 16;
-  private static final int METHODID_GET_WF_RUN = 17;
-  private static final int METHODID_GET_USER_TASK_RUN = 18;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 19;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 20;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 21;
-  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 22;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 23;
-  private static final int METHODID_GET_NODE_RUN = 24;
-  private static final int METHODID_LIST_NODE_RUNS = 25;
-  private static final int METHODID_GET_TASK_RUN = 26;
-  private static final int METHODID_LIST_TASK_RUNS = 27;
-  private static final int METHODID_GET_VARIABLE = 28;
-  private static final int METHODID_LIST_VARIABLES = 29;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 30;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 31;
-  private static final int METHODID_PUT_DATA_NUGGET = 32;
-  private static final int METHODID_GET_DATA_NUGGET = 33;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 34;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 35;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 36;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 37;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 38;
-  private static final int METHODID_SEARCH_WF_RUN = 39;
-  private static final int METHODID_SEARCH_NODE_RUN = 40;
-  private static final int METHODID_SEARCH_TASK_RUN = 41;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 42;
-  private static final int METHODID_SEARCH_VARIABLE = 43;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 44;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 45;
-  private static final int METHODID_SEARCH_TASK_DEF = 46;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 47;
-  private static final int METHODID_SEARCH_WF_SPEC = 48;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 49;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 50;
-  private static final int METHODID_SEARCH_TENANT = 51;
-  private static final int METHODID_SEARCH_PRINCIPAL = 52;
-  private static final int METHODID_REGISTER_TASK_WORKER = 53;
-  private static final int METHODID_REPORT_TASK = 54;
-  private static final int METHODID_STOP_WF_RUN = 55;
-  private static final int METHODID_RESUME_WF_RUN = 56;
-  private static final int METHODID_RESCUE_THREAD_RUN = 57;
-  private static final int METHODID_DELETE_WF_RUN = 58;
-  private static final int METHODID_DELETE_TASK_DEF = 59;
-  private static final int METHODID_DELETE_WF_SPEC = 60;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 61;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 62;
-  private static final int METHODID_DELETE_DATA_NUGGET = 63;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 64;
-  private static final int METHODID_DELETE_PRINCIPAL = 65;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 66;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 67;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 68;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 69;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 70;
-  private static final int METHODID_PUT_TENANT = 71;
-  private static final int METHODID_GET_TENANT = 72;
-  private static final int METHODID_PUT_PRINCIPAL = 73;
-  private static final int METHODID_GET_PRINCIPAL = 74;
-  private static final int METHODID_WHOAMI = 75;
-  private static final int METHODID_GET_SERVER_VERSION = 76;
-  private static final int METHODID_POLL_TASK = 77;
+  private static final int METHODID_PUT_STRUCT_DEF = 10;
+  private static final int METHODID_GET_STRUCT_DEF = 11;
+  private static final int METHODID_VALIDATE_STRUCT_DEF_EVOLUTION = 12;
+  private static final int METHODID_PUT_USER_TASK_DEF = 13;
+  private static final int METHODID_GET_USER_TASK_DEF = 14;
+  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 15;
+  private static final int METHODID_RUN_WF = 16;
+  private static final int METHODID_SCHEDULE_WF = 17;
+  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 18;
+  private static final int METHODID_GET_SCHEDULED_WF_RUN = 19;
+  private static final int METHODID_GET_WF_RUN = 20;
+  private static final int METHODID_GET_USER_TASK_RUN = 21;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 22;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 23;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 24;
+  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 25;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 26;
+  private static final int METHODID_GET_NODE_RUN = 27;
+  private static final int METHODID_LIST_NODE_RUNS = 28;
+  private static final int METHODID_GET_TASK_RUN = 29;
+  private static final int METHODID_LIST_TASK_RUNS = 30;
+  private static final int METHODID_GET_VARIABLE = 31;
+  private static final int METHODID_LIST_VARIABLES = 32;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 33;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 34;
+  private static final int METHODID_PUT_DATA_NUGGET = 35;
+  private static final int METHODID_GET_DATA_NUGGET = 36;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 37;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 38;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 39;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 40;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 41;
+  private static final int METHODID_SEARCH_WF_RUN = 42;
+  private static final int METHODID_SEARCH_NODE_RUN = 43;
+  private static final int METHODID_SEARCH_TASK_RUN = 44;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 45;
+  private static final int METHODID_SEARCH_VARIABLE = 46;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 47;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 48;
+  private static final int METHODID_SEARCH_TASK_DEF = 49;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 50;
+  private static final int METHODID_SEARCH_WF_SPEC = 51;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 52;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 53;
+  private static final int METHODID_SEARCH_TENANT = 54;
+  private static final int METHODID_SEARCH_PRINCIPAL = 55;
+  private static final int METHODID_REGISTER_TASK_WORKER = 56;
+  private static final int METHODID_REPORT_TASK = 57;
+  private static final int METHODID_STOP_WF_RUN = 58;
+  private static final int METHODID_RESUME_WF_RUN = 59;
+  private static final int METHODID_RESCUE_THREAD_RUN = 60;
+  private static final int METHODID_DELETE_WF_RUN = 61;
+  private static final int METHODID_DELETE_TASK_DEF = 62;
+  private static final int METHODID_DELETE_STRUCT_DEF = 63;
+  private static final int METHODID_DELETE_WF_SPEC = 64;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 65;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 66;
+  private static final int METHODID_DELETE_DATA_NUGGET = 67;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 68;
+  private static final int METHODID_DELETE_PRINCIPAL = 69;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 70;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 71;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 72;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 73;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 74;
+  private static final int METHODID_PUT_TENANT = 75;
+  private static final int METHODID_GET_TENANT = 76;
+  private static final int METHODID_PUT_PRINCIPAL = 77;
+  private static final int METHODID_GET_PRINCIPAL = 78;
+  private static final int METHODID_WHOAMI = 79;
+  private static final int METHODID_GET_SERVER_VERSION = 80;
+  private static final int METHODID_POLL_TASK = 81;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6108,6 +6428,18 @@ public final class LittleHorseGrpc {
         case METHODID_MIGRATE_WF_SPEC:
           serviceImpl.migrateWfSpec((io.littlehorse.sdk.common.proto.MigrateWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec>) responseObserver);
+          break;
+        case METHODID_PUT_STRUCT_DEF:
+          serviceImpl.putStructDef((io.littlehorse.sdk.common.proto.PutStructDefRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef>) responseObserver);
+          break;
+        case METHODID_GET_STRUCT_DEF:
+          serviceImpl.getStructDef((io.littlehorse.sdk.common.proto.StructDefId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef>) responseObserver);
+          break;
+        case METHODID_VALIDATE_STRUCT_DEF_EVOLUTION:
+          serviceImpl.validateStructDefEvolution((io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>) responseObserver);
           break;
         case METHODID_PUT_USER_TASK_DEF:
           serviceImpl.putUserTaskDef((io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) request,
@@ -6309,6 +6641,10 @@ public final class LittleHorseGrpc {
           serviceImpl.deleteTaskDef((io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
+        case METHODID_DELETE_STRUCT_DEF:
+          serviceImpl.deleteStructDef((io.littlehorse.sdk.common.proto.DeleteStructDefRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
         case METHODID_DELETE_WF_SPEC:
           serviceImpl.deleteWfSpec((io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
@@ -6468,6 +6804,27 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.MigrateWfSpecRequest,
               io.littlehorse.sdk.common.proto.WfSpec>(
                 service, METHODID_MIGRATE_WF_SPEC)))
+        .addMethod(
+          getPutStructDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutStructDefRequest,
+              io.littlehorse.sdk.common.proto.StructDef>(
+                service, METHODID_PUT_STRUCT_DEF)))
+        .addMethod(
+          getGetStructDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.StructDefId,
+              io.littlehorse.sdk.common.proto.StructDef>(
+                service, METHODID_GET_STRUCT_DEF)))
+        .addMethod(
+          getValidateStructDefEvolutionMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+              io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>(
+                service, METHODID_VALIDATE_STRUCT_DEF_EVOLUTION)))
         .addMethod(
           getPutUserTaskDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6826,6 +7183,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_TASK_DEF)))
         .addMethod(
+          getDeleteStructDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteStructDefRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_STRUCT_DEF)))
+        .addMethod(
           getDeleteWfSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -7002,6 +7366,9 @@ public final class LittleHorseGrpc {
               .addMethod(getGetWfSpecMethod())
               .addMethod(getGetLatestWfSpecMethod())
               .addMethod(getMigrateWfSpecMethod())
+              .addMethod(getPutStructDefMethod())
+              .addMethod(getGetStructDefMethod())
+              .addMethod(getValidateStructDefEvolutionMethod())
               .addMethod(getPutUserTaskDefMethod())
               .addMethod(getGetUserTaskDefMethod())
               .addMethod(getGetLatestUserTaskDefMethod())
@@ -7053,6 +7420,7 @@ public final class LittleHorseGrpc {
               .addMethod(getRescueThreadRunMethod())
               .addMethod(getDeleteWfRunMethod())
               .addMethod(getDeleteTaskDefMethod())
+              .addMethod(getDeleteStructDefMethod())
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
