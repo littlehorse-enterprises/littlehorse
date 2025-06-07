@@ -204,11 +204,6 @@ message ExternalEventNodeRun {
 
   // Whether we had a timeout while waiting for the ExternalEvent to come.
   bool timed_out = 4;
-
-  // Correlation ID for the External Event Node to allow posting events by
-  // correlation (without knowing the WfRunId in advance). If not set,
-  // the ExternalEvent poster must know the WfRunId.
-  optional string correlation_id = 5;
 }
 
 // The sub-node structure for a SLEEP NodeRun.

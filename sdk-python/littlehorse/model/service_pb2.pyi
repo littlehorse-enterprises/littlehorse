@@ -150,31 +150,11 @@ class PutExternalEventRequest(_message.Message):
     node_run_position: int
     def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ...) -> None: ...
 
-class PutDataNuggetRequest(_message.Message):
-    __slots__ = ["key", "external_event_def_id", "guid", "content", "expected_epoch"]
-    KEY_FIELD_NUMBER: _ClassVar[int]
-    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    GUID_FIELD_NUMBER: _ClassVar[int]
-    CONTENT_FIELD_NUMBER: _ClassVar[int]
-    EXPECTED_EPOCH_FIELD_NUMBER: _ClassVar[int]
-    key: str
-    external_event_def_id: _object_id_pb2.ExternalEventDefId
-    guid: str
-    content: _variable_pb2.VariableValue
-    expected_epoch: int
-    def __init__(self, key: _Optional[str] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., expected_epoch: _Optional[int] = ...) -> None: ...
-
 class DeleteExternalEventRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.ExternalEventId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
-
-class DeleteDataNuggetRequest(_message.Message):
-    __slots__ = ["id"]
-    ID_FIELD_NUMBER: _ClassVar[int]
-    id: _object_id_pb2.DataNuggetId
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.DataNuggetId, _Mapping]] = ...) -> None: ...
 
 class DeleteScheduledWfRunRequest(_message.Message):
     __slots__ = ["id"]

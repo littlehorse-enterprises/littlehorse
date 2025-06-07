@@ -55,8 +55,6 @@ const (
 	LittleHorse_ListVariables_FullMethodName              = "/littlehorse.LittleHorse/ListVariables"
 	LittleHorse_PutExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/PutExternalEvent"
 	LittleHorse_GetExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/GetExternalEvent"
-	LittleHorse_PutDataNugget_FullMethodName              = "/littlehorse.LittleHorse/PutDataNugget"
-	LittleHorse_GetDataNugget_FullMethodName              = "/littlehorse.LittleHorse/GetDataNugget"
 	LittleHorse_AwaitWorkflowEvent_FullMethodName         = "/littlehorse.LittleHorse/AwaitWorkflowEvent"
 	LittleHorse_GetWorkflowEventDef_FullMethodName        = "/littlehorse.LittleHorse/GetWorkflowEventDef"
 	LittleHorse_GetWorkflowEvent_FullMethodName           = "/littlehorse.LittleHorse/GetWorkflowEvent"
@@ -88,7 +86,6 @@ const (
 	LittleHorse_DeleteWfSpec_FullMethodName               = "/littlehorse.LittleHorse/DeleteWfSpec"
 	LittleHorse_DeleteUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/DeleteUserTaskDef"
 	LittleHorse_DeleteExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteExternalEventDef"
-	LittleHorse_DeleteDataNugget_FullMethodName           = "/littlehorse.LittleHorse/DeleteDataNugget"
 	LittleHorse_DeleteWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteWorkflowEventDef"
 	LittleHorse_DeletePrincipal_FullMethodName            = "/littlehorse.LittleHorse/DeletePrincipal"
 	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
@@ -211,16 +208,10 @@ type LittleHorseClient interface {
 	GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error)
 	// List all Variables from a WfRun.
 	ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error)
-	// Post an ExternalEvent.
+	// Post an ExternalEvent. This RPC is highly useful for
 	PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*ExternalEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error)
-	// Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
-	// for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
-	// will be created.
-	PutDataNugget(ctx context.Context, in *PutDataNuggetRequest, opts ...grpc.CallOption) (*DataNugget, error)
-	// Get a specific DataNugget.
-	GetDataNugget(ctx context.Context, in *DataNuggetId, opts ...grpc.CallOption) (*DataNugget, error)
 	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
 	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
 	// is not thrown before the deadline specified by the client.
@@ -266,7 +257,7 @@ type LittleHorseClient interface {
 	SearchWorkflowEventDef(ctx context.Context, in *SearchWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
-	// Search for Principals.
+	//
 	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -308,8 +299,6 @@ type LittleHorseClient interface {
 	DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Deletes a DataNugget.
-	DeleteDataNugget(ctx context.Context, in *DeleteDataNuggetRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -661,24 +650,6 @@ func (c *littleHorseClient) GetExternalEvent(ctx context.Context, in *ExternalEv
 	return out, nil
 }
 
-func (c *littleHorseClient) PutDataNugget(ctx context.Context, in *PutDataNuggetRequest, opts ...grpc.CallOption) (*DataNugget, error) {
-	out := new(DataNugget)
-	err := c.cc.Invoke(ctx, LittleHorse_PutDataNugget_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *littleHorseClient) GetDataNugget(ctx context.Context, in *DataNuggetId, opts ...grpc.CallOption) (*DataNugget, error) {
-	out := new(DataNugget)
-	err := c.cc.Invoke(ctx, LittleHorse_GetDataNugget_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *littleHorseClient) AwaitWorkflowEvent(ctx context.Context, in *AwaitWorkflowEventRequest, opts ...grpc.CallOption) (*WorkflowEvent, error) {
 	out := new(WorkflowEvent)
 	err := c.cc.Invoke(ctx, LittleHorse_AwaitWorkflowEvent_FullMethodName, in, out, opts...)
@@ -980,15 +951,6 @@ func (c *littleHorseClient) DeleteExternalEventDef(ctx context.Context, in *Dele
 	return out, nil
 }
 
-func (c *littleHorseClient) DeleteDataNugget(ctx context.Context, in *DeleteDataNuggetRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, LittleHorse_DeleteDataNugget_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *littleHorseClient) DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteWorkflowEventDef_FullMethodName, in, out, opts...)
@@ -1213,16 +1175,10 @@ type LittleHorseServer interface {
 	GetVariable(context.Context, *VariableId) (*Variable, error)
 	// List all Variables from a WfRun.
 	ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error)
-	// Post an ExternalEvent.
+	// Post an ExternalEvent. This RPC is highly useful for
 	PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error)
-	// Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
-	// for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
-	// will be created.
-	PutDataNugget(context.Context, *PutDataNuggetRequest) (*DataNugget, error)
-	// Get a specific DataNugget.
-	GetDataNugget(context.Context, *DataNuggetId) (*DataNugget, error)
 	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
 	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
 	// is not thrown before the deadline specified by the client.
@@ -1268,7 +1224,7 @@ type LittleHorseServer interface {
 	SearchWorkflowEventDef(context.Context, *SearchWorkflowEventDefRequest) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
-	// Search for Principals.
+	//
 	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -1310,8 +1266,6 @@ type LittleHorseServer interface {
 	DeleteUserTaskDef(context.Context, *DeleteUserTaskDefRequest) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
-	// Deletes a DataNugget.
-	DeleteDataNugget(context.Context, *DeleteDataNuggetRequest) (*emptypb.Empty, error)
 	DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -1450,12 +1404,6 @@ func (UnimplementedLittleHorseServer) PutExternalEvent(context.Context, *PutExte
 func (UnimplementedLittleHorseServer) GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExternalEvent not implemented")
 }
-func (UnimplementedLittleHorseServer) PutDataNugget(context.Context, *PutDataNuggetRequest) (*DataNugget, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutDataNugget not implemented")
-}
-func (UnimplementedLittleHorseServer) GetDataNugget(context.Context, *DataNuggetId) (*DataNugget, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDataNugget not implemented")
-}
 func (UnimplementedLittleHorseServer) AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AwaitWorkflowEvent not implemented")
 }
@@ -1548,9 +1496,6 @@ func (UnimplementedLittleHorseServer) DeleteUserTaskDef(context.Context, *Delete
 }
 func (UnimplementedLittleHorseServer) DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExternalEventDef not implemented")
-}
-func (UnimplementedLittleHorseServer) DeleteDataNugget(context.Context, *DeleteDataNuggetRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteDataNugget not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkflowEventDef not implemented")
@@ -2234,42 +2179,6 @@ func _LittleHorse_GetExternalEvent_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_PutDataNugget_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutDataNuggetRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LittleHorseServer).PutDataNugget(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LittleHorse_PutDataNugget_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).PutDataNugget(ctx, req.(*PutDataNuggetRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LittleHorse_GetDataNugget_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataNuggetId)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LittleHorseServer).GetDataNugget(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LittleHorse_GetDataNugget_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).GetDataNugget(ctx, req.(*DataNuggetId))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _LittleHorse_AwaitWorkflowEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AwaitWorkflowEventRequest)
 	if err := dec(in); err != nil {
@@ -2836,24 +2745,6 @@ func _LittleHorse_DeleteExternalEventDef_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_DeleteDataNugget_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteDataNuggetRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LittleHorseServer).DeleteDataNugget(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LittleHorse_DeleteDataNugget_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).DeleteDataNugget(ctx, req.(*DeleteDataNuggetRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _LittleHorse_DeleteWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteWorkflowEventDefRequest)
 	if err := dec(in); err != nil {
@@ -3236,14 +3127,6 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_GetExternalEvent_Handler,
 		},
 		{
-			MethodName: "PutDataNugget",
-			Handler:    _LittleHorse_PutDataNugget_Handler,
-		},
-		{
-			MethodName: "GetDataNugget",
-			Handler:    _LittleHorse_GetDataNugget_Handler,
-		},
-		{
 			MethodName: "AwaitWorkflowEvent",
 			Handler:    _LittleHorse_AwaitWorkflowEvent_Handler,
 		},
@@ -3362,10 +3245,6 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteExternalEventDef",
 			Handler:    _LittleHorse_DeleteExternalEventDef_Handler,
-		},
-		{
-			MethodName: "DeleteDataNugget",
-			Handler:    _LittleHorse_DeleteDataNugget_Handler,
 		},
 		{
 			MethodName: "DeleteWorkflowEventDef",

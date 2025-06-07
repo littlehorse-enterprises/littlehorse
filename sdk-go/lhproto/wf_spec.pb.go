@@ -1039,9 +1039,6 @@ type ExternalEventNode struct {
 	// Determines the maximum amount of time that the NodeRun will wait for the
 	// ExternalEvent to arrive.
 	TimeoutSeconds *VariableAssignment `protobuf:"bytes,2,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
-	// If set, then the `ExternalEventNode` will have correlations enabled, so you can
-	// put an `ExternalEvent` with a correlation id and the `WfRun` will be matched.
-	CorrelationId *VariableAssignment `protobuf:"bytes,3,opt,name=correlation_id,json=correlationId,proto3,oneof" json:"correlation_id,omitempty"`
 }
 
 func (x *ExternalEventNode) Reset() {
@@ -1086,13 +1083,6 @@ func (x *ExternalEventNode) GetExternalEventDefId() *ExternalEventDefId {
 func (x *ExternalEventNode) GetTimeoutSeconds() *VariableAssignment {
 	if x != nil {
 		return x.TimeoutSeconds
-	}
-	return nil
-}
-
-func (x *ExternalEventNode) GetCorrelationId() *VariableAssignment {
-	if x != nil {
-		return x.CorrelationId
 	}
 	return nil
 }
@@ -2565,7 +2555,7 @@ var file_wf_spec_proto_rawDesc = []byte{
 	0x64, 0x73, 0x4e, 0x6f, 0x64, 0x65, 0x2e, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x54, 0x6f, 0x57,
 	0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x52, 0x07, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x42,
 	0x15, 0x0a, 0x13, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x5f, 0x74, 0x6f, 0x5f, 0x77, 0x61,
-	0x69, 0x74, 0x5f, 0x66, 0x6f, 0x72, 0x22, 0x91, 0x02, 0x0a, 0x11, 0x45, 0x78, 0x74, 0x65, 0x72,
+	0x69, 0x74, 0x5f, 0x66, 0x6f, 0x72, 0x22, 0xb1, 0x01, 0x0a, 0x11, 0x45, 0x78, 0x74, 0x65, 0x72,
 	0x6e, 0x61, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x12, 0x52, 0x0a, 0x15,
 	0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x5f, 0x64,
 	0x65, 0x66, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69,
@@ -2576,13 +2566,7 @@ var file_wf_spec_proto_rawDesc = []byte{
 	0x6e, 0x64, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74,
 	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65,
 	0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x0e, 0x74, 0x69, 0x6d, 0x65,
-	0x6f, 0x75, 0x74, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x12, 0x4b, 0x0a, 0x0e, 0x63, 0x6f,
-	0x72, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
-	0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d,
-	0x65, 0x6e, 0x74, 0x48, 0x00, 0x52, 0x0d, 0x63, 0x6f, 0x72, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x49, 0x64, 0x88, 0x01, 0x01, 0x42, 0x11, 0x0a, 0x0f, 0x5f, 0x63, 0x6f, 0x72, 0x72,
-	0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x22, 0x10, 0x0a, 0x0e, 0x45, 0x6e,
+	0x6f, 0x75, 0x74, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x22, 0x10, 0x0a, 0x0e, 0x45, 0x6e,
 	0x74, 0x72, 0x79, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x22, 0x59, 0x0a, 0x08,
 	0x45, 0x78, 0x69, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x12, 0x3d, 0x0a, 0x0b, 0x66, 0x61, 0x69, 0x6c,
 	0x75, 0x72, 0x65, 0x5f, 0x64, 0x65, 0x66, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e,
@@ -2890,54 +2874,53 @@ var file_wf_spec_proto_depIdxs = []int32{
 	11, // 23: littlehorse.WaitForThreadsNode.per_thread_failure_handlers:type_name -> littlehorse.FailureHandlerDef
 	42, // 24: littlehorse.ExternalEventNode.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
 	43, // 25: littlehorse.ExternalEventNode.timeout_seconds:type_name -> littlehorse.VariableAssignment
-	43, // 26: littlehorse.ExternalEventNode.correlation_id:type_name -> littlehorse.VariableAssignment
-	16, // 27: littlehorse.ExitNode.failure_def:type_name -> littlehorse.FailureDef
-	43, // 28: littlehorse.FailureDef.content:type_name -> littlehorse.VariableAssignment
-	22, // 29: littlehorse.Node.outgoing_edges:type_name -> littlehorse.Edge
-	11, // 30: littlehorse.Node.failure_handlers:type_name -> littlehorse.FailureHandlerDef
-	14, // 31: littlehorse.Node.entrypoint:type_name -> littlehorse.EntrypointNode
-	15, // 32: littlehorse.Node.exit:type_name -> littlehorse.ExitNode
-	44, // 33: littlehorse.Node.task:type_name -> littlehorse.TaskNode
-	13, // 34: littlehorse.Node.external_event:type_name -> littlehorse.ExternalEventNode
-	9,  // 35: littlehorse.Node.start_thread:type_name -> littlehorse.StartThreadNode
-	12, // 36: littlehorse.Node.wait_for_threads:type_name -> littlehorse.WaitForThreadsNode
-	23, // 37: littlehorse.Node.nop:type_name -> littlehorse.NopNode
-	24, // 38: littlehorse.Node.sleep:type_name -> littlehorse.SleepNode
-	20, // 39: littlehorse.Node.user_task:type_name -> littlehorse.UserTaskNode
-	10, // 40: littlehorse.Node.start_multiple_threads:type_name -> littlehorse.StartMultipleThreadsNode
-	19, // 41: littlehorse.Node.throw_event:type_name -> littlehorse.ThrowEventNode
-	18, // 42: littlehorse.Node.wait_for_condition:type_name -> littlehorse.WaitForConditionNode
-	21, // 43: littlehorse.WaitForConditionNode.condition:type_name -> littlehorse.EdgeCondition
-	45, // 44: littlehorse.ThrowEventNode.event_def_id:type_name -> littlehorse.WorkflowEventDefId
-	43, // 45: littlehorse.ThrowEventNode.content:type_name -> littlehorse.VariableAssignment
-	43, // 46: littlehorse.UserTaskNode.user_group:type_name -> littlehorse.VariableAssignment
-	43, // 47: littlehorse.UserTaskNode.user_id:type_name -> littlehorse.VariableAssignment
-	46, // 48: littlehorse.UserTaskNode.actions:type_name -> littlehorse.UTActionTrigger
-	43, // 49: littlehorse.UserTaskNode.notes:type_name -> littlehorse.VariableAssignment
-	43, // 50: littlehorse.UserTaskNode.on_cancellation_exception_name:type_name -> littlehorse.VariableAssignment
-	47, // 51: littlehorse.EdgeCondition.comparator:type_name -> littlehorse.Comparator
-	43, // 52: littlehorse.EdgeCondition.left:type_name -> littlehorse.VariableAssignment
-	43, // 53: littlehorse.EdgeCondition.right:type_name -> littlehorse.VariableAssignment
-	21, // 54: littlehorse.Edge.condition:type_name -> littlehorse.EdgeCondition
-	48, // 55: littlehorse.Edge.variable_mutations:type_name -> littlehorse.VariableMutation
-	43, // 56: littlehorse.SleepNode.raw_seconds:type_name -> littlehorse.VariableAssignment
-	43, // 57: littlehorse.SleepNode.timestamp:type_name -> littlehorse.VariableAssignment
-	43, // 58: littlehorse.SleepNode.iso_date:type_name -> littlehorse.VariableAssignment
-	35, // 59: littlehorse.WfSpecVersionMigration.thread_spec_migrations:type_name -> littlehorse.WfSpecVersionMigration.ThreadSpecMigrationsEntry
-	36, // 60: littlehorse.ThreadSpecMigration.node_migrations:type_name -> littlehorse.ThreadSpecMigration.NodeMigrationsEntry
-	6,  // 61: littlehorse.WfSpec.ThreadSpecsEntry.value:type_name -> littlehorse.ThreadSpec
-	17, // 62: littlehorse.ThreadSpec.NodesEntry.value:type_name -> littlehorse.Node
-	43, // 63: littlehorse.StartThreadNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
-	43, // 64: littlehorse.StartMultipleThreadsNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
-	43, // 65: littlehorse.WaitForThreadsNode.ThreadToWaitFor.thread_run_number:type_name -> littlehorse.VariableAssignment
-	33, // 66: littlehorse.WaitForThreadsNode.ThreadsToWaitFor.threads:type_name -> littlehorse.WaitForThreadsNode.ThreadToWaitFor
-	26, // 67: littlehorse.WfSpecVersionMigration.ThreadSpecMigrationsEntry.value:type_name -> littlehorse.ThreadSpecMigration
-	27, // 68: littlehorse.ThreadSpecMigration.NodeMigrationsEntry.value:type_name -> littlehorse.NodeMigration
-	69, // [69:69] is the sub-list for method output_type
-	69, // [69:69] is the sub-list for method input_type
-	69, // [69:69] is the sub-list for extension type_name
-	69, // [69:69] is the sub-list for extension extendee
-	0,  // [0:69] is the sub-list for field type_name
+	16, // 26: littlehorse.ExitNode.failure_def:type_name -> littlehorse.FailureDef
+	43, // 27: littlehorse.FailureDef.content:type_name -> littlehorse.VariableAssignment
+	22, // 28: littlehorse.Node.outgoing_edges:type_name -> littlehorse.Edge
+	11, // 29: littlehorse.Node.failure_handlers:type_name -> littlehorse.FailureHandlerDef
+	14, // 30: littlehorse.Node.entrypoint:type_name -> littlehorse.EntrypointNode
+	15, // 31: littlehorse.Node.exit:type_name -> littlehorse.ExitNode
+	44, // 32: littlehorse.Node.task:type_name -> littlehorse.TaskNode
+	13, // 33: littlehorse.Node.external_event:type_name -> littlehorse.ExternalEventNode
+	9,  // 34: littlehorse.Node.start_thread:type_name -> littlehorse.StartThreadNode
+	12, // 35: littlehorse.Node.wait_for_threads:type_name -> littlehorse.WaitForThreadsNode
+	23, // 36: littlehorse.Node.nop:type_name -> littlehorse.NopNode
+	24, // 37: littlehorse.Node.sleep:type_name -> littlehorse.SleepNode
+	20, // 38: littlehorse.Node.user_task:type_name -> littlehorse.UserTaskNode
+	10, // 39: littlehorse.Node.start_multiple_threads:type_name -> littlehorse.StartMultipleThreadsNode
+	19, // 40: littlehorse.Node.throw_event:type_name -> littlehorse.ThrowEventNode
+	18, // 41: littlehorse.Node.wait_for_condition:type_name -> littlehorse.WaitForConditionNode
+	21, // 42: littlehorse.WaitForConditionNode.condition:type_name -> littlehorse.EdgeCondition
+	45, // 43: littlehorse.ThrowEventNode.event_def_id:type_name -> littlehorse.WorkflowEventDefId
+	43, // 44: littlehorse.ThrowEventNode.content:type_name -> littlehorse.VariableAssignment
+	43, // 45: littlehorse.UserTaskNode.user_group:type_name -> littlehorse.VariableAssignment
+	43, // 46: littlehorse.UserTaskNode.user_id:type_name -> littlehorse.VariableAssignment
+	46, // 47: littlehorse.UserTaskNode.actions:type_name -> littlehorse.UTActionTrigger
+	43, // 48: littlehorse.UserTaskNode.notes:type_name -> littlehorse.VariableAssignment
+	43, // 49: littlehorse.UserTaskNode.on_cancellation_exception_name:type_name -> littlehorse.VariableAssignment
+	47, // 50: littlehorse.EdgeCondition.comparator:type_name -> littlehorse.Comparator
+	43, // 51: littlehorse.EdgeCondition.left:type_name -> littlehorse.VariableAssignment
+	43, // 52: littlehorse.EdgeCondition.right:type_name -> littlehorse.VariableAssignment
+	21, // 53: littlehorse.Edge.condition:type_name -> littlehorse.EdgeCondition
+	48, // 54: littlehorse.Edge.variable_mutations:type_name -> littlehorse.VariableMutation
+	43, // 55: littlehorse.SleepNode.raw_seconds:type_name -> littlehorse.VariableAssignment
+	43, // 56: littlehorse.SleepNode.timestamp:type_name -> littlehorse.VariableAssignment
+	43, // 57: littlehorse.SleepNode.iso_date:type_name -> littlehorse.VariableAssignment
+	35, // 58: littlehorse.WfSpecVersionMigration.thread_spec_migrations:type_name -> littlehorse.WfSpecVersionMigration.ThreadSpecMigrationsEntry
+	36, // 59: littlehorse.ThreadSpecMigration.node_migrations:type_name -> littlehorse.ThreadSpecMigration.NodeMigrationsEntry
+	6,  // 60: littlehorse.WfSpec.ThreadSpecsEntry.value:type_name -> littlehorse.ThreadSpec
+	17, // 61: littlehorse.ThreadSpec.NodesEntry.value:type_name -> littlehorse.Node
+	43, // 62: littlehorse.StartThreadNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
+	43, // 63: littlehorse.StartMultipleThreadsNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
+	43, // 64: littlehorse.WaitForThreadsNode.ThreadToWaitFor.thread_run_number:type_name -> littlehorse.VariableAssignment
+	33, // 65: littlehorse.WaitForThreadsNode.ThreadsToWaitFor.threads:type_name -> littlehorse.WaitForThreadsNode.ThreadToWaitFor
+	26, // 66: littlehorse.WfSpecVersionMigration.ThreadSpecMigrationsEntry.value:type_name -> littlehorse.ThreadSpecMigration
+	27, // 67: littlehorse.ThreadSpecMigration.NodeMigrationsEntry.value:type_name -> littlehorse.NodeMigration
+	68, // [68:68] is the sub-list for method output_type
+	68, // [68:68] is the sub-list for method input_type
+	68, // [68:68] is the sub-list for extension type_name
+	68, // [68:68] is the sub-list for extension extendee
+	0,  // [0:68] is the sub-list for field type_name
 }
 
 func init() { file_wf_spec_proto_init() }
@@ -3314,7 +3297,6 @@ func file_wf_spec_proto_init() {
 		(*WaitForThreadsNode_Threads)(nil),
 		(*WaitForThreadsNode_ThreadList)(nil),
 	}
-	file_wf_spec_proto_msgTypes[11].OneofWrappers = []interface{}{}
 	file_wf_spec_proto_msgTypes[13].OneofWrappers = []interface{}{}
 	file_wf_spec_proto_msgTypes[14].OneofWrappers = []interface{}{}
 	file_wf_spec_proto_msgTypes[15].OneofWrappers = []interface{}{

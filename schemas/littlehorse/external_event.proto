@@ -64,44 +64,6 @@ message ExternalEventDef {
   // a specified type_information, we do not validate the WfSpec's usage of the ExternalEvent
   // nor do we validate the type of `content` in the `rpc PutExternalEvent`.
   optional ReturnType type_information = 4;
-
-  // If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-  // type.
-  optional DataNuggetConfig data_nugget_config = 5;
-}
-
-// Configures behavior of `DataNugget`s created for a specific `ExternalEventDef`.
-message DataNuggetConfig {
-  // If ttl_seconds is set, then `DataNugget`s will be automatically
-  // cleaned up based on the provided ttl.
-  optional int64 ttl_seconds = 1;
-
-  // If true, delete the `DataNugget` after the first `ExternalEvent` is created.
-  // Also, if set, it is implied that only one `WfRun` can ever be correlated
-  // to this `DataNugget`.
-  bool delete_after_first_correlation = 2;
-}
-
-// A DataNugget is a piece of data that has been posted into LittleHorse but is not
-// yet associated with any specific `WfRun`. This allows users to indirectly create
-// `ExternalEvent`s without knowing the `WfRunId` that they are posting the
-// `ExternalEvent` to by taking advantage of the correlation id feature of a
-// `DataNugget`.
-//
-// DataNuggets also serve as a way to simply store data in LittleHorse.
-message DataNugget {
-  // The ID of the DataNugget
-  DataNuggetId id = 1;
-
-  // The time at which the `DataNugget` was created.
-  google.protobuf.Timestamp created_at = 2;
-
-  // The content of the `DataNugget`.
-  VariableValue content = 3;
-
-  // The epoch represents the number of times that the `DataNugget` has been
-  // modified.
-  int32 epoch = 4;
 }
 
 // Policy to determine how long an ExternalEvent is retained after creation if it

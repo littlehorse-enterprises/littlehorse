@@ -422,14 +422,7 @@ export interface ExternalEventNode {
    * Determines the maximum amount of time that the NodeRun will wait for the
    * ExternalEvent to arrive.
    */
-  timeoutSeconds:
-    | VariableAssignment
-    | undefined;
-  /**
-   * If set, then the `ExternalEventNode` will have correlations enabled, so you can
-   * put an `ExternalEvent` with a correlation id and the `WfRun` will be matched.
-   */
-  correlationId?: VariableAssignment | undefined;
+  timeoutSeconds: VariableAssignment | undefined;
 }
 
 /**
@@ -1904,7 +1897,7 @@ export const WaitForThreadsNode_ThreadsToWaitFor = {
 };
 
 function createBaseExternalEventNode(): ExternalEventNode {
-  return { externalEventDefId: undefined, timeoutSeconds: undefined, correlationId: undefined };
+  return { externalEventDefId: undefined, timeoutSeconds: undefined };
 }
 
 export const ExternalEventNode = {
@@ -1914,9 +1907,6 @@ export const ExternalEventNode = {
     }
     if (message.timeoutSeconds !== undefined) {
       VariableAssignment.encode(message.timeoutSeconds, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.correlationId !== undefined) {
-      VariableAssignment.encode(message.correlationId, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1942,13 +1932,6 @@ export const ExternalEventNode = {
 
           message.timeoutSeconds = VariableAssignment.decode(reader, reader.uint32());
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.correlationId = VariableAssignment.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1968,9 +1951,6 @@ export const ExternalEventNode = {
       : undefined;
     message.timeoutSeconds = (object.timeoutSeconds !== undefined && object.timeoutSeconds !== null)
       ? VariableAssignment.fromPartial(object.timeoutSeconds)
-      : undefined;
-    message.correlationId = (object.correlationId !== undefined && object.correlationId !== null)
-      ? VariableAssignment.fromPartial(object.correlationId)
       : undefined;
     return message;
   },

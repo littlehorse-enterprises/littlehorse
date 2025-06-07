@@ -25,38 +25,16 @@ class ExternalEvent(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ..., claimed: bool = ...) -> None: ...
 
 class ExternalEventDef(_message.Message):
-    __slots__ = ["id", "created_at", "retention_policy", "type_information", "data_nugget_config"]
+    __slots__ = ["id", "created_at", "retention_policy", "type_information"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     TYPE_INFORMATION_FIELD_NUMBER: _ClassVar[int]
-    DATA_NUGGET_CONFIG_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.ExternalEventDefId
     created_at: _timestamp_pb2.Timestamp
     retention_policy: ExternalEventRetentionPolicy
     type_information: _common_wfspec_pb2.ReturnType
-    data_nugget_config: DataNuggetConfig
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., retention_policy: _Optional[_Union[ExternalEventRetentionPolicy, _Mapping]] = ..., type_information: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., data_nugget_config: _Optional[_Union[DataNuggetConfig, _Mapping]] = ...) -> None: ...
-
-class DataNuggetConfig(_message.Message):
-    __slots__ = ["ttl_seconds", "delete_after_first_correlation"]
-    TTL_SECONDS_FIELD_NUMBER: _ClassVar[int]
-    DELETE_AFTER_FIRST_CORRELATION_FIELD_NUMBER: _ClassVar[int]
-    ttl_seconds: int
-    delete_after_first_correlation: bool
-    def __init__(self, ttl_seconds: _Optional[int] = ..., delete_after_first_correlation: bool = ...) -> None: ...
-
-class DataNugget(_message.Message):
-    __slots__ = ["id", "created_at", "content", "epoch"]
-    ID_FIELD_NUMBER: _ClassVar[int]
-    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    CONTENT_FIELD_NUMBER: _ClassVar[int]
-    EPOCH_FIELD_NUMBER: _ClassVar[int]
-    id: _object_id_pb2.DataNuggetId
-    created_at: _timestamp_pb2.Timestamp
-    content: _variable_pb2.VariableValue
-    epoch: int
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.DataNuggetId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., epoch: _Optional[int] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., retention_policy: _Optional[_Union[ExternalEventRetentionPolicy, _Mapping]] = ..., type_information: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class ExternalEventRetentionPolicy(_message.Message):
     __slots__ = ["seconds_after_put"]

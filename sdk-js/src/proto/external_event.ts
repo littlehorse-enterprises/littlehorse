@@ -9,7 +9,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ReturnType } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { DataNuggetId, ExternalEventDefId, ExternalEventId } from "./object_id";
+import { ExternalEventDefId, ExternalEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /**
@@ -83,60 +83,7 @@ export interface ExternalEventDef {
    * a specified type_information, we do not validate the WfSpec's usage of the ExternalEvent
    * nor do we validate the type of `content` in the `rpc PutExternalEvent`.
    */
-  typeInformation?:
-    | ReturnType
-    | undefined;
-  /**
-   * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-   * type.
-   */
-  dataNuggetConfig?: DataNuggetConfig | undefined;
-}
-
-/** Configures behavior of `DataNugget`s created for a specific `ExternalEventDef`. */
-export interface DataNuggetConfig {
-  /**
-   * If ttl_seconds is set, then `DataNugget`s will be automatically
-   * cleaned up based on the provided ttl.
-   */
-  ttlSeconds?:
-    | number
-    | undefined;
-  /**
-   * If true, delete the `DataNugget` after the first `ExternalEvent` is created.
-   * Also, if set, it is implied that only one `WfRun` can ever be correlated
-   * to this `DataNugget`.
-   */
-  deleteAfterFirstCorrelation: boolean;
-}
-
-/**
- * A DataNugget is a piece of data that has been posted into LittleHorse but is not
- * yet associated with any specific `WfRun`. This allows users to indirectly create
- * `ExternalEvent`s without knowing the `WfRunId` that they are posting the
- * `ExternalEvent` to by taking advantage of the correlation id feature of a
- * `DataNugget`.
- *
- * DataNuggets also serve as a way to simply store data in LittleHorse.
- */
-export interface DataNugget {
-  /** The ID of the DataNugget */
-  id:
-    | DataNuggetId
-    | undefined;
-  /** The time at which the `DataNugget` was created. */
-  createdAt:
-    | string
-    | undefined;
-  /** The content of the `DataNugget`. */
-  content:
-    | VariableValue
-    | undefined;
-  /**
-   * The epoch represents the number of times that the `DataNugget` has been
-   * modified.
-   */
-  epoch: number;
+  typeInformation?: ReturnType | undefined;
 }
 
 /**
@@ -267,13 +214,7 @@ export const ExternalEvent = {
 };
 
 function createBaseExternalEventDef(): ExternalEventDef {
-  return {
-    id: undefined,
-    createdAt: undefined,
-    retentionPolicy: undefined,
-    typeInformation: undefined,
-    dataNuggetConfig: undefined,
-  };
+  return { id: undefined, createdAt: undefined, retentionPolicy: undefined, typeInformation: undefined };
 }
 
 export const ExternalEventDef = {
@@ -289,9 +230,6 @@ export const ExternalEventDef = {
     }
     if (message.typeInformation !== undefined) {
       ReturnType.encode(message.typeInformation, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.dataNuggetConfig !== undefined) {
-      DataNuggetConfig.encode(message.dataNuggetConfig, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -331,13 +269,6 @@ export const ExternalEventDef = {
 
           message.typeInformation = ReturnType.decode(reader, reader.uint32());
           continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.dataNuggetConfig = DataNuggetConfig.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -362,145 +293,6 @@ export const ExternalEventDef = {
     message.typeInformation = (object.typeInformation !== undefined && object.typeInformation !== null)
       ? ReturnType.fromPartial(object.typeInformation)
       : undefined;
-    message.dataNuggetConfig = (object.dataNuggetConfig !== undefined && object.dataNuggetConfig !== null)
-      ? DataNuggetConfig.fromPartial(object.dataNuggetConfig)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseDataNuggetConfig(): DataNuggetConfig {
-  return { ttlSeconds: undefined, deleteAfterFirstCorrelation: false };
-}
-
-export const DataNuggetConfig = {
-  encode(message: DataNuggetConfig, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.ttlSeconds !== undefined) {
-      writer.uint32(8).int64(message.ttlSeconds);
-    }
-    if (message.deleteAfterFirstCorrelation !== false) {
-      writer.uint32(16).bool(message.deleteAfterFirstCorrelation);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DataNuggetConfig {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDataNuggetConfig();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.ttlSeconds = longToNumber(reader.int64() as Long);
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.deleteAfterFirstCorrelation = reader.bool();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<DataNuggetConfig>): DataNuggetConfig {
-    return DataNuggetConfig.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<DataNuggetConfig>): DataNuggetConfig {
-    const message = createBaseDataNuggetConfig();
-    message.ttlSeconds = object.ttlSeconds ?? undefined;
-    message.deleteAfterFirstCorrelation = object.deleteAfterFirstCorrelation ?? false;
-    return message;
-  },
-};
-
-function createBaseDataNugget(): DataNugget {
-  return { id: undefined, createdAt: undefined, content: undefined, epoch: 0 };
-}
-
-export const DataNugget = {
-  encode(message: DataNugget, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== undefined) {
-      DataNuggetId.encode(message.id, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.createdAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.content !== undefined) {
-      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.epoch !== 0) {
-      writer.uint32(32).int32(message.epoch);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DataNugget {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDataNugget();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = DataNuggetId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.content = VariableValue.decode(reader, reader.uint32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.epoch = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<DataNugget>): DataNugget {
-    return DataNugget.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<DataNugget>): DataNugget {
-    const message = createBaseDataNugget();
-    message.id = (object.id !== undefined && object.id !== null) ? DataNuggetId.fromPartial(object.id) : undefined;
-    message.createdAt = object.createdAt ?? undefined;
-    message.content = (object.content !== undefined && object.content !== null)
-      ? VariableValue.fromPartial(object.content)
-      : undefined;
-    message.epoch = object.epoch ?? 0;
     return message;
   },
 };

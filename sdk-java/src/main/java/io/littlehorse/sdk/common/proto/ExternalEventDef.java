@@ -213,47 +213,6 @@ private static final long serialVersionUID = 0L;
     return typeInformation_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : typeInformation_;
   }
 
-  public static final int DATA_NUGGET_CONFIG_FIELD_NUMBER = 5;
-  private io.littlehorse.sdk.common.proto.DataNuggetConfig dataNuggetConfig_;
-  /**
-   * <pre>
-   * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-   * type.
-   * </pre>
-   *
-   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-   * @return Whether the dataNuggetConfig field is set.
-   */
-  @java.lang.Override
-  public boolean hasDataNuggetConfig() {
-    return ((bitField0_ & 0x00000002) != 0);
-  }
-  /**
-   * <pre>
-   * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-   * type.
-   * </pre>
-   *
-   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-   * @return The dataNuggetConfig.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DataNuggetConfig getDataNuggetConfig() {
-    return dataNuggetConfig_ == null ? io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
-  }
-  /**
-   * <pre>
-   * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-   * type.
-   * </pre>
-   *
-   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder getDataNuggetConfigOrBuilder() {
-    return dataNuggetConfig_ == null ? io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -280,9 +239,6 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(4, getTypeInformation());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(5, getDataNuggetConfig());
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -307,10 +263,6 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getTypeInformation());
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, getDataNuggetConfig());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -347,11 +299,6 @@ private static final long serialVersionUID = 0L;
       if (!getTypeInformation()
           .equals(other.getTypeInformation())) return false;
     }
-    if (hasDataNuggetConfig() != other.hasDataNuggetConfig()) return false;
-    if (hasDataNuggetConfig()) {
-      if (!getDataNuggetConfig()
-          .equals(other.getDataNuggetConfig())) return false;
-    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -378,10 +325,6 @@ private static final long serialVersionUID = 0L;
     if (hasTypeInformation()) {
       hash = (37 * hash) + TYPE_INFORMATION_FIELD_NUMBER;
       hash = (53 * hash) + getTypeInformation().hashCode();
-    }
-    if (hasDataNuggetConfig()) {
-      hash = (37 * hash) + DATA_NUGGET_CONFIG_FIELD_NUMBER;
-      hash = (53 * hash) + getDataNuggetConfig().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -521,7 +464,6 @@ private static final long serialVersionUID = 0L;
         getCreatedAtFieldBuilder();
         getRetentionPolicyFieldBuilder();
         getTypeInformationFieldBuilder();
-        getDataNuggetConfigFieldBuilder();
       }
     }
     @java.lang.Override
@@ -547,11 +489,6 @@ private static final long serialVersionUID = 0L;
       if (typeInformationBuilder_ != null) {
         typeInformationBuilder_.dispose();
         typeInformationBuilder_ = null;
-      }
-      dataNuggetConfig_ = null;
-      if (dataNuggetConfigBuilder_ != null) {
-        dataNuggetConfigBuilder_.dispose();
-        dataNuggetConfigBuilder_ = null;
       }
       return this;
     }
@@ -607,12 +544,6 @@ private static final long serialVersionUID = 0L;
             ? typeInformation_
             : typeInformationBuilder_.build();
         to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.dataNuggetConfig_ = dataNuggetConfigBuilder_ == null
-            ? dataNuggetConfig_
-            : dataNuggetConfigBuilder_.build();
-        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -673,9 +604,6 @@ private static final long serialVersionUID = 0L;
       if (other.hasTypeInformation()) {
         mergeTypeInformation(other.getTypeInformation());
       }
-      if (other.hasDataNuggetConfig()) {
-        mergeDataNuggetConfig(other.getDataNuggetConfig());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -730,13 +658,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              input.readMessage(
-                  getDataNuggetConfigFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1426,170 +1347,6 @@ private static final long serialVersionUID = 0L;
         typeInformation_ = null;
       }
       return typeInformationBuilder_;
-    }
-
-    private io.littlehorse.sdk.common.proto.DataNuggetConfig dataNuggetConfig_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DataNuggetConfig, io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder, io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder> dataNuggetConfigBuilder_;
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     * @return Whether the dataNuggetConfig field is set.
-     */
-    public boolean hasDataNuggetConfig() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     * @return The dataNuggetConfig.
-     */
-    public io.littlehorse.sdk.common.proto.DataNuggetConfig getDataNuggetConfig() {
-      if (dataNuggetConfigBuilder_ == null) {
-        return dataNuggetConfig_ == null ? io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
-      } else {
-        return dataNuggetConfigBuilder_.getMessage();
-      }
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     */
-    public Builder setDataNuggetConfig(io.littlehorse.sdk.common.proto.DataNuggetConfig value) {
-      if (dataNuggetConfigBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        dataNuggetConfig_ = value;
-      } else {
-        dataNuggetConfigBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     */
-    public Builder setDataNuggetConfig(
-        io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder builderForValue) {
-      if (dataNuggetConfigBuilder_ == null) {
-        dataNuggetConfig_ = builderForValue.build();
-      } else {
-        dataNuggetConfigBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     */
-    public Builder mergeDataNuggetConfig(io.littlehorse.sdk.common.proto.DataNuggetConfig value) {
-      if (dataNuggetConfigBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
-          dataNuggetConfig_ != null &&
-          dataNuggetConfig_ != io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance()) {
-          getDataNuggetConfigBuilder().mergeFrom(value);
-        } else {
-          dataNuggetConfig_ = value;
-        }
-      } else {
-        dataNuggetConfigBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     */
-    public Builder clearDataNuggetConfig() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      dataNuggetConfig_ = null;
-      if (dataNuggetConfigBuilder_ != null) {
-        dataNuggetConfigBuilder_.dispose();
-        dataNuggetConfigBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     */
-    public io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder getDataNuggetConfigBuilder() {
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return getDataNuggetConfigFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     */
-    public io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder getDataNuggetConfigOrBuilder() {
-      if (dataNuggetConfigBuilder_ != null) {
-        return dataNuggetConfigBuilder_.getMessageOrBuilder();
-      } else {
-        return dataNuggetConfig_ == null ?
-            io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
-      }
-    }
-    /**
-     * <pre>
-     * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
-     * type.
-     * </pre>
-     *
-     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DataNuggetConfig, io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder, io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder> 
-        getDataNuggetConfigFieldBuilder() {
-      if (dataNuggetConfigBuilder_ == null) {
-        dataNuggetConfigBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DataNuggetConfig, io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder, io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder>(
-                getDataNuggetConfig(),
-                getParentForChildren(),
-                isClean());
-        dataNuggetConfig_ = null;
-      }
-      return dataNuggetConfigBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

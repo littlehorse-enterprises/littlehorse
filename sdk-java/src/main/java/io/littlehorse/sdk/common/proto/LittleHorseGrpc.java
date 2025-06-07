@@ -1100,68 +1100,6 @@ public final class LittleHorseGrpc {
     return getGetExternalEventMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutDataNuggetRequest,
-      io.littlehorse.sdk.common.proto.DataNugget> getPutDataNuggetMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "PutDataNugget",
-      requestType = io.littlehorse.sdk.common.proto.PutDataNuggetRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.DataNugget.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutDataNuggetRequest,
-      io.littlehorse.sdk.common.proto.DataNugget> getPutDataNuggetMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutDataNuggetRequest, io.littlehorse.sdk.common.proto.DataNugget> getPutDataNuggetMethod;
-    if ((getPutDataNuggetMethod = LittleHorseGrpc.getPutDataNuggetMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getPutDataNuggetMethod = LittleHorseGrpc.getPutDataNuggetMethod) == null) {
-          LittleHorseGrpc.getPutDataNuggetMethod = getPutDataNuggetMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutDataNuggetRequest, io.littlehorse.sdk.common.proto.DataNugget>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutDataNugget"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.PutDataNuggetRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.DataNugget.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutDataNugget"))
-              .build();
-        }
-      }
-    }
-    return getPutDataNuggetMethod;
-  }
-
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DataNuggetId,
-      io.littlehorse.sdk.common.proto.DataNugget> getGetDataNuggetMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "GetDataNugget",
-      requestType = io.littlehorse.sdk.common.proto.DataNuggetId.class,
-      responseType = io.littlehorse.sdk.common.proto.DataNugget.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DataNuggetId,
-      io.littlehorse.sdk.common.proto.DataNugget> getGetDataNuggetMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DataNuggetId, io.littlehorse.sdk.common.proto.DataNugget> getGetDataNuggetMethod;
-    if ((getGetDataNuggetMethod = LittleHorseGrpc.getGetDataNuggetMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getGetDataNuggetMethod = LittleHorseGrpc.getGetDataNuggetMethod) == null) {
-          LittleHorseGrpc.getGetDataNuggetMethod = getGetDataNuggetMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DataNuggetId, io.littlehorse.sdk.common.proto.DataNugget>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetDataNugget"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.DataNuggetId.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.DataNugget.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetDataNugget"))
-              .build();
-        }
-      }
-    }
-    return getGetDataNuggetMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest,
       io.littlehorse.sdk.common.proto.WorkflowEvent> getAwaitWorkflowEventMethod;
 
@@ -2123,37 +2061,6 @@ public final class LittleHorseGrpc {
     return getDeleteExternalEventDefMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest,
-      com.google.protobuf.Empty> getDeleteDataNuggetMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "DeleteDataNugget",
-      requestType = io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest.class,
-      responseType = com.google.protobuf.Empty.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest,
-      com.google.protobuf.Empty> getDeleteDataNuggetMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest, com.google.protobuf.Empty> getDeleteDataNuggetMethod;
-    if ((getDeleteDataNuggetMethod = LittleHorseGrpc.getDeleteDataNuggetMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getDeleteDataNuggetMethod = LittleHorseGrpc.getDeleteDataNuggetMethod) == null) {
-          LittleHorseGrpc.getDeleteDataNuggetMethod = getDeleteDataNuggetMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest, com.google.protobuf.Empty>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteDataNugget"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.google.protobuf.Empty.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteDataNugget"))
-              .build();
-        }
-      }
-    }
-    return getDeleteDataNuggetMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest,
       com.google.protobuf.Empty> getDeleteWorkflowEventDefMethod;
 
@@ -2967,7 +2874,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent.
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     default void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
@@ -2983,28 +2890,6 @@ public final class LittleHorseGrpc {
     default void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetExternalEventMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
-     * for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
-     * will be created.
-     * </pre>
-     */
-    default void putDataNugget(io.littlehorse.sdk.common.proto.PutDataNuggetRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.DataNugget> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutDataNuggetMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Get a specific DataNugget.
-     * </pre>
-     */
-    default void getDataNugget(io.littlehorse.sdk.common.proto.DataNuggetId request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.DataNugget> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetDataNuggetMethod(), responseObserver);
     }
 
     /**
@@ -3196,9 +3081,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Search for Principals.
-     * </pre>
      */
     default void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -3337,16 +3219,6 @@ public final class LittleHorseGrpc {
     default void deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteExternalEventDefMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Deletes a DataNugget.
-     * </pre>
-     */
-    default void deleteDataNugget(io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest request,
-        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteDataNuggetMethod(), responseObserver);
     }
 
     /**
@@ -3898,7 +3770,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent.
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     public void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
@@ -3916,30 +3788,6 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
-     * for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
-     * will be created.
-     * </pre>
-     */
-    public void putDataNugget(io.littlehorse.sdk.common.proto.PutDataNuggetRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.DataNugget> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getPutDataNuggetMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Get a specific DataNugget.
-     * </pre>
-     */
-    public void getDataNugget(io.littlehorse.sdk.common.proto.DataNuggetId request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.DataNugget> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getGetDataNuggetMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4149,9 +3997,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Search for Principals.
-     * </pre>
      */
     public void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -4303,17 +4148,6 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteExternalEventDefMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Deletes a DataNugget.
-     * </pre>
-     */
-    public void deleteDataNugget(io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest request,
-        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getDeleteDataNuggetMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4834,7 +4668,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent.
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEvent putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
@@ -4850,28 +4684,6 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.ExternalEvent getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetExternalEventMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
-     * Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
-     * for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
-     * will be created.
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.DataNugget putDataNugget(io.littlehorse.sdk.common.proto.PutDataNuggetRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getPutDataNuggetMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
-     * Get a specific DataNugget.
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.DataNugget getDataNugget(io.littlehorse.sdk.common.proto.DataNuggetId request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getGetDataNuggetMethod(), getCallOptions(), request);
     }
 
     /**
@@ -5063,9 +4875,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Search for Principals.
-     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -5193,16 +5002,6 @@ public final class LittleHorseGrpc {
     public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
-     * Deletes a DataNugget.
-     * </pre>
-     */
-    public com.google.protobuf.Empty deleteDataNugget(io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getDeleteDataNuggetMethod(), getCallOptions(), request);
     }
 
     /**
@@ -5743,7 +5542,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent.
+     * Post an ExternalEvent. This RPC is highly useful for
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEvent> putExternalEvent(
@@ -5761,30 +5560,6 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
-     * Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
-     * for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
-     * will be created.
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.DataNugget> putDataNugget(
-        io.littlehorse.sdk.common.proto.PutDataNuggetRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getPutDataNuggetMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
-     * Get a specific DataNugget.
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.DataNugget> getDataNugget(
-        io.littlehorse.sdk.common.proto.DataNuggetId request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getGetDataNuggetMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5994,9 +5769,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Search for Principals.
-     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.PrincipalIdList> searchPrincipal(
         io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
@@ -6136,17 +5908,6 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteExternalEventDefMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
-     * Deletes a DataNugget.
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteDataNugget(
-        io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getDeleteDataNuggetMethod(), getCallOptions()), request);
     }
 
     /**
@@ -6324,53 +6085,50 @@ public final class LittleHorseGrpc {
   private static final int METHODID_LIST_VARIABLES = 32;
   private static final int METHODID_PUT_EXTERNAL_EVENT = 33;
   private static final int METHODID_GET_EXTERNAL_EVENT = 34;
-  private static final int METHODID_PUT_DATA_NUGGET = 35;
-  private static final int METHODID_GET_DATA_NUGGET = 36;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 37;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 38;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 39;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 40;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 41;
-  private static final int METHODID_SEARCH_WF_RUN = 42;
-  private static final int METHODID_SEARCH_NODE_RUN = 43;
-  private static final int METHODID_SEARCH_TASK_RUN = 44;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 45;
-  private static final int METHODID_SEARCH_VARIABLE = 46;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 47;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 48;
-  private static final int METHODID_SEARCH_TASK_DEF = 49;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 50;
-  private static final int METHODID_SEARCH_WF_SPEC = 51;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 52;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 53;
-  private static final int METHODID_SEARCH_TENANT = 54;
-  private static final int METHODID_SEARCH_PRINCIPAL = 55;
-  private static final int METHODID_REGISTER_TASK_WORKER = 56;
-  private static final int METHODID_REPORT_TASK = 57;
-  private static final int METHODID_STOP_WF_RUN = 58;
-  private static final int METHODID_RESUME_WF_RUN = 59;
-  private static final int METHODID_RESCUE_THREAD_RUN = 60;
-  private static final int METHODID_DELETE_WF_RUN = 61;
-  private static final int METHODID_DELETE_TASK_DEF = 62;
-  private static final int METHODID_DELETE_STRUCT_DEF = 63;
-  private static final int METHODID_DELETE_WF_SPEC = 64;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 65;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 66;
-  private static final int METHODID_DELETE_DATA_NUGGET = 67;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 68;
-  private static final int METHODID_DELETE_PRINCIPAL = 69;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 70;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 71;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 72;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 73;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 74;
-  private static final int METHODID_PUT_TENANT = 75;
-  private static final int METHODID_GET_TENANT = 76;
-  private static final int METHODID_PUT_PRINCIPAL = 77;
-  private static final int METHODID_GET_PRINCIPAL = 78;
-  private static final int METHODID_WHOAMI = 79;
-  private static final int METHODID_GET_SERVER_VERSION = 80;
-  private static final int METHODID_POLL_TASK = 81;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 35;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 36;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 37;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 38;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 39;
+  private static final int METHODID_SEARCH_WF_RUN = 40;
+  private static final int METHODID_SEARCH_NODE_RUN = 41;
+  private static final int METHODID_SEARCH_TASK_RUN = 42;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 43;
+  private static final int METHODID_SEARCH_VARIABLE = 44;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 45;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 46;
+  private static final int METHODID_SEARCH_TASK_DEF = 47;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 48;
+  private static final int METHODID_SEARCH_WF_SPEC = 49;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 50;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 51;
+  private static final int METHODID_SEARCH_TENANT = 52;
+  private static final int METHODID_SEARCH_PRINCIPAL = 53;
+  private static final int METHODID_REGISTER_TASK_WORKER = 54;
+  private static final int METHODID_REPORT_TASK = 55;
+  private static final int METHODID_STOP_WF_RUN = 56;
+  private static final int METHODID_RESUME_WF_RUN = 57;
+  private static final int METHODID_RESCUE_THREAD_RUN = 58;
+  private static final int METHODID_DELETE_WF_RUN = 59;
+  private static final int METHODID_DELETE_TASK_DEF = 60;
+  private static final int METHODID_DELETE_STRUCT_DEF = 61;
+  private static final int METHODID_DELETE_WF_SPEC = 62;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 63;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 64;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 65;
+  private static final int METHODID_DELETE_PRINCIPAL = 66;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 67;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 68;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 69;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 70;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 71;
+  private static final int METHODID_PUT_TENANT = 72;
+  private static final int METHODID_GET_TENANT = 73;
+  private static final int METHODID_PUT_PRINCIPAL = 74;
+  private static final int METHODID_GET_PRINCIPAL = 75;
+  private static final int METHODID_WHOAMI = 76;
+  private static final int METHODID_GET_SERVER_VERSION = 77;
+  private static final int METHODID_POLL_TASK = 78;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6529,14 +6287,6 @@ public final class LittleHorseGrpc {
           serviceImpl.getExternalEvent((io.littlehorse.sdk.common.proto.ExternalEventId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent>) responseObserver);
           break;
-        case METHODID_PUT_DATA_NUGGET:
-          serviceImpl.putDataNugget((io.littlehorse.sdk.common.proto.PutDataNuggetRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.DataNugget>) responseObserver);
-          break;
-        case METHODID_GET_DATA_NUGGET:
-          serviceImpl.getDataNugget((io.littlehorse.sdk.common.proto.DataNuggetId) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.DataNugget>) responseObserver);
-          break;
         case METHODID_AWAIT_WORKFLOW_EVENT:
           serviceImpl.awaitWorkflowEvent((io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent>) responseObserver);
@@ -6655,10 +6405,6 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_DELETE_EXTERNAL_EVENT_DEF:
           serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) request,
-              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
-          break;
-        case METHODID_DELETE_DATA_NUGGET:
-          serviceImpl.deleteDataNugget((io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_WORKFLOW_EVENT_DEF:
@@ -6980,20 +6726,6 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ExternalEvent>(
                 service, METHODID_GET_EXTERNAL_EVENT)))
         .addMethod(
-          getPutDataNuggetMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.PutDataNuggetRequest,
-              io.littlehorse.sdk.common.proto.DataNugget>(
-                service, METHODID_PUT_DATA_NUGGET)))
-        .addMethod(
-          getGetDataNuggetMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.DataNuggetId,
-              io.littlehorse.sdk.common.proto.DataNugget>(
-                service, METHODID_GET_DATA_NUGGET)))
-        .addMethod(
           getAwaitWorkflowEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -7211,13 +6943,6 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
         .addMethod(
-          getDeleteDataNuggetMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.DeleteDataNuggetRequest,
-              com.google.protobuf.Empty>(
-                service, METHODID_DELETE_DATA_NUGGET)))
-        .addMethod(
           getDeleteWorkflowEventDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -7391,8 +7116,6 @@ public final class LittleHorseGrpc {
               .addMethod(getListVariablesMethod())
               .addMethod(getPutExternalEventMethod())
               .addMethod(getGetExternalEventMethod())
-              .addMethod(getPutDataNuggetMethod())
-              .addMethod(getGetDataNuggetMethod())
               .addMethod(getAwaitWorkflowEventMethod())
               .addMethod(getGetWorkflowEventDefMethod())
               .addMethod(getGetWorkflowEventMethod())
@@ -7424,7 +7147,6 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
-              .addMethod(getDeleteDataNuggetMethod())
               .addMethod(getDeleteWorkflowEventDefMethod())
               .addMethod(getDeletePrincipalMethod())
               .addMethod(getDeleteScheduledWfRunMethod())
