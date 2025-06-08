@@ -1,4 +1,4 @@
-# `DataNugget` for `ExternalEvent` Correlation
+# Correlated `ExternalEvent`s
 
 ## Motivation
 
@@ -10,12 +10,12 @@ documentId.assign(wf.execute("create-docusign"));
 wf.waitForevent("document-signed").withCorrelationId(documentId).timeoutSeconds(60 * 60 * 24 * 7);
 ```
 
-Then instead of posting an ExternalEvent in which they need to know the WfRunId that they are signaling, they can just post a DataNugget (a new Getable that we introduce) with the document ID as a correlation.
+Then instead of posting an ExternalEvent in which they need to know the WfRunId that they are signaling, they can just post a CorrelatedEvent (a new Getable that we introduce) with the document ID as a correlation.
 
 ```java
 String documentId = "asdfapoghweofjadksla"; // whatever docusign's webhook gives you
 
-client.putDataNugget(PutDataNuggetRequest.newBuilder()
+client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                 .setExternalEventDefId(ExternalEventDefId.newBuilder().setName("document-signed"))
                 .setContent(LHLibUtil.objToVarVal("document was signed!"))
                 .setKey(documentId)
@@ -29,9 +29,9 @@ LH as a lightweight database. As we will see soon, both motivations can be compl
 ## Proposal
 
 * **`ExternalEvent`**: it's like a signal to a specific `WfRun` saying something happened _outside that `WfRun`_. Already exists. I wish we could rename it to `Signal` but 1. Temporal does that and 2. it would be a breaking change.
-* **`DataNugget`**: represents a piece of data from outside the LH Server. It can spawn off zero or more `ExternalEvent`s.
+* **`CorrelatedEvent`**: represents a piece of data from outside the LH Server. It can spawn off zero or more `ExternalEvent`s.
 
-A `DataNugget` is associated with an `ExternalEventDef`.
+A `CorrelatedEvent` is associated with an `ExternalEventDef`.
 
 ### Protobuf
 
@@ -56,46 +56,51 @@ message ExternalEventDef {
   // nor do we validate the type of `content` in the `rpc PutExternalEvent`.
   optional ReturnType type_information = 4;
 
-  // If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
+  // If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
   // type.
-  optional DataNuggetConfig data_nugget_config = 5;
+  optional CorrelatedEventConfig correlated_event_config = 5;
 }
 
-// Configures behavior of `DataNugget`s created for a specific `ExternalEventDef`.
-message DataNuggetConfig {
-  // If ttl_seconds is set, then `DataNugget`s will be automatically
+// Configures behavior of `CorrelatedEvent`s created for a specific `ExternalEventDef`.
+message CorrelatedEventConfig {
+  // If ttl_seconds is set, then `CorrelatedEvent`s will be automatically
   // cleaned up based on the provided ttl.
   optional int64 ttl_seconds = 1;
 
-  // If true, delete the `DataNugget` after the first `ExternalEvent` is created.
+  // If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created.
   // Also, if set, it is implied that only one `WfRun` can ever be correlated
-  // to this `DataNugget`.
+  // to this `CorrelatedEvent`.
   bool delete_after_first_correlation = 2;
 }
 
-// A DataNugget is a piece of data that has been posted into LittleHorse but is not
+// The ID of a CorrelatedEvent, which is a precursor to an `ExternalEvent`.
+message CorrelatedEventId {
+  // The key used for correlation
+  string key = 1;
+
+  // The `ExternalEventDefId`
+  ExternalEventDefId external_event_def_id = 2;
+}
+
+// A CorrelatedEvent is a piece of data that has been posted into LittleHorse but is not
 // yet associated with any specific `WfRun`. This allows users to indirectly create
 // `ExternalEvent`s without knowing the `WfRunId` that they are posting the
 // `ExternalEvent` to by taking advantage of the correlation id feature of a
-// `DataNugget`.
+// `CorrelatedEvent`.
 //
-// DataNuggets also serve as a way to simply store data in LittleHorse.
-message DataNugget {
-  // The ID of the DataNugget
-  DataNuggetId id = 1;
+// CorrelatedEvents also serve as a way to simply store data in LittleHorse.
+message CorrelatedEvent {
+  // The ID of the CorrelatedEvent
+  CorrelatedEventId id = 1;
 
-  // The time at which the `DataNugget` was created.
+  // The time at which the `CorrelatedEvent` was created.
   google.protobuf.Timestamp created_at = 2;
 
-  // The content of the `DataNugget`.
+  // The content of the `CorrelatedEvent`.
   VariableValue content = 3;
 
-  // The epoch represents the number of times that the `DataNugget` has been
-  // modified.
-  int32 epoch = 4;
-
-  // List of `ExternalEvent`s that have been created for this `DataNugget`.
-  repeated ExternalEventId external_events = 5;
+  // List of `ExternalEvent`s that have been created for this `CorrelatedEvent`.
+  repeated ExternalEventId external_events = 4;
 }
 ```
 
@@ -116,35 +121,23 @@ message ExternalEventNodeRun {
 And some new RPC's:
 
 ```proto
-// Request used to create a `DataNugget` or update its content.
-message PutDataNuggetRequest {
-  // The correlation key of the DataNugget.
+// Request used to create a `CorrelatedEvent` or update its content.
+message PutCorrelatedEventRequest {
+  // The correlation key of the CorrelatedEvent.
   string key = 1;
 
-  // The `ExternalEventDef` that is associated with this `DataNugget`. This is
+  // The `ExternalEventDef` that is associated with this `CorrelatedEvent`. This is
   // also the `ExternalEventDef` of any `ExternalEvent`s that are generated after
-  // this `DataNugget` is correlated to `WfRun`s.
+  // this `CorrelatedEvent` is correlated to `WfRun`s.
   ExternalEventDefId external_event_def_id = 2;
 
-  // Note that a DataNuggetId is a three-part ID:
-  // 1. Key (correlation ID)
-  // 2. ExternalEventDef Name
-  // 3. A guid
-  // The guid from part 3) can be optionally provided to the PutDataNuggetRequest
-  // in order to make it idempotent. It is a best practice to do so.
-  optional string guid = 3;
-
-  // The content of the DataNugget and any `ExternalEvent`s created after
-  // correlating this `DataNugget`.
-  VariableValue content = 4;
-
-  // If set, the current epoch of the `DataNugget` must match this number or else
-  // the request will fail with `FAILED_PRECONDITION`.
-  optional int32 expected_epoch = 5;
+  // The content of the CorrelatedEvent and any `ExternalEvent`s created after
+  // correlating this `CorrelatedEvent`.
+  VariableValue content = 3;
 }
 
-message SearchDataNuggetRequest {
-  // ExternalEventDefId of DataNuggets to search for
+message SearchCorrelatedEventRequest {
+  // ExternalEventDefId of CorrelatedEvents to search for
   ExternalEventDefId external_event_def_id = 1;
 
   // earliest create time
@@ -153,39 +146,36 @@ message SearchDataNuggetRequest {
   // latest create time
   optional google.protobuf.Timestamp latest = 3;
 
-  // Return only DataNugget's with the following content match
-  optional VariableValue content = 4;
-
-  // If set, returns only DataNugget's that have or do not have correlated
-  // `ExternalEvent`s. Useful for finding orphaned `DataNugget`s.
-  optional bool has_correlated_events = 5;
+  // If set, returns only CorrelatedEvent's that have or do not have correlated
+  // `ExternalEvent`s. Useful for finding orphaned `CorrelatedEvent`s.
+  optional bool has_correlated_events = 4;
 
   // Maximum number of results
-  int32 limit = 6;
+  int32 limit = 5;
 
   // Bookmark
-  optional bytes bookmark = 7;
+  optional bytes bookmark = 6;
 }
 
 service LittleHorse {
   // ...
 
-  // Put a DataNugget in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
-  // for a DataNugget with the same correlation ID, then one or more `ExternalEvent`s
+  // Put a CorrelatedEvent in LittleHorse. If there are any `ExternalEventNodeRun`s waiting
+  // for a CorrelatedEvent with the same correlation ID, then one or more `ExternalEvent`s
   // will be created.
-  rpc PutDataNugget(PutDataNuggetRequest) returns (DataNugget) {}
+  rpc PutCorrelatedEvent(PutCorrelatedEventRequest) returns (CorrelatedEvent) {}
 
-  // Get a specific DataNugget.
-  rpc GetDataNugget(DataNuggetId) returns (DataNugget) {}
+  // Get a specific CorrelatedEvent.
+  rpc GetCorrelatedEvent(CorrelatedEventId) returns (CorrelatedEvent) {}
 
-  // Deletes a DataNugget.
-  rpc DeleteDataNugget(DeleteDataNuggetRequest) returns (google.protobuf.Empty) {}
+  // Deletes a CorrelatedEvent.
+  rpc DeleteCorrelatedEvent(DeleteCorrelatedEventRequest) returns (google.protobuf.Empty) {}
 }
 ```
 
 ## Implementation
 
-The `DataNugget` is partitioned by its `id.key`.
+The `CorrelatedEvent` is partitioned by its `id.key`.
 
 ### Storage
 
@@ -207,7 +197,7 @@ message CorrelationMarker {
 }
 ```
 
-When you arrive at an `ExternalEventNode` with the `correlation_key` set, it will create a `CorrelationMarker` which gets sent (repartitioned) to the partition where the `DataNugget` would live.
+When you arrive at an `ExternalEventNode` with the `correlation_key` set, it will create a `CorrelationMarker` which gets sent (repartitioned) to the partition where the `CorrelatedEvent` would live.
 
 ### `ExternalEventNode` Timeout
 
@@ -225,7 +215,7 @@ As a solution, when the Core processor needs to send a `Command` to another part
 We do this in two places:
 
 1. When creating a `CorrelationMarker`
-2. When a `Correlationmarker` matches with a `DataNugget` and we need to create an `ExternalEvent`.
+2. When a `Correlationmarker` matches with a `CorrelatedEvent` and we need to create an `ExternalEvent`.
 
 ## Rejected Alternatives
 
@@ -240,7 +230,7 @@ We can't modify `rpc PutExternalEvent` to take in a `correlation_key` because:
 * We don't have a `WfRunId`, so we can't create (nor return) an `ExternalEvent`
 * It's also possible to have one "event" create multiple `ExternalEvent`s
 
-### Make `DataNugget` Not A `Getable`
+### Make `CorrelatedEvent` Not A `Getable`
 
 Problems with this:
 
@@ -249,6 +239,6 @@ Problems with this:
 
 Basically, the administrator / operational UX would be pretty bad. And we get the added benefit here of allowing (advanced) users to use LH as a storage center for small amounts of data.
 
-### Make `DataNuggetDef`
+### Make `CorrelatedEventDef`
 
-Coupling `DataNugget` to `ExternalEventDef` makes the relationship very clear. Otherwise it gets really hairy, especially with strong typing.
+Coupling `CorrelatedEvent` to `ExternalEventDef` makes the relationship very clear. Otherwise it gets really hairy, especially with strong typing.
