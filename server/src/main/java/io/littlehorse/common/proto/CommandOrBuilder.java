@@ -399,5 +399,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutDataNuggetRequest put_data_nugget = 28;</code>
+   * @return Whether the putDataNugget field is set.
+   */
+  boolean hasPutDataNugget();
+  /**
+   * <code>.littlehorse.PutDataNuggetRequest put_data_nugget = 28;</code>
+   * @return The putDataNugget.
+   */
+  io.littlehorse.sdk.common.proto.PutDataNuggetRequest getPutDataNugget();
+  /**
+   * <code>.littlehorse.PutDataNuggetRequest put_data_nugget = 28;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutDataNuggetRequestOrBuilder getPutDataNuggetOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

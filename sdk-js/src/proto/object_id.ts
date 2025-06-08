@@ -119,8 +119,8 @@ export interface ExternalEventId {
 
 /** ID for a DataNugget */
 export interface DataNuggetId {
-  /** The correlation ID for the DataNugget. */
-  correlationId: string;
+  /** The key of a DataNugget is used as the correlation ID for ExternalEventNodeRuns. */
+  key: string;
   /**
    * The ExternalEventDef for this DataNugget and any ExternalEvent's that are created
    * by it.
@@ -759,13 +759,13 @@ export const ExternalEventId = {
 };
 
 function createBaseDataNuggetId(): DataNuggetId {
-  return { correlationId: "", externalEventDefId: undefined, guid: "" };
+  return { key: "", externalEventDefId: undefined, guid: "" };
 }
 
 export const DataNuggetId = {
   encode(message: DataNuggetId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.correlationId !== "") {
-      writer.uint32(10).string(message.correlationId);
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
     }
     if (message.externalEventDefId !== undefined) {
       ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(18).fork()).ldelim();
@@ -788,7 +788,7 @@ export const DataNuggetId = {
             break;
           }
 
-          message.correlationId = reader.string();
+          message.key = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
@@ -818,7 +818,7 @@ export const DataNuggetId = {
   },
   fromPartial(object: DeepPartial<DataNuggetId>): DataNuggetId {
     const message = createBaseDataNuggetId();
-    message.correlationId = object.correlationId ?? "";
+    message.key = object.key ?? "";
     message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
       ? ExternalEventDefId.fromPartial(object.externalEventDefId)
       : undefined;

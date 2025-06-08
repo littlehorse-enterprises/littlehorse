@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+// Don't put lombok here, see `returnType` and `createdAt`
 public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
 
     @Getter
@@ -28,6 +29,10 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
     @Getter
     private ExternalEventRetentionPolicyModel retentionPolicy;
 
+    @Getter
+    private DataNuggetConfigModel dataNuggetConfig;
+
+    // Do not use lombok for this
     private Date createdAt;
     private ReturnTypeModel returnType;
 
@@ -69,6 +74,10 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         } else {
             log.trace("Handling ExternalEventDef created prior to 0.13.2 or with lazy user: no type information");
         }
+
+        if (dataNuggetConfig != null) {
+            b.setDataNuggetConfig(dataNuggetConfig.toProto());
+        }
         return b;
     }
 
@@ -79,6 +88,10 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         if (proto.hasTypeInformation()) {
             this.returnType = LHSerializable.fromProto(proto.getTypeInformation(), ReturnTypeModel.class, context);
+        }
+        if (proto.hasDataNuggetConfig()) {
+            this.dataNuggetConfig =
+                    LHSerializable.fromProto(proto.getDataNuggetConfig(), DataNuggetConfigModel.class, context);
         }
 
         retentionPolicy =

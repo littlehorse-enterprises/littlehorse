@@ -2,9 +2,10 @@ from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
+from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -47,16 +48,18 @@ class DataNuggetConfig(_message.Message):
     def __init__(self, ttl_seconds: _Optional[int] = ..., delete_after_first_correlation: bool = ...) -> None: ...
 
 class DataNugget(_message.Message):
-    __slots__ = ["id", "created_at", "content", "epoch"]
+    __slots__ = ["id", "created_at", "content", "epoch", "external_events"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     EPOCH_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENTS_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.DataNuggetId
     created_at: _timestamp_pb2.Timestamp
     content: _variable_pb2.VariableValue
     epoch: int
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.DataNuggetId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., epoch: _Optional[int] = ...) -> None: ...
+    external_events: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.ExternalEventId]
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.DataNuggetId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., epoch: _Optional[int] = ..., external_events: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventId, _Mapping]]] = ...) -> None: ...
 
 class ExternalEventRetentionPolicy(_message.Message):
     __slots__ = ["seconds_after_put"]

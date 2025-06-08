@@ -111,8 +111,8 @@ message ExternalEventId {
 
 // ID for a DataNugget
 message DataNuggetId {
-  // The correlation ID for the DataNugget.
-  string correlation_id = 1;
+  // The key of a DataNugget is used as the correlation ID for ExternalEventNodeRuns.
+  string key = 1;
 
   // The ExternalEventDef for this DataNugget and any ExternalEvent's that are created
   // by it.

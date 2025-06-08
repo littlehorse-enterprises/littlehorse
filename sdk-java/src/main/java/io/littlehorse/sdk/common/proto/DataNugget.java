@@ -26,6 +26,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private DataNugget() {
+    externalEvents_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -178,6 +179,67 @@ private static final long serialVersionUID = 0L;
     return epoch_;
   }
 
+  public static final int EXTERNAL_EVENTS_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.ExternalEventId> externalEvents_;
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventId> getExternalEventsList() {
+    return externalEvents_;
+  }
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> 
+      getExternalEventsOrBuilderList() {
+    return externalEvents_;
+  }
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  @java.lang.Override
+  public int getExternalEventsCount() {
+    return externalEvents_.size();
+  }
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventId getExternalEvents(int index) {
+    return externalEvents_.get(index);
+  }
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getExternalEventsOrBuilder(
+      int index) {
+    return externalEvents_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -204,6 +266,9 @@ private static final long serialVersionUID = 0L;
     if (epoch_ != 0) {
       output.writeInt32(4, epoch_);
     }
+    for (int i = 0; i < externalEvents_.size(); i++) {
+      output.writeMessage(5, externalEvents_.get(i));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -228,6 +293,10 @@ private static final long serialVersionUID = 0L;
     if (epoch_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(4, epoch_);
+    }
+    for (int i = 0; i < externalEvents_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, externalEvents_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -261,6 +330,8 @@ private static final long serialVersionUID = 0L;
     }
     if (getEpoch()
         != other.getEpoch()) return false;
+    if (!getExternalEventsList()
+        .equals(other.getExternalEventsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -286,6 +357,10 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + EPOCH_FIELD_NUMBER;
     hash = (53 * hash) + getEpoch();
+    if (getExternalEventsCount() > 0) {
+      hash = (37 * hash) + EXTERNAL_EVENTS_FIELD_NUMBER;
+      hash = (53 * hash) + getExternalEventsList().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -443,6 +518,13 @@ private static final long serialVersionUID = 0L;
         contentBuilder_ = null;
       }
       epoch_ = 0;
+      if (externalEventsBuilder_ == null) {
+        externalEvents_ = java.util.Collections.emptyList();
+      } else {
+        externalEvents_ = null;
+        externalEventsBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000010);
       return this;
     }
 
@@ -469,9 +551,22 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.DataNugget buildPartial() {
       io.littlehorse.sdk.common.proto.DataNugget result = new io.littlehorse.sdk.common.proto.DataNugget(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.DataNugget result) {
+      if (externalEventsBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0)) {
+          externalEvents_ = java.util.Collections.unmodifiableList(externalEvents_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.externalEvents_ = externalEvents_;
+      } else {
+        result.externalEvents_ = externalEventsBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.DataNugget result) {
@@ -552,6 +647,32 @@ private static final long serialVersionUID = 0L;
       if (other.getEpoch() != 0) {
         setEpoch(other.getEpoch());
       }
+      if (externalEventsBuilder_ == null) {
+        if (!other.externalEvents_.isEmpty()) {
+          if (externalEvents_.isEmpty()) {
+            externalEvents_ = other.externalEvents_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureExternalEventsIsMutable();
+            externalEvents_.addAll(other.externalEvents_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.externalEvents_.isEmpty()) {
+          if (externalEventsBuilder_.isEmpty()) {
+            externalEventsBuilder_.dispose();
+            externalEventsBuilder_ = null;
+            externalEvents_ = other.externalEvents_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+            externalEventsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getExternalEventsFieldBuilder() : null;
+          } else {
+            externalEventsBuilder_.addAllMessages(other.externalEvents_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -604,6 +725,19 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 42: {
+              io.littlehorse.sdk.common.proto.ExternalEventId m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.ExternalEventId.parser(),
+                      extensionRegistry);
+              if (externalEventsBuilder_ == null) {
+                ensureExternalEventsIsMutable();
+                externalEvents_.add(m);
+              } else {
+                externalEventsBuilder_.addMessage(m);
+              }
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1131,6 +1265,318 @@ private static final long serialVersionUID = 0L;
       epoch_ = 0;
       onChanged();
       return this;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.ExternalEventId> externalEvents_ =
+      java.util.Collections.emptyList();
+    private void ensureExternalEventsIsMutable() {
+      if (!((bitField0_ & 0x00000010) != 0)) {
+        externalEvents_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ExternalEventId>(externalEvents_);
+        bitField0_ |= 0x00000010;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> externalEventsBuilder_;
+
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventId> getExternalEventsList() {
+      if (externalEventsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(externalEvents_);
+      } else {
+        return externalEventsBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public int getExternalEventsCount() {
+      if (externalEventsBuilder_ == null) {
+        return externalEvents_.size();
+      } else {
+        return externalEventsBuilder_.getCount();
+      }
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventId getExternalEvents(int index) {
+      if (externalEventsBuilder_ == null) {
+        return externalEvents_.get(index);
+      } else {
+        return externalEventsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder setExternalEvents(
+        int index, io.littlehorse.sdk.common.proto.ExternalEventId value) {
+      if (externalEventsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureExternalEventsIsMutable();
+        externalEvents_.set(index, value);
+        onChanged();
+      } else {
+        externalEventsBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder setExternalEvents(
+        int index, io.littlehorse.sdk.common.proto.ExternalEventId.Builder builderForValue) {
+      if (externalEventsBuilder_ == null) {
+        ensureExternalEventsIsMutable();
+        externalEvents_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        externalEventsBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder addExternalEvents(io.littlehorse.sdk.common.proto.ExternalEventId value) {
+      if (externalEventsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureExternalEventsIsMutable();
+        externalEvents_.add(value);
+        onChanged();
+      } else {
+        externalEventsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder addExternalEvents(
+        int index, io.littlehorse.sdk.common.proto.ExternalEventId value) {
+      if (externalEventsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureExternalEventsIsMutable();
+        externalEvents_.add(index, value);
+        onChanged();
+      } else {
+        externalEventsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder addExternalEvents(
+        io.littlehorse.sdk.common.proto.ExternalEventId.Builder builderForValue) {
+      if (externalEventsBuilder_ == null) {
+        ensureExternalEventsIsMutable();
+        externalEvents_.add(builderForValue.build());
+        onChanged();
+      } else {
+        externalEventsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder addExternalEvents(
+        int index, io.littlehorse.sdk.common.proto.ExternalEventId.Builder builderForValue) {
+      if (externalEventsBuilder_ == null) {
+        ensureExternalEventsIsMutable();
+        externalEvents_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        externalEventsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder addAllExternalEvents(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.ExternalEventId> values) {
+      if (externalEventsBuilder_ == null) {
+        ensureExternalEventsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, externalEvents_);
+        onChanged();
+      } else {
+        externalEventsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder clearExternalEvents() {
+      if (externalEventsBuilder_ == null) {
+        externalEvents_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+      } else {
+        externalEventsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public Builder removeExternalEvents(int index) {
+      if (externalEventsBuilder_ == null) {
+        ensureExternalEventsIsMutable();
+        externalEvents_.remove(index);
+        onChanged();
+      } else {
+        externalEventsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getExternalEventsBuilder(
+        int index) {
+      return getExternalEventsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getExternalEventsOrBuilder(
+        int index) {
+      if (externalEventsBuilder_ == null) {
+        return externalEvents_.get(index);  } else {
+        return externalEventsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> 
+         getExternalEventsOrBuilderList() {
+      if (externalEventsBuilder_ != null) {
+        return externalEventsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(externalEvents_);
+      }
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventId.Builder addExternalEventsBuilder() {
+      return getExternalEventsFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance());
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventId.Builder addExternalEventsBuilder(
+        int index) {
+      return getExternalEventsFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance());
+    }
+    /**
+     * <pre>
+     * List of `ExternalEvent`s that have been created for this `DataNugget`.
+     * </pre>
+     *
+     * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventId.Builder> 
+         getExternalEventsBuilderList() {
+      return getExternalEventsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> 
+        getExternalEventsFieldBuilder() {
+      if (externalEventsBuilder_ == null) {
+        externalEventsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder>(
+                externalEvents_,
+                ((bitField0_ & 0x00000010) != 0),
+                getParentForChildren(),
+                isClean());
+        externalEvents_ = null;
+      }
+      return externalEventsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -137,6 +137,8 @@ export interface DataNugget {
    * modified.
    */
   epoch: number;
+  /** List of `ExternalEvent`s that have been created for this `DataNugget`. */
+  externalEvents: ExternalEventId[];
 }
 
 /**
@@ -426,7 +428,7 @@ export const DataNuggetConfig = {
 };
 
 function createBaseDataNugget(): DataNugget {
-  return { id: undefined, createdAt: undefined, content: undefined, epoch: 0 };
+  return { id: undefined, createdAt: undefined, content: undefined, epoch: 0, externalEvents: [] };
 }
 
 export const DataNugget = {
@@ -442,6 +444,9 @@ export const DataNugget = {
     }
     if (message.epoch !== 0) {
       writer.uint32(32).int32(message.epoch);
+    }
+    for (const v of message.externalEvents) {
+      ExternalEventId.encode(v!, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -481,6 +486,13 @@ export const DataNugget = {
 
           message.epoch = reader.int32();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.externalEvents.push(ExternalEventId.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -501,6 +513,7 @@ export const DataNugget = {
       ? VariableValue.fromPartial(object.content)
       : undefined;
     message.epoch = object.epoch ?? 0;
+    message.externalEvents = object.externalEvents?.map((e) => ExternalEventId.fromPartial(e)) || [];
     return message;
   },
 };

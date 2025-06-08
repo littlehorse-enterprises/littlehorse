@@ -102,6 +102,9 @@ message DataNugget {
   // The epoch represents the number of times that the `DataNugget` has been
   // modified.
   int32 epoch = 4;
+
+  // List of `ExternalEvent`s that have been created for this `DataNugget`.
+  repeated ExternalEventId external_events = 5;
 }
 
 // Policy to determine how long an ExternalEvent is retained after creation if it

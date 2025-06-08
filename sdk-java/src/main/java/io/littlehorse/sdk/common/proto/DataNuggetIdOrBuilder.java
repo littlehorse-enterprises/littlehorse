@@ -9,23 +9,23 @@ public interface DataNuggetIdOrBuilder extends
 
   /**
    * <pre>
-   * The correlation ID for the DataNugget.
+   * The key of a DataNugget is used as the correlation ID for ExternalEventNodeRuns.
    * </pre>
    *
-   * <code>string correlation_id = 1;</code>
-   * @return The correlationId.
+   * <code>string key = 1;</code>
+   * @return The key.
    */
-  java.lang.String getCorrelationId();
+  java.lang.String getKey();
   /**
    * <pre>
-   * The correlation ID for the DataNugget.
+   * The key of a DataNugget is used as the correlation ID for ExternalEventNodeRuns.
    * </pre>
    *
-   * <code>string correlation_id = 1;</code>
-   * @return The bytes for correlationId.
+   * <code>string key = 1;</code>
+   * @return The bytes for key.
    */
   com.google.protobuf.ByteString
-      getCorrelationIdBytes();
+      getKeyBytes();
 
   /**
    * <pre>

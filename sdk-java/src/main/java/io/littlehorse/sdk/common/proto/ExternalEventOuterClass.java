@@ -69,15 +69,16 @@ public final class ExternalEventOuterClass {
       "tionB\025\n\023_data_nugget_config\"d\n\020DataNugge" +
       "tConfig\022\030\n\013ttl_seconds\030\001 \001(\003H\000\210\001\001\022&\n\036del" +
       "ete_after_first_correlation\030\002 \001(\010B\016\n\014_tt" +
-      "l_seconds\"\237\001\n\nDataNugget\022%\n\002id\030\001 \001(\0132\031.l" +
+      "l_seconds\"\326\001\n\nDataNugget\022%\n\002id\030\001 \001(\0132\031.l" +
       "ittlehorse.DataNuggetId\022.\n\ncreated_at\030\002 " +
       "\001(\0132\032.google.protobuf.Timestamp\022+\n\007conte" +
       "nt\030\003 \001(\0132\032.littlehorse.VariableValue\022\r\n\005" +
-      "epoch\030\004 \001(\005\"P\n\034ExternalEventRetentionPol" +
-      "icy\022\033\n\021seconds_after_put\030\001 \001(\003H\000B\023\n\021ext_" +
-      "evt_gc_policyBM\n\037io.littlehorse.sdk.comm" +
-      "on.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk." +
-      "Common.Protob\006proto3"
+      "epoch\030\004 \001(\005\0225\n\017external_events\030\005 \003(\0132\034.l" +
+      "ittlehorse.ExternalEventId\"P\n\034ExternalEv" +
+      "entRetentionPolicy\022\033\n\021seconds_after_put\030" +
+      "\001 \001(\003H\000B\023\n\021ext_evt_gc_policyBM\n\037io.littl" +
+      "ehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034L" +
+      "ittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -110,7 +111,7 @@ public final class ExternalEventOuterClass {
     internal_static_littlehorse_DataNugget_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_DataNugget_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "Content", "Epoch", });
+        new java.lang.String[] { "Id", "CreatedAt", "Content", "Epoch", "ExternalEvents", });
     internal_static_littlehorse_ExternalEventRetentionPolicy_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_ExternalEventRetentionPolicy_fieldAccessorTable = new

@@ -84,6 +84,10 @@ public enum GetableClassEnum
    * <code>STRUCT_DEF = 18;</code>
    */
   STRUCT_DEF(18),
+  /**
+   * <code>DATA_NUGGET = 19;</code>
+   */
+  DATA_NUGGET(19),
   UNRECOGNIZED(-1),
   ;
 
@@ -163,6 +167,10 @@ public enum GetableClassEnum
    * <code>STRUCT_DEF = 18;</code>
    */
   public static final int STRUCT_DEF_VALUE = 18;
+  /**
+   * <code>DATA_NUGGET = 19;</code>
+   */
+  public static final int DATA_NUGGET_VALUE = 19;
 
 
   public final int getNumber() {
@@ -208,6 +216,7 @@ public enum GetableClassEnum
       case 16: return WORKFLOW_EVENT;
       case 17: return SCHEDULED_WF_RUN;
       case 18: return STRUCT_DEF;
+      case 19: return DATA_NUGGET;
       default: return null;
     }
   }

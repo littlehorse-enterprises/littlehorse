@@ -98,4 +98,48 @@ public interface DataNuggetOrBuilder extends
    * @return The epoch.
    */
   int getEpoch();
+
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.ExternalEventId> 
+      getExternalEventsList();
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventId getExternalEvents(int index);
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  int getExternalEventsCount();
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> 
+      getExternalEventsOrBuilderList();
+  /**
+   * <pre>
+   * List of `ExternalEvent`s that have been created for this `DataNugget`.
+   * </pre>
+   *
+   * <code>repeated .littlehorse.ExternalEventId external_events = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getExternalEventsOrBuilder(
+      int index);
 }
