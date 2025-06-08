@@ -46,6 +46,7 @@ message Command {
         ScheduleWfRequest schedule_wf_run_request = 25;
         DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;
         SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;
+        PutCorrelatedEventRequest put_correlated_event = 28;
     }
 }
 

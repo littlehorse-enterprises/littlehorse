@@ -399,5 +399,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return Whether the putCorrelatedEvent field is set.
+   */
+  boolean hasPutCorrelatedEvent();
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return The putCorrelatedEvent.
+   */
+  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest getPutCorrelatedEvent();
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

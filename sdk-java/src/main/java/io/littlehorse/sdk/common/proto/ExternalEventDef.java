@@ -213,6 +213,47 @@ private static final long serialVersionUID = 0L;
     return typeInformation_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : typeInformation_;
   }
 
+  public static final int CORRELATED_EVENT_CONFIG_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.CorrelatedEventConfig correlatedEventConfig_;
+  /**
+   * <pre>
+   * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+   * type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+   * @return Whether the correlatedEventConfig field is set.
+   */
+  @java.lang.Override
+  public boolean hasCorrelatedEventConfig() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+   * type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+   * @return The correlatedEventConfig.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CorrelatedEventConfig getCorrelatedEventConfig() {
+    return correlatedEventConfig_ == null ? io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+  }
+  /**
+   * <pre>
+   * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+   * type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder getCorrelatedEventConfigOrBuilder() {
+    return correlatedEventConfig_ == null ? io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -239,6 +280,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(4, getTypeInformation());
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(5, getCorrelatedEventConfig());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -263,6 +307,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getTypeInformation());
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getCorrelatedEventConfig());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -299,6 +347,11 @@ private static final long serialVersionUID = 0L;
       if (!getTypeInformation()
           .equals(other.getTypeInformation())) return false;
     }
+    if (hasCorrelatedEventConfig() != other.hasCorrelatedEventConfig()) return false;
+    if (hasCorrelatedEventConfig()) {
+      if (!getCorrelatedEventConfig()
+          .equals(other.getCorrelatedEventConfig())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -325,6 +378,10 @@ private static final long serialVersionUID = 0L;
     if (hasTypeInformation()) {
       hash = (37 * hash) + TYPE_INFORMATION_FIELD_NUMBER;
       hash = (53 * hash) + getTypeInformation().hashCode();
+    }
+    if (hasCorrelatedEventConfig()) {
+      hash = (37 * hash) + CORRELATED_EVENT_CONFIG_FIELD_NUMBER;
+      hash = (53 * hash) + getCorrelatedEventConfig().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -464,6 +521,7 @@ private static final long serialVersionUID = 0L;
         getCreatedAtFieldBuilder();
         getRetentionPolicyFieldBuilder();
         getTypeInformationFieldBuilder();
+        getCorrelatedEventConfigFieldBuilder();
       }
     }
     @java.lang.Override
@@ -489,6 +547,11 @@ private static final long serialVersionUID = 0L;
       if (typeInformationBuilder_ != null) {
         typeInformationBuilder_.dispose();
         typeInformationBuilder_ = null;
+      }
+      correlatedEventConfig_ = null;
+      if (correlatedEventConfigBuilder_ != null) {
+        correlatedEventConfigBuilder_.dispose();
+        correlatedEventConfigBuilder_ = null;
       }
       return this;
     }
@@ -544,6 +607,12 @@ private static final long serialVersionUID = 0L;
             ? typeInformation_
             : typeInformationBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.correlatedEventConfig_ = correlatedEventConfigBuilder_ == null
+            ? correlatedEventConfig_
+            : correlatedEventConfigBuilder_.build();
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -604,6 +673,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasTypeInformation()) {
         mergeTypeInformation(other.getTypeInformation());
       }
+      if (other.hasCorrelatedEventConfig()) {
+        mergeCorrelatedEventConfig(other.getCorrelatedEventConfig());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -658,6 +730,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 42: {
+              input.readMessage(
+                  getCorrelatedEventConfigFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1347,6 +1426,170 @@ private static final long serialVersionUID = 0L;
         typeInformation_ = null;
       }
       return typeInformationBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.CorrelatedEventConfig correlatedEventConfig_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.CorrelatedEventConfig, io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder> correlatedEventConfigBuilder_;
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     * @return Whether the correlatedEventConfig field is set.
+     */
+    public boolean hasCorrelatedEventConfig() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     * @return The correlatedEventConfig.
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventConfig getCorrelatedEventConfig() {
+      if (correlatedEventConfigBuilder_ == null) {
+        return correlatedEventConfig_ == null ? io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+      } else {
+        return correlatedEventConfigBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     */
+    public Builder setCorrelatedEventConfig(io.littlehorse.sdk.common.proto.CorrelatedEventConfig value) {
+      if (correlatedEventConfigBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        correlatedEventConfig_ = value;
+      } else {
+        correlatedEventConfigBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     */
+    public Builder setCorrelatedEventConfig(
+        io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder builderForValue) {
+      if (correlatedEventConfigBuilder_ == null) {
+        correlatedEventConfig_ = builderForValue.build();
+      } else {
+        correlatedEventConfigBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     */
+    public Builder mergeCorrelatedEventConfig(io.littlehorse.sdk.common.proto.CorrelatedEventConfig value) {
+      if (correlatedEventConfigBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          correlatedEventConfig_ != null &&
+          correlatedEventConfig_ != io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance()) {
+          getCorrelatedEventConfigBuilder().mergeFrom(value);
+        } else {
+          correlatedEventConfig_ = value;
+        }
+      } else {
+        correlatedEventConfigBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     */
+    public Builder clearCorrelatedEventConfig() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      correlatedEventConfig_ = null;
+      if (correlatedEventConfigBuilder_ != null) {
+        correlatedEventConfigBuilder_.dispose();
+        correlatedEventConfigBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder getCorrelatedEventConfigBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return getCorrelatedEventConfigFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder getCorrelatedEventConfigOrBuilder() {
+      if (correlatedEventConfigBuilder_ != null) {
+        return correlatedEventConfigBuilder_.getMessageOrBuilder();
+      } else {
+        return correlatedEventConfig_ == null ?
+            io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+      }
+    }
+    /**
+     * <pre>
+     * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+     * type.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.CorrelatedEventConfig, io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder> 
+        getCorrelatedEventConfigFieldBuilder() {
+      if (correlatedEventConfigBuilder_ == null) {
+        correlatedEventConfigBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.CorrelatedEventConfig, io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder>(
+                getCorrelatedEventConfig(),
+                getParentForChildren(),
+                isClean());
+        correlatedEventConfig_ = null;
+      }
+      return correlatedEventConfigBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

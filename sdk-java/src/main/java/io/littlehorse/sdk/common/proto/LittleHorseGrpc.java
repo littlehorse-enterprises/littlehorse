@@ -1069,6 +1069,37 @@ public final class LittleHorseGrpc {
     return getPutExternalEventMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getPutCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.CorrelatedEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getPutCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEvent> getPutCorrelatedEventMethod;
+    if ((getPutCorrelatedEventMethod = LittleHorseGrpc.getPutCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutCorrelatedEventMethod = LittleHorseGrpc.getPutCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getPutCorrelatedEventMethod = getPutCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getPutCorrelatedEventMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventId,
       io.littlehorse.sdk.common.proto.ExternalEvent> getGetExternalEventMethod;
 
@@ -1098,6 +1129,37 @@ public final class LittleHorseGrpc {
       }
     }
     return getGetExternalEventMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CorrelatedEventId,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getGetCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.CorrelatedEventId.class,
+      responseType = io.littlehorse.sdk.common.proto.CorrelatedEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CorrelatedEventId,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getGetCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CorrelatedEventId, io.littlehorse.sdk.common.proto.CorrelatedEvent> getGetCorrelatedEventMethod;
+    if ((getGetCorrelatedEventMethod = LittleHorseGrpc.getGetCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetCorrelatedEventMethod = LittleHorseGrpc.getGetCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getGetCorrelatedEventMethod = getGetCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CorrelatedEventId, io.littlehorse.sdk.common.proto.CorrelatedEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEventId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getGetCorrelatedEventMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest,
@@ -2874,12 +2936,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     default void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutExternalEventMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    default void putCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutCorrelatedEventMethod(), responseObserver);
     }
 
     /**
@@ -2890,6 +2962,16 @@ public final class LittleHorseGrpc {
     default void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetExternalEventMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    default void getCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEventId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetCorrelatedEventMethod(), responseObserver);
     }
 
     /**
@@ -3770,13 +3852,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     public void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPutExternalEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    public void putCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3788,6 +3881,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    public void getCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEventId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4668,12 +4772,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEvent putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEvent putCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutCorrelatedEventMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4684,6 +4798,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.ExternalEvent getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEvent getCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEventId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetCorrelatedEventMethod(), getCallOptions(), request);
     }
 
     /**
@@ -5542,13 +5666,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEvent> putExternalEvent(
         io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPutExternalEventMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CorrelatedEvent> putCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutCorrelatedEventMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5560,6 +5695,17 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CorrelatedEvent> getCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.CorrelatedEventId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetCorrelatedEventMethod(), getCallOptions()), request);
     }
 
     /**
@@ -6084,51 +6230,53 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_VARIABLE = 31;
   private static final int METHODID_LIST_VARIABLES = 32;
   private static final int METHODID_PUT_EXTERNAL_EVENT = 33;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 34;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 35;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 36;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 37;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 38;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 39;
-  private static final int METHODID_SEARCH_WF_RUN = 40;
-  private static final int METHODID_SEARCH_NODE_RUN = 41;
-  private static final int METHODID_SEARCH_TASK_RUN = 42;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 43;
-  private static final int METHODID_SEARCH_VARIABLE = 44;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 45;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 46;
-  private static final int METHODID_SEARCH_TASK_DEF = 47;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 48;
-  private static final int METHODID_SEARCH_WF_SPEC = 49;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 50;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 51;
-  private static final int METHODID_SEARCH_TENANT = 52;
-  private static final int METHODID_SEARCH_PRINCIPAL = 53;
-  private static final int METHODID_REGISTER_TASK_WORKER = 54;
-  private static final int METHODID_REPORT_TASK = 55;
-  private static final int METHODID_STOP_WF_RUN = 56;
-  private static final int METHODID_RESUME_WF_RUN = 57;
-  private static final int METHODID_RESCUE_THREAD_RUN = 58;
-  private static final int METHODID_DELETE_WF_RUN = 59;
-  private static final int METHODID_DELETE_TASK_DEF = 60;
-  private static final int METHODID_DELETE_STRUCT_DEF = 61;
-  private static final int METHODID_DELETE_WF_SPEC = 62;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 63;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 64;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 65;
-  private static final int METHODID_DELETE_PRINCIPAL = 66;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 67;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 68;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 69;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 70;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 71;
-  private static final int METHODID_PUT_TENANT = 72;
-  private static final int METHODID_GET_TENANT = 73;
-  private static final int METHODID_PUT_PRINCIPAL = 74;
-  private static final int METHODID_GET_PRINCIPAL = 75;
-  private static final int METHODID_WHOAMI = 76;
-  private static final int METHODID_GET_SERVER_VERSION = 77;
-  private static final int METHODID_POLL_TASK = 78;
+  private static final int METHODID_PUT_CORRELATED_EVENT = 34;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 35;
+  private static final int METHODID_GET_CORRELATED_EVENT = 36;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 37;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 38;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 39;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 40;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 41;
+  private static final int METHODID_SEARCH_WF_RUN = 42;
+  private static final int METHODID_SEARCH_NODE_RUN = 43;
+  private static final int METHODID_SEARCH_TASK_RUN = 44;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 45;
+  private static final int METHODID_SEARCH_VARIABLE = 46;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 47;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 48;
+  private static final int METHODID_SEARCH_TASK_DEF = 49;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 50;
+  private static final int METHODID_SEARCH_WF_SPEC = 51;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 52;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 53;
+  private static final int METHODID_SEARCH_TENANT = 54;
+  private static final int METHODID_SEARCH_PRINCIPAL = 55;
+  private static final int METHODID_REGISTER_TASK_WORKER = 56;
+  private static final int METHODID_REPORT_TASK = 57;
+  private static final int METHODID_STOP_WF_RUN = 58;
+  private static final int METHODID_RESUME_WF_RUN = 59;
+  private static final int METHODID_RESCUE_THREAD_RUN = 60;
+  private static final int METHODID_DELETE_WF_RUN = 61;
+  private static final int METHODID_DELETE_TASK_DEF = 62;
+  private static final int METHODID_DELETE_STRUCT_DEF = 63;
+  private static final int METHODID_DELETE_WF_SPEC = 64;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 65;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 66;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 67;
+  private static final int METHODID_DELETE_PRINCIPAL = 68;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 69;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 70;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 71;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 72;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 73;
+  private static final int METHODID_PUT_TENANT = 74;
+  private static final int METHODID_GET_TENANT = 75;
+  private static final int METHODID_PUT_PRINCIPAL = 76;
+  private static final int METHODID_GET_PRINCIPAL = 77;
+  private static final int METHODID_WHOAMI = 78;
+  private static final int METHODID_GET_SERVER_VERSION = 79;
+  private static final int METHODID_POLL_TASK = 80;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6283,9 +6431,17 @@ public final class LittleHorseGrpc {
           serviceImpl.putExternalEvent((io.littlehorse.sdk.common.proto.PutExternalEventRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent>) responseObserver);
           break;
+        case METHODID_PUT_CORRELATED_EVENT:
+          serviceImpl.putCorrelatedEvent((io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent>) responseObserver);
+          break;
         case METHODID_GET_EXTERNAL_EVENT:
           serviceImpl.getExternalEvent((io.littlehorse.sdk.common.proto.ExternalEventId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent>) responseObserver);
+          break;
+        case METHODID_GET_CORRELATED_EVENT:
+          serviceImpl.getCorrelatedEvent((io.littlehorse.sdk.common.proto.CorrelatedEventId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent>) responseObserver);
           break;
         case METHODID_AWAIT_WORKFLOW_EVENT:
           serviceImpl.awaitWorkflowEvent((io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest) request,
@@ -6719,12 +6875,26 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ExternalEvent>(
                 service, METHODID_PUT_EXTERNAL_EVENT)))
         .addMethod(
+          getPutCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest,
+              io.littlehorse.sdk.common.proto.CorrelatedEvent>(
+                service, METHODID_PUT_CORRELATED_EVENT)))
+        .addMethod(
           getGetExternalEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ExternalEventId,
               io.littlehorse.sdk.common.proto.ExternalEvent>(
                 service, METHODID_GET_EXTERNAL_EVENT)))
+        .addMethod(
+          getGetCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CorrelatedEventId,
+              io.littlehorse.sdk.common.proto.CorrelatedEvent>(
+                service, METHODID_GET_CORRELATED_EVENT)))
         .addMethod(
           getAwaitWorkflowEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -7115,7 +7285,9 @@ public final class LittleHorseGrpc {
               .addMethod(getGetVariableMethod())
               .addMethod(getListVariablesMethod())
               .addMethod(getPutExternalEventMethod())
+              .addMethod(getPutCorrelatedEventMethod())
               .addMethod(getGetExternalEventMethod())
+              .addMethod(getGetCorrelatedEventMethod())
               .addMethod(getAwaitWorkflowEventMethod())
               .addMethod(getGetWorkflowEventDefMethod())
               .addMethod(getGetWorkflowEventMethod())

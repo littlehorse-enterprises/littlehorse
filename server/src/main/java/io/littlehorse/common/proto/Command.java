@@ -74,6 +74,7 @@ private static final long serialVersionUID = 0L;
     SCHEDULE_WF_RUN_REQUEST(25),
     DELETE_SCHEDULED_WF_RUN(26),
     SAVE_USER_TASK_RUN_PROGRESS(27),
+    PUT_CORRELATED_EVENT(28),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -115,6 +116,7 @@ private static final long serialVersionUID = 0L;
         case 25: return SCHEDULE_WF_RUN_REQUEST;
         case 26: return DELETE_SCHEDULED_WF_RUN;
         case 27: return SAVE_USER_TASK_RUN_PROGRESS;
+        case 28: return PUT_CORRELATED_EVENT;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -947,6 +949,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
   }
 
+  public static final int PUT_CORRELATED_EVENT_FIELD_NUMBER = 28;
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return Whether the putCorrelatedEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutCorrelatedEvent() {
+    return commandCase_ == 28;
+  }
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return The putCorrelatedEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest getPutCorrelatedEvent() {
+    if (commandCase_ == 28) {
+       return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder() {
+    if (commandCase_ == 28) {
+       return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1038,6 +1071,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 27) {
       output.writeMessage(27, (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_);
+    }
+    if (commandCase_ == 28) {
+      output.writeMessage(28, (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1150,6 +1186,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 27) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(27, (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_);
+    }
+    if (commandCase_ == 28) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(28, (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1274,6 +1314,10 @@ private static final long serialVersionUID = 0L;
         if (!getSaveUserTaskRunProgress()
             .equals(other.getSaveUserTaskRunProgress())) return false;
         break;
+      case 28:
+        if (!getPutCorrelatedEvent()
+            .equals(other.getPutCorrelatedEvent())) return false;
+        break;
       case 0:
       default:
     }
@@ -1392,6 +1436,10 @@ private static final long serialVersionUID = 0L;
       case 27:
         hash = (37 * hash) + SAVE_USER_TASK_RUN_PROGRESS_FIELD_NUMBER;
         hash = (53 * hash) + getSaveUserTaskRunProgress().hashCode();
+        break;
+      case 28:
+        hash = (37 * hash) + PUT_CORRELATED_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getPutCorrelatedEvent().hashCode();
         break;
       case 0:
       default:
@@ -1609,6 +1657,9 @@ private static final long serialVersionUID = 0L;
       if (saveUserTaskRunProgressBuilder_ != null) {
         saveUserTaskRunProgressBuilder_.clear();
       }
+      if (putCorrelatedEventBuilder_ != null) {
+        putCorrelatedEventBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1756,6 +1807,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 27 &&
           saveUserTaskRunProgressBuilder_ != null) {
         result.command_ = saveUserTaskRunProgressBuilder_.build();
+      }
+      if (commandCase_ == 28 &&
+          putCorrelatedEventBuilder_ != null) {
+        result.command_ = putCorrelatedEventBuilder_.build();
       }
     }
 
@@ -1906,6 +1961,10 @@ private static final long serialVersionUID = 0L;
         }
         case SAVE_USER_TASK_RUN_PROGRESS: {
           mergeSaveUserTaskRunProgress(other.getSaveUserTaskRunProgress());
+          break;
+        }
+        case PUT_CORRELATED_EVENT: {
+          mergePutCorrelatedEvent(other.getPutCorrelatedEvent());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2118,6 +2177,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 27;
               break;
             } // case 218
+            case 226: {
+              input.readMessage(
+                  getPutCorrelatedEventFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 28;
+              break;
+            } // case 226
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5754,6 +5820,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 27;
       onChanged();
       return saveUserTaskRunProgressBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder> putCorrelatedEventBuilder_;
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     * @return Whether the putCorrelatedEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutCorrelatedEvent() {
+      return commandCase_ == 28;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     * @return The putCorrelatedEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest getPutCorrelatedEvent() {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (commandCase_ == 28) {
+          return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 28) {
+          return putCorrelatedEventBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder setPutCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest value) {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        putCorrelatedEventBuilder_.setMessage(value);
+      }
+      commandCase_ = 28;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder setPutCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder builderForValue) {
+      if (putCorrelatedEventBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        putCorrelatedEventBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 28;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder mergePutCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest value) {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (commandCase_ == 28 &&
+            command_ != io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.newBuilder((io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 28) {
+          putCorrelatedEventBuilder_.mergeFrom(value);
+        } else {
+          putCorrelatedEventBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 28;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder clearPutCorrelatedEvent() {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (commandCase_ == 28) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 28) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        putCorrelatedEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder getPutCorrelatedEventBuilder() {
+      return getPutCorrelatedEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder() {
+      if ((commandCase_ == 28) && (putCorrelatedEventBuilder_ != null)) {
+        return putCorrelatedEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 28) {
+          return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder> 
+        getPutCorrelatedEventFieldBuilder() {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (!(commandCase_ == 28)) {
+          command_ = io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+        }
+        putCorrelatedEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 28;
+      onChanged();
+      return putCorrelatedEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
