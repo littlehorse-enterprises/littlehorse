@@ -1,11 +1,10 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 LittleHorse Enterprises LLC <engineering@littlehorse.io>
 */
 package internal
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -46,8 +45,6 @@ var getExternalEventCmd = &cobra.Command{
 		if len(args) == 1 {
 			args = strings.Split(args[0], "/")
 		}
-
-		fmt.Println(args)
 
 		ctx := requestContext(cmd)
 

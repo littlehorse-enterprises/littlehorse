@@ -125,14 +125,16 @@ class PutUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
-    __slots__ = ["name", "retention_policy", "content_type"]
+    __slots__ = ["name", "retention_policy", "content_type", "data_nugget_config"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
+    DATA_NUGGET_CONFIG_FIELD_NUMBER: _ClassVar[int]
     name: str
     retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
     content_type: _common_wfspec_pb2.ReturnType
-    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+    data_nugget_config: _external_event_pb2.DataNuggetConfig
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., data_nugget_config: _Optional[_Union[_external_event_pb2.DataNuggetConfig, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ["wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position"]

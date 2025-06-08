@@ -101,4 +101,31 @@ public interface PutExternalEventDefRequestOrBuilder extends
    * <code>optional .littlehorse.ReturnType content_type = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder();
+
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+   * @return Whether the dataNuggetConfig field is set.
+   */
+  boolean hasDataNuggetConfig();
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+   * @return The dataNuggetConfig.
+   */
+  io.littlehorse.sdk.common.proto.DataNuggetConfig getDataNuggetConfig();
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder getDataNuggetConfigOrBuilder();
 }

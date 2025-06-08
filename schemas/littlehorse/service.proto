@@ -476,6 +476,9 @@ message PutExternalEventDefRequest {
 
   // Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
   optional ReturnType content_type = 3;
+
+  // If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+  optional DataNuggetConfig data_nugget_config = 4;
 }
 
 // Request used to create an ExternalEvent.

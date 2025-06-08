@@ -102,13 +102,13 @@ public class PutDataNuggetRequestModel extends CoreSubCommand<PutDataNuggetReque
         DataNuggetIdModel id = new DataNuggetIdModel(key, externalEventDefId, guid);
         DataNuggetModel dataNugget = manager.get(id);
         if (dataNugget != null) {
-            if (dataNugget.getEpoch() != expectedEpoch) {
+            if (expectedEpoch != null && dataNugget.getEpoch() != expectedEpoch) {
                 throw new LHApiException(
                         Status.FAILED_PRECONDITION,
                         "Mismatched epoch. Expected " + expectedEpoch + " and observed " + dataNugget.getEpoch());
             }
 
-            dataNugget.setEpoch(expectedEpoch + 1);
+            dataNugget.setEpoch(dataNugget.getEpoch() + 1);
             dataNugget.setContent(content);
         } else {
             dataNugget = new DataNuggetModel();

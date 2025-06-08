@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,6 +31,7 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
     private ExternalEventRetentionPolicyModel retentionPolicy;
 
     @Getter
+    @Setter
     private DataNuggetConfigModel dataNuggetConfig;
 
     // Do not use lombok for this

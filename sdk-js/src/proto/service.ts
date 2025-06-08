@@ -21,7 +21,13 @@ import {
   taskStatusToNumber,
 } from "./common_enums";
 import { ReturnType, VariableDef } from "./common_wfspec";
-import { DataNugget, ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
+import {
+  DataNugget,
+  DataNuggetConfig,
+  ExternalEvent,
+  ExternalEventDef,
+  ExternalEventRetentionPolicy,
+} from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
@@ -311,7 +317,11 @@ export interface PutExternalEventDefRequest {
     | ExternalEventRetentionPolicy
     | undefined;
   /** Typing information for the content of ExternalEvent's associated with this ExternalEventDef. */
-  contentType?: ReturnType | undefined;
+  contentType?:
+    | ReturnType
+    | undefined;
+  /** If set, then this `ExternalEventDef` will allow the `DataNugget` feature. */
+  dataNuggetConfig?: DataNuggetConfig | undefined;
 }
 
 /** Request used to create an ExternalEvent. */
@@ -2293,7 +2303,7 @@ export const PutUserTaskDefRequest = {
 };
 
 function createBasePutExternalEventDefRequest(): PutExternalEventDefRequest {
-  return { name: "", retentionPolicy: undefined, contentType: undefined };
+  return { name: "", retentionPolicy: undefined, contentType: undefined, dataNuggetConfig: undefined };
 }
 
 export const PutExternalEventDefRequest = {
@@ -2306,6 +2316,9 @@ export const PutExternalEventDefRequest = {
     }
     if (message.contentType !== undefined) {
       ReturnType.encode(message.contentType, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.dataNuggetConfig !== undefined) {
+      DataNuggetConfig.encode(message.dataNuggetConfig, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -2338,6 +2351,13 @@ export const PutExternalEventDefRequest = {
 
           message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.dataNuggetConfig = DataNuggetConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2358,6 +2378,9 @@ export const PutExternalEventDefRequest = {
       : undefined;
     message.contentType = (object.contentType !== undefined && object.contentType !== null)
       ? ReturnType.fromPartial(object.contentType)
+      : undefined;
+    message.dataNuggetConfig = (object.dataNuggetConfig !== undefined && object.dataNuggetConfig !== null)
+      ? DataNuggetConfig.fromPartial(object.dataNuggetConfig)
       : undefined;
     return message;
   },
