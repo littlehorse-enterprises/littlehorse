@@ -1,7 +1,7 @@
 "use server"
 
 import { ScheduledWfRun, ScheduledWfRunId } from "littlehorse-client/proto"
-import { lhClient } from "@/lib/lhClient"
+import { lhClient } from "@/utils/client/lhClient"
 
 export async function getScheduledWfRunsFromIds(scheduledWfRunIds: ScheduledWfRunId[], tenantId: string): Promise<ScheduledWfRun[]> {
   if (!scheduledWfRunIds || scheduledWfRunIds.length === 0) {

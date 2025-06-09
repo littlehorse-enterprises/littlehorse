@@ -1,4 +1,4 @@
-import { isTokenExpired, validateAccessToken } from "@/utils/authUtil";
+import { isTokenExpired, validateAccessToken } from "@/utils/auth/authUtil";
 import NextAuth from "next-auth";
 import "next-auth/jwt";
 import Keycloak from "next-auth/providers/keycloak";

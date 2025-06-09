@@ -26,13 +26,6 @@ export interface LayoutOptions {
   customOptions?: Record<string, string>;
 }
 
-/**
- * Layout function that positions nodes using elkjs with horizontal layout
- * @param nodes - Array of React Flow nodes
- * @param edges - Array of React Flow edges
- * @param options - Layout configuration options
- * @returns Promise resolving to layouted nodes and edges
- */
 export const getLayoutedElements = async (
   nodes: Node[], 
   edges: Edge[], 
@@ -78,7 +71,7 @@ export const getLayoutedElements = async (
     
     const layoutedNodes: Node[] = layoutedGraph.children?.map((node) => ({
       id: node.id,
-      type: 'task',
+      type: "node",
       data: nodes.find(n => n.id === node.id)?.data || { label: node.id },
       targetPosition: Position.Left,
       sourcePosition: Position.Right,

@@ -1,7 +1,7 @@
 "use server";
 
 import { signOut } from "@/auth";
-import { getKeycloakLogoutUrl } from "@/utils/getKeycloakLogoutUrl";
+import { getKeycloakLogoutUrl } from "@/utils/auth/getKeycloakLogoutUrl";
 import { redirect } from "next/navigation";
 
 export async function handleSignOut() {

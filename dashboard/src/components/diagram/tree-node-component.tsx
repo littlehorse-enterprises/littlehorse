@@ -2,9 +2,10 @@
 
 import { TreeNode } from "@/types/buildNodeTree"
 import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from "lucide-react"
-import type React from "react"
+import React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { useSelection } from "../context/selection-context"
+import { getNodeIcon, NodeType } from "@/utils/ui/node-utils"
 
 interface TreeNodeComponentProps {
     node: TreeNode
@@ -42,31 +43,58 @@ export function TreeNodeComponent({
         }
     }, [searchTerm, node, isExpanded])
 
-    const getNodeTypeFromLabel = (label: string): string => {
-        if (label.includes('ENTRYPOINT')) return "ENTRYPOINT"
-        if (label.includes('EXIT')) return "EXIT"
-        if (label.includes('TASK')) return "TASK"
-        if (label.includes('EXTERNAL_EVENT')) return "EXTERNAL_EVENT"
-        return "UNKNOWN"
+    const getNodeTypeFromLabel = (label: string): NodeType | null => {
+        if (label.includes('ENTRYPOINT') || label.includes('entrypoint')) return "ENTRYPOINT"
+        if (label.includes('EXIT') || label.includes('exit')) return "EXIT"
+        if (label.includes('TASK') || label.includes('task')) return "TASK"
+        if (label.includes('EXTERNAL_EVENT') || label.includes('external')) return "EXTERNAL_EVENT"
+        if (label.includes('DECISION') || label.includes('decision')) return "DECISION"
+        return null
     }
 
     const getNodeStatusIcon = () => {
-        // Check for pattern in node label/ID
+        // Check for pattern in node label/ID and get proper icon
         const nodeType = getNodeTypeFromLabel(node.label)
 
-        if (nodeType !== "UNKNOWN") {
-            // return getNodeIcon(nodeType, "sm")
+        if (nodeType) {
+            const iconElement = getNodeIcon(nodeType)
+            if (iconElement) {
+                // Clone the icon with smaller size for tree view
+                return (
+                    <div className="mr-1.5 flex items-center justify-center">
+                        <div className="w-3 h-3 flex items-center justify-center">
+                            {React.cloneElement(iconElement, {
+                                className: iconElement.props.className.replace('h-6 w-6', 'h-3 w-3')
+                            })}
+                        </div>
+                    </div>
+                )
+            }
         }
 
-        // Original type-based icons as fallback
+        // Fallback for node types based on tree node type
         if (node.type === "start") return <div className="w-3 h-3 rounded-full bg-green-500 mr-1.5" />
         if (node.type === "end") return <div className="w-3 h-3 rounded-full bg-red-500 mr-1.5" />
         if (node.type === "decision") return <div className="w-3 h-3 rotate-45 bg-yellow-500 mr-1.5" />
 
-        // For task nodes, show status
+        // For task nodes, show status with proper task icon
         if (node.status === "completed") return <CheckCircle className="w-3 h-3 text-green-500 mr-1.5" />
         if (node.status === "error") return <XCircle className="w-3 h-3 text-red-500 mr-1.5" />
         if (node.status === "running") return <Loader2 className="w-3 h-3 text-blue-500 animate-spin mr-1.5" />
+
+        // Default to task icon if no specific type detected
+        const taskIcon = getNodeIcon("TASK")
+        if (taskIcon) {
+            return (
+                <div className="mr-1.5 flex items-center justify-center">
+                    <div className="w-3 h-3 flex items-center justify-center">
+                        {React.cloneElement(taskIcon, {
+                            className: taskIcon.props.className.replace('h-6 w-6', 'h-3 w-3')
+                        })}
+                    </div>
+                </div>
+            )
+        }
 
         return <div className="w-3 h-3 rounded-sm bg-gray-400 mr-1.5" />
     }

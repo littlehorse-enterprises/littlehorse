@@ -1,4 +1,4 @@
-import { MetadataSearchClient } from "./components/metadata-search-client"
+import { MetadataSearchClient } from "@/components/metadata/metadata-search-client"
 
 export default function MetadataSearchPage() {
     return (

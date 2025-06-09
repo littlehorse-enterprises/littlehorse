@@ -1,5 +1,5 @@
 "use client"
-import ScheduledWfRunsTab from "@/components/diagram/left-sidebar/scheduled-wf-runs-tab"
+import ScheduledWfRunsTab from "@/components/diagram/left-sidebar/tab-content/scheduled-wf-runs-tab"
 import { Badge } from "@/components/ui/badge"
 import SidebarExpandButton from "@/components/ui/sidebar-expand-button"
 import { LeftSidebarTabId } from "@/types/leftSidebarTabs"
@@ -7,8 +7,8 @@ import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { WfRun, WfSpec } from "littlehorse-client/proto"
 import { Play } from "lucide-react"
 import { useEffect, useState } from "react"
-import WfRunTab from "../wf-run-tab"
-import WfSpecTab from "../wf-spec-tab"
+import WfRunTab from "./tab-content/wf-run-tab"
+import WfSpecTab from "./tab-content/wf-spec-tab"
 import LeftSidebarTabs from "./left-sidebar-tabs"
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {

@@ -1,6 +1,6 @@
 "use server";
 
-import { lhClient } from "@/lib/lhClient";
+import { lhClient } from "@/utils/client/lhClient";
 import {
   LHMethodParamType,
   LHMethodReturnType,

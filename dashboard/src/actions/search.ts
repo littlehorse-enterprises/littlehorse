@@ -1,6 +1,6 @@
 "use server";
-import { SEARCH_LIMIT_DEFAULT } from "@/lib/constants";
-import { lhClient } from "@/lib/lhClient";
+import { SEARCH_LIMIT_DEFAULT } from "@/utils/ui/constants";
+import { lhClient } from "@/utils/client/lhClient";
 import { SearchType } from "@/types/search";
 import { WithBookmark, WithTenant } from "@/types/withs";
 import {

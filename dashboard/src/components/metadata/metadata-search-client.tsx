@@ -1,7 +1,7 @@
 "use client"
 import { search, SearchResponse } from "@/actions/search"
 import { LoadMorePagination } from "@/components/ui/load-more-pagination"
-import { SEARCH_ENTITIES, SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/lib/constants"
+import { SEARCH_ENTITIES, SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/utils/ui/constants"
 import { SearchType } from "@/types/search"
 import { Tabs, TabsList, TabsTrigger } from "@littlehorse-enterprises/ui-library/tabs"
 import { useParams } from "next/navigation"

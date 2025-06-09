@@ -2,16 +2,16 @@
 
 import { handleSignOut } from "@/actions/handleSignOut"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
-import { getTenants } from "@/utils/getTenants"
+import { getTenants } from "@/utils/auth/getTenants"
 import { Button } from "@littlehorse-enterprises/ui-library/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@littlehorse-enterprises/ui-library/dropdown-menu"
 import { Check } from "lucide-react"
 import { useSession } from "next-auth/react"
@@ -22,7 +22,7 @@ import { useState } from "react"
 // this exists because the path can't be obtained from the server component layout
 export default function TenantHeader() {
     const router = useRouter()
-    const {data: session} = useSession()
+    const { data: session } = useSession()
     const tenantId = useParams().tenantId as string
     const [currentTenant, setCurrentTenant] = useState<string | null>(tenantId)
 
@@ -69,7 +69,7 @@ export default function TenantHeader() {
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut}>
-                      Sign Out
+                        Sign Out
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

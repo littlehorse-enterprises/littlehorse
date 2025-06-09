@@ -1,7 +1,7 @@
 "use server"
 
 import { NodeRun, ThreadRun, WfRunId } from "littlehorse-client/proto"
-import { lhClient } from "@/lib/lhClient"
+import { lhClient } from "@/utils/client/lhClient"
 import { WfRunDetails, ThreadRunWithNodeRuns } from "@/types/wfRunDetails"
 
 type Props = {

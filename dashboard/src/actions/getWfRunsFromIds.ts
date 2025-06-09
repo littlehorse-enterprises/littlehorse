@@ -1,7 +1,7 @@
 "use server"
 
 import { WfRun, WfRunId } from "littlehorse-client/proto"
-import { lhClient } from "@/lib/lhClient"
+import { lhClient } from "@/utils/client/lhClient"
 
 export async function getWfRunsFromIds(wfRunIds: WfRunId[], tenantId: string): Promise<WfRun[]> {
   if (!wfRunIds || wfRunIds.length === 0) {

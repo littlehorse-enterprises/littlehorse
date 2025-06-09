@@ -38,6 +38,7 @@ export function extractNodeData(wfSpec: WfSpec, wfRunDetails?: WfRunDetails): No
     const data = {
       label: nodeName,
       status: status,
+      type: nodeName.split('-').at(-1),
       ...nodeRun
     };
 
@@ -49,7 +50,6 @@ export function extractNodeData(wfSpec: WfSpec, wfRunDetails?: WfRunDetails): No
     } satisfies Node;
   });
 
-  console.log("Extracted nodes:", nodes);
   return nodes;
 }
 
@@ -81,7 +81,6 @@ export function extractEdgeData(wfSpec: WfSpec): Edge[] {
     });
   });
 
-  console.log("Extracted edges:", edges);
   return edges;
 }
 

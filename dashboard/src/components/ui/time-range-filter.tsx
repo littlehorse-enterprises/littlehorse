@@ -1,6 +1,6 @@
 "use client"
 
-import { TIME_RANGES } from "@/lib/constants"
+import { TIME_RANGES } from "@/utils/ui/constants"
 import { Clock } from "lucide-react"
 import { useState } from "react"
 

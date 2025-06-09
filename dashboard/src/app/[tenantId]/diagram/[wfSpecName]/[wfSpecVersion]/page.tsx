@@ -1,8 +1,8 @@
 import { getWfRunDetails } from "@/actions/getWfRun";
 import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
 import WorkflowDiagram from "@/components/diagram/workflow-diagram";
-import { extractEdgeData, extractNodeData } from "@/lib/data-extraction";
-import { lhClient } from "@/lib/lhClient";
+import { extractEdgeData, extractNodeData } from "@/utils/data/data-extraction";
+import { lhClient } from "@/utils/client/lhClient";
 import { type Edge, type Node } from "@xyflow/react";
 import { SelectionProvider } from "@/components/context/selection-context";
 import { WfRunDetails } from "@/types/wfRunDetails";

@@ -1,4 +1,4 @@
-import { lhClient } from "@/lib/lhClient"
+import { lhClient } from "@/utils/lhClient"
 import TaskDefClient from "./TaskDefClient"
 
 type PageProps = {
@@ -13,8 +13,8 @@ export default async function TaskDefPage({ params }: PageProps) {
 
   try {
     const client = await lhClient(tenantId)
-    
-    const [taskDef, {results: wfSpecIds}] = await Promise.all([
+
+    const [taskDef, { results: wfSpecIds }] = await Promise.all([
       client.getTaskDef({ name: taskDefId }),
       client.searchWfSpec({ taskDefName: taskDefId, limit: 10 }),
     ])

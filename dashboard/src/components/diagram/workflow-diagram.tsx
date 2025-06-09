@@ -14,20 +14,19 @@ import {
     BackgroundVariant,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import TaskNode from '@/components/flow/task-node';
-import { mockNodes, mockEdges } from '@/lib/mock-data';
-import { getLayoutedElements } from '@/lib/layout-utils';
+import { getLayoutedElements } from '@/utils/ui/layout-utils';
 import { useSelection } from '../context/selection-context';
+import NodeComponent from '@/components/diagram/node'
 
 // Define custom node types
 const nodeTypes: NodeTypes = {
-    task: TaskNode,
+    node: NodeComponent,
 };
 
 interface WorkflowDiagramProps {
     className?: string;
-    nodes?: Node[];
-    edges?: Edge[];
+    nodes: Node[];
+    edges: Edge[];
 }
 
 export default function WorkflowDiagram({
@@ -40,8 +39,8 @@ export default function WorkflowDiagram({
     const { selectedId, setSelectedId } = useSelection();
 
     // Use custom nodes/edges if provided, otherwise use mock data
-    const sourceNodes = customNodes || mockNodes;
-    const sourceEdges = customEdges || mockEdges;
+    const sourceNodes = customNodes;
+    const sourceEdges = customEdges;
 
     // Apply layout when component mounts or when source data changes
     useEffect(() => {
@@ -80,6 +79,7 @@ export default function WorkflowDiagram({
                 onEdgesChange={onEdgesChange}
                 onNodeClick={handleNodeClick}
                 nodeTypes={nodeTypes}
+                defaultEdgeOptions={{ type: 'step' }}
                 fitView
                 attributionPosition="bottom-right"
                 nodesDraggable={false}

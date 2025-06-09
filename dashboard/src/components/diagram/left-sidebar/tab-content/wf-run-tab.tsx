@@ -6,11 +6,11 @@ import { DropdownFilter } from "@/components/ui/dropdown-filter"
 import { FilterResetButton } from "@/components/ui/filter-reset-button"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
 import {
-  MINUTES_TO_TIME_RANGE,
-  STATUS_OPTIONS,
-  TIME_RANGE_MINUTES,
-  TIME_RANGE_OPTIONS
-} from "@/lib/constants"
+    MINUTES_TO_TIME_RANGE,
+    STATUS_OPTIONS,
+    TIME_RANGE_MINUTES,
+    TIME_RANGE_OPTIONS
+} from "@/utils/ui/constants"
 import type { ColumnDef } from "@tanstack/react-table"
 import { WfRun } from "littlehorse-client/proto"
 import { CheckCircle, Clock, Loader2, XCircle } from "lucide-react"
