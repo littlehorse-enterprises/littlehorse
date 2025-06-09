@@ -1,13 +1,20 @@
 package io.littlehorse.common.model.getable.core.usertaskrun;
 
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
+import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 
 public class UserTaskRunModelTest {
 
@@ -65,4 +72,75 @@ public class UserTaskRunModelTest {
 
         Assertions.assertThat(deduplicatedIndexes.size()).isEqualTo(15);
     }
+
+    @Test
+    void commentMethodshouldProperlyAddCommentEvent(){
+
+        // Mock the context and command
+        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CommandModel mockCommand = mock(CommandModel.class);
+        when(mockCommand.getTime()).thenReturn(new java.util.Date());
+        when(mockContext.currentCommand()).thenReturn(mockCommand);
+
+        UserTaskRunModel utr = new UserTaskRunModel();
+        utr.setProcessorContext(mockContext);
+
+        UserTaskEventModel addEvent = utr.comment("user1", "hello world");
+        Integer commentId = addEvent.getCommented().getUserCommentId();
+
+        Assertions.assertThat(utr.getLastEventForComment().get(commentId)).isEqualTo(addEvent);
+        Assertions.assertThat(addEvent.getCommented()).isNotNull();
+        Assertions.assertThat(addEvent.getCommented().getComment()).isEqualTo("hello world");
+        Assertions.assertThat(addEvent.getCommented().getUserCommentId()).isEqualTo(0);
+        Assertions.assertThat(utr.getCommentIdCount()).isEqualTo(1);
+        Assertions.assertThat(utr.getEvents().get(0)).isEqualTo(addEvent);
+
+    }
+
+    @Test
+    void editCommentMethodShouldProperlyAddCommnetEventAndReplaceInLastEventForComment(){
+
+        // Mock the context and command
+        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CommandModel mockCommand = mock(CommandModel.class);
+        when(mockCommand.getTime()).thenReturn(new java.util.Date());
+        when(mockContext.currentCommand()).thenReturn(mockCommand);
+
+        UserTaskRunModel utr = new UserTaskRunModel();
+        utr.setProcessorContext(mockContext);
+        
+        UserTaskEventModel addEvent = utr.comment("user1", "hello world");
+        Integer commentId = addEvent.getCommented().getUserCommentId();
+
+        UserTaskEventModel editEvent = utr.editComment("user1", "new comment", commentId);
+
+        Assertions.assertThat(editEvent.getCommentEdited()).isNotNull();
+        Assertions.assertThat(utr.getEvents().get(1)).isEqualTo(editEvent);
+        Assertions.assertThat(utr.getLastEventForComment().get(commentId)).isEqualTo(editEvent);
+
+    }
+
+    @Test
+    void deleteCommentMethodShouldProperlyAddToEventsAndLastEventForComment(){
+        // Mock the context and command
+        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CommandModel mockCommand = mock(CommandModel.class);
+        when(mockCommand.getTime()).thenReturn(new java.util.Date());
+        when(mockContext.currentCommand()).thenReturn(mockCommand);
+
+        UserTaskRunModel utr = new UserTaskRunModel();
+        utr.setProcessorContext(mockContext);
+
+        UserTaskEventModel addEvent = utr.comment("user1", "hello world");
+        Integer commentId = addEvent.getCommented().getUserCommentId();
+
+        utr.deleteComment(commentId);
+
+        Assertions.assertThat(utr.getEvents().get(1).getType()).isEqualTo(EventCase.COMMENT_DELETED);
+        Assertions.assertThat(utr.getEvents().get(1).getCommentDeleted().getUserCommentId()).isEqualTo(commentId);
+        Assertions.assertThat(utr.getLastEventForComment().get(commentId).getCommentDeleted()).isNotNull();
+
+    }
+
+ 
 }
