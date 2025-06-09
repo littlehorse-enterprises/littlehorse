@@ -146,24 +146,25 @@ public final class NodeRunOuterClass {
       "d_run_id\"\214\001\n\023WaitingThreadStatus\022\026\n\022THRE" +
       "AD_IN_PROGRESS\020\000\022\033\n\027THREAD_HANDLING_FAIL" +
       "URE\020\001\022\'\n#THREAD_COMPLETED_OR_FAILURE_HAN" +
-      "DLED\020\002\022\027\n\023THREAD_UNSUCCESSFUL\020\003\"\201\002\n\024Exte" +
+      "DLED\020\002\022\027\n\023THREAD_UNSUCCESSFUL\020\003\"\263\002\n\024Exte" +
       "rnalEventNodeRun\022>\n\025external_event_def_i" +
       "d\030\001 \001(\0132\037.littlehorse.ExternalEventDefId" +
       "\0223\n\nevent_time\030\002 \001(\0132\032.google.protobuf.T" +
       "imestampH\000\210\001\001\022<\n\021external_event_id\030\003 \001(\013" +
       "2\034.littlehorse.ExternalEventIdH\001\210\001\001\022\021\n\tt" +
-      "imed_out\030\004 \001(\010B\r\n\013_event_timeB\024\n\022_extern" +
-      "al_event_id\"T\n\014SleepNodeRun\0223\n\017maturatio" +
-      "n_time\030\001 \001(\0132\032.google.protobuf.Timestamp" +
-      "\022\017\n\007matured\030\002 \001(\010\"\330\001\n\007Failure\022\024\n\014failure" +
-      "_name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\0220\n\007content\030" +
-      "\003 \001(\0132\032.littlehorse.VariableValueH\000\210\001\001\022\034" +
-      "\n\024was_properly_handled\030\004 \001(\010\022)\n\034failure_" +
-      "handler_threadrun_id\030\005 \001(\005H\001\210\001\001B\n\n\010_cont" +
-      "entB\037\n\035_failure_handler_threadrun_idBM\n\037" +
-      "io.littlehorse.sdk.common.protoP\001Z\t.;lhp" +
-      "roto\252\002\034LittleHorse.Sdk.Common.Protob\006pro" +
-      "to3"
+      "imed_out\030\004 \001(\010\022\034\n\017correlation_key\030\005 \001(\tH" +
+      "\002\210\001\001B\r\n\013_event_timeB\024\n\022_external_event_i" +
+      "dB\022\n\020_correlation_key\"T\n\014SleepNodeRun\0223\n" +
+      "\017maturation_time\030\001 \001(\0132\032.google.protobuf" +
+      ".Timestamp\022\017\n\007matured\030\002 \001(\010\"\330\001\n\007Failure\022" +
+      "\024\n\014failure_name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\0220" +
+      "\n\007content\030\003 \001(\0132\032.littlehorse.VariableVa" +
+      "lueH\000\210\001\001\022\034\n\024was_properly_handled\030\004 \001(\010\022)" +
+      "\n\034failure_handler_threadrun_id\030\005 \001(\005H\001\210\001" +
+      "\001B\n\n\010_contentB\037\n\035_failure_handler_thread" +
+      "run_idBM\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -244,7 +245,7 @@ public final class NodeRunOuterClass {
     internal_static_littlehorse_ExternalEventNodeRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventNodeRun_descriptor,
-        new java.lang.String[] { "ExternalEventDefId", "EventTime", "ExternalEventId", "TimedOut", "EventTime", "ExternalEventId", });
+        new java.lang.String[] { "ExternalEventDefId", "EventTime", "ExternalEventId", "TimedOut", "CorrelationKey", "EventTime", "ExternalEventId", "CorrelationKey", });
     internal_static_littlehorse_SleepNodeRun_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_SleepNodeRun_fieldAccessorTable = new

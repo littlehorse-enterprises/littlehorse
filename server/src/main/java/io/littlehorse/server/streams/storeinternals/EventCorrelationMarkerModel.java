@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.storeinternals;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
-import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.EventCorrelationMarker;
@@ -12,7 +11,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 
@@ -52,7 +50,7 @@ public class EventCorrelationMarkerModel extends Storeable<EventCorrelationMarke
         EventCorrelationMarker p = (EventCorrelationMarker) proto;
         this.correlationKey = p.getCorrelationKey();
         this.eventDefId = LHSerializable.fromProto(p.getEventDefId(), ExternalEventDefIdModel.class, context);
-        
+
         for (NodeRunId nrid : p.getSourceNodeRunsList()) {
             this.sourceNodeRuns.add(LHSerializable.fromProto(nrid, NodeRunIdModel.class, context));
         }
@@ -79,8 +77,6 @@ public class EventCorrelationMarkerModel extends Storeable<EventCorrelationMarke
     public void removeCorrelation(NodeRunIdModel nodeRunId) {
         sourceNodeRuns.remove(nodeRunId);
     }
-
-    public List<CoreSubCommand<?>> 
 
     public boolean isEmpty() {
         return sourceNodeRuns.isEmpty();

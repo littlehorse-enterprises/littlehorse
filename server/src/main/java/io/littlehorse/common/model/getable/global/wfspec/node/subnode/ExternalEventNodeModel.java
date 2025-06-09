@@ -16,7 +16,6 @@ import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import lombok.Getter;
 
 @Getter
@@ -44,8 +43,9 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
             timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), ignored);
         }
 
-        if (p.hasCorrelationId()) {
-            this.corrrelationId = LHSerializable.fromProto(p.getCorrelationId(), VariableAssignmentModel.class, ignored);
+        if (p.hasCorrelationKey()) {
+            this.corrrelationId =
+                    LHSerializable.fromProto(p.getCorrelationKey(), VariableAssignmentModel.class, ignored);
         }
     }
 
@@ -54,7 +54,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
                 ExternalEventNode.newBuilder().setExternalEventDefId(externalEventDefId.toProto());
 
         if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
-        if (corrrelationId != null) out.setCorrelationId(corrrelationId.toProto());
+        if (corrrelationId != null) out.setCorrelationKey(corrrelationId.toProto());
         return out;
     }
 
@@ -75,7 +75,8 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
-        ExternalEventDefModel eed = ctx.metadataManager().get(new ExternalEventDefIdModel(externalEventDefId.getName()));
+        ExternalEventDefModel eed =
+                ctx.metadataManager().get(new ExternalEventDefIdModel(externalEventDefId.getName()));
 
         // TODO: validate the timeout
 

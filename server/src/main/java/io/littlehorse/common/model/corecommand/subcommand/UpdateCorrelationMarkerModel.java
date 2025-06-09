@@ -14,8 +14,10 @@ import io.littlehorse.server.streams.topology.core.CorrelationMarkerManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelationmarkerPb> {
 
     private String correlationKey;
@@ -45,7 +47,8 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
         this.correlationKey = p.getCorrelationKey();
         this.action = p.getAction();
         this.waitingNodeRun = LHSerializable.fromProto(p.getWaitingNodeRun(), NodeRunIdModel.class, ignored);
-        this.externalEventDefId = LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, ignored);
+        this.externalEventDefId =
+                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, ignored);
     }
 
     @Override
@@ -57,16 +60,16 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
     public Empty process(ProcessorExecutionContext context, LHServerConfig config) {
         CorrelationMarkerManager manager = context.getCorrelationMarkerManager();
         EventCorrelationMarkerModel marker = manager.getMarker(correlationKey, externalEventDefId);
-        
-        switch(action) {
-        case CORRELATE:
-            marker.addCorrelation(waitingNodeRun);
-            break;
-        case UNCORRELATE:
-            marker.removeCorrelation(waitingNodeRun);
-            break;
-        default:
-            throw new IllegalStateException("Unrecognized Correlation Marker Action");
+
+        switch (action) {
+            case CORRELATE:
+                marker.addCorrelation(waitingNodeRun);
+                break;
+            case UNCORRELATE:
+                marker.removeCorrelation(waitingNodeRun);
+                break;
+            default:
+                throw new IllegalStateException("Unrecognized Correlation Marker Action");
         }
         manager.saveCorrelationMarker(marker);
 

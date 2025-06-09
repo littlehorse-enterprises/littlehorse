@@ -116,12 +116,10 @@ public class ProcessorExecutionContext implements ExecutionContext {
     }
 
     /**
-     * Various subnodes can forward timers during the 
+     * Various subnodes can forward timers during the
      * @param timer
      */
-    public void forwardTimer(LHTimer timer) {
-
-    }
+    public void forwardTimer(LHTimer timer) {}
 
     @Override
     public AuthorizationContext authorization() {

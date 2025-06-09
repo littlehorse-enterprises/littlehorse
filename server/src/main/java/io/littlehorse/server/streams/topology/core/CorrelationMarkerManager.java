@@ -5,7 +5,7 @@ import io.littlehorse.server.streams.storeinternals.EventCorrelationMarkerModel;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 
 public class CorrelationMarkerManager {
-    
+
     private final TenantScopedStore store;
 
     public CorrelationMarkerManager(TenantScopedStore store) {
