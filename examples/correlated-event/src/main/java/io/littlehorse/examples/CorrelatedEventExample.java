@@ -62,9 +62,12 @@ public class CorrelatedEventExample {
         LHConfig config = new LHConfig(props);
         LittleHorseBlockingStub client = config.getBlockingStub();
 
+        String correlationKey = args.length == 0 ? "some-document" : args[0];
+
         client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
                 .setName(EVENT_NAME)
-                .setContentType(ReturnType.newBuilder().setReturnType(TypeDefinition.newBuilder().setType(VariableType.BOOL)))
+                .setContentType(ReturnType.newBuilder().setReturnType(
+                            TypeDefinition.newBuilder().setType(VariableType.BOOL)))
                 .setCorrelatedEventConfig(CorrelatedEventConfig.newBuilder().setDeleteAfterFirstCorrelation(false))
                 .build());
 
@@ -74,13 +77,16 @@ public class CorrelatedEventExample {
         // For fun, let's run the workflow
         Thread.sleep(1000);
 
-        WfRun result = client.runWf(RunWfRequest.newBuilder().setWfSpecName(WF_NAME).putVariables("document-id", LHLibUtil.objToVarVal("some-document")).build());
+        WfRun result = client.runWf(RunWfRequest.newBuilder()
+                .setWfSpecName(WF_NAME)
+                .putVariables("document-id", LHLibUtil.objToVarVal(correlationKey))
+                .build());
 
         System.out.println(LHLibUtil.protoToJson(result));
 
         client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
             .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(EVENT_NAME))
-            .setKey("some-document")
+            .setKey(correlationKey)
             .setContent(LHLibUtil.objToVarVal(true))
             .build());
 

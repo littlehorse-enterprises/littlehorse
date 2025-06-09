@@ -19,7 +19,10 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelatedEventRequest> {
@@ -97,6 +100,8 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
 
         // TODO (#1583): Check for CorrelationMarkers and send ExternalEvent's through Timer/Boomerang topology
         manager.put(correlatedEvent);
+
+        log.trace("About to correlate pedros: {}", correlatedEvent);
         context.maybeCorrelateEventPedros(correlatedEvent);
 
         return correlatedEvent.toProto().build();

@@ -33,6 +33,8 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +50,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * Execution context used in the Core Sub-Topology. This is the processor where the real work of
  * scheduling WfRun's is actually done.
  */
+@Slf4j
 public class ProcessorExecutionContext implements ExecutionContext {
 
     private final LHServerConfig config;
@@ -124,6 +127,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public void maybeCorrelateEventPedros(CorrelatedEventModel event) {
         EventCorrelationMarkerModel marker = getCorrelationMarkerManager()
                 .getMarker(event.getId().getKey(), event.getId().getExternalEventDefId());
+
+        log.debug("marker with key {} and event id {} is {}", event.getId().getKey(), event.getId().getExternalEventDefId(), marker);
         if (marker != null) {
             correlate(event, marker);
         }

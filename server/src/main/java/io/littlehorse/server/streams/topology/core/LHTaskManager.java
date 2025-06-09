@@ -8,6 +8,8 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.apache.kafka.streams.processor.api.Record;
 /**
  * This class provides useful methods for managing LH tasks
  */
+@Slf4j
 public class LHTaskManager {
 
     private final List<LHTimer> timersToSchedule = new ArrayList<>();
@@ -103,6 +106,7 @@ public class LHTaskManager {
         timer.topic = commandTopicName;
         CommandProcessorOutput output = new CommandProcessorOutput(timerTopicName, timer, timer.key);
         Headers headers = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
+        log.trace("forwarding lh timer: {}", timer);
         processorContext.forward(new Record<>(timer.key, output, System.currentTimeMillis(), headers));
     }
 }

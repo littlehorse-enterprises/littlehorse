@@ -68,9 +68,6 @@ It's also possible to pass an empty input by excluding the last two arguments:
 lhctl put correlatedEvent <key> <externalEventName>
 `,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 3 {
-			return errors.New("requires 2 or 4 args. Note: When a <varType> is specified, a <payload> is also required")
-		}
 		if len(args) != 2 && len(args) != 4 {
 			return errors.New("requires 2 or 4 args")
 		}
@@ -78,7 +75,7 @@ lhctl put correlatedEvent <key> <externalEventName>
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		eedName, key := args[0], args[1]
+		key, eedName := args[0], args[1]
 		content := &lhproto.VariableValue{}
 
 		if len(args) == 4 {

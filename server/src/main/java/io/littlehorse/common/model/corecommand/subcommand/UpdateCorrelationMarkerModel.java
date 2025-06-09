@@ -15,9 +15,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
+@Slf4j
 public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelationmarkerPb> {
 
     private String correlationKey;
@@ -72,6 +74,8 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
                 throw new IllegalStateException("Unrecognized Correlation Marker Action");
         }
         manager.saveCorrelationMarker(marker);
+        log.trace("Saved correleation marker {}", marker);
+        context.maybeCorrelateEventPedros(marker);
 
         return Empty.getDefaultInstance();
     }
