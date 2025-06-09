@@ -2,16 +2,11 @@
 
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
 import { Badge } from "@littlehorse-enterprises/ui-library/badge"
-import { Button } from "@littlehorse-enterprises/ui-library/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card"
-import { Input } from "@littlehorse-enterprises/ui-library/input"
-import { Label } from "@littlehorse-enterprises/ui-library/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@littlehorse-enterprises/ui-library/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@littlehorse-enterprises/ui-library/table"
-import { TaskDef, TaskStatus, WfSpecId } from "littlehorse-client/proto"
-import { Activity, ArrowLeft, Clock, Filter, Hash, Type, Workflow, X } from "lucide-react"
+import { TaskDef, WfSpecId } from "littlehorse-client/proto"
+import { Activity, ArrowLeft, Clock, Hash, Type, Workflow } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
 
 interface TaskDefClientProps {
   taskDef: TaskDef
@@ -26,23 +21,10 @@ export default function TaskDefClient({
   tenantId, 
   taskDefId 
 }: TaskDefClientProps) {
-
-  // Filter state
-  const [filters, setFilters] = useState({
-    status: undefined as TaskStatus | undefined,
-    earliestStart: undefined as string | undefined,
-    latestStart: undefined as string | undefined,
-  })
-
-  const [showFilters, setShowFilters] = useState(false)
-
   const { data: taskRuns } = useExecuteRPCWithSWR("searchTaskRun", {
     taskDefName: taskDefId,
     limit: 10,
-    ...filters,
   });
-
-  const hasActiveFilters = filters.status || filters.earliestStart || filters.latestStart
 
   return (
     <div className="container mx-auto py-6">
@@ -190,92 +172,8 @@ export default function TaskDefClient({
               <Activity className="h-5 w-5" />
               Related Task Runs
             </CardTitle>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2"
-              >
-                <Filter className="h-4 w-4" />
-                Filters
-                {hasActiveFilters && (
-                  <Badge variant="secondary" className="ml-1">
-                    {Object.values(filters).filter(v => v !== undefined && v !== "").length}
-                  </Badge>
-                )}
-              </Button>
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" onClick={() => {
-                   setFilters({
-                    status: undefined,
-                    earliestStart: undefined,
-                    latestStart: undefined,
-                  })
-                }}>
-                  <X className="h-4 w-4" />
-                  Clear
-                </Button>
-              )}
-            </div>
           </CardHeader>
           <CardContent>
-            {/* Filter Controls */}
-            {showFilters && (
-              <div className="mb-6 p-4 border rounded-lg bg-muted/10">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="status-filter">Status</Label>
-                    <Select
-                      value={filters.status?.toString() || "ALL"}
-                      onValueChange={(value) => 
-                        setFilters(prev => ({ 
-                          ...prev, 
-                          status: value as TaskStatus
-                        }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="All statuses" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="ALL">All statuses</SelectItem>
-                        {Object.values(TaskStatus).filter(status => status !== TaskStatus.UNRECOGNIZED).map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="earliest-start">Earliest Start</Label>
-                    <Input
-                      id="earliest-start"
-                      type="datetime-local"
-                      value={filters.earliestStart ?? ""}
-                      onChange={(e) => 
-                        setFilters(prev => ({ ...prev, earliestStart: e.target.value }))
-                      }
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="latest-start">Latest Start</Label>
-                    <Input
-                      id="latest-start"
-                      type="datetime-local"
-                      value={filters.latestStart ?? ""}
-                      onChange={(e) => 
-                        setFilters(prev => ({ ...prev, latestStart: e.target.value }))
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
             {!taskRuns ? (
               <div className="text-center py-8 text-muted-foreground">
                 Loading task runs...
@@ -286,14 +184,20 @@ export default function TaskDefClient({
                   <TableRow>
                     <TableHead>WfRun Id</TableHead>
                     <TableHead>Task GUID</TableHead>
-                    <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {taskRuns.results.map((taskRunId, index) => (
                     <TableRow key={index}>
                       <TableCell>
-                        {taskRunId.wfRunId!.id}
+                        {taskRunId.wfRunId && (
+                          <Link
+                            href={`/${tenantId}/wfRun/${taskRunId.wfRunId!.id}`}
+                            className="text-primary hover:underline"
+                          >
+                            {taskRunId.wfRunId.id}
+                          </Link>
+                        )}
                       </TableCell>
                       <TableCell>
                         {taskRunId.taskGuid}
@@ -304,10 +208,7 @@ export default function TaskDefClient({
               </Table>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                {hasActiveFilters 
-                  ? "No task runs match the current filters"
-                  : "No task runs found for this TaskDef"
-                }
+                No task runs found for this TaskDef
               </div>
             )}
           </CardContent>
