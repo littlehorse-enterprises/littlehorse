@@ -1693,7 +1693,12 @@ class WorkflowThread:
             args,
         )
 
-    def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
+    def wait_for_event(
+        self,
+        event_name: str,
+        timeout: int = -1,
+        correlation_id: Optional[Union[str, LHFormatString, WfRunVariable]] = None,
+    ) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
 
@@ -1701,14 +1706,22 @@ class WorkflowThread:
             event_name (str): The name of ExternalEvent to wait for
             timeout (int, optional): Timeout in seconds. If
             it is 0 or less it does not set a timeout. Defaults to -1.
+            correlation_id (Union[str, LHFormatString, WfRunVariable]): the
+            correlation id to be used for CorrelatedEvents.
 
         Returns:
             NodeOutput: A NodeOutput for this event.
         """
         self._check_if_active()
+
+        correlation_var_assn: Optional[VariableAssignment] = None
+        if correlation_id is not None:
+            correlation_var_assn = to_variable_assignment(correlation_id)
+
         wait_node = ExternalEventNode(
             external_event_def_id=ExternalEventDefId(name=event_name),
             timeout_seconds=None if timeout <= 0 else to_variable_assignment(timeout),
+            correlation_key=correlation_var_assn,
         )
         node_name = self.add_node(event_name, wait_node)
         return NodeOutput(node_name)

@@ -20,7 +20,23 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.*;
+import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.PutCorrelatedEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -33,13 +49,17 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
@@ -52,6 +72,7 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
@@ -59,6 +80,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEven
 import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
@@ -66,6 +88,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.common.util.InlineStructDefUtil;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
@@ -134,6 +157,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -298,7 +322,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         if (utd == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion()));
+                    "Couldn't find UserTaskDef %s version %d".formatted(req.getName(), req.getVersion()));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -313,6 +337,24 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(td.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
+    public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
+        StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
+
+        if (sd == null) {
+            throw new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find StructDef %s version %d".formatted(req.getName(), req.getVersion()));
+        } else {
+            ctx.onNext(sd.toProto().build());
             ctx.onCompleted();
         }
     }
@@ -360,6 +402,57 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
+    public void putStructDef(PutStructDefRequest req, StreamObserver<StructDef> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
+
+        PutStructDefRequestModel reqModel =
+                LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, StructDef.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
+    public void validateStructDefEvolution(
+            ValidateStructDefEvolutionRequest req, StreamObserver<ValidateStructDefEvolutionResponse> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
+
+        InlineStructDefModel newInlineStructDef =
+                LHSerializable.fromProto(req.getStructDef(), InlineStructDefModel.class, requestContext());
+        newInlineStructDef.validate();
+
+        StructDefIdModel sdId =
+                LHSerializable.fromProto(req.getStructDefId(), StructDefIdModel.class, requestContext());
+        StructDefModel existingStructDef = getServiceFromContext().getStructDef(sdId);
+
+        if (existingStructDef == null) {
+            ctx.onNext(ValidateStructDefEvolutionResponse.newBuilder()
+                    .setIsValid(true)
+                    .build());
+            ctx.onCompleted();
+        } else {
+            InlineStructDefModel oldInlineStructDef = existingStructDef.getStructDef();
+
+            Set<String> invalidFields = InlineStructDefUtil.getIncompatibleFields(
+                    req.getCompatibilityType(), newInlineStructDef, oldInlineStructDef);
+
+            System.out.println(invalidFields);
+
+            ValidateStructDefEvolutionResponse resp = ValidateStructDefEvolutionResponse.newBuilder()
+                    .setIsValid(invalidFields.isEmpty())
+                    .build();
+
+            ctx.onNext(resp);
+            ctx.onCompleted();
+        }
+    }
+    ;
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.WRITE_METADATA)
     public void putWorkflowEventDef(PutWorkflowEventDefRequest req, StreamObserver<WorkflowEventDef> ctx) {
         PutWorkflowEventDefRequestModel reqModel =
@@ -381,6 +474,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         PutExternalEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutExternalEventDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, ExternalEventDef.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.RUN)
+    public void putCorrelatedEvent(PutCorrelatedEventRequest req, StreamObserver<CorrelatedEvent> observer) {
+        PutCorrelatedEventRequestModel reqModel =
+                LHSerializable.fromProto(req, PutCorrelatedEventRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), observer, CorrelatedEvent.class, true);
     }
 
     @Override
@@ -644,6 +745,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getExternalEvent(ExternalEventId req, StreamObserver<ExternalEvent> ctx) {
         ExternalEventIdModel id = LHSerializable.fromProto(req, ExternalEventIdModel.class, requestContext());
         ExternalEventModel externalEvent = internalComms.getObject(id, ExternalEventModel.class, requestContext());
+        ctx.onNext(externalEvent.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
+    public void getCorrelatedEvent(CorrelatedEventId req, StreamObserver<CorrelatedEvent> ctx) {
+        CorrelatedEventIdModel id = LHSerializable.fromProto(req, CorrelatedEventIdModel.class, requestContext());
+        CorrelatedEventModel externalEvent = internalComms.getObject(id, CorrelatedEventModel.class, requestContext());
         ctx.onNext(externalEvent.toProto().build());
         ctx.onCompleted();
     }
@@ -926,6 +1036,17 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         DeleteWorkflowEventDefRequestModel dwedr =
                 LHSerializable.fromProto(req, DeleteWorkflowEventDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(dwedr), ctx, Empty.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
+    public void deleteStructDef(DeleteStructDefRequest req, StreamObserver<Empty> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
+        DeleteStructDefRequestModel dsdr =
+                LHSerializable.fromProto(req, DeleteStructDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(dsdr), ctx, Empty.class, true);
     }
 
     @Override

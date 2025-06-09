@@ -5,6 +5,30 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.subcommand.*;
+import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.BulkUpdateJobModel;
+import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.PutCorrelatedEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
+import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
+import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarkerModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.proto.Command;
@@ -52,6 +76,8 @@ public class CommandModel extends AbstractCommand<Command> {
     private ScheduleWfRunCommandModel scheduleWfRun;
     private ScheduleWfRequestModel scheduleWfRunRequest;
     private DeleteScheduledWfRunRequestModel deleteScheduledWfRun;
+    private PutCorrelatedEventRequestModel putCorrelatedEvent;
+    private UpdateCorrelationMarkerModel updateCorrellationMarker;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -158,6 +184,12 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case DELETE_SCHEDULED_WF_RUN:
                 out.setDeleteScheduledWfRun(deleteScheduledWfRun.toProto());
+                break;
+            case PUT_CORRELATED_EVENT:
+                out.setPutCorrelatedEvent(putCorrelatedEvent.toProto());
+                break;
+            case UPDATE_CORRELATION_MARKER:
+                out.setUpdateCorrelationMarker(updateCorrellationMarker.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -271,6 +303,14 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteScheduledWfRun = LHSerializable.fromProto(
                         p.getDeleteScheduledWfRun(), DeleteScheduledWfRunRequestModel.class, context);
                 break;
+            case PUT_CORRELATED_EVENT:
+                putCorrelatedEvent = LHSerializable.fromProto(
+                        p.getPutCorrelatedEvent(), PutCorrelatedEventRequestModel.class, context);
+                break;
+            case UPDATE_CORRELATION_MARKER:
+                updateCorrellationMarker = LHSerializable.fromProto(
+                        p.getUpdateCorrelationMarker(), UpdateCorrelationMarkerModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -333,6 +373,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 return scheduleWfRunRequest;
             case DELETE_SCHEDULED_WF_RUN:
                 return deleteScheduledWfRun;
+            case PUT_CORRELATED_EVENT:
+                return putCorrelatedEvent;
+            case UPDATE_CORRELATION_MARKER:
+                return updateCorrellationMarker;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -421,6 +465,12 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteScheduledWfRunRequestModel.class)) {
             type = CommandCase.DELETE_SCHEDULED_WF_RUN;
             deleteScheduledWfRun = (DeleteScheduledWfRunRequestModel) cmd;
+        } else if (cls.equals(PutCorrelatedEventRequestModel.class)) {
+            type = CommandCase.PUT_CORRELATED_EVENT;
+            putCorrelatedEvent = (PutCorrelatedEventRequestModel) cmd;
+        } else if (cls.equals(UpdateCorrelationMarkerModel.class)) {
+            type = CommandCase.UPDATE_CORRELATION_MARKER;
+            updateCorrellationMarker = (UpdateCorrelationMarkerModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

@@ -45,6 +45,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ExternalEventNode.class, io.littlehorse.sdk.common.proto.ExternalEventNode.Builder.class);
   }
 
+  private int bitField0_;
   public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
@@ -124,6 +125,47 @@ private static final long serialVersionUID = 0L;
     return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : timeoutSeconds_;
   }
 
+  public static final int CORRELATION_KEY_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.VariableAssignment correlationKey_;
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   * @return Whether the correlationKey field is set.
+   */
+  @java.lang.Override
+  public boolean hasCorrelationKey() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   * @return The correlationKey.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment getCorrelationKey() {
+    return correlationKey_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : correlationKey_;
+  }
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getCorrelationKeyOrBuilder() {
+    return correlationKey_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : correlationKey_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -144,6 +186,9 @@ private static final long serialVersionUID = 0L;
     if (timeoutSeconds_ != null) {
       output.writeMessage(2, getTimeoutSeconds());
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(3, getCorrelationKey());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -160,6 +205,10 @@ private static final long serialVersionUID = 0L;
     if (timeoutSeconds_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getTimeoutSeconds());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getCorrelationKey());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -186,6 +235,11 @@ private static final long serialVersionUID = 0L;
       if (!getTimeoutSeconds()
           .equals(other.getTimeoutSeconds())) return false;
     }
+    if (hasCorrelationKey() != other.hasCorrelationKey()) return false;
+    if (hasCorrelationKey()) {
+      if (!getCorrelationKey()
+          .equals(other.getCorrelationKey())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -204,6 +258,10 @@ private static final long serialVersionUID = 0L;
     if (hasTimeoutSeconds()) {
       hash = (37 * hash) + TIMEOUT_SECONDS_FIELD_NUMBER;
       hash = (53 * hash) + getTimeoutSeconds().hashCode();
+    }
+    if (hasCorrelationKey()) {
+      hash = (37 * hash) + CORRELATION_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getCorrelationKey().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -331,13 +389,21 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.ExternalEventNode.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getExternalEventDefIdFieldBuilder();
+        getTimeoutSecondsFieldBuilder();
+        getCorrelationKeyFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -352,6 +418,11 @@ private static final long serialVersionUID = 0L;
       if (timeoutSecondsBuilder_ != null) {
         timeoutSecondsBuilder_.dispose();
         timeoutSecondsBuilder_ = null;
+      }
+      correlationKey_ = null;
+      if (correlationKeyBuilder_ != null) {
+        correlationKeyBuilder_.dispose();
+        correlationKeyBuilder_ = null;
       }
       return this;
     }
@@ -396,6 +467,14 @@ private static final long serialVersionUID = 0L;
             ? timeoutSeconds_
             : timeoutSecondsBuilder_.build();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.correlationKey_ = correlationKeyBuilder_ == null
+            ? correlationKey_
+            : correlationKeyBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -448,6 +527,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasTimeoutSeconds()) {
         mergeTimeoutSeconds(other.getTimeoutSeconds());
       }
+      if (other.hasCorrelationKey()) {
+        mergeCorrelationKey(other.getCorrelationKey());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -488,6 +570,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  getCorrelationKeyFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -822,6 +911,170 @@ private static final long serialVersionUID = 0L;
         timeoutSeconds_ = null;
       }
       return timeoutSecondsBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.VariableAssignment correlationKey_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> correlationKeyBuilder_;
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     * @return Whether the correlationKey field is set.
+     */
+    public boolean hasCorrelationKey() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     * @return The correlationKey.
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment getCorrelationKey() {
+      if (correlationKeyBuilder_ == null) {
+        return correlationKey_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : correlationKey_;
+      } else {
+        return correlationKeyBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     */
+    public Builder setCorrelationKey(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (correlationKeyBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        correlationKey_ = value;
+      } else {
+        correlationKeyBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     */
+    public Builder setCorrelationKey(
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+      if (correlationKeyBuilder_ == null) {
+        correlationKey_ = builderForValue.build();
+      } else {
+        correlationKeyBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     */
+    public Builder mergeCorrelationKey(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (correlationKeyBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          correlationKey_ != null &&
+          correlationKey_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          getCorrelationKeyBuilder().mergeFrom(value);
+        } else {
+          correlationKey_ = value;
+        }
+      } else {
+        correlationKeyBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     */
+    public Builder clearCorrelationKey() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      correlationKey_ = null;
+      if (correlationKeyBuilder_ != null) {
+        correlationKeyBuilder_.dispose();
+        correlationKeyBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getCorrelationKeyBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getCorrelationKeyFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getCorrelationKeyOrBuilder() {
+      if (correlationKeyBuilder_ != null) {
+        return correlationKeyBuilder_.getMessageOrBuilder();
+      } else {
+        return correlationKey_ == null ?
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : correlationKey_;
+      }
+    }
+    /**
+     * <pre>
+     * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+     * using the correlation key provided here.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+        getCorrelationKeyFieldBuilder() {
+      if (correlationKeyBuilder_ == null) {
+        correlationKeyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                getCorrelationKey(),
+                getParentForChildren(),
+                isClean());
+        correlationKey_ = null;
+      }
+      return correlationKeyBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
@@ -22,6 +23,7 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     private String name;
     private ExternalEventRetentionPolicyModel retentionPolicy;
     private ReturnTypeModel contentType;
+    private CorrelatedEventConfigModel correlatedEventConfig;
 
     @Override
     public Class<PutExternalEventDefRequest> getProtoBaseClass() {
@@ -36,6 +38,9 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         if (contentType != null) {
             out.setContentType(contentType.toProto());
         }
+        if (correlatedEventConfig != null) {
+            out.setCorrelatedEventConfig(correlatedEventConfig.toProto());
+        }
 
         return out;
     }
@@ -48,6 +53,10 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
                 LHSerializable.fromProto(p.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
         if (p.hasContentType()) {
             contentType = LHSerializable.fromProto(p.getContentType(), ReturnTypeModel.class, context);
+        }
+        if (p.hasCorrelatedEventConfig()) {
+            correlatedEventConfig =
+                    LHSerializable.fromProto(p.getCorrelatedEventConfig(), CorrelatedEventConfigModel.class, context);
         }
     }
 
@@ -65,6 +74,9 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         }
 
         ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy, contentType);
+        if (correlatedEventConfig != null) {
+            spec.setCorrelatedEventConfig(correlatedEventConfig);
+        }
 
         metadataManager.put(spec);
         return spec.toProto().build();

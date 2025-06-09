@@ -74,9 +74,11 @@ private static final long serialVersionUID = 0L;
     SCHEDULE_WF_RUN_REQUEST(25),
     DELETE_SCHEDULED_WF_RUN(26),
     SAVE_USER_TASK_RUN_PROGRESS(27),
-    COMMENT_USER_TASK_RUN(28),
-    EDIT_COMMENT_USER_TASK_RUN(29),
-    DELETE_COMMENT_USER_TASK_RUN(30),
+    PUT_CORRELATED_EVENT(28),
+    UPDATE_CORRELATION_MARKER(29),
+    COMMENT_USER_TASK_RUN(30),
+    EDIT_COMMENT_USER_TASK_RUN(31),
+    DELETE_COMMENT_USER_TASK_RUN(32),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -118,9 +120,11 @@ private static final long serialVersionUID = 0L;
         case 25: return SCHEDULE_WF_RUN_REQUEST;
         case 26: return DELETE_SCHEDULED_WF_RUN;
         case 27: return SAVE_USER_TASK_RUN_PROGRESS;
-        case 28: return COMMENT_USER_TASK_RUN;
-        case 29: return EDIT_COMMENT_USER_TASK_RUN;
-        case 30: return DELETE_COMMENT_USER_TASK_RUN;
+        case 28: return PUT_CORRELATED_EVENT;
+        case 29: return UPDATE_CORRELATION_MARKER;
+        case 30: return COMMENT_USER_TASK_RUN;
+        case 31: return EDIT_COMMENT_USER_TASK_RUN;
+        case 32: return DELETE_COMMENT_USER_TASK_RUN;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -953,94 +957,156 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
   }
 
-  public static final int COMMENT_USER_TASK_RUN_FIELD_NUMBER = 28;
+  public static final int PUT_CORRELATED_EVENT_FIELD_NUMBER = 28;
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return Whether the putCorrelatedEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutCorrelatedEvent() {
+    return commandCase_ == 28;
+  }
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return The putCorrelatedEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest getPutCorrelatedEvent() {
+    if (commandCase_ == 28) {
+       return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder() {
+    if (commandCase_ == 28) {
+       return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+  }
+
+  public static final int UPDATE_CORRELATION_MARKER_FIELD_NUMBER = 29;
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return Whether the updateCorrelationMarker field is set.
+   */
+  @java.lang.Override
+  public boolean hasUpdateCorrelationMarker() {
+    return commandCase_ == 29;
+  }
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return The updateCorrelationMarker.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCorrelationmarkerPb getUpdateCorrelationMarker() {
+    if (commandCase_ == 29) {
+       return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder() {
+    if (commandCase_ == 29) {
+       return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+  }
+
+  public static final int COMMENT_USER_TASK_RUN_FIELD_NUMBER = 30;
+  /**
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
    * @return Whether the commentUserTaskRun field is set.
    */
   @java.lang.Override
   public boolean hasCommentUserTaskRun() {
-    return commandCase_ == 28;
+    return commandCase_ == 30;
   }
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
    * @return The commentUserTaskRun.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest getCommentUserTaskRun() {
-    if (commandCase_ == 28) {
+    if (commandCase_ == 30) {
        return (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder getCommentUserTaskRunOrBuilder() {
-    if (commandCase_ == 28) {
+    if (commandCase_ == 30) {
        return (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance();
   }
 
-  public static final int EDIT_COMMENT_USER_TASK_RUN_FIELD_NUMBER = 29;
+  public static final int EDIT_COMMENT_USER_TASK_RUN_FIELD_NUMBER = 31;
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
    * @return Whether the editCommentUserTaskRun field is set.
    */
   @java.lang.Override
   public boolean hasEditCommentUserTaskRun() {
-    return commandCase_ == 29;
+    return commandCase_ == 31;
   }
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
    * @return The editCommentUserTaskRun.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getEditCommentUserTaskRun() {
-    if (commandCase_ == 29) {
+    if (commandCase_ == 31) {
        return (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder getEditCommentUserTaskRunOrBuilder() {
-    if (commandCase_ == 29) {
+    if (commandCase_ == 31) {
        return (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance();
   }
 
-  public static final int DELETE_COMMENT_USER_TASK_RUN_FIELD_NUMBER = 30;
+  public static final int DELETE_COMMENT_USER_TASK_RUN_FIELD_NUMBER = 32;
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
    * @return Whether the deleteCommentUserTaskRun field is set.
    */
   @java.lang.Override
   public boolean hasDeleteCommentUserTaskRun() {
-    return commandCase_ == 30;
+    return commandCase_ == 32;
   }
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
    * @return The deleteCommentUserTaskRun.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDeleteCommentUserTaskRun() {
-    if (commandCase_ == 30) {
+    if (commandCase_ == 32) {
        return (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder getDeleteCommentUserTaskRunOrBuilder() {
-    if (commandCase_ == 30) {
+    if (commandCase_ == 32) {
        return (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance();
@@ -1139,13 +1205,19 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(27, (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_);
     }
     if (commandCase_ == 28) {
-      output.writeMessage(28, (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_);
+      output.writeMessage(28, (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_);
     }
     if (commandCase_ == 29) {
-      output.writeMessage(29, (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_);
+      output.writeMessage(29, (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_);
     }
     if (commandCase_ == 30) {
-      output.writeMessage(30, (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_);
+      output.writeMessage(30, (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_);
+    }
+    if (commandCase_ == 31) {
+      output.writeMessage(31, (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_);
+    }
+    if (commandCase_ == 32) {
+      output.writeMessage(32, (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1261,15 +1333,23 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 28) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(28, (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_);
+        .computeMessageSize(28, (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_);
     }
     if (commandCase_ == 29) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(29, (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_);
+        .computeMessageSize(29, (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_);
     }
     if (commandCase_ == 30) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(30, (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_);
+        .computeMessageSize(30, (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_);
+    }
+    if (commandCase_ == 31) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(31, (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_);
+    }
+    if (commandCase_ == 32) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(32, (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1395,14 +1475,22 @@ private static final long serialVersionUID = 0L;
             .equals(other.getSaveUserTaskRunProgress())) return false;
         break;
       case 28:
+        if (!getPutCorrelatedEvent()
+            .equals(other.getPutCorrelatedEvent())) return false;
+        break;
+      case 29:
+        if (!getUpdateCorrelationMarker()
+            .equals(other.getUpdateCorrelationMarker())) return false;
+        break;
+      case 30:
         if (!getCommentUserTaskRun()
             .equals(other.getCommentUserTaskRun())) return false;
         break;
-      case 29:
+      case 31:
         if (!getEditCommentUserTaskRun()
             .equals(other.getEditCommentUserTaskRun())) return false;
         break;
-      case 30:
+      case 32:
         if (!getDeleteCommentUserTaskRun()
             .equals(other.getDeleteCommentUserTaskRun())) return false;
         break;
@@ -1526,14 +1614,22 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getSaveUserTaskRunProgress().hashCode();
         break;
       case 28:
+        hash = (37 * hash) + PUT_CORRELATED_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getPutCorrelatedEvent().hashCode();
+        break;
+      case 29:
+        hash = (37 * hash) + UPDATE_CORRELATION_MARKER_FIELD_NUMBER;
+        hash = (53 * hash) + getUpdateCorrelationMarker().hashCode();
+        break;
+      case 30:
         hash = (37 * hash) + COMMENT_USER_TASK_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getCommentUserTaskRun().hashCode();
         break;
-      case 29:
+      case 31:
         hash = (37 * hash) + EDIT_COMMENT_USER_TASK_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getEditCommentUserTaskRun().hashCode();
         break;
-      case 30:
+      case 32:
         hash = (37 * hash) + DELETE_COMMENT_USER_TASK_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteCommentUserTaskRun().hashCode();
         break;
@@ -1753,6 +1849,12 @@ private static final long serialVersionUID = 0L;
       if (saveUserTaskRunProgressBuilder_ != null) {
         saveUserTaskRunProgressBuilder_.clear();
       }
+      if (putCorrelatedEventBuilder_ != null) {
+        putCorrelatedEventBuilder_.clear();
+      }
+      if (updateCorrelationMarkerBuilder_ != null) {
+        updateCorrelationMarkerBuilder_.clear();
+      }
       if (commentUserTaskRunBuilder_ != null) {
         commentUserTaskRunBuilder_.clear();
       }
@@ -1911,14 +2013,22 @@ private static final long serialVersionUID = 0L;
         result.command_ = saveUserTaskRunProgressBuilder_.build();
       }
       if (commandCase_ == 28 &&
+          putCorrelatedEventBuilder_ != null) {
+        result.command_ = putCorrelatedEventBuilder_.build();
+      }
+      if (commandCase_ == 29 &&
+          updateCorrelationMarkerBuilder_ != null) {
+        result.command_ = updateCorrelationMarkerBuilder_.build();
+      }
+      if (commandCase_ == 30 &&
           commentUserTaskRunBuilder_ != null) {
         result.command_ = commentUserTaskRunBuilder_.build();
       }
-      if (commandCase_ == 29 &&
+      if (commandCase_ == 31 &&
           editCommentUserTaskRunBuilder_ != null) {
         result.command_ = editCommentUserTaskRunBuilder_.build();
       }
-      if (commandCase_ == 30 &&
+      if (commandCase_ == 32 &&
           deleteCommentUserTaskRunBuilder_ != null) {
         result.command_ = deleteCommentUserTaskRunBuilder_.build();
       }
@@ -2071,6 +2181,14 @@ private static final long serialVersionUID = 0L;
         }
         case SAVE_USER_TASK_RUN_PROGRESS: {
           mergeSaveUserTaskRunProgress(other.getSaveUserTaskRunProgress());
+          break;
+        }
+        case PUT_CORRELATED_EVENT: {
+          mergePutCorrelatedEvent(other.getPutCorrelatedEvent());
+          break;
+        }
+        case UPDATE_CORRELATION_MARKER: {
+          mergeUpdateCorrelationMarker(other.getUpdateCorrelationMarker());
           break;
         }
         case COMMENT_USER_TASK_RUN: {
@@ -2297,25 +2415,39 @@ private static final long serialVersionUID = 0L;
             } // case 218
             case 226: {
               input.readMessage(
-                  getCommentUserTaskRunFieldBuilder().getBuilder(),
+                  getPutCorrelatedEventFieldBuilder().getBuilder(),
                   extensionRegistry);
               commandCase_ = 28;
               break;
             } // case 226
             case 234: {
               input.readMessage(
-                  getEditCommentUserTaskRunFieldBuilder().getBuilder(),
+                  getUpdateCorrelationMarkerFieldBuilder().getBuilder(),
                   extensionRegistry);
               commandCase_ = 29;
               break;
             } // case 234
             case 242: {
               input.readMessage(
-                  getDeleteCommentUserTaskRunFieldBuilder().getBuilder(),
+                  getCommentUserTaskRunFieldBuilder().getBuilder(),
                   extensionRegistry);
               commandCase_ = 30;
               break;
             } // case 242
+            case 250: {
+              input.readMessage(
+                  getEditCommentUserTaskRunFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 31;
+              break;
+            } // case 250
+            case 258: {
+              input.readMessage(
+                  getDeleteCommentUserTaskRunFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 32;
+              break;
+            } // case 258
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5955,35 +6087,319 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder> putCorrelatedEventBuilder_;
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     * @return Whether the putCorrelatedEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutCorrelatedEvent() {
+      return commandCase_ == 28;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     * @return The putCorrelatedEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest getPutCorrelatedEvent() {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (commandCase_ == 28) {
+          return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 28) {
+          return putCorrelatedEventBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder setPutCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest value) {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        putCorrelatedEventBuilder_.setMessage(value);
+      }
+      commandCase_ = 28;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder setPutCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder builderForValue) {
+      if (putCorrelatedEventBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        putCorrelatedEventBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 28;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder mergePutCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest value) {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (commandCase_ == 28 &&
+            command_ != io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.newBuilder((io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 28) {
+          putCorrelatedEventBuilder_.mergeFrom(value);
+        } else {
+          putCorrelatedEventBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 28;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public Builder clearPutCorrelatedEvent() {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (commandCase_ == 28) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 28) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        putCorrelatedEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder getPutCorrelatedEventBuilder() {
+      return getPutCorrelatedEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder() {
+      if ((commandCase_ == 28) && (putCorrelatedEventBuilder_ != null)) {
+        return putCorrelatedEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 28) {
+          return (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder> 
+        getPutCorrelatedEventFieldBuilder() {
+      if (putCorrelatedEventBuilder_ == null) {
+        if (!(commandCase_ == 28)) {
+          command_ = io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
+        }
+        putCorrelatedEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.Builder, io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 28;
+      onChanged();
+      return putCorrelatedEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.UpdateCorrelationmarkerPb, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder, io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder> updateCorrelationMarkerBuilder_;
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     * @return Whether the updateCorrelationMarker field is set.
+     */
+    @java.lang.Override
+    public boolean hasUpdateCorrelationMarker() {
+      return commandCase_ == 29;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     * @return The updateCorrelationMarker.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb getUpdateCorrelationMarker() {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (commandCase_ == 29) {
+          return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 29) {
+          return updateCorrelationMarkerBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder setUpdateCorrelationMarker(io.littlehorse.common.proto.UpdateCorrelationmarkerPb value) {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        updateCorrelationMarkerBuilder_.setMessage(value);
+      }
+      commandCase_ = 29;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder setUpdateCorrelationMarker(
+        io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder builderForValue) {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        updateCorrelationMarkerBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 29;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder mergeUpdateCorrelationMarker(io.littlehorse.common.proto.UpdateCorrelationmarkerPb value) {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (commandCase_ == 29 &&
+            command_ != io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.UpdateCorrelationmarkerPb.newBuilder((io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 29) {
+          updateCorrelationMarkerBuilder_.mergeFrom(value);
+        } else {
+          updateCorrelationMarkerBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 29;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder clearUpdateCorrelationMarker() {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (commandCase_ == 29) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 29) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        updateCorrelationMarkerBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder getUpdateCorrelationMarkerBuilder() {
+      return getUpdateCorrelationMarkerFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder() {
+      if ((commandCase_ == 29) && (updateCorrelationMarkerBuilder_ != null)) {
+        return updateCorrelationMarkerBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 29) {
+          return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.UpdateCorrelationmarkerPb, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder, io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder> 
+        getUpdateCorrelationMarkerFieldBuilder() {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (!(commandCase_ == 29)) {
+          command_ = io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+        }
+        updateCorrelationMarkerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.UpdateCorrelationmarkerPb, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder, io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder>(
+                (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 29;
+      onChanged();
+      return updateCorrelationMarkerBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder> commentUserTaskRunBuilder_;
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      * @return Whether the commentUserTaskRun field is set.
      */
     @java.lang.Override
     public boolean hasCommentUserTaskRun() {
-      return commandCase_ == 28;
+      return commandCase_ == 30;
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      * @return The commentUserTaskRun.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest getCommentUserTaskRun() {
       if (commentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 28) {
+        if (commandCase_ == 30) {
           return (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_;
         }
         return io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance();
       } else {
-        if (commandCase_ == 28) {
+        if (commandCase_ == 30) {
           return commentUserTaskRunBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      */
     public Builder setCommentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest value) {
       if (commentUserTaskRunBuilder_ == null) {
@@ -5995,11 +6411,11 @@ private static final long serialVersionUID = 0L;
       } else {
         commentUserTaskRunBuilder_.setMessage(value);
       }
-      commandCase_ = 28;
+      commandCase_ = 30;
       return this;
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      */
     public Builder setCommentUserTaskRun(
         io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.Builder builderForValue) {
@@ -6009,15 +6425,15 @@ private static final long serialVersionUID = 0L;
       } else {
         commentUserTaskRunBuilder_.setMessage(builderForValue.build());
       }
-      commandCase_ = 28;
+      commandCase_ = 30;
       return this;
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      */
     public Builder mergeCommentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest value) {
       if (commentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 28 &&
+        if (commandCase_ == 30 &&
             command_ != io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance()) {
           command_ = io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.newBuilder((io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_)
               .mergeFrom(value).buildPartial();
@@ -6026,27 +6442,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (commandCase_ == 28) {
+        if (commandCase_ == 30) {
           commentUserTaskRunBuilder_.mergeFrom(value);
         } else {
           commentUserTaskRunBuilder_.setMessage(value);
         }
       }
-      commandCase_ = 28;
+      commandCase_ = 30;
       return this;
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      */
     public Builder clearCommentUserTaskRun() {
       if (commentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 28) {
+        if (commandCase_ == 30) {
           commandCase_ = 0;
           command_ = null;
           onChanged();
         }
       } else {
-        if (commandCase_ == 28) {
+        if (commandCase_ == 30) {
           commandCase_ = 0;
           command_ = null;
         }
@@ -6055,33 +6471,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      */
     public io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.Builder getCommentUserTaskRunBuilder() {
       return getCommentUserTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder getCommentUserTaskRunOrBuilder() {
-      if ((commandCase_ == 28) && (commentUserTaskRunBuilder_ != null)) {
+      if ((commandCase_ == 30) && (commentUserTaskRunBuilder_ != null)) {
         return commentUserTaskRunBuilder_.getMessageOrBuilder();
       } else {
-        if (commandCase_ == 28) {
+        if (commandCase_ == 30) {
           return (io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest) command_;
         }
         return io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+     * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder> 
         getCommentUserTaskRunFieldBuilder() {
       if (commentUserTaskRunBuilder_ == null) {
-        if (!(commandCase_ == 28)) {
+        if (!(commandCase_ == 30)) {
           command_ = io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest.getDefaultInstance();
         }
         commentUserTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -6091,7 +6507,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         command_ = null;
       }
-      commandCase_ = 28;
+      commandCase_ = 30;
       onChanged();
       return commentUserTaskRunBuilder_;
     }
@@ -6099,33 +6515,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder> editCommentUserTaskRunBuilder_;
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      * @return Whether the editCommentUserTaskRun field is set.
      */
     @java.lang.Override
     public boolean hasEditCommentUserTaskRun() {
-      return commandCase_ == 29;
+      return commandCase_ == 31;
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      * @return The editCommentUserTaskRun.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getEditCommentUserTaskRun() {
       if (editCommentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 29) {
+        if (commandCase_ == 31) {
           return (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_;
         }
         return io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance();
       } else {
-        if (commandCase_ == 29) {
+        if (commandCase_ == 31) {
           return editCommentUserTaskRunBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      */
     public Builder setEditCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest value) {
       if (editCommentUserTaskRunBuilder_ == null) {
@@ -6137,11 +6553,11 @@ private static final long serialVersionUID = 0L;
       } else {
         editCommentUserTaskRunBuilder_.setMessage(value);
       }
-      commandCase_ = 29;
+      commandCase_ = 31;
       return this;
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      */
     public Builder setEditCommentUserTaskRun(
         io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.Builder builderForValue) {
@@ -6151,15 +6567,15 @@ private static final long serialVersionUID = 0L;
       } else {
         editCommentUserTaskRunBuilder_.setMessage(builderForValue.build());
       }
-      commandCase_ = 29;
+      commandCase_ = 31;
       return this;
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      */
     public Builder mergeEditCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest value) {
       if (editCommentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 29 &&
+        if (commandCase_ == 31 &&
             command_ != io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance()) {
           command_ = io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.newBuilder((io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_)
               .mergeFrom(value).buildPartial();
@@ -6168,27 +6584,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (commandCase_ == 29) {
+        if (commandCase_ == 31) {
           editCommentUserTaskRunBuilder_.mergeFrom(value);
         } else {
           editCommentUserTaskRunBuilder_.setMessage(value);
         }
       }
-      commandCase_ = 29;
+      commandCase_ = 31;
       return this;
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      */
     public Builder clearEditCommentUserTaskRun() {
       if (editCommentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 29) {
+        if (commandCase_ == 31) {
           commandCase_ = 0;
           command_ = null;
           onChanged();
         }
       } else {
-        if (commandCase_ == 29) {
+        if (commandCase_ == 31) {
           commandCase_ = 0;
           command_ = null;
         }
@@ -6197,33 +6613,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      */
     public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.Builder getEditCommentUserTaskRunBuilder() {
       return getEditCommentUserTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder getEditCommentUserTaskRunOrBuilder() {
-      if ((commandCase_ == 29) && (editCommentUserTaskRunBuilder_ != null)) {
+      if ((commandCase_ == 31) && (editCommentUserTaskRunBuilder_ != null)) {
         return editCommentUserTaskRunBuilder_.getMessageOrBuilder();
       } else {
-        if (commandCase_ == 29) {
+        if (commandCase_ == 31) {
           return (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) command_;
         }
         return io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+     * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder> 
         getEditCommentUserTaskRunFieldBuilder() {
       if (editCommentUserTaskRunBuilder_ == null) {
-        if (!(commandCase_ == 29)) {
+        if (!(commandCase_ == 31)) {
           command_ = io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance();
         }
         editCommentUserTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -6233,7 +6649,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         command_ = null;
       }
-      commandCase_ = 29;
+      commandCase_ = 31;
       onChanged();
       return editCommentUserTaskRunBuilder_;
     }
@@ -6241,33 +6657,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder> deleteCommentUserTaskRunBuilder_;
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      * @return Whether the deleteCommentUserTaskRun field is set.
      */
     @java.lang.Override
     public boolean hasDeleteCommentUserTaskRun() {
-      return commandCase_ == 30;
+      return commandCase_ == 32;
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      * @return The deleteCommentUserTaskRun.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDeleteCommentUserTaskRun() {
       if (deleteCommentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 30) {
+        if (commandCase_ == 32) {
           return (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_;
         }
         return io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance();
       } else {
-        if (commandCase_ == 30) {
+        if (commandCase_ == 32) {
           return deleteCommentUserTaskRunBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      */
     public Builder setDeleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest value) {
       if (deleteCommentUserTaskRunBuilder_ == null) {
@@ -6279,11 +6695,11 @@ private static final long serialVersionUID = 0L;
       } else {
         deleteCommentUserTaskRunBuilder_.setMessage(value);
       }
-      commandCase_ = 30;
+      commandCase_ = 32;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      */
     public Builder setDeleteCommentUserTaskRun(
         io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.Builder builderForValue) {
@@ -6293,15 +6709,15 @@ private static final long serialVersionUID = 0L;
       } else {
         deleteCommentUserTaskRunBuilder_.setMessage(builderForValue.build());
       }
-      commandCase_ = 30;
+      commandCase_ = 32;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      */
     public Builder mergeDeleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest value) {
       if (deleteCommentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 30 &&
+        if (commandCase_ == 32 &&
             command_ != io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance()) {
           command_ = io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_)
               .mergeFrom(value).buildPartial();
@@ -6310,27 +6726,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (commandCase_ == 30) {
+        if (commandCase_ == 32) {
           deleteCommentUserTaskRunBuilder_.mergeFrom(value);
         } else {
           deleteCommentUserTaskRunBuilder_.setMessage(value);
         }
       }
-      commandCase_ = 30;
+      commandCase_ = 32;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      */
     public Builder clearDeleteCommentUserTaskRun() {
       if (deleteCommentUserTaskRunBuilder_ == null) {
-        if (commandCase_ == 30) {
+        if (commandCase_ == 32) {
           commandCase_ = 0;
           command_ = null;
           onChanged();
         }
       } else {
-        if (commandCase_ == 30) {
+        if (commandCase_ == 32) {
           commandCase_ = 0;
           command_ = null;
         }
@@ -6339,33 +6755,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      */
     public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.Builder getDeleteCommentUserTaskRunBuilder() {
       return getDeleteCommentUserTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder getDeleteCommentUserTaskRunOrBuilder() {
-      if ((commandCase_ == 30) && (deleteCommentUserTaskRunBuilder_ != null)) {
+      if ((commandCase_ == 32) && (deleteCommentUserTaskRunBuilder_ != null)) {
         return deleteCommentUserTaskRunBuilder_.getMessageOrBuilder();
       } else {
-        if (commandCase_ == 30) {
+        if (commandCase_ == 32) {
           return (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) command_;
         }
         return io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+     * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest, io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder> 
         getDeleteCommentUserTaskRunFieldBuilder() {
       if (deleteCommentUserTaskRunBuilder_ == null) {
-        if (!(commandCase_ == 30)) {
+        if (!(commandCase_ == 32)) {
           command_ = io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance();
         }
         deleteCommentUserTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -6375,7 +6791,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         command_ = null;
       }
-      commandCase_ = 30;
+      commandCase_ = 32;
       onChanged();
       return deleteCommentUserTaskRunBuilder_;
     }

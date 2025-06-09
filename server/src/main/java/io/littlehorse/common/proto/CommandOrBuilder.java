@@ -400,47 +400,77 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder();
 
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return Whether the putCorrelatedEvent field is set.
+   */
+  boolean hasPutCorrelatedEvent();
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return The putCorrelatedEvent.
+   */
+  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest getPutCorrelatedEvent();
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder();
+
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return Whether the updateCorrelationMarker field is set.
+   */
+  boolean hasUpdateCorrelationMarker();
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return The updateCorrelationMarker.
+   */
+  io.littlehorse.common.proto.UpdateCorrelationmarkerPb getUpdateCorrelationMarker();
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   */
+  io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder();
+
+  /**
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
    * @return Whether the commentUserTaskRun field is set.
    */
   boolean hasCommentUserTaskRun();
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
    * @return The commentUserTaskRun.
    */
   io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest getCommentUserTaskRun();
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 28;</code>
+   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
    */
   io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder getCommentUserTaskRunOrBuilder();
 
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
    * @return Whether the editCommentUserTaskRun field is set.
    */
   boolean hasEditCommentUserTaskRun();
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
    * @return The editCommentUserTaskRun.
    */
   io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getEditCommentUserTaskRun();
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 29;</code>
+   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
    */
   io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder getEditCommentUserTaskRunOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
    * @return Whether the deleteCommentUserTaskRun field is set.
    */
   boolean hasDeleteCommentUserTaskRun();
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
    * @return The deleteCommentUserTaskRun.
    */
   io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDeleteCommentUserTaskRun();
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 30;</code>
+   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
    */
   io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder getDeleteCommentUserTaskRunOrBuilder();
 
