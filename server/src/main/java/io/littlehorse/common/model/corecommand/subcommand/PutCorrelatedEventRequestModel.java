@@ -63,8 +63,8 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
     @Override
     public CorrelatedEvent process(ProcessorExecutionContext context, LHServerConfig config) {
         // Validate the name. Only `/` is prohibited.
-        if (key.contains("/")) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "CorrelatedEvent keys cannot contain '/'");
+        if (key.contains("/") || key.contains("~")) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "CorrelatedEvent keys cannot contain '/' or '~'");
         }
 
         ExternalEventDefModel externalEventDef = context.metadataManager().get(externalEventDefId);
