@@ -536,7 +536,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         if (serverConfig.areStructDefsEnabled() == false) {
             throw new StatusRuntimeException(Status.UNIMPLEMENTED);
         }
-        
+
         InlineStructDefModel newInlineStructDef =
                 LHSerializable.fromProto(req.getStructDef(), InlineStructDefModel.class, requestContext());
         newInlineStructDef.validate();
