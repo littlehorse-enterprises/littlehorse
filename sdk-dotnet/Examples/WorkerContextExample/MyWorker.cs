@@ -5,7 +5,7 @@ namespace WorkerContextExample;
 public class MyWorker
 {
     [LHTaskMethod("task")]
-    public void ProcessTask(long requestTime, LHWorkerContext context)
+    public async Task ProcessTask(long requestTime, LHWorkerContext context)
     {
         context.Log("ProcessPayment");
         Console.WriteLine($"Processing request time: {requestTime}");

@@ -74,7 +74,7 @@ public abstract class Program
             
             Thread.Sleep(300);
 
-            worker.Start();
+            worker.Start().Wait();
         }
     }
 }

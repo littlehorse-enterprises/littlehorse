@@ -20,7 +20,6 @@ namespace LittleHorse.Sdk.Worker.Internal
         private readonly LittleHorseClient _bootstrapClient;
         private bool _running;
         private readonly List<LHServerConnection<T>> _runningConnections;
-        private readonly Thread _rebalanceThread;
         private readonly LHTask<T> _task;
         
         internal LHConfig Config => _config;
@@ -35,16 +34,15 @@ namespace LittleHorse.Sdk.Worker.Internal
             _bootstrapClient = bootstrapClient;
             _running = false;
             _runningConnections = new List<LHServerConnection<T>>();
-            _rebalanceThread = new Thread(RebalanceWork);
         }
 
         /// <summary>
         /// Starts the connection manager.
         /// </summary>
-        internal void Start()
+        internal async Task Start()
         {
             _running = true;
-            _rebalanceThread.Start();
+            await RebalanceWork();
         }
 
         /// <summary>
@@ -55,16 +53,16 @@ namespace LittleHorse.Sdk.Worker.Internal
             _running = false;
         }
 
-        private void RebalanceWork()
+        private async Task RebalanceWork()
         {
             while (_running)
             {
-                DoHeartBeat();
-                Thread.Sleep(BalancerSleepTime);
+                await DoHeartBeat();
+                await Task.Delay(BalancerSleepTime);
             }
         }
 
-        private void DoHeartBeat()
+        private async Task DoHeartBeat()
         {
             try
             {
@@ -73,10 +71,10 @@ namespace LittleHorse.Sdk.Worker.Internal
                     TaskDefId = _task.TaskDef!.Id,
                     TaskWorkerId = _config.WorkerId
                 };
-                var response = _bootstrapClient.RegisterTaskWorker(request: request,
+                var response = await _bootstrapClient.RegisterTaskWorkerAsync(request: request,
                     deadline: DateTime.UtcNow.AddSeconds(GrpcUnaryCallTimeoutSeconds));
                 
-                HandleRegisterTaskWorkerResponse(response);
+                await HandleRegisterTaskWorkerResponse(response);
             }
             catch (Exception ex)
             {
@@ -95,21 +93,21 @@ namespace LittleHorse.Sdk.Worker.Internal
                 }
 
                 CloseAllConnections();
-                Thread.Sleep(BalancerSleepTime);
+                await Task.Delay(BalancerSleepTime);
             }
         }
 
-        private void HandleRegisterTaskWorkerResponse(RegisterTaskWorkerResponse response)
+        private async Task HandleRegisterTaskWorkerResponse(RegisterTaskWorkerResponse response)
         {
-            response.YourHosts.ToList().ForEach(host =>
+            foreach (var host in response.YourHosts.ToList())
             {
                 if (!IsAlreadyRunning(host))
                 {
                     try
                     {
                         var newConnection = new LHServerConnection<T>(this, host, _task);
-                        newConnection.Start();
                         _runningConnections.Add(newConnection);
+                        newConnection.Start();
                         _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_task.TaskDef!.Id}'");
                     }
                     catch (IOException ex)
@@ -117,7 +115,8 @@ namespace LittleHorse.Sdk.Worker.Internal
                         _logger?.LogError(ex, "Exception on HandleRegisterTaskWorkResponse.");
                     }
                 }
-            });
+                
+            }
 
             var lastIndexOfRunningConnection = _runningConnections.Count() - 1;
 

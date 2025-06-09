@@ -48,7 +48,7 @@ namespace LittleHorse.Sdk.Worker
         /// incompatible with the method signature from the provided executable Dotnet object, or if
         /// the Worker cannot connect to the LH Server.
         /// </exception>
-        public void Start()
+        public async Task Start()
         {
             if (!TaskDefExists())
             {
@@ -59,7 +59,7 @@ namespace LittleHorse.Sdk.Worker
             if (_manager == null)
             {
                 _manager = new LHServerConnectionManager<T>(_config, _task, _lhClient);
-                _manager.Start();    
+                await _manager.Start();    
             }
         }
 

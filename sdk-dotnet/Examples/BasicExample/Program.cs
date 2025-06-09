@@ -72,8 +72,7 @@ public class Program
             workflow.RegisterWfSpec(config.GetGrpcClientInstance());
 
             Thread.Sleep(1000);
-
-            taskWorker.Start();
+            taskWorker.Start().Wait();
         }
     }
 }

@@ -5,14 +5,14 @@ namespace ChildThreadExample;
 public class MyWorker
 {
     [LHTaskMethod("parent-task-1")]
-    public int ParentTask1(int input) 
+    public async Task<int> ParentTask1(int input) 
     {
         Console.WriteLine("Executing parent-task-1");
         return input * 2;
     }
     
     [LHTaskMethod("child-task")]
-    public string ChildTask(int input) 
+    public async Task<string> ChildTask(int input) 
     {
         Console.WriteLine("Executing child-task");
         
@@ -20,7 +20,7 @@ public class MyWorker
     }
     
     [LHTaskMethod("parent-task-2")]
-    public string ParentTask2() 
+    public async Task<string> ParentTask2() 
     {
         Console.WriteLine("Executing parent-task-2");
         

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Data;
+using System.Reflection;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using LittleHorse.Sdk.Common.Proto;
@@ -9,6 +10,7 @@ using Polly;
 using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 using LHTaskException = LittleHorse.Sdk.Exceptions.LHTaskException;
 using TaskStatus = LittleHorse.Sdk.Common.Proto.TaskStatus;
+using Type = System.Type;
 
 namespace LittleHorse.Sdk.Worker.Internal
 {
@@ -32,6 +34,7 @@ namespace LittleHorse.Sdk.Worker.Internal
         private readonly LHTask<T> _task;
 
         internal LHHostInfo HostInfo => _hostInfo;
+        private readonly bool _voidReturnType;
 
         /// <summary>
         /// Creates a new instance of the <see cref="LHServerConnection{T}"/> class.
@@ -48,15 +51,16 @@ namespace LittleHorse.Sdk.Worker.Internal
             _call = _client.PollTask();
             _reportTaskSemaphore = new SemaphoreSlim(_connectionManager.Config.WorkerThreads);
             _task = task;
+            _voidReturnType = !_task.TaskMethod!.ReturnType.IsGenericType;
         }
 
         /// <summary>
         /// Starts a new async task which will poll the server for tasks to execute.
         /// </summary>
-        internal void Start()
+        internal async Task Start()
         {
             _running = true;
-            Task.Run(RequestMoreWorkAsync);
+            await RequestMoreWorkAsync();
         }
 
         private async Task RequestMoreWorkAsync()
@@ -67,44 +71,39 @@ namespace LittleHorse.Sdk.Worker.Internal
                 TaskDefId = _connectionManager.TaskDef.Id,
                 TaskWorkerVersion = _connectionManager.Config.TaskWorkerVersion
             };
-
-            var readTask = Task.Run(async () =>
-             {
-                 await foreach (var taskToDo in _call.ResponseStream.ReadAllAsync())
-                 {
-                     if (taskToDo.Result != null)
-                     {
-                         var scheduledTask = taskToDo.Result;
-                         var wFRunId = LHTaskHelper.GetWfRunId(scheduledTask.Source);
-                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId?.Id}");
-
-                         await _reportTaskSemaphore.WaitAsync();
-
-                         await DoTask(scheduledTask);
-
-                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId?.Id}");
-                     }
-                     else
-                     {
-                         _logger?.LogError("Didn't successfully claim task, likely due to a server crash.");
-                         Thread.Sleep(PolltaskSleepTime);
-                     }
-                     _reportTaskSemaphore.Release();
-
-                     if (_running)
-                     {
-                         await _call.RequestStream.WriteAsync(request);
-                     }
-                     else
-                     {
-                         await _call.RequestStream.CompleteAsync();
-                     }
-                 }
-             });
-
             await _call.RequestStream.WriteAsync(request);
+            await foreach (var taskToDo in _call.ResponseStream.ReadAllAsync())
+            {
 
-            await readTask;
+                if (taskToDo.Result != null)
+                {
+                    var scheduledTask = taskToDo.Result;
+                    var wFRunId = LHTaskHelper.GetWfRunId(scheduledTask.Source);
+                    _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId?.Id}");
+
+                    await _reportTaskSemaphore.WaitAsync();
+
+                    await DoTask(scheduledTask);
+
+                    _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId?.Id}");
+                }
+                else
+                {
+                    _logger?.LogError("Didn't successfully claim task, likely due to a server crash.");
+                    await Task.Delay(PolltaskSleepTime);
+                }
+                _reportTaskSemaphore.Release();
+
+                if (_running)
+                {
+                    await _call.RequestStream.WriteAsync(request);
+                }
+                else
+                {
+                    await _call.RequestStream.CompleteAsync();
+                }
+            }
+            await _call.RequestStream.WriteAsync(request);
         }
 
         /// <summary>
@@ -131,7 +130,7 @@ namespace LittleHorse.Sdk.Worker.Internal
       
         private async Task DoTask(ScheduledTask scheduledTask)
         {
-            ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.DateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
+            ReportTaskRun result = await ExecuteTask(scheduledTask, LHMappingHelper.DateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
             
             var wfRunId = LHTaskHelper.GetWfRunId(scheduledTask.Source);
 
@@ -177,7 +176,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             await _client.ReportTaskAsync(reportedTask);
         }
 
-        private ReportTaskRun ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)
+        private async Task<ReportTaskRun> ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)
         {
             var taskResult = new ReportTaskRun
             {
@@ -189,9 +188,8 @@ namespace LittleHorse.Sdk.Worker.Internal
 
             try
             {
-                var result = Invoke(scheduledTask, workerContext);
+                var result = await Invoke(scheduledTask, workerContext);
                 var serialized = LHMappingHelper.ObjectToVariableValue(result);
-
                 taskResult.Output = serialized;
                 taskResult.Status = TaskStatus.TaskSuccess;
 
@@ -268,11 +266,25 @@ namespace LittleHorse.Sdk.Worker.Internal
             return taskResult;
         }
 
-        private object? Invoke(ScheduledTask scheduledTask, LHWorkerContext workerContext)
+        private async Task<object?> Invoke(ScheduledTask scheduledTask, LHWorkerContext workerContext)
         {
             var inputs = _task.TaskMethodMappings.Select(mapping => mapping.Assign(scheduledTask, workerContext)).ToArray();
+            var result = _task.TaskMethod!.Invoke(_task.Executable, inputs);
 
-            return _task.TaskMethod!.Invoke(_task.Executable, inputs);
+            if (result is Task task)
+            {
+                // DO NOT MOVE THIS LINE AS WE NEED THE TASK TO BE AWAITED BEFORE RETURNING NULL
+                await task;
+                
+                if (!_task.TaskMethod.ReturnType.IsGenericType)
+                {
+                    return null;
+                }
+
+                return ((dynamic)task).Result;
+            }
+
+            throw new InvalidConstraintException("Task method must return Task<type> or Task");
         }
     }
 }

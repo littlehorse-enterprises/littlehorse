@@ -55,11 +55,14 @@ public abstract class Program
             }
             
             Thread.Sleep(300);
-
+            var tasks = new List<Task>();
+            
             foreach (var worker in workers)
             {
-                worker.Start();
+                tasks.Add(worker.Start());
             }
+            
+            Task.WaitAll(tasks.ToArray());
         }
     }
 }
