@@ -17,9 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+// Don't put lombok here, see `returnType` and `createdAt`
 public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
 
     @Getter
@@ -28,6 +30,11 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
     @Getter
     private ExternalEventRetentionPolicyModel retentionPolicy;
 
+    @Getter
+    @Setter
+    private CorrelatedEventConfigModel correlatedEventConfig;
+
+    // Do not use lombok for this
     private Date createdAt;
     private ReturnTypeModel returnType;
 
@@ -69,6 +76,10 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         } else {
             log.trace("Handling ExternalEventDef created prior to 0.13.2 or with lazy user: no type information");
         }
+
+        if (correlatedEventConfig != null) {
+            b.setCorrelatedEventConfig(correlatedEventConfig.toProto());
+        }
         return b;
     }
 
@@ -79,6 +90,10 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         if (proto.hasTypeInformation()) {
             this.returnType = LHSerializable.fromProto(proto.getTypeInformation(), ReturnTypeModel.class, context);
+        }
+        if (proto.hasCorrelatedEventConfig()) {
+            this.correlatedEventConfig = LHSerializable.fromProto(
+                    proto.getCorrelatedEventConfig(), CorrelatedEventConfigModel.class, context);
         }
 
         retentionPolicy =

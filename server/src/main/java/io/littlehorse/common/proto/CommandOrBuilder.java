@@ -399,5 +399,35 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return Whether the putCorrelatedEvent field is set.
+   */
+  boolean hasPutCorrelatedEvent();
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   * @return The putCorrelatedEvent.
+   */
+  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest getPutCorrelatedEvent();
+  /**
+   * <code>.littlehorse.PutCorrelatedEventRequest put_correlated_event = 28;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder();
+
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return Whether the updateCorrelationMarker field is set.
+   */
+  boolean hasUpdateCorrelationMarker();
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return The updateCorrelationMarker.
+   */
+  io.littlehorse.common.proto.UpdateCorrelationmarkerPb getUpdateCorrelationMarker();
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   */
+  io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

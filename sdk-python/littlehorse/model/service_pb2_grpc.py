@@ -218,10 +218,20 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.PutExternalEventRequest.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 _registered_method=True)
+        self.PutCorrelatedEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutCorrelatedEvent',
+                request_serializer=service__pb2.PutCorrelatedEventRequest.SerializeToString,
+                response_deserializer=external__event__pb2.CorrelatedEvent.FromString,
+                _registered_method=True)
         self.GetExternalEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetExternalEvent',
                 request_serializer=object__id__pb2.ExternalEventId.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
+                _registered_method=True)
+        self.GetCorrelatedEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetCorrelatedEvent',
+                request_serializer=object__id__pb2.CorrelatedEventId.SerializeToString,
+                response_deserializer=external__event__pb2.CorrelatedEvent.FromString,
                 _registered_method=True)
         self.AwaitWorkflowEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/AwaitWorkflowEvent',
@@ -525,7 +535,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutStructDef(self, request, context):
-        """Creates a new `StructDef``.
+        """EXPERIMENTAL: Creates a new `StructDef``.
 
         Note that this request is idempotent: if you
         make a request to create a `StructDef` identical to the currently-created
@@ -540,14 +550,14 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetStructDef(self, request, context):
-        """Get a StructDef.
+        """EXPERIMENTAL: Get a StructDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ValidateStructDefEvolution(self, request, context):
-        """Validate evolution of an existing `StructDef` into a new `StructDef`
+        """EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -717,7 +727,14 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEvent(self, request, context):
-        """Post an ExternalEvent. This RPC is highly useful for
+        """Post an ExternalEvent.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutCorrelatedEvent(self, request, context):
+        """Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -725,6 +742,13 @@ class LittleHorseServicer(object):
 
     def GetExternalEvent(self, request, context):
         """Get a specific ExternalEvent.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCorrelatedEvent(self, request, context):
+        """Get a specific CorrelatedEvent
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -945,7 +969,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def DeleteStructDef(self, request, context):
-        """Deletes a StructDef.
+        """EXPERIMENTAL: Deletes a StructDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1236,10 +1260,20 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.PutExternalEventRequest.FromString,
                     response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
             ),
+            'PutCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutCorrelatedEvent,
+                    request_deserializer=service__pb2.PutCorrelatedEventRequest.FromString,
+                    response_serializer=external__event__pb2.CorrelatedEvent.SerializeToString,
+            ),
             'GetExternalEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.GetExternalEvent,
                     request_deserializer=object__id__pb2.ExternalEventId.FromString,
                     response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
+            ),
+            'GetCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCorrelatedEvent,
+                    request_deserializer=object__id__pb2.CorrelatedEventId.FromString,
+                    response_serializer=external__event__pb2.CorrelatedEvent.SerializeToString,
             ),
             'AwaitWorkflowEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.AwaitWorkflowEvent,
@@ -2391,6 +2425,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def PutCorrelatedEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutCorrelatedEvent',
+            service__pb2.PutCorrelatedEventRequest.SerializeToString,
+            external__event__pb2.CorrelatedEvent.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def GetExternalEvent(request,
             target,
             options=(),
@@ -2407,6 +2468,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetExternalEvent',
             object__id__pb2.ExternalEventId.SerializeToString,
             external__event__pb2.ExternalEvent.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCorrelatedEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetCorrelatedEvent',
+            object__id__pb2.CorrelatedEventId.SerializeToString,
+            external__event__pb2.CorrelatedEvent.FromString,
             options,
             channel_credentials,
             insecure,

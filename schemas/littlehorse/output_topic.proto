@@ -41,6 +41,9 @@ message OutputTopicRecord {
 
         // Updates about an `ExternalEvent` changing.
         ExternalEvent external_event = 7;
+
+        // Updates about a `CorrelatedEvent` changing.
+        CorrelatedEvent correlated_event = 8;
     }
 }
 

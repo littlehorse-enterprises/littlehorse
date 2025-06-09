@@ -21,11 +21,18 @@ import {
   taskStatusToNumber,
 } from "./common_enums";
 import { ReturnType, VariableDef } from "./common_wfspec";
-import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
+import {
+  CorrelatedEvent,
+  CorrelatedEventConfig,
+  ExternalEvent,
+  ExternalEventDef,
+  ExternalEventRetentionPolicy,
+} from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
+  CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
   NodeRunId,
@@ -310,7 +317,11 @@ export interface PutExternalEventDefRequest {
     | ExternalEventRetentionPolicy
     | undefined;
   /** Typing information for the content of ExternalEvent's associated with this ExternalEventDef. */
-  contentType?: ReturnType | undefined;
+  contentType?:
+    | ReturnType
+    | undefined;
+  /** If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature. */
+  correlatedEventConfig?: CorrelatedEventConfig | undefined;
 }
 
 /** Request used to create an ExternalEvent. */
@@ -347,6 +358,28 @@ export interface PutExternalEventRequest {
    * In order for this to be set, you must also set thread_run_number.
    */
   nodeRunPosition?: number | undefined;
+}
+
+/**
+ * Request used to record a `CorrelatedEvent`, which is a precursor to zero or more
+ * `ExternalEvent`s.
+ */
+export interface PutCorrelatedEventRequest {
+  /** The correlation key of the CorrelatedEvent. */
+  key: string;
+  /**
+   * The `ExternalEventDef` that is associated with this `CorrelatedEvent`. This is
+   * also the `ExternalEventDef` of any `ExternalEvent`s that are generated after
+   * this `CorrelatedEvent` is correlated to `WfRun`s.
+   */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * The content of the CorrelatedEvent and any `ExternalEvent`s created after
+   * correlating this `CorrelatedEvent`.
+   */
+  content: VariableValue | undefined;
 }
 
 /** Deletes an ExternalEvent. */
@@ -2249,7 +2282,7 @@ export const PutUserTaskDefRequest = {
 };
 
 function createBasePutExternalEventDefRequest(): PutExternalEventDefRequest {
-  return { name: "", retentionPolicy: undefined, contentType: undefined };
+  return { name: "", retentionPolicy: undefined, contentType: undefined, correlatedEventConfig: undefined };
 }
 
 export const PutExternalEventDefRequest = {
@@ -2262,6 +2295,9 @@ export const PutExternalEventDefRequest = {
     }
     if (message.contentType !== undefined) {
       ReturnType.encode(message.contentType, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.correlatedEventConfig !== undefined) {
+      CorrelatedEventConfig.encode(message.correlatedEventConfig, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -2294,6 +2330,13 @@ export const PutExternalEventDefRequest = {
 
           message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.correlatedEventConfig = CorrelatedEventConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2315,6 +2358,10 @@ export const PutExternalEventDefRequest = {
     message.contentType = (object.contentType !== undefined && object.contentType !== null)
       ? ReturnType.fromPartial(object.contentType)
       : undefined;
+    message.correlatedEventConfig =
+      (object.correlatedEventConfig !== undefined && object.correlatedEventConfig !== null)
+        ? CorrelatedEventConfig.fromPartial(object.correlatedEventConfig)
+        : undefined;
     return message;
   },
 };
@@ -2428,6 +2475,77 @@ export const PutExternalEventRequest = {
       : undefined;
     message.threadRunNumber = object.threadRunNumber ?? undefined;
     message.nodeRunPosition = object.nodeRunPosition ?? undefined;
+    return message;
+  },
+};
+
+function createBasePutCorrelatedEventRequest(): PutCorrelatedEventRequest {
+  return { key: "", externalEventDefId: undefined, content: undefined };
+}
+
+export const PutCorrelatedEventRequest = {
+  encode(message: PutCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.content !== undefined) {
+      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutCorrelatedEventRequest>): PutCorrelatedEventRequest {
+    return PutCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutCorrelatedEventRequest>): PutCorrelatedEventRequest {
+    const message = createBasePutCorrelatedEventRequest();
+    message.key = object.key ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.content = (object.content !== undefined && object.content !== null)
+      ? VariableValue.fromPartial(object.content)
+      : undefined;
     return message;
   },
 };
@@ -8166,7 +8284,7 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /**
-     * Creates a new `StructDef``.
+     * EXPERIMENTAL: Creates a new `StructDef``.
      *
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
@@ -8184,7 +8302,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Get a StructDef. */
+    /** EXPERIMENTAL: Get a StructDef. */
     getStructDef: {
       name: "GetStructDef",
       requestType: StructDefId,
@@ -8193,7 +8311,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+    /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
     validateStructDefEvolution: {
       name: "ValidateStructDefEvolution",
       requestType: ValidateStructDefEvolutionRequest,
@@ -8421,12 +8539,21 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Post an ExternalEvent. This RPC is highly useful for */
+    /** Post an ExternalEvent. */
     putExternalEvent: {
       name: "PutExternalEvent",
       requestType: PutExternalEventRequest,
       requestStream: false,
       responseType: ExternalEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+    putCorrelatedEvent: {
+      name: "PutCorrelatedEvent",
+      requestType: PutCorrelatedEventRequest,
+      requestStream: false,
+      responseType: CorrelatedEvent,
       responseStream: false,
       options: {},
     },
@@ -8436,6 +8563,15 @@ export const LittleHorseDefinition = {
       requestType: ExternalEventId,
       requestStream: false,
       responseType: ExternalEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Get a specific CorrelatedEvent */
+    getCorrelatedEvent: {
+      name: "GetCorrelatedEvent",
+      requestType: CorrelatedEventId,
+      requestStream: false,
+      responseType: CorrelatedEvent,
       responseStream: false,
       options: {},
     },
@@ -8725,7 +8861,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Deletes a StructDef. */
+    /** EXPERIMENTAL: Deletes a StructDef. */
     deleteStructDef: {
       name: "DeleteStructDef",
       requestType: DeleteStructDefRequest,
@@ -8921,7 +9057,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /**
-   * Creates a new `StructDef``.
+   * EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
@@ -8932,9 +9068,9 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** Get a StructDef. */
+  /** EXPERIMENTAL: Get a StructDef. */
   getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
     request: ValidateStructDefEvolutionRequest,
     context: CallContext & CallContextExt,
@@ -9048,16 +9184,26 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListVariablesRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<VariableList>>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: PutExternalEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+  putCorrelatedEvent(
+    request: PutCorrelatedEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEvent>>;
   /** Get a specific ExternalEvent. */
   getExternalEvent(
     request: ExternalEventId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /** Get a specific CorrelatedEvent */
+  getCorrelatedEvent(
+    request: CorrelatedEventId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEvent>>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -9209,7 +9355,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   deleteWfRun(request: DeleteWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeleteTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
-  /** Deletes a StructDef. */
+  /** EXPERIMENTAL: Deletes a StructDef. */
   deleteStructDef(request: DeleteStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeleteWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
@@ -9312,7 +9458,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /**
-   * Creates a new `StructDef``.
+   * EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
@@ -9323,9 +9469,9 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** Get a StructDef. */
+  /** EXPERIMENTAL: Get a StructDef. */
   getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
     request: DeepPartial<ValidateStructDefEvolutionRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -9439,16 +9585,26 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListVariablesRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<VariableList>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: DeepPartial<PutExternalEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+  putCorrelatedEvent(
+    request: DeepPartial<PutCorrelatedEventRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEvent>;
   /** Get a specific ExternalEvent. */
   getExternalEvent(
     request: DeepPartial<ExternalEventId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /** Get a specific CorrelatedEvent */
+  getCorrelatedEvent(
+    request: DeepPartial<CorrelatedEventId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEvent>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -9606,7 +9762,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   deleteWfRun(request: DeepPartial<DeleteWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeepPartial<DeleteTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
-  /** Deletes a StructDef. */
+  /** EXPERIMENTAL: Deletes a StructDef. */
   deleteStructDef(request: DeepPartial<DeleteStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeepPartial<DeleteWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;

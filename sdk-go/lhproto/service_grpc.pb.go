@@ -54,7 +54,9 @@ const (
 	LittleHorse_GetVariable_FullMethodName                = "/littlehorse.LittleHorse/GetVariable"
 	LittleHorse_ListVariables_FullMethodName              = "/littlehorse.LittleHorse/ListVariables"
 	LittleHorse_PutExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/PutExternalEvent"
+	LittleHorse_PutCorrelatedEvent_FullMethodName         = "/littlehorse.LittleHorse/PutCorrelatedEvent"
 	LittleHorse_GetExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/GetExternalEvent"
+	LittleHorse_GetCorrelatedEvent_FullMethodName         = "/littlehorse.LittleHorse/GetCorrelatedEvent"
 	LittleHorse_AwaitWorkflowEvent_FullMethodName         = "/littlehorse.LittleHorse/AwaitWorkflowEvent"
 	LittleHorse_GetWorkflowEventDef_FullMethodName        = "/littlehorse.LittleHorse/GetWorkflowEventDef"
 	LittleHorse_GetWorkflowEvent_FullMethodName           = "/littlehorse.LittleHorse/GetWorkflowEvent"
@@ -131,7 +133,7 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	// Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef``.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -141,9 +143,9 @@ type LittleHorseClient interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error)
-	// Get a StructDef.
+	// EXPERIMENTAL: Get a StructDef.
 	GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error)
-	// Validate evolution of an existing `StructDef` into a new `StructDef`
+	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(ctx context.Context, in *ValidateStructDefEvolutionRequest, opts ...grpc.CallOption) (*ValidateStructDefEvolutionResponse, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
@@ -208,10 +210,14 @@ type LittleHorseClient interface {
 	GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error)
 	// List all Variables from a WfRun.
 	ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error)
-	// Post an ExternalEvent. This RPC is highly useful for
+	// Post an ExternalEvent.
 	PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*ExternalEvent, error)
+	// Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+	PutCorrelatedEvent(ctx context.Context, in *PutCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error)
+	// Get a specific CorrelatedEvent
+	GetCorrelatedEvent(ctx context.Context, in *CorrelatedEventId, opts ...grpc.CallOption) (*CorrelatedEvent, error)
 	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
 	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
 	// is not thrown before the deadline specified by the client.
@@ -291,7 +297,7 @@ type LittleHorseClient interface {
 	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Deletes a StructDef.
+	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(ctx context.Context, in *DeleteStructDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -641,9 +647,27 @@ func (c *littleHorseClient) PutExternalEvent(ctx context.Context, in *PutExterna
 	return out, nil
 }
 
+func (c *littleHorseClient) PutCorrelatedEvent(ctx context.Context, in *PutCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEvent, error) {
+	out := new(CorrelatedEvent)
+	err := c.cc.Invoke(ctx, LittleHorse_PutCorrelatedEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error) {
 	out := new(ExternalEvent)
 	err := c.cc.Invoke(ctx, LittleHorse_GetExternalEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetCorrelatedEvent(ctx context.Context, in *CorrelatedEventId, opts ...grpc.CallOption) (*CorrelatedEvent, error) {
+	out := new(CorrelatedEvent)
+	err := c.cc.Invoke(ctx, LittleHorse_GetCorrelatedEvent_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1098,7 +1122,7 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
-	// Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef``.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -1108,9 +1132,9 @@ type LittleHorseServer interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error)
-	// Get a StructDef.
+	// EXPERIMENTAL: Get a StructDef.
 	GetStructDef(context.Context, *StructDefId) (*StructDef, error)
-	// Validate evolution of an existing `StructDef` into a new `StructDef`
+	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(context.Context, *ValidateStructDefEvolutionRequest) (*ValidateStructDefEvolutionResponse, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
@@ -1175,10 +1199,14 @@ type LittleHorseServer interface {
 	GetVariable(context.Context, *VariableId) (*Variable, error)
 	// List all Variables from a WfRun.
 	ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error)
-	// Post an ExternalEvent. This RPC is highly useful for
+	// Post an ExternalEvent.
 	PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error)
+	// Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+	PutCorrelatedEvent(context.Context, *PutCorrelatedEventRequest) (*CorrelatedEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error)
+	// Get a specific CorrelatedEvent
+	GetCorrelatedEvent(context.Context, *CorrelatedEventId) (*CorrelatedEvent, error)
 	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
 	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
 	// is not thrown before the deadline specified by the client.
@@ -1258,7 +1286,7 @@ type LittleHorseServer interface {
 	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error)
-	// Deletes a StructDef.
+	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(context.Context, *DeleteStructDefRequest) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error)
@@ -1401,8 +1429,14 @@ func (UnimplementedLittleHorseServer) ListVariables(context.Context, *ListVariab
 func (UnimplementedLittleHorseServer) PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutExternalEvent not implemented")
 }
+func (UnimplementedLittleHorseServer) PutCorrelatedEvent(context.Context, *PutCorrelatedEventRequest) (*CorrelatedEvent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutCorrelatedEvent not implemented")
+}
 func (UnimplementedLittleHorseServer) GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExternalEvent not implemented")
+}
+func (UnimplementedLittleHorseServer) GetCorrelatedEvent(context.Context, *CorrelatedEventId) (*CorrelatedEvent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCorrelatedEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AwaitWorkflowEvent not implemented")
@@ -2161,6 +2195,24 @@ func _LittleHorse_PutExternalEvent_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_PutCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutCorrelatedEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutCorrelatedEvent(ctx, req.(*PutCorrelatedEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetExternalEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExternalEventId)
 	if err := dec(in); err != nil {
@@ -2175,6 +2227,24 @@ func _LittleHorse_GetExternalEvent_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetExternalEvent(ctx, req.(*ExternalEventId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CorrelatedEventId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetCorrelatedEvent(ctx, req.(*CorrelatedEventId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3123,8 +3193,16 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_PutExternalEvent_Handler,
 		},
 		{
+			MethodName: "PutCorrelatedEvent",
+			Handler:    _LittleHorse_PutCorrelatedEvent_Handler,
+		},
+		{
 			MethodName: "GetExternalEvent",
 			Handler:    _LittleHorse_GetExternalEvent_Handler,
+		},
+		{
+			MethodName: "GetCorrelatedEvent",
+			Handler:    _LittleHorse_GetCorrelatedEvent_Handler,
 		},
 		{
 			MethodName: "AwaitWorkflowEvent",

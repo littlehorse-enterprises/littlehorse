@@ -1,11 +1,14 @@
 package io.littlehorse.sdk.wfsdk;
 
+import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
+import java.io.Serializable;
+
 public interface ExternalEventNodeOutput extends NodeOutput {
     /**
      * Adds a timeout to an ExternalEventNode.
      *
      * @param timeoutSeconds the timeout length.
-     * @return the TaskNodeOutput.
+     * @return the ExternalEventNodeOutput.
      */
     public ExternalEventNodeOutput timeout(int timeoutSeconds);
 
@@ -18,4 +21,19 @@ public interface ExternalEventNodeOutput extends NodeOutput {
      * @return the ExternalEventNodeOutput.
      */
     public ExternalEventNodeOutput registeredAs(Class<?> payloadClass);
+
+    /**
+     * Allows users to set a correlationId on the `ExternalEventNode`. This allows the NodeRun
+     * to be completed by CorrelatedEvents not just ExternalEvents.
+     * @param correlationId is the correlationId.
+     * @return the ExternalEventNodeOutput.
+     */
+    public ExternalEventNodeOutput withCorrelationId(Serializable correlationId);
+
+    /**
+     * Allows setting a CorrelatedEventConfig on the ExternalEventDef registration.
+     * @param config is the CorrelatedEventConfig to be put on the registered ExternalEventDef.
+     * @return this ExternalEventNodeOutput
+     */
+    public ExternalEventNodeOutput withCorrelatedEventConfig(CorrelatedEventConfig config);
 }

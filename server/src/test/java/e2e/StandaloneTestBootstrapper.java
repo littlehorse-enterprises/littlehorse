@@ -101,6 +101,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         serverProperties.put(LHServerConfig.CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 8));
         serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
         serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
+        serverProperties.put(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "true");
         return serverProperties;
     }
 
