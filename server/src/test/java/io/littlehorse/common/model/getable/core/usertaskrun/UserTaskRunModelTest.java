@@ -1,20 +1,20 @@
 package io.littlehorse.common.model.getable.core.usertaskrun;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class UserTaskRunModelTest {
 
@@ -74,7 +74,7 @@ public class UserTaskRunModelTest {
     }
 
     @Test
-    void commentMethodshouldProperlyAddCommentEvent(){
+    void commentMethodshouldProperlyAddCommentEvent() {
 
         // Mock the context and command
         ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
@@ -94,11 +94,10 @@ public class UserTaskRunModelTest {
         Assertions.assertThat(addEvent.getCommented().getUserCommentId()).isEqualTo(0);
         Assertions.assertThat(utr.getCommentIdCount()).isEqualTo(1);
         Assertions.assertThat(utr.getEvents().get(0)).isEqualTo(addEvent);
-
     }
 
     @Test
-    void editCommentMethodShouldProperlyAddCommnetEventAndReplaceInLastEventForComment(){
+    void editCommentMethodShouldProperlyAddCommnetEventAndReplaceInLastEventForComment() {
 
         // Mock the context and command
         ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
@@ -108,7 +107,7 @@ public class UserTaskRunModelTest {
 
         UserTaskRunModel utr = new UserTaskRunModel();
         utr.setProcessorContext(mockContext);
-        
+
         UserTaskEventModel addEvent = utr.comment("user1", "hello world");
         Integer commentId = addEvent.getCommented().getUserCommentId();
 
@@ -117,11 +116,10 @@ public class UserTaskRunModelTest {
         Assertions.assertThat(editEvent.getCommentEdited()).isNotNull();
         Assertions.assertThat(utr.getEvents().get(1)).isEqualTo(editEvent);
         Assertions.assertThat(utr.getLastEventForComment().get(commentId)).isEqualTo(editEvent);
-
     }
 
     @Test
-    void deleteCommentMethodShouldProperlyAddToEventsAndLastEventForComment(){
+    void deleteCommentMethodShouldProperlyAddToEventsAndLastEventForComment() {
         // Mock the context and command
         ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
         CommandModel mockCommand = mock(CommandModel.class);
@@ -137,10 +135,9 @@ public class UserTaskRunModelTest {
         utr.deleteComment(commentId);
 
         Assertions.assertThat(utr.getEvents().get(1).getType()).isEqualTo(EventCase.COMMENT_DELETED);
-        Assertions.assertThat(utr.getEvents().get(1).getCommentDeleted().getUserCommentId()).isEqualTo(commentId);
-        Assertions.assertThat(utr.getLastEventForComment().get(commentId).getCommentDeleted()).isNotNull();
-
+        Assertions.assertThat(utr.getEvents().get(1).getCommentDeleted().getUserCommentId())
+                .isEqualTo(commentId);
+        Assertions.assertThat(utr.getLastEventForComment().get(commentId).getCommentDeleted())
+                .isNotNull();
     }
-
- 
 }
