@@ -330,7 +330,7 @@ public class WorkflowThreadTest
         void EntryPointAction(WorkflowThread wf)
         {
             WfRunVariable name = wf.DeclareStr("name");
-            wf.WaitForEvent("name-event").withCorrelationId(name);
+            wf.WaitForEvent("name-event").WithCorrelationId(name);
         }
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
         
