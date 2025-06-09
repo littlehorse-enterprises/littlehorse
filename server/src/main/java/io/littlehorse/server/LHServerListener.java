@@ -460,6 +460,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
         StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
 
         if (sd == null) {
@@ -517,6 +520,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
     public void putStructDef(PutStructDefRequest req, StreamObserver<StructDef> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
+
         PutStructDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, StructDef.class, true);
@@ -526,6 +533,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void validateStructDefEvolution(
             ValidateStructDefEvolutionRequest req, StreamObserver<ValidateStructDefEvolutionResponse> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
+
         InlineStructDefModel newInlineStructDef =
                 LHSerializable.fromProto(req.getStructDef(), InlineStructDefModel.class, requestContext());
         newInlineStructDef.validate();
@@ -1102,6 +1113,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.WRITE_METADATA)
     public void deleteStructDef(DeleteStructDefRequest req, StreamObserver<Empty> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
         DeleteStructDefRequestModel dsdr =
                 LHSerializable.fromProto(req, DeleteStructDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(dsdr), ctx, Empty.class, true);

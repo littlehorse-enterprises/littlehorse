@@ -8166,7 +8166,7 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /**
-     * Creates a new `StructDef``.
+     * EXPERIMENTAL: Creates a new `StructDef``.
      *
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
@@ -8184,7 +8184,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Get a StructDef. */
+    /** EXPERIMENTAL: Get a StructDef. */
     getStructDef: {
       name: "GetStructDef",
       requestType: StructDefId,
@@ -8193,7 +8193,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+    /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
     validateStructDefEvolution: {
       name: "ValidateStructDefEvolution",
       requestType: ValidateStructDefEvolutionRequest,
@@ -8725,7 +8725,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Deletes a StructDef. */
+    /** EXPERIMENTAL: Deletes a StructDef. */
     deleteStructDef: {
       name: "DeleteStructDef",
       requestType: DeleteStructDefRequest,
@@ -8921,7 +8921,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /**
-   * Creates a new `StructDef``.
+   * EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
@@ -8932,9 +8932,9 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** Get a StructDef. */
+  /** EXPERIMENTAL: Get a StructDef. */
   getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
     request: ValidateStructDefEvolutionRequest,
     context: CallContext & CallContextExt,
@@ -9209,7 +9209,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   deleteWfRun(request: DeleteWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeleteTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
-  /** Deletes a StructDef. */
+  /** EXPERIMENTAL: Deletes a StructDef. */
   deleteStructDef(request: DeleteStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeleteWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
@@ -9312,7 +9312,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /**
-   * Creates a new `StructDef``.
+   * EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
@@ -9323,9 +9323,9 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** Get a StructDef. */
+  /** EXPERIMENTAL: Get a StructDef. */
   getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
     request: DeepPartial<ValidateStructDefEvolutionRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -9606,7 +9606,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   deleteWfRun(request: DeepPartial<DeleteWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeepPartial<DeleteTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
-  /** Deletes a StructDef. */
+  /** EXPERIMENTAL: Deletes a StructDef. */
   deleteStructDef(request: DeepPartial<DeleteStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeepPartial<DeleteWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
