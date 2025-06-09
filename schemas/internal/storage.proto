@@ -25,6 +25,7 @@ enum StoreableType {
     METRIC_WINDOW = 7;
     INITIALIZATION_LOG = 8;
     WFRUN_STORED_INVENTORY = 9;
+    CORRELATION_MARKER = 10;
 }
 
 enum GetableClassEnum {
@@ -103,4 +104,15 @@ message StoredGetablePb {
     TagsCachePb index_cache = 1;
     bytes getable_payload = 2;
     GetableClassEnum type = 3;
+}
+
+message EventCorrelationMarker {
+  // NodeRunId of the `ExternalEventNodeRun` that are waiting
+  repeated NodeRunId source_node_runs = 1;
+
+  // ExternalEventDefId that we're waiting for
+  ExternalEventDefId event_def_id = 2;
+
+  // Correlation key
+  string correlation_key = 3;
 }

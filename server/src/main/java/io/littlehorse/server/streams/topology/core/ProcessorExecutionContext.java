@@ -4,6 +4,7 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -107,6 +108,19 @@ public class ProcessorExecutionContext implements ExecutionContext {
                 globalTaskQueueManager,
                 coreStore);
         return currentTaskManager;
+    }
+
+    public CorrelationMarkerManager getCorrelationMarkerManager() {
+        // Safe for now because we call this only once per command. TODO: Lazy loading.
+        return new CorrelationMarkerManager(coreStore);
+    }
+
+    /**
+     * Various subnodes can forward timers during the 
+     * @param timer
+     */
+    public void forwardTimer(LHTimer timer) {
+
     }
 
     @Override

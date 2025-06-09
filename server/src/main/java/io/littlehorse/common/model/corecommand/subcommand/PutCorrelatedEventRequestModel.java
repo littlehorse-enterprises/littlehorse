@@ -97,6 +97,7 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
 
         // TODO (#1583): Check for CorrelationMarkers and send ExternalEvent's through Timer/Boomerang topology
         manager.put(correlatedEvent);
+        correlatedEvent.maybeWakeUpNodeRuns(manager.);
 
         return correlatedEvent.toProto().build();
     }

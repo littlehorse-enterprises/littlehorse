@@ -75,6 +75,7 @@ private static final long serialVersionUID = 0L;
     DELETE_SCHEDULED_WF_RUN(26),
     SAVE_USER_TASK_RUN_PROGRESS(27),
     PUT_CORRELATED_EVENT(28),
+    UPDATE_CORRELATION_MARKER(29),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -117,6 +118,7 @@ private static final long serialVersionUID = 0L;
         case 26: return DELETE_SCHEDULED_WF_RUN;
         case 27: return SAVE_USER_TASK_RUN_PROGRESS;
         case 28: return PUT_CORRELATED_EVENT;
+        case 29: return UPDATE_CORRELATION_MARKER;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -980,6 +982,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance();
   }
 
+  public static final int UPDATE_CORRELATION_MARKER_FIELD_NUMBER = 29;
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return Whether the updateCorrelationMarker field is set.
+   */
+  @java.lang.Override
+  public boolean hasUpdateCorrelationMarker() {
+    return commandCase_ == 29;
+  }
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * @return The updateCorrelationMarker.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCorrelationmarkerPb getUpdateCorrelationMarker() {
+    if (commandCase_ == 29) {
+       return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder() {
+    if (commandCase_ == 29) {
+       return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1074,6 +1107,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 28) {
       output.writeMessage(28, (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_);
+    }
+    if (commandCase_ == 29) {
+      output.writeMessage(29, (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1190,6 +1226,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 28) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(28, (io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) command_);
+    }
+    if (commandCase_ == 29) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(29, (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1318,6 +1358,10 @@ private static final long serialVersionUID = 0L;
         if (!getPutCorrelatedEvent()
             .equals(other.getPutCorrelatedEvent())) return false;
         break;
+      case 29:
+        if (!getUpdateCorrelationMarker()
+            .equals(other.getUpdateCorrelationMarker())) return false;
+        break;
       case 0:
       default:
     }
@@ -1440,6 +1484,10 @@ private static final long serialVersionUID = 0L;
       case 28:
         hash = (37 * hash) + PUT_CORRELATED_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getPutCorrelatedEvent().hashCode();
+        break;
+      case 29:
+        hash = (37 * hash) + UPDATE_CORRELATION_MARKER_FIELD_NUMBER;
+        hash = (53 * hash) + getUpdateCorrelationMarker().hashCode();
         break;
       case 0:
       default:
@@ -1660,6 +1708,9 @@ private static final long serialVersionUID = 0L;
       if (putCorrelatedEventBuilder_ != null) {
         putCorrelatedEventBuilder_.clear();
       }
+      if (updateCorrelationMarkerBuilder_ != null) {
+        updateCorrelationMarkerBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1811,6 +1862,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 28 &&
           putCorrelatedEventBuilder_ != null) {
         result.command_ = putCorrelatedEventBuilder_.build();
+      }
+      if (commandCase_ == 29 &&
+          updateCorrelationMarkerBuilder_ != null) {
+        result.command_ = updateCorrelationMarkerBuilder_.build();
       }
     }
 
@@ -1965,6 +2020,10 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_CORRELATED_EVENT: {
           mergePutCorrelatedEvent(other.getPutCorrelatedEvent());
+          break;
+        }
+        case UPDATE_CORRELATION_MARKER: {
+          mergeUpdateCorrelationMarker(other.getUpdateCorrelationMarker());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2184,6 +2243,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 28;
               break;
             } // case 226
+            case 234: {
+              input.readMessage(
+                  getUpdateCorrelationMarkerFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 29;
+              break;
+            } // case 234
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5962,6 +6028,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 28;
       onChanged();
       return putCorrelatedEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.UpdateCorrelationmarkerPb, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder, io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder> updateCorrelationMarkerBuilder_;
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     * @return Whether the updateCorrelationMarker field is set.
+     */
+    @java.lang.Override
+    public boolean hasUpdateCorrelationMarker() {
+      return commandCase_ == 29;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     * @return The updateCorrelationMarker.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb getUpdateCorrelationMarker() {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (commandCase_ == 29) {
+          return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 29) {
+          return updateCorrelationMarkerBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder setUpdateCorrelationMarker(io.littlehorse.common.proto.UpdateCorrelationmarkerPb value) {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        updateCorrelationMarkerBuilder_.setMessage(value);
+      }
+      commandCase_ = 29;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder setUpdateCorrelationMarker(
+        io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder builderForValue) {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        updateCorrelationMarkerBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 29;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder mergeUpdateCorrelationMarker(io.littlehorse.common.proto.UpdateCorrelationmarkerPb value) {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (commandCase_ == 29 &&
+            command_ != io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.UpdateCorrelationmarkerPb.newBuilder((io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 29) {
+          updateCorrelationMarkerBuilder_.mergeFrom(value);
+        } else {
+          updateCorrelationMarkerBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 29;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public Builder clearUpdateCorrelationMarker() {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (commandCase_ == 29) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 29) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        updateCorrelationMarkerBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder getUpdateCorrelationMarkerBuilder() {
+      return getUpdateCorrelationMarkerFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder() {
+      if ((commandCase_ == 29) && (updateCorrelationMarkerBuilder_ != null)) {
+        return updateCorrelationMarkerBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 29) {
+          return (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.UpdateCorrelationmarkerPb, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder, io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder> 
+        getUpdateCorrelationMarkerFieldBuilder() {
+      if (updateCorrelationMarkerBuilder_ == null) {
+        if (!(commandCase_ == 29)) {
+          command_ = io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+        }
+        updateCorrelationMarkerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.UpdateCorrelationmarkerPb, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder, io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder>(
+                (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 29;
+      onChanged();
+      return updateCorrelationMarkerBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
