@@ -63,7 +63,7 @@ service LittleHorse {
    */
   rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
 
-  /* Creates a new `StructDef``.
+  /* EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
@@ -75,10 +75,10 @@ service LittleHorse {
    */
   rpc PutStructDef(PutStructDefRequest) returns (StructDef) {}
   
-  // Get a StructDef.
+  // EXPERIMENTAL: Get a StructDef.
   rpc GetStructDef(StructDefId) returns (StructDef) {}
 
-  // Validate evolution of an existing `StructDef` into a new `StructDef`
+  // EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
   rpc ValidateStructDefEvolution(ValidateStructDefEvolutionRequest) returns (ValidateStructDefEvolutionResponse) {}
 
   // Creates a UserTaskDef.
@@ -277,7 +277,7 @@ service LittleHorse {
   rpc DeleteWfRun(DeleteWfRunRequest) returns (google.protobuf.Empty) {}
   // Deletes a TaskDef.
   rpc DeleteTaskDef(DeleteTaskDefRequest) returns (google.protobuf.Empty) {}
-  // Deletes a StructDef.
+  // EXPERIMENTAL: Deletes a StructDef.
   rpc DeleteStructDef(DeleteStructDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a WfSpec.
   rpc DeleteWfSpec(DeleteWfSpecRequest) returns (google.protobuf.Empty) {}

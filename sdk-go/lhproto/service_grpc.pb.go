@@ -133,7 +133,7 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	// Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef``.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -143,9 +143,9 @@ type LittleHorseClient interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error)
-	// Get a StructDef.
+	// EXPERIMENTAL: Get a StructDef.
 	GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error)
-	// Validate evolution of an existing `StructDef` into a new `StructDef`
+	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(ctx context.Context, in *ValidateStructDefEvolutionRequest, opts ...grpc.CallOption) (*ValidateStructDefEvolutionResponse, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
@@ -297,7 +297,7 @@ type LittleHorseClient interface {
 	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Deletes a StructDef.
+	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(ctx context.Context, in *DeleteStructDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -1122,7 +1122,7 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
-	// Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef``.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -1132,9 +1132,9 @@ type LittleHorseServer interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error)
-	// Get a StructDef.
+	// EXPERIMENTAL: Get a StructDef.
 	GetStructDef(context.Context, *StructDefId) (*StructDef, error)
-	// Validate evolution of an existing `StructDef` into a new `StructDef`
+	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(context.Context, *ValidateStructDefEvolutionRequest) (*ValidateStructDefEvolutionResponse, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
@@ -1286,7 +1286,7 @@ type LittleHorseServer interface {
 	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error)
-	// Deletes a StructDef.
+	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(context.Context, *DeleteStructDefRequest) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error)

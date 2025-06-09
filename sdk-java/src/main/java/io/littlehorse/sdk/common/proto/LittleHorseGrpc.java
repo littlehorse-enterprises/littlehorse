@@ -2680,7 +2680,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new `StructDef``.
+     * EXPERIMENTAL: Creates a new `StructDef``.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
@@ -2696,7 +2696,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a StructDef.
+     * EXPERIMENTAL: Get a StructDef.
      * </pre>
      */
     default void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -2706,7 +2706,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
      * </pre>
      */
     default void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
@@ -3265,7 +3265,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a StructDef.
+     * EXPERIMENTAL: Deletes a StructDef.
      * </pre>
      */
     default void deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request,
@@ -3573,7 +3573,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new `StructDef``.
+     * EXPERIMENTAL: Creates a new `StructDef``.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
@@ -3590,7 +3590,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a StructDef.
+     * EXPERIMENTAL: Get a StructDef.
      * </pre>
      */
     public void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -3601,7 +3601,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
      * </pre>
      */
     public void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
@@ -4212,7 +4212,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a StructDef.
+     * EXPERIMENTAL: Deletes a StructDef.
      * </pre>
      */
     public void deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request,
@@ -4516,7 +4516,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new `StructDef``.
+     * EXPERIMENTAL: Creates a new `StructDef``.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
@@ -4532,7 +4532,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a StructDef.
+     * EXPERIMENTAL: Get a StructDef.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) {
@@ -4542,7 +4542,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
@@ -5090,7 +5090,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a StructDef.
+     * EXPERIMENTAL: Deletes a StructDef.
      * </pre>
      */
     public com.google.protobuf.Empty deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request) {
@@ -5387,7 +5387,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new `StructDef``.
+     * EXPERIMENTAL: Creates a new `StructDef``.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
@@ -5404,7 +5404,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a StructDef.
+     * EXPERIMENTAL: Get a StructDef.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> getStructDef(
@@ -5415,7 +5415,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Validate evolution of an existing `StructDef` into a new `StructDef`
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> validateStructDefEvolution(
@@ -6014,7 +6014,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a StructDef.
+     * EXPERIMENTAL: Deletes a StructDef.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteStructDef(

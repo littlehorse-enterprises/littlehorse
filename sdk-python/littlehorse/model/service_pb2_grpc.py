@@ -535,7 +535,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutStructDef(self, request, context):
-        """Creates a new `StructDef``.
+        """EXPERIMENTAL: Creates a new `StructDef``.
 
         Note that this request is idempotent: if you
         make a request to create a `StructDef` identical to the currently-created
@@ -550,14 +550,14 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetStructDef(self, request, context):
-        """Get a StructDef.
+        """EXPERIMENTAL: Get a StructDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ValidateStructDefEvolution(self, request, context):
-        """Validate evolution of an existing `StructDef` into a new `StructDef`
+        """EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -969,7 +969,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def DeleteStructDef(self, request, context):
-        """Deletes a StructDef.
+        """EXPERIMENTAL: Deletes a StructDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
