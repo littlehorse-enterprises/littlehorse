@@ -61,7 +61,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
     @Override
     public Empty process(ProcessorExecutionContext context, LHServerConfig config) {
         CorrelationMarkerManager manager = context.getCorrelationMarkerManager();
-        EventCorrelationMarkerModel marker = manager.getMarker(correlationKey, externalEventDefId);
+        EventCorrelationMarkerModel marker = manager.getOrCreateMarker(correlationKey, externalEventDefId);
 
         switch (action) {
             case CORRELATE:

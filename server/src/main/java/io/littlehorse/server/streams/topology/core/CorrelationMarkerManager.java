@@ -14,8 +14,11 @@ public class CorrelationMarkerManager {
 
     public EventCorrelationMarkerModel getMarker(String key, ExternalEventDefIdModel externalEventDefId) {
         String storeKey = EventCorrelationMarkerModel.getStoreKey(key, externalEventDefId);
+        return store.get(storeKey, EventCorrelationMarkerModel.class);
+    }
 
-        EventCorrelationMarkerModel result = store.get(storeKey, EventCorrelationMarkerModel.class);
+    public EventCorrelationMarkerModel getOrCreateMarker(String key, ExternalEventDefIdModel externalEventDefId) {
+        EventCorrelationMarkerModel result = getMarker(key, externalEventDefId);
         if (result == null) {
             result = new EventCorrelationMarkerModel(key, externalEventDefId);
         }

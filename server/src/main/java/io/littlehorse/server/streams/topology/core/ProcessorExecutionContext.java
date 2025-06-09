@@ -33,12 +33,11 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -128,7 +127,11 @@ public class ProcessorExecutionContext implements ExecutionContext {
         EventCorrelationMarkerModel marker = getCorrelationMarkerManager()
                 .getMarker(event.getId().getKey(), event.getId().getExternalEventDefId());
 
-        log.debug("marker with key {} and event id {} is {}", event.getId().getKey(), event.getId().getExternalEventDefId(), marker);
+        log.trace(
+                "marker with key {} and event id {} is {}",
+                event.getId().getKey(),
+                event.getId().getExternalEventDefId(),
+                marker);
         if (marker != null) {
             correlate(event, marker);
         }
