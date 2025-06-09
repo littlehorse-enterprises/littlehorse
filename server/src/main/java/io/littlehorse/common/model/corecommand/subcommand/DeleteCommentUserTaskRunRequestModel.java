@@ -42,19 +42,19 @@ public class DeleteCommentUserTaskRunRequestModel extends CoreSubCommand<DeleteC
 
         if (userTaskRunId == null){
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId can not be null");
-        }
+        }   
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
 
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }
+        
+        if(!utr.getLastEventForComment().containsKey(userCommentId)){
+            throw new LHApiException(Status.INVALID_ARGUMENT,"The user Comment does not exist");
+        }
 
-        UTECommentDeletedModel commentDeletedEvent = new UTECommentDeletedModel(userCommentId);
-
-        utr.getEvents()
-                .add(new UserTaskEventModel(
-                        commentDeletedEvent, executionContext.currentCommand().getTime()));
+        utr.deleteComment(userCommentId);
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
         if (wfRunModel == null) {

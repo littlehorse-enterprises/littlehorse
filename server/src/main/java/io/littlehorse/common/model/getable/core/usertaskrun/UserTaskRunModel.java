@@ -16,6 +16,7 @@ import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEAssignedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECancelledModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentDeletedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentEditedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
@@ -86,6 +87,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
     private FailureModel failureToThrowKenobi;
+    private transient Map<Integer, UserTaskEventModel> lastEventForComment = new HashMap<>();
 
     public UserTaskRunModel() {}
 
@@ -164,6 +166,19 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         }
         for (Map.Entry<String, VariableValue> result : p.getResultsMap().entrySet()) {
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
+        }
+
+        lastEventForComment = new HashMap<>();
+        for (UserTaskEventModel event : events) {
+           if(event.getCommented() != null){
+                lastEventForComment.put(event.getCommented().getUserCommentId(), event);
+            }
+           if(event.getCommentEdited() != null){
+                lastEventForComment.put(event.getCommentEdited().getUserCommentId(), event);
+           }    
+           if(event.getCommentDeleted() != null){
+                lastEventForComment.put(event.getCommentDeleted().getUserCommentId(), event);
+           }
         }
         this.epoch = p.getEpoch();
         this.commentIdCount = p.getCommentIdCount();
@@ -322,10 +337,11 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
     public UserTaskEventModel comment(String userId, String comment) {
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
-                new UTECommentedModel(userId, comment, commentIdCount++),
+                new UTECommentedModel(userId, comment, commentIdCount),
                 processorContext.currentCommand().getTime());
         this.events.add(userTaskEventModel);
-
+        this.lastEventForComment.put(commentIdCount, userTaskEventModel);
+        commentIdCount++;
         return userTaskEventModel;
     }
 
@@ -334,7 +350,17 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             new UTECommentEditedModel(userCommentId, userId, comment),
             processorContext.currentCommand().getTime());
         this.events.addLast(userTaskEventModel);
+        this.lastEventForComment.put(userCommentId, userTaskEventModel);
         return userTaskEventModel;
+    }
+
+    public void deleteComment(Integer userCommentId){
+        UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
+            new UTECommentDeletedModel(userCommentId), 
+            processorContext.currentCommand().getTime()
+            );
+        this.events.addLast(userTaskEventModel);
+        this.lastEventForComment.put(userCommentId, userTaskEventModel);
     }
 
     public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx)

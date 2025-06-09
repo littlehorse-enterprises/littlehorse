@@ -53,6 +53,18 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
 
+        if (utr == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
+        }
+        
+        if(!utr.getLastEventForComment().containsKey(userCommentId)){
+            throw new LHApiException(Status.INVALID_ARGUMENT, "No comment exists for the provided comment ID: " + userCommentId + ".");
+        }
+
+        if(utr.getLastEventForComment().get(userCommentId).getCommentDeleted() != null){
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The specified comment cannot be edited because it has already been deleted.");
+        }
+     
         UserTaskEventModel ute = utr.editComment(userId, comment, userCommentId);
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
