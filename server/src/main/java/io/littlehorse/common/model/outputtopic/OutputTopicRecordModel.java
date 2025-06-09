@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.DataNuggetModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -34,6 +35,7 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
     private UserTaskRunModel userTaskRun;
     private VariableModel variable;
     private TaskRunModel taskRun;
+    private DataNuggetModel dataNugget;
 
     public OutputTopicRecordModel() {
         this.timestamp = LHLibUtil.fromDate(new Date());
@@ -72,6 +74,9 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
             case VARIABLE:
                 out.setVariable(variable.toProto());
                 break;
+            case DATA_NUGGET:
+                out.setDataNugget(dataNugget.toProto());
+                break;
             case PAYLOAD_NOT_SET:
         }
 
@@ -84,30 +89,28 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
 
         timestamp = p.getTimestamp();
 
-        switch (p.getPayloadCase()) {
+        payloadCase = p.getPayloadCase();
+        switch (payloadCase) {
             case WF_RUN:
-                payloadCase = PayloadCase.WF_RUN;
                 wfRun = LHSerializable.fromProto(p.getWfRun(), WfRunModel.class, ignored);
                 break;
             case USER_TASK_RUN:
-                payloadCase = PayloadCase.USER_TASK_RUN;
                 userTaskRun = LHSerializable.fromProto(p.getUserTaskRun(), UserTaskRunModel.class, ignored);
                 break;
             case EXTERNAL_EVENT:
-                payloadCase = PayloadCase.EXTERNAL_EVENT;
                 externalEvent = LHSerializable.fromProto(p.getExternalEvent(), ExternalEventModel.class, ignored);
                 break;
             case TASK_RUN:
-                payloadCase = PayloadCase.TASK_RUN;
                 taskRun = LHSerializable.fromProto(p.getTaskRun(), TaskRunModel.class, ignored);
                 break;
             case WORKFLOW_EVENT:
-                payloadCase = PayloadCase.WORKFLOW_EVENT;
                 workflowEvent = LHSerializable.fromProto(p.getWorkflowEvent(), WorkflowEventModel.class, ignored);
                 break;
             case VARIABLE:
-                payloadCase = PayloadCase.VARIABLE;
                 variable = LHSerializable.fromProto(p.getVariable(), VariableModel.class, ignored);
+                break;
+            case DATA_NUGGET:
+                dataNugget = LHSerializable.fromProto(p.getDataNugget(), DataNuggetModel.class, ignored);
                 break;
             case PAYLOAD_NOT_SET:
         }
@@ -131,6 +134,8 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
                 return workflowEvent;
             case VARIABLE:
                 return variable;
+            case DATA_NUGGET:
+                return dataNugget;
             case PAYLOAD_NOT_SET:
         }
         throw new IllegalStateException("Forgot to add new output topic record type here");
@@ -159,6 +164,9 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         } else if (VariableModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.VARIABLE;
             this.variable = (VariableModel) thing;
+        } else if (DataNuggetModel.class.isAssignableFrom(thing.getClass())) {
+            this.payloadCase = PayloadCase.DATA_NUGGET;
+            this.dataNugget = (DataNuggetModel) thing;
         } else {
             throw new IllegalArgumentException("Unrecognized Output Topic Event thing: " + thing.getClass());
         }

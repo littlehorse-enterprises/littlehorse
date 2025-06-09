@@ -199,5 +199,32 @@ public interface OutputTopicRecordOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getExternalEventOrBuilder();
 
+  /**
+   * <pre>
+   * Updates about a `DataNugget` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.DataNugget data_nugget = 8;</code>
+   * @return Whether the dataNugget field is set.
+   */
+  boolean hasDataNugget();
+  /**
+   * <pre>
+   * Updates about a `DataNugget` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.DataNugget data_nugget = 8;</code>
+   * @return The dataNugget.
+   */
+  io.littlehorse.sdk.common.proto.DataNugget getDataNugget();
+  /**
+   * <pre>
+   * Updates about a `DataNugget` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.DataNugget data_nugget = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.DataNuggetOrBuilder getDataNuggetOrBuilder();
+
   io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase getPayloadCase();
 }

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.DataNuggetModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -20,6 +21,7 @@ import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.DataNuggetIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -105,6 +107,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.WORKFLOW_EVENT;
         } else if (cls.equals(ScheduledWfRunModel.class)) {
             return GetableClassEnum.SCHEDULED_WF_RUN;
+        } else if (cls.equals(DataNuggetModel.class)) {
+            return GetableClassEnum.DATA_NUGGET;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -150,6 +154,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunModel.class;
+            case DATA_NUGGET:
+                return DataNuggetModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -196,6 +202,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventIdModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunIdModel.class;
+            case DATA_NUGGET:
+                return DataNuggetIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

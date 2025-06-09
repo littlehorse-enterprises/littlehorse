@@ -78,6 +78,16 @@ class ExternalEventId(_message.Message):
     guid: str
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ...) -> None: ...
 
+class DataNuggetId(_message.Message):
+    __slots__ = ["key", "external_event_def_id", "guid"]
+    KEY_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    GUID_FIELD_NUMBER: _ClassVar[int]
+    key: str
+    external_event_def_id: ExternalEventDefId
+    guid: str
+    def __init__(self, key: _Optional[str] = ..., external_event_def_id: _Optional[_Union[ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ...) -> None: ...
+
 class WfRunId(_message.Message):
     __slots__ = ["id", "parent_wf_run_id"]
     ID_FIELD_NUMBER: _ClassVar[int]

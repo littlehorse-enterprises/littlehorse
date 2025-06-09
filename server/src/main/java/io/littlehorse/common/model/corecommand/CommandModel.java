@@ -13,6 +13,7 @@ import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventReq
 import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.PutDataNuggetRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
@@ -70,6 +71,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private ScheduleWfRunCommandModel scheduleWfRun;
     private ScheduleWfRequestModel scheduleWfRunRequest;
     private DeleteScheduledWfRunRequestModel deleteScheduledWfRun;
+    private PutDataNuggetRequestModel putDataNugget;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -167,6 +169,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case DELETE_SCHEDULED_WF_RUN:
                 out.setDeleteScheduledWfRun(deleteScheduledWfRun.toProto());
+                break;
+            case PUT_DATA_NUGGET:
+                out.setPutDataNugget(putDataNugget.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -268,6 +273,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteScheduledWfRun = LHSerializable.fromProto(
                         p.getDeleteScheduledWfRun(), DeleteScheduledWfRunRequestModel.class, context);
                 break;
+            case PUT_DATA_NUGGET:
+                putDataNugget =
+                        LHSerializable.fromProto(p.getPutDataNugget(), PutDataNuggetRequestModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -324,6 +333,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return scheduleWfRunRequest;
             case DELETE_SCHEDULED_WF_RUN:
                 return deleteScheduledWfRun;
+            case PUT_DATA_NUGGET:
+                return putDataNugget;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -403,6 +414,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteScheduledWfRunRequestModel.class)) {
             type = CommandCase.DELETE_SCHEDULED_WF_RUN;
             deleteScheduledWfRun = (DeleteScheduledWfRunRequestModel) cmd;
+        } else if (cls.equals(PutDataNuggetRequestModel.class)) {
+            type = CommandCase.PUT_DATA_NUGGET;
+            putDataNugget = (PutDataNuggetRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

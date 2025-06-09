@@ -63,4 +63,34 @@ public interface ExternalEventNodeOrBuilder extends
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder();
+
+  /**
+   * <pre>
+   * If set, then the `ExternalEventNode` will have correlations enabled, so you can
+   * put an `ExternalEvent` with a correlation id and the `WfRun` will be matched.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_id = 3;</code>
+   * @return Whether the correlationId field is set.
+   */
+  boolean hasCorrelationId();
+  /**
+   * <pre>
+   * If set, then the `ExternalEventNode` will have correlations enabled, so you can
+   * put an `ExternalEvent` with a correlation id and the `WfRun` will be matched.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_id = 3;</code>
+   * @return The correlationId.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getCorrelationId();
+  /**
+   * <pre>
+   * If set, then the `ExternalEventNode` will have correlations enabled, so you can
+   * put an `ExternalEvent` with a correlation id and the `WfRun` will be matched.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_id = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getCorrelationIdOrBuilder();
 }

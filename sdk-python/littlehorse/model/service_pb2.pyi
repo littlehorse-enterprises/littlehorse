@@ -125,14 +125,16 @@ class PutUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
-    __slots__ = ["name", "retention_policy", "content_type"]
+    __slots__ = ["name", "retention_policy", "content_type", "data_nugget_config"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
+    DATA_NUGGET_CONFIG_FIELD_NUMBER: _ClassVar[int]
     name: str
     retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
     content_type: _common_wfspec_pb2.ReturnType
-    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+    data_nugget_config: _external_event_pb2.DataNuggetConfig
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., data_nugget_config: _Optional[_Union[_external_event_pb2.DataNuggetConfig, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ["wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position"]
@@ -150,11 +152,31 @@ class PutExternalEventRequest(_message.Message):
     node_run_position: int
     def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ...) -> None: ...
 
+class PutDataNuggetRequest(_message.Message):
+    __slots__ = ["key", "external_event_def_id", "guid", "content", "expected_epoch"]
+    KEY_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    GUID_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    EXPECTED_EPOCH_FIELD_NUMBER: _ClassVar[int]
+    key: str
+    external_event_def_id: _object_id_pb2.ExternalEventDefId
+    guid: str
+    content: _variable_pb2.VariableValue
+    expected_epoch: int
+    def __init__(self, key: _Optional[str] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., expected_epoch: _Optional[int] = ...) -> None: ...
+
 class DeleteExternalEventRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.ExternalEventId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
+
+class DeleteDataNuggetRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.DataNuggetId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.DataNuggetId, _Mapping]] = ...) -> None: ...
 
 class DeleteScheduledWfRunRequest(_message.Message):
     __slots__ = ["id"]

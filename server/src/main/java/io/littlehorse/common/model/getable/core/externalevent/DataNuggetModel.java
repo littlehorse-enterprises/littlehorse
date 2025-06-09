@@ -1,0 +1,86 @@
+package io.littlehorse.common.model.getable.core.externalevent;
+
+import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.objectId.DataNuggetIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.DataNugget;
+import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
+public class DataNuggetModel extends CoreGetable<DataNugget> implements CoreOutputTopicGetable<DataNugget> {
+
+    private DataNuggetIdModel id;
+    private VariableValueModel content;
+    private Date createdAt;
+    private int epoch;
+    private List<ExternalEventIdModel> externalEvents = new ArrayList<>();
+
+    @Override
+    public Class<DataNugget> getProtoBaseClass() {
+        return DataNugget.class;
+    }
+
+    @Override
+    public DataNugget.Builder toProto() {
+        DataNugget.Builder out = DataNugget.newBuilder()
+                .setCreatedAt(LHLibUtil.fromDate(createdAt))
+                .setContent(content.toProto())
+                .setId(id.toProto())
+                .setEpoch(epoch);
+
+        for (ExternalEventIdModel extEvtId : externalEvents) {
+            out.addExternalEvents(extEvtId.toProto());
+        }
+
+        return out;
+    }
+
+    @Override
+    public void initFrom(Message proto, ExecutionContext ignored) {
+        DataNugget p = (DataNugget) proto;
+        this.id = LHSerializable.fromProto(p.getId(), DataNuggetIdModel.class, ignored);
+        this.content = LHSerializable.fromProto(p.getContent(), VariableValueModel.class, ignored);
+        this.createdAt = LHLibUtil.fromProtoTs(p.getCreatedAt());
+        this.epoch = p.getEpoch();
+
+        this.externalEvents = new ArrayList<>();
+        for (ExternalEventId extEvtId : p.getExternalEventsList()) {
+            this.externalEvents.add(LHSerializable.fromProto(extEvtId, ExternalEventIdModel.class, ignored));
+        }
+    }
+
+    @Override
+    public DataNuggetIdModel getObjectId() {
+        return id;
+    }
+
+    @Override
+    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        // TODO (#1582): add indexes
+        return List.of();
+    }
+
+    @Override
+    public List<IndexedField> getIndexValues(String fieldKey, Optional<TagStorageType> tagStorageType) {
+        return List.of();
+    }
+}

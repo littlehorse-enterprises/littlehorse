@@ -287,6 +287,12 @@ export interface ExternalEventNodeRun {
     | undefined;
   /** Whether we had a timeout while waiting for the ExternalEvent to come. */
   timedOut: boolean;
+  /**
+   * Correlation ID for the External Event Node to allow posting events by
+   * correlation (without knowing the WfRunId in advance). If not set,
+   * the ExternalEvent poster must know the WfRunId.
+   */
+  correlationId?: string | undefined;
 }
 
 /** The sub-node structure for a SLEEP NodeRun. */
@@ -1166,7 +1172,13 @@ export const WaitForThreadsRun_WaitForThread = {
 };
 
 function createBaseExternalEventNodeRun(): ExternalEventNodeRun {
-  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined, timedOut: false };
+  return {
+    externalEventDefId: undefined,
+    eventTime: undefined,
+    externalEventId: undefined,
+    timedOut: false,
+    correlationId: undefined,
+  };
 }
 
 export const ExternalEventNodeRun = {
@@ -1182,6 +1194,9 @@ export const ExternalEventNodeRun = {
     }
     if (message.timedOut !== false) {
       writer.uint32(32).bool(message.timedOut);
+    }
+    if (message.correlationId !== undefined) {
+      writer.uint32(42).string(message.correlationId);
     }
     return writer;
   },
@@ -1221,6 +1236,13 @@ export const ExternalEventNodeRun = {
 
           message.timedOut = reader.bool();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.correlationId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1243,6 +1265,7 @@ export const ExternalEventNodeRun = {
       ? ExternalEventId.fromPartial(object.externalEventId)
       : undefined;
     message.timedOut = object.timedOut ?? false;
+    message.correlationId = object.correlationId ?? undefined;
     return message;
   },
 };

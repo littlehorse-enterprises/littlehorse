@@ -47,6 +47,7 @@ enum GetableClassEnum {
     WORKFLOW_EVENT = 16;
     SCHEDULED_WF_RUN = 17;
     STRUCT_DEF = 18;
+    DATA_NUGGET = 19;
 }
 
 message AttributePb {

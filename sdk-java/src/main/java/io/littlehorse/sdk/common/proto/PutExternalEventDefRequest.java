@@ -188,6 +188,44 @@ private static final long serialVersionUID = 0L;
     return contentType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : contentType_;
   }
 
+  public static final int DATA_NUGGET_CONFIG_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.DataNuggetConfig dataNuggetConfig_;
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+   * @return Whether the dataNuggetConfig field is set.
+   */
+  @java.lang.Override
+  public boolean hasDataNuggetConfig() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+   * @return The dataNuggetConfig.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DataNuggetConfig getDataNuggetConfig() {
+    return dataNuggetConfig_ == null ? io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
+  }
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder getDataNuggetConfigOrBuilder() {
+    return dataNuggetConfig_ == null ? io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -211,6 +249,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getContentType());
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(4, getDataNuggetConfig());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -230,6 +271,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getContentType());
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getDataNuggetConfig());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -258,6 +303,11 @@ private static final long serialVersionUID = 0L;
       if (!getContentType()
           .equals(other.getContentType())) return false;
     }
+    if (hasDataNuggetConfig() != other.hasDataNuggetConfig()) return false;
+    if (hasDataNuggetConfig()) {
+      if (!getDataNuggetConfig()
+          .equals(other.getDataNuggetConfig())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -278,6 +328,10 @@ private static final long serialVersionUID = 0L;
     if (hasContentType()) {
       hash = (37 * hash) + CONTENT_TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getContentType().hashCode();
+    }
+    if (hasDataNuggetConfig()) {
+      hash = (37 * hash) + DATA_NUGGET_CONFIG_FIELD_NUMBER;
+      hash = (53 * hash) + getDataNuggetConfig().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -415,6 +469,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getRetentionPolicyFieldBuilder();
         getContentTypeFieldBuilder();
+        getDataNuggetConfigFieldBuilder();
       }
     }
     @java.lang.Override
@@ -431,6 +486,11 @@ private static final long serialVersionUID = 0L;
       if (contentTypeBuilder_ != null) {
         contentTypeBuilder_.dispose();
         contentTypeBuilder_ = null;
+      }
+      dataNuggetConfig_ = null;
+      if (dataNuggetConfigBuilder_ != null) {
+        dataNuggetConfigBuilder_.dispose();
+        dataNuggetConfigBuilder_ = null;
       }
       return this;
     }
@@ -479,6 +539,12 @@ private static final long serialVersionUID = 0L;
             ? contentType_
             : contentTypeBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.dataNuggetConfig_ = dataNuggetConfigBuilder_ == null
+            ? dataNuggetConfig_
+            : dataNuggetConfigBuilder_.build();
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -538,6 +604,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasContentType()) {
         mergeContentType(other.getContentType());
       }
+      if (other.hasDataNuggetConfig()) {
+        mergeDataNuggetConfig(other.getDataNuggetConfig());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -583,6 +652,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getDataNuggetConfigFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1063,6 +1139,161 @@ private static final long serialVersionUID = 0L;
         contentType_ = null;
       }
       return contentTypeBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.DataNuggetConfig dataNuggetConfig_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.DataNuggetConfig, io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder, io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder> dataNuggetConfigBuilder_;
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     * @return Whether the dataNuggetConfig field is set.
+     */
+    public boolean hasDataNuggetConfig() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     * @return The dataNuggetConfig.
+     */
+    public io.littlehorse.sdk.common.proto.DataNuggetConfig getDataNuggetConfig() {
+      if (dataNuggetConfigBuilder_ == null) {
+        return dataNuggetConfig_ == null ? io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
+      } else {
+        return dataNuggetConfigBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     */
+    public Builder setDataNuggetConfig(io.littlehorse.sdk.common.proto.DataNuggetConfig value) {
+      if (dataNuggetConfigBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        dataNuggetConfig_ = value;
+      } else {
+        dataNuggetConfigBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     */
+    public Builder setDataNuggetConfig(
+        io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder builderForValue) {
+      if (dataNuggetConfigBuilder_ == null) {
+        dataNuggetConfig_ = builderForValue.build();
+      } else {
+        dataNuggetConfigBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     */
+    public Builder mergeDataNuggetConfig(io.littlehorse.sdk.common.proto.DataNuggetConfig value) {
+      if (dataNuggetConfigBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          dataNuggetConfig_ != null &&
+          dataNuggetConfig_ != io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance()) {
+          getDataNuggetConfigBuilder().mergeFrom(value);
+        } else {
+          dataNuggetConfig_ = value;
+        }
+      } else {
+        dataNuggetConfigBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     */
+    public Builder clearDataNuggetConfig() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      dataNuggetConfig_ = null;
+      if (dataNuggetConfigBuilder_ != null) {
+        dataNuggetConfigBuilder_.dispose();
+        dataNuggetConfigBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder getDataNuggetConfigBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getDataNuggetConfigFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder getDataNuggetConfigOrBuilder() {
+      if (dataNuggetConfigBuilder_ != null) {
+        return dataNuggetConfigBuilder_.getMessageOrBuilder();
+      } else {
+        return dataNuggetConfig_ == null ?
+            io.littlehorse.sdk.common.proto.DataNuggetConfig.getDefaultInstance() : dataNuggetConfig_;
+      }
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `DataNugget` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.DataNuggetConfig, io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder, io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder> 
+        getDataNuggetConfigFieldBuilder() {
+      if (dataNuggetConfigBuilder_ == null) {
+        dataNuggetConfigBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.DataNuggetConfig, io.littlehorse.sdk.common.proto.DataNuggetConfig.Builder, io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder>(
+                getDataNuggetConfig(),
+                getParentForChildren(),
+                isClean());
+        dataNuggetConfig_ = null;
+      }
+      return dataNuggetConfigBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

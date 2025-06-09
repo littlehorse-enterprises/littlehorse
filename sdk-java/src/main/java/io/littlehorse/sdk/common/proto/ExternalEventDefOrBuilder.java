@@ -132,4 +132,34 @@ public interface ExternalEventDefOrBuilder extends
    * <code>optional .littlehorse.ReturnType type_information = 4;</code>
    */
   io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getTypeInformationOrBuilder();
+
+  /**
+   * <pre>
+   * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
+   * type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
+   * @return Whether the dataNuggetConfig field is set.
+   */
+  boolean hasDataNuggetConfig();
+  /**
+   * <pre>
+   * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
+   * type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
+   * @return The dataNuggetConfig.
+   */
+  io.littlehorse.sdk.common.proto.DataNuggetConfig getDataNuggetConfig();
+  /**
+   * <pre>
+   * If not set, then the users cannot use the `rpc PutDataNugget` to post externalEvents of this
+   * type.
+   * </pre>
+   *
+   * <code>optional .littlehorse.DataNuggetConfig data_nugget_config = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.DataNuggetConfigOrBuilder getDataNuggetConfigOrBuilder();
 }
