@@ -11,6 +11,8 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.HeadersUtil;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -119,12 +121,12 @@ public class TimerProcessorTest {
 
     @Test
     public void supportTimerDistinctionByTenant() {
-        LHTimer tenantATask = buildNewTimer("my-task", LocalDateTime.now());
+        LHTimer tenantATask = buildNewTimer("my-task", LocalDateTime.now().plus(Duration.ofSeconds(5)));
         tenantATask.setTenantId(new TenantIdModel("tenantA"));
-        LHTimer tenantBTask = buildNewTimer("otherTask", LocalDateTime.now());
+        LHTimer tenantBTask = buildNewTimer("otherTask", LocalDateTime.now().plus(Duration.ofSeconds(5)));
         tenantBTask.setTenantId(new TenantIdModel("tenantB"));
-        processor.process(new Record<>("my-task", tenantATask, 0L));
-        processor.process(new Record<>("my-task", tenantBTask, 0L));
+        processor.process(new Record<>("my-task", tenantATask, System.currentTimeMillis() + 5000L));
+        processor.process(new Record<>("my-task", tenantBTask, System.currentTimeMillis() + 5000L));
         Assertions.assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).hasSize(2);
         ImmutableList<KeyValue<String, LHTimer>> tasks = ImmutableList.copyOf(nativeInMemoryStore.all());
         Assertions.assertThat(tasks)
