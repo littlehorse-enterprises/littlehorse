@@ -319,6 +319,74 @@ public class WorkflowThreadTest
         Assert.Equal(expectedSpec, compiledWfThread);
     }
 
+        [Fact]
+    public void WfThread_WithCorrelaatedExternalEvent_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfExternalEvents = 1;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable name = wf.DeclareStr("name");
+            wf.WaitForEvent("name-event").withCorrelationId(name);
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-name-event-EXTERNAL_EVENT" }
+            }
+        };
+
+        var externalEvent = new Node
+        {
+            ExternalEvent = new ExternalEventNode
+            {
+                ExternalEventDefId = new ExternalEventDefId { Name = "name-event" },
+                CorrelationKey = new VariableAssignment { VariableName = "name" }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-exit-EXIT",
+                }
+            }
+        };
+
+        var exitNode = new Node
+        {
+            Exit = new ExitNode()
+        };
+
+        var threadVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "name",
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-name-event-EXTERNAL_EVENT", externalEvent);
+        expectedSpec.Nodes.Add("2-exit-EXIT", exitNode);
+        expectedSpec.VariableDefs.Add(threadVarDef);
+
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfExternalEvents;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedSpec, compiledWfThread);
+    }
+
+
     [Fact]
     public void WorkflowThread_WaitingManyChildThreads_ShouldCompile()
     {
