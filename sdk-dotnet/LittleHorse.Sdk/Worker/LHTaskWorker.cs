@@ -50,16 +50,16 @@ namespace LittleHorse.Sdk.Worker
         /// </exception>
         public async Task Start()
         {
-            if (!TaskDefExists())
+            if (!await TaskDefExists())
             {
                 throw new LHMisconfigurationException($"Couldn't find TaskDef: {_task.TaskDefName}");
             }
 
-            _task.PrepareLHTaskMethod();
+            await _task.PrepareLHTaskMethod();
             if (_manager == null)
             {
                 _manager = new LHServerConnectionManager<T>(_config, _task, _lhClient);
-                await _manager.Start();    
+                await _manager.Start();
             }
         }
 
@@ -71,11 +71,11 @@ namespace LittleHorse.Sdk.Worker
         /// </returns>
         /// <exception cref="RpcException"> Throws when call fails.
         /// </exception>
-        public bool TaskDefExists()
+        public async Task<bool> TaskDefExists()
         {
             try
             {
-                _task.GetTaskDef();
+                await _task.GetTaskDef();
 
                 return true;
             }
@@ -135,16 +135,16 @@ namespace LittleHorse.Sdk.Worker
                         Type = lhMethodParam.Type,
                         MaskedValue = lhMethodParam.IsMasked
                     };
-                    
+
                     request.InputVars.Add(variableDef);
                 }
-                
+
                 if (signature.ReturnType != null) {
                     request.ReturnType = signature.ReturnType;
                 }
 
                 var response = _lhClient.PutTaskDef(request);
-                
+
                 _logger?.LogInformation($"Created TaskDef:\n{LHMappingHelper.ProtoToJson(response)}");
             }
             catch (RpcException ex)
