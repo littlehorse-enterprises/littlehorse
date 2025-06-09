@@ -54,25 +54,30 @@ public class ExternalEventNodeOutputImpl extends NodeOutputImpl implements Exter
     }
 
     public PutExternalEventDefRequest toPutExtDefRequest() {
-        TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
-
+        PutExternalEventDefRequest.Builder builder;
         if (payloadClass == null) {
             // We don't set the typeDef: the event has no payload
-        } else if (String.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.STR);
-        } else if (Double.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.DOUBLE);
-        } else if (Integer.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.INT);
-        } else if (Boolean.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.BOOL);
+            builder = PutExternalEventDefRequest.newBuilder()
+                    .setName(externalEventDefName)
+                    .setContentType(ReturnType.newBuilder());
         } else {
-            throw new IllegalArgumentException(
-                    "ExternalEventDef payload class must be one of String, Double, Integer or Boolean");
+            TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
+            if (String.class.isAssignableFrom(payloadClass)) {
+                typeDef.setType(VariableType.STR);
+            } else if (Double.class.isAssignableFrom(payloadClass)) {
+                typeDef.setType(VariableType.DOUBLE);
+            } else if (Integer.class.isAssignableFrom(payloadClass)) {
+                typeDef.setType(VariableType.INT);
+            } else if (Boolean.class.isAssignableFrom(payloadClass)) {
+                typeDef.setType(VariableType.BOOL);
+            } else {
+                throw new IllegalArgumentException(
+                        "ExternalEventDef payload class must be one of String, Double, Integer or Boolean");
+            }
+            builder = PutExternalEventDefRequest.newBuilder()
+                    .setContentType(ReturnType.newBuilder().setReturnType(typeDef))
+                    .setName(externalEventDefName);
         }
-        PutExternalEventDefRequest.Builder builder = PutExternalEventDefRequest.newBuilder()
-                .setContentType(ReturnType.newBuilder().setReturnType(typeDef))
-                .setName(externalEventDefName);
 
         if (correlatedEventConfig != null) {
             builder.setCorrelatedEventConfig(correlatedEventConfig);
