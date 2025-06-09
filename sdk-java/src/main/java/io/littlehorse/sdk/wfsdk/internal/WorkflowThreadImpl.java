@@ -739,6 +739,18 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, nb.build());
     }
 
+    public void addCorrelationIdToExtEvtNode(ExternalEventNodeOutputImpl node, Serializable correlationId) {
+        Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
+
+        VariableAssignment correlationValue = assignVariable(correlationId);
+
+        ExternalEventNode.Builder evt = n.getExternalEventBuilder();
+        evt.setCorrelationKey(correlationValue);
+        n.setExternalEvent(evt);
+
+        spec.putNodes(node.nodeName, n.build());
+    }
+
     public void addTimeoutToExtEvtNode(ExternalEventNodeOutputImpl node, int timeoutSeconds) {
         checkIfIsActive();
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();

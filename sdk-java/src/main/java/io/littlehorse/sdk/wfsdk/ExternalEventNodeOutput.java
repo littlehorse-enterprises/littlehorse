@@ -1,5 +1,7 @@
 package io.littlehorse.sdk.wfsdk;
 
+import java.io.Serializable;
+
 public interface ExternalEventNodeOutput extends NodeOutput {
     /**
      * Adds a timeout to an ExternalEventNode.
@@ -18,4 +20,10 @@ public interface ExternalEventNodeOutput extends NodeOutput {
      * @return the ExternalEventNodeOutput.
      */
     public ExternalEventNodeOutput registeredAs(Class<?> payloadClass);
+
+    /**
+     * Allows users to set a correlationId on the `ExternalEventNode`. This allows the NodeRun
+     * to be completed by CorrelatedEvents not just ExternalEvents.
+     */
+    public ExternalEventNodeOutput withCorrelationId(Serializable correlationId);
 }

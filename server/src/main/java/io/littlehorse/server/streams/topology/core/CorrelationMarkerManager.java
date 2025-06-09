@@ -29,4 +29,8 @@ public class CorrelationMarkerManager {
             store.put(toSave);
         }
     }
+
+    public void clearMarker(EventCorrelationMarkerModel toDelete) {
+        store.delete(toDelete);
+    }
 }

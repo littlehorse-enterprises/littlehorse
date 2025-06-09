@@ -1,12 +1,20 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,9 +30,19 @@ import org.slf4j.LoggerFactory;
  */
 public class CorrelatedEventExample {
 
+    public static final String WF_NAME = "correlated-events";
+    public static final String EVENT_NAME = "document-signed";
+
     private static final Logger log = LoggerFactory.getLogger(
         CorrelatedEventExample.class
     );
+
+    private static Workflow getWorkflow() {
+        return Workflow.newWorkflow(WF_NAME, wf -> {
+            WfRunVariable documentId = wf.declareStr("document-id");
+            wf.waitForEvent(EVENT_NAME).withCorrelationId(documentId);
+        });
+    }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
@@ -38,16 +56,34 @@ public class CorrelatedEventExample {
         return props;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
-                .setName("document-signed")
+                .setName(EVENT_NAME)
                 .setContentType(ReturnType.newBuilder().setReturnType(TypeDefinition.newBuilder().setType(VariableType.BOOL)))
                 .setCorrelatedEventConfig(CorrelatedEventConfig.newBuilder().setDeleteAfterFirstCorrelation(false))
                 .build());
+
+        Workflow workflowGenerator = getWorkflow();
+        workflowGenerator.registerWfSpec(client);
+
+        // For fun, let's run the workflow
+        Thread.sleep(1000);
+
+        WfRun result = client.runWf(RunWfRequest.newBuilder().setWfSpecName(WF_NAME).putVariables("document-id", LHLibUtil.objToVarVal("some-document")).build());
+
+        System.out.println(LHLibUtil.protoToJson(result));
+
+        client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
+            .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(EVENT_NAME))
+            .setKey("some-document")
+            .setContent(LHLibUtil.objToVarVal(true))
+            .build());
+
+        System.out.println(LHLibUtil.protoToJson(client.getWfRun(result.getId())));
     }
 }

@@ -6,16 +6,25 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
+import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.Command;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.storeinternals.EventCorrelationMarkerModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
@@ -25,6 +34,7 @@ import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.apache.kafka.common.header.Headers;
@@ -46,6 +56,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
     private LHTaskManager currentTaskManager;
+    private CorrelationMarkerManager correlationManager;
     private TaskQueueManager globalTaskQueueManager;
     private GetableManager storageManager;
     private final Headers recordMetadata;
@@ -110,16 +121,72 @@ public class ProcessorExecutionContext implements ExecutionContext {
         return currentTaskManager;
     }
 
-    public CorrelationMarkerManager getCorrelationMarkerManager() {
-        // Safe for now because we call this only once per command. TODO: Lazy loading.
-        return new CorrelationMarkerManager(coreStore);
+    public void maybeCorrelateEventPedros(CorrelatedEventModel event) {
+        EventCorrelationMarkerModel marker = getCorrelationMarkerManager()
+                .getMarker(event.getId().getKey(), event.getId().getExternalEventDefId());
+        if (marker != null) {
+            correlate(event, marker);
+        }
     }
 
-    /**
-     * Various subnodes can forward timers during the
-     * @param timer
-     */
-    public void forwardTimer(LHTimer timer) {}
+    public void maybeCorrelateEventPedros(EventCorrelationMarkerModel marker) {
+        CorrelatedEventModel candidate =
+                getableManager().get(new CorrelatedEventIdModel(marker.getCorrelationKey(), marker.getEventDefId()));
+        if (candidate != null) {
+            correlate(candidate, marker);
+        }
+    }
+
+    private void correlate(CorrelatedEventModel correlatedEvent, EventCorrelationMarkerModel marker) {
+        // What we need to do is fetch the `EventCorrelationMarkerModel` if it exists, and if so:
+        // 1. Delete it (if specified to do so in the `ExternalEventDefModel`)
+        // 2. Forward ExternalEvents
+
+        for (NodeRunIdModel waitingNodeRun : marker.getSourceNodeRuns()) {
+            ExternalEventIdModel externalEventId = new ExternalEventIdModel(
+                    waitingNodeRun.getWfRunId(),
+                    correlatedEvent.getId().getExternalEventDefId(),
+                    LHUtil.generateGuid());
+            PutExternalEventRequestModel request = new PutExternalEventRequestModel();
+            request.setWfRunId(waitingNodeRun.getWfRunId());
+            request.setGuid(externalEventId.getGuid());
+            request.setThreadRunNumber(waitingNodeRun.getThreadRunNumber());
+            request.setNodeRunPosition(waitingNodeRun.getPosition());
+            request.setContent(correlatedEvent.getContent());
+            request.setExternalEventDefId(correlatedEvent.getId().getExternalEventDefId());
+
+            correlatedEvent.getExternalEvents().add(externalEventId);
+
+            CommandModel command = new CommandModel(request);
+            command.time = new Date();
+
+            LHTimer timer = new LHTimer(command);
+            timer.key = command.getPartitionKey();
+            timer.setMaturationTime(command.time);
+
+            getTaskManager().forwardTimer(timer);
+        }
+
+        // Either save the marker or delete it
+        ExternalEventDefModel externalEventDef =
+                metadataManager().get(correlatedEvent.getId().getExternalEventDefId());
+        CorrelatedEventConfigModel config = externalEventDef.getCorrelatedEventConfig();
+        if (config.isDeleteAfterFirstCorrelation()) {
+            getableManager().delete(correlatedEvent.getId());
+        } else {
+            getableManager().put(correlatedEvent);
+        }
+
+        getCorrelationMarkerManager().clearMarker(marker);
+    }
+
+    public CorrelationMarkerManager getCorrelationMarkerManager() {
+        // I'm not so lazy that I forget to do lazy loading
+        if (this.correlationManager == null) {
+            this.correlationManager = new CorrelationMarkerManager(coreStore);
+        }
+        return this.correlationManager;
+    }
 
     @Override
     public AuthorizationContext authorization() {

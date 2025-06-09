@@ -4,7 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
+@Getter
 public class CorrelatedEventConfigModel extends LHSerializable<CorrelatedEventConfig> {
 
     private Long ttlSeconds;
