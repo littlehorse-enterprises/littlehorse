@@ -26,14 +26,4 @@ public interface ExternalEventDefIdOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNameBytes();
-
-  /**
-   * <pre>
-   * The version of this ExternalEventDef.
-   * </pre>
-   *
-   * <code>int32 version = 2;</code>
-   * @return The version.
-   */
-  int getVersion();
 }

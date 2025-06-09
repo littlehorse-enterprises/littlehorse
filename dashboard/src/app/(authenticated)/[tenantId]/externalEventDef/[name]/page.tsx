@@ -8,7 +8,7 @@ type Props = { params: { name: string; tenantId: string } }
 
 export default async function Page({ params: { name, tenantId } }: Props) {
   try {
-    const spec = await getExternalEventDef(tenantId, { name, version: 0 })
+    const spec = await getExternalEventDef(tenantId, { name })
     return <ExternalEventDef spec={spec} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()

@@ -41,7 +41,11 @@ lhctl postEvent <wfRunId> <externalEventName>
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		wfRunIdStr, eedName := args[0], args[1]
-		guid := cmd.Flag("guid").Value.String()
+		var guid *string = nil
+		if cmd.Flag("guid").Changed {
+			guidTmp := cmd.Flag("guid").Value.String()
+			guid = &guidTmp
+		}
 		threadRunNumber := int32(-1)
 		nodeRunNumber := int32(-1)
 		if cmd.Flag("threadRunNumber").Changed {
@@ -85,7 +89,7 @@ lhctl postEvent <wfRunId> <externalEventName>
 			WfRunId:            wfRunId,
 			ExternalEventDefId: &lhproto.ExternalEventDefId{Name: eedName},
 			Content:            content,
-			Guid:               &guid,
+			Guid:               guid,
 		}
 		if threadRunNumber != -1 {
 			req.ThreadRunNumber = &threadRunNumber

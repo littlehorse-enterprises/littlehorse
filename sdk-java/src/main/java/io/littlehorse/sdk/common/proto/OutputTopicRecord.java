@@ -55,6 +55,7 @@ private static final long serialVersionUID = 0L;
     USER_TASK_RUN(5),
     VARIABLE(6),
     EXTERNAL_EVENT(7),
+    CORRELATED_EVENT(8),
     PAYLOAD_NOT_SET(0);
     private final int value;
     private PayloadCase(int value) {
@@ -78,6 +79,7 @@ private static final long serialVersionUID = 0L;
         case 5: return USER_TASK_RUN;
         case 6: return VARIABLE;
         case 7: return EXTERNAL_EVENT;
+        case 8: return CORRELATED_EVENT;
         case 0: return PAYLOAD_NOT_SET;
         default: return null;
       }
@@ -392,6 +394,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance();
   }
 
+  public static final int CORRELATED_EVENT_FIELD_NUMBER = 8;
+  /**
+   * <pre>
+   * Updates about a `CorrelatedEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+   * @return Whether the correlatedEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasCorrelatedEvent() {
+    return payloadCase_ == 8;
+  }
+  /**
+   * <pre>
+   * Updates about a `CorrelatedEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+   * @return The correlatedEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CorrelatedEvent getCorrelatedEvent() {
+    if (payloadCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_;
+    }
+    return io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Updates about a `CorrelatedEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CorrelatedEventOrBuilder getCorrelatedEventOrBuilder() {
+    if (payloadCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_;
+    }
+    return io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -426,6 +471,9 @@ private static final long serialVersionUID = 0L;
     }
     if (payloadCase_ == 7) {
       output.writeMessage(7, (io.littlehorse.sdk.common.proto.ExternalEvent) payload_);
+    }
+    if (payloadCase_ == 8) {
+      output.writeMessage(8, (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -463,6 +511,10 @@ private static final long serialVersionUID = 0L;
     if (payloadCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, (io.littlehorse.sdk.common.proto.ExternalEvent) payload_);
+    }
+    if (payloadCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -510,6 +562,10 @@ private static final long serialVersionUID = 0L;
         if (!getExternalEvent()
             .equals(other.getExternalEvent())) return false;
         break;
+      case 8:
+        if (!getCorrelatedEvent()
+            .equals(other.getCorrelatedEvent())) return false;
+        break;
       case 0:
       default:
     }
@@ -552,6 +608,10 @@ private static final long serialVersionUID = 0L;
       case 7:
         hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getExternalEvent().hashCode();
+        break;
+      case 8:
+        hash = (37 * hash) + CORRELATED_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getCorrelatedEvent().hashCode();
         break;
       case 0:
       default:
@@ -715,6 +775,9 @@ private static final long serialVersionUID = 0L;
       if (externalEventBuilder_ != null) {
         externalEventBuilder_.clear();
       }
+      if (correlatedEventBuilder_ != null) {
+        correlatedEventBuilder_.clear();
+      }
       payloadCase_ = 0;
       payload_ = null;
       return this;
@@ -784,6 +847,10 @@ private static final long serialVersionUID = 0L;
       if (payloadCase_ == 7 &&
           externalEventBuilder_ != null) {
         result.payload_ = externalEventBuilder_.build();
+      }
+      if (payloadCase_ == 8 &&
+          correlatedEventBuilder_ != null) {
+        result.payload_ = correlatedEventBuilder_.build();
       }
     }
 
@@ -857,6 +924,10 @@ private static final long serialVersionUID = 0L;
         }
         case EXTERNAL_EVENT: {
           mergeExternalEvent(other.getExternalEvent());
+          break;
+        }
+        case CORRELATED_EVENT: {
+          mergeCorrelatedEvent(other.getCorrelatedEvent());
           break;
         }
         case PAYLOAD_NOT_SET: {
@@ -938,6 +1009,13 @@ private static final long serialVersionUID = 0L;
               payloadCase_ = 7;
               break;
             } // case 58
+            case 66: {
+              input.readMessage(
+                  getCorrelatedEventFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              payloadCase_ = 8;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2200,6 +2278,184 @@ private static final long serialVersionUID = 0L;
       payloadCase_ = 7;
       onChanged();
       return externalEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.CorrelatedEvent, io.littlehorse.sdk.common.proto.CorrelatedEvent.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventOrBuilder> correlatedEventBuilder_;
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     * @return Whether the correlatedEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasCorrelatedEvent() {
+      return payloadCase_ == 8;
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     * @return The correlatedEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CorrelatedEvent getCorrelatedEvent() {
+      if (correlatedEventBuilder_ == null) {
+        if (payloadCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_;
+        }
+        return io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance();
+      } else {
+        if (payloadCase_ == 8) {
+          return correlatedEventBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     */
+    public Builder setCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEvent value) {
+      if (correlatedEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        payload_ = value;
+        onChanged();
+      } else {
+        correlatedEventBuilder_.setMessage(value);
+      }
+      payloadCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     */
+    public Builder setCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.CorrelatedEvent.Builder builderForValue) {
+      if (correlatedEventBuilder_ == null) {
+        payload_ = builderForValue.build();
+        onChanged();
+      } else {
+        correlatedEventBuilder_.setMessage(builderForValue.build());
+      }
+      payloadCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     */
+    public Builder mergeCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEvent value) {
+      if (correlatedEventBuilder_ == null) {
+        if (payloadCase_ == 8 &&
+            payload_ != io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance()) {
+          payload_ = io.littlehorse.sdk.common.proto.CorrelatedEvent.newBuilder((io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          payload_ = value;
+        }
+        onChanged();
+      } else {
+        if (payloadCase_ == 8) {
+          correlatedEventBuilder_.mergeFrom(value);
+        } else {
+          correlatedEventBuilder_.setMessage(value);
+        }
+      }
+      payloadCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     */
+    public Builder clearCorrelatedEvent() {
+      if (correlatedEventBuilder_ == null) {
+        if (payloadCase_ == 8) {
+          payloadCase_ = 0;
+          payload_ = null;
+          onChanged();
+        }
+      } else {
+        if (payloadCase_ == 8) {
+          payloadCase_ = 0;
+          payload_ = null;
+        }
+        correlatedEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEvent.Builder getCorrelatedEventBuilder() {
+      return getCorrelatedEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CorrelatedEventOrBuilder getCorrelatedEventOrBuilder() {
+      if ((payloadCase_ == 8) && (correlatedEventBuilder_ != null)) {
+        return correlatedEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (payloadCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_;
+        }
+        return io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Updates about a `CorrelatedEvent` changing.
+     * </pre>
+     *
+     * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.CorrelatedEvent, io.littlehorse.sdk.common.proto.CorrelatedEvent.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventOrBuilder> 
+        getCorrelatedEventFieldBuilder() {
+      if (correlatedEventBuilder_ == null) {
+        if (!(payloadCase_ == 8)) {
+          payload_ = io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance();
+        }
+        correlatedEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.CorrelatedEvent, io.littlehorse.sdk.common.proto.CorrelatedEvent.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventOrBuilder>(
+                (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_,
+                getParentForChildren(),
+                isClean());
+        payload_ = null;
+      }
+      payloadCase_ = 8;
+      onChanged();
+      return correlatedEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
