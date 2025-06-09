@@ -106,9 +106,8 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         NodeModel node = nodeRun.getNode();
         ExternalEventNodeModel eNode = node.getExternalEventNode();
 
-        ExternalEventModel evt = processorContext
-                .getableManager()
-                .getUnclaimedEvent(nodeRun.getId().getWfRunId(), eNode.getExternalEventDefId());
+        ExternalEventModel evt =
+                processorContext.getableManager().getUnclaimedEvent(nodeRun.getId(), eNode.getExternalEventDefId());
         if (evt == null) {
             // It hasn't come in yet.
             return false;

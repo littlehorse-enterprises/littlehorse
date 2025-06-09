@@ -11,7 +11,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.HeadersUtil;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
