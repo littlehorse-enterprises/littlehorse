@@ -1,6 +1,5 @@
 package io.littlehorse.test.internal.step;
 
-import io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -16,8 +15,8 @@ public class EditCommentUserTaskRun extends AbstractStep {
     private final String comment;
     private final int comment_id;
 
-
-    public EditCommentUserTaskRun(int id, int threadRunNumber, int nodeRunNumber, String userId, String comment, int comment_id) {
+    public EditCommentUserTaskRun(
+            int id, int threadRunNumber, int nodeRunNumber, String userId, String comment, int comment_id) {
         super(id);
         this.threadRunNumber = threadRunNumber;
         this.nodeRunNumber = nodeRunNumber;
@@ -41,15 +40,14 @@ public class EditCommentUserTaskRun extends AbstractStep {
                     .setUserTaskGuid(userTaskGuid)
                     .build();
             lhClient.editCommentUserTaskRun(EditCommentUserTaskRunRequest.newBuilder()
-                            .setUserTaskRunId(userTaskId)
-                            .setUserId(userId)
-                            .setComment(comment)
-                            .setUserCommentId(comment_id)
-                            .build());
+                    .setUserTaskRunId(userTaskId)
+                    .setUserId(userId)
+                    .setComment(comment)
+                    .setUserCommentId(comment_id)
+                    .build());
         } else {
             throw new IllegalArgumentException(
                     String.format("Node run %s in thread %s is not a user task", nodeRunNumber, threadRunNumber));
         }
     }
-    
 }

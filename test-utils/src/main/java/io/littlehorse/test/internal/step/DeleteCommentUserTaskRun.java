@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.test.internal.TestExecutionContext;
 
-public class DeleteCommentUserTaskRun extends AbstractStep{
+public class DeleteCommentUserTaskRun extends AbstractStep {
 
     private final int threadRunNumber;
     private final int nodeRunNumber;
@@ -43,7 +43,4 @@ public class DeleteCommentUserTaskRun extends AbstractStep{
                     String.format("Node run %s in thread %s is not a user task", nodeRunNumber, threadRunNumber));
         }
     }
-
 }
-
-
