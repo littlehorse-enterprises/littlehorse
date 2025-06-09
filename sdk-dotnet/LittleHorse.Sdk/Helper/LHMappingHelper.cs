@@ -240,11 +240,6 @@ namespace LittleHorse.Sdk.Helper
             return obj is sbyte or byte or short or ushort or int or uint or long or ulong or nint or nuint;
         }
         
-        private static bool IsIntObject(Task obj)
-        {
-            return obj is Task<sbyte> or Task<byte> or Task<short> or Task<ushort> or Task<int> or Task<uint> or Task<long> or Task<ulong> or Task<nint> or Task<nuint>;
-        }
-        
         private static bool IsDoubleObject(object obj)
         {
             return obj is double or float or Double;
