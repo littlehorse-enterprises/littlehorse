@@ -3,10 +3,10 @@
 This example has a simple one-step `WfSpec` which just waits for an external event with a correlation ID. To run it (and run a WfRun):
 
 ```
-./gradlew example-data-nugget:run
+./gradlew example-correlated-event:run
 ```
 
-Look at the `ExternalEvent`:
+Look at the `ExternalEventDef`:
 
 ```
 lhctl get externalEventDef document-signed
