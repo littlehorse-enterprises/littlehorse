@@ -786,6 +786,21 @@ func TestThrowEvent(t *testing.T) {
 	assert.Equal(t, node.GetThrowEvent().EventDefId.Name, "another-event")
 }
 
+func TestExternalEventCorrelaation(t *testing.T) {
+	putWf, _ := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		myVar := wf.DeclareStr("my-var")
+		wf.WaitForEvent("some-event").SetCorrelationId(myVar)
+	}, "obiwan").Compile()
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-event-EXTERNAL_EVENT"]
+	assert.Equal(
+		t,
+		node.GetExternalEvent().CorrelationKey.GetVariableName(),
+		"my-var",
+	)
+}
+
 func TestDynamicTask(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
 		myVar := wf.AddVariable("my-var", lhproto.VariableType_STR)
