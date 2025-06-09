@@ -441,21 +441,19 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         processCommand(new CommandModel(reqModel), ctx, UserTaskEvent.class, true);
     }
 
-    
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
-    public void deleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest req, StreamObserver<Empty> ctx){
-        DeleteCommentUserTaskRunRequestModel reqModel = 
-        LHSerializable.fromProto(req, DeleteCommentUserTaskRunRequestModel.class, requestContext());
+    public void deleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest req, StreamObserver<Empty> ctx) {
+        DeleteCommentUserTaskRunRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteCommentUserTaskRunRequestModel.class, requestContext());
 
         processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
-    
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
-    public void editCommentUserTaskRun(EditCommentUserTaskRunRequest req, StreamObserver<UserTaskEvent> ctx){
-        EditCommentUserTaskRunRequestModel reqModel = 
+    public void editCommentUserTaskRun(EditCommentUserTaskRunRequest req, StreamObserver<UserTaskEvent> ctx) {
+        EditCommentUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, EditCommentUserTaskRunRequestModel.class, requestContext());
 
         processCommand(new CommandModel(reqModel), ctx, UserTaskEvent.class, true);

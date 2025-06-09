@@ -17,8 +17,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 
-
-
 public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;

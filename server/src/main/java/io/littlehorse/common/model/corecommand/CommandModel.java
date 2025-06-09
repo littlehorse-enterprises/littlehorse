@@ -234,11 +234,11 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case EDIT_COMMENT_USER_TASK_RUN:
                 editCommentUserTaskRun = LHSerializable.fromProto(
-                    p.getEditCommentUserTaskRun(), EditCommentUserTaskRunRequestModel.class, context);
+                        p.getEditCommentUserTaskRun(), EditCommentUserTaskRunRequestModel.class, context);
                 break;
             case DELETE_COMMENT_USER_TASK_RUN:
                 deleteCommentUserTaskRun = LHSerializable.fromProto(
-                    p.getDeleteCommentUserTaskRun(), DeleteCommentUserTaskRunRequestModel.class, context);
+                        p.getDeleteCommentUserTaskRun(), DeleteCommentUserTaskRunRequestModel.class, context);
                 break;
             case BULK_JOB:
                 bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);
@@ -391,13 +391,13 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(CommentUserTaskRunRequestModel.class)) {
             type = CommandCase.COMMENT_USER_TASK_RUN;
             commentUserTaskRun = (CommentUserTaskRunRequestModel) cmd;
-        } else if (cls.equals(EditCommentUserTaskRunRequestModel.class)){
+        } else if (cls.equals(EditCommentUserTaskRunRequestModel.class)) {
             type = CommandCase.EDIT_COMMENT_USER_TASK_RUN;
             editCommentUserTaskRun = (EditCommentUserTaskRunRequestModel) cmd;
-        }else if (cls.equals(DeleteCommentUserTaskRunRequestModel.class)){
+        } else if (cls.equals(DeleteCommentUserTaskRunRequestModel.class)) {
             type = CommandCase.DELETE_COMMENT_USER_TASK_RUN;
             deleteCommentUserTaskRun = (DeleteCommentUserTaskRunRequestModel) cmd;
-        }else if (cls.equals(BulkUpdateJobModel.class)) {
+        } else if (cls.equals(BulkUpdateJobModel.class)) {
             type = CommandCase.BULK_JOB;
             bulkJob = (BulkUpdateJobModel) cmd;
         } else if (cls.equals(TaskAttemptRetryReadyModel.class)) {

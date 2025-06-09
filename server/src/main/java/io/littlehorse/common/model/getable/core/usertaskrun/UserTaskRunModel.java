@@ -170,15 +170,15 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
         lastEventForComment = new HashMap<>();
         for (UserTaskEventModel event : events) {
-           if(event.getCommented() != null){
+            if (event.getCommented() != null) {
                 lastEventForComment.put(event.getCommented().getUserCommentId(), event);
             }
-           if(event.getCommentEdited() != null){
+            if (event.getCommentEdited() != null) {
                 lastEventForComment.put(event.getCommentEdited().getUserCommentId(), event);
-           }    
-           if(event.getCommentDeleted() != null){
+            }
+            if (event.getCommentDeleted() != null) {
                 lastEventForComment.put(event.getCommentDeleted().getUserCommentId(), event);
-           }
+            }
         }
         this.epoch = p.getEpoch();
         this.commentIdCount = p.getCommentIdCount();
@@ -345,20 +345,19 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         return userTaskEventModel;
     }
 
-    public UserTaskEventModel editComment(String userId, String comment , Integer userCommentId){
+    public UserTaskEventModel editComment(String userId, String comment, Integer userCommentId) {
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
-            new UTECommentEditedModel(userCommentId, userId, comment),
-            processorContext.currentCommand().getTime());
+                new UTECommentEditedModel(userCommentId, userId, comment),
+                processorContext.currentCommand().getTime());
         this.events.addLast(userTaskEventModel);
         this.lastEventForComment.put(userCommentId, userTaskEventModel);
         return userTaskEventModel;
     }
 
-    public void deleteComment(Integer userCommentId){
+    public void deleteComment(Integer userCommentId) {
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
-            new UTECommentDeletedModel(userCommentId), 
-            processorContext.currentCommand().getTime()
-            );
+                new UTECommentDeletedModel(userCommentId),
+                processorContext.currentCommand().getTime());
         this.events.addLast(userTaskEventModel);
         this.lastEventForComment.put(userCommentId, userTaskEventModel);
     }

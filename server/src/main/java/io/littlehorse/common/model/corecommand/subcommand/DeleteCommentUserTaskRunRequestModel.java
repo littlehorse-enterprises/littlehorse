@@ -1,7 +1,5 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
-import java.util.Date;
-
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
@@ -17,9 +15,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-
-
-
+import java.util.Date;
 
 public class DeleteCommentUserTaskRunRequestModel extends CoreSubCommand<DeleteCommentUserTaskRunRequest> {
 
@@ -38,18 +34,18 @@ public class DeleteCommentUserTaskRunRequestModel extends CoreSubCommand<DeleteC
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userCommentId must be provided.");
         }
 
-        if (userTaskRunId == null){
+        if (userTaskRunId == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId can not be null");
-        }   
+        }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
 
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }
-        
-        if(!utr.getLastEventForComment().containsKey(userCommentId)){
-            throw new LHApiException(Status.INVALID_ARGUMENT,"The user Comment does not exist");
+
+        if (!utr.getLastEventForComment().containsKey(userCommentId)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The user Comment does not exist");
         }
 
         utr.deleteComment(userCommentId);
