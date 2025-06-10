@@ -76,13 +76,6 @@ public class AsyncWaiters {
         return getOrRegisterFuture(tenantId, wfRunId, eventDefIds.toArray(WorkflowEventDefIdModel[]::new));
     }
 
-    public void completeEvent(
-            TenantIdModel tenantId, WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId, WorkflowEvent event) {
-        workflowEvents
-                .get(new WorkflowEventDefIdAndTenant(wfRunId, eventDefId, tenantId))
-                .complete(event);
-    }
-
     public void handleRebalance(Set<TaskId> taskIds) {
         // TODO: handle rebalance
     }

@@ -488,7 +488,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putCorrelatedEvent(PutCorrelatedEventRequest req, StreamObserver<CorrelatedEvent> observer) {
         PutCorrelatedEventRequestModel reqModel =
                 LHSerializable.fromProto(req, PutCorrelatedEventRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), observer, CorrelatedEvent.class, true);
+        processCommand(new CommandModel(reqModel), observer, CorrelatedEvent.class);
     }
 
     @Override
