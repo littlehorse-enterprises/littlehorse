@@ -1119,8 +1119,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 requestContext.authorization().tenantId(),
                 requestContext);
         try {
-            log.info(
-                    "Waiting for command {} to be processed on completable {}", command.getCommandId(), futureResponse);
             Message response =
                     futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
             responseObserver.onNext((RC) response);
@@ -1130,8 +1128,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             log.error("Failed to process command %s".formatted(command), cause);
             responseObserver.onError(cause);
         } catch (TimeoutException e) {
-            log.error("Timingout for command id %s with completable %s"
-                    .formatted(command.getCommandId(), futureResponse.toString()));
             responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
                     "Could not process command in time id: %s".formatted(command.getCommandId()))));
         } catch (Throwable e) {
