@@ -166,7 +166,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                         command.getCommandId(), Message.class, new CompletableFuture<>());
-                log.info("Completing command " + command.getCommandId() + " with completable" + completable.toString());
                 completable.complete(response);
 
                 // This allows us to set a larger commit interval for the Core Topology
@@ -177,8 +176,6 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 // commit will not impact performance of the rest of the application very
                 // often.
                 streamsContext.commit();
-            } else {
-                log.info("Ignoring command " + command.getCommandId());
             }
         } catch (Exception exn) {
             throw new MetadataCommandException(exn, command);

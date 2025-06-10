@@ -86,9 +86,7 @@ public class AsyncWaiters {
         CompletableFuture<FutureResponseAndWaitingClient> waitingClient = new CompletableFuture<>()
                 .orTimeout(removeCompletedAfter, timeUnit)
                 .handle((o, throwable) -> {
-                    var out = responses.remove(commandId);
-                    log.info("Removed response for commandId: {}", commandId);
-                    return out;
+                    return responses.remove(commandId);
                 });
         return new FutureResponseAndWaitingClient(completable, waitingClient);
     }
@@ -97,9 +95,7 @@ public class AsyncWaiters {
             String commandId, Class<?> responseType, CompletableFuture<Message> completable) {
         Objects.requireNonNull(commandId);
         Objects.requireNonNull(completable);
-        var out = responses.computeIfAbsent(commandId, s -> createFuture(commandId, completable));
-        log.info("Created response completable for commandId: {} completable: {}", commandId, out.completable());
-        return out;
+        return responses.computeIfAbsent(commandId, s -> createFuture(commandId, completable));
     }
 
     private record WorkflowEventDefIdAndTenant(
