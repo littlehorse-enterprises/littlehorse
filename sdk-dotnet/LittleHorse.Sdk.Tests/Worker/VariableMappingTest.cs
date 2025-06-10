@@ -144,6 +144,22 @@ public class VariableMappingTest
     }
     
     [Fact]
+    public void VariableMapping_WithNoValue_ShouldReturnNull()
+    {
+        Type type = typeof(string);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue();
+        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+
+        Assert.Null(result);
+    }
+
+    [Fact]
     public void VariableMapping_WithAssignLongValue_ShouldReturnInt64Object()
     {
         int expectedValue = 29;
