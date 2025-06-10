@@ -37,6 +37,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
+import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -170,13 +171,13 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
         lastEventForComment = new HashMap<>();
         for (UserTaskEventModel event : events) {
-            if (event.getCommented() != null) {
+            if (event.getType().equals(EventCase.COMMENT_ADDED)) {
                 lastEventForComment.put(event.getCommented().getUserCommentId(), event);
             }
-            if (event.getCommentEdited() != null) {
+            if (event.getType().equals(EventCase.COMMENT_EDITED)) {
                 lastEventForComment.put(event.getCommentEdited().getUserCommentId(), event);
             }
-            if (event.getCommentDeleted() != null) {
+            if (event.getType().equals(EventCase.COMMENT_DELETED)) {
                 lastEventForComment.put(event.getCommentDeleted().getUserCommentId(), event);
             }
         }

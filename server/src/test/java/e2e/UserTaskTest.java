@@ -468,6 +468,7 @@ public class UserTaskTest {
                     UserTaskEvent userTaskEvent = userTaskRun.getEventsList().getLast();
                     UserTaskEvent.UTECommented uteCommented = userTaskEvent.getCommentAdded();
 
+                    Assertions.assertThat(userTaskEvent.getEventCase()).isEqualByComparingTo(EventCase.COMMENT_ADDED);
                     Assertions.assertThat(uteCommented.getUserCommentId()).isEqualTo(0);
                     Assertions.assertThat(uteCommented.getUserId()).isEqualTo(TEST_USER_ID);
                     Assertions.assertThat(uteCommented.getComment()).isEqualTo(comment);
@@ -494,7 +495,7 @@ public class UserTaskTest {
                     UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
                     UserTaskEvent userTaskEvent = userTaskRun.getEventsList().getLast();
 
-                    Assertions.assertThat(userTaskEvent.getCommentDeleted()).isNotNull();
+                    Assertions.assertThat(userTaskEvent.getEventCase()).isEqualByComparingTo(EventCase.COMMENT_DELETED);
                     Assertions.assertThat(userTaskEvent.getCommentDeleted().getUserCommentId())
                             .isEqualTo(0);
                 })
@@ -520,8 +521,8 @@ public class UserTaskTest {
                     UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
                     UserTaskEvent userTaskEvent = userTaskRun.getEventsList().getLast();
 
-                    Assertions.assertThat(userTaskEvent.getCommentDeleted()).isNotNull();
-                    Assertions.assertThat(userTaskEvent.getCommentDeleted().getUserCommentId())
+                    Assertions.assertThat(userTaskEvent.getEventCase()).isEqualByComparingTo(EventCase.COMMENT_EDITED);
+                    Assertions.assertThat(userTaskEvent.getCommentEdited().getUserCommentId())
                             .isEqualTo(0);
                 })
                 .start();
@@ -543,8 +544,6 @@ public class UserTaskTest {
                 .thenDeleteCommentUserTaskRun(0, 1, 0)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
-                    UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
-                    UserTaskEvent userTaskEvent = userTaskRun.getEventsList().getLast();
 
                     Assertions.assertThatThrownBy(() -> {
                                 client.editCommentUserTaskRun(EditCommentUserTaskRunRequest.newBuilder()

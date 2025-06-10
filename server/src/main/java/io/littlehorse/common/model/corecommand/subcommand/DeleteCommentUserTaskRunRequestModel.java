@@ -31,11 +31,11 @@ public class DeleteCommentUserTaskRunRequestModel extends CoreSubCommand<DeleteC
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
 
         if (userCommentId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userCommentId must be provided.");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userCommentId must be provided");
         }
 
         if (userTaskRunId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId can not be null");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId cannot be null");
         }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);

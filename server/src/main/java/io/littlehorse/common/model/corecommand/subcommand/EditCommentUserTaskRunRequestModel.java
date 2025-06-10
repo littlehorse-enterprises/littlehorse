@@ -31,11 +31,11 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         if (userCommentId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The User Comment Id must be provided.");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The User Comment Id must be provided");
         }
 
         if (userId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The User Id must be provided");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided");
         }
 
         if (comment == null) {
@@ -43,7 +43,7 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
         }
 
         if (userTaskRunId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId can not be null");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId cannot be null");
         }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
@@ -54,7 +54,7 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
 
         if (!utr.getLastEventForComment().containsKey(userCommentId)) {
             throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "No comment exists for the provided comment ID: " + userCommentId + ".");
+                    Status.INVALID_ARGUMENT, "No comment exists for the provided comment ID: " + userCommentId);
         }
 
         if (utr.getLastEventForComment().get(userCommentId).getCommentDeleted() != null) {
