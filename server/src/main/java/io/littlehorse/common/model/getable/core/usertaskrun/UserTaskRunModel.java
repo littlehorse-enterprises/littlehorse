@@ -337,12 +337,12 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     }
 
     public UserTaskEventModel comment(String userId, String comment) {
+        commentIdCount++;
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
                 new UTECommentedModel(userId, comment, commentIdCount),
                 processorContext.currentCommand().getTime());
         this.events.add(userTaskEventModel);
         this.lastEventForComment.put(commentIdCount, userTaskEventModel);
-        commentIdCount++;
         return userTaskEventModel;
     }
 

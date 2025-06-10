@@ -74,8 +74,7 @@ public class UserTaskRunModelTest {
     }
 
     @Test
-    void commentMethodshouldProperlyAddCommentEvent() {
-
+    void commentMethodShouldProperlyAddCommentEvent() {
         // Mock the context and command
         ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
         CommandModel mockCommand = mock(CommandModel.class);
@@ -91,14 +90,12 @@ public class UserTaskRunModelTest {
         Assertions.assertThat(utr.getLastEventForComment().get(commentId)).isEqualTo(addEvent);
         Assertions.assertThat(addEvent.getType()).isEqualByComparingTo(EventCase.COMMENT_ADDED);
         Assertions.assertThat(addEvent.getCommented().getComment()).isEqualTo("hello world");
-        Assertions.assertThat(addEvent.getCommented().getUserCommentId()).isEqualTo(0);
-        Assertions.assertThat(utr.getCommentIdCount()).isEqualTo(1);
+        Assertions.assertThat(addEvent.getCommented().getUserCommentId()).isEqualTo(1);
         Assertions.assertThat(utr.getEvents().get(0)).isEqualTo(addEvent);
     }
 
     @Test
-    void editCommentMethodShouldProperlyAddCommnetEventAndReplaceInLastEventForComment() {
-
+    void editCommentMethodShouldProperlyAddCommentEventAndReplaceInLastEventForComment() {
         // Mock the context and command
         ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
         CommandModel mockCommand = mock(CommandModel.class);

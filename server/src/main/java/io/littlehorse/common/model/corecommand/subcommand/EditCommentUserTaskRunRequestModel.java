@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
@@ -30,20 +31,18 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        if (userCommentId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The User Comment Id must be provided");
+        if (userCommentId == 0) {
+            throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");
         }
-
-        if (userId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided");
+        if (userTaskRunId.getUserTaskGuid().isBlank()
+                || userTaskRunId.getWfRunId().getId().isBlank()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
         }
-
-        if (comment == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The comment must be provided");
+        if (userId.isBlank()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided.");
         }
-
-        if (userTaskRunId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId cannot be null");
+        if (comment.isBlank()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The comment must be provided.");
         }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
@@ -54,12 +53,12 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
 
         if (!utr.getLastEventForComment().containsKey(userCommentId)) {
             throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "No comment exists for the provided comment ID: " + userCommentId);
+                    Status.NOT_FOUND, "No comment exists for the provided comment ID: " + userCommentId);
         }
 
-        if (utr.getLastEventForComment().get(userCommentId).getCommentDeleted() != null) {
+        if (utr.getLastEventForComment().get(userCommentId).getType().equals(UserTaskEvent.EventCase.COMMENT_DELETED)) {
             throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
+                    Status.FAILED_PRECONDITION,
                     "The specified comment cannot be edited because it has already been deleted.");
         }
 

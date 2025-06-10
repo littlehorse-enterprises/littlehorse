@@ -30,15 +30,14 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
 
     @Override
     public UserTaskEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        if (userTaskRunId == null) {
+        if (userTaskRunId.getUserTaskGuid().isBlank()
+                || userTaskRunId.getWfRunId().getId().isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
         }
-
-        if (userId == null) {
+        if (userId.isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided.");
         }
-
-        if (comment == null) {
+        if (comment.isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The comment must be provided.");
         }
 

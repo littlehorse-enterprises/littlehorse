@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
@@ -30,12 +31,12 @@ public class DeleteCommentUserTaskRunRequestModel extends CoreSubCommand<DeleteC
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
 
-        if (userCommentId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userCommentId must be provided");
+        if (userCommentId == 0) {
+            throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");
         }
-
-        if (userTaskRunId == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId cannot be null");
+        if (userTaskRunId.getUserTaskGuid().isBlank()
+                || userTaskRunId.getWfRunId().getId().isBlank()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
         }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
@@ -45,7 +46,13 @@ public class DeleteCommentUserTaskRunRequestModel extends CoreSubCommand<DeleteC
         }
 
         if (!utr.getLastEventForComment().containsKey(userCommentId)) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The user Comment does not exist");
+            throw new LHApiException(Status.NOT_FOUND, "The user Comment does not exist");
+        }
+
+        if (utr.getLastEventForComment().get(userCommentId).getType().equals(UserTaskEvent.EventCase.COMMENT_DELETED)) {
+            throw new LHApiException(
+                    Status.FAILED_PRECONDITION,
+                    "The specified comment cannot be deleted because it has already been deleted.");
         }
 
         utr.deleteComment(userCommentId);

@@ -469,10 +469,10 @@ public class UserTaskTest {
                     UserTaskEvent.UTECommented uteCommented = userTaskEvent.getCommentAdded();
 
                     Assertions.assertThat(userTaskEvent.getEventCase()).isEqualByComparingTo(EventCase.COMMENT_ADDED);
-                    Assertions.assertThat(uteCommented.getUserCommentId()).isEqualTo(0);
+                    Assertions.assertThat(uteCommented.getUserCommentId()).isEqualTo(1);
                     Assertions.assertThat(uteCommented.getUserId()).isEqualTo(TEST_USER_ID);
                     Assertions.assertThat(uteCommented.getComment()).isEqualTo(comment);
-                    Assertions.assertThat(userTaskRun.getCommentIdCount()).isEqualTo(1);
+                    Assertions.assertThat(userTaskRun.getEventsCount() == 2).isTrue();
                 })
                 .start();
     }
@@ -489,7 +489,7 @@ public class UserTaskTest {
                 .prepareRun(workflow)
                 .waitForStatus(RUNNING)
                 .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
-                .thenDeleteCommentUserTaskRun(0, 1, 0)
+                .thenDeleteCommentUserTaskRun(0, 1, 1)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
                     UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
@@ -497,7 +497,8 @@ public class UserTaskTest {
 
                     Assertions.assertThat(userTaskEvent.getEventCase()).isEqualByComparingTo(EventCase.COMMENT_DELETED);
                     Assertions.assertThat(userTaskEvent.getCommentDeleted().getUserCommentId())
-                            .isEqualTo(0);
+                            .isEqualTo(1);
+                    Assertions.assertThat(userTaskRun.getEventsCount() == 3).isTrue();
                 })
                 .start();
     }
@@ -515,7 +516,7 @@ public class UserTaskTest {
                 .prepareRun(workflow)
                 .waitForStatus(RUNNING)
                 .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
-                .thenEditComment(0, 1, TEST_USER_ID, editComment, 0)
+                .thenEditComment(0, 1, TEST_USER_ID, editComment, 1)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
                     UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
@@ -523,13 +524,14 @@ public class UserTaskTest {
 
                     Assertions.assertThat(userTaskEvent.getEventCase()).isEqualByComparingTo(EventCase.COMMENT_EDITED);
                     Assertions.assertThat(userTaskEvent.getCommentEdited().getUserCommentId())
-                            .isEqualTo(0);
+                            .isEqualTo(1);
+                    Assertions.assertThat(userTaskRun.getEventsCount() == 3).isTrue();
                 })
                 .start();
     }
 
     @Test
-    void shouldCreateWorkflowAssignUserTaskCheckifDeletedCommentCanBeEdited() {
+    void shouldThrowExceptionWhenTryToEditADeletedCommentInUserTaskRun() {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
         String editComment = "This is a edited comment";
@@ -541,43 +543,7 @@ public class UserTaskTest {
                 .prepareRun(workflow)
                 .waitForStatus(RUNNING)
                 .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
-                .thenDeleteCommentUserTaskRun(0, 1, 0)
-                .thenVerifyNodeRun(0, 1, nodeRun -> {
-                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
-
-                    Assertions.assertThatThrownBy(() -> {
-                                client.editCommentUserTaskRun(EditCommentUserTaskRunRequest.newBuilder()
-                                        .setUserTaskRunId(userTaskId)
-                                        .setUserId(TEST_USER_ID)
-                                        .setComment(editComment)
-                                        .setUserCommentId(0)
-                                        .build());
-                            })
-                            .matches(exn -> {
-                                Assertions.assertThat(StatusRuntimeException.class)
-                                        .isAssignableFrom(exn.getClass());
-
-                                StatusRuntimeException sre = (StatusRuntimeException) exn;
-                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
-                                return true;
-                            });
-                })
-                .start();
-    }
-
-    @Test
-    void shouldThrowExceptionWhenTrysToEditCommentThatDoesNotExist() {
-        String workflowName = "delete-comment-on-user-task-run-workflow";
-        String comment = "This is a comment.";
-        String editComment = "This is a edited comment";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
-
-        workflowVerifier
-                .prepareRun(workflow)
-                .waitForStatus(RUNNING)
-                .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
+                .thenDeleteCommentUserTaskRun(0, 1, 1)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
 
@@ -594,7 +560,7 @@ public class UserTaskTest {
                                         .isAssignableFrom(exn.getClass());
 
                                 StatusRuntimeException sre = (StatusRuntimeException) exn;
-                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
+                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.FAILED_PRECONDITION);
                                 return true;
                             });
                 })
@@ -602,7 +568,43 @@ public class UserTaskTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenTrysToDeleteCommentThatDoesNotExist() {
+    void shouldThrowExceptionWhenTryToEditCommentThatDoesNotExist() {
+        String workflowName = "delete-comment-on-user-task-run-workflow";
+        String comment = "This is a comment.";
+        String editComment = "This is a edited comment";
+        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow)
+                .waitForStatus(RUNNING)
+                .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
+
+                    Assertions.assertThatThrownBy(() -> {
+                                client.editCommentUserTaskRun(EditCommentUserTaskRunRequest.newBuilder()
+                                        .setUserTaskRunId(userTaskId)
+                                        .setUserId(TEST_USER_ID)
+                                        .setComment(editComment)
+                                        .setUserCommentId(2)
+                                        .build());
+                            })
+                            .matches(exn -> {
+                                Assertions.assertThat(StatusRuntimeException.class)
+                                        .isAssignableFrom(exn.getClass());
+
+                                StatusRuntimeException sre = (StatusRuntimeException) exn;
+                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.NOT_FOUND);
+                                return true;
+                            });
+                })
+                .start();
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTryToDeleteCommentThatDoesNotExist() {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
         Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
@@ -626,7 +628,40 @@ public class UserTaskTest {
                                 Assertions.assertThat(StatusRuntimeException.class)
                                         .isAssignableFrom(exn.getClass());
                                 StatusRuntimeException sre = (StatusRuntimeException) exn;
-                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
+                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.NOT_FOUND);
+                                return true;
+                            });
+                })
+                .start();
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTryToDeleteCommentThatWasAlreadyDeleted() {
+        String workflowName = "delete-comment-on-user-task-run-workflow";
+        String comment = "This is a deleted comment.";
+        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow)
+                .waitForStatus(RUNNING)
+                .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
+                .thenDeleteCommentUserTaskRun(0, 1, 1)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
+
+                    Assertions.assertThatThrownBy(() -> {
+                                client.deleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest.newBuilder()
+                                        .setUserTaskRunId(userTaskId)
+                                        .setUserCommentId(1)
+                                        .build());
+                            })
+                            .matches(exn -> {
+                                Assertions.assertThat(StatusRuntimeException.class)
+                                        .isAssignableFrom(exn.getClass());
+                                StatusRuntimeException sre = (StatusRuntimeException) exn;
+                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.FAILED_PRECONDITION);
                                 return true;
                             });
                 })
