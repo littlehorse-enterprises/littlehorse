@@ -439,8 +439,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             Set<String> invalidFields = InlineStructDefUtil.getIncompatibleFields(
                     req.getCompatibilityType(), newInlineStructDef, oldInlineStructDef);
 
-            System.out.println(invalidFields);
-
             ValidateStructDefEvolutionResponse resp = ValidateStructDefEvolutionResponse.newBuilder()
                     .setIsValid(invalidFields.isEmpty())
                     .build();

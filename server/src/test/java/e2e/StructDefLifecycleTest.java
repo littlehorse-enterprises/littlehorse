@@ -423,8 +423,7 @@ public class StructDefLifecycleTest {
                     if (version != null) {
                         structDefId.setVersion(version);
                     }
-                    StructDef structDef = client.getStructDef(structDefId.build());
-                    System.out.println(structDef.getId());
+                    client.getStructDef(structDefId.build());
                     return true;
                 });
     }
