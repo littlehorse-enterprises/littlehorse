@@ -41,7 +41,7 @@ public abstract class Program
         return workers;
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -49,20 +49,12 @@ public abstract class Program
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
             var workers = GetTaskWorkers(config);
-            foreach (var worker in workers)
-            {
-                worker.RegisterTaskDef();
-            }
-            
-            Thread.Sleep(300);
-            var tasks = new List<Task>();
-            
-            foreach (var worker in workers)
-            {
-                tasks.Add(worker.Start());
-            }
-            
-            Task.WaitAll(tasks.ToArray());
+
+            await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
+
+            await Task.Delay(300);
+
+            await Task.WhenAll(workers.Select(worker => worker.Start()));
         }
     }
 }

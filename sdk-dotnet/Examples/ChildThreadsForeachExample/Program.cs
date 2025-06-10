@@ -57,7 +57,7 @@ public abstract class Program
         return new Workflow("spawn-parallel-threads-from-json-arr-variable", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -66,15 +66,14 @@ public abstract class Program
             var config = GetLHConfig(args, loggerFactory);
             var client = config.GetGrpcClientInstance();
             var worker = new LHTaskWorker<MyWorker>(new MyWorker(), "task-executor", config);
-            worker.RegisterTaskDef();
-
-            var workflow = GetWorkflow();
             
-            workflow.RegisterWfSpec(client);
-            
-            Thread.Sleep(300);
+            await worker.RegisterTaskDef();
 
-            worker.Start().Wait();
+            await GetWorkflow().RegisterWfSpec(client);
+            
+            await Task.Delay(300);
+
+            await worker.Start();
         }
     }
 }

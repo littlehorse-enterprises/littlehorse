@@ -56,23 +56,22 @@ public class Program
         return new Workflow("example-basic", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
+            var worker = new LHTaskWorker<MyWorker>(new MyWorker(), "greet", config);
 
-            MyWorker executable = new MyWorker();
-            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet", config);
-            taskWorker.RegisterTaskDef();
-            
-            var workflow = GetWorkflow();
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
+            await worker.RegisterTaskDef();
 
-            Thread.Sleep(1000);
-            taskWorker.Start().Wait();
+            await GetWorkflow().RegisterWfSpec(config.GetGrpcClientInstance());
+
+            await Task.Delay(1000);
+
+            await worker.Start();
         }
     }
 }

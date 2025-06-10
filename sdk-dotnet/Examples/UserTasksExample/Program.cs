@@ -121,7 +121,7 @@ public abstract class Program
         return new Workflow(WorkflowName, MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -130,28 +130,27 @@ public abstract class Program
             var config = GetLHConfig(args, loggerFactory);
             var client = config.GetGrpcClientInstance();
             var worker = new LHTaskWorker<EmailSender>(new EmailSender(), "send-email", config);
-            worker.RegisterTaskDef();
+
+            await worker.RegisterTaskDef();
             
             // Create the User Task Def
             UserTaskSchema requestForm = new UserTaskSchema(
                 new ItemRequestForm(),
                 ItRequestForm
             );
-            client.PutUserTaskDef(requestForm.Compile());
+            await client.PutUserTaskDefAsync(requestForm.Compile());
 
             UserTaskSchema approvalForm = new UserTaskSchema(
                 new ApprovalForm(),
                 ApprovalForm
             );
-            client.PutUserTaskDef(approvalForm.Compile());
+            await client.PutUserTaskDefAsync(approvalForm.Compile());
 
-            var workflow = GetWorkflow();
-            
-            workflow.RegisterWfSpec(client);
-            
-            Thread.Sleep(300);
+            await GetWorkflow().RegisterWfSpec(client);
 
-            worker.Start().Wait();
+            await Task.Delay(300);
+
+            await worker.Start();
         }
     }
 }

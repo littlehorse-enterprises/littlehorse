@@ -72,7 +72,7 @@ public abstract class Program
         return new Workflow("example-child-thread", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -81,23 +81,14 @@ public abstract class Program
             var config = GetLHConfig(args, loggerFactory);
             var client = config.GetGrpcClientInstance();
             var workers = GetTaskWorkers(config);
-            foreach (var worker in workers)
-            {
-                worker.RegisterTaskDef();
-            }
 
-            var workflow = GetWorkflow();
-            
-            workflow.RegisterWfSpec(client);
-            
-            Thread.Sleep(300);
-            var tasks = new List<Task>();
-            foreach (var worker in workers)
-            {
-                tasks.Add(worker.Start());
-            }
+            await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
 
-            Task.WaitAll(tasks.ToArray());
+            await GetWorkflow().RegisterWfSpec(client);
+
+            await Task.Delay(300);
+
+            await Task.WhenAll(workers.Select(worker => worker.Start()));
         }
     }
 }

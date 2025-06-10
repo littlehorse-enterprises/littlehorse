@@ -102,9 +102,9 @@ namespace LittleHorse.Sdk.Worker
         /// Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
         /// recommended for production(in production you should manually use the PutTaskDef).
         /// </summary>
-        public void RegisterTaskDef()
+        public async Task RegisterTaskDef()
         {
-            RegisterTaskDef(false);
+            await RegisterTaskDef(false);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace LittleHorse.Sdk.Worker
         /// <param name="swallowAlreadyExists">
         /// If true, then ignore grpc ALREADY_EXISTS error when registering the TaskDef.
         /// </param>
-        private void RegisterTaskDef(bool swallowAlreadyExists)
+        private async Task RegisterTaskDef(bool swallowAlreadyExists)
         {
             _logger?.LogInformation($"Creating TaskDef: {_task.TaskDefName}");
 
@@ -143,7 +143,7 @@ namespace LittleHorse.Sdk.Worker
                     request.ReturnType = signature.ReturnType;
                 }
 
-                var response = _lhClient.PutTaskDef(request);
+                var response = await _lhClient.PutTaskDefAsync(request);
 
                 _logger?.LogInformation($"Created TaskDef:\n{LHMappingHelper.ProtoToJson(response)}");
             }
