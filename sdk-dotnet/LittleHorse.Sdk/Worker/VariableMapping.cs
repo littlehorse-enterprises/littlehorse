@@ -70,6 +70,8 @@ namespace LittleHorse.Sdk.Worker
                 case VariableValue.ValueOneofCase.JsonObj:
                     jsonStr = val.JsonObj;
                     return JsonHandler.DeserializeFromJson(jsonStr, _type);
+                case VariableValue.ValueOneofCase.None:
+                    return null;
                 default:
                     throw new InvalidOperationException("Unrecognized variable value type");
             }

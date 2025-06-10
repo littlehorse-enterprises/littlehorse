@@ -150,6 +150,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
 
+    public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
+
     // Instance configs
     private final String lhsMetricsLevel;
 
@@ -1058,6 +1060,10 @@ public class LHServerConfig extends ConfigBase {
 
     public int getStreamsSessionTimeout() {
         return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
+    }
+
+    public boolean areStructDefsEnabled() {
+        return Boolean.valueOf(getOrSetDefault(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "false"));
     }
 
     public int getNumNetworkThreads() {

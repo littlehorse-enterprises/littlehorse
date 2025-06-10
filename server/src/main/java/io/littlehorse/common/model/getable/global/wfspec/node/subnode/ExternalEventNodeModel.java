@@ -10,11 +10,12 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 
 @Getter
@@ -22,11 +23,10 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
 
     private ExternalEventDefIdModel externalEventDefId;
     private VariableAssignmentModel timeoutSeconds;
+    private VariableAssignmentModel corrrelationId;
 
     // Not in the proto
     private ExternalEventDefModel externalEventDef;
-    private ReadOnlyMetadataManager metadataManager;
-    private ProcessorExecutionContext processorContext;
 
     public ExternalEventNodeModel() {}
 
@@ -35,15 +35,18 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) {
+    public void initFrom(Message proto, ExecutionContext ignored) {
         ExternalEventNode p = (ExternalEventNode) proto;
         externalEventDefId =
-                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
+                LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, ignored);
         if (p.hasTimeoutSeconds()) {
-            timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), context);
+            timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), ignored);
         }
-        this.metadataManager = context.metadataManager();
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+
+        if (p.hasCorrelationKey()) {
+            this.corrrelationId =
+                    LHSerializable.fromProto(p.getCorrelationKey(), VariableAssignmentModel.class, ignored);
+        }
     }
 
     public ExternalEventNode.Builder toProto() {
@@ -51,7 +54,20 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
                 ExternalEventNode.newBuilder().setExternalEventDefId(externalEventDefId.toProto());
 
         if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
+        if (corrrelationId != null) out.setCorrelationKey(corrrelationId.toProto());
         return out;
+    }
+
+    @Override
+    public Set<String> getNeededVariableNames() {
+        HashSet<String> result = new HashSet<>();
+        if (timeoutSeconds != null) {
+            result.addAll(timeoutSeconds.getRequiredWfRunVarNames());
+        }
+        if (corrrelationId != null) {
+            result.addAll(corrrelationId.getRequiredWfRunVarNames());
+        }
+        return result;
     }
 
     @Override
@@ -59,7 +75,8 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
-        ExternalEventDefModel eed = this.metadataManager.get(new ExternalEventDefIdModel(externalEventDefId.getName()));
+        ExternalEventDefModel eed =
+                ctx.metadataManager().get(new ExternalEventDefIdModel(externalEventDefId.getName()));
 
         // TODO: validate the timeout
 

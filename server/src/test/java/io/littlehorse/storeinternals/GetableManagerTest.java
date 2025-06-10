@@ -22,6 +22,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -366,6 +367,7 @@ public class GetableManagerTest {
     void findUnclaimedEvents(boolean useInMemoryBuffer) {
         WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
         VariableValueModel content = new VariableValueModel();
+        NodeRunIdModel nodeRunId = new NodeRunIdModel(wfRunId, 1, 2);
         ExternalEventDefIdModel externalEventDefId =
                 new ExternalEventDefIdModel(UUID.randomUUID().toString());
         String guid = LHUtil.generateGuid();
@@ -381,7 +383,7 @@ public class GetableManagerTest {
         if (!useInMemoryBuffer) {
             getableManager.commit();
         }
-        ExternalEventModel unclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
+        ExternalEventModel unclaimedEvent = getableManager.getUnclaimedEvent(nodeRunId, externalEventDefId);
         assertThat(unclaimedEvent).isNotNull();
         assertThat(unclaimedEvent.getId().getExternalEventDefId()).isEqualTo(externalEventDefId);
         assertThat(unclaimedEvent.getId().getWfRunId()).isEqualTo(wfRunId);
@@ -394,6 +396,7 @@ public class GetableManagerTest {
         VariableValueModel content = new VariableValueModel();
         ExternalEventDefIdModel externalEventDefId =
                 new ExternalEventDefIdModel(UUID.randomUUID().toString());
+        NodeRunIdModel nodeRunId = new NodeRunIdModel(wfRunId, 1, 2);
         int threadRunNumber = 1;
         int nodeRunPosition = 2;
         ExternalEventModel expectedEvent = new ExternalEventModel(
@@ -411,10 +414,31 @@ public class GetableManagerTest {
         getableManager.put(expectedEvent);
         getableManager.put(olderEvent);
         getableManager.commit();
-        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
+        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(nodeRunId, externalEventDefId);
         assertThat(firstUnclaimedEvent).isNotNull();
         assertThat(firstUnclaimedEvent.getId().getGuid())
                 .isEqualTo(expectedEvent.getId().getGuid());
+    }
+
+    @Test
+    void respectTheNodeRunNumberOnExternalEvent() {
+        WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
+        VariableValueModel content = new VariableValueModel();
+        ExternalEventDefIdModel externalEventDefId =
+                new ExternalEventDefIdModel(UUID.randomUUID().toString());
+        NodeRunIdModel nodeRunId = new NodeRunIdModel(wfRunId, 0, 1);
+        int threadRunNumber = 1;
+        int nodeRunPosition = 2;
+        ExternalEventModel fooEvent = new ExternalEventModel(
+                content,
+                new ExternalEventIdModel(wfRunId, externalEventDefId, "expectedEvent"),
+                threadRunNumber,
+                nodeRunPosition,
+                new Date(1));
+        getableManager.put(fooEvent);
+        getableManager.commit();
+        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(nodeRunId, externalEventDefId);
+        assertThat(firstUnclaimedEvent).isNull();
     }
 
     @Test

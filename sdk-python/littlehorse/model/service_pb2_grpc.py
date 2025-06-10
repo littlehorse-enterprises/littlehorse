@@ -10,6 +10,7 @@ import littlehorse.model.node_run_pb2 as node__run__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.scheduled_wf_run_pb2 as scheduled__wf__run__pb2
 import littlehorse.model.service_pb2 as service__pb2
+import littlehorse.model.struct_def_pb2 as struct__def__pb2
 import littlehorse.model.task_def_pb2 as task__def__pb2
 import littlehorse.model.task_run_pb2 as task__run__pb2
 import littlehorse.model.user_tasks_pb2 as user__tasks__pb2
@@ -96,6 +97,21 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/MigrateWfSpec',
                 request_serializer=service__pb2.MigrateWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
+                _registered_method=True)
+        self.PutStructDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutStructDef',
+                request_serializer=service__pb2.PutStructDefRequest.SerializeToString,
+                response_deserializer=struct__def__pb2.StructDef.FromString,
+                _registered_method=True)
+        self.GetStructDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetStructDef',
+                request_serializer=object__id__pb2.StructDefId.SerializeToString,
+                response_deserializer=struct__def__pb2.StructDef.FromString,
+                _registered_method=True)
+        self.ValidateStructDefEvolution = channel.unary_unary(
+                '/littlehorse.LittleHorse/ValidateStructDefEvolution',
+                request_serializer=service__pb2.ValidateStructDefEvolutionRequest.SerializeToString,
+                response_deserializer=service__pb2.ValidateStructDefEvolutionResponse.FromString,
                 _registered_method=True)
         self.PutUserTaskDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutUserTaskDef',
@@ -202,10 +218,20 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.PutExternalEventRequest.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 _registered_method=True)
+        self.PutCorrelatedEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutCorrelatedEvent',
+                request_serializer=service__pb2.PutCorrelatedEventRequest.SerializeToString,
+                response_deserializer=external__event__pb2.CorrelatedEvent.FromString,
+                _registered_method=True)
         self.GetExternalEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetExternalEvent',
                 request_serializer=object__id__pb2.ExternalEventId.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
+                _registered_method=True)
+        self.GetCorrelatedEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetCorrelatedEvent',
+                request_serializer=object__id__pb2.CorrelatedEventId.SerializeToString,
+                response_deserializer=external__event__pb2.CorrelatedEvent.FromString,
                 _registered_method=True)
         self.AwaitWorkflowEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/AwaitWorkflowEvent',
@@ -340,6 +366,11 @@ class LittleHorseStub(object):
         self.DeleteTaskDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteTaskDef',
                 request_serializer=service__pb2.DeleteTaskDefRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.DeleteStructDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteStructDef',
+                request_serializer=service__pb2.DeleteStructDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
         self.DeleteWfSpec = channel.unary_unary(
@@ -498,6 +529,35 @@ class LittleHorseServicer(object):
         completion.
 
         As of 0.7.2, this feature is only partially implemented.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutStructDef(self, request, context):
+        """EXPERIMENTAL: Creates a new `StructDef``.
+
+        Note that this request is idempotent: if you
+        make a request to create a `StructDef` identical to the currently-created
+        one with the same `name`, no new `StructDef` will be created. This is the
+        same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+
+        For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+        enum within the `PutStructDefRequest`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetStructDef(self, request, context):
+        """EXPERIMENTAL: Get a StructDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ValidateStructDefEvolution(self, request, context):
+        """EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -667,7 +727,14 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutExternalEvent(self, request, context):
-        """Post an ExternalEvent. This RPC is highly useful for
+        """Post an ExternalEvent.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutCorrelatedEvent(self, request, context):
+        """Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -675,6 +742,13 @@ class LittleHorseServicer(object):
 
     def GetExternalEvent(self, request, context):
         """Get a specific ExternalEvent.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCorrelatedEvent(self, request, context):
+        """Get a specific CorrelatedEvent
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -894,6 +968,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteStructDef(self, request, context):
+        """EXPERIMENTAL: Deletes a StructDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def DeleteWfSpec(self, request, context):
         """Deletes a WfSpec.
         """
@@ -1059,6 +1140,21 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.MigrateWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
+            'PutStructDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutStructDef,
+                    request_deserializer=service__pb2.PutStructDefRequest.FromString,
+                    response_serializer=struct__def__pb2.StructDef.SerializeToString,
+            ),
+            'GetStructDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetStructDef,
+                    request_deserializer=object__id__pb2.StructDefId.FromString,
+                    response_serializer=struct__def__pb2.StructDef.SerializeToString,
+            ),
+            'ValidateStructDefEvolution': grpc.unary_unary_rpc_method_handler(
+                    servicer.ValidateStructDefEvolution,
+                    request_deserializer=service__pb2.ValidateStructDefEvolutionRequest.FromString,
+                    response_serializer=service__pb2.ValidateStructDefEvolutionResponse.SerializeToString,
+            ),
             'PutUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutUserTaskDef,
                     request_deserializer=service__pb2.PutUserTaskDefRequest.FromString,
@@ -1164,10 +1260,20 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.PutExternalEventRequest.FromString,
                     response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
             ),
+            'PutCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutCorrelatedEvent,
+                    request_deserializer=service__pb2.PutCorrelatedEventRequest.FromString,
+                    response_serializer=external__event__pb2.CorrelatedEvent.SerializeToString,
+            ),
             'GetExternalEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.GetExternalEvent,
                     request_deserializer=object__id__pb2.ExternalEventId.FromString,
                     response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
+            ),
+            'GetCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCorrelatedEvent,
+                    request_deserializer=object__id__pb2.CorrelatedEventId.FromString,
+                    response_serializer=external__event__pb2.CorrelatedEvent.SerializeToString,
             ),
             'AwaitWorkflowEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.AwaitWorkflowEvent,
@@ -1302,6 +1408,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteTaskDef,
                     request_deserializer=service__pb2.DeleteTaskDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteStructDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteStructDef,
+                    request_deserializer=service__pb2.DeleteStructDefRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWfSpec': grpc.unary_unary_rpc_method_handler(
@@ -1655,6 +1766,87 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/MigrateWfSpec',
             service__pb2.MigrateWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutStructDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutStructDef',
+            service__pb2.PutStructDefRequest.SerializeToString,
+            struct__def__pb2.StructDef.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetStructDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetStructDef',
+            object__id__pb2.StructDefId.SerializeToString,
+            struct__def__pb2.StructDef.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ValidateStructDefEvolution(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ValidateStructDefEvolution',
+            service__pb2.ValidateStructDefEvolutionRequest.SerializeToString,
+            service__pb2.ValidateStructDefEvolutionResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -2233,6 +2425,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def PutCorrelatedEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutCorrelatedEvent',
+            service__pb2.PutCorrelatedEventRequest.SerializeToString,
+            external__event__pb2.CorrelatedEvent.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def GetExternalEvent(request,
             target,
             options=(),
@@ -2249,6 +2468,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetExternalEvent',
             object__id__pb2.ExternalEventId.SerializeToString,
             external__event__pb2.ExternalEvent.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCorrelatedEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetCorrelatedEvent',
+            object__id__pb2.CorrelatedEventId.SerializeToString,
+            external__event__pb2.CorrelatedEvent.FromString,
             options,
             channel_credentials,
             insecure,
@@ -2977,6 +3223,33 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/DeleteTaskDef',
             service__pb2.DeleteTaskDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteStructDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteStructDef',
+            service__pb2.DeleteStructDefRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,

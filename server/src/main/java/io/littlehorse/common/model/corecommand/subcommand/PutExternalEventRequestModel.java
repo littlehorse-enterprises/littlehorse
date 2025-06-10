@@ -25,7 +25,9 @@ import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Date;
 import java.util.Optional;
+import lombok.Setter;
 
+@Setter
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
 
     private WfRunIdModel wfRunId;
