@@ -346,7 +346,7 @@ export interface EditCommentUserTaskRunRequest {
   comment: string;
 }
 
-/** Deletes a Commnet on a UserTaskRun */
+/** Deletes a comment on a UserTaskRun */
 export interface DeleteCommentUserTaskRunRequest {
   /** The id of `UserTaskRun` */
   userTaskRunId:

@@ -900,7 +900,7 @@ func (x *EditCommentUserTaskRunRequest) GetComment() string {
 	return ""
 }
 
-//Deletes a Commnet on a UserTaskRun
+// Deletes a comment on a UserTaskRun
 type DeleteCommentUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

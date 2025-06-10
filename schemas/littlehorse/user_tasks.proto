@@ -223,7 +223,7 @@ message EditCommentUserTaskRunRequest {
   string comment = 4;
 }
 
-//Deletes a Commnet on a UserTaskRun
+// Deletes a comment on a UserTaskRun
 message DeleteCommentUserTaskRunRequest {
   
   // The id of `UserTaskRun`

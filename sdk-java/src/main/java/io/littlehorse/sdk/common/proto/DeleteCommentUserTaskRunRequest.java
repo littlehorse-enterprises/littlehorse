@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- *Deletes a Commnet on a UserTaskRun
+ * Deletes a comment on a UserTaskRun
  * </pre>
  *
  * Protobuf type {@code littlehorse.DeleteCommentUserTaskRunRequest}
@@ -270,7 +270,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   *Deletes a Commnet on a UserTaskRun
+   * Deletes a comment on a UserTaskRun
    * </pre>
    *
    * Protobuf type {@code littlehorse.DeleteCommentUserTaskRunRequest}
