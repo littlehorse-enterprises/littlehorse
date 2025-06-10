@@ -2967,7 +2967,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Add user comment depending on whether a user_comment_id is passed in 
+     * Adds userComment to a UserTaskRun
      * </pre>
      */
     default void commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request,
@@ -2977,7 +2977,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edit user comment depending on whether a user_comment_id is passed in 
+     * Edits userComment with the correlated userCommentId 
      * </pre>
      */
     default void editCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest request,
@@ -2987,7 +2987,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
      * </pre>
      */
     default void deleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest request,
@@ -3907,7 +3907,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Add user comment depending on whether a user_comment_id is passed in 
+     * Adds userComment to a UserTaskRun
      * </pre>
      */
     public void commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request,
@@ -3918,7 +3918,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edit user comment depending on whether a user_comment_id is passed in 
+     * Edits userComment with the correlated userCommentId 
      * </pre>
      */
     public void editCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest request,
@@ -3929,7 +3929,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
      * </pre>
      */
     public void deleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest request,
@@ -4866,7 +4866,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Add user comment depending on whether a user_comment_id is passed in 
+     * Adds userComment to a UserTaskRun
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent commentUserTaskRun(io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest request) {
@@ -4876,7 +4876,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edit user comment depending on whether a user_comment_id is passed in 
+     * Edits userComment with the correlated userCommentId 
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskEvent editCommentUserTaskRun(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest request) {
@@ -4886,7 +4886,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
      * </pre>
      */
     public com.google.protobuf.Empty deleteCommentUserTaskRun(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest request) {
@@ -5784,7 +5784,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Add user comment depending on whether a user_comment_id is passed in 
+     * Adds userComment to a UserTaskRun
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskEvent> commentUserTaskRun(
@@ -5795,7 +5795,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edit user comment depending on whether a user_comment_id is passed in 
+     * Edits userComment with the correlated userCommentId 
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskEvent> editCommentUserTaskRun(
@@ -5806,7 +5806,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteCommentUserTaskRun(

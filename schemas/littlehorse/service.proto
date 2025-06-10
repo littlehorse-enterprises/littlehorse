@@ -145,13 +145,13 @@ service LittleHorse {
   // to model an entity.
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
-  // Add user comment depending on whether a user_comment_id is passed in 
+  // Adds userComment to a UserTaskRun
   rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (UserTaskEvent) {};
 
-  // Edit user comment depending on whether a user_comment_id is passed in 
+  // Edits userComment with the correlated userCommentId 
   rpc EditCommentUserTaskRun(EditCommentUserTaskRunRequest) returns (UserTaskEvent) {};
 
-  // Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+  // Deletes a comment logically, this does not affect the userTaskEvent Log
   rpc DeleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest) returns (google.protobuf.Empty) {};
 
   // Gets a specific NodeRun.

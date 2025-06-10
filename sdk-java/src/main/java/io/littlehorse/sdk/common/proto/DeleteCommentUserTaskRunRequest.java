@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ *Deletes a Commnet on a UserTaskRun
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.DeleteCommentUserTaskRunRequest}
  */
 public final class DeleteCommentUserTaskRunRequest extends
@@ -42,7 +46,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.UserTaskRunId userTaskRunId_;
   /**
    * <pre>
-   * The id of UserTaskRun to delete a comment
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -54,7 +58,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of UserTaskRun to delete a comment
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -66,7 +70,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of UserTaskRun to delete a comment
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -265,6 +269,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   *Deletes a Commnet on a UserTaskRun
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.DeleteCommentUserTaskRunRequest}
    */
   public static final class Builder extends
@@ -457,7 +465,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> userTaskRunIdBuilder_;
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -468,7 +476,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -483,7 +491,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -503,7 +511,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -521,7 +529,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -544,7 +552,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -561,7 +569,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -573,7 +581,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -588,7 +596,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of UserTaskRun to delete a comment
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>

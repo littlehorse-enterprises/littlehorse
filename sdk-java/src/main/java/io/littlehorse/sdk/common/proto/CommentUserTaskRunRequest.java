@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Adds a comment to a UserTaskRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.CommentUserTaskRunRequest}
  */
 public final class CommentUserTaskRunRequest extends
@@ -355,6 +359,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Adds a comment to a UserTaskRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.CommentUserTaskRunRequest}
    */
   public static final class Builder extends

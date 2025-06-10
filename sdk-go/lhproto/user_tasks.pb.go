@@ -757,6 +757,7 @@ func (x *CancelUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
 	return nil
 }
 
+// Adds a comment to a UserTaskRun.
 type CommentUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -823,14 +824,15 @@ func (x *CommentUserTaskRunRequest) GetComment() string {
 	return ""
 }
 
+// Edits an existing comment on a UserTaskRun
 type EditCommentUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// This the id of a individual user comment
+	// This is the unique identifier for a comment
 	UserCommentId int32 `protobuf:"varint,1,opt,name=user_comment_id,json=userCommentId,proto3" json:"user_comment_id,omitempty"`
-	// The id of `UserTaskRun` to edit a comment.
+	// The id of `UserTaskRun`
 	UserTaskRunId *UserTaskRunId `protobuf:"bytes,2,opt,name=user_task_run_id,json=userTaskRunId,proto3" json:"user_task_run_id,omitempty"`
 	// The author of the comment being made on a `UserTaskRun`
 	UserId string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -898,12 +900,13 @@ func (x *EditCommentUserTaskRunRequest) GetComment() string {
 	return ""
 }
 
+//Deletes a Commnet on a UserTaskRun
 type DeleteCommentUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The id of UserTaskRun to delete a comment
+	// The id of `UserTaskRun`
 	UserTaskRunId *UserTaskRunId `protobuf:"bytes,1,opt,name=user_task_run_id,json=userTaskRunId,proto3" json:"user_task_run_id,omitempty"`
 	// The id of the comment you are deleting
 	UserCommentId int32 `protobuf:"varint,2,opt,name=user_comment_id,json=userCommentId,proto3" json:"user_comment_id,omitempty"`
@@ -1443,6 +1446,7 @@ func (x *UserTaskEvent_UTEAssigned) GetNewUserGroup() string {
 	return ""
 }
 
+// Message to denote that a comment has been added or edited on a userTaskRun
 type UserTaskEvent_UTECommented struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1510,6 +1514,7 @@ func (x *UserTaskEvent_UTECommented) GetComment() string {
 	return ""
 }
 
+// Message to denote that a userTaskRun has been deleted
 type UserTaskEvent_UTECommentDeleted struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

@@ -199,11 +199,11 @@ type LittleHorseClient interface {
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
-	// Add user comment depending on whether a user_comment_id is passed in
+	// Adds userComment to a UserTaskRun
 	CommentUserTaskRun(ctx context.Context, in *CommentUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskEvent, error)
-	// Edit user comment depending on whether a user_comment_id is passed in
+	// Edits userComment with the correlated userCommentId
 	EditCommentUserTaskRun(ctx context.Context, in *EditCommentUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskEvent, error)
-	// Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+	// Deletes a comment logically, this does not affect the userTaskEvent Log
 	DeleteCommentUserTaskRun(ctx context.Context, in *DeleteCommentUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Gets a specific NodeRun.
 	GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error)
@@ -1221,11 +1221,11 @@ type LittleHorseServer interface {
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
-	// Add user comment depending on whether a user_comment_id is passed in
+	// Adds userComment to a UserTaskRun
 	CommentUserTaskRun(context.Context, *CommentUserTaskRunRequest) (*UserTaskEvent, error)
-	// Edit user comment depending on whether a user_comment_id is passed in
+	// Edits userComment with the correlated userCommentId
 	EditCommentUserTaskRun(context.Context, *EditCommentUserTaskRunRequest) (*UserTaskEvent, error)
-	// Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+	// Deletes a comment logically, this does not affect the userTaskEvent Log
 	DeleteCommentUserTaskRun(context.Context, *DeleteCommentUserTaskRunRequest) (*emptypb.Empty, error)
 	// Gets a specific NodeRun.
 	GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error)

@@ -320,6 +320,7 @@ export interface CancelUserTaskRunRequest {
   userTaskRunId: UserTaskRunId | undefined;
 }
 
+/** Adds a comment to a UserTaskRun. */
 export interface CommentUserTaskRunRequest {
   /** The id of `UserTaskRun` to save. */
   userTaskRunId:
@@ -331,10 +332,11 @@ export interface CommentUserTaskRunRequest {
   comment: string;
 }
 
+/** Edits an existing comment on a UserTaskRun */
 export interface EditCommentUserTaskRunRequest {
-  /** This the id of a individual user comment */
+  /** This is the unique identifier for a comment */
   userCommentId: number;
-  /** The id of `UserTaskRun` to edit a comment. */
+  /** The id of `UserTaskRun` */
   userTaskRunId:
     | UserTaskRunId
     | undefined;
@@ -344,8 +346,9 @@ export interface EditCommentUserTaskRunRequest {
   comment: string;
 }
 
+/** Deletes a Commnet on a UserTaskRun */
 export interface DeleteCommentUserTaskRunRequest {
-  /** The id of UserTaskRun to delete a comment */
+  /** The id of `UserTaskRun` */
   userTaskRunId:
     | UserTaskRunId
     | undefined;
@@ -467,6 +470,7 @@ export interface UserTaskEvent_UTEAssigned {
   newUserGroup?: string | undefined;
 }
 
+/** Message to denote that a comment has been added or edited on a userTaskRun */
 export interface UserTaskEvent_UTECommented {
   /** The id of the user comment */
   userCommentId: number;
@@ -479,6 +483,7 @@ export interface UserTaskEvent_UTECommented {
   comment: string;
 }
 
+/** Message to denote that a userTaskRun has been deleted */
 export interface UserTaskEvent_UTECommentDeleted {
   /** The id of the comment that will be deleted */
   userCommentId: number;

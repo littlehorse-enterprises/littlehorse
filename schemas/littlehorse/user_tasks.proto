@@ -196,6 +196,7 @@ message CancelUserTaskRunRequest {
   UserTaskRunId user_task_run_id = 1;
 }
 
+// Adds a comment to a UserTaskRun.
 message CommentUserTaskRunRequest {
   // The id of `UserTaskRun` to save.
   UserTaskRunId user_task_run_id = 1;
@@ -207,11 +208,12 @@ message CommentUserTaskRunRequest {
   string comment = 3;
 }
 
+// Edits an existing comment on a UserTaskRun
 message EditCommentUserTaskRunRequest {
-  // This the id of a individual user comment
+  // This is the unique identifier for a comment
   int32 user_comment_id = 1;
-  
-  // The id of `UserTaskRun` to edit a comment.
+
+  // The id of `UserTaskRun`
   UserTaskRunId user_task_run_id = 2;
 
   // The author of the comment being made on a `UserTaskRun`
@@ -221,9 +223,10 @@ message EditCommentUserTaskRunRequest {
   string comment = 4;
 }
 
+//Deletes a Commnet on a UserTaskRun
 message DeleteCommentUserTaskRunRequest {
   
-  // The id of UserTaskRun to delete a comment
+  // The id of `UserTaskRun`
   UserTaskRunId user_task_run_id = 1;
 
   // The id of the comment you are deleting
@@ -310,6 +313,7 @@ message UserTaskEvent {
     optional string new_user_group = 4;
   }
 
+  // Message to denote that a comment has been added or edited on a userTaskRun
   message UTECommented {
     // The id of the user comment
     int32 user_comment_id = 1;
@@ -320,6 +324,7 @@ message UserTaskEvent {
     string comment = 3; 
   }
 
+  // Message to denote that a userTaskRun has been deleted
   message UTECommentDeleted {
   // The id of the comment that will be deleted
   int32 user_comment_id = 1;

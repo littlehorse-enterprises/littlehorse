@@ -3604,6 +3604,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         getCommentBytes();
   }
   /**
+   * <pre>
+   * Message to denote that a comment has been added or edited on a userTaskRun
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskEvent.UTECommented}
    */
   public static final class UTECommented extends
@@ -3929,6 +3933,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return builder;
     }
     /**
+     * <pre>
+     * Message to denote that a comment has been added or edited on a userTaskRun
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UserTaskEvent.UTECommented}
      */
     public static final class Builder extends
@@ -4435,6 +4443,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     int getUserCommentId();
   }
   /**
+   * <pre>
+   * Message to denote that a userTaskRun has been deleted
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskEvent.UTECommentDeleted}
    */
   public static final class UTECommentDeleted extends
@@ -4642,6 +4654,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return builder;
     }
     /**
+     * <pre>
+     * Message to denote that a userTaskRun has been deleted
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.UserTaskEvent.UTECommentDeleted}
      */
     public static final class Builder extends

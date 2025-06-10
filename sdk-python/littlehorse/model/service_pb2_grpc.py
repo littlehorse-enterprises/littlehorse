@@ -698,21 +698,21 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CommentUserTaskRun(self, request, context):
-        """Add user comment depending on whether a user_comment_id is passed in 
+        """Adds userComment to a UserTaskRun
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def EditCommentUserTaskRun(self, request, context):
-        """Edit user comment depending on whether a user_comment_id is passed in 
+        """Edits userComment with the correlated userCommentId 
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteCommentUserTaskRun(self, request, context):
-        """Deletes a comment logically inorder to mantain a historical log of UserTaskEvents
+        """Deletes a comment logically, this does not affect the userTaskEvent Log
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

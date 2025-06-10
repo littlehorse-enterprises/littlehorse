@@ -9,7 +9,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
 
   /**
    * <pre>
-   * This the id of a individual user comment
+   * This is the unique identifier for a comment
    * </pre>
    *
    * <code>int32 user_comment_id = 1;</code>
@@ -19,7 +19,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
 
   /**
    * <pre>
-   * The id of `UserTaskRun` to edit a comment.
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -28,7 +28,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
   boolean hasUserTaskRunId();
   /**
    * <pre>
-   * The id of `UserTaskRun` to edit a comment.
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -37,7 +37,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
    * <pre>
-   * The id of `UserTaskRun` to edit a comment.
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>

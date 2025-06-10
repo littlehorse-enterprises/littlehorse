@@ -8485,7 +8485,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Add user comment depending on whether a user_comment_id is passed in */
+    /** Adds userComment to a UserTaskRun */
     commentUserTaskRun: {
       name: "CommentUserTaskRun",
       requestType: CommentUserTaskRunRequest,
@@ -8494,7 +8494,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Edit user comment depending on whether a user_comment_id is passed in */
+    /** Edits userComment with the correlated userCommentId */
     editCommentUserTaskRun: {
       name: "EditCommentUserTaskRun",
       requestType: EditCommentUserTaskRunRequest,
@@ -8503,7 +8503,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Deletes a comment logically inorder to mantain a historical log of UserTaskEvents */
+    /** Deletes a comment logically, this does not affect the userTaskEvent Log */
     deleteCommentUserTaskRun: {
       name: "DeleteCommentUserTaskRun",
       requestType: DeleteCommentUserTaskRunRequest,
@@ -9196,17 +9196,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListUserTaskRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskRunList>>;
-  /** Add user comment depending on whether a user_comment_id is passed in */
+  /** Adds userComment to a UserTaskRun */
   commentUserTaskRun(
     request: CommentUserTaskRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskEvent>>;
-  /** Edit user comment depending on whether a user_comment_id is passed in */
+  /** Edits userComment with the correlated userCommentId */
   editCommentUserTaskRun(
     request: EditCommentUserTaskRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskEvent>>;
-  /** Deletes a comment logically inorder to mantain a historical log of UserTaskEvents */
+  /** Deletes a comment logically, this does not affect the userTaskEvent Log */
   deleteCommentUserTaskRun(
     request: DeleteCommentUserTaskRunRequest,
     context: CallContext & CallContextExt,
@@ -9612,17 +9612,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskRunList>;
-  /** Add user comment depending on whether a user_comment_id is passed in */
+  /** Adds userComment to a UserTaskRun */
   commentUserTaskRun(
     request: DeepPartial<CommentUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskEvent>;
-  /** Edit user comment depending on whether a user_comment_id is passed in */
+  /** Edits userComment with the correlated userCommentId */
   editCommentUserTaskRun(
     request: DeepPartial<EditCommentUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskEvent>;
-  /** Deletes a comment logically inorder to mantain a historical log of UserTaskEvents */
+  /** Deletes a comment logically, this does not affect the userTaskEvent Log */
   deleteCommentUserTaskRun(
     request: DeepPartial<DeleteCommentUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,

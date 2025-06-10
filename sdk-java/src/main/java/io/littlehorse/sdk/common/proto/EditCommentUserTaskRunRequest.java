@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Edits an existing comment on a UserTaskRun
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.EditCommentUserTaskRunRequest}
  */
 public final class EditCommentUserTaskRunRequest extends
@@ -44,7 +48,7 @@ private static final long serialVersionUID = 0L;
   private int userCommentId_ = 0;
   /**
    * <pre>
-   * This the id of a individual user comment
+   * This is the unique identifier for a comment
    * </pre>
    *
    * <code>int32 user_comment_id = 1;</code>
@@ -59,7 +63,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.UserTaskRunId userTaskRunId_;
   /**
    * <pre>
-   * The id of `UserTaskRun` to edit a comment.
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -71,7 +75,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of `UserTaskRun` to edit a comment.
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -83,7 +87,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of `UserTaskRun` to edit a comment.
+   * The id of `UserTaskRun`
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -381,6 +385,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Edits an existing comment on a UserTaskRun
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.EditCommentUserTaskRunRequest}
    */
   public static final class Builder extends
@@ -599,7 +607,7 @@ private static final long serialVersionUID = 0L;
     private int userCommentId_ ;
     /**
      * <pre>
-     * This the id of a individual user comment
+     * This is the unique identifier for a comment
      * </pre>
      *
      * <code>int32 user_comment_id = 1;</code>
@@ -611,7 +619,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This the id of a individual user comment
+     * This is the unique identifier for a comment
      * </pre>
      *
      * <code>int32 user_comment_id = 1;</code>
@@ -627,7 +635,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This the id of a individual user comment
+     * This is the unique identifier for a comment
      * </pre>
      *
      * <code>int32 user_comment_id = 1;</code>
@@ -645,7 +653,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> userTaskRunIdBuilder_;
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -656,7 +664,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -671,7 +679,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -691,7 +699,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -709,7 +717,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -732,7 +740,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -749,7 +757,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -761,7 +769,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
@@ -776,7 +784,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun` to edit a comment.
+     * The id of `UserTaskRun`
      * </pre>
      *
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
