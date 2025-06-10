@@ -1,6 +1,5 @@
 import { getWfRunDetails } from "@/actions/getWfRun";
-import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
-import WorkflowDiagram from "@/components/diagram/workflow-diagram";
+import DiagramLayout from "@/components/diagram/diagram-layout";
 import { extractEdgeData, extractNodeData } from "@/utils/data/data-extraction";
 import { lhClient } from "@/utils/client/lhClient";
 import { type Edge, type Node } from "@xyflow/react";
@@ -43,10 +42,13 @@ export default async function DiagramPage({
 
     return (
         <SelectionProvider>
-            <div className="flex h-screen">
-                <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
-                <WorkflowDiagram nodes={nodes} edges={edges} />
-            </div>
+            <DiagramLayout
+                wfSpec={wfSpec}
+                wfRun={wfRunDetails?.wfRun}
+                nodeRuns={wfRunDetails?.nodeRuns}
+                nodes={nodes}
+                edges={edges}
+            />
         </SelectionProvider>
     );
 }
