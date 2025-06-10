@@ -14,7 +14,7 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class OutputTopicRecord(_message.Message):
-    __slots__ = ["timestamp", "task_run", "workflow_event", "wf_run", "user_task_run", "variable", "external_event"]
+    __slots__ = ["timestamp", "task_run", "workflow_event", "wf_run", "user_task_run", "variable", "external_event", "correlated_event"]
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     TASK_RUN_FIELD_NUMBER: _ClassVar[int]
     WORKFLOW_EVENT_FIELD_NUMBER: _ClassVar[int]
@@ -22,6 +22,7 @@ class OutputTopicRecord(_message.Message):
     USER_TASK_RUN_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_FIELD_NUMBER: _ClassVar[int]
     EXTERNAL_EVENT_FIELD_NUMBER: _ClassVar[int]
+    CORRELATED_EVENT_FIELD_NUMBER: _ClassVar[int]
     timestamp: _timestamp_pb2.Timestamp
     task_run: _task_run_pb2.TaskRun
     workflow_event: _workflow_event_pb2.WorkflowEvent
@@ -29,7 +30,8 @@ class OutputTopicRecord(_message.Message):
     user_task_run: _user_tasks_pb2.UserTaskRun
     variable: _variable_pb2.Variable
     external_event: _external_event_pb2.ExternalEvent
-    def __init__(self, timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_run: _Optional[_Union[_task_run_pb2.TaskRun, _Mapping]] = ..., workflow_event: _Optional[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]] = ..., wf_run: _Optional[_Union[_wf_run_pb2.WfRun, _Mapping]] = ..., user_task_run: _Optional[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]] = ..., variable: _Optional[_Union[_variable_pb2.Variable, _Mapping]] = ..., external_event: _Optional[_Union[_external_event_pb2.ExternalEvent, _Mapping]] = ...) -> None: ...
+    correlated_event: _external_event_pb2.CorrelatedEvent
+    def __init__(self, timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_run: _Optional[_Union[_task_run_pb2.TaskRun, _Mapping]] = ..., workflow_event: _Optional[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]] = ..., wf_run: _Optional[_Union[_wf_run_pb2.WfRun, _Mapping]] = ..., user_task_run: _Optional[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]] = ..., variable: _Optional[_Union[_variable_pb2.Variable, _Mapping]] = ..., external_event: _Optional[_Union[_external_event_pb2.ExternalEvent, _Mapping]] = ..., correlated_event: _Optional[_Union[_external_event_pb2.CorrelatedEvent, _Mapping]] = ...) -> None: ...
 
 class MetadataOutputTopicRecord(_message.Message):
     __slots__ = ["wf_spec", "task_def", "external_event_def", "workflow_event_def", "user_task_def"]
