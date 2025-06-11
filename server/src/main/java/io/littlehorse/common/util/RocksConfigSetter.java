@@ -62,6 +62,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setBlockSize(BLOCK_SIZE);
         options.setTableFormatConfig(tableConfig);
 
+        options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
+        options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
+
         options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
         options.setCompactionStyle(CompactionStyle.UNIVERSAL);
 
