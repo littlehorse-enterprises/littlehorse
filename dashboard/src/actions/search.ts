@@ -1,15 +1,14 @@
 "use server";
-import { SEARCH_LIMIT_DEFAULT } from "@/utils/ui/constants";
-import { lhClient } from "@/utils/client/lhClient";
 import { SearchType } from "@/types/search";
 import { WithBookmark, WithTenant } from "@/types/withs";
+import { lhClient } from "@/utils/client/lhClient";
+import { SEARCH_LIMIT_DEFAULT } from "@/utils/ui/constants";
 import {
   ExternalEventDefId,
   TaskDefId,
-  WfSpecId,
-  WfSpecIdList,
   UserTaskDefId,
-  WorkflowEventDefId,
+  WfSpecId,
+  WorkflowEventDefId
 } from "littlehorse-client/proto";
 
 type Props = { prefix?: string; limit?: number } & WithBookmark;
@@ -84,22 +83,22 @@ export type WfSpecList = SearchResult & {
 
 type TaskDefList = SearchResult & {
   type: "TaskDef";
-  results: Pick<WfSpecIdList, "results">;
+  results: TaskDefId[];
 };
 
 type UserTaskDefList = SearchResult & {
   type: "UserTaskDef";
-  results: Pick<WfSpecIdList, "results">;
+  results: UserTaskDefId[];
 };
 
 type ExternalEventDefList = SearchResult & {
   type: "ExternalEventDef";
-  results: Pick<WfSpecIdList, "results">;
+  results: ExternalEventDefId[];
 };
 
 type WorkflowEventDefList = SearchResult & {
   type: "WorkflowEventDef";
-  results: Pick<WfSpecIdList, "results">;
+  results: WorkflowEventDefId[];
 };
 
 export type Ids =

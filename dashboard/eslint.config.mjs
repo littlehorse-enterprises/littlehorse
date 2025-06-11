@@ -1,6 +1,6 @@
+import { FlatCompat } from "@eslint/eslintrc";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -8,78 +8,6 @@ const __dirname = dirname(__filename);
 const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
-
-/**
- * Custom ESLint rule to enforce that executeRpc can only be used in:
- * 1. The useExecuteRPCWithSWR hook (src/hooks/useExecuteRPCWithSWR.ts)
- * 2. The executeRPC.ts file itself (src/actions/executeRPC.ts)
- *
- * This ensures consistent patterns across the codebase where:
- * - Server components use direct client access for better performance
- * - Client components use the SWR wrapper for caching and reactivity
- */
-const restrictExecuteRpcRule = {
-  "restrict-execute-rpc": {
-    meta: {
-      type: "problem",
-      docs: {
-        description:
-          "Restrict executeRpc usage to only useExecuteRPCWithSWR hook",
-        category: "Best Practices",
-      },
-      messages: {
-        restrictedUsage:
-          "executeRpc can only be used in useExecuteRPCWithSWR hook. Use direct client access instead.",
-      },
-    },
-    create(context) {
-      return {
-        ImportDeclaration(node) {
-          const filename = context.getFilename();
-          const isUseExecuteRPCWithSWRFile = filename.includes(
-            "useExecuteRPCWithSWR.ts"
-          );
-          const isExecuteRPCFile = filename.includes("executeRPC.ts");
-
-          if (
-            !isUseExecuteRPCWithSWRFile &&
-            !isExecuteRPCFile &&
-            node.source.value === "@/actions/executeRPC" &&
-            node.specifiers.some(
-              (spec) =>
-                spec.type === "ImportSpecifier" &&
-                spec.imported.name === "executeRpc"
-            )
-          ) {
-            context.report({
-              node,
-              messageId: "restrictedUsage",
-            });
-          }
-        },
-        CallExpression(node) {
-          const filename = context.getFilename();
-          const isUseExecuteRPCWithSWRFile = filename.includes(
-            "useExecuteRPCWithSWR.ts"
-          );
-          const isExecuteRPCFile = filename.includes("executeRPC.ts");
-
-          if (
-            !isUseExecuteRPCWithSWRFile &&
-            !isExecuteRPCFile &&
-            node.callee.type === "Identifier" &&
-            node.callee.name === "executeRpc"
-          ) {
-            context.report({
-              node,
-              messageId: "restrictedUsage",
-            });
-          }
-        },
-      };
-    },
-  },
-};
 
 /**
  * Custom ESLint rule to enforce React component prop interface naming convention.

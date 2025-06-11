@@ -1,29 +1,38 @@
 "use client"
 
+import { executeRpc } from "@/actions/executeRPC"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
+import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/utils/ui/constants"
 import { Badge } from "@littlehorse-enterprises/ui-library/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card"
+import { Label } from "@littlehorse-enterprises/ui-library/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@littlehorse-enterprises/ui-library/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@littlehorse-enterprises/ui-library/table"
-import { TaskDef, WfSpecId } from "littlehorse-client/proto"
-import { Activity, ArrowLeft, Clock, Hash, Type, Workflow } from "lucide-react"
+import { TaskDef } from "littlehorse-client/proto"
+import { Activity, ArrowLeft, Clock, Hash, Loader2, Type } from "lucide-react"
 import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useState } from "react"
 
 interface TaskDefClientProps {
   taskDef: TaskDef
-  wfSpecIds: WfSpecId[]
-  tenantId: string
-  taskDefId: string
 }
 
 export default function TaskDefClient({ 
   taskDef, 
-  wfSpecIds,
-  tenantId, 
-  taskDefId 
 }: TaskDefClientProps) {
+  const { taskDefId, tenantId } = useParams<{ taskDefId: string; tenantId: string }>()
+  
+  const [limit, setLimit] = useState(SEARCH_LIMIT_DEFAULT);
+
+  const getKey = (pageIndex: number, previousData: Awaited<ReturnType<typeof executeRpc<"searchTaskRun">>> | null) => {
+    if (previousData && !previousData.bookmark) return null // reached the end
+    return ['searchTaskRun', tenantId, limit, taskDefId, previousData?.bookmark] as const;
+  }
+
   const { data: taskRuns } = useExecuteRPCWithSWR("searchTaskRun", {
     taskDefName: taskDefId,
-    limit: 10,
+    limit,
   });
 
   return (
@@ -42,11 +51,76 @@ export default function TaskDefClient({
           {taskDef.id?.name}
         </h1>
         <p className="text-muted-foreground mt-2">
-          Task Definition - Blueprint for executable tasks
+          Task Definition
         </p>
       </div>
 
       <div className="grid gap-6">
+        {/* Related Task Runs */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Related Task Runs
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+              <>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>WfRun Id</TableHead>
+                      <TableHead>GUID</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {!taskRuns ?(
+                      <TableRow>
+                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                          <Loader2 className="inline animate-spin" />
+                        </TableCell>
+                      </TableRow>
+                    ): taskRuns.results.length === 0 ?(<TableRow>
+                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                          No TaskRuns found for this TaskDef
+                        </TableCell>
+                      </TableRow>) :(
+                      taskRuns.results.map((taskRunId, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            {taskRunId.wfRunId && taskRunId.wfRunId.id}
+                          </TableCell>
+                          <TableCell>
+                            {taskRunId.taskGuid}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+                {/* Limit dropdown */}
+                <div className="mt-4 flex items-center justify-end">
+                  <Label className="mr-2 text-sm">Limit:</Label>
+                  <Select
+                    value={limit.toString()}
+                    onValueChange={value => setLimit(Number(value) as typeof SEARCH_LIMITS[number])}
+                  >
+                    <SelectTrigger className="w-fit">
+                      <SelectValue placeholder="Items per load" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SEARCH_LIMITS.map(limit => (
+                        <SelectItem key={limit} value={limit.toString()}>
+                          {limit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+          </CardContent>
+        </Card>
+
         {/* Basic Information */}
         <Card>
           <CardHeader>
@@ -122,93 +196,6 @@ export default function TaskDefClient({
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 No input variables defined for this task
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* WfSpec Usage */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Workflow className="h-5 w-5" />
-              WfSpec Usage
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {wfSpecIds.length > 0 ? (
-              <div className="space-y-3">
-                {wfSpecIds.map((wfSpecId, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Workflow className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <Link
-                          href={`/${tenantId}/diagram/${wfSpecId.name}/${wfSpecId.majorVersion}.${wfSpecId.revision}`}
-                          className="font-mono font-medium hover:text-primary"
-                        >
-                          {wfSpecId.name}
-                        </Link>
-                        <Badge variant="secondary" className="ml-2 text-xs">
-                          v{wfSpecId.majorVersion}.{wfSpecId.revision}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                No WfSpec are currently using this TaskDef
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Related Task Runs */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Related Task Runs
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {!taskRuns ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Loading task runs...
-              </div>
-            ) : taskRuns.results && taskRuns.results.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>WfRun Id</TableHead>
-                    <TableHead>Task GUID</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {taskRuns.results.map((taskRunId, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        {taskRunId.wfRunId && (
-                          <Link
-                            href={`/${tenantId}/wfRun/${taskRunId.wfRunId!.id}`}
-                            className="text-primary hover:underline"
-                          >
-                            {taskRunId.wfRunId.id}
-                          </Link>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {taskRunId.taskGuid}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                No task runs found for this TaskDef
               </div>
             )}
           </CardContent>

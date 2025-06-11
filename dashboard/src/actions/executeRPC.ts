@@ -15,9 +15,11 @@ export async function executeRpc<M extends LittleHorseMethodRPCName>(
   const client = await lhClient(tenantId);
 
   // Use a type cast to inform TypeScript that this is a callable function
+  
   return (
     client[methodName] as (
       request: LHMethodParamType<M>
     ) => Promise<LHMethodReturnType<M>>
   )(params);
+
 }

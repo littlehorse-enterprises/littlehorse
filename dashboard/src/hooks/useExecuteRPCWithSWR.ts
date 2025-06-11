@@ -1,3 +1,5 @@
+"use client";
+
 import { executeRpc } from "@/actions/executeRPC";
 import {
   LHMethodParamType,

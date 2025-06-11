@@ -1,29 +1,29 @@
 "use client"
 
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR";
+import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/utils/ui/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card";
+import { Label } from "@littlehorse-enterprises/ui-library/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@littlehorse-enterprises/ui-library/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@littlehorse-enterprises/ui-library/table";
-import { Activity, ArrowLeft, Clock, Hash } from "lucide-react";
+import { ExternalEventDef } from "littlehorse-client/proto";
+import { Activity, ArrowLeft, Clock, Hash, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 interface ExternalEventDefClientProps {
-  externalEventDefId: string;
-  tenantId: string;
+  externalEventDef: ExternalEventDef;
 }
 
-export default function ExternalEventDefClient({ externalEventDefId, tenantId }: ExternalEventDefClientProps) {
-  const [itemsPerLoad, setItemsPerLoad] = useState(10);
-
-  // Fetch ExternalEventDef details
-  const { data: externalEventDef } = useExecuteRPCWithSWR("getExternalEventDef", {
-    name: externalEventDefId,
-  });
+export default function ExternalEventDefClient({ externalEventDef }: ExternalEventDefClientProps) {
+  const [limit, setLimit] = useState(SEARCH_LIMIT_DEFAULT);
+  const { tenantId, externalEventDefId } = useParams<{ tenantId: string; externalEventDefId: string }>();
 
   // Fetch related ExternalEvents
   const { data: relatedEvents } = useExecuteRPCWithSWR("searchExternalEvent", {
     externalEventDefId: { name: externalEventDefId },
-    limit: itemsPerLoad,
+    limit,
   });
   return (
     <div className="container mx-auto py-6">
@@ -58,16 +58,16 @@ export default function ExternalEventDefClient({ externalEventDefId, tenantId }:
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Name</p>
-                <p className="text-lg font-mono">{externalEventDef?.id?.name || externalEventDefId}</p>
+                <p className="text-lg font-mono">{externalEventDef.id?.name || externalEventDefId}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Created At</p>
-                <p className="text-lg">{externalEventDef?.createdAt ? new Date(externalEventDef.createdAt).toLocaleString() : "N/A"}</p>
+                <p className="text-lg">{externalEventDef.createdAt ? new Date(externalEventDef.createdAt).toLocaleString() : "N/A"}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Retention Policy</p>
                 <p className="text-lg font-mono">
-                  {externalEventDef?.retentionPolicy
+                  {externalEventDef.retentionPolicy
                     ? JSON.stringify(externalEventDef.retentionPolicy, null, 2)
                     : "N/A"}
                 </p>
@@ -85,50 +85,60 @@ export default function ExternalEventDefClient({ externalEventDefId, tenantId }:
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {!relatedEvents ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Loading events...
-              </div>
-            ) : (
               <>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
                       <TableHead>WfRun Id</TableHead>
                       <TableHead>GUID</TableHead>
-                      <TableHead>Created At</TableHead>
-                      <TableHead>Content</TableHead>
-                      <TableHead>Claimed</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {relatedEvents.results.length > 0 ? (
-                      <></>
-                    ) : (
+                  {!relatedEvents ?(
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                          No related events found for this ExternalEventDef
+                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                          <Loader2 className="inline animate-spin" />
                         </TableCell>
                       </TableRow>
+                    ): relatedEvents.results.length === 0 ?(<TableRow>
+                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                          No ExternalEvents found for this ExternalEventDef
+                        </TableCell>
+                      </TableRow>) :(
+                      relatedEvents.results.map((externalEventId, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            {externalEventId.wfRunId && externalEventId.wfRunId.id}
+                          </TableCell>
+                          <TableCell>
+                            {externalEventId.guid}
+                          </TableCell>
+                        </TableRow>
+                      ))
                     )}
+
                   </TableBody>
                 </Table>
-                {/* Items per load dropdown */}
-                <div className="mt-4 flex justify-end">
-                  <label className="mr-2 text-sm">Items per load:</label>
-                  <select
-                    className="border rounded px-2 py-1"
-                    value={itemsPerLoad}
-                    onChange={e => setItemsPerLoad(Number(e.target.value))}
+                {/* Limit dropdown */}
+                <div className="mt-4 flex items-center justify-end">
+                  <Label className="mr-2 text-sm">Limit:</Label>
+                  <Select
+                    value={limit.toString()}
+                    onValueChange={value => setLimit(Number(value) as typeof SEARCH_LIMITS[number])}
                   >
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                  </select>
+                    <SelectTrigger className="w-fit">
+                      <SelectValue placeholder="Items per load" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SEARCH_LIMITS.map(limit => (
+                        <SelectItem key={limit} value={limit.toString()}>
+                          {limit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </>
-            )}
           </CardContent>
         </Card>
       </div>
