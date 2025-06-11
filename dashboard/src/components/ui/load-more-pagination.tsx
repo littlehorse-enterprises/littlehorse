@@ -10,8 +10,7 @@ interface LoadMorePaginationProps {
     isLoading: boolean
     limitOptions: readonly number[]
     className?: string
-    dataLength: number
-    defaultLimit: number
+    hasNextBookmark: boolean
 }
 
 export function LoadMorePagination({
@@ -21,10 +20,10 @@ export function LoadMorePagination({
     isLoading,
     limitOptions,
     className = "",
-    dataLength,
-    defaultLimit
+    hasNextBookmark,
 }: LoadMorePaginationProps) {
-    if (dataLength <= defaultLimit) return null
+    console.log(hasNextBookmark)
+    if (!hasNextBookmark) return null
 
     return (
         <div className={`mt-4 flex justify-between items-center ${className}`}>

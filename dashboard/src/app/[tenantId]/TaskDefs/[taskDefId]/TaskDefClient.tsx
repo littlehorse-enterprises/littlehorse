@@ -1,39 +1,47 @@
 "use client"
 
 import { executeRpc } from "@/actions/executeRPC"
+import { search, SearchResponse } from "@/actions/search"
+import { searchTaskRun, SearchTaskRunResponse } from "@/actions/searchTaskRun"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
+import { LoadMorePagination } from "@/components/ui/load-more-pagination"
 import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/utils/ui/constants"
 import { Badge } from "@littlehorse-enterprises/ui-library/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card"
 import { Label } from "@littlehorse-enterprises/ui-library/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@littlehorse-enterprises/ui-library/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@littlehorse-enterprises/ui-library/table"
-import { TaskDef } from "littlehorse-client/proto"
+import { TaskDef, TaskRunIdList } from "littlehorse-client/proto"
 import { Activity, ArrowLeft, Clock, Hash, Loader2, Type } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useState } from "react"
+import useSWRInfinite from "swr/infinite"
 
 interface TaskDefClientProps {
   taskDef: TaskDef
 }
 
-export default function TaskDefClient({ 
-  taskDef, 
+export default function TaskDefClient({
+  taskDef,
 }: TaskDefClientProps) {
   const { taskDefId, tenantId } = useParams<{ taskDefId: string; tenantId: string }>()
-  
   const [limit, setLimit] = useState(SEARCH_LIMIT_DEFAULT);
 
-  const getKey = (pageIndex: number, previousData: Awaited<ReturnType<typeof executeRpc<"searchTaskRun">>> | null) => {
-    if (previousData && !previousData.bookmark) return null // reached the end
-    return ['searchTaskRun', tenantId, limit, taskDefId, previousData?.bookmark] as const;
+  const getKey = (pageIndex: number, previousPageData: SearchTaskRunResponse | null) => {
+    if (previousPageData && !previousPageData.bookmark) return null // reached the end
+    return ['searchTaskRun', tenantId, limit, taskDefId, previousPageData?.bookmark]
   }
 
-  const { data: taskRuns } = useExecuteRPCWithSWR("searchTaskRun", {
-    taskDefName: taskDefId,
-    limit,
-  });
+  const { data: taskRuns2, size, setSize, isLoading: isDataLoading } = useSWRInfinite<SearchTaskRunResponse>(getKey, async key => {
+    const [, tenantIdKey, limitKey, taskDefIdKey, bookmark] = key
+    return searchTaskRun({
+      taskDefName: taskDefIdKey,
+      tenantId: tenantIdKey,
+      limit: limitKey,
+      bookmark,
+    })
+  })
 
   return (
     <div className="container mx-auto py-6">
@@ -65,59 +73,53 @@ export default function TaskDefClient({
             </CardTitle>
           </CardHeader>
           <CardContent>
-              <>
-                <Table>
-                  <TableHeader>
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>WfRun Id</TableHead>
+                    <TableHead>GUID</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {!taskRuns2 || isDataLoading ? (
                     <TableRow>
-                      <TableHead>WfRun Id</TableHead>
-                      <TableHead>GUID</TableHead>
+                      <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                        <Loader2 className="inline animate-spin" />
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {!taskRuns ?(
-                      <TableRow>
-                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
-                          <Loader2 className="inline animate-spin" />
+                  ) : taskRuns2.every(page => page.results.length === 0) ? (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                        No TaskRuns found for this TaskDef
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    taskRuns2.flatMap(page => page.results).map((taskRunId, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          {taskRunId.wfRunId && taskRunId.wfRunId.id}
+                        </TableCell>
+                        <TableCell>
+                          {taskRunId.taskGuid}
                         </TableCell>
                       </TableRow>
-                    ): taskRuns.results.length === 0 ?(<TableRow>
-                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
-                          No TaskRuns found for this TaskDef
-                        </TableCell>
-                      </TableRow>) :(
-                      taskRuns.results.map((taskRunId, index) => (
-                        <TableRow key={index}>
-                          <TableCell>
-                            {taskRunId.wfRunId && taskRunId.wfRunId.id}
-                          </TableCell>
-                          <TableCell>
-                            {taskRunId.taskGuid}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-                {/* Limit dropdown */}
-                <div className="mt-4 flex items-center justify-end">
-                  <Label className="mr-2 text-sm">Limit:</Label>
-                  <Select
-                    value={limit.toString()}
-                    onValueChange={value => setLimit(Number(value) as typeof SEARCH_LIMITS[number])}
-                  >
-                    <SelectTrigger className="w-fit">
-                      <SelectValue placeholder="Items per load" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SEARCH_LIMITS.map(limit => (
-                        <SelectItem key={limit} value={limit.toString()}>
-                          {limit}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+
+              {taskRuns2 && (
+                <LoadMorePagination
+                  limit={limit}
+                  onLimitChange={(newLimit) => setLimit(newLimit as typeof SEARCH_LIMITS[number])}
+                  onLoadMore={() => setSize(size + 1)}
+                  isLoading={isDataLoading}
+                  limitOptions={SEARCH_LIMITS}
+                  hasNextBookmark={!!taskRuns2[taskRuns2.length - 1]?.bookmark}
+                />
+              )}
+            </>
           </CardContent>
         </Card>
 
@@ -138,7 +140,7 @@ export default function TaskDefClient({
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Created At</p>
                 <p className="text-lg">
-                  {taskDef.createdAt 
+                  {taskDef.createdAt
                     ? new Date(taskDef.createdAt).toLocaleString()
                     : "N/A"
                   }
@@ -179,7 +181,7 @@ export default function TaskDefClient({
                         </Badge>
                       </TableCell>
                       <TableCell className="font-mono text-sm">
-                        {variable.defaultValue 
+                        {variable.defaultValue
                           ? JSON.stringify(variable.defaultValue).slice(0, 50) + "..."
                           : "None"
                         }

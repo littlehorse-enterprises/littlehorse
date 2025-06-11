@@ -6,6 +6,7 @@ import { SEARCH_LIMIT_DEFAULT } from "@/utils/ui/constants";
 import {
   ExternalEventDefId,
   TaskDefId,
+  TaskRunId,
   UserTaskDefId,
   WfSpecId,
   WorkflowEventDefId
@@ -49,6 +50,9 @@ export const search = async ({
       break;
     case "WorkflowEventDef":
       results = await genericSearch(request, client.searchWorkflowEventDef);
+      break;
+    case "TaskRun":
+      results = await genericSearch(request, client.searchTaskRun);
       break;
     default:
       results = await genericSearch(request, client.searchWfSpec);
@@ -101,16 +105,23 @@ type WorkflowEventDefList = SearchResult & {
   results: WorkflowEventDefId[];
 };
 
+type TaskRunList = SearchResult & {
+  type: "TaskRun";
+  results: TaskRunId[];
+};
+
 export type Ids =
   | WfSpecId
   | TaskDefId
   | UserTaskDefId
   | ExternalEventDefId
-  | WorkflowEventDefId;
+  | WorkflowEventDefId
+  | TaskRunId;
 
 export type SearchResponse =
   | WfSpecList
   | TaskDefList
   | UserTaskDefList
   | ExternalEventDefList
-  | WorkflowEventDefList;
+  | WorkflowEventDefList
+  | TaskRunList;
