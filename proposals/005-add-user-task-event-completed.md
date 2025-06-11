@@ -17,7 +17,7 @@ message UserTaskEvent {
   // Message denoting that the UserTaskRun has been completed
   message UTECompleted {
     // The ID of the TaskRun that was just completed
-    TaskRunId task_run_id = 1;
+    string message = 1;
   }
   ...
 }
