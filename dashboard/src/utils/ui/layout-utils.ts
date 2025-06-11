@@ -35,8 +35,8 @@ export const getLayoutedElements = async (
 
   const {
     algorithm = 'layered',
-    nodeSpacing = '80',
-    layerSpacing = '100',
+    nodeSpacing = '600',
+    layerSpacing = '50',
     customOptions = {},
   } = options;
 

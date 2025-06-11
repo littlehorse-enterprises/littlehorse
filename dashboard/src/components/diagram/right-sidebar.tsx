@@ -30,24 +30,32 @@ export default function RightSidebar({
     const [activeTab, setActiveTab] = useState(nodeRuns.length > 0 ? "runs" : "definition")
     const [sidebarState, setSidebarState] = useState<SidebarState>("normal")
     const [selectedAttempt, setSelectedAttempt] = useState<string | null>(null)
+    const [selectedNodeRun, setSelectedNodeRun] = useState<NodeRun | null>(null)
     const { selectedId } = useSelection()
 
     // Find the selected node data
     const selectedNodeRuns = nodeRuns.filter(nodeRun => nodeRun.nodeName === selectedId)
     const nodeDef = wfSpec?.threadSpecs?.[wfSpec.entrypointThreadName]?.nodes?.[selectedId || ""]
 
-    // Find TaskRuns that correspond to the selected node's NodeRuns
-    const selectedTaskRuns = taskRuns.filter(taskRun =>
-        selectedNodeRuns.some(nodeRun =>
-            taskRun.source?.taskNode?.nodeRunId?.wfRunId?.id === nodeRun.id?.wfRunId?.id &&
-            taskRun.source?.taskNode?.nodeRunId?.position === nodeRun.id?.position
-        )
-    )
+    // Find TaskRuns that correspond to the selected specific node run (not all node runs)
+    const selectedTaskRuns = selectedNodeRun ? taskRuns.filter(taskRun =>
+        taskRun.source?.taskNode?.nodeRunId?.wfRunId?.id === selectedNodeRun.id?.wfRunId?.id &&
+        taskRun.source?.taskNode?.nodeRunId?.position === selectedNodeRun.id?.position
+    ) : []
 
 
     useEffect(() => {
         setActiveTab(nodeRuns.length > 0 ? "runs" : "definition")
-    }, [nodeRuns])
+        // Reset selected node run when selected node changes
+        setSelectedNodeRun(null)
+    }, [nodeRuns, selectedId])
+
+    // Auto-select first node run by default
+    useEffect(() => {
+        if (selectedNodeRuns.length > 0 && !selectedNodeRun) {
+            setSelectedNodeRun(selectedNodeRuns[0])
+        }
+    }, [selectedNodeRuns, selectedNodeRun])
 
     // Sidebar width based on state
     const sidebarWidth = sidebarState === "expanded"
@@ -132,35 +140,42 @@ export default function RightSidebar({
                 {/* Tab Content */}
                 <div className="flex-1 overflow-y-auto">
                     {activeTab === "runs" && (
-                        <div className="p-4">
+                        <div className="p-4 flex flex-col h-full">
                             <h3 className="text-sm font-medium mb-2">NodeRuns</h3>
 
                             {/* NodeRuns List */}
-                            <div className="space-y-2">
-                                {selectedNodeRuns.map((nodeRun, index) => (
-                                    <div
-                                        key={nodeRun.id?.wfRunId?.id + "-" + nodeRun.id?.position}
-                                        className="border rounded-md p-3 border-gray-200 hover:bg-gray-50"
-                                    >
-                                        <div className="flex items-center justify-between mb-1">
-                                            <div className="flex items-center">
-                                                {getStatusIcon(nodeRun.status)}
-                                                <span className="text-xs font-medium">Run {index + 1}</span>
+                            <div className="h-1/3 overflow-y-auto">
+                                <div className="space-y-2">
+                                    {selectedNodeRuns.map((nodeRun, index) => (
+                                        <div
+                                            key={nodeRun.id?.wfRunId?.id + "-" + nodeRun.id?.position}
+                                            className={`border rounded-md p-3 cursor-pointer transition-colors ${selectedNodeRun?.id?.wfRunId?.id === nodeRun.id?.wfRunId?.id &&
+                                                selectedNodeRun?.id?.position === nodeRun.id?.position
+                                                ? "border-blue-500 bg-blue-50"
+                                                : "border-gray-200 hover:bg-gray-50"
+                                                }`}
+                                            onClick={() => setSelectedNodeRun(nodeRun)}
+                                        >
+                                            <div className="flex items-center justify-between mb-1">
+                                                <div className="flex items-center">
+                                                    {getStatusIcon(nodeRun.status)}
+                                                    <span className="text-xs font-medium">Run {index + 1}</span>
+                                                </div>
+                                                {getStatusBadge(nodeRun.status)}
                                             </div>
-                                            {getStatusBadge(nodeRun.status)}
+                                            <div className="space-y-1 text-xs">
+                                                <div className="flex justify-between">
+                                                    <span className="text-[#656565]">Started:</span>
+                                                    <span>{formatDate(nodeRun.arrivalTime)}</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-[#656565]">Duration:</span>
+                                                    <span>{calculateDuration(nodeRun.arrivalTime, nodeRun.endTime)}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="space-y-1 text-xs">
-                                            <div className="flex justify-between">
-                                                <span className="text-[#656565]">Started:</span>
-                                                <span>{formatDate(nodeRun.arrivalTime)}</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span className="text-[#656565]">Duration:</span>
-                                                <span>{calculateDuration(nodeRun.arrivalTime, nodeRun.endTime)}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
 
                             {selectedNodeRuns.length === 0 && (
@@ -170,8 +185,8 @@ export default function RightSidebar({
                             )}
 
                             {/* TaskRun Details Section */}
-                            {selectedTaskRuns.length > 0 && getNodeType(selectedId || "") === "TASK" && (
-                                <>
+                            {selectedTaskRuns.length > 0 && getNodeType(selectedId || "") === "TASK" && selectedNodeRun && (
+                                <div className="flex-shrink-0">
                                     <Separator className="my-4" />
                                     <div>
                                         <div className="flex items-center justify-between mb-2">
@@ -199,7 +214,7 @@ export default function RightSidebar({
                                         <h4 className="text-xs font-medium mb-2">Task Attempts ({selectedTaskRuns[0].attempts?.length || 0})</h4>
 
                                         {/* Task Attempts Accordion */}
-                                        <Accordion type="single" collapsible className="w-full">
+                                        <Accordion type="single" collapsible className="w-full" defaultValue={selectedTaskRuns[0].id?.wfRunId?.id + "-" + 0}>
                                             {selectedTaskRuns[0].attempts?.map((attempt, index) => (
                                                 <AccordionItem key={selectedTaskRuns[0].id?.wfRunId?.id + "-" + index} value={selectedTaskRuns[0].id?.wfRunId?.id + "-" + index || ""}>
                                                     <AccordionTrigger
@@ -243,7 +258,7 @@ export default function RightSidebar({
                                             ))}
                                         </Accordion>
                                     </div>
-                                </>
+                                </div>
                             )}
                         </div>
                     )}
