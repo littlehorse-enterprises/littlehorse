@@ -107,8 +107,8 @@ public class TenantAdministrationTest {
 
         command.setTime(new Date(secondTimestamp));
         command.setCommandId(UUID.randomUUID().toString());
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                command.getCommandId().get(), Message.class, new CompletableFuture<>());
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), secondTimestamp, metadata));
         assertThat(futureResponse).isCompleted();
@@ -122,8 +122,8 @@ public class TenantAdministrationTest {
         PutTenantRequestModel putTenantRequestModel =
                 PutTenantRequestModel.fromProto(putTenantRequest(invalidTenant), PutTenantRequestModel.class, mock());
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequestModel);
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                command.getCommandId().get(), Message.class, new CompletableFuture<>());
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
@@ -138,8 +138,8 @@ public class TenantAdministrationTest {
         PutTenantRequestModel putTenantRequestModel =
                 PutTenantRequestModel.fromProto(putTenantRequest(invalidTenant), PutTenantRequestModel.class, mock());
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequestModel);
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                command.getCommandId().get(), Message.class, new CompletableFuture<>());
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));

@@ -162,10 +162,10 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
         try {
             Message response = command.process(metadataContext);
-            if (command.hasResponse() && command.getCommandId() != null) {
+            if (command.getCommandId().isPresent() && command.hasResponse()) {
 
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
-                        command.getCommandId(), Message.class, new CompletableFuture<>());
+                        command.getCommandId().get(), Message.class, new CompletableFuture<>());
                 completable.complete(response);
 
                 // This allows us to set a larger commit interval for the Core Topology

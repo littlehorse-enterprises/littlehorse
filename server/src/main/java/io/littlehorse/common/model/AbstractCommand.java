@@ -5,10 +5,9 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
-import lombok.Getter;
+import java.util.Optional;
 import lombok.Setter;
 
-@Getter
 @Setter
 public abstract class AbstractCommand<T extends Message> extends LHSerializable<T> {
 
@@ -26,4 +25,8 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
     public abstract String getPartitionKey();
 
     public abstract SubCommand<? extends Message> getSubCommand();
+
+    public Optional<String> getCommandId() {
+        return Optional.ofNullable(commandId);
+    }
 }

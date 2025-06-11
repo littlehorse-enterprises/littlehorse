@@ -22,6 +22,7 @@ import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -148,12 +149,15 @@ public class CommandSender {
                     case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
                 };
         KeyQueryMetadata meta = internalComms.lookupPartitionKey(storeName, command.getPartitionKey());
-
+        Optional<String> commandId = command.getCommandId();
+        if (commandId.isEmpty()) {
+            return CompletableFuture.completedFuture(null);
+        }
         if (meta.activeHost().equals(thisHost)) {
-            return asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+            return asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, new CompletableFuture<>());
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
-                    .setCommandId(command.getCommandId())
+                    .setCommandId(commandId.get())
                     .setPartition(meta.partition())
                     .build();
             LHInternalsGrpc.LHInternalsBlockingStub internalClient =

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.util.AsyncWaiters;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
@@ -26,6 +27,7 @@ public class LHProcessingExceptionHandler {
         try {
             runnable.run();
         } catch (CoreCommandException commandException) {
+            Optional<String> commandId = commandException.getCommand().getCommandId();
             if (commandException.isUserError()) {
                 // debug and continue
                 StatusRuntimeException sre = (StatusRuntimeException) commandException.getCause();
@@ -43,9 +45,9 @@ public class LHProcessingExceptionHandler {
                         commandException.getCommand().getType(),
                         commandException.getCause());
             }
-            if (commandException.isNotifyClientOnError()) {
-                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
-                        commandException.getCommand().getCommandId(), Message.class, new CompletableFuture<>());
+            if (commandException.isNotifyClientOnError() && commandId.isPresent()) {
+                CompletableFuture<Message> completable =
+                        asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, new CompletableFuture<>());
                 completable.completeExceptionally(commandException.getCause());
             }
         } catch (MetadataCommandException ex) {
@@ -61,8 +63,12 @@ public class LHProcessingExceptionHandler {
                         ex.getCause());
             }
             try {
-                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
-                        ex.getCommand().getCommandId(), Message.class, new CompletableFuture<>());
+                Optional<String> commandId = ex.getCommand().getCommandId();
+                if (commandId.isEmpty()) {
+                    return;
+                }
+                CompletableFuture<Message> completable =
+                        asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, new CompletableFuture<>());
                 completable.completeExceptionally(ex.getCause());
             } catch (Exception e) {
                 // Nothing to do

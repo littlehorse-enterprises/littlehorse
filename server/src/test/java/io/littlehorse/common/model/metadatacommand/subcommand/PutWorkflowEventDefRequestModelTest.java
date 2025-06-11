@@ -87,15 +87,15 @@ public class PutWorkflowEventDefRequestModelTest {
         Assertions.assertThat(storedEventDef).isNotNull();
         MetadataCommandModel commandSent =
                 sendCommand(new PutWorkflowEventDefRequestModel("user-created", new ReturnTypeModel(VariableType.INT)));
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(commandSent.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                commandSent.getCommandId().get(), Message.class, new CompletableFuture<>());
         Assertions.assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(LHApiException.class);
         PutWorkflowEventDefRequestModel userUpdatedCommand =
                 new PutWorkflowEventDefRequestModel("user-updated", new ReturnTypeModel(VariableType.STR));
         reset(server);
         MetadataCommandModel commandSent2 = sendCommand(userUpdatedCommand);
-        CompletableFuture<Message> futureResponse2 =
-                asyncWaiters.getOrRegisterFuture(commandSent2.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse2 = asyncWaiters.getOrRegisterFuture(
+                commandSent2.getCommandId().get(), Message.class, new CompletableFuture<>());
         Assertions.assertThat(futureResponse2.getNow(null)).isNotNull();
         WorkflowEventDefModel userUpdatedEventDef = metadataManager.get(new WorkflowEventDefIdModel("user-updated"));
         Assertions.assertThat(userUpdatedEventDef).isNotNull();

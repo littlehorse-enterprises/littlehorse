@@ -194,8 +194,8 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setOverwrite(false);
         metadataCache.clear();
         MetadataCommandModel commandSent2 = sendCommand(putPrincipalRequest);
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(commandSent2.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                commandSent2.getCommandId().get(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(LHApiException.class);
     }
 
@@ -236,8 +236,8 @@ public class PrincipalAdministrationTest {
         requester.setGlobalAcls(TestUtil.singleAdminAcl("tyler"));
         defaultStore.put(new StoredGetable<>(requester));
         MetadataCommandModel commandSent = sendCommand(putPrincipalRequest);
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(commandSent.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                commandSent.getCommandId().get(), Message.class, new CompletableFuture<>());
         assertThat(futureResponse.getNow(null)).isNotNull();
     }
 
@@ -258,8 +258,8 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.getPerTenantAcls().clear();
 
         MetadataCommandModel commandSent = sendCommand(putPrincipalRequest);
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(commandSent.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                commandSent.getCommandId().get(), Message.class, new CompletableFuture<>());
         assertThat(futureResponse.getNow(null)).isNotNull();
     }
 
@@ -270,8 +270,8 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithTenantResource()));
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                command.getCommandId().get(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .hasCauseInstanceOf(LHApiException.class)
@@ -286,8 +286,8 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithPrincipalResource()));
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                command.getCommandId().get(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .hasCauseInstanceOf(LHApiException.class)
@@ -306,8 +306,8 @@ public class PrincipalAdministrationTest {
 
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                command.getCommandId().get(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .hasCauseInstanceOf(LHApiException.class)
@@ -329,8 +329,8 @@ public class PrincipalAdministrationTest {
 
         MetadataCommandModel command = sendCommand(putTenantRequest);
 
-        CompletableFuture<Message> futureResponse =
-                asyncWaiters.getOrRegisterFuture(command.getCommandId(), Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse = asyncWaiters.getOrRegisterFuture(
+                command.getCommandId().get(), Message.class, new CompletableFuture<>());
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .isNotNull()
                 .hasCauseInstanceOf(LHApiException.class)

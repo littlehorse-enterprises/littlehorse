@@ -91,7 +91,7 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
 
     @Override
     public boolean hasResponse() {
-        return false;
+        return true;
     }
 
     @Override

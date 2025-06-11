@@ -1134,7 +1134,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
             log.error("Failed processing command", e);
         } finally {
-            asyncWaiters.removeCommand(command.getCommandId());
+            command.getCommandId().ifPresent(asyncWaiters::removeCommand);
         }
     }
 

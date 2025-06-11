@@ -45,7 +45,7 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         StatusRuntimeException sre = new StatusRuntimeException(io.grpc.Status.INVALID_ARGUMENT);
         CoreCommandException cce = new CoreCommandException(sre, command);
-        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId()), any(), any(CompletableFuture.class)))
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
                 .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw cce;
@@ -59,7 +59,7 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         NullPointerException npe = new NullPointerException();
         CoreCommandException cce = new CoreCommandException(npe, command);
-        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId()), any(), any(CompletableFuture.class)))
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
                 .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw cce;
@@ -73,7 +73,7 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         NullPointerException npe = new NullPointerException();
         MetadataCommandException mce = new MetadataCommandException(npe, command);
-        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId()), any(), any(CompletableFuture.class)))
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
                 .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw mce;
@@ -87,7 +87,7 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         StatusRuntimeException sre = new StatusRuntimeException(io.grpc.Status.INVALID_ARGUMENT);
         MetadataCommandException mce = new MetadataCommandException(sre, command);
-        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId()), any(), any(CompletableFuture.class)))
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
                 .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw mce;

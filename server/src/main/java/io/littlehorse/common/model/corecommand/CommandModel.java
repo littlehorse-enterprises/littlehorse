@@ -37,7 +37,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
-import java.util.Objects;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -451,8 +451,9 @@ public class CommandModel extends AbstractCommand<Command> {
         return config.getCoreCmdTopicName();
     }
 
-    public String getCommandId() {
-        return Objects.requireNonNull(commandId);
+    @Override
+    public Optional<String> getCommandId() {
+        return super.getCommandId();
     }
 
     public boolean hasResponse() {
