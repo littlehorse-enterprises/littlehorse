@@ -25,6 +25,8 @@ export function MetadataTable({ data, activeTab, isLoading }: MetadataTableProps
             router.push(`/${tenantId}/UserTaskDefs/${name}`)
         else if (activeTab === "ExternalEventDef")
             router.push(`/${tenantId}/ExternalEventDefs/${name}`)
+        else if (activeTab === "WorkflowEventDef")
+            router.push(`/${tenantId}/WorkflowEventDefs/${name}`)
     }
 
     return (
