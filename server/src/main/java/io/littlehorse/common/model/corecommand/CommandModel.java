@@ -37,6 +37,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,7 +45,6 @@ import lombok.Setter;
 @Setter
 public class CommandModel extends AbstractCommand<Command> {
 
-    public String commandId;
     public Date time;
 
     public CommandCase type;
@@ -449,6 +449,11 @@ public class CommandModel extends AbstractCommand<Command> {
     @Override
     public String getTopic(LHServerConfig config) {
         return config.getCoreCmdTopicName();
+    }
+
+    @Override
+    public Optional<String> getCommandId() {
+        return super.getCommandId();
     }
 
     public boolean hasResponse() {
