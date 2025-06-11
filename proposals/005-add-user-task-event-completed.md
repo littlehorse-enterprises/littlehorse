@@ -14,9 +14,8 @@ Add new message:
 message UserTaskEvent {
   //...
 
-  // Message denoting that the UserTaskRun has been completed
+  // Empty message used to denote that the `UserTaskRun` was completed.
   message UTECompleted {
-    // The ID of the TaskRun that was just completed
     string message = 1;
   }
   ...
