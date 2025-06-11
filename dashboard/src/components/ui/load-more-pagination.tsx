@@ -1,6 +1,7 @@
 "use client"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { cn } from "@/utils/ui/utils"
 import { Button } from "@littlehorse-enterprises/ui-library/button"
 
 interface LoadMorePaginationProps {
@@ -13,7 +14,7 @@ interface LoadMorePaginationProps {
     hasNextBookmark: boolean
 }
 
-export function LoadMorePagination({
+export function Pagination({
     limit,
     onLimitChange,
     onLoadMore,
@@ -22,11 +23,8 @@ export function LoadMorePagination({
     className = "",
     hasNextBookmark,
 }: LoadMorePaginationProps) {
-    console.log(hasNextBookmark)
-    if (!hasNextBookmark) return null
-
     return (
-        <div className={`mt-4 flex justify-between items-center ${className}`}>
+        <div className={cn("mt-4 flex justify-between items-center", className)}>
             <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Items per load:</span>
                 <Select
@@ -45,13 +43,15 @@ export function LoadMorePagination({
                     </SelectContent>
                 </Select>
             </div>
-            <Button
-                onClick={onLoadMore}
-                disabled={isLoading}
-                className="ml-auto"
-            >
-                Load More
-            </Button>
+            {hasNextBookmark && (
+              <Button
+                  onClick={onLoadMore}
+                  disabled={isLoading}
+                  className="ml-auto"
+                  >
+                      Load More
+                  </Button>
+            )}
         </div>
     )
 }

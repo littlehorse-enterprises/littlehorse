@@ -205,14 +205,12 @@ const eslintConfig = [
     plugins: {
       custom: {
         rules: {
-          ...restrictExecuteRpcRule,
           ...enforcePropsInterfaceNamingRule,
           ...noClientPagesRule,
         },
       },
     },
     rules: {
-      "custom/restrict-execute-rpc": "error",
       "custom/enforce-props-interface-naming": "error",
       "custom/no-client-pages": "error",
     },

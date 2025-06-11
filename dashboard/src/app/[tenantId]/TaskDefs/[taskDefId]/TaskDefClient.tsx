@@ -1,17 +1,12 @@
 "use client"
 
-import { executeRpc } from "@/actions/executeRPC"
-import { search, SearchResponse } from "@/actions/search"
-import { searchTaskRun, SearchTaskRunResponse } from "@/actions/searchTaskRun"
-import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
-import { LoadMorePagination } from "@/components/ui/load-more-pagination"
+import { searchTaskRun } from "@/actions/searchTaskRun"
+import { Pagination } from "@/components/ui/load-more-pagination"
 import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/utils/ui/constants"
 import { Badge } from "@littlehorse-enterprises/ui-library/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card"
-import { Label } from "@littlehorse-enterprises/ui-library/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@littlehorse-enterprises/ui-library/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@littlehorse-enterprises/ui-library/table"
-import { TaskDef, TaskRunIdList } from "littlehorse-client/proto"
+import { TaskDef } from "littlehorse-client/proto"
 import { Activity, ArrowLeft, Clock, Hash, Loader2, Type } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
@@ -28,18 +23,18 @@ export default function TaskDefClient({
   const { taskDefId, tenantId } = useParams<{ taskDefId: string; tenantId: string }>()
   const [limit, setLimit] = useState(SEARCH_LIMIT_DEFAULT);
 
-  const getKey = (pageIndex: number, previousPageData: SearchTaskRunResponse | null) => {
+  const getKey = (pageIndex: number, previousPageData: Awaited<ReturnType<typeof searchTaskRun>> | null) => {
     if (previousPageData && !previousPageData.bookmark) return null // reached the end
-    return ['searchTaskRun', tenantId, limit, taskDefId, previousPageData?.bookmark]
+    return ['searchTaskRun', tenantId, limit, taskDefId, previousPageData?.bookmark] as const;
   }
 
-  const { data: taskRuns2, size, setSize, isLoading: isDataLoading } = useSWRInfinite<SearchTaskRunResponse>(getKey, async key => {
-    const [, tenantIdKey, limitKey, taskDefIdKey, bookmark] = key
+  const { data: pages, size, setSize, isLoading: isDataLoading } = useSWRInfinite(getKey, async key => {
+    const [, tenantId, limit, taskDefName, bookmark] = key
     return searchTaskRun({
-      taskDefName: taskDefIdKey,
-      tenantId: tenantIdKey,
-      limit: limitKey,
-      bookmark,
+      taskDefName,
+      tenantId,
+      limit,
+      bookmark
     })
   })
 
@@ -82,20 +77,20 @@ export default function TaskDefClient({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {!taskRuns2 || isDataLoading ? (
+                  {!pages || isDataLoading ? (
                     <TableRow>
                       <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
                         <Loader2 className="inline animate-spin" />
                       </TableCell>
                     </TableRow>
-                  ) : taskRuns2.every(page => page.results.length === 0) ? (
+                  ) : pages.every(page => page.results.length === 0) ? (
                     <TableRow>
                       <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
                         No TaskRuns found for this TaskDef
                       </TableCell>
                     </TableRow>
                   ) : (
-                    taskRuns2.flatMap(page => page.results).map((taskRunId, index) => (
+                    pages.flatMap(page => page.results).map((taskRunId, index) => (
                       <TableRow key={index}>
                         <TableCell>
                           {taskRunId.wfRunId && taskRunId.wfRunId.id}
@@ -109,14 +104,14 @@ export default function TaskDefClient({
                 </TableBody>
               </Table>
 
-              {taskRuns2 && (
-                <LoadMorePagination
+              {pages && (
+                <Pagination
                   limit={limit}
                   onLimitChange={(newLimit) => setLimit(newLimit as typeof SEARCH_LIMITS[number])}
                   onLoadMore={() => setSize(size + 1)}
                   isLoading={isDataLoading}
                   limitOptions={SEARCH_LIMITS}
-                  hasNextBookmark={!!taskRuns2[taskRuns2.length - 1]?.bookmark}
+                  hasNextBookmark={!!pages[pages.length - 1]?.bookmark}
                 />
               )}
             </>

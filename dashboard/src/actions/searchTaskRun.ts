@@ -1,16 +1,12 @@
 "use server"
 
+import { LHMethodParamType } from "@/types/executeRPCTypes"
+import { WithBookmark, WithTenant } from "@/types/withs"
+import { TaskRunId } from "littlehorse-client/proto"
 import { executeRpc } from "./executeRPC"
 
-export interface SearchTaskRunProps {
-  taskDefName: string
-  tenantId: string
-  bookmark?: string
-  limit?: number
-}
-
 export interface SearchTaskRunResponse {
-  results: any[]
+  results: TaskRunId[]
   bookmark?: string
 }
 
@@ -19,7 +15,7 @@ export const searchTaskRun = async ({
   tenantId,
   bookmark,
   limit,
-}: SearchTaskRunProps): Promise<SearchTaskRunResponse> => {
+}: Omit<LHMethodParamType<"searchTaskRun">, "bookmark"> & WithBookmark & WithTenant): Promise<SearchTaskRunResponse> => {
   const results = await executeRpc("searchTaskRun", {
     taskDefName,
     limit,
