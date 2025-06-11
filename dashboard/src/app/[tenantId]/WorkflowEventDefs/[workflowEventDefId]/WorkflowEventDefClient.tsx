@@ -1,30 +1,39 @@
 "use client"
 
-import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR";
-import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/utils/ui/constants";
-import { Card, CardContent, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card";
-import { Label } from "@littlehorse-enterprises/ui-library/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@littlehorse-enterprises/ui-library/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@littlehorse-enterprises/ui-library/table";
-import { WorkflowEventDef } from "littlehorse-client/proto";
-import { Activity, ArrowLeft, Clock, Hash, Loader2 } from "lucide-react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+import { searchWorkflowEvent } from "@/actions/searchWorkflowEvent"
+import { Pagination } from "@/components/ui/load-more-pagination"
+import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from "@/utils/ui/constants"
+import { Card, CardContent, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@littlehorse-enterprises/ui-library/table"
+import { WorkflowEventDef } from "littlehorse-client/proto"
+import { Activity, ArrowLeft, Clock, Hash, Loader2 } from "lucide-react"
+import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useState } from "react"
+import useSWRInfinite from "swr/infinite"
 
 interface WorkflowEventDefClientProps {
   workflowEventDef: WorkflowEventDef;
 }
 
 export default function WorkflowEventDefClient({ workflowEventDef }: WorkflowEventDefClientProps) {
+  const { tenantId, workflowEventDefId } = useParams<{ tenantId: string; workflowEventDefId: string }>()
   const [limit, setLimit] = useState(SEARCH_LIMIT_DEFAULT);
-  const { tenantId, workflowEventDefId } = useParams<{ tenantId: string; workflowEventDefId: string }>();
 
-  // Fetch related WorkflowEvents
-  const { data: relatedEvents } = useExecuteRPCWithSWR("searchWorkflowEvent", {
-    workflowEventDefId: { name: workflowEventDefId },
-    limit,
-  });
+  const getKey = (pageIndex: number, previousPageData: Awaited<ReturnType<typeof searchWorkflowEvent>> | null) => {
+    if (previousPageData && !previousPageData.bookmark) return null // reached the end
+    return ['searchWorkflowEvent', tenantId, limit, workflowEventDefId, previousPageData?.bookmark] as const;
+  }
+
+  const { data: pages, size, setSize, isLoading: isDataLoading } = useSWRInfinite(getKey, async key => {
+    const [, tenantId, limit, workflowEventDefId, bookmark] = key
+    return searchWorkflowEvent({
+      workflowEventDefId: { name: workflowEventDefId },
+      tenantId,
+      limit,
+      bookmark
+    })
+  })
 
   return (
     <div className="container mx-auto py-6">
@@ -78,59 +87,53 @@ export default function WorkflowEventDefClient({ workflowEventDef }: WorkflowEve
             </CardTitle>
           </CardHeader>
           <CardContent>
-              <>
-                <Table>
-                  <TableHeader>
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>WfRun Id</TableHead>
+                    <TableHead>Number</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {!pages || isDataLoading ? (
                     <TableRow>
-                      <TableHead>WfRun Id</TableHead>
-                      <TableHead>Number</TableHead>
+                      <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                        <Loader2 className="inline animate-spin" />
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                  {!relatedEvents ?(
-                      <TableRow>
-                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
-                          <Loader2 className="inline animate-spin" />
+                  ) : pages.every(page => page.results.length === 0) ? (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                        No WorkflowEvents found for this WorkflowEventDef
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    pages.flatMap(page => page.results).map((workflowEventId, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          {workflowEventId.wfRunId && workflowEventId.wfRunId.id}
+                        </TableCell>
+                        <TableCell>
+                          {workflowEventId.number}
                         </TableCell>
                       </TableRow>
-                    ): relatedEvents.results.length === 0 ?(<TableRow>
-                        <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
-                          No WorkflowEvents found for this WorkflowEventDef
-                        </TableCell>
-                      </TableRow>) :(
-                      relatedEvents.results.map((workflowEventId, index) => (
-                        <TableRow key={index}>
-                          <TableCell>
-                            {workflowEventId.wfRunId && workflowEventId.wfRunId.id}
-                          </TableCell>
-                          <TableCell>
-                            {workflowEventId.number}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-                {/* Limit dropdown */}
-                <div className="mt-4 flex items-center justify-end">
-                  <Label className="mr-2 text-sm">Limit:</Label>
-                  <Select
-                    value={limit.toString()}
-                    onValueChange={value => setLimit(Number(value) as typeof SEARCH_LIMITS[number])}
-                  >
-                    <SelectTrigger className="w-fit">
-                      <SelectValue placeholder="Items per load" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SEARCH_LIMITS.map(limit => (
-                        <SelectItem key={limit} value={limit.toString()}>
-                          {limit}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+
+              {pages && (
+                <Pagination
+                  limit={limit}
+                  onLimitChange={(newLimit) => setLimit(newLimit as typeof SEARCH_LIMITS[number])}
+                  onLoadMore={() => setSize(size + 1)}
+                  isLoading={isDataLoading}
+                  limitOptions={SEARCH_LIMITS}
+                  hasNextBookmark={!!pages[pages.length - 1]?.bookmark}
+                />
+              )}
+            </>
           </CardContent>
         </Card>
       </div>
