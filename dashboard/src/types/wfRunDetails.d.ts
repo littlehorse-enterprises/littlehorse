@@ -6,4 +6,5 @@ export type WfRunDetails = {
   wfRun: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
   nodeRuns: NodeRun[]
   variables: Variable[]
+  taskRuns: TaskRun[]
 } 

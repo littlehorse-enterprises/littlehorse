@@ -1,75 +1,53 @@
 "use client"
 
-import { useState } from "react"
-import { Clock, CheckCircle, XCircle, Loader2, MoreHorizontal } from "lucide-react"
+import { useEffect, useState } from "react"
 import SidebarExpandButton from "@/components/ui/sidebar-expand-button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import ExpandableText from "@/components/ui/expandable-text"
+import VariableDisplay from "@/components/ui/variable-display"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 import { useSelection } from "@/components/context/selection-context"
-import { NodeRun, WfSpec, LHStatus } from "littlehorse-client/proto"
+import { NodeRun, WfSpec, TaskRun, TaskStatus } from "littlehorse-client/proto"
 import { getNodeType } from "@/utils/ui/node-utils"
+import { formatDate, getStatusIcon, getStatusBadge, getTaskStatusIcon, calculateDuration } from "@/utils/ui/status-utils"
 
 type SidebarState = "hidden" | "normal" | "expanded"
 
 interface RightSidebarProps {
-    wfSpec?: WfSpec
-    nodeRuns?: NodeRun[]
+    wfSpec: WfSpec
+    nodeRuns: NodeRun[]
+    taskRuns: TaskRun[]
 }
+
+
 
 export default function RightSidebar({
     wfSpec,
-    nodeRuns = [],
+    nodeRuns,
+    taskRuns,
 }: RightSidebarProps) {
-    const [activeTab, setActiveTab] = useState("runs")
+    const [activeTab, setActiveTab] = useState(nodeRuns.length > 0 ? "runs" : "definition")
     const [sidebarState, setSidebarState] = useState<SidebarState>("normal")
+    const [selectedAttempt, setSelectedAttempt] = useState<string | null>(null)
     const { selectedId } = useSelection()
 
     // Find the selected node data
     const selectedNodeRuns = nodeRuns.filter(nodeRun => nodeRun.nodeName === selectedId)
     const nodeDef = wfSpec?.threadSpecs?.[wfSpec.entrypointThreadName]?.nodes?.[selectedId || ""]
 
-    // Format dates for display - more compact format
-    function formatDate(timestamp: any): string {
-        if (!timestamp) return "In progress"
-        try {
-            const date = timestamp.seconds
-                ? new Date(timestamp.seconds * 1000 + (timestamp.nanos || 0) / 1000000)
-                : new Date(timestamp)
-            return (
-                date.toLocaleTimeString() +
-                " " +
-                date.toLocaleDateString(undefined, { month: "numeric", day: "numeric", year: "2-digit" })
-            )
-        } catch {
-            return "Invalid date"
-        }
-    }
+    // Find TaskRuns that correspond to the selected node's NodeRuns
+    const selectedTaskRuns = taskRuns.filter(taskRun =>
+        selectedNodeRuns.some(nodeRun =>
+            taskRun.source?.taskNode?.nodeRunId?.wfRunId?.id === nodeRun.id?.wfRunId?.id &&
+            taskRun.source?.taskNode?.nodeRunId?.position === nodeRun.id?.position
+        )
+    )
 
-    // Get status icon based on status string
-    function getStatusIcon(status: LHStatus) {
-        if (status === LHStatus.COMPLETED) {
-            return <CheckCircle className="h-3 w-3 text-green-500 mr-1" />
-        } else if (status === LHStatus.ERROR || status === LHStatus.EXCEPTION) {
-            return <XCircle className="h-3 w-3 text-red-500 mr-1" />
-        } else if (status === LHStatus.RUNNING) {
-            return <Loader2 className="h-3 w-3 text-blue-500 animate-spin mr-1" />
-        } else {
-            return <Clock className="h-3 w-3 text-[#656565] mr-1" />
-        }
-    }
 
-    // Get status badge based on status
-    function getStatusBadge(status: LHStatus) {
-        if (status === LHStatus.COMPLETED) {
-            return <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-100">COMPLETED</Badge>
-        } else if (status === LHStatus.ERROR || status === LHStatus.EXCEPTION) {
-            return <Badge variant="destructive" className="bg-red-100 text-red-800 hover:bg-red-100">FAILED</Badge>
-        } else if (status === LHStatus.RUNNING) {
-            return <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100">RUNNING</Badge>
-        } else {
-            return <Badge variant="outline" className="bg-gray-100 text-gray-800 hover:bg-gray-100">HALTED</Badge>
-        }
-    }
+    useEffect(() => {
+        setActiveTab(nodeRuns.length > 0 ? "runs" : "definition")
+    }, [nodeRuns])
 
     // Sidebar width based on state
     const sidebarWidth = sidebarState === "expanded"
@@ -123,25 +101,14 @@ export default function RightSidebar({
                                 <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-100">Task</Badge>
                             )}
                         </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <button className="p-1 rounded-md hover:bg-gray-100">
-                                    <MoreHorizontal className="h-4 w-4 text-gray-500" />
-                                </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>View in Graph</DropdownMenuItem>
-                                <DropdownMenuItem>Copy ID</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+
                     </div>
                 </div>
 
                 {/* Tab Navigation */}
                 <div className="border-b border-gray-200 px-4 pt-2 bg-white sticky top-[73px] z-10">
                     <div className="flex space-x-4">
-                        <button
+                        {nodeRuns.length > 0 && <button
                             onClick={() => setActiveTab("runs")}
                             className={`pb-2 text-xs font-medium border-b-2 transition-colors ${activeTab === "runs"
                                 ? "border-blue-500 text-blue-600"
@@ -149,7 +116,7 @@ export default function RightSidebar({
                                 }`}
                         >
                             Runs
-                        </button>
+                        </button>}
                         <button
                             onClick={() => setActiveTab("definition")}
                             className={`pb-2 text-xs font-medium border-b-2 transition-colors ${activeTab === "definition"
@@ -188,8 +155,8 @@ export default function RightSidebar({
                                                 <span>{formatDate(nodeRun.arrivalTime)}</span>
                                             </div>
                                             <div className="flex justify-between">
-                                                <span className="text-[#656565]">Status:</span>
-                                                <span>{LHStatus[nodeRun.status]}</span>
+                                                <span className="text-[#656565]">Duration:</span>
+                                                <span>{calculateDuration(nodeRun.arrivalTime, nodeRun.endTime)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -200,6 +167,83 @@ export default function RightSidebar({
                                 <div className="text-xs text-gray-500 italic">
                                     No runs found for this node
                                 </div>
+                            )}
+
+                            {/* TaskRun Details Section */}
+                            {selectedTaskRuns.length > 0 && getNodeType(selectedId || "") === "TASK" && (
+                                <>
+                                    <Separator className="my-4" />
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h3 className="text-sm font-medium">TaskRun</h3>
+                                        </div>
+
+                                        <div className="space-y-2 text-xs mb-4">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-[#656565]">Status:</span>
+                                                <div className="flex items-center">
+                                                    {getTaskStatusIcon(selectedTaskRuns[0].status)}
+                                                    <span>{TaskStatus[selectedTaskRuns[0].status]}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-[#656565]">Timeout:</span>
+                                                <span>{selectedTaskRuns[0].timeoutSeconds || "N/A"} s</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-[#656565]">Max Attempts:</span>
+                                                <span>{selectedTaskRuns[0].totalAttempts || "N/A"}</span>
+                                            </div>
+                                        </div>
+
+                                        <h4 className="text-xs font-medium mb-2">Task Attempts ({selectedTaskRuns[0].attempts?.length || 0})</h4>
+
+                                        {/* Task Attempts Accordion */}
+                                        <Accordion type="single" collapsible className="w-full">
+                                            {selectedTaskRuns[0].attempts?.map((attempt, index) => (
+                                                <AccordionItem key={selectedTaskRuns[0].id?.wfRunId?.id + "-" + index} value={selectedTaskRuns[0].id?.wfRunId?.id + "-" + index || ""}>
+                                                    <AccordionTrigger
+                                                        className={`text-xs py-2 ${selectedAttempt === (selectedTaskRuns[0].id?.wfRunId?.id + "-" + index) ? "text-blue-600" : ""}`}
+                                                        onClick={() => setSelectedAttempt(selectedTaskRuns[0].id?.wfRunId?.id + "-" + index || "")}
+                                                    >
+                                                        <div className="flex items-center">
+                                                            {getTaskStatusIcon(attempt.status)}
+                                                            <span>Attempt {index + 1}</span>
+                                                        </div>
+                                                    </AccordionTrigger>
+                                                    <AccordionContent>
+                                                        <div className="space-y-2 text-xs pl-2">
+                                                            <div className="flex justify-between">
+                                                                <span className="text-[#656565]">Started:</span>
+                                                                <span>{formatDate(attempt.startTime)}</span>
+                                                            </div>
+                                                            <div className="flex justify-between">
+                                                                <span className="text-[#656565]">Duration:</span>
+                                                                <span>{calculateDuration(attempt.startTime, attempt.endTime)}</span>
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-[#656565] mb-1">Result:</div>
+                                                                <ExpandableText
+                                                                    text={attempt.error ? JSON.stringify(attempt.error, null, 2) : attempt.exception ? JSON.stringify(attempt.exception, null, 2) : attempt.output ? JSON.stringify(attempt.output, null, 2) : "No result"}
+                                                                    isCode={true}
+                                                                    maxLength={100}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-[#656565] mb-1">Log Output:</div>
+                                                                <ExpandableText
+                                                                    text={attempt.logOutput ? JSON.stringify(attempt.logOutput, null, 2) : "No log output"}
+                                                                    isCode={true}
+                                                                    maxLength={100}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </AccordionContent>
+                                                </AccordionItem>
+                                            ))}
+                                        </Accordion>
+                                    </div>
+                                </>
                             )}
                         </div>
                     )}
@@ -237,6 +281,23 @@ export default function RightSidebar({
                                                     <span className="text-blue-600">{nodeDef.task.taskDefId.name}</span>
                                                 </div>
                                             )}
+                                            {/* Display task variables if available */}
+                                            {nodeDef?.task?.variables && Object.entries(nodeDef.task.variables).map(([key, variable]) => (
+                                                <VariableDisplay
+                                                    key={key}
+                                                    name={key}
+                                                    type={variable.variableName || "UNKNOWN"}
+                                                    value={variable.jsonPath || variable.literalValue || "N/A"}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
+                                        <h4 className="text-xs font-medium mb-2">Output Type</h4>
+                                        <div className="text-xs font-mono">
+                                            <span className="text-purple-600">Object</span>{" "}
+                                            <span className="text-blue-600">result</span>
                                         </div>
                                     </div>
                                 </div>

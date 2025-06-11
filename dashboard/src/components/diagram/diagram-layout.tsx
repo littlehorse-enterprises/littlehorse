@@ -4,12 +4,13 @@ import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar"
 import RightSidebar from "@/components/diagram/right-sidebar"
 import WorkflowDiagram from "@/components/diagram/workflow-diagram"
 import { type Edge, type Node } from "@xyflow/react"
-import { WfSpec, WfRun, NodeRun } from "littlehorse-client/proto"
+import { WfSpec, WfRun, NodeRun, TaskRun } from "littlehorse-client/proto"
 
 interface DiagramLayoutProps {
     wfSpec: WfSpec
     wfRun?: WfRun
     nodeRuns?: NodeRun[]
+    taskRuns?: TaskRun[]
     nodes: Node[]
     edges: Edge[]
 }
@@ -18,6 +19,7 @@ export default function DiagramLayout({
     wfSpec,
     wfRun,
     nodeRuns = [],
+    taskRuns = [],
     nodes,
     edges
 }: DiagramLayoutProps) {
@@ -29,6 +31,7 @@ export default function DiagramLayout({
                 <RightSidebar
                     wfSpec={wfSpec}
                     nodeRuns={nodeRuns}
+                    taskRuns={taskRuns}
                 />
             </div>
         </div>

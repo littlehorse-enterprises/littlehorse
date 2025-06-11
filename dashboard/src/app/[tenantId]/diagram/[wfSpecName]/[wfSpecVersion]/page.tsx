@@ -46,6 +46,7 @@ export default async function DiagramPage({
                 wfSpec={wfSpec}
                 wfRun={wfRunDetails?.wfRun}
                 nodeRuns={wfRunDetails?.nodeRuns}
+                taskRuns={wfRunDetails?.taskRuns}
                 nodes={nodes}
                 edges={edges}
             />

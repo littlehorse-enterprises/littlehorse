@@ -55,8 +55,7 @@ export function MetadataSearchClient() {
                         onLoadMore={() => setSize(size + 1)}
                         isLoading={isDataLoading}
                         limitOptions={SEARCH_LIMITS}
-                        dataLength={data[0]?.results?.length || 0}
-                        defaultLimit={SEARCH_LIMIT_DEFAULT}
+                        hasNextBookmark={!!data[data.length - 1]?.bookmark}
                     />
                 )}
             </Tabs>

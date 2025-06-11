@@ -13,7 +13,6 @@ import {
 } from "@tanstack/react-table"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useSelection } from "@/components/context/selection-context"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -28,7 +27,7 @@ export function DataTable<TData, TValue>({
   idField = "id" as keyof TData,
   onRowClick,
 }: DataTableProps<TData, TValue>) {
-  const { selectedId, setSelectedId } = useSelection()
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const table = useReactTable({

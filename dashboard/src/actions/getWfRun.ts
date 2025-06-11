@@ -33,11 +33,19 @@ export const getWfRunDetails = async ({
   const threadRuns = wfRun.threadRuns.map((threadRun: ThreadRun) =>
     mergeThreadRunsWithNodeRuns(threadRun, nodeRuns)
   )
+
+  const taskRuns = await Promise.all(nodeRuns.filter(nodeRun => nodeRun.task?.taskRunId?.taskGuid).map(async (nodeRun: NodeRun) => {
+      return await client.getTaskRun({
+        wfRunId,
+      taskGuid: nodeRun.task!.taskRunId!.taskGuid,
+    })
+  }))
   
   return { 
     wfRun: { ...wfRun, threadRuns }, 
     nodeRuns, 
-    variables 
+    variables,
+    taskRuns
   }
 }
 

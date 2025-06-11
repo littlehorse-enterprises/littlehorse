@@ -21,7 +21,7 @@ type SidebarState = "hidden" | "normal" | "expanded"
 
 interface LeftSidebarProps {
   wfSpec: WfSpec
-  wfRun?: WfRun
+  wfRun: WfRun | undefined
 }
 
 export default function LeftSidebar({
