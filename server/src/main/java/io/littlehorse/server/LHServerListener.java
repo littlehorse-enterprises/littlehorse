@@ -196,7 +196,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ServerListenerConfig listenerConfig,
             TaskQueueManager taskQueueManager,
             BackendInternalComms internalComms,
-            ExecutorService networkThreadPool,
+            ExecutorService networkThreads,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
@@ -226,7 +226,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
-                .executor(networkThreadPool);
+                .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {
             builder.intercept(interceptor);
