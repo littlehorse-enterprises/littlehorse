@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.Date;
 
 public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteUserTaskRunCommentRequest> {
 

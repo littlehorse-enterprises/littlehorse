@@ -7,7 +7,6 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
-import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
