@@ -429,5 +429,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.common.proto.UpdateCorrelationMarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder();
 
+  /**
+   * <code>.littlehorse.DeleteCorrelatedEventRequest delete_correlated_event = 30;</code>
+   * @return Whether the deleteCorrelatedEvent field is set.
+   */
+  boolean hasDeleteCorrelatedEvent();
+  /**
+   * <code>.littlehorse.DeleteCorrelatedEventRequest delete_correlated_event = 30;</code>
+   * @return The deleteCorrelatedEvent.
+   */
+  io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest getDeleteCorrelatedEvent();
+  /**
+   * <code>.littlehorse.DeleteCorrelatedEventRequest delete_correlated_event = 30;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequestOrBuilder getDeleteCorrelatedEventOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
