@@ -145,7 +145,7 @@ export default function RightSidebar({
                             <h3 className="text-sm font-medium mb-2">NodeRuns</h3>
 
                             {/* NodeRuns List */}
-                            <div className="h-1/3 overflow-y-auto">
+                            <div className="max-h-1/3 h-fit overflow-y-auto">
                                 <div className="space-y-2">
                                     {selectedNodeRuns.map((nodeRun, index) => (
                                         <div
