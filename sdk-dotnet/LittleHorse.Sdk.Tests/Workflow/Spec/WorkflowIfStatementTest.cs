@@ -406,7 +406,7 @@ public class WorkflowIfStatementTest
     }
 
     [Fact]
-    public void WorkflowThread_WithIfElseAndComplete_ShouldCreateACompleteExitNodeAndReturnInTheLastNopNode()
+    public void WorkflowThread_CallingACompleteInDoIf_ShouldCompileSpecWithElseBody()
     {
         var workflowName = "TestWorkflow";
         var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
@@ -418,22 +418,229 @@ public class WorkflowIfStatementTest
                 body =>
                 {
                     body.Complete();
-                    test.Assign(10);
-                    body.Execute("task-a");
+                });
+            ifStatement.DoElse(body => body.Execute("task-b"));
+            
+            test.Assign(10);
+            thread.Execute("task-a");
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+        
+        var compiledWfThread = workflowThread.Compile();
+
+        var threadSpec = new ThreadSpec();
+        var entryPointNode = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "1-nop-NOP"
+                }
+            }
+        };
+
+        var firstNopNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-complete-EXIT",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue { Int = 5 }
+                        },
+                        Comparator = Comparator.GreaterThanEq,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue { Int = 9 }
+                        }
+                    }
+                },
+                new Edge {SinkNodeName = "4-task-b-TASK"}
+            }
+        };
+
+        var lastNopNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "5-task-a-TASK",
+                    VariableMutations = { new VariableMutation
+                    {
+                        LhsName = "test",
+                        Operation = VariableMutationType.Assign,
+                        RhsAssignment = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                Int = 10
+                            }
+                        }
+                    } }
+                }
+            }
+        };
+        
+        var taskANode = new Node
+        {
+            Task = new TaskNode { TaskDefId = new TaskDefId { Name = "task-a"}},
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "6-exit-EXIT"
+                }
+            }
+        };
+        
+        var taskBNode = new Node
+        {
+            Task = new TaskNode { TaskDefId = new TaskDefId { Name = "task-b"}},
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+
+        var threadVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "test",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        threadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entryPointNode);
+        threadSpec.Nodes.Add("1-nop-NOP", firstNopNode);
+        threadSpec.Nodes.Add("2-complete-EXIT", new Node { Exit = new ExitNode() });
+        threadSpec.Nodes.Add("3-nop-NOP", lastNopNode);
+        threadSpec.Nodes.Add("4-task-b-TASK", taskBNode);
+        threadSpec.Nodes.Add("5-task-a-TASK", taskANode);
+        threadSpec.Nodes.Add("6-exit-EXIT", new Node { Exit = new ExitNode() });
+        threadSpec.VariableDefs.Add(threadVarDef);
+        
+        Assert.Equal(threadSpec, compiledWfThread);
+    }
+
+    [Fact]
+    public void WorkflowThread_ExecutingATaskAfterCompleteMethod_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        
+        void MyEntrypoint(WorkflowThread thread)
+        {
+            var test = thread.DeclareInt("test");
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
+                body =>
+                {
+                    body.Complete();
+                    var exception = Assert.Throws<InvalidOperationException>(() =>
+                        body.Execute("task-a"));
+        
+                    Assert.Equal("You cannot add a Node in a given thread after the thread has completed.", exception.Message);
                 });
             ifStatement.DoElse(body => body.Execute("task-b"));
         }
 
+        _ = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+    }
+    
+    [Fact]
+    public void WorkflowThread_MutatingAVariableAfterCompleteMethod_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        
+        void MyEntrypoint(WorkflowThread thread)
+        {
+            var test = thread.DeclareInt("test");
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
+                body =>
+                {
+                    body.Complete();
+                    var exception = Assert.Throws<InvalidOperationException>(() => test.Assign(10));
+        
+                    Assert.Equal("You cannot mutate a variable in a given thread after the thread has completed.", exception.Message);
+                });
+            ifStatement.DoElse(body => body.Execute("task-b"));
+        }
+
+        _ = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+    }
+
+    [Fact] public void WorkflowThread_DeclaringAVariableAfterCompleteMethod_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        
+        void MyEntrypoint(WorkflowThread thread)
+        {
+            var test = thread.DeclareInt("test");
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
+                body =>
+                {
+                    body.Complete();
+                    var exception = Assert.Throws<InvalidOperationException>(() => body.DeclareStr("other-var"));
+        
+                    Assert.Equal("You cannot add a variable in a given thread after the thread has completed.", 
+                        exception.Message);
+                });
+            ifStatement.DoElse(body => body.Execute("task-b"));
+        }
+
+        _ = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+    }
+
+    [Fact]
+    public void WorkflowThread_WithCompleteNodesInDoIfAndDoElse_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        
+        void MyEntrypoint(WorkflowThread thread)
+        {
+            WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
+                body =>
+                {
+                    body.Complete();
+                });
+            ifStatement.DoElseIf(thread.Condition(2, Comparator.LessThan, 4), body =>
+            {
+                body.Execute("task-b");
+                body.Complete();
+            });
+        }
+        
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
         
         var compiledWfThread = workflowThread.Compile();
         
-        var startNopNode = compiledWfThread.Nodes["1-nop-NOP"];
-        var completeNode = compiledWfThread.Nodes["2-complete-EXIT"];
-        var taskNodeB = compiledWfThread.Nodes["3-task-b-TASK"];
-        var lastNopNode = compiledWfThread.Nodes["4-nop-NOP"];
-
-        Assert.Equal(new Node
+        var threadSpec = new ThreadSpec();
+        threadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-nop-NOP" }
+            }
+        });
+        threadSpec.Nodes.Add("1-nop-NOP", new Node
         {
             Nop = new NopNode(),
             OutgoingEdges =
@@ -456,13 +663,51 @@ public class WorkflowIfStatementTest
                 },
                 new Edge
                 {
-                    SinkNodeName = "3-task-b-TASK"
+                    SinkNodeName = "4-task-b-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue { Int = 2 }
+                        },
+                        Comparator = Comparator.LessThan,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue { Int = 4 }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
                 }
             }
-        }, startNopNode);
+        });
         
-        Assert.True(completeNode.OutgoingEdges.Count == 0);
-        Assert.Equal("4-nop-NOP", taskNodeB.OutgoingEdges[0].SinkNodeName);
-        Assert.Equal("5-exit-EXIT", lastNopNode.OutgoingEdges[0].SinkNodeName);
+        threadSpec.Nodes.Add("2-complete-EXIT", new Node { Exit = new ExitNode() });
+        threadSpec.Nodes.Add("3-nop-NOP", new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges = { new Edge
+            {
+                SinkNodeName = "6-exit-EXIT",
+            } }
+        });
+        
+        threadSpec.Nodes.Add("4-task-b-TASK", new Node
+        {
+            Task = new TaskNode { TaskDefId = new TaskDefId { Name = "task-b" }},
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "5-complete-EXIT"
+                }
+            }
+        });
+        threadSpec.Nodes.Add("5-complete-EXIT", new Node { Exit = new ExitNode() });
+        threadSpec.Nodes.Add("6-exit-EXIT", new Node { Exit = new ExitNode() });
+        
+        Assert.Equal(threadSpec, compiledWfThread);
     }
 }

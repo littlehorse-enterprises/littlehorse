@@ -320,7 +320,7 @@ public class WorkflowThreadTest
     }
 
         [Fact]
-    public void WfThread_WithCorrelaatedExternalEvent_ShouldCompile()
+    public void WfThread_WithCorrelatedExternalEvent_ShouldCompile()
     {
         var numberOfExitNodes = 1;
         var numberOfEntrypointNodes = 1;

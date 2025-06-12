@@ -124,9 +124,10 @@ public class WorkflowThread
             feederNode.OutgoingEdges.Add(edge);
             _spec.Nodes[LastNodeName] = feederNode;
         }
-        else
+        else if(type != Node.NodeOneofCase.Nop) 
         {
-            return LastNodeName;
+            throw new InvalidOperationException(
+                "You cannot add a Node in a given thread after the thread has completed.");
         }
 
         Node node = new Node();
@@ -200,6 +201,13 @@ public class WorkflowThread
     public WfRunVariable AddVariable(string name, object typeOrDefaultVal) 
     {
         CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot add a variable in a given thread after the thread has completed.");
+        }
+        
         var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
         _wfRunVariables.Add(wfRunVariable);
         
@@ -654,6 +662,13 @@ public class WorkflowThread
     public void Mutate(WfRunVariable lhs, VariableMutationType type, object rhs)
     {
         CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot mutate a variable in a given thread after the thread has completed.");
+        }
+        
         var mutation = new VariableMutation
         {
             LhsName = lhs.Name,
