@@ -120,10 +120,10 @@ public final class CommandOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ExternalEventNodeTimeoutPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_UpdateCorrelationmarkerPb_descriptor;
+    internal_static_littlehorse_UpdateCorrelationMarkerPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_UpdateCorrelationmarkerPb_fieldAccessorTable;
+      internal_static_littlehorse_UpdateCorrelationMarkerPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_SleepNodeMaturedPb_descriptor;
   static final 
@@ -213,7 +213,7 @@ public final class CommandOuterClass {
       "ed_event\030\034 \001(\0132&.littlehorse.PutCorrelat" +
       "edEventRequestH\000\022K\n\031update_correlation_m" +
       "arker\030\035 \001(\0132&.littlehorse.UpdateCorrelat" +
-      "ionmarkerPbH\000B\t\n\007commandB\r\n\013_command_id\"" +
+      "ionMarkerPbH\000B\t\n\007commandB\r\n\013_command_id\"" +
       "\233\003\n\rScheduleWfRun\0223\n\014scheduled_id\030\001 \001(\0132" +
       "\035.littlehorse.ScheduledWfRunId\022\024\n\014wf_spe" +
       "c_name\030\002 \001(\t\022\032\n\rmajor_version\030\003 \001(\005H\000\210\001\001" +
@@ -321,12 +321,12 @@ public final class CommandOuterClass {
       "task_worker_version\030\004 \001(\tH\000\210\001\001B\026\n\024_task_" +
       "worker_version\"I\n\032ExternalEventNodeTimeo" +
       "utPb\022+\n\013node_run_id\030\001 \001(\0132\026.littlehorse." +
-      "NodeRunId\"\261\002\n\031UpdateCorrelationmarkerPb\022" +
+      "NodeRunId\"\261\002\n\031UpdateCorrelationMarkerPb\022" +
       "\027\n\017correlation_key\030\001 \001(\t\022>\n\025external_eve" +
       "nt_def_id\030\002 \001(\0132\037.littlehorse.ExternalEv" +
       "entDefId\0220\n\020waiting_node_run\030\003 \001(\0132\026.lit" +
       "tlehorse.NodeRunId\022N\n\006action\030\004 \001(\0162>.lit" +
-      "tlehorse.UpdateCorrelationmarkerPb.Corre" +
+      "tlehorse.UpdateCorrelationMarkerPb.Corre" +
       "lationUpdateAction\"9\n\027CorrelationUpdateA" +
       "ction\022\r\n\tCORRELATE\020\000\022\017\n\013UNCORRELATE\020\001\"A\n" +
       "\022SleepNodeMaturedPb\022+\n\013node_run_id\030\001 \001(\013" +
@@ -491,11 +491,11 @@ public final class CommandOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventNodeTimeoutPb_descriptor,
         new java.lang.String[] { "NodeRunId", });
-    internal_static_littlehorse_UpdateCorrelationmarkerPb_descriptor =
+    internal_static_littlehorse_UpdateCorrelationMarkerPb_descriptor =
       getDescriptor().getMessageTypes().get(18);
-    internal_static_littlehorse_UpdateCorrelationmarkerPb_fieldAccessorTable = new
+    internal_static_littlehorse_UpdateCorrelationMarkerPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_UpdateCorrelationmarkerPb_descriptor,
+        internal_static_littlehorse_UpdateCorrelationMarkerPb_descriptor,
         new java.lang.String[] { "CorrelationKey", "ExternalEventDefId", "WaitingNodeRun", "Action", });
     internal_static_littlehorse_SleepNodeMaturedPb_descriptor =
       getDescriptor().getMessageTypes().get(19);

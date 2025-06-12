@@ -55,7 +55,7 @@ public class CommandProcessorTest {
 
     @InjectMocks
     private final CommandProcessor commandProcessor =
-            new CommandProcessor(config, server, metadataCache, taskQueueManager);
+            new CommandProcessor(config, server, metadataCache, taskQueueManager, mock());
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
