@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -62,7 +61,6 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
             throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }
 
-        wfRunModel.advance(new Date());
         return utr.toProto().build();
     }
 

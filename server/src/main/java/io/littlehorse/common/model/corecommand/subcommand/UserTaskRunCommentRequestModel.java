@@ -11,12 +11,10 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTa
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.Date;
 
 public class UserTaskRunCommentRequestModel extends CoreSubCommand<UserTaskRunCommentRequest> {
 
@@ -31,10 +29,6 @@ public class UserTaskRunCommentRequestModel extends CoreSubCommand<UserTaskRunCo
 
     @Override
     public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        if (userTaskRunId.getUserTaskGuid().isBlank()
-                || userTaskRunId.getWfRunId().getId().isBlank()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
-        }
         if (userId.isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided.");
         }

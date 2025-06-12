@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.Date;
 
 public class EditUserTaskRunCommentRequestModel extends CoreSubCommand<EditUserTaskRunCommentRequest> {
 
@@ -34,10 +33,6 @@ public class EditUserTaskRunCommentRequestModel extends CoreSubCommand<EditUserT
     public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         if (userCommentId == 0) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");
-        }
-        if (userTaskRunId.getUserTaskGuid().isBlank()
-                || userTaskRunId.getWfRunId().getId().isBlank()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
         }
         if (userId.isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided.");
@@ -63,7 +58,7 @@ public class EditUserTaskRunCommentRequestModel extends CoreSubCommand<EditUserT
                     "The specified comment cannot be edited because it has already been deleted.");
         }
 
-        UserTaskEventModel ute = utr.editComment(userId, comment, userCommentId);
+        utr.editComment(userId, comment, userCommentId);
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
         if (wfRunModel == null) {

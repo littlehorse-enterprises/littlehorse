@@ -7,8 +7,8 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest;
+import io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -548,7 +548,7 @@ public class UserTaskTest {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
 
                     Assertions.assertThatThrownBy(() -> {
-                                client.editCommentUserTaskRun(EditCommentUserTaskRunRequest.newBuilder()
+                                client.editUserTaskRunComment(EditUserTaskRunCommentRequest.newBuilder()
                                         .setUserTaskRunId(userTaskId)
                                         .setUserId(TEST_USER_ID)
                                         .setComment(editComment)
@@ -584,7 +584,7 @@ public class UserTaskTest {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
 
                     Assertions.assertThatThrownBy(() -> {
-                                client.editCommentUserTaskRun(EditCommentUserTaskRunRequest.newBuilder()
+                                client.editUserTaskRunComment(EditUserTaskRunCommentRequest.newBuilder()
                                         .setUserTaskRunId(userTaskId)
                                         .setUserId(TEST_USER_ID)
                                         .setComment(editComment)
@@ -619,7 +619,7 @@ public class UserTaskTest {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
 
                     Assertions.assertThatThrownBy(() -> {
-                                client.deleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest.newBuilder()
+                                client.deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest.newBuilder()
                                         .setUserTaskRunId(userTaskId)
                                         .setUserCommentId(2)
                                         .build());
@@ -652,7 +652,7 @@ public class UserTaskTest {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
 
                     Assertions.assertThatThrownBy(() -> {
-                                client.deleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest.newBuilder()
+                                client.deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest.newBuilder()
                                         .setUserTaskRunId(userTaskId)
                                         .setUserCommentId(1)
                                         .build());

@@ -645,21 +645,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return epoch_;
   }
 
-  public static final int COMMENT_ID_COUNT_FIELD_NUMBER = 13;
-  private int commentIdCount_ = 0;
-  /**
-   * <pre>
-   * The number of comments that have been made on this UserTaskRun.
-   * </pre>
-   *
-   * <code>int32 comment_id_count = 13;</code>
-   * @return The commentIdCount.
-   */
-  @java.lang.Override
-  public int getCommentIdCount() {
-    return commentIdCount_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -709,9 +694,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (epoch_ != 0) {
       output.writeInt32(12, epoch_);
-    }
-    if (commentIdCount_ != 0) {
-      output.writeInt32(13, commentIdCount_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -768,10 +750,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (epoch_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(12, epoch_);
-    }
-    if (commentIdCount_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(13, commentIdCount_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -830,8 +808,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (getEpoch()
         != other.getEpoch()) return false;
-    if (getCommentIdCount()
-        != other.getCommentIdCount()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -883,8 +859,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     hash = (37 * hash) + EPOCH_FIELD_NUMBER;
     hash = (53 * hash) + getEpoch();
-    hash = (37 * hash) + COMMENT_ID_COUNT_FIELD_NUMBER;
-    hash = (53 * hash) + getCommentIdCount();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1076,7 +1050,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         nodeRunIdBuilder_ = null;
       }
       epoch_ = 0;
-      commentIdCount_ = 0;
       return this;
     }
 
@@ -1165,9 +1138,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       if (((from_bitField0_ & 0x00000400) != 0)) {
         result.epoch_ = epoch_;
-      }
-      if (((from_bitField0_ & 0x00000800) != 0)) {
-        result.commentIdCount_ = commentIdCount_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1278,9 +1248,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (other.getEpoch() != 0) {
         setEpoch(other.getEpoch());
       }
-      if (other.getCommentIdCount() != 0) {
-        setCommentIdCount(other.getCommentIdCount());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1382,11 +1349,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               bitField0_ |= 0x00000400;
               break;
             } // case 96
-            case 104: {
-              commentIdCount_ = input.readInt32();
-              bitField0_ |= 0x00000800;
-              break;
-            } // case 104
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3029,50 +2991,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     public Builder clearEpoch() {
       bitField0_ = (bitField0_ & ~0x00000400);
       epoch_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int commentIdCount_ ;
-    /**
-     * <pre>
-     * The number of comments that have been made on this UserTaskRun.
-     * </pre>
-     *
-     * <code>int32 comment_id_count = 13;</code>
-     * @return The commentIdCount.
-     */
-    @java.lang.Override
-    public int getCommentIdCount() {
-      return commentIdCount_;
-    }
-    /**
-     * <pre>
-     * The number of comments that have been made on this UserTaskRun.
-     * </pre>
-     *
-     * <code>int32 comment_id_count = 13;</code>
-     * @param value The commentIdCount to set.
-     * @return This builder for chaining.
-     */
-    public Builder setCommentIdCount(int value) {
-
-      commentIdCount_ = value;
-      bitField0_ |= 0x00000800;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The number of comments that have been made on this UserTaskRun.
-     * </pre>
-     *
-     * <code>int32 comment_id_count = 13;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearCommentIdCount() {
-      bitField0_ = (bitField0_ & ~0x00000800);
-      commentIdCount_ = 0;
       onChanged();
       return this;
     }

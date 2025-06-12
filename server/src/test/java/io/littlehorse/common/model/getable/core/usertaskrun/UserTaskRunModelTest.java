@@ -113,6 +113,7 @@ public class UserTaskRunModelTest {
         Assertions.assertThat(editEvent.getType()).isEqualByComparingTo(EventCase.COMMENT_EDITED);
         Assertions.assertThat(utr.getEvents().get(1)).isEqualTo(editEvent);
         Assertions.assertThat(utr.getLastEventForComment().get(commentId)).isEqualTo(editEvent);
+        Assertions.assertThat(utr.getLastEventForComment().size()).isEqualTo(1);
     }
 
     @Test
@@ -136,5 +137,41 @@ public class UserTaskRunModelTest {
                 .isEqualTo(commentId);
         Assertions.assertThat(utr.getLastEventForComment().get(commentId).getType())
                 .isEqualByComparingTo(EventCase.COMMENT_DELETED);
+        Assertions.assertThat(utr.getLastEventForComment().size()).isEqualTo(1);
+    }
+
+    @Test
+    void getLastEventForCommentShouldProperlyMaintainKeyAndValueStore() {
+        // Mock the context and command
+        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CommandModel mockCommand = mock(CommandModel.class);
+        when(mockCommand.getTime()).thenReturn(new java.util.Date());
+        when(mockContext.currentCommand()).thenReturn(mockCommand);
+
+        UserTaskRunModel utr = new UserTaskRunModel();
+        utr.setProcessorContext(mockContext);
+
+        UserTaskEventModel addEvent = utr.comment("user1", "hello world");
+        Integer commentId = addEvent.getCommented().getUserCommentId();
+
+        utr.deleteComment(commentId);
+
+        UserTaskEventModel addEventTwo = utr.comment("user2", "hello world");
+        int commentIdTwo = addEventTwo.getCommented().getUserCommentId();
+
+        utr.deleteComment(commentIdTwo);
+
+        UserTaskEventModel addEventThree = utr.comment("user3", "hello world");
+        int commentIdThree = addEventThree.getCommented().getUserCommentId();
+        UserTaskEventModel addEventFour = utr.editComment("user2", "comment", commentIdThree);
+        UserTaskEventModel addEventFive = utr.comment("user", "comment");
+
+        Assertions.assertThat(utr.getLastEventForComment().size()).isEqualTo(4);
+        Assertions.assertThat(utr.getLastEventForComment().get(commentIdTwo).getType())
+                .isEqualTo(EventCase.COMMENT_DELETED);
+        Assertions.assertThat(utr.getLastEventForComment().get(commentId).getType())
+                .isEqualTo(EventCase.COMMENT_DELETED);
+        Assertions.assertThat(utr.getLastEventForComment().get(commentIdThree).getType())
+                .isEqualTo(EventCase.COMMENT_EDITED);
     }
 }

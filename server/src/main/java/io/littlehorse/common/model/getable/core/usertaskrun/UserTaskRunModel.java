@@ -69,7 +69,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
-    private int commentIdCount;
 
     private List<UserTaskEventModel> events = new ArrayList<>();
 
@@ -106,7 +105,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
         this.epoch = 0;
-        this.commentIdCount = 0;
         this.userTaskNode = userTaskNode;
         this.executionContext = processorContext;
         this.processorContext = processorContext;
@@ -138,7 +136,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             out.putResults(result.getKey(), result.getValue().toProto().build());
         }
         out.setEpoch(this.epoch);
-        out.setCommentIdCount(commentIdCount);
 
         return out;
     }
@@ -182,7 +179,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             }
         }
         this.epoch = p.getEpoch();
-        this.commentIdCount = p.getCommentIdCount();
         this.executionContext = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
@@ -337,12 +333,12 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     }
 
     public UserTaskEventModel comment(String userId, String comment) {
-        commentIdCount++;
+        int commentId = lastEventForComment.size() + 1;
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
-                new UTECommentedModel(userId, comment, commentIdCount),
+                new UTECommentedModel(userId, comment, commentId),
                 processorContext.currentCommand().getTime());
         this.events.add(userTaskEventModel);
-        this.lastEventForComment.put(commentIdCount, userTaskEventModel);
+        this.lastEventForComment.put(commentId, userTaskEventModel);
         return userTaskEventModel;
     }
 
