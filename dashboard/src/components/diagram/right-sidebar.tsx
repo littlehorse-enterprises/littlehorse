@@ -11,6 +11,7 @@ import { useSelection } from "@/components/context/selection-context"
 import { NodeRun, WfSpec, TaskRun, TaskStatus } from "littlehorse-client/proto"
 import { getNodeType } from "@/utils/ui/node-utils"
 import { formatDate, getStatusIcon, getStatusBadge, getTaskStatusIcon, calculateDuration } from "@/utils/ui/status-utils"
+import { getVariableValue } from "@/utils/data/variables"
 
 type SidebarState = "hidden" | "normal" | "expanded"
 
@@ -239,7 +240,7 @@ export default function RightSidebar({
                                                             <div>
                                                                 <div className="text-[#656565] mb-1">Result:</div>
                                                                 <ExpandableText
-                                                                    text={attempt.error ? JSON.stringify(attempt.error, null, 2) : attempt.exception ? JSON.stringify(attempt.exception, null, 2) : attempt.output ? JSON.stringify(attempt.output, null, 2) : "No result"}
+                                                                    text={attempt.error ? JSON.stringify(attempt.error, null, 2) : attempt.exception ? JSON.stringify(attempt.exception, null, 2) : attempt.output ? getVariableValue(attempt.output)?.toString() : "No result"}
                                                                     isCode={true}
                                                                     maxLength={100}
                                                                 />
@@ -247,7 +248,7 @@ export default function RightSidebar({
                                                             <div>
                                                                 <div className="text-[#656565] mb-1">Log Output:</div>
                                                                 <ExpandableText
-                                                                    text={attempt.logOutput ? JSON.stringify(attempt.logOutput, null, 2) : "No log output"}
+                                                                    text={attempt.logOutput ? getVariableValue(attempt.logOutput)?.toString() : "No log output"}
                                                                     isCode={true}
                                                                     maxLength={100}
                                                                 />
