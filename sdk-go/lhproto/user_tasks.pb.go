@@ -758,7 +758,7 @@ func (x *CancelUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
 }
 
 // Adds a comment to a UserTaskRun.
-type CommentUserTaskRunRequest struct {
+type UserTaskRunCommentRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -771,8 +771,8 @@ type CommentUserTaskRunRequest struct {
 	Comment string `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
 }
 
-func (x *CommentUserTaskRunRequest) Reset() {
-	*x = CommentUserTaskRunRequest{}
+func (x *UserTaskRunCommentRequest) Reset() {
+	*x = UserTaskRunCommentRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_user_tasks_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -780,13 +780,13 @@ func (x *CommentUserTaskRunRequest) Reset() {
 	}
 }
 
-func (x *CommentUserTaskRunRequest) String() string {
+func (x *UserTaskRunCommentRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommentUserTaskRunRequest) ProtoMessage() {}
+func (*UserTaskRunCommentRequest) ProtoMessage() {}
 
-func (x *CommentUserTaskRunRequest) ProtoReflect() protoreflect.Message {
+func (x *UserTaskRunCommentRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_tasks_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -798,26 +798,26 @@ func (x *CommentUserTaskRunRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommentUserTaskRunRequest.ProtoReflect.Descriptor instead.
-func (*CommentUserTaskRunRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use UserTaskRunCommentRequest.ProtoReflect.Descriptor instead.
+func (*UserTaskRunCommentRequest) Descriptor() ([]byte, []int) {
 	return file_user_tasks_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *CommentUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
+func (x *UserTaskRunCommentRequest) GetUserTaskRunId() *UserTaskRunId {
 	if x != nil {
 		return x.UserTaskRunId
 	}
 	return nil
 }
 
-func (x *CommentUserTaskRunRequest) GetUserId() string {
+func (x *UserTaskRunCommentRequest) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *CommentUserTaskRunRequest) GetComment() string {
+func (x *UserTaskRunCommentRequest) GetComment() string {
 	if x != nil {
 		return x.Comment
 	}
@@ -825,7 +825,7 @@ func (x *CommentUserTaskRunRequest) GetComment() string {
 }
 
 // Edits an existing comment on a UserTaskRun
-type EditCommentUserTaskRunRequest struct {
+type EditUserTaskRunCommentRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -840,8 +840,8 @@ type EditCommentUserTaskRunRequest struct {
 	Comment string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
 }
 
-func (x *EditCommentUserTaskRunRequest) Reset() {
-	*x = EditCommentUserTaskRunRequest{}
+func (x *EditUserTaskRunCommentRequest) Reset() {
+	*x = EditUserTaskRunCommentRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_user_tasks_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -849,13 +849,13 @@ func (x *EditCommentUserTaskRunRequest) Reset() {
 	}
 }
 
-func (x *EditCommentUserTaskRunRequest) String() string {
+func (x *EditUserTaskRunCommentRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*EditCommentUserTaskRunRequest) ProtoMessage() {}
+func (*EditUserTaskRunCommentRequest) ProtoMessage() {}
 
-func (x *EditCommentUserTaskRunRequest) ProtoReflect() protoreflect.Message {
+func (x *EditUserTaskRunCommentRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_tasks_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -867,33 +867,33 @@ func (x *EditCommentUserTaskRunRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use EditCommentUserTaskRunRequest.ProtoReflect.Descriptor instead.
-func (*EditCommentUserTaskRunRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use EditUserTaskRunCommentRequest.ProtoReflect.Descriptor instead.
+func (*EditUserTaskRunCommentRequest) Descriptor() ([]byte, []int) {
 	return file_user_tasks_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *EditCommentUserTaskRunRequest) GetUserCommentId() int32 {
+func (x *EditUserTaskRunCommentRequest) GetUserCommentId() int32 {
 	if x != nil {
 		return x.UserCommentId
 	}
 	return 0
 }
 
-func (x *EditCommentUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
+func (x *EditUserTaskRunCommentRequest) GetUserTaskRunId() *UserTaskRunId {
 	if x != nil {
 		return x.UserTaskRunId
 	}
 	return nil
 }
 
-func (x *EditCommentUserTaskRunRequest) GetUserId() string {
+func (x *EditUserTaskRunCommentRequest) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *EditCommentUserTaskRunRequest) GetComment() string {
+func (x *EditUserTaskRunCommentRequest) GetComment() string {
 	if x != nil {
 		return x.Comment
 	}
@@ -901,7 +901,7 @@ func (x *EditCommentUserTaskRunRequest) GetComment() string {
 }
 
 // Deletes a comment on a UserTaskRun
-type DeleteCommentUserTaskRunRequest struct {
+type DeleteUserTaskRunCommentRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -912,8 +912,8 @@ type DeleteCommentUserTaskRunRequest struct {
 	UserCommentId int32 `protobuf:"varint,2,opt,name=user_comment_id,json=userCommentId,proto3" json:"user_comment_id,omitempty"`
 }
 
-func (x *DeleteCommentUserTaskRunRequest) Reset() {
-	*x = DeleteCommentUserTaskRunRequest{}
+func (x *DeleteUserTaskRunCommentRequest) Reset() {
+	*x = DeleteUserTaskRunCommentRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_user_tasks_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -921,13 +921,13 @@ func (x *DeleteCommentUserTaskRunRequest) Reset() {
 	}
 }
 
-func (x *DeleteCommentUserTaskRunRequest) String() string {
+func (x *DeleteUserTaskRunCommentRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteCommentUserTaskRunRequest) ProtoMessage() {}
+func (*DeleteUserTaskRunCommentRequest) ProtoMessage() {}
 
-func (x *DeleteCommentUserTaskRunRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteUserTaskRunCommentRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_tasks_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -939,19 +939,19 @@ func (x *DeleteCommentUserTaskRunRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteCommentUserTaskRunRequest.ProtoReflect.Descriptor instead.
-func (*DeleteCommentUserTaskRunRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteUserTaskRunCommentRequest.ProtoReflect.Descriptor instead.
+func (*DeleteUserTaskRunCommentRequest) Descriptor() ([]byte, []int) {
 	return file_user_tasks_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *DeleteCommentUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
+func (x *DeleteUserTaskRunCommentRequest) GetUserTaskRunId() *UserTaskRunId {
 	if x != nil {
 		return x.UserTaskRunId
 	}
 	return nil
 }
 
-func (x *DeleteCommentUserTaskRunRequest) GetUserCommentId() int32 {
+func (x *DeleteUserTaskRunCommentRequest) GetUserCommentId() int32 {
 	if x != nil {
 		return x.UserCommentId
 	}
@@ -1713,8 +1713,8 @@ var file_user_tasks_proto_rawDesc = []byte{
 	0x5f, 0x72, 0x75, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e,
 	0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x55, 0x73, 0x65, 0x72,
 	0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x52, 0x0d, 0x75, 0x73, 0x65, 0x72, 0x54,
-	0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x22, 0x93, 0x01, 0x0a, 0x19, 0x43, 0x6f, 0x6d,
-	0x6d, 0x65, 0x6e, 0x74, 0x55, 0x73, 0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x52,
+	0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x22, 0x93, 0x01, 0x0a, 0x19, 0x55, 0x73, 0x65,
+	0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52,
 	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x43, 0x0a, 0x10, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x74,
 	0x61, 0x73, 0x6b, 0x5f, 0x72, 0x75, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x55,
@@ -1723,8 +1723,8 @@ var file_user_tasks_proto_rawDesc = []byte{
 	0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73,
 	0x65, 0x72, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x18,
 	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x22, 0xbf,
-	0x01, 0x0a, 0x1d, 0x45, 0x64, 0x69, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x55, 0x73,
-	0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x01, 0x0a, 0x1d, 0x45, 0x64, 0x69, 0x74, 0x55, 0x73, 0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52,
+	0x75, 0x6e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
 	0x12, 0x26, 0x0a, 0x0f, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
 	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0d, 0x75, 0x73, 0x65, 0x72, 0x43,
 	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x12, 0x43, 0x0a, 0x10, 0x75, 0x73, 0x65, 0x72,
@@ -1735,8 +1735,8 @@ var file_user_tasks_proto_rawDesc = []byte{
 	0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
 	0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
 	0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
-	0x22, 0x8e, 0x01, 0x0a, 0x1f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x65,
-	0x6e, 0x74, 0x55, 0x73, 0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x52, 0x65, 0x71,
+	0x22, 0x8e, 0x01, 0x0a, 0x1f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x54,
+	0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x12, 0x43, 0x0a, 0x10, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x74, 0x61, 0x73,
 	0x6b, 0x5f, 0x72, 0x75, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
 	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x55, 0x73, 0x65,
@@ -1879,9 +1879,9 @@ var file_user_tasks_proto_goTypes = []interface{}{
 	(*CompleteUserTaskRunRequest)(nil),      // 6: littlehorse.CompleteUserTaskRunRequest
 	(*SaveUserTaskRunProgressRequest)(nil),  // 7: littlehorse.SaveUserTaskRunProgressRequest
 	(*CancelUserTaskRunRequest)(nil),        // 8: littlehorse.CancelUserTaskRunRequest
-	(*CommentUserTaskRunRequest)(nil),       // 9: littlehorse.CommentUserTaskRunRequest
-	(*EditCommentUserTaskRunRequest)(nil),   // 10: littlehorse.EditCommentUserTaskRunRequest
-	(*DeleteCommentUserTaskRunRequest)(nil), // 11: littlehorse.DeleteCommentUserTaskRunRequest
+	(*UserTaskRunCommentRequest)(nil),       // 9: littlehorse.UserTaskRunCommentRequest
+	(*EditUserTaskRunCommentRequest)(nil),   // 10: littlehorse.EditUserTaskRunCommentRequest
+	(*DeleteUserTaskRunCommentRequest)(nil), // 11: littlehorse.DeleteUserTaskRunCommentRequest
 	(*UserTaskTriggerReference)(nil),        // 12: littlehorse.UserTaskTriggerReference
 	(*UserTaskEvent)(nil),                   // 13: littlehorse.UserTaskEvent
 	nil,                                     // 14: littlehorse.UserTaskRun.ResultsEntry
@@ -1920,9 +1920,9 @@ var file_user_tasks_proto_depIdxs = []int32{
 	16, // 14: littlehorse.SaveUserTaskRunProgressRequest.results:type_name -> littlehorse.SaveUserTaskRunProgressRequest.ResultsEntry
 	1,  // 15: littlehorse.SaveUserTaskRunProgressRequest.policy:type_name -> littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy
 	26, // 16: littlehorse.CancelUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	26, // 17: littlehorse.CommentUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	26, // 18: littlehorse.EditCommentUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	26, // 19: littlehorse.DeleteCommentUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 17: littlehorse.UserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 18: littlehorse.EditUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 19: littlehorse.DeleteUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
 	28, // 20: littlehorse.UserTaskTriggerReference.node_run_id:type_name -> littlehorse.NodeRunId
 	24, // 21: littlehorse.UserTaskEvent.time:type_name -> google.protobuf.Timestamp
 	18, // 22: littlehorse.UserTaskEvent.task_executed:type_name -> littlehorse.UserTaskEvent.UTETaskExecuted
@@ -2039,7 +2039,7 @@ func file_user_tasks_proto_init() {
 			}
 		}
 		file_user_tasks_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommentUserTaskRunRequest); i {
+			switch v := v.(*UserTaskRunCommentRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2051,7 +2051,7 @@ func file_user_tasks_proto_init() {
 			}
 		}
 		file_user_tasks_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EditCommentUserTaskRunRequest); i {
+			switch v := v.(*EditUserTaskRunCommentRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2063,7 +2063,7 @@ func file_user_tasks_proto_init() {
 			}
 		}
 		file_user_tasks_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteCommentUserTaskRunRequest); i {
+			switch v := v.(*DeleteUserTaskRunCommentRequest); i {
 			case 0:
 				return &v.state
 			case 1:

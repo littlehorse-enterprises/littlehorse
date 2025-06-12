@@ -213,13 +213,13 @@ public final class CommandOuterClass {
       "ed_event\030\034 \001(\0132&.littlehorse.PutCorrelat" +
       "edEventRequestH\000\022K\n\031update_correlation_m" +
       "arker\030\035 \001(\0132&.littlehorse.UpdateCorrelat" +
-      "ionmarkerPbH\000\022G\n\025comment_user_task_run\030\036" +
-      " \001(\0132&.littlehorse.CommentUserTaskRunReq" +
-      "uestH\000\022P\n\032edit_comment_user_task_run\030\037 \001" +
-      "(\0132*.littlehorse.EditCommentUserTaskRunR" +
-      "equestH\000\022T\n\034delete_comment_user_task_run" +
-      "\030  \001(\0132,.littlehorse.DeleteCommentUserTa" +
-      "skRunRequestH\000B\t\n\007commandB\r\n\013_command_id" +
+      "ionmarkerPbH\000\022G\n\025user_task_run_comment\030\036" +
+      " \001(\0132&.littlehorse.UserTaskRunCommentReq" +
+      "uestH\000\022P\n\032edit_user_task_run_comment\030\037 \001" +
+      "(\0132*.littlehorse.EditUserTaskRunCommentR" +
+      "equestH\000\022T\n\034delete_user_task_run_comment" +
+      "\030  \001(\0132,.littlehorse.DeleteUserTaskRunCo" +
+      "mmentRequestH\000B\t\n\007commandB\r\n\013_command_id" +
       "\"\233\003\n\rScheduleWfRun\0223\n\014scheduled_id\030\001 \001(\013" +
       "2\035.littlehorse.ScheduledWfRunId\022\024\n\014wf_sp" +
       "ec_name\030\002 \001(\t\022\032\n\rmajor_version\030\003 \001(\005H\000\210\001" +
@@ -376,7 +376,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_Command_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Command_descriptor,
-        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "ScheduleWfRun", "ScheduleWfRunRequest", "DeleteScheduledWfRun", "SaveUserTaskRunProgress", "PutCorrelatedEvent", "UpdateCorrelationMarker", "CommentUserTaskRun", "EditCommentUserTaskRun", "DeleteCommentUserTaskRun", "Command", "CommandId", });
+        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "ScheduleWfRun", "ScheduleWfRunRequest", "DeleteScheduledWfRun", "SaveUserTaskRunProgress", "PutCorrelatedEvent", "UpdateCorrelationMarker", "UserTaskRunComment", "EditUserTaskRunComment", "DeleteUserTaskRunComment", "Command", "CommandId", });
     internal_static_littlehorse_ScheduleWfRun_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_ScheduleWfRun_fieldAccessorTable = new

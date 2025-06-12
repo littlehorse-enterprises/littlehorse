@@ -321,7 +321,7 @@ export interface CancelUserTaskRunRequest {
 }
 
 /** Adds a comment to a UserTaskRun. */
-export interface CommentUserTaskRunRequest {
+export interface UserTaskRunCommentRequest {
   /** The id of `UserTaskRun` to save. */
   userTaskRunId:
     | UserTaskRunId
@@ -333,7 +333,7 @@ export interface CommentUserTaskRunRequest {
 }
 
 /** Edits an existing comment on a UserTaskRun */
-export interface EditCommentUserTaskRunRequest {
+export interface EditUserTaskRunCommentRequest {
   /** This is the unique identifier for a comment */
   userCommentId: number;
   /** The id of `UserTaskRun` */
@@ -347,7 +347,7 @@ export interface EditCommentUserTaskRunRequest {
 }
 
 /** Deletes a comment on a UserTaskRun */
-export interface DeleteCommentUserTaskRunRequest {
+export interface DeleteUserTaskRunCommentRequest {
   /** The id of `UserTaskRun` */
   userTaskRunId:
     | UserTaskRunId
@@ -1341,12 +1341,12 @@ export const CancelUserTaskRunRequest = {
   },
 };
 
-function createBaseCommentUserTaskRunRequest(): CommentUserTaskRunRequest {
+function createBaseUserTaskRunCommentRequest(): UserTaskRunCommentRequest {
   return { userTaskRunId: undefined, userId: "", comment: "" };
 }
 
-export const CommentUserTaskRunRequest = {
-  encode(message: CommentUserTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UserTaskRunCommentRequest = {
+  encode(message: UserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userTaskRunId !== undefined) {
       UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
     }
@@ -1359,10 +1359,10 @@ export const CommentUserTaskRunRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CommentUserTaskRunRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskRunCommentRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCommentUserTaskRunRequest();
+    const message = createBaseUserTaskRunCommentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1396,11 +1396,11 @@ export const CommentUserTaskRunRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<CommentUserTaskRunRequest>): CommentUserTaskRunRequest {
-    return CommentUserTaskRunRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<UserTaskRunCommentRequest>): UserTaskRunCommentRequest {
+    return UserTaskRunCommentRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<CommentUserTaskRunRequest>): CommentUserTaskRunRequest {
-    const message = createBaseCommentUserTaskRunRequest();
+  fromPartial(object: DeepPartial<UserTaskRunCommentRequest>): UserTaskRunCommentRequest {
+    const message = createBaseUserTaskRunCommentRequest();
     message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
       ? UserTaskRunId.fromPartial(object.userTaskRunId)
       : undefined;
@@ -1410,12 +1410,12 @@ export const CommentUserTaskRunRequest = {
   },
 };
 
-function createBaseEditCommentUserTaskRunRequest(): EditCommentUserTaskRunRequest {
+function createBaseEditUserTaskRunCommentRequest(): EditUserTaskRunCommentRequest {
   return { userCommentId: 0, userTaskRunId: undefined, userId: "", comment: "" };
 }
 
-export const EditCommentUserTaskRunRequest = {
-  encode(message: EditCommentUserTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const EditUserTaskRunCommentRequest = {
+  encode(message: EditUserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userCommentId !== 0) {
       writer.uint32(8).int32(message.userCommentId);
     }
@@ -1431,10 +1431,10 @@ export const EditCommentUserTaskRunRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): EditCommentUserTaskRunRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): EditUserTaskRunCommentRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEditCommentUserTaskRunRequest();
+    const message = createBaseEditUserTaskRunCommentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1475,11 +1475,11 @@ export const EditCommentUserTaskRunRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<EditCommentUserTaskRunRequest>): EditCommentUserTaskRunRequest {
-    return EditCommentUserTaskRunRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<EditUserTaskRunCommentRequest>): EditUserTaskRunCommentRequest {
+    return EditUserTaskRunCommentRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<EditCommentUserTaskRunRequest>): EditCommentUserTaskRunRequest {
-    const message = createBaseEditCommentUserTaskRunRequest();
+  fromPartial(object: DeepPartial<EditUserTaskRunCommentRequest>): EditUserTaskRunCommentRequest {
+    const message = createBaseEditUserTaskRunCommentRequest();
     message.userCommentId = object.userCommentId ?? 0;
     message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
       ? UserTaskRunId.fromPartial(object.userTaskRunId)
@@ -1490,12 +1490,12 @@ export const EditCommentUserTaskRunRequest = {
   },
 };
 
-function createBaseDeleteCommentUserTaskRunRequest(): DeleteCommentUserTaskRunRequest {
+function createBaseDeleteUserTaskRunCommentRequest(): DeleteUserTaskRunCommentRequest {
   return { userTaskRunId: undefined, userCommentId: 0 };
 }
 
-export const DeleteCommentUserTaskRunRequest = {
-  encode(message: DeleteCommentUserTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DeleteUserTaskRunCommentRequest = {
+  encode(message: DeleteUserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userTaskRunId !== undefined) {
       UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
     }
@@ -1505,10 +1505,10 @@ export const DeleteCommentUserTaskRunRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteCommentUserTaskRunRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteUserTaskRunCommentRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDeleteCommentUserTaskRunRequest();
+    const message = createBaseDeleteUserTaskRunCommentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1535,11 +1535,11 @@ export const DeleteCommentUserTaskRunRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<DeleteCommentUserTaskRunRequest>): DeleteCommentUserTaskRunRequest {
-    return DeleteCommentUserTaskRunRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<DeleteUserTaskRunCommentRequest>): DeleteUserTaskRunCommentRequest {
+    return DeleteUserTaskRunCommentRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<DeleteCommentUserTaskRunRequest>): DeleteCommentUserTaskRunRequest {
-    const message = createBaseDeleteCommentUserTaskRunRequest();
+  fromPartial(object: DeepPartial<DeleteUserTaskRunCommentRequest>): DeleteUserTaskRunCommentRequest {
+    const message = createBaseDeleteUserTaskRunCommentRequest();
     message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
       ? UserTaskRunId.fromPartial(object.userTaskRunId)
       : undefined;

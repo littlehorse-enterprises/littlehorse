@@ -203,19 +203,19 @@ public class WfRunVerifier extends AbstractVerifier {
     }
 
     public WfRunVerifier thenCommentUserTaskRun(int threadRunNumber, int nodeRunNumber, String userId, String comment) {
-        steps.add(new CommentUserTaskRun(steps.size() + 1, threadRunNumber, nodeRunNumber, userId, comment));
+        steps.add(new UserTaskRunComment(steps.size() + 1, threadRunNumber, nodeRunNumber, userId, comment));
         return this;
     }
 
     public WfRunVerifier thenDeleteCommentUserTaskRun(int threadNumber, int nodeRunNumber, int commentId) {
-        steps.add(new DeleteCommentUserTaskRun(steps.size() + 1, threadNumber, nodeRunNumber, commentId));
+        steps.add(new DeleteUserTaskRunComment(steps.size() + 1, threadNumber, nodeRunNumber, commentId));
         return this;
     }
 
     public WfRunVerifier thenEditComment(
             int threadNumber, int nodeRunNumber, String userId, String comment, int commentId) {
         steps.add(
-                new EditCommentUserTaskRun(steps.size() + 1, threadNumber, nodeRunNumber, userId, comment, commentId));
+                new EditUserTaskRunComment(steps.size() + 1, threadNumber, nodeRunNumber, userId, comment, commentId));
         return this;
     }
 }

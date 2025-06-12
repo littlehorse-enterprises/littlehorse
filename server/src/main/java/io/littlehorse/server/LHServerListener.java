@@ -535,29 +535,29 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
-    public void commentUserTaskRun(CommentUserTaskRunRequest req, StreamObserver<UserTaskEvent> ctx) {
-        CommentUserTaskRunRequestModel reqModel =
-                LHSerializable.fromProto(req, CommentUserTaskRunRequestModel.class, requestContext());
+    public void userTaskRunComment(UserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        UserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, UserTaskRunCommentRequestModel.class, requestContext());
 
-        processCommand(new CommandModel(reqModel), ctx, UserTaskEvent.class, true);
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class, true);
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
-    public void deleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest req, StreamObserver<Empty> ctx) {
-        DeleteCommentUserTaskRunRequestModel reqModel =
-                LHSerializable.fromProto(req, DeleteCommentUserTaskRunRequestModel.class, requestContext());
+    public void deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        DeleteUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteUserTaskRunCommentRequestModel.class, requestContext());
 
-        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class, true);
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
-    public void editCommentUserTaskRun(EditCommentUserTaskRunRequest req, StreamObserver<UserTaskEvent> ctx) {
-        EditCommentUserTaskRunRequestModel reqModel =
-                LHSerializable.fromProto(req, EditCommentUserTaskRunRequestModel.class, requestContext());
+    public void editUserTaskRunComment(EditUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        EditUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, EditUserTaskRunCommentRequestModel.class, requestContext());
 
-        processCommand(new CommandModel(reqModel), ctx, UserTaskEvent.class, true);
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class, true);
     }
 
     @Override

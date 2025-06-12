@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface DeleteCommentUserTaskRunRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.DeleteCommentUserTaskRunRequest)
+public interface DeleteUserTaskRunCommentRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.DeleteUserTaskRunCommentRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

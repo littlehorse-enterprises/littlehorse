@@ -3,13 +3,13 @@ package io.littlehorse.test.internal.step;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.test.internal.TestExecutionContext;
 
-public class CommentUserTaskRun extends AbstractStep {
+public class UserTaskRunComment extends AbstractStep {
     private final int threadRunNumber;
     private final int nodeRunNumber;
     private final String userId;
     private final String comment;
 
-    public CommentUserTaskRun(int id, int threadRunNumber, int nodeRunNumber, String userId, String comment) {
+    public UserTaskRunComment(int id, int threadRunNumber, int nodeRunNumber, String userId, String comment) {
         super(id);
         this.threadRunNumber = threadRunNumber;
         this.nodeRunNumber = nodeRunNumber;
@@ -31,7 +31,7 @@ public class CommentUserTaskRun extends AbstractStep {
                     .setWfRunId(context.getWfRunId())
                     .setUserTaskGuid(userTaskGuid)
                     .build();
-            lhClient.commentUserTaskRun(CommentUserTaskRunRequest.newBuilder()
+            lhClient.userTaskRunComment(UserTaskRunCommentRequest.newBuilder()
                     .setUserTaskRunId(userTaskId)
                     .setUserId(userId)
                     .setComment(comment)

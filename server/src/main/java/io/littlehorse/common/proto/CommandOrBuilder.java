@@ -430,49 +430,49 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder();
 
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
-   * @return Whether the commentUserTaskRun field is set.
+   * <code>.littlehorse.UserTaskRunCommentRequest user_task_run_comment = 30;</code>
+   * @return Whether the userTaskRunComment field is set.
    */
-  boolean hasCommentUserTaskRun();
+  boolean hasUserTaskRunComment();
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
-   * @return The commentUserTaskRun.
+   * <code>.littlehorse.UserTaskRunCommentRequest user_task_run_comment = 30;</code>
+   * @return The userTaskRunComment.
    */
-  io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest getCommentUserTaskRun();
+  io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest getUserTaskRunComment();
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 30;</code>
+   * <code>.littlehorse.UserTaskRunCommentRequest user_task_run_comment = 30;</code>
    */
-  io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder getCommentUserTaskRunOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskRunCommentRequestOrBuilder getUserTaskRunCommentOrBuilder();
 
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
-   * @return Whether the editCommentUserTaskRun field is set.
+   * <code>.littlehorse.EditUserTaskRunCommentRequest edit_user_task_run_comment = 31;</code>
+   * @return Whether the editUserTaskRunComment field is set.
    */
-  boolean hasEditCommentUserTaskRun();
+  boolean hasEditUserTaskRunComment();
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
-   * @return The editCommentUserTaskRun.
+   * <code>.littlehorse.EditUserTaskRunCommentRequest edit_user_task_run_comment = 31;</code>
+   * @return The editUserTaskRunComment.
    */
-  io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getEditCommentUserTaskRun();
+  io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest getEditUserTaskRunComment();
   /**
-   * <code>.littlehorse.EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;</code>
+   * <code>.littlehorse.EditUserTaskRunCommentRequest edit_user_task_run_comment = 31;</code>
    */
-  io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder getEditCommentUserTaskRunOrBuilder();
+  io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequestOrBuilder getEditUserTaskRunCommentOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
-   * @return Whether the deleteCommentUserTaskRun field is set.
+   * <code>.littlehorse.DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 32;</code>
+   * @return Whether the deleteUserTaskRunComment field is set.
    */
-  boolean hasDeleteCommentUserTaskRun();
+  boolean hasDeleteUserTaskRunComment();
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
-   * @return The deleteCommentUserTaskRun.
+   * <code>.littlehorse.DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 32;</code>
+   * @return The deleteUserTaskRunComment.
    */
-  io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDeleteCommentUserTaskRun();
+  io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest getDeleteUserTaskRunComment();
   /**
-   * <code>.littlehorse.DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;</code>
+   * <code>.littlehorse.DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 32;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder getDeleteCommentUserTaskRunOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequestOrBuilder getDeleteUserTaskRunCommentOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -7,21 +8,20 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
-import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 
-public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTaskRunRequest> {
+public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteUserTaskRunCommentRequest> {
 
+    Integer userCommentId;
     private UserTaskRunIdModel userTaskRunId;
-    private String userId;
-    private String comment;
 
     @Override
     public boolean hasResponse() {
@@ -29,16 +29,14 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
     }
 
     @Override
-    public UserTaskEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+
+        if (userCommentId == 0) {
+            throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");
+        }
         if (userTaskRunId.getUserTaskGuid().isBlank()
                 || userTaskRunId.getWfRunId().getId().isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
-        }
-        if (userId.isBlank()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided.");
-        }
-        if (comment.isBlank()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The comment must be provided.");
         }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
@@ -47,7 +45,17 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }
 
-        UserTaskEventModel userTaskEventModel = utr.comment(userId, comment);
+        if (!utr.getLastEventForComment().containsKey(userCommentId)) {
+            throw new LHApiException(Status.NOT_FOUND, "The user Comment does not exist");
+        }
+
+        if (utr.getLastEventForComment().get(userCommentId).getType().equals(UserTaskEvent.EventCase.COMMENT_DELETED)) {
+            throw new LHApiException(
+                    Status.FAILED_PRECONDITION,
+                    "The specified comment cannot be deleted because it has already been deleted.");
+        }
+
+        utr.deleteComment(userCommentId);
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
         if (wfRunModel == null) {
@@ -55,8 +63,7 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
         }
 
         wfRunModel.advance(new Date());
-
-        return userTaskEventModel.toProto().build();
+        return utr.toProto().build();
     }
 
     @Override
@@ -65,24 +72,22 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
     }
 
     @Override
-    public CommentUserTaskRunRequest.Builder toProto() {
-        CommentUserTaskRunRequest.Builder out = CommentUserTaskRunRequest.newBuilder();
-        out.setUserTaskRunId(userTaskRunId.toProto());
-        out.setUserId(userId);
-        out.setComment(comment);
+    public DeleteUserTaskRunCommentRequest.Builder toProto() {
+        DeleteUserTaskRunCommentRequest.Builder out = DeleteUserTaskRunCommentRequest.newBuilder();
+        if (userCommentId != null) out.setUserCommentId(userCommentId);
+        if (userTaskRunId != null) out.setUserTaskRunId(userTaskRunId.toProto());
         return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        CommentUserTaskRunRequest p = (CommentUserTaskRunRequest) proto;
+        DeleteUserTaskRunCommentRequest p = (DeleteUserTaskRunCommentRequest) proto;
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
-        userId = p.getUserId();
-        comment = p.getComment();
+        userCommentId = p.getUserCommentId();
     }
 
     @Override
-    public Class<CommentUserTaskRunRequest> getProtoBaseClass() {
-        return CommentUserTaskRunRequest.class;
+    public Class<DeleteUserTaskRunCommentRequest> getProtoBaseClass() {
+        return DeleteUserTaskRunCommentRequest.class;
     }
 }

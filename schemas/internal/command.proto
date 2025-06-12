@@ -48,9 +48,9 @@ message Command {
         SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;
         PutCorrelatedEventRequest put_correlated_event = 28;
         UpdateCorrelationmarkerPb update_correlation_marker = 29;
-        CommentUserTaskRunRequest comment_user_task_run = 30;
-        EditCommentUserTaskRunRequest edit_comment_user_task_run = 31;
-        DeleteCommentUserTaskRunRequest delete_comment_user_task_run = 32;
+        UserTaskRunCommentRequest user_task_run_comment = 30;
+        EditUserTaskRunCommentRequest edit_user_task_run_comment = 31;
+        DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 32;
     }
 }
 

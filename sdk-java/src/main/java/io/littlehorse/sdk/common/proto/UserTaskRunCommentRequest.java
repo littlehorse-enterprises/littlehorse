@@ -5,21 +5,21 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Edits an existing comment on a UserTaskRun
+ * Adds a comment to a UserTaskRun.
  * </pre>
  *
- * Protobuf type {@code littlehorse.EditCommentUserTaskRunRequest}
+ * Protobuf type {@code littlehorse.UserTaskRunCommentRequest}
  */
-public final class EditCommentUserTaskRunRequest extends
+public final class UserTaskRunCommentRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.EditCommentUserTaskRunRequest)
-    EditCommentUserTaskRunRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskRunCommentRequest)
+    UserTaskRunCommentRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use EditCommentUserTaskRunRequest.newBuilder() to construct.
-  private EditCommentUserTaskRunRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UserTaskRunCommentRequest.newBuilder() to construct.
+  private UserTaskRunCommentRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private EditCommentUserTaskRunRequest() {
+  private UserTaskRunCommentRequest() {
     userId_ = "";
     comment_ = "";
   }
@@ -28,45 +28,30 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new EditCommentUserTaskRunRequest();
+    return new UserTaskRunCommentRequest();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_EditCommentUserTaskRunRequest_descriptor;
+    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskRunCommentRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_EditCommentUserTaskRunRequest_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskRunCommentRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.class, io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.Builder.class);
+            io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest.class, io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest.Builder.class);
   }
 
-  public static final int USER_COMMENT_ID_FIELD_NUMBER = 1;
-  private int userCommentId_ = 0;
-  /**
-   * <pre>
-   * This is the unique identifier for a comment
-   * </pre>
-   *
-   * <code>int32 user_comment_id = 1;</code>
-   * @return The userCommentId.
-   */
-  @java.lang.Override
-  public int getUserCommentId() {
-    return userCommentId_;
-  }
-
-  public static final int USER_TASK_RUN_ID_FIELD_NUMBER = 2;
+  public static final int USER_TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.UserTaskRunId userTaskRunId_;
   /**
    * <pre>
-   * The id of `UserTaskRun`
+   * The id of `UserTaskRun` to save.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
   @java.lang.Override
@@ -75,10 +60,10 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of `UserTaskRun`
+   * The id of `UserTaskRun` to save.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
   @java.lang.Override
@@ -87,17 +72,17 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of `UserTaskRun`
+   * The id of `UserTaskRun` to save.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder() {
     return userTaskRunId_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance() : userTaskRunId_;
   }
 
-  public static final int USER_ID_FIELD_NUMBER = 3;
+  public static final int USER_ID_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
@@ -105,7 +90,7 @@ private static final long serialVersionUID = 0L;
    * The author of the comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string user_id = 3;</code>
+   * <code>string user_id = 2;</code>
    * @return The userId.
    */
   @java.lang.Override
@@ -126,7 +111,7 @@ private static final long serialVersionUID = 0L;
    * The author of the comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string user_id = 3;</code>
+   * <code>string user_id = 2;</code>
    * @return The bytes for userId.
    */
   @java.lang.Override
@@ -144,7 +129,7 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int COMMENT_FIELD_NUMBER = 4;
+  public static final int COMMENT_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
   private volatile java.lang.Object comment_ = "";
   /**
@@ -152,7 +137,7 @@ private static final long serialVersionUID = 0L;
    * The comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string comment = 4;</code>
+   * <code>string comment = 3;</code>
    * @return The comment.
    */
   @java.lang.Override
@@ -173,7 +158,7 @@ private static final long serialVersionUID = 0L;
    * The comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string comment = 4;</code>
+   * <code>string comment = 3;</code>
    * @return The bytes for comment.
    */
   @java.lang.Override
@@ -205,17 +190,14 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (userCommentId_ != 0) {
-      output.writeInt32(1, userCommentId_);
-    }
     if (userTaskRunId_ != null) {
-      output.writeMessage(2, getUserTaskRunId());
+      output.writeMessage(1, getUserTaskRunId());
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userId_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(comment_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, comment_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, comment_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -226,19 +208,15 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (userCommentId_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, userCommentId_);
-    }
     if (userTaskRunId_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getUserTaskRunId());
+        .computeMessageSize(1, getUserTaskRunId());
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userId_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(comment_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, comment_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, comment_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -250,13 +228,11 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest other = (io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) obj;
+    io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest other = (io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest) obj;
 
-    if (getUserCommentId()
-        != other.getUserCommentId()) return false;
     if (hasUserTaskRunId() != other.hasUserTaskRunId()) return false;
     if (hasUserTaskRunId()) {
       if (!getUserTaskRunId()
@@ -277,8 +253,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + USER_COMMENT_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getUserCommentId();
     if (hasUserTaskRunId()) {
       hash = (37 * hash) + USER_TASK_RUN_ID_FIELD_NUMBER;
       hash = (53 * hash) + getUserTaskRunId().hashCode();
@@ -292,44 +266,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -337,26 +311,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -369,7 +343,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -386,29 +360,29 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Edits an existing comment on a UserTaskRun
+   * Adds a comment to a UserTaskRun.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.EditCommentUserTaskRunRequest}
+   * Protobuf type {@code littlehorse.UserTaskRunCommentRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.EditCommentUserTaskRunRequest)
-      io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskRunCommentRequest)
+      io.littlehorse.sdk.common.proto.UserTaskRunCommentRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_EditCommentUserTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskRunCommentRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_EditCommentUserTaskRunRequest_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskRunCommentRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.class, io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest.class, io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest.newBuilder()
     private Builder() {
 
     }
@@ -422,7 +396,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      userCommentId_ = 0;
       userTaskRunId_ = null;
       if (userTaskRunIdBuilder_ != null) {
         userTaskRunIdBuilder_.dispose();
@@ -436,17 +409,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_EditCommentUserTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskRunCommentRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest build() {
-      io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest result = buildPartial();
+    public io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest build() {
+      io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -454,27 +427,24 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest buildPartial() {
-      io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest result = new io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest(this);
+    public io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest result = new io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.userCommentId_ = userCommentId_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.userTaskRunId_ = userTaskRunIdBuilder_ == null
             ? userTaskRunId_
             : userTaskRunIdBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.userId_ = userId_;
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.comment_ = comment_;
       }
     }
@@ -513,30 +483,27 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest other) {
-      if (other == io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest.getDefaultInstance()) return this;
-      if (other.getUserCommentId() != 0) {
-        setUserCommentId(other.getUserCommentId());
-      }
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest.getDefaultInstance()) return this;
       if (other.hasUserTaskRunId()) {
         mergeUserTaskRunId(other.getUserTaskRunId());
       }
       if (!other.getUserId().isEmpty()) {
         userId_ = other.userId_;
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
       }
       if (!other.getComment().isEmpty()) {
         comment_ = other.comment_;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -565,28 +532,23 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              userCommentId_ = input.readInt32();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 8
-            case 18: {
+            case 10: {
               input.readMessage(
                   getUserTaskRunIdFieldBuilder().getBuilder(),
                   extensionRegistry);
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 10
+            case 18: {
+              userId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000002;
               break;
             } // case 18
             case 26: {
-              userId_ = input.readStringRequireUtf8();
+              comment_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000004;
               break;
             } // case 26
-            case 34: {
-              comment_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -604,70 +566,26 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int userCommentId_ ;
-    /**
-     * <pre>
-     * This is the unique identifier for a comment
-     * </pre>
-     *
-     * <code>int32 user_comment_id = 1;</code>
-     * @return The userCommentId.
-     */
-    @java.lang.Override
-    public int getUserCommentId() {
-      return userCommentId_;
-    }
-    /**
-     * <pre>
-     * This is the unique identifier for a comment
-     * </pre>
-     *
-     * <code>int32 user_comment_id = 1;</code>
-     * @param value The userCommentId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setUserCommentId(int value) {
-
-      userCommentId_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * This is the unique identifier for a comment
-     * </pre>
-     *
-     * <code>int32 user_comment_id = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearUserCommentId() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      userCommentId_ = 0;
-      onChanged();
-      return this;
-    }
-
     private io.littlehorse.sdk.common.proto.UserTaskRunId userTaskRunId_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> userTaskRunIdBuilder_;
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return Whether the userTaskRunId field is set.
      */
     public boolean hasUserTaskRunId() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      * @return The userTaskRunId.
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId() {
@@ -679,10 +597,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
       if (userTaskRunIdBuilder_ == null) {
@@ -693,16 +611,16 @@ private static final long serialVersionUID = 0L;
       } else {
         userTaskRunIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder setUserTaskRunId(
         io.littlehorse.sdk.common.proto.UserTaskRunId.Builder builderForValue) {
@@ -711,20 +629,20 @@ private static final long serialVersionUID = 0L;
       } else {
         userTaskRunIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder mergeUserTaskRunId(io.littlehorse.sdk.common.proto.UserTaskRunId value) {
       if (userTaskRunIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
+        if (((bitField0_ & 0x00000001) != 0) &&
           userTaskRunId_ != null &&
           userTaskRunId_ != io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance()) {
           getUserTaskRunIdBuilder().mergeFrom(value);
@@ -734,19 +652,19 @@ private static final long serialVersionUID = 0L;
       } else {
         userTaskRunIdBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public Builder clearUserTaskRunId() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000001);
       userTaskRunId_ = null;
       if (userTaskRunIdBuilder_ != null) {
         userTaskRunIdBuilder_.dispose();
@@ -757,22 +675,22 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunId.Builder getUserTaskRunIdBuilder() {
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return getUserTaskRunIdFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder() {
       if (userTaskRunIdBuilder_ != null) {
@@ -784,10 +702,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The id of `UserTaskRun`
+     * The id of `UserTaskRun` to save.
      * </pre>
      *
-     * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+     * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> 
@@ -809,7 +727,7 @@ private static final long serialVersionUID = 0L;
      * The author of the comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string user_id = 3;</code>
+     * <code>string user_id = 2;</code>
      * @return The userId.
      */
     public java.lang.String getUserId() {
@@ -829,7 +747,7 @@ private static final long serialVersionUID = 0L;
      * The author of the comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string user_id = 3;</code>
+     * <code>string user_id = 2;</code>
      * @return The bytes for userId.
      */
     public com.google.protobuf.ByteString
@@ -850,7 +768,7 @@ private static final long serialVersionUID = 0L;
      * The author of the comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string user_id = 3;</code>
+     * <code>string user_id = 2;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
      */
@@ -858,7 +776,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       userId_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -867,12 +785,12 @@ private static final long serialVersionUID = 0L;
      * The author of the comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string user_id = 3;</code>
+     * <code>string user_id = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearUserId() {
       userId_ = getDefaultInstance().getUserId();
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -881,7 +799,7 @@ private static final long serialVersionUID = 0L;
      * The author of the comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string user_id = 3;</code>
+     * <code>string user_id = 2;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.
      */
@@ -890,7 +808,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       userId_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -901,7 +819,7 @@ private static final long serialVersionUID = 0L;
      * The comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string comment = 4;</code>
+     * <code>string comment = 3;</code>
      * @return The comment.
      */
     public java.lang.String getComment() {
@@ -921,7 +839,7 @@ private static final long serialVersionUID = 0L;
      * The comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string comment = 4;</code>
+     * <code>string comment = 3;</code>
      * @return The bytes for comment.
      */
     public com.google.protobuf.ByteString
@@ -942,7 +860,7 @@ private static final long serialVersionUID = 0L;
      * The comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string comment = 4;</code>
+     * <code>string comment = 3;</code>
      * @param value The comment to set.
      * @return This builder for chaining.
      */
@@ -950,7 +868,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       comment_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -959,12 +877,12 @@ private static final long serialVersionUID = 0L;
      * The comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string comment = 4;</code>
+     * <code>string comment = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearComment() {
       comment_ = getDefaultInstance().getComment();
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -973,7 +891,7 @@ private static final long serialVersionUID = 0L;
      * The comment being made on a `UserTaskRun`
      * </pre>
      *
-     * <code>string comment = 4;</code>
+     * <code>string comment = 3;</code>
      * @param value The bytes for comment to set.
      * @return This builder for chaining.
      */
@@ -982,7 +900,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       comment_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -999,23 +917,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.EditCommentUserTaskRunRequest)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskRunCommentRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.EditCommentUserTaskRunRequest)
-  private static final io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskRunCommentRequest)
+  private static final io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<EditCommentUserTaskRunRequest>
-      PARSER = new com.google.protobuf.AbstractParser<EditCommentUserTaskRunRequest>() {
+  private static final com.google.protobuf.Parser<UserTaskRunCommentRequest>
+      PARSER = new com.google.protobuf.AbstractParser<UserTaskRunCommentRequest>() {
     @java.lang.Override
-    public EditCommentUserTaskRunRequest parsePartialFrom(
+    public UserTaskRunCommentRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1034,17 +952,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<EditCommentUserTaskRunRequest> parser() {
+  public static com.google.protobuf.Parser<UserTaskRunCommentRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<EditCommentUserTaskRunRequest> getParserForType() {
+  public com.google.protobuf.Parser<UserTaskRunCommentRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

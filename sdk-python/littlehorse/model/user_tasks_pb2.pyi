@@ -144,7 +144,7 @@ class CancelUserTaskRunRequest(_message.Message):
     user_task_run_id: _object_id_pb2.UserTaskRunId
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ...) -> None: ...
 
-class CommentUserTaskRunRequest(_message.Message):
+class UserTaskRunCommentRequest(_message.Message):
     __slots__ = ["user_task_run_id", "user_id", "comment"]
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
@@ -154,7 +154,7 @@ class CommentUserTaskRunRequest(_message.Message):
     comment: str
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_id: _Optional[str] = ..., comment: _Optional[str] = ...) -> None: ...
 
-class EditCommentUserTaskRunRequest(_message.Message):
+class EditUserTaskRunCommentRequest(_message.Message):
     __slots__ = ["user_comment_id", "user_task_run_id", "user_id", "comment"]
     USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
@@ -166,7 +166,7 @@ class EditCommentUserTaskRunRequest(_message.Message):
     comment: str
     def __init__(self, user_comment_id: _Optional[int] = ..., user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_id: _Optional[str] = ..., comment: _Optional[str] = ...) -> None: ...
 
-class DeleteCommentUserTaskRunRequest(_message.Message):
+class DeleteUserTaskRunCommentRequest(_message.Message):
     __slots__ = ["user_task_run_id", "user_comment_id"]
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]

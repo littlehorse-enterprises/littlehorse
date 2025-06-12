@@ -8,38 +8,38 @@ package io.littlehorse.sdk.common.proto;
  * Deletes a comment on a UserTaskRun
  * </pre>
  *
- * Protobuf type {@code littlehorse.DeleteCommentUserTaskRunRequest}
+ * Protobuf type {@code littlehorse.DeleteUserTaskRunCommentRequest}
  */
-public final class DeleteCommentUserTaskRunRequest extends
+public final class DeleteUserTaskRunCommentRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.DeleteCommentUserTaskRunRequest)
-    DeleteCommentUserTaskRunRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.DeleteUserTaskRunCommentRequest)
+    DeleteUserTaskRunCommentRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use DeleteCommentUserTaskRunRequest.newBuilder() to construct.
-  private DeleteCommentUserTaskRunRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use DeleteUserTaskRunCommentRequest.newBuilder() to construct.
+  private DeleteUserTaskRunCommentRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private DeleteCommentUserTaskRunRequest() {
+  private DeleteUserTaskRunCommentRequest() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new DeleteCommentUserTaskRunRequest();
+    return new DeleteUserTaskRunCommentRequest();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteCommentUserTaskRunRequest_descriptor;
+    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteUserTaskRunCommentRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteCommentUserTaskRunRequest_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteUserTaskRunCommentRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.class, io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.Builder.class);
+            io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.class, io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.Builder.class);
   }
 
   public static final int USER_TASK_RUN_ID_FIELD_NUMBER = 1;
@@ -142,10 +142,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest other = (io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) obj;
+    io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest other = (io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest) obj;
 
     if (hasUserTaskRunId() != other.hasUserTaskRunId()) return false;
     if (hasUserTaskRunId()) {
@@ -176,44 +176,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -221,26 +221,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -253,7 +253,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -273,26 +273,26 @@ private static final long serialVersionUID = 0L;
    * Deletes a comment on a UserTaskRun
    * </pre>
    *
-   * Protobuf type {@code littlehorse.DeleteCommentUserTaskRunRequest}
+   * Protobuf type {@code littlehorse.DeleteUserTaskRunCommentRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.DeleteCommentUserTaskRunRequest)
-      io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.DeleteUserTaskRunCommentRequest)
+      io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteCommentUserTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteUserTaskRunCommentRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteCommentUserTaskRunRequest_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteUserTaskRunCommentRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.class, io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.Builder.class);
+              io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.class, io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.newBuilder()
     private Builder() {
 
     }
@@ -318,17 +318,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteCommentUserTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_DeleteUserTaskRunCommentRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest build() {
-      io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest result = buildPartial();
+    public io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest build() {
+      io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -336,14 +336,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest buildPartial() {
-      io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest result = new io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest(this);
+    public io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest result = new io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.userTaskRunId_ = userTaskRunIdBuilder_ == null
@@ -389,16 +389,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest other) {
-      if (other == io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.getDefaultInstance()) return this;
       if (other.hasUserTaskRunId()) {
         mergeUserTaskRunId(other.getUserTaskRunId());
       }
@@ -671,23 +671,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.DeleteCommentUserTaskRunRequest)
+    // @@protoc_insertion_point(builder_scope:littlehorse.DeleteUserTaskRunCommentRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.DeleteCommentUserTaskRunRequest)
-  private static final io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.DeleteUserTaskRunCommentRequest)
+  private static final io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<DeleteCommentUserTaskRunRequest>
-      PARSER = new com.google.protobuf.AbstractParser<DeleteCommentUserTaskRunRequest>() {
+  private static final com.google.protobuf.Parser<DeleteUserTaskRunCommentRequest>
+      PARSER = new com.google.protobuf.AbstractParser<DeleteUserTaskRunCommentRequest>() {
     @java.lang.Override
-    public DeleteCommentUserTaskRunRequest parsePartialFrom(
+    public DeleteUserTaskRunCommentRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -706,17 +706,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<DeleteCommentUserTaskRunRequest> parser() {
+  public static com.google.protobuf.Parser<DeleteUserTaskRunCommentRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<DeleteCommentUserTaskRunRequest> getParserForType() {
+  public com.google.protobuf.Parser<DeleteUserTaskRunCommentRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteCommentUserTaskRunRequest getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

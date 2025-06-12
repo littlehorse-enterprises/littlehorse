@@ -146,13 +146,13 @@ service LittleHorse {
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
   // Adds userComment to a UserTaskRun
-  rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (UserTaskEvent) {};
+  rpc UserTaskRunComment(UserTaskRunCommentRequest) returns (UserTaskRun) {};
 
   // Edits userComment with the correlated userCommentId 
-  rpc EditCommentUserTaskRun(EditCommentUserTaskRunRequest) returns (UserTaskEvent) {};
+  rpc EditUserTaskRunComment(EditUserTaskRunCommentRequest) returns (UserTaskRun) {};
 
   // Deletes a comment logically, this does not affect the userTaskEvent Log
-  rpc DeleteCommentUserTaskRun(DeleteCommentUserTaskRunRequest) returns (google.protobuf.Empty) {};
+  rpc DeleteUserTaskRunComment(DeleteUserTaskRunCommentRequest) returns (UserTaskRun) {};
 
   // Gets a specific NodeRun.
   rpc GetNodeRun(NodeRunId) returns (NodeRun) {}

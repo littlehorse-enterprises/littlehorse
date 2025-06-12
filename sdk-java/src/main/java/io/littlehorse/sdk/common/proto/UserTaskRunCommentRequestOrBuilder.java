@@ -3,44 +3,34 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface EditCommentUserTaskRunRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.EditCommentUserTaskRunRequest)
+public interface UserTaskRunCommentRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskRunCommentRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**
    * <pre>
-   * This is the unique identifier for a comment
+   * The id of `UserTaskRun` to save.
    * </pre>
    *
-   * <code>int32 user_comment_id = 1;</code>
-   * @return The userCommentId.
-   */
-  int getUserCommentId();
-
-  /**
-   * <pre>
-   * The id of `UserTaskRun`
-   * </pre>
-   *
-   * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
   boolean hasUserTaskRunId();
   /**
    * <pre>
-   * The id of `UserTaskRun`
+   * The id of `UserTaskRun` to save.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
   io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
    * <pre>
-   * The id of `UserTaskRun`
+   * The id of `UserTaskRun` to save.
    * </pre>
    *
-   * <code>.littlehorse.UserTaskRunId user_task_run_id = 2;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();
 
@@ -49,7 +39,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
    * The author of the comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string user_id = 3;</code>
+   * <code>string user_id = 2;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
@@ -58,7 +48,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
    * The author of the comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string user_id = 3;</code>
+   * <code>string user_id = 2;</code>
    * @return The bytes for userId.
    */
   com.google.protobuf.ByteString
@@ -69,7 +59,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
    * The comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string comment = 4;</code>
+   * <code>string comment = 3;</code>
    * @return The comment.
    */
   java.lang.String getComment();
@@ -78,7 +68,7 @@ public interface EditCommentUserTaskRunRequestOrBuilder extends
    * The comment being made on a `UserTaskRun`
    * </pre>
    *
-   * <code>string comment = 4;</code>
+   * <code>string comment = 3;</code>
    * @return The bytes for comment.
    */
   com.google.protobuf.ByteString

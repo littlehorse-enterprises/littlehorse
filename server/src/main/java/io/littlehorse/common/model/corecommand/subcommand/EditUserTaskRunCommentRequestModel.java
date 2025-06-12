@@ -11,13 +11,14 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTa
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.EditCommentUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 
-public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditCommentUserTaskRunRequest> {
+public class EditUserTaskRunCommentRequestModel extends CoreSubCommand<EditUserTaskRunCommentRequest> {
 
     private Integer userCommentId;
     private UserTaskRunIdModel userTaskRunId;
@@ -30,7 +31,7 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         if (userCommentId == 0) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");
         }
@@ -69,9 +70,7 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
             throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }
 
-        wfRunModel.advance(new Date());
-
-        return ute.toProto().build();
+        return utr.toProto().build();
     }
 
     @Override
@@ -80,8 +79,8 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
     }
 
     @Override
-    public EditCommentUserTaskRunRequest.Builder toProto() {
-        EditCommentUserTaskRunRequest.Builder out = EditCommentUserTaskRunRequest.newBuilder();
+    public EditUserTaskRunCommentRequest.Builder toProto() {
+        EditUserTaskRunCommentRequest.Builder out = EditUserTaskRunCommentRequest.newBuilder();
         if (userCommentId != null) out.setUserCommentId(userCommentId);
         if (userTaskRunId != null) out.setUserTaskRunId(userTaskRunId.toProto());
         if (userId != null) out.setUserId(userId);
@@ -91,7 +90,7 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        EditCommentUserTaskRunRequest p = (EditCommentUserTaskRunRequest) proto;
+        EditUserTaskRunCommentRequest p = (EditUserTaskRunCommentRequest) proto;
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         userId = p.getUserId();
         comment = p.getComment();
@@ -99,7 +98,7 @@ public class EditCommentUserTaskRunRequestModel extends CoreSubCommand<EditComme
     }
 
     @Override
-    public Class<EditCommentUserTaskRunRequest> getProtoBaseClass() {
-        return EditCommentUserTaskRunRequest.class;
+    public Class<EditUserTaskRunCommentRequest> getProtoBaseClass() {
+        return EditUserTaskRunCommentRequest.class;
     }
 }

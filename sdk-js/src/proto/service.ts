@@ -58,15 +58,14 @@ import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } f
 import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
-  CommentUserTaskRunRequest,
   CompleteUserTaskRunRequest,
-  DeleteCommentUserTaskRunRequest,
-  EditCommentUserTaskRunRequest,
+  DeleteUserTaskRunCommentRequest,
+  EditUserTaskRunCommentRequest,
   SaveUserTaskRunProgressRequest,
   UserTaskDef,
-  UserTaskEvent,
   UserTaskField,
   UserTaskRun,
+  UserTaskRunCommentRequest,
   UserTaskRunStatus,
   userTaskRunStatusFromJSON,
   userTaskRunStatusToNumber,
@@ -8486,29 +8485,29 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /** Adds userComment to a UserTaskRun */
-    commentUserTaskRun: {
-      name: "CommentUserTaskRun",
-      requestType: CommentUserTaskRunRequest,
+    userTaskRunComment: {
+      name: "UserTaskRunComment",
+      requestType: UserTaskRunCommentRequest,
       requestStream: false,
-      responseType: UserTaskEvent,
+      responseType: UserTaskRun,
       responseStream: false,
       options: {},
     },
     /** Edits userComment with the correlated userCommentId */
-    editCommentUserTaskRun: {
-      name: "EditCommentUserTaskRun",
-      requestType: EditCommentUserTaskRunRequest,
+    editUserTaskRunComment: {
+      name: "EditUserTaskRunComment",
+      requestType: EditUserTaskRunCommentRequest,
       requestStream: false,
-      responseType: UserTaskEvent,
+      responseType: UserTaskRun,
       responseStream: false,
       options: {},
     },
     /** Deletes a comment logically, this does not affect the userTaskEvent Log */
-    deleteCommentUserTaskRun: {
-      name: "DeleteCommentUserTaskRun",
-      requestType: DeleteCommentUserTaskRunRequest,
+    deleteUserTaskRunComment: {
+      name: "DeleteUserTaskRunComment",
+      requestType: DeleteUserTaskRunCommentRequest,
       requestStream: false,
-      responseType: Empty,
+      responseType: UserTaskRun,
       responseStream: false,
       options: {},
     },
@@ -9197,20 +9196,20 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskRunList>>;
   /** Adds userComment to a UserTaskRun */
-  commentUserTaskRun(
-    request: CommentUserTaskRunRequest,
+  userTaskRunComment(
+    request: UserTaskRunCommentRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<UserTaskEvent>>;
+  ): Promise<DeepPartial<UserTaskRun>>;
   /** Edits userComment with the correlated userCommentId */
-  editCommentUserTaskRun(
-    request: EditCommentUserTaskRunRequest,
+  editUserTaskRunComment(
+    request: EditUserTaskRunCommentRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<UserTaskEvent>>;
+  ): Promise<DeepPartial<UserTaskRun>>;
   /** Deletes a comment logically, this does not affect the userTaskEvent Log */
-  deleteCommentUserTaskRun(
-    request: DeleteCommentUserTaskRunRequest,
+  deleteUserTaskRunComment(
+    request: DeleteUserTaskRunCommentRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
+  ): Promise<DeepPartial<UserTaskRun>>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: NodeRunId, context: CallContext & CallContextExt): Promise<DeepPartial<NodeRun>>;
   /** Lists all NodeRun's for a specific WfRun. */
@@ -9613,20 +9612,20 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskRunList>;
   /** Adds userComment to a UserTaskRun */
-  commentUserTaskRun(
-    request: DeepPartial<CommentUserTaskRunRequest>,
+  userTaskRunComment(
+    request: DeepPartial<UserTaskRunCommentRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<UserTaskEvent>;
+  ): Promise<UserTaskRun>;
   /** Edits userComment with the correlated userCommentId */
-  editCommentUserTaskRun(
-    request: DeepPartial<EditCommentUserTaskRunRequest>,
+  editUserTaskRunComment(
+    request: DeepPartial<EditUserTaskRunCommentRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<UserTaskEvent>;
+  ): Promise<UserTaskRun>;
   /** Deletes a comment logically, this does not affect the userTaskEvent Log */
-  deleteCommentUserTaskRun(
-    request: DeepPartial<DeleteCommentUserTaskRunRequest>,
+  deleteUserTaskRunComment(
+    request: DeepPartial<DeleteUserTaskRunCommentRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
+  ): Promise<UserTaskRun>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: DeepPartial<NodeRunId>, options?: CallOptions & CallOptionsExt): Promise<NodeRun>;
   /** Lists all NodeRun's for a specific WfRun. */
