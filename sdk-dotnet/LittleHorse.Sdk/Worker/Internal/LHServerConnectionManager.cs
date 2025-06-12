@@ -10,7 +10,7 @@ namespace LittleHorse.Sdk.Worker.Internal
     /// Manages the connections to the LH servers for a specific task worker.
     /// </summary>
     /// <typeparam name="T">It is the custom task worker.</typeparam>
-    internal class LHServerConnectionManager<T> : IDisposable
+    internal class LHServerConnectionManager<T>
     {
         private const int BalancerSleepTime = 5000;
         private const int GrpcUnaryCallTimeoutSeconds = 30;
@@ -18,22 +18,27 @@ namespace LittleHorse.Sdk.Worker.Internal
         private readonly LHConfig _config;
         private readonly ILogger? _logger;
         private readonly LittleHorseClient _bootstrapClient;
-        private bool _running;
-        private readonly List<LHServerConnection<T>> _runningConnections;
+        private readonly Dictionary<LHHostInfo, List<Task<LHServerConnection<T>>>> _runningConnections;
+        private readonly Dictionary<LHHostInfo, CancellationTokenSource> _cancellationTokenSource;
         private readonly LHTask<T> _task;
-        
-        internal LHConfig Config => _config;
-        internal TaskDef TaskDef => _task.TaskDef!;
+        private readonly CancellationToken _cancellationToken;
+        private readonly RegisterTaskWorkerRequest _registerTaskWorkerRequest;
 
         internal LHServerConnectionManager(LHConfig config,
-                                         LHTask<T> task, LittleHorseClient bootstrapClient)
+                                         LHTask<T> task, LittleHorseClient bootstrapClient, CancellationToken cancellationToken = default)
         {
             _config = config;
             _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnectionManager<T>>();
             _task = task;
             _bootstrapClient = bootstrapClient;
-            _running = false;
-            _runningConnections = new List<LHServerConnection<T>>();
+            _cancellationToken = cancellationToken;
+            _runningConnections = new Dictionary<LHHostInfo, List<Task<LHServerConnection<T>>>>();
+            _cancellationTokenSource = new Dictionary<LHHostInfo, CancellationTokenSource>();
+            _registerTaskWorkerRequest = new RegisterTaskWorkerRequest
+            {
+                TaskDefId = _task.TaskDef!.Id,
+                TaskWorkerId = _config.WorkerId
+            };
         }
 
         /// <summary>
@@ -41,21 +46,7 @@ namespace LittleHorse.Sdk.Worker.Internal
         /// </summary>
         internal async Task Start()
         {
-            _running = true;
-            await RebalanceWork();
-        }
-
-        /// <summary>
-        /// Stops the connection manager and all connections.
-        /// </summary>
-        public void Dispose()
-        {
-            _running = false;
-        }
-
-        private async Task RebalanceWork()
-        {
-            while (_running)
+            while (!_cancellationToken.IsCancellationRequested)
             {
                 await DoHeartBeat();
                 await Task.Delay(BalancerSleepTime);
@@ -66,92 +57,86 @@ namespace LittleHorse.Sdk.Worker.Internal
         {
             try
             {
-                var request = new RegisterTaskWorkerRequest
-                {
-                    TaskDefId = _task.TaskDef!.Id,
-                    TaskWorkerId = _config.WorkerId
-                };
-                var response = await _bootstrapClient.RegisterTaskWorkerAsync(request: request,
+                var response = await _bootstrapClient.RegisterTaskWorkerAsync(request: _registerTaskWorkerRequest,
                     deadline: DateTime.UtcNow.AddSeconds(GrpcUnaryCallTimeoutSeconds));
                 
-                await HandleRegisterTaskWorkerResponse(response);
+                CancelUnassignedHosts(response.YourHosts);
+                RemoveDeadConnections();
+                AddNewHosts(response.YourHosts);
             }
             catch (Exception ex)
             {
-                switch (ex.InnerException)
-                {
-                    case RpcException { StatusCode: StatusCode.Internal }:
-                        _logger?.LogError(ex,
-                            $"Failed contacting bootstrap host {_config.BootstrapHost}:{_config.BootstrapPort}");
-                        break;
-                    case RpcException { StatusCode: StatusCode.DeadlineExceeded }:
-                        _logger?.LogError(ex, "Deadline exceeded trying to register task worker.");
-                        break;
-                    default:
-                        _logger?.LogError(ex, "Something happened trying to contact the bootstrap server.");
-                        break;
-                }
-
+                _logger?.LogError(ex, "Error when registering task worker.");
                 CloseAllConnections();
                 await Task.Delay(BalancerSleepTime);
             }
         }
 
-        private async Task HandleRegisterTaskWorkerResponse(RegisterTaskWorkerResponse response)
+        private void RemoveDeadConnections()
         {
-            foreach (var host in response.YourHosts.ToList())
+            foreach (var host in _runningConnections.Keys.ToList())
             {
-                if (!IsAlreadyRunning(host))
-                {
-                    try
-                    {
-                        var newConnection = new LHServerConnection<T>(this, host, _task);
-                        _runningConnections.Add(newConnection);
-                        newConnection.Start();
-                        _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_task.TaskDef!.Id}'");
-                    }
-                    catch (IOException ex)
-                    {
-                        _logger?.LogError(ex, "Exception on HandleRegisterTaskWorkResponse.");
-                    }
-                }
-                
-            }
-
-            var lastIndexOfRunningConnection = _runningConnections.Count() - 1;
-
-            for (int i = lastIndexOfRunningConnection; i >= 0; i--)
-            {
-                var runningThread = _runningConnections[i];
-                
-                if (!ShouldBeRunning(runningThread, response.YourHosts))
-                {
-                    _logger?.LogInformation($"Stopping worker thread for host {runningThread.HostInfo.Host} : {runningThread.HostInfo.Port}");
-
-                    runningThread.Dispose();
-                    _runningConnections.RemoveAt(i);
-                }
+                var connectionsToKeep = _runningConnections[host].Where(task => task.Result.IsRunning()).ToList();
+                _runningConnections[host].Where(task => !task.Result.IsRunning()).ToList().ForEach(connection => connection.Dispose());
+                _runningConnections[host] = connectionsToKeep;
             }
         }
 
-        private bool ShouldBeRunning(LHServerConnection<T> runningThread, RepeatedField<LHHostInfo> hosts)
+        private void AddNewHosts(IList<LHHostInfo> assignedHosts)
         {
-            return hosts.ToList().Any(host => runningThread.IsSame(host.Host, host.Port));
+            foreach (var host in HostsToAdd(assignedHosts))
+            {
+                var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+                _cancellationTokenSource[host] = cancellationTokenSource;
+                _runningConnections[host] = ListOfConnections(host, cancellationTokenSource.Token);
+                _logger?.LogInformation("Added {} connections for host {}:{}", _runningConnections[host].Count, host.Host, host.Port);
+            }
         }
 
-        private bool IsAlreadyRunning(LHHostInfo host)
+        private List<LHHostInfo> HostsToAdd(IList<LHHostInfo> hosts) =>
+            hosts
+                .Where(host => !_runningConnections.ContainsKey(host))
+                .ToList();
+
+        private void CancelUnassignedHosts(IList<LHHostInfo> assignedHosts)
         {
-            return _runningConnections.Any(conn => conn.IsSame(host.Host, host.Port));
+            foreach (var host in HostsToRemove(assignedHosts))
+            {
+                _logger?.LogInformation("Cancelling all connections for host {}:{}", host.Host, host.Port);
+                _cancellationTokenSource.Remove(host, out var cancellationTokenSource);
+                cancellationTokenSource?.Cancel();
+                cancellationTokenSource?.Dispose();
+            }
         }
+
+        private List<LHHostInfo> HostsToRemove(IList<LHHostInfo> hosts) =>
+            _runningConnections.Keys
+                .Where(host => !hosts.Contains(host))
+                .ToList();
+
+        private List<Task<LHServerConnection<T>>> ListOfConnections(LHHostInfo host, CancellationToken cancellationToken) =>
+            Enumerable.Range(0, _config.WorkerThreads).Select(index => Task.Run(() =>
+                {
+                    _logger?.LogDebug("Adding connection #{} to: {}:{} for task '{}'", index, host.Host, host.Port, _task.TaskDef!.Id);
+                    var client = _config.GetGrpcClientInstance(host.Host, host.Port);
+                    var newConnection = new LHServerConnection<T>(_config.WorkerId, _task.TaskDef.Id, _config.TaskWorkerVersion, _task, client, cancellationToken);
+                    newConnection.Start();
+                    return Task.FromResult(newConnection);
+                })
+            ).ToList();
         
         private void CloseAllConnections()
         {
-            _runningConnections.RemoveAll(serverConnection =>
-            {
-                serverConnection.Dispose();
+            _cancellationTokenSource
+                .Values
+                .ToList()
+                .ForEach(cancellationTokenSource =>
+                {
+                    cancellationTokenSource.Cancel();
+                    cancellationTokenSource.Dispose();
+                });
             
-                return true;
-            });
+            _cancellationTokenSource.Clear();
         }
     }
 }

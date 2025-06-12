@@ -22,6 +22,7 @@ namespace LittleHorse.Sdk.Worker
         private LHServerConnectionManager<T>? _manager;
         private readonly LittleHorseClient _lhClient;
         private readonly LHTask<T> _task;
+        private readonly CancellationTokenSource _cancellationTokenSource;
 
         /// <value>Property <c>TaskDefName</c> represents the name of the TaskDef.</value>
         public string TaskDefName => _task.TaskDefName;
@@ -32,12 +33,14 @@ namespace LittleHorse.Sdk.Worker
         /// <param name="executable">Custom class where customer business logic will be added.</param>
         /// <param name="taskDefName">The name of the task.</param>
         /// <param name="config">The LH configuration object.</param>
-        public LHTaskWorker(T executable, string taskDefName, LHConfig config)
+        /// <param name="cancellationToken"></param>
+        public LHTaskWorker(T executable, string taskDefName, LHConfig config, CancellationToken cancellationToken = default)
         {
             _config = config;
             _logger = LHLoggerFactoryProvider.GetLogger<LHTaskWorker<T>>();
             _lhClient = _config.GetGrpcClientInstance();
             _task = new LHTask<T>(executable, taskDefName, _lhClient);
+            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         }
 
         /// <summary>
@@ -58,7 +61,7 @@ namespace LittleHorse.Sdk.Worker
             await _task.PrepareLHTaskMethod();
             if (_manager == null)
             {
-                _manager = new LHServerConnectionManager<T>(_config, _task, _lhClient);
+                _manager = new LHServerConnectionManager<T>(_config, _task, _lhClient, _cancellationTokenSource.Token);
                 await _manager.Start();
             }
         }
@@ -95,7 +98,8 @@ namespace LittleHorse.Sdk.Worker
         /// </summary>
         public void Close()
         {
-            _manager?.Dispose();
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
         }
 
         /// <summary>
@@ -145,13 +149,13 @@ namespace LittleHorse.Sdk.Worker
 
                 var response = await _lhClient.PutTaskDefAsync(request);
 
-                _logger?.LogInformation($"Created TaskDef:\n{LHMappingHelper.ProtoToJson(response)}");
+                _logger?.LogInformation("Created TaskDef:\n{}", LHMappingHelper.ProtoToJson(response));
             }
             catch (RpcException ex)
             {
                 if (swallowAlreadyExists && ex.StatusCode == StatusCode.AlreadyExists)
                 {
-                    _logger?.LogInformation($"TaskDef {_task.TaskDefName} already exists!");
+                    _logger?.LogInformation("TaskDef {} already exists!", _task.TaskDefName);
                 }
                 else
                 {
