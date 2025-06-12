@@ -201,7 +201,7 @@ func (x SearchNodeRunRequest_NodeType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use SearchNodeRunRequest_NodeType.Descriptor instead.
 func (SearchNodeRunRequest_NodeType) EnumDescriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{28, 0}
+	return file_service_proto_rawDescGZIP(), []int{29, 0}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -1148,6 +1148,55 @@ func (x *DeleteWfRunRequest) GetId() *WfRunId {
 	return nil
 }
 
+// Deletes a CorrelatedEvent
+type DeleteCorrelatedEventRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The ID of the CorrelatedEvent to delete.
+	Id *CorrelatedEventId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *DeleteCorrelatedEventRequest) Reset() {
+	*x = DeleteCorrelatedEventRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteCorrelatedEventRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteCorrelatedEventRequest) ProtoMessage() {}
+
+func (x *DeleteCorrelatedEventRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteCorrelatedEventRequest.ProtoReflect.Descriptor instead.
+func (*DeleteCorrelatedEventRequest) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *DeleteCorrelatedEventRequest) GetId() *CorrelatedEventId {
+	if x != nil {
+		return x.Id
+	}
+	return nil
+}
+
 // Deletes a TaskDef.
 type DeleteTaskDefRequest struct {
 	state         protoimpl.MessageState
@@ -1161,7 +1210,7 @@ type DeleteTaskDefRequest struct {
 func (x *DeleteTaskDefRequest) Reset() {
 	*x = DeleteTaskDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[14]
+		mi := &file_service_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1174,7 +1223,7 @@ func (x *DeleteTaskDefRequest) String() string {
 func (*DeleteTaskDefRequest) ProtoMessage() {}
 
 func (x *DeleteTaskDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[14]
+	mi := &file_service_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1187,7 +1236,7 @@ func (x *DeleteTaskDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTaskDefRequest.ProtoReflect.Descriptor instead.
 func (*DeleteTaskDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{14}
+	return file_service_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *DeleteTaskDefRequest) GetId() *TaskDefId {
@@ -1210,7 +1259,7 @@ type DeleteStructDefRequest struct {
 func (x *DeleteStructDefRequest) Reset() {
 	*x = DeleteStructDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[15]
+		mi := &file_service_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1223,7 +1272,7 @@ func (x *DeleteStructDefRequest) String() string {
 func (*DeleteStructDefRequest) ProtoMessage() {}
 
 func (x *DeleteStructDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[15]
+	mi := &file_service_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1236,7 +1285,7 @@ func (x *DeleteStructDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteStructDefRequest.ProtoReflect.Descriptor instead.
 func (*DeleteStructDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{15}
+	return file_service_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *DeleteStructDefRequest) GetId() *StructDefId {
@@ -1259,7 +1308,7 @@ type DeleteUserTaskDefRequest struct {
 func (x *DeleteUserTaskDefRequest) Reset() {
 	*x = DeleteUserTaskDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[16]
+		mi := &file_service_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1272,7 +1321,7 @@ func (x *DeleteUserTaskDefRequest) String() string {
 func (*DeleteUserTaskDefRequest) ProtoMessage() {}
 
 func (x *DeleteUserTaskDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[16]
+	mi := &file_service_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1285,7 +1334,7 @@ func (x *DeleteUserTaskDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserTaskDefRequest.ProtoReflect.Descriptor instead.
 func (*DeleteUserTaskDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{16}
+	return file_service_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *DeleteUserTaskDefRequest) GetId() *UserTaskDefId {
@@ -1308,7 +1357,7 @@ type DeleteWfSpecRequest struct {
 func (x *DeleteWfSpecRequest) Reset() {
 	*x = DeleteWfSpecRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[17]
+		mi := &file_service_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1321,7 +1370,7 @@ func (x *DeleteWfSpecRequest) String() string {
 func (*DeleteWfSpecRequest) ProtoMessage() {}
 
 func (x *DeleteWfSpecRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[17]
+	mi := &file_service_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1334,7 +1383,7 @@ func (x *DeleteWfSpecRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteWfSpecRequest.ProtoReflect.Descriptor instead.
 func (*DeleteWfSpecRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{17}
+	return file_service_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *DeleteWfSpecRequest) GetId() *WfSpecId {
@@ -1357,7 +1406,7 @@ type DeleteExternalEventDefRequest struct {
 func (x *DeleteExternalEventDefRequest) Reset() {
 	*x = DeleteExternalEventDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[18]
+		mi := &file_service_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1370,7 +1419,7 @@ func (x *DeleteExternalEventDefRequest) String() string {
 func (*DeleteExternalEventDefRequest) ProtoMessage() {}
 
 func (x *DeleteExternalEventDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[18]
+	mi := &file_service_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1383,7 +1432,7 @@ func (x *DeleteExternalEventDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteExternalEventDefRequest.ProtoReflect.Descriptor instead.
 func (*DeleteExternalEventDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{18}
+	return file_service_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *DeleteExternalEventDefRequest) GetId() *ExternalEventDefId {
@@ -1406,7 +1455,7 @@ type DeleteWorkflowEventDefRequest struct {
 func (x *DeleteWorkflowEventDefRequest) Reset() {
 	*x = DeleteWorkflowEventDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[19]
+		mi := &file_service_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1419,7 +1468,7 @@ func (x *DeleteWorkflowEventDefRequest) String() string {
 func (*DeleteWorkflowEventDefRequest) ProtoMessage() {}
 
 func (x *DeleteWorkflowEventDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[19]
+	mi := &file_service_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1432,7 +1481,7 @@ func (x *DeleteWorkflowEventDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteWorkflowEventDefRequest.ProtoReflect.Descriptor instead.
 func (*DeleteWorkflowEventDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{19}
+	return file_service_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *DeleteWorkflowEventDefRequest) GetId() *WorkflowEventDefId {
@@ -1471,7 +1520,7 @@ type RunWfRequest struct {
 func (x *RunWfRequest) Reset() {
 	*x = RunWfRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[20]
+		mi := &file_service_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1484,7 +1533,7 @@ func (x *RunWfRequest) String() string {
 func (*RunWfRequest) ProtoMessage() {}
 
 func (x *RunWfRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[20]
+	mi := &file_service_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1497,7 +1546,7 @@ func (x *RunWfRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RunWfRequest.ProtoReflect.Descriptor instead.
 func (*RunWfRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{20}
+	return file_service_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *RunWfRequest) GetWfSpecName() string {
@@ -1572,7 +1621,7 @@ type ScheduleWfRequest struct {
 func (x *ScheduleWfRequest) Reset() {
 	*x = ScheduleWfRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[21]
+		mi := &file_service_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1585,7 +1634,7 @@ func (x *ScheduleWfRequest) String() string {
 func (*ScheduleWfRequest) ProtoMessage() {}
 
 func (x *ScheduleWfRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[21]
+	mi := &file_service_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1598,7 +1647,7 @@ func (x *ScheduleWfRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleWfRequest.ProtoReflect.Descriptor instead.
 func (*ScheduleWfRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{21}
+	return file_service_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ScheduleWfRequest) GetId() string {
@@ -1666,7 +1715,7 @@ type VariableMatch struct {
 func (x *VariableMatch) Reset() {
 	*x = VariableMatch{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[22]
+		mi := &file_service_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1679,7 +1728,7 @@ func (x *VariableMatch) String() string {
 func (*VariableMatch) ProtoMessage() {}
 
 func (x *VariableMatch) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[22]
+	mi := &file_service_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1692,7 +1741,7 @@ func (x *VariableMatch) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VariableMatch.ProtoReflect.Descriptor instead.
 func (*VariableMatch) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{22}
+	return file_service_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *VariableMatch) GetVarName() string {
@@ -1731,7 +1780,7 @@ type AwaitWorkflowEventRequest struct {
 func (x *AwaitWorkflowEventRequest) Reset() {
 	*x = AwaitWorkflowEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[23]
+		mi := &file_service_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1744,7 +1793,7 @@ func (x *AwaitWorkflowEventRequest) String() string {
 func (*AwaitWorkflowEventRequest) ProtoMessage() {}
 
 func (x *AwaitWorkflowEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[23]
+	mi := &file_service_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1757,7 +1806,7 @@ func (x *AwaitWorkflowEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AwaitWorkflowEventRequest.ProtoReflect.Descriptor instead.
 func (*AwaitWorkflowEventRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{23}
+	return file_service_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *AwaitWorkflowEventRequest) GetWfRunId() *WfRunId {
@@ -1813,7 +1862,7 @@ type SearchWfRunRequest struct {
 func (x *SearchWfRunRequest) Reset() {
 	*x = SearchWfRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[24]
+		mi := &file_service_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1826,7 +1875,7 @@ func (x *SearchWfRunRequest) String() string {
 func (*SearchWfRunRequest) ProtoMessage() {}
 
 func (x *SearchWfRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[24]
+	mi := &file_service_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1839,7 +1888,7 @@ func (x *SearchWfRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchWfRunRequest.ProtoReflect.Descriptor instead.
 func (*SearchWfRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{24}
+	return file_service_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *SearchWfRunRequest) GetBookmark() []byte {
@@ -1922,7 +1971,7 @@ type WfRunIdList struct {
 func (x *WfRunIdList) Reset() {
 	*x = WfRunIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[25]
+		mi := &file_service_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1935,7 +1984,7 @@ func (x *WfRunIdList) String() string {
 func (*WfRunIdList) ProtoMessage() {}
 
 func (x *WfRunIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[25]
+	mi := &file_service_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1948,7 +1997,7 @@ func (x *WfRunIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WfRunIdList.ProtoReflect.Descriptor instead.
 func (*WfRunIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{25}
+	return file_service_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *WfRunIdList) GetResults() []*WfRunId {
@@ -1988,7 +2037,7 @@ type SearchTaskRunRequest struct {
 func (x *SearchTaskRunRequest) Reset() {
 	*x = SearchTaskRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[26]
+		mi := &file_service_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2001,7 +2050,7 @@ func (x *SearchTaskRunRequest) String() string {
 func (*SearchTaskRunRequest) ProtoMessage() {}
 
 func (x *SearchTaskRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[26]
+	mi := &file_service_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2014,7 +2063,7 @@ func (x *SearchTaskRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchTaskRunRequest.ProtoReflect.Descriptor instead.
 func (*SearchTaskRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{26}
+	return file_service_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *SearchTaskRunRequest) GetBookmark() []byte {
@@ -2076,7 +2125,7 @@ type TaskRunIdList struct {
 func (x *TaskRunIdList) Reset() {
 	*x = TaskRunIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[27]
+		mi := &file_service_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2089,7 +2138,7 @@ func (x *TaskRunIdList) String() string {
 func (*TaskRunIdList) ProtoMessage() {}
 
 func (x *TaskRunIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[27]
+	mi := &file_service_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2102,7 +2151,7 @@ func (x *TaskRunIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskRunIdList.ProtoReflect.Descriptor instead.
 func (*TaskRunIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{27}
+	return file_service_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *TaskRunIdList) GetResults() []*TaskRunId {
@@ -2142,7 +2191,7 @@ type SearchNodeRunRequest struct {
 func (x *SearchNodeRunRequest) Reset() {
 	*x = SearchNodeRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[28]
+		mi := &file_service_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2155,7 +2204,7 @@ func (x *SearchNodeRunRequest) String() string {
 func (*SearchNodeRunRequest) ProtoMessage() {}
 
 func (x *SearchNodeRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[28]
+	mi := &file_service_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2168,7 +2217,7 @@ func (x *SearchNodeRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchNodeRunRequest.ProtoReflect.Descriptor instead.
 func (*SearchNodeRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{28}
+	return file_service_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *SearchNodeRunRequest) GetBookmark() []byte {
@@ -2230,7 +2279,7 @@ type NodeRunIdList struct {
 func (x *NodeRunIdList) Reset() {
 	*x = NodeRunIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[29]
+		mi := &file_service_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2243,7 +2292,7 @@ func (x *NodeRunIdList) String() string {
 func (*NodeRunIdList) ProtoMessage() {}
 
 func (x *NodeRunIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[29]
+	mi := &file_service_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2256,7 +2305,7 @@ func (x *NodeRunIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NodeRunIdList.ProtoReflect.Descriptor instead.
 func (*NodeRunIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{29}
+	return file_service_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *NodeRunIdList) GetResults() []*NodeRunId {
@@ -2302,7 +2351,7 @@ type SearchUserTaskRunRequest struct {
 func (x *SearchUserTaskRunRequest) Reset() {
 	*x = SearchUserTaskRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[30]
+		mi := &file_service_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2315,7 +2364,7 @@ func (x *SearchUserTaskRunRequest) String() string {
 func (*SearchUserTaskRunRequest) ProtoMessage() {}
 
 func (x *SearchUserTaskRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[30]
+	mi := &file_service_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2328,7 +2377,7 @@ func (x *SearchUserTaskRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchUserTaskRunRequest.ProtoReflect.Descriptor instead.
 func (*SearchUserTaskRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{30}
+	return file_service_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *SearchUserTaskRunRequest) GetBookmark() []byte {
@@ -2404,7 +2453,7 @@ type UserTaskRunIdList struct {
 func (x *UserTaskRunIdList) Reset() {
 	*x = UserTaskRunIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[31]
+		mi := &file_service_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2417,7 +2466,7 @@ func (x *UserTaskRunIdList) String() string {
 func (*UserTaskRunIdList) ProtoMessage() {}
 
 func (x *UserTaskRunIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[31]
+	mi := &file_service_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2430,7 +2479,7 @@ func (x *UserTaskRunIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserTaskRunIdList.ProtoReflect.Descriptor instead.
 func (*UserTaskRunIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{31}
+	return file_service_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *UserTaskRunIdList) GetResults() []*UserTaskRunId {
@@ -2481,7 +2530,7 @@ type SearchVariableRequest struct {
 func (x *SearchVariableRequest) Reset() {
 	*x = SearchVariableRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[32]
+		mi := &file_service_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2494,7 +2543,7 @@ func (x *SearchVariableRequest) String() string {
 func (*SearchVariableRequest) ProtoMessage() {}
 
 func (x *SearchVariableRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[32]
+	mi := &file_service_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2507,7 +2556,7 @@ func (x *SearchVariableRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchVariableRequest.ProtoReflect.Descriptor instead.
 func (*SearchVariableRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{32}
+	return file_service_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SearchVariableRequest) GetBookmark() []byte {
@@ -2576,7 +2625,7 @@ type VariableIdList struct {
 func (x *VariableIdList) Reset() {
 	*x = VariableIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[33]
+		mi := &file_service_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2589,7 +2638,7 @@ func (x *VariableIdList) String() string {
 func (*VariableIdList) ProtoMessage() {}
 
 func (x *VariableIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[33]
+	mi := &file_service_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2602,7 +2651,7 @@ func (x *VariableIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VariableIdList.ProtoReflect.Descriptor instead.
 func (*VariableIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{33}
+	return file_service_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *VariableIdList) GetResults() []*VariableId {
@@ -2636,7 +2685,7 @@ type SearchTaskDefRequest struct {
 func (x *SearchTaskDefRequest) Reset() {
 	*x = SearchTaskDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[34]
+		mi := &file_service_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2649,7 +2698,7 @@ func (x *SearchTaskDefRequest) String() string {
 func (*SearchTaskDefRequest) ProtoMessage() {}
 
 func (x *SearchTaskDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[34]
+	mi := &file_service_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2662,7 +2711,7 @@ func (x *SearchTaskDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchTaskDefRequest.ProtoReflect.Descriptor instead.
 func (*SearchTaskDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{34}
+	return file_service_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *SearchTaskDefRequest) GetBookmark() []byte {
@@ -2703,7 +2752,7 @@ type TaskDefIdList struct {
 func (x *TaskDefIdList) Reset() {
 	*x = TaskDefIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[35]
+		mi := &file_service_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2716,7 +2765,7 @@ func (x *TaskDefIdList) String() string {
 func (*TaskDefIdList) ProtoMessage() {}
 
 func (x *TaskDefIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[35]
+	mi := &file_service_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2729,7 +2778,7 @@ func (x *TaskDefIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskDefIdList.ProtoReflect.Descriptor instead.
 func (*TaskDefIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{35}
+	return file_service_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *TaskDefIdList) GetResults() []*TaskDefId {
@@ -2768,7 +2817,7 @@ type SearchUserTaskDefRequest struct {
 func (x *SearchUserTaskDefRequest) Reset() {
 	*x = SearchUserTaskDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[36]
+		mi := &file_service_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2781,7 +2830,7 @@ func (x *SearchUserTaskDefRequest) String() string {
 func (*SearchUserTaskDefRequest) ProtoMessage() {}
 
 func (x *SearchUserTaskDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[36]
+	mi := &file_service_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2794,7 +2843,7 @@ func (x *SearchUserTaskDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchUserTaskDefRequest.ProtoReflect.Descriptor instead.
 func (*SearchUserTaskDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{36}
+	return file_service_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *SearchUserTaskDefRequest) GetBookmark() []byte {
@@ -2867,7 +2916,7 @@ type UserTaskDefIdList struct {
 func (x *UserTaskDefIdList) Reset() {
 	*x = UserTaskDefIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[37]
+		mi := &file_service_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2880,7 +2929,7 @@ func (x *UserTaskDefIdList) String() string {
 func (*UserTaskDefIdList) ProtoMessage() {}
 
 func (x *UserTaskDefIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[37]
+	mi := &file_service_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2893,7 +2942,7 @@ func (x *UserTaskDefIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserTaskDefIdList.ProtoReflect.Descriptor instead.
 func (*UserTaskDefIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{37}
+	return file_service_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *UserTaskDefIdList) GetResults() []*UserTaskDefId {
@@ -2933,7 +2982,7 @@ type SearchWfSpecRequest struct {
 func (x *SearchWfSpecRequest) Reset() {
 	*x = SearchWfSpecRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[38]
+		mi := &file_service_proto_msgTypes[39]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2946,7 +2995,7 @@ func (x *SearchWfSpecRequest) String() string {
 func (*SearchWfSpecRequest) ProtoMessage() {}
 
 func (x *SearchWfSpecRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[38]
+	mi := &file_service_proto_msgTypes[39]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2959,7 +3008,7 @@ func (x *SearchWfSpecRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchWfSpecRequest.ProtoReflect.Descriptor instead.
 func (*SearchWfSpecRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{38}
+	return file_service_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *SearchWfSpecRequest) GetBookmark() []byte {
@@ -3046,7 +3095,7 @@ type WfSpecIdList struct {
 func (x *WfSpecIdList) Reset() {
 	*x = WfSpecIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[39]
+		mi := &file_service_proto_msgTypes[40]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3059,7 +3108,7 @@ func (x *WfSpecIdList) String() string {
 func (*WfSpecIdList) ProtoMessage() {}
 
 func (x *WfSpecIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[39]
+	mi := &file_service_proto_msgTypes[40]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3072,7 +3121,7 @@ func (x *WfSpecIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WfSpecIdList.ProtoReflect.Descriptor instead.
 func (*WfSpecIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{39}
+	return file_service_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *WfSpecIdList) GetResults() []*WfSpecId {
@@ -3106,7 +3155,7 @@ type SearchExternalEventDefRequest struct {
 func (x *SearchExternalEventDefRequest) Reset() {
 	*x = SearchExternalEventDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[40]
+		mi := &file_service_proto_msgTypes[41]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3119,7 +3168,7 @@ func (x *SearchExternalEventDefRequest) String() string {
 func (*SearchExternalEventDefRequest) ProtoMessage() {}
 
 func (x *SearchExternalEventDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[40]
+	mi := &file_service_proto_msgTypes[41]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3132,7 +3181,7 @@ func (x *SearchExternalEventDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchExternalEventDefRequest.ProtoReflect.Descriptor instead.
 func (*SearchExternalEventDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{40}
+	return file_service_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *SearchExternalEventDefRequest) GetBookmark() []byte {
@@ -3173,7 +3222,7 @@ type ExternalEventDefIdList struct {
 func (x *ExternalEventDefIdList) Reset() {
 	*x = ExternalEventDefIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[41]
+		mi := &file_service_proto_msgTypes[42]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3186,7 +3235,7 @@ func (x *ExternalEventDefIdList) String() string {
 func (*ExternalEventDefIdList) ProtoMessage() {}
 
 func (x *ExternalEventDefIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[41]
+	mi := &file_service_proto_msgTypes[42]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3199,7 +3248,7 @@ func (x *ExternalEventDefIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExternalEventDefIdList.ProtoReflect.Descriptor instead.
 func (*ExternalEventDefIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{41}
+	return file_service_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *ExternalEventDefIdList) GetResults() []*ExternalEventDefId {
@@ -3233,7 +3282,7 @@ type SearchWorkflowEventDefRequest struct {
 func (x *SearchWorkflowEventDefRequest) Reset() {
 	*x = SearchWorkflowEventDefRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[42]
+		mi := &file_service_proto_msgTypes[43]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3246,7 +3295,7 @@ func (x *SearchWorkflowEventDefRequest) String() string {
 func (*SearchWorkflowEventDefRequest) ProtoMessage() {}
 
 func (x *SearchWorkflowEventDefRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[42]
+	mi := &file_service_proto_msgTypes[43]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3259,7 +3308,7 @@ func (x *SearchWorkflowEventDefRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchWorkflowEventDefRequest.ProtoReflect.Descriptor instead.
 func (*SearchWorkflowEventDefRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{42}
+	return file_service_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *SearchWorkflowEventDefRequest) GetBookmark() []byte {
@@ -3300,7 +3349,7 @@ type WorkflowEventDefIdList struct {
 func (x *WorkflowEventDefIdList) Reset() {
 	*x = WorkflowEventDefIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[43]
+		mi := &file_service_proto_msgTypes[44]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3313,7 +3362,7 @@ func (x *WorkflowEventDefIdList) String() string {
 func (*WorkflowEventDefIdList) ProtoMessage() {}
 
 func (x *WorkflowEventDefIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[43]
+	mi := &file_service_proto_msgTypes[44]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3326,7 +3375,7 @@ func (x *WorkflowEventDefIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WorkflowEventDefIdList.ProtoReflect.Descriptor instead.
 func (*WorkflowEventDefIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{43}
+	return file_service_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *WorkflowEventDefIdList) GetResults() []*WorkflowEventDefId {
@@ -3358,7 +3407,7 @@ type SearchTenantRequest struct {
 func (x *SearchTenantRequest) Reset() {
 	*x = SearchTenantRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[44]
+		mi := &file_service_proto_msgTypes[45]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3371,7 +3420,7 @@ func (x *SearchTenantRequest) String() string {
 func (*SearchTenantRequest) ProtoMessage() {}
 
 func (x *SearchTenantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[44]
+	mi := &file_service_proto_msgTypes[45]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3384,7 +3433,7 @@ func (x *SearchTenantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchTenantRequest.ProtoReflect.Descriptor instead.
 func (*SearchTenantRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{44}
+	return file_service_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *SearchTenantRequest) GetLimit() int32 {
@@ -3415,7 +3464,7 @@ type TenantIdList struct {
 func (x *TenantIdList) Reset() {
 	*x = TenantIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[45]
+		mi := &file_service_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3428,7 +3477,7 @@ func (x *TenantIdList) String() string {
 func (*TenantIdList) ProtoMessage() {}
 
 func (x *TenantIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[45]
+	mi := &file_service_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3441,7 +3490,7 @@ func (x *TenantIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantIdList.ProtoReflect.Descriptor instead.
 func (*TenantIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{45}
+	return file_service_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *TenantIdList) GetResults() []*TenantId {
@@ -3481,7 +3530,7 @@ type SearchPrincipalRequest struct {
 func (x *SearchPrincipalRequest) Reset() {
 	*x = SearchPrincipalRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[46]
+		mi := &file_service_proto_msgTypes[47]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3494,7 +3543,7 @@ func (x *SearchPrincipalRequest) String() string {
 func (*SearchPrincipalRequest) ProtoMessage() {}
 
 func (x *SearchPrincipalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[46]
+	mi := &file_service_proto_msgTypes[47]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3507,7 +3556,7 @@ func (x *SearchPrincipalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchPrincipalRequest.ProtoReflect.Descriptor instead.
 func (*SearchPrincipalRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{46}
+	return file_service_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *SearchPrincipalRequest) GetBookmark() []byte {
@@ -3591,7 +3640,7 @@ type PrincipalIdList struct {
 func (x *PrincipalIdList) Reset() {
 	*x = PrincipalIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[47]
+		mi := &file_service_proto_msgTypes[48]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3604,7 +3653,7 @@ func (x *PrincipalIdList) String() string {
 func (*PrincipalIdList) ProtoMessage() {}
 
 func (x *PrincipalIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[47]
+	mi := &file_service_proto_msgTypes[48]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3617,7 +3666,7 @@ func (x *PrincipalIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PrincipalIdList.ProtoReflect.Descriptor instead.
 func (*PrincipalIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{47}
+	return file_service_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *PrincipalIdList) GetResults() []*PrincipalId {
@@ -3665,7 +3714,7 @@ type SearchExternalEventRequest struct {
 func (x *SearchExternalEventRequest) Reset() {
 	*x = SearchExternalEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[48]
+		mi := &file_service_proto_msgTypes[49]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3678,7 +3727,7 @@ func (x *SearchExternalEventRequest) String() string {
 func (*SearchExternalEventRequest) ProtoMessage() {}
 
 func (x *SearchExternalEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[48]
+	mi := &file_service_proto_msgTypes[49]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3691,7 +3740,7 @@ func (x *SearchExternalEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchExternalEventRequest.ProtoReflect.Descriptor instead.
 func (*SearchExternalEventRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{48}
+	return file_service_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *SearchExternalEventRequest) GetBookmark() []byte {
@@ -3753,7 +3802,7 @@ type ExternalEventIdList struct {
 func (x *ExternalEventIdList) Reset() {
 	*x = ExternalEventIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[49]
+		mi := &file_service_proto_msgTypes[50]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3766,7 +3815,7 @@ func (x *ExternalEventIdList) String() string {
 func (*ExternalEventIdList) ProtoMessage() {}
 
 func (x *ExternalEventIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[49]
+	mi := &file_service_proto_msgTypes[50]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3779,7 +3828,7 @@ func (x *ExternalEventIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExternalEventIdList.ProtoReflect.Descriptor instead.
 func (*ExternalEventIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{49}
+	return file_service_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ExternalEventIdList) GetResults() []*ExternalEventId {
@@ -3823,7 +3872,7 @@ type SearchWorkflowEventRequest struct {
 func (x *SearchWorkflowEventRequest) Reset() {
 	*x = SearchWorkflowEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[50]
+		mi := &file_service_proto_msgTypes[51]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3836,7 +3885,7 @@ func (x *SearchWorkflowEventRequest) String() string {
 func (*SearchWorkflowEventRequest) ProtoMessage() {}
 
 func (x *SearchWorkflowEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[50]
+	mi := &file_service_proto_msgTypes[51]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3849,7 +3898,7 @@ func (x *SearchWorkflowEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchWorkflowEventRequest.ProtoReflect.Descriptor instead.
 func (*SearchWorkflowEventRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{50}
+	return file_service_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *SearchWorkflowEventRequest) GetBookmark() []byte {
@@ -3904,7 +3953,7 @@ type WorkflowEventIdList struct {
 func (x *WorkflowEventIdList) Reset() {
 	*x = WorkflowEventIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[51]
+		mi := &file_service_proto_msgTypes[52]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3917,7 +3966,7 @@ func (x *WorkflowEventIdList) String() string {
 func (*WorkflowEventIdList) ProtoMessage() {}
 
 func (x *WorkflowEventIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[51]
+	mi := &file_service_proto_msgTypes[52]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3930,7 +3979,7 @@ func (x *WorkflowEventIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WorkflowEventIdList.ProtoReflect.Descriptor instead.
 func (*WorkflowEventIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{51}
+	return file_service_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *WorkflowEventIdList) GetResults() []*WorkflowEventId {
@@ -3967,7 +4016,7 @@ type ListNodeRunsRequest struct {
 func (x *ListNodeRunsRequest) Reset() {
 	*x = ListNodeRunsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[52]
+		mi := &file_service_proto_msgTypes[53]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3980,7 +4029,7 @@ func (x *ListNodeRunsRequest) String() string {
 func (*ListNodeRunsRequest) ProtoMessage() {}
 
 func (x *ListNodeRunsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[52]
+	mi := &file_service_proto_msgTypes[53]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3993,7 +4042,7 @@ func (x *ListNodeRunsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListNodeRunsRequest.ProtoReflect.Descriptor instead.
 func (*ListNodeRunsRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{52}
+	return file_service_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *ListNodeRunsRequest) GetWfRunId() *WfRunId {
@@ -4041,7 +4090,7 @@ type NodeRunList struct {
 func (x *NodeRunList) Reset() {
 	*x = NodeRunList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[53]
+		mi := &file_service_proto_msgTypes[54]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4054,7 +4103,7 @@ func (x *NodeRunList) String() string {
 func (*NodeRunList) ProtoMessage() {}
 
 func (x *NodeRunList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[53]
+	mi := &file_service_proto_msgTypes[54]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4067,7 +4116,7 @@ func (x *NodeRunList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NodeRunList.ProtoReflect.Descriptor instead.
 func (*NodeRunList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{53}
+	return file_service_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *NodeRunList) GetResults() []*NodeRun {
@@ -4098,7 +4147,7 @@ type ListVariablesRequest struct {
 func (x *ListVariablesRequest) Reset() {
 	*x = ListVariablesRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[54]
+		mi := &file_service_proto_msgTypes[55]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4111,7 +4160,7 @@ func (x *ListVariablesRequest) String() string {
 func (*ListVariablesRequest) ProtoMessage() {}
 
 func (x *ListVariablesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[54]
+	mi := &file_service_proto_msgTypes[55]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4124,7 +4173,7 @@ func (x *ListVariablesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVariablesRequest.ProtoReflect.Descriptor instead.
 func (*ListVariablesRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{54}
+	return file_service_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *ListVariablesRequest) GetWfRunId() *WfRunId {
@@ -4147,7 +4196,7 @@ type VariableList struct {
 func (x *VariableList) Reset() {
 	*x = VariableList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[55]
+		mi := &file_service_proto_msgTypes[56]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4160,7 +4209,7 @@ func (x *VariableList) String() string {
 func (*VariableList) ProtoMessage() {}
 
 func (x *VariableList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[55]
+	mi := &file_service_proto_msgTypes[56]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4173,7 +4222,7 @@ func (x *VariableList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VariableList.ProtoReflect.Descriptor instead.
 func (*VariableList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{55}
+	return file_service_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *VariableList) GetResults() []*Variable {
@@ -4197,7 +4246,7 @@ type ListExternalEventsRequest struct {
 func (x *ListExternalEventsRequest) Reset() {
 	*x = ListExternalEventsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[56]
+		mi := &file_service_proto_msgTypes[57]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4210,7 +4259,7 @@ func (x *ListExternalEventsRequest) String() string {
 func (*ListExternalEventsRequest) ProtoMessage() {}
 
 func (x *ListExternalEventsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[56]
+	mi := &file_service_proto_msgTypes[57]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4223,7 +4272,7 @@ func (x *ListExternalEventsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListExternalEventsRequest.ProtoReflect.Descriptor instead.
 func (*ListExternalEventsRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{56}
+	return file_service_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *ListExternalEventsRequest) GetWfRunId() *WfRunId {
@@ -4246,7 +4295,7 @@ type ExternalEventList struct {
 func (x *ExternalEventList) Reset() {
 	*x = ExternalEventList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[57]
+		mi := &file_service_proto_msgTypes[58]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4259,7 +4308,7 @@ func (x *ExternalEventList) String() string {
 func (*ExternalEventList) ProtoMessage() {}
 
 func (x *ExternalEventList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[57]
+	mi := &file_service_proto_msgTypes[58]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4272,7 +4321,7 @@ func (x *ExternalEventList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExternalEventList.ProtoReflect.Descriptor instead.
 func (*ExternalEventList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{57}
+	return file_service_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *ExternalEventList) GetResults() []*ExternalEvent {
@@ -4296,7 +4345,7 @@ type ListWorkflowEventsRequest struct {
 func (x *ListWorkflowEventsRequest) Reset() {
 	*x = ListWorkflowEventsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[58]
+		mi := &file_service_proto_msgTypes[59]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4309,7 +4358,7 @@ func (x *ListWorkflowEventsRequest) String() string {
 func (*ListWorkflowEventsRequest) ProtoMessage() {}
 
 func (x *ListWorkflowEventsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[58]
+	mi := &file_service_proto_msgTypes[59]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4322,7 +4371,7 @@ func (x *ListWorkflowEventsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWorkflowEventsRequest.ProtoReflect.Descriptor instead.
 func (*ListWorkflowEventsRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{58}
+	return file_service_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *ListWorkflowEventsRequest) GetWfRunId() *WfRunId {
@@ -4345,7 +4394,7 @@ type WorkflowEventList struct {
 func (x *WorkflowEventList) Reset() {
 	*x = WorkflowEventList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[59]
+		mi := &file_service_proto_msgTypes[60]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4358,7 +4407,7 @@ func (x *WorkflowEventList) String() string {
 func (*WorkflowEventList) ProtoMessage() {}
 
 func (x *WorkflowEventList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[59]
+	mi := &file_service_proto_msgTypes[60]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4371,7 +4420,7 @@ func (x *WorkflowEventList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WorkflowEventList.ProtoReflect.Descriptor instead.
 func (*WorkflowEventList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{59}
+	return file_service_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *WorkflowEventList) GetResults() []*WorkflowEvent {
@@ -4399,7 +4448,7 @@ type RegisterTaskWorkerRequest struct {
 func (x *RegisterTaskWorkerRequest) Reset() {
 	*x = RegisterTaskWorkerRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[60]
+		mi := &file_service_proto_msgTypes[61]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4412,7 +4461,7 @@ func (x *RegisterTaskWorkerRequest) String() string {
 func (*RegisterTaskWorkerRequest) ProtoMessage() {}
 
 func (x *RegisterTaskWorkerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[60]
+	mi := &file_service_proto_msgTypes[61]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4425,7 +4474,7 @@ func (x *RegisterTaskWorkerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterTaskWorkerRequest.ProtoReflect.Descriptor instead.
 func (*RegisterTaskWorkerRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{60}
+	return file_service_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *RegisterTaskWorkerRequest) GetTaskWorkerId() string {
@@ -4459,7 +4508,7 @@ type TaskWorkerHeartBeatRequest struct {
 func (x *TaskWorkerHeartBeatRequest) Reset() {
 	*x = TaskWorkerHeartBeatRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[61]
+		mi := &file_service_proto_msgTypes[62]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4472,7 +4521,7 @@ func (x *TaskWorkerHeartBeatRequest) String() string {
 func (*TaskWorkerHeartBeatRequest) ProtoMessage() {}
 
 func (x *TaskWorkerHeartBeatRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[61]
+	mi := &file_service_proto_msgTypes[62]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4485,7 +4534,7 @@ func (x *TaskWorkerHeartBeatRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskWorkerHeartBeatRequest.ProtoReflect.Descriptor instead.
 func (*TaskWorkerHeartBeatRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{61}
+	return file_service_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *TaskWorkerHeartBeatRequest) GetClientId() string {
@@ -4525,7 +4574,7 @@ type RegisterTaskWorkerResponse struct {
 func (x *RegisterTaskWorkerResponse) Reset() {
 	*x = RegisterTaskWorkerResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[62]
+		mi := &file_service_proto_msgTypes[63]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4538,7 +4587,7 @@ func (x *RegisterTaskWorkerResponse) String() string {
 func (*RegisterTaskWorkerResponse) ProtoMessage() {}
 
 func (x *RegisterTaskWorkerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[62]
+	mi := &file_service_proto_msgTypes[63]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4551,7 +4600,7 @@ func (x *RegisterTaskWorkerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterTaskWorkerResponse.ProtoReflect.Descriptor instead.
 func (*RegisterTaskWorkerResponse) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{62}
+	return file_service_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *RegisterTaskWorkerResponse) GetYourHosts() []*LHHostInfo {
@@ -4583,7 +4632,7 @@ type LHHostInfo struct {
 func (x *LHHostInfo) Reset() {
 	*x = LHHostInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[63]
+		mi := &file_service_proto_msgTypes[64]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4596,7 +4645,7 @@ func (x *LHHostInfo) String() string {
 func (*LHHostInfo) ProtoMessage() {}
 
 func (x *LHHostInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[63]
+	mi := &file_service_proto_msgTypes[64]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4609,7 +4658,7 @@ func (x *LHHostInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LHHostInfo.ProtoReflect.Descriptor instead.
 func (*LHHostInfo) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{63}
+	return file_service_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *LHHostInfo) GetHost() string {
@@ -4645,7 +4694,7 @@ type PollTaskRequest struct {
 func (x *PollTaskRequest) Reset() {
 	*x = PollTaskRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[64]
+		mi := &file_service_proto_msgTypes[65]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4658,7 +4707,7 @@ func (x *PollTaskRequest) String() string {
 func (*PollTaskRequest) ProtoMessage() {}
 
 func (x *PollTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[64]
+	mi := &file_service_proto_msgTypes[65]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4671,7 +4720,7 @@ func (x *PollTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PollTaskRequest.ProtoReflect.Descriptor instead.
 func (*PollTaskRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{64}
+	return file_service_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *PollTaskRequest) GetTaskDefId() *TaskDefId {
@@ -4721,7 +4770,7 @@ type ScheduledTask struct {
 func (x *ScheduledTask) Reset() {
 	*x = ScheduledTask{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[65]
+		mi := &file_service_proto_msgTypes[66]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4734,7 +4783,7 @@ func (x *ScheduledTask) String() string {
 func (*ScheduledTask) ProtoMessage() {}
 
 func (x *ScheduledTask) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[65]
+	mi := &file_service_proto_msgTypes[66]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4747,7 +4796,7 @@ func (x *ScheduledTask) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduledTask.ProtoReflect.Descriptor instead.
 func (*ScheduledTask) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{65}
+	return file_service_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *ScheduledTask) GetTaskRunId() *TaskRunId {
@@ -4805,7 +4854,7 @@ type PollTaskResponse struct {
 func (x *PollTaskResponse) Reset() {
 	*x = PollTaskResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[66]
+		mi := &file_service_proto_msgTypes[67]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4818,7 +4867,7 @@ func (x *PollTaskResponse) String() string {
 func (*PollTaskResponse) ProtoMessage() {}
 
 func (x *PollTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[66]
+	mi := &file_service_proto_msgTypes[67]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4831,7 +4880,7 @@ func (x *PollTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PollTaskResponse.ProtoReflect.Descriptor instead.
 func (*PollTaskResponse) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{66}
+	return file_service_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *PollTaskResponse) GetResult() *ScheduledTask {
@@ -4873,7 +4922,7 @@ type ReportTaskRun struct {
 func (x *ReportTaskRun) Reset() {
 	*x = ReportTaskRun{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[67]
+		mi := &file_service_proto_msgTypes[68]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4886,7 +4935,7 @@ func (x *ReportTaskRun) String() string {
 func (*ReportTaskRun) ProtoMessage() {}
 
 func (x *ReportTaskRun) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[67]
+	mi := &file_service_proto_msgTypes[68]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4899,7 +4948,7 @@ func (x *ReportTaskRun) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportTaskRun.ProtoReflect.Descriptor instead.
 func (*ReportTaskRun) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{67}
+	return file_service_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *ReportTaskRun) GetTaskRunId() *TaskRunId {
@@ -5008,7 +5057,7 @@ type StopWfRunRequest struct {
 func (x *StopWfRunRequest) Reset() {
 	*x = StopWfRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[68]
+		mi := &file_service_proto_msgTypes[69]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5021,7 +5070,7 @@ func (x *StopWfRunRequest) String() string {
 func (*StopWfRunRequest) ProtoMessage() {}
 
 func (x *StopWfRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[68]
+	mi := &file_service_proto_msgTypes[69]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5034,7 +5083,7 @@ func (x *StopWfRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopWfRunRequest.ProtoReflect.Descriptor instead.
 func (*StopWfRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{68}
+	return file_service_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *StopWfRunRequest) GetWfRunId() *WfRunId {
@@ -5069,7 +5118,7 @@ type ResumeWfRunRequest struct {
 func (x *ResumeWfRunRequest) Reset() {
 	*x = ResumeWfRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[69]
+		mi := &file_service_proto_msgTypes[70]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5082,7 +5131,7 @@ func (x *ResumeWfRunRequest) String() string {
 func (*ResumeWfRunRequest) ProtoMessage() {}
 
 func (x *ResumeWfRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[69]
+	mi := &file_service_proto_msgTypes[70]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5095,7 +5144,7 @@ func (x *ResumeWfRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResumeWfRunRequest.ProtoReflect.Descriptor instead.
 func (*ResumeWfRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{69}
+	return file_service_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *ResumeWfRunRequest) GetWfRunId() *WfRunId {
@@ -5140,7 +5189,7 @@ type RescueThreadRunRequest struct {
 func (x *RescueThreadRunRequest) Reset() {
 	*x = RescueThreadRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[70]
+		mi := &file_service_proto_msgTypes[71]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5153,7 +5202,7 @@ func (x *RescueThreadRunRequest) String() string {
 func (*RescueThreadRunRequest) ProtoMessage() {}
 
 func (x *RescueThreadRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[70]
+	mi := &file_service_proto_msgTypes[71]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5166,7 +5215,7 @@ func (x *RescueThreadRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RescueThreadRunRequest.ProtoReflect.Descriptor instead.
 func (*RescueThreadRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{70}
+	return file_service_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *RescueThreadRunRequest) GetWfRunId() *WfRunId {
@@ -5208,7 +5257,7 @@ type TaskDefMetricsQueryRequest struct {
 func (x *TaskDefMetricsQueryRequest) Reset() {
 	*x = TaskDefMetricsQueryRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[71]
+		mi := &file_service_proto_msgTypes[72]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5221,7 +5270,7 @@ func (x *TaskDefMetricsQueryRequest) String() string {
 func (*TaskDefMetricsQueryRequest) ProtoMessage() {}
 
 func (x *TaskDefMetricsQueryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[71]
+	mi := &file_service_proto_msgTypes[72]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5234,7 +5283,7 @@ func (x *TaskDefMetricsQueryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskDefMetricsQueryRequest.ProtoReflect.Descriptor instead.
 func (*TaskDefMetricsQueryRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{71}
+	return file_service_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *TaskDefMetricsQueryRequest) GetWindowStart() *timestamppb.Timestamp {
@@ -5278,7 +5327,7 @@ type ListTaskMetricsRequest struct {
 func (x *ListTaskMetricsRequest) Reset() {
 	*x = ListTaskMetricsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[72]
+		mi := &file_service_proto_msgTypes[73]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5291,7 +5340,7 @@ func (x *ListTaskMetricsRequest) String() string {
 func (*ListTaskMetricsRequest) ProtoMessage() {}
 
 func (x *ListTaskMetricsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[72]
+	mi := &file_service_proto_msgTypes[73]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5304,7 +5353,7 @@ func (x *ListTaskMetricsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTaskMetricsRequest.ProtoReflect.Descriptor instead.
 func (*ListTaskMetricsRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{72}
+	return file_service_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *ListTaskMetricsRequest) GetTaskDefId() *TaskDefId {
@@ -5348,7 +5397,7 @@ type ListTaskMetricsResponse struct {
 func (x *ListTaskMetricsResponse) Reset() {
 	*x = ListTaskMetricsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[73]
+		mi := &file_service_proto_msgTypes[74]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5361,7 +5410,7 @@ func (x *ListTaskMetricsResponse) String() string {
 func (*ListTaskMetricsResponse) ProtoMessage() {}
 
 func (x *ListTaskMetricsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[73]
+	mi := &file_service_proto_msgTypes[74]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5374,7 +5423,7 @@ func (x *ListTaskMetricsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTaskMetricsResponse.ProtoReflect.Descriptor instead.
 func (*ListTaskMetricsResponse) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{73}
+	return file_service_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *ListTaskMetricsResponse) GetResults() []*TaskDefMetrics {
@@ -5402,7 +5451,7 @@ type WfSpecMetricsQueryRequest struct {
 func (x *WfSpecMetricsQueryRequest) Reset() {
 	*x = WfSpecMetricsQueryRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[74]
+		mi := &file_service_proto_msgTypes[75]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5415,7 +5464,7 @@ func (x *WfSpecMetricsQueryRequest) String() string {
 func (*WfSpecMetricsQueryRequest) ProtoMessage() {}
 
 func (x *WfSpecMetricsQueryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[74]
+	mi := &file_service_proto_msgTypes[75]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5428,7 +5477,7 @@ func (x *WfSpecMetricsQueryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WfSpecMetricsQueryRequest.ProtoReflect.Descriptor instead.
 func (*WfSpecMetricsQueryRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{74}
+	return file_service_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *WfSpecMetricsQueryRequest) GetWfSpecId() *WfSpecId {
@@ -5472,7 +5521,7 @@ type ListWfMetricsRequest struct {
 func (x *ListWfMetricsRequest) Reset() {
 	*x = ListWfMetricsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[75]
+		mi := &file_service_proto_msgTypes[76]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5485,7 +5534,7 @@ func (x *ListWfMetricsRequest) String() string {
 func (*ListWfMetricsRequest) ProtoMessage() {}
 
 func (x *ListWfMetricsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[75]
+	mi := &file_service_proto_msgTypes[76]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5498,7 +5547,7 @@ func (x *ListWfMetricsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWfMetricsRequest.ProtoReflect.Descriptor instead.
 func (*ListWfMetricsRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{75}
+	return file_service_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *ListWfMetricsRequest) GetWfSpecId() *WfSpecId {
@@ -5542,7 +5591,7 @@ type ListWfMetricsResponse struct {
 func (x *ListWfMetricsResponse) Reset() {
 	*x = ListWfMetricsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[76]
+		mi := &file_service_proto_msgTypes[77]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5555,7 +5604,7 @@ func (x *ListWfMetricsResponse) String() string {
 func (*ListWfMetricsResponse) ProtoMessage() {}
 
 func (x *ListWfMetricsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[76]
+	mi := &file_service_proto_msgTypes[77]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5568,7 +5617,7 @@ func (x *ListWfMetricsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWfMetricsResponse.ProtoReflect.Descriptor instead.
 func (*ListWfMetricsResponse) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{76}
+	return file_service_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *ListWfMetricsResponse) GetResults() []*WfSpecMetrics {
@@ -5611,7 +5660,7 @@ type TaskDefMetrics struct {
 func (x *TaskDefMetrics) Reset() {
 	*x = TaskDefMetrics{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[77]
+		mi := &file_service_proto_msgTypes[78]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5624,7 +5673,7 @@ func (x *TaskDefMetrics) String() string {
 func (*TaskDefMetrics) ProtoMessage() {}
 
 func (x *TaskDefMetrics) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[77]
+	mi := &file_service_proto_msgTypes[78]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5637,7 +5686,7 @@ func (x *TaskDefMetrics) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskDefMetrics.ProtoReflect.Descriptor instead.
 func (*TaskDefMetrics) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{77}
+	return file_service_proto_rawDescGZIP(), []int{78}
 }
 
 func (x *TaskDefMetrics) GetTaskDefId() *TaskDefId {
@@ -5744,7 +5793,7 @@ type WfSpecMetrics struct {
 func (x *WfSpecMetrics) Reset() {
 	*x = WfSpecMetrics{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[78]
+		mi := &file_service_proto_msgTypes[79]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5757,7 +5806,7 @@ func (x *WfSpecMetrics) String() string {
 func (*WfSpecMetrics) ProtoMessage() {}
 
 func (x *WfSpecMetrics) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[78]
+	mi := &file_service_proto_msgTypes[79]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5770,7 +5819,7 @@ func (x *WfSpecMetrics) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WfSpecMetrics.ProtoReflect.Descriptor instead.
 func (*WfSpecMetrics) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{78}
+	return file_service_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *WfSpecMetrics) GetWfSpecId() *WfSpecId {
@@ -5842,7 +5891,7 @@ type ListUserTaskRunRequest struct {
 func (x *ListUserTaskRunRequest) Reset() {
 	*x = ListUserTaskRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[79]
+		mi := &file_service_proto_msgTypes[80]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5855,7 +5904,7 @@ func (x *ListUserTaskRunRequest) String() string {
 func (*ListUserTaskRunRequest) ProtoMessage() {}
 
 func (x *ListUserTaskRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[79]
+	mi := &file_service_proto_msgTypes[80]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5868,7 +5917,7 @@ func (x *ListUserTaskRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUserTaskRunRequest.ProtoReflect.Descriptor instead.
 func (*ListUserTaskRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{79}
+	return file_service_proto_rawDescGZIP(), []int{80}
 }
 
 func (x *ListUserTaskRunRequest) GetWfRunId() *WfRunId {
@@ -5891,7 +5940,7 @@ type UserTaskRunList struct {
 func (x *UserTaskRunList) Reset() {
 	*x = UserTaskRunList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[80]
+		mi := &file_service_proto_msgTypes[81]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5904,7 +5953,7 @@ func (x *UserTaskRunList) String() string {
 func (*UserTaskRunList) ProtoMessage() {}
 
 func (x *UserTaskRunList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[80]
+	mi := &file_service_proto_msgTypes[81]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5917,7 +5966,7 @@ func (x *UserTaskRunList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserTaskRunList.ProtoReflect.Descriptor instead.
 func (*UserTaskRunList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{80}
+	return file_service_proto_rawDescGZIP(), []int{81}
 }
 
 func (x *UserTaskRunList) GetResults() []*UserTaskRun {
@@ -5940,7 +5989,7 @@ type ScheduledWfRunIdList struct {
 func (x *ScheduledWfRunIdList) Reset() {
 	*x = ScheduledWfRunIdList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[81]
+		mi := &file_service_proto_msgTypes[82]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5953,7 +6002,7 @@ func (x *ScheduledWfRunIdList) String() string {
 func (*ScheduledWfRunIdList) ProtoMessage() {}
 
 func (x *ScheduledWfRunIdList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[81]
+	mi := &file_service_proto_msgTypes[82]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5966,7 +6015,7 @@ func (x *ScheduledWfRunIdList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduledWfRunIdList.ProtoReflect.Descriptor instead.
 func (*ScheduledWfRunIdList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{81}
+	return file_service_proto_rawDescGZIP(), []int{82}
 }
 
 func (x *ScheduledWfRunIdList) GetResults() []*ScheduledWfRunId {
@@ -5993,7 +6042,7 @@ type SearchScheduledWfRunRequest struct {
 func (x *SearchScheduledWfRunRequest) Reset() {
 	*x = SearchScheduledWfRunRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[82]
+		mi := &file_service_proto_msgTypes[83]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6006,7 +6055,7 @@ func (x *SearchScheduledWfRunRequest) String() string {
 func (*SearchScheduledWfRunRequest) ProtoMessage() {}
 
 func (x *SearchScheduledWfRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[82]
+	mi := &file_service_proto_msgTypes[83]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6019,7 +6068,7 @@ func (x *SearchScheduledWfRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchScheduledWfRunRequest.ProtoReflect.Descriptor instead.
 func (*SearchScheduledWfRunRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{82}
+	return file_service_proto_rawDescGZIP(), []int{83}
 }
 
 func (x *SearchScheduledWfRunRequest) GetWfSpecName() string {
@@ -6060,7 +6109,7 @@ type TaskWorkerMetadata struct {
 func (x *TaskWorkerMetadata) Reset() {
 	*x = TaskWorkerMetadata{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[83]
+		mi := &file_service_proto_msgTypes[84]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6073,7 +6122,7 @@ func (x *TaskWorkerMetadata) String() string {
 func (*TaskWorkerMetadata) ProtoMessage() {}
 
 func (x *TaskWorkerMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[83]
+	mi := &file_service_proto_msgTypes[84]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6086,7 +6135,7 @@ func (x *TaskWorkerMetadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskWorkerMetadata.ProtoReflect.Descriptor instead.
 func (*TaskWorkerMetadata) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{83}
+	return file_service_proto_rawDescGZIP(), []int{84}
 }
 
 func (x *TaskWorkerMetadata) GetTaskWorkerId() string {
@@ -6127,7 +6176,7 @@ type TaskWorkerGroup struct {
 func (x *TaskWorkerGroup) Reset() {
 	*x = TaskWorkerGroup{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[84]
+		mi := &file_service_proto_msgTypes[85]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6140,7 +6189,7 @@ func (x *TaskWorkerGroup) String() string {
 func (*TaskWorkerGroup) ProtoMessage() {}
 
 func (x *TaskWorkerGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[84]
+	mi := &file_service_proto_msgTypes[85]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6153,7 +6202,7 @@ func (x *TaskWorkerGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskWorkerGroup.ProtoReflect.Descriptor instead.
 func (*TaskWorkerGroup) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{84}
+	return file_service_proto_rawDescGZIP(), []int{85}
 }
 
 func (x *TaskWorkerGroup) GetId() *TaskWorkerGroupId {
@@ -6190,7 +6239,7 @@ type ListTaskRunsRequest struct {
 func (x *ListTaskRunsRequest) Reset() {
 	*x = ListTaskRunsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[85]
+		mi := &file_service_proto_msgTypes[86]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6203,7 +6252,7 @@ func (x *ListTaskRunsRequest) String() string {
 func (*ListTaskRunsRequest) ProtoMessage() {}
 
 func (x *ListTaskRunsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[85]
+	mi := &file_service_proto_msgTypes[86]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6216,7 +6265,7 @@ func (x *ListTaskRunsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTaskRunsRequest.ProtoReflect.Descriptor instead.
 func (*ListTaskRunsRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{85}
+	return file_service_proto_rawDescGZIP(), []int{86}
 }
 
 func (x *ListTaskRunsRequest) GetWfRunId() *WfRunId {
@@ -6239,7 +6288,7 @@ type TaskRunList struct {
 func (x *TaskRunList) Reset() {
 	*x = TaskRunList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[86]
+		mi := &file_service_proto_msgTypes[87]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6252,7 +6301,7 @@ func (x *TaskRunList) String() string {
 func (*TaskRunList) ProtoMessage() {}
 
 func (x *TaskRunList) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[86]
+	mi := &file_service_proto_msgTypes[87]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6265,7 +6314,7 @@ func (x *TaskRunList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskRunList.ProtoReflect.Descriptor instead.
 func (*TaskRunList) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{86}
+	return file_service_proto_rawDescGZIP(), []int{87}
 }
 
 func (x *TaskRunList) GetResults() []*TaskRun {
@@ -6288,7 +6337,7 @@ type MigrateWfSpecRequest struct {
 func (x *MigrateWfSpecRequest) Reset() {
 	*x = MigrateWfSpecRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[87]
+		mi := &file_service_proto_msgTypes[88]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6301,7 +6350,7 @@ func (x *MigrateWfSpecRequest) String() string {
 func (*MigrateWfSpecRequest) ProtoMessage() {}
 
 func (x *MigrateWfSpecRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[87]
+	mi := &file_service_proto_msgTypes[88]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6314,7 +6363,7 @@ func (x *MigrateWfSpecRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MigrateWfSpecRequest.ProtoReflect.Descriptor instead.
 func (*MigrateWfSpecRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{87}
+	return file_service_proto_rawDescGZIP(), []int{88}
 }
 
 func (x *MigrateWfSpecRequest) GetOldWfSpec() *WfSpecId {
@@ -6349,7 +6398,7 @@ type GetLatestWfSpecRequest struct {
 func (x *GetLatestWfSpecRequest) Reset() {
 	*x = GetLatestWfSpecRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[88]
+		mi := &file_service_proto_msgTypes[89]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6362,7 +6411,7 @@ func (x *GetLatestWfSpecRequest) String() string {
 func (*GetLatestWfSpecRequest) ProtoMessage() {}
 
 func (x *GetLatestWfSpecRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[88]
+	mi := &file_service_proto_msgTypes[89]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6375,7 +6424,7 @@ func (x *GetLatestWfSpecRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestWfSpecRequest.ProtoReflect.Descriptor instead.
 func (*GetLatestWfSpecRequest) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{88}
+	return file_service_proto_rawDescGZIP(), []int{89}
 }
 
 func (x *GetLatestWfSpecRequest) GetName() string {
@@ -6412,7 +6461,7 @@ type LittleHorseVersion struct {
 func (x *LittleHorseVersion) Reset() {
 	*x = LittleHorseVersion{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[89]
+		mi := &file_service_proto_msgTypes[90]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6425,7 +6474,7 @@ func (x *LittleHorseVersion) String() string {
 func (*LittleHorseVersion) ProtoMessage() {}
 
 func (x *LittleHorseVersion) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[89]
+	mi := &file_service_proto_msgTypes[90]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6438,7 +6487,7 @@ func (x *LittleHorseVersion) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LittleHorseVersion.ProtoReflect.Descriptor instead.
 func (*LittleHorseVersion) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{89}
+	return file_service_proto_rawDescGZIP(), []int{90}
 }
 
 func (x *LittleHorseVersion) GetMajorVersion() int32 {
@@ -6665,7 +6714,12 @@ var file_service_proto_rawDesc = []byte{
 	0x69, 0x64, 0x22, 0x3a, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x57, 0x66, 0x52, 0x75,
 	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x24, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
-	0x73, 0x65, 0x2e, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x52, 0x02, 0x69, 0x64, 0x22, 0x3e,
+	0x73, 0x65, 0x2e, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x52, 0x02, 0x69, 0x64, 0x22, 0x4e,
+	0x0a, 0x1c, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x72, 0x72, 0x65, 0x6c, 0x61, 0x74,
+	0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6c, 0x69, 0x74,
+	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x72, 0x72, 0x65, 0x6c, 0x61,
+	0x74, 0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x52, 0x02, 0x69, 0x64, 0x22, 0x3e,
 	0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x52,
 	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x26, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
@@ -7565,7 +7619,7 @@ var file_service_proto_rawDesc = []byte{
 	0x0a, 0x11, 0x4e, 0x4f, 0x5f, 0x53, 0x43, 0x48, 0x45, 0x4d, 0x41, 0x5f, 0x55, 0x50, 0x44, 0x41,
 	0x54, 0x45, 0x53, 0x10, 0x00, 0x12, 0x23, 0x0a, 0x1f, 0x46, 0x55, 0x4c, 0x4c, 0x59, 0x5f, 0x43,
 	0x4f, 0x4d, 0x50, 0x41, 0x54, 0x49, 0x42, 0x4c, 0x45, 0x5f, 0x53, 0x43, 0x48, 0x45, 0x4d, 0x41,
-	0x5f, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x53, 0x10, 0x01, 0x32, 0xec, 0x36, 0x0a, 0x0b, 0x4c,
+	0x5f, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x53, 0x10, 0x01, 0x32, 0xca, 0x37, 0x0a, 0x0b, 0x4c,
 	0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x0a, 0x50, 0x75,
 	0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x12, 0x1e, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
 	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x75, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65,
@@ -7937,79 +7991,85 @@ var file_service_proto_rawDesc = []byte{
 	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x78, 0x74,
 	0x65, 0x72, 0x6e, 0x61, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x44, 0x65, 0x66, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x5e,
-	0x0a, 0x16, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x44, 0x65, 0x66, 0x12, 0x2a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x57, 0x6f, 0x72,
-	0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x44, 0x65, 0x66, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x50,
-	0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61,
-	0x6c, 0x12, 0x23, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
-	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00,
-	0x12, 0x5a, 0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75,
-	0x6c, 0x65, 0x64, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x12, 0x28, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x63, 0x68,
-	0x65, 0x64, 0x75, 0x6c, 0x65, 0x64, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x5c,
+	0x0a, 0x15, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x72, 0x72, 0x65, 0x6c, 0x61, 0x74,
+	0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x29, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
+	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x72, 0x72,
+	0x65, 0x6c, 0x61, 0x74, 0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x61, 0x0a, 0x17,
-	0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63,
-	0x73, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x12, 0x27, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65, 0x74,
-	0x72, 0x69, 0x63, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x1b, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54,
-	0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x22, 0x00, 0x12,
-	0x5e, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x57, 0x66, 0x53, 0x70, 0x65, 0x63, 0x4d, 0x65, 0x74, 0x72,
-	0x69, 0x63, 0x73, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x12, 0x26, 0x2e, 0x6c, 0x69, 0x74, 0x74,
-	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x57, 0x66, 0x53, 0x70, 0x65, 0x63, 0x4d, 0x65,
-	0x74, 0x72, 0x69, 0x63, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
-	0x57, 0x66, 0x53, 0x70, 0x65, 0x63, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x22, 0x00, 0x12,
-	0x61, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65,
-	0x74, 0x72, 0x69, 0x63, 0x73, 0x12, 0x23, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
-	0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x4d, 0x65, 0x74, 0x72,
-	0x69, 0x63, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x6c, 0x69, 0x74,
-	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73,
-	0x6b, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x00, 0x12, 0x5c, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x66, 0x53, 0x70, 0x65, 0x63,
-	0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x12, 0x21, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x66, 0x4d, 0x65, 0x74, 0x72,
-	0x69, 0x63, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x6c, 0x69, 0x74,
-	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x66, 0x4d,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x5e, 0x0a, 0x16,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x44, 0x65, 0x66, 0x12, 0x2a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b, 0x66,
+	0x6c, 0x6f, 0x77, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x44, 0x65, 0x66, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x50, 0x0a, 0x0f,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x12,
+	0x23, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x5a,
+	0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65,
+	0x64, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x12, 0x28, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x63, 0x68, 0x65, 0x64,
+	0x75, 0x6c, 0x65, 0x64, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x61, 0x0a, 0x17, 0x47, 0x65,
+	0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x57,
+	0x69, 0x6e, 0x64, 0x6f, 0x77, 0x12, 0x27, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69,
+	0x63, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b,
+	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x61, 0x73,
+	0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x22, 0x00, 0x12, 0x5e, 0x0a,
+	0x16, 0x47, 0x65, 0x74, 0x57, 0x66, 0x53, 0x70, 0x65, 0x63, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63,
+	0x73, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x12, 0x26, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
+	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x57, 0x66, 0x53, 0x70, 0x65, 0x63, 0x4d, 0x65, 0x74, 0x72,
+	0x69, 0x63, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x57, 0x66,
+	0x53, 0x70, 0x65, 0x63, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x22, 0x00, 0x12, 0x61, 0x0a,
+	0x12, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x4d, 0x65, 0x74, 0x72,
+	0x69, 0x63, 0x73, 0x12, 0x23, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73,
+	0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
+	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x4d,
 	0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x12, 0x41, 0x0a, 0x09, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x12, 0x1d, 0x2e,
-	0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x75, 0x74, 0x54,
-	0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6c,
-	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e,
-	0x74, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74,
-	0x12, 0x15, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54,
-	0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x64, 0x1a, 0x13, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x22, 0x00, 0x12, 0x4a,
-	0x0a, 0x0c, 0x50, 0x75, 0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x12, 0x20,
-	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x75, 0x74,
-	0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50,
-	0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12, 0x42, 0x0a, 0x0c, 0x47, 0x65,
-	0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x12, 0x18, 0x2e, 0x6c, 0x69, 0x74,
-	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70,
-	0x61, 0x6c, 0x49, 0x64, 0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
-	0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12, 0x3a,
-	0x0a, 0x06, 0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50,
-	0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12, 0x4d, 0x0a, 0x10, 0x47, 0x65,
-	0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x16,
-	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
-	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65,
-	0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x22, 0x00, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e,
-	0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
-	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09,
-	0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74,
-	0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d,
-	0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x5c, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x66, 0x53, 0x70, 0x65, 0x63, 0x4d, 0x65,
+	0x74, 0x72, 0x69, 0x63, 0x73, 0x12, 0x21, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
+	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x66, 0x4d, 0x65, 0x74,
+	0x72, 0x69, 0x63, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41,
+	0x0a, 0x09, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x12, 0x1d, 0x2e, 0x6c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e,
+	0x61, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6c, 0x69, 0x74,
+	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x22,
+	0x00, 0x12, 0x39, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x12, 0x15,
+	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e,
+	0x61, 0x6e, 0x74, 0x49, 0x64, 0x1a, 0x13, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x22, 0x00, 0x12, 0x4a, 0x0a, 0x0c,
+	0x50, 0x75, 0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x12, 0x20, 0x2e, 0x6c,
+	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x75, 0x74, 0x50, 0x72,
+	0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16,
+	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69,
+	0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12, 0x42, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x50,
+	0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x12, 0x18, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
+	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c,
+	0x49, 0x64, 0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x06,
+	0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x16,
+	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69,
+	0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12, 0x4d, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53,
+	0x65, 0x72, 0x76, 0x65, 0x72, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x1a, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
+	0x73, 0x65, 0x2e, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x56, 0x65,
+	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x22, 0x00, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f,
+	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b,
+	0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65,
+	0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -8025,7 +8085,7 @@ func file_service_proto_rawDescGZIP() []byte {
 }
 
 var file_service_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 94)
+var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 95)
 var file_service_proto_goTypes = []interface{}{
 	(AllowedUpdateType)(0),                     // 0: littlehorse.AllowedUpdateType
 	(StructDefCompatibilityType)(0),            // 1: littlehorse.StructDefCompatibilityType
@@ -8044,465 +8104,469 @@ var file_service_proto_goTypes = []interface{}{
 	(*DeleteExternalEventRequest)(nil),         // 14: littlehorse.DeleteExternalEventRequest
 	(*DeleteScheduledWfRunRequest)(nil),        // 15: littlehorse.DeleteScheduledWfRunRequest
 	(*DeleteWfRunRequest)(nil),                 // 16: littlehorse.DeleteWfRunRequest
-	(*DeleteTaskDefRequest)(nil),               // 17: littlehorse.DeleteTaskDefRequest
-	(*DeleteStructDefRequest)(nil),             // 18: littlehorse.DeleteStructDefRequest
-	(*DeleteUserTaskDefRequest)(nil),           // 19: littlehorse.DeleteUserTaskDefRequest
-	(*DeleteWfSpecRequest)(nil),                // 20: littlehorse.DeleteWfSpecRequest
-	(*DeleteExternalEventDefRequest)(nil),      // 21: littlehorse.DeleteExternalEventDefRequest
-	(*DeleteWorkflowEventDefRequest)(nil),      // 22: littlehorse.DeleteWorkflowEventDefRequest
-	(*RunWfRequest)(nil),                       // 23: littlehorse.RunWfRequest
-	(*ScheduleWfRequest)(nil),                  // 24: littlehorse.ScheduleWfRequest
-	(*VariableMatch)(nil),                      // 25: littlehorse.VariableMatch
-	(*AwaitWorkflowEventRequest)(nil),          // 26: littlehorse.AwaitWorkflowEventRequest
-	(*SearchWfRunRequest)(nil),                 // 27: littlehorse.SearchWfRunRequest
-	(*WfRunIdList)(nil),                        // 28: littlehorse.WfRunIdList
-	(*SearchTaskRunRequest)(nil),               // 29: littlehorse.SearchTaskRunRequest
-	(*TaskRunIdList)(nil),                      // 30: littlehorse.TaskRunIdList
-	(*SearchNodeRunRequest)(nil),               // 31: littlehorse.SearchNodeRunRequest
-	(*NodeRunIdList)(nil),                      // 32: littlehorse.NodeRunIdList
-	(*SearchUserTaskRunRequest)(nil),           // 33: littlehorse.SearchUserTaskRunRequest
-	(*UserTaskRunIdList)(nil),                  // 34: littlehorse.UserTaskRunIdList
-	(*SearchVariableRequest)(nil),              // 35: littlehorse.SearchVariableRequest
-	(*VariableIdList)(nil),                     // 36: littlehorse.VariableIdList
-	(*SearchTaskDefRequest)(nil),               // 37: littlehorse.SearchTaskDefRequest
-	(*TaskDefIdList)(nil),                      // 38: littlehorse.TaskDefIdList
-	(*SearchUserTaskDefRequest)(nil),           // 39: littlehorse.SearchUserTaskDefRequest
-	(*UserTaskDefIdList)(nil),                  // 40: littlehorse.UserTaskDefIdList
-	(*SearchWfSpecRequest)(nil),                // 41: littlehorse.SearchWfSpecRequest
-	(*WfSpecIdList)(nil),                       // 42: littlehorse.WfSpecIdList
-	(*SearchExternalEventDefRequest)(nil),      // 43: littlehorse.SearchExternalEventDefRequest
-	(*ExternalEventDefIdList)(nil),             // 44: littlehorse.ExternalEventDefIdList
-	(*SearchWorkflowEventDefRequest)(nil),      // 45: littlehorse.SearchWorkflowEventDefRequest
-	(*WorkflowEventDefIdList)(nil),             // 46: littlehorse.WorkflowEventDefIdList
-	(*SearchTenantRequest)(nil),                // 47: littlehorse.SearchTenantRequest
-	(*TenantIdList)(nil),                       // 48: littlehorse.TenantIdList
-	(*SearchPrincipalRequest)(nil),             // 49: littlehorse.SearchPrincipalRequest
-	(*PrincipalIdList)(nil),                    // 50: littlehorse.PrincipalIdList
-	(*SearchExternalEventRequest)(nil),         // 51: littlehorse.SearchExternalEventRequest
-	(*ExternalEventIdList)(nil),                // 52: littlehorse.ExternalEventIdList
-	(*SearchWorkflowEventRequest)(nil),         // 53: littlehorse.SearchWorkflowEventRequest
-	(*WorkflowEventIdList)(nil),                // 54: littlehorse.WorkflowEventIdList
-	(*ListNodeRunsRequest)(nil),                // 55: littlehorse.ListNodeRunsRequest
-	(*NodeRunList)(nil),                        // 56: littlehorse.NodeRunList
-	(*ListVariablesRequest)(nil),               // 57: littlehorse.ListVariablesRequest
-	(*VariableList)(nil),                       // 58: littlehorse.VariableList
-	(*ListExternalEventsRequest)(nil),          // 59: littlehorse.ListExternalEventsRequest
-	(*ExternalEventList)(nil),                  // 60: littlehorse.ExternalEventList
-	(*ListWorkflowEventsRequest)(nil),          // 61: littlehorse.ListWorkflowEventsRequest
-	(*WorkflowEventList)(nil),                  // 62: littlehorse.WorkflowEventList
-	(*RegisterTaskWorkerRequest)(nil),          // 63: littlehorse.RegisterTaskWorkerRequest
-	(*TaskWorkerHeartBeatRequest)(nil),         // 64: littlehorse.TaskWorkerHeartBeatRequest
-	(*RegisterTaskWorkerResponse)(nil),         // 65: littlehorse.RegisterTaskWorkerResponse
-	(*LHHostInfo)(nil),                         // 66: littlehorse.LHHostInfo
-	(*PollTaskRequest)(nil),                    // 67: littlehorse.PollTaskRequest
-	(*ScheduledTask)(nil),                      // 68: littlehorse.ScheduledTask
-	(*PollTaskResponse)(nil),                   // 69: littlehorse.PollTaskResponse
-	(*ReportTaskRun)(nil),                      // 70: littlehorse.ReportTaskRun
-	(*StopWfRunRequest)(nil),                   // 71: littlehorse.StopWfRunRequest
-	(*ResumeWfRunRequest)(nil),                 // 72: littlehorse.ResumeWfRunRequest
-	(*RescueThreadRunRequest)(nil),             // 73: littlehorse.RescueThreadRunRequest
-	(*TaskDefMetricsQueryRequest)(nil),         // 74: littlehorse.TaskDefMetricsQueryRequest
-	(*ListTaskMetricsRequest)(nil),             // 75: littlehorse.ListTaskMetricsRequest
-	(*ListTaskMetricsResponse)(nil),            // 76: littlehorse.ListTaskMetricsResponse
-	(*WfSpecMetricsQueryRequest)(nil),          // 77: littlehorse.WfSpecMetricsQueryRequest
-	(*ListWfMetricsRequest)(nil),               // 78: littlehorse.ListWfMetricsRequest
-	(*ListWfMetricsResponse)(nil),              // 79: littlehorse.ListWfMetricsResponse
-	(*TaskDefMetrics)(nil),                     // 80: littlehorse.TaskDefMetrics
-	(*WfSpecMetrics)(nil),                      // 81: littlehorse.WfSpecMetrics
-	(*ListUserTaskRunRequest)(nil),             // 82: littlehorse.ListUserTaskRunRequest
-	(*UserTaskRunList)(nil),                    // 83: littlehorse.UserTaskRunList
-	(*ScheduledWfRunIdList)(nil),               // 84: littlehorse.ScheduledWfRunIdList
-	(*SearchScheduledWfRunRequest)(nil),        // 85: littlehorse.SearchScheduledWfRunRequest
-	(*TaskWorkerMetadata)(nil),                 // 86: littlehorse.TaskWorkerMetadata
-	(*TaskWorkerGroup)(nil),                    // 87: littlehorse.TaskWorkerGroup
-	(*ListTaskRunsRequest)(nil),                // 88: littlehorse.ListTaskRunsRequest
-	(*TaskRunList)(nil),                        // 89: littlehorse.TaskRunList
-	(*MigrateWfSpecRequest)(nil),               // 90: littlehorse.MigrateWfSpecRequest
-	(*GetLatestWfSpecRequest)(nil),             // 91: littlehorse.GetLatestWfSpecRequest
-	(*LittleHorseVersion)(nil),                 // 92: littlehorse.LittleHorseVersion
-	nil,                                        // 93: littlehorse.PutWfSpecRequest.ThreadSpecsEntry
-	nil,                                        // 94: littlehorse.RunWfRequest.VariablesEntry
-	nil,                                        // 95: littlehorse.ScheduleWfRequest.VariablesEntry
-	nil,                                        // 96: littlehorse.TaskWorkerGroup.TaskWorkersEntry
-	(*WorkflowRetentionPolicy)(nil),            // 97: littlehorse.WorkflowRetentionPolicy
-	(*WfSpec_ParentWfSpecReference)(nil),       // 98: littlehorse.WfSpec.ParentWfSpecReference
-	(*VariableDef)(nil),                        // 99: littlehorse.VariableDef
-	(*ReturnType)(nil),                         // 100: littlehorse.ReturnType
-	(*InlineStructDef)(nil),                    // 101: littlehorse.InlineStructDef
-	(*StructDefId)(nil),                        // 102: littlehorse.StructDefId
-	(*UserTaskField)(nil),                      // 103: littlehorse.UserTaskField
-	(*ExternalEventRetentionPolicy)(nil),       // 104: littlehorse.ExternalEventRetentionPolicy
-	(*CorrelatedEventConfig)(nil),              // 105: littlehorse.CorrelatedEventConfig
-	(*WfRunId)(nil),                            // 106: littlehorse.WfRunId
-	(*ExternalEventDefId)(nil),                 // 107: littlehorse.ExternalEventDefId
-	(*VariableValue)(nil),                      // 108: littlehorse.VariableValue
-	(*ExternalEventId)(nil),                    // 109: littlehorse.ExternalEventId
-	(*ScheduledWfRunId)(nil),                   // 110: littlehorse.ScheduledWfRunId
-	(*TaskDefId)(nil),                          // 111: littlehorse.TaskDefId
-	(*UserTaskDefId)(nil),                      // 112: littlehorse.UserTaskDefId
-	(*WfSpecId)(nil),                           // 113: littlehorse.WfSpecId
-	(*WorkflowEventDefId)(nil),                 // 114: littlehorse.WorkflowEventDefId
-	(*WorkflowEventId)(nil),                    // 115: littlehorse.WorkflowEventId
-	(LHStatus)(0),                              // 116: littlehorse.LHStatus
-	(*timestamppb.Timestamp)(nil),              // 117: google.protobuf.Timestamp
-	(TaskStatus)(0),                            // 118: littlehorse.TaskStatus
-	(*TaskRunId)(nil),                          // 119: littlehorse.TaskRunId
-	(*NodeRunId)(nil),                          // 120: littlehorse.NodeRunId
-	(UserTaskRunStatus)(0),                     // 121: littlehorse.UserTaskRunStatus
-	(*UserTaskRunId)(nil),                      // 122: littlehorse.UserTaskRunId
-	(*VariableId)(nil),                         // 123: littlehorse.VariableId
-	(*TenantId)(nil),                           // 124: littlehorse.TenantId
-	(*PrincipalId)(nil),                        // 125: littlehorse.PrincipalId
-	(*NodeRun)(nil),                            // 126: littlehorse.NodeRun
-	(*Variable)(nil),                           // 127: littlehorse.Variable
-	(*ExternalEvent)(nil),                      // 128: littlehorse.ExternalEvent
-	(*WorkflowEvent)(nil),                      // 129: littlehorse.WorkflowEvent
-	(*VarNameAndVal)(nil),                      // 130: littlehorse.VarNameAndVal
-	(*TaskRunSource)(nil),                      // 131: littlehorse.TaskRunSource
-	(*LHTaskError)(nil),                        // 132: littlehorse.LHTaskError
-	(*LHTaskException)(nil),                    // 133: littlehorse.LHTaskException
-	(MetricsWindowLength)(0),                   // 134: littlehorse.MetricsWindowLength
-	(*UserTaskRun)(nil),                        // 135: littlehorse.UserTaskRun
-	(*TaskWorkerGroupId)(nil),                  // 136: littlehorse.TaskWorkerGroupId
-	(*TaskRun)(nil),                            // 137: littlehorse.TaskRun
-	(*WfSpecVersionMigration)(nil),             // 138: littlehorse.WfSpecVersionMigration
-	(*ThreadSpec)(nil),                         // 139: littlehorse.ThreadSpec
-	(*AssignUserTaskRunRequest)(nil),           // 140: littlehorse.AssignUserTaskRunRequest
-	(*CompleteUserTaskRunRequest)(nil),         // 141: littlehorse.CompleteUserTaskRunRequest
-	(*CancelUserTaskRunRequest)(nil),           // 142: littlehorse.CancelUserTaskRunRequest
-	(*SaveUserTaskRunProgressRequest)(nil),     // 143: littlehorse.SaveUserTaskRunProgressRequest
-	(*UserTaskRunCommentRequest)(nil),          // 144: littlehorse.UserTaskRunCommentRequest
-	(*EditUserTaskRunCommentRequest)(nil),      // 145: littlehorse.EditUserTaskRunCommentRequest
-	(*DeleteUserTaskRunCommentRequest)(nil),    // 146: littlehorse.DeleteUserTaskRunCommentRequest
-	(*CorrelatedEventId)(nil),                  // 147: littlehorse.CorrelatedEventId
-	(*DeletePrincipalRequest)(nil),             // 148: littlehorse.DeletePrincipalRequest
-	(*PutTenantRequest)(nil),                   // 149: littlehorse.PutTenantRequest
-	(*PutPrincipalRequest)(nil),                // 150: littlehorse.PutPrincipalRequest
-	(*emptypb.Empty)(nil),                      // 151: google.protobuf.Empty
-	(*TaskDef)(nil),                            // 152: littlehorse.TaskDef
-	(*ExternalEventDef)(nil),                   // 153: littlehorse.ExternalEventDef
-	(*WorkflowEventDef)(nil),                   // 154: littlehorse.WorkflowEventDef
-	(*WfSpec)(nil),                             // 155: littlehorse.WfSpec
-	(*StructDef)(nil),                          // 156: littlehorse.StructDef
-	(*UserTaskDef)(nil),                        // 157: littlehorse.UserTaskDef
-	(*WfRun)(nil),                              // 158: littlehorse.WfRun
-	(*ScheduledWfRun)(nil),                     // 159: littlehorse.ScheduledWfRun
-	(*CorrelatedEvent)(nil),                    // 160: littlehorse.CorrelatedEvent
-	(*Tenant)(nil),                             // 161: littlehorse.Tenant
-	(*Principal)(nil),                          // 162: littlehorse.Principal
+	(*DeleteCorrelatedEventRequest)(nil),       // 17: littlehorse.DeleteCorrelatedEventRequest
+	(*DeleteTaskDefRequest)(nil),               // 18: littlehorse.DeleteTaskDefRequest
+	(*DeleteStructDefRequest)(nil),             // 19: littlehorse.DeleteStructDefRequest
+	(*DeleteUserTaskDefRequest)(nil),           // 20: littlehorse.DeleteUserTaskDefRequest
+	(*DeleteWfSpecRequest)(nil),                // 21: littlehorse.DeleteWfSpecRequest
+	(*DeleteExternalEventDefRequest)(nil),      // 22: littlehorse.DeleteExternalEventDefRequest
+	(*DeleteWorkflowEventDefRequest)(nil),      // 23: littlehorse.DeleteWorkflowEventDefRequest
+	(*RunWfRequest)(nil),                       // 24: littlehorse.RunWfRequest
+	(*ScheduleWfRequest)(nil),                  // 25: littlehorse.ScheduleWfRequest
+	(*VariableMatch)(nil),                      // 26: littlehorse.VariableMatch
+	(*AwaitWorkflowEventRequest)(nil),          // 27: littlehorse.AwaitWorkflowEventRequest
+	(*SearchWfRunRequest)(nil),                 // 28: littlehorse.SearchWfRunRequest
+	(*WfRunIdList)(nil),                        // 29: littlehorse.WfRunIdList
+	(*SearchTaskRunRequest)(nil),               // 30: littlehorse.SearchTaskRunRequest
+	(*TaskRunIdList)(nil),                      // 31: littlehorse.TaskRunIdList
+	(*SearchNodeRunRequest)(nil),               // 32: littlehorse.SearchNodeRunRequest
+	(*NodeRunIdList)(nil),                      // 33: littlehorse.NodeRunIdList
+	(*SearchUserTaskRunRequest)(nil),           // 34: littlehorse.SearchUserTaskRunRequest
+	(*UserTaskRunIdList)(nil),                  // 35: littlehorse.UserTaskRunIdList
+	(*SearchVariableRequest)(nil),              // 36: littlehorse.SearchVariableRequest
+	(*VariableIdList)(nil),                     // 37: littlehorse.VariableIdList
+	(*SearchTaskDefRequest)(nil),               // 38: littlehorse.SearchTaskDefRequest
+	(*TaskDefIdList)(nil),                      // 39: littlehorse.TaskDefIdList
+	(*SearchUserTaskDefRequest)(nil),           // 40: littlehorse.SearchUserTaskDefRequest
+	(*UserTaskDefIdList)(nil),                  // 41: littlehorse.UserTaskDefIdList
+	(*SearchWfSpecRequest)(nil),                // 42: littlehorse.SearchWfSpecRequest
+	(*WfSpecIdList)(nil),                       // 43: littlehorse.WfSpecIdList
+	(*SearchExternalEventDefRequest)(nil),      // 44: littlehorse.SearchExternalEventDefRequest
+	(*ExternalEventDefIdList)(nil),             // 45: littlehorse.ExternalEventDefIdList
+	(*SearchWorkflowEventDefRequest)(nil),      // 46: littlehorse.SearchWorkflowEventDefRequest
+	(*WorkflowEventDefIdList)(nil),             // 47: littlehorse.WorkflowEventDefIdList
+	(*SearchTenantRequest)(nil),                // 48: littlehorse.SearchTenantRequest
+	(*TenantIdList)(nil),                       // 49: littlehorse.TenantIdList
+	(*SearchPrincipalRequest)(nil),             // 50: littlehorse.SearchPrincipalRequest
+	(*PrincipalIdList)(nil),                    // 51: littlehorse.PrincipalIdList
+	(*SearchExternalEventRequest)(nil),         // 52: littlehorse.SearchExternalEventRequest
+	(*ExternalEventIdList)(nil),                // 53: littlehorse.ExternalEventIdList
+	(*SearchWorkflowEventRequest)(nil),         // 54: littlehorse.SearchWorkflowEventRequest
+	(*WorkflowEventIdList)(nil),                // 55: littlehorse.WorkflowEventIdList
+	(*ListNodeRunsRequest)(nil),                // 56: littlehorse.ListNodeRunsRequest
+	(*NodeRunList)(nil),                        // 57: littlehorse.NodeRunList
+	(*ListVariablesRequest)(nil),               // 58: littlehorse.ListVariablesRequest
+	(*VariableList)(nil),                       // 59: littlehorse.VariableList
+	(*ListExternalEventsRequest)(nil),          // 60: littlehorse.ListExternalEventsRequest
+	(*ExternalEventList)(nil),                  // 61: littlehorse.ExternalEventList
+	(*ListWorkflowEventsRequest)(nil),          // 62: littlehorse.ListWorkflowEventsRequest
+	(*WorkflowEventList)(nil),                  // 63: littlehorse.WorkflowEventList
+	(*RegisterTaskWorkerRequest)(nil),          // 64: littlehorse.RegisterTaskWorkerRequest
+	(*TaskWorkerHeartBeatRequest)(nil),         // 65: littlehorse.TaskWorkerHeartBeatRequest
+	(*RegisterTaskWorkerResponse)(nil),         // 66: littlehorse.RegisterTaskWorkerResponse
+	(*LHHostInfo)(nil),                         // 67: littlehorse.LHHostInfo
+	(*PollTaskRequest)(nil),                    // 68: littlehorse.PollTaskRequest
+	(*ScheduledTask)(nil),                      // 69: littlehorse.ScheduledTask
+	(*PollTaskResponse)(nil),                   // 70: littlehorse.PollTaskResponse
+	(*ReportTaskRun)(nil),                      // 71: littlehorse.ReportTaskRun
+	(*StopWfRunRequest)(nil),                   // 72: littlehorse.StopWfRunRequest
+	(*ResumeWfRunRequest)(nil),                 // 73: littlehorse.ResumeWfRunRequest
+	(*RescueThreadRunRequest)(nil),             // 74: littlehorse.RescueThreadRunRequest
+	(*TaskDefMetricsQueryRequest)(nil),         // 75: littlehorse.TaskDefMetricsQueryRequest
+	(*ListTaskMetricsRequest)(nil),             // 76: littlehorse.ListTaskMetricsRequest
+	(*ListTaskMetricsResponse)(nil),            // 77: littlehorse.ListTaskMetricsResponse
+	(*WfSpecMetricsQueryRequest)(nil),          // 78: littlehorse.WfSpecMetricsQueryRequest
+	(*ListWfMetricsRequest)(nil),               // 79: littlehorse.ListWfMetricsRequest
+	(*ListWfMetricsResponse)(nil),              // 80: littlehorse.ListWfMetricsResponse
+	(*TaskDefMetrics)(nil),                     // 81: littlehorse.TaskDefMetrics
+	(*WfSpecMetrics)(nil),                      // 82: littlehorse.WfSpecMetrics
+	(*ListUserTaskRunRequest)(nil),             // 83: littlehorse.ListUserTaskRunRequest
+	(*UserTaskRunList)(nil),                    // 84: littlehorse.UserTaskRunList
+	(*ScheduledWfRunIdList)(nil),               // 85: littlehorse.ScheduledWfRunIdList
+	(*SearchScheduledWfRunRequest)(nil),        // 86: littlehorse.SearchScheduledWfRunRequest
+	(*TaskWorkerMetadata)(nil),                 // 87: littlehorse.TaskWorkerMetadata
+	(*TaskWorkerGroup)(nil),                    // 88: littlehorse.TaskWorkerGroup
+	(*ListTaskRunsRequest)(nil),                // 89: littlehorse.ListTaskRunsRequest
+	(*TaskRunList)(nil),                        // 90: littlehorse.TaskRunList
+	(*MigrateWfSpecRequest)(nil),               // 91: littlehorse.MigrateWfSpecRequest
+	(*GetLatestWfSpecRequest)(nil),             // 92: littlehorse.GetLatestWfSpecRequest
+	(*LittleHorseVersion)(nil),                 // 93: littlehorse.LittleHorseVersion
+	nil,                                        // 94: littlehorse.PutWfSpecRequest.ThreadSpecsEntry
+	nil,                                        // 95: littlehorse.RunWfRequest.VariablesEntry
+	nil,                                        // 96: littlehorse.ScheduleWfRequest.VariablesEntry
+	nil,                                        // 97: littlehorse.TaskWorkerGroup.TaskWorkersEntry
+	(*WorkflowRetentionPolicy)(nil),            // 98: littlehorse.WorkflowRetentionPolicy
+	(*WfSpec_ParentWfSpecReference)(nil),       // 99: littlehorse.WfSpec.ParentWfSpecReference
+	(*VariableDef)(nil),                        // 100: littlehorse.VariableDef
+	(*ReturnType)(nil),                         // 101: littlehorse.ReturnType
+	(*InlineStructDef)(nil),                    // 102: littlehorse.InlineStructDef
+	(*StructDefId)(nil),                        // 103: littlehorse.StructDefId
+	(*UserTaskField)(nil),                      // 104: littlehorse.UserTaskField
+	(*ExternalEventRetentionPolicy)(nil),       // 105: littlehorse.ExternalEventRetentionPolicy
+	(*CorrelatedEventConfig)(nil),              // 106: littlehorse.CorrelatedEventConfig
+	(*WfRunId)(nil),                            // 107: littlehorse.WfRunId
+	(*ExternalEventDefId)(nil),                 // 108: littlehorse.ExternalEventDefId
+	(*VariableValue)(nil),                      // 109: littlehorse.VariableValue
+	(*ExternalEventId)(nil),                    // 110: littlehorse.ExternalEventId
+	(*ScheduledWfRunId)(nil),                   // 111: littlehorse.ScheduledWfRunId
+	(*CorrelatedEventId)(nil),                  // 112: littlehorse.CorrelatedEventId
+	(*TaskDefId)(nil),                          // 113: littlehorse.TaskDefId
+	(*UserTaskDefId)(nil),                      // 114: littlehorse.UserTaskDefId
+	(*WfSpecId)(nil),                           // 115: littlehorse.WfSpecId
+	(*WorkflowEventDefId)(nil),                 // 116: littlehorse.WorkflowEventDefId
+	(*WorkflowEventId)(nil),                    // 117: littlehorse.WorkflowEventId
+	(LHStatus)(0),                              // 118: littlehorse.LHStatus
+	(*timestamppb.Timestamp)(nil),              // 119: google.protobuf.Timestamp
+	(TaskStatus)(0),                            // 120: littlehorse.TaskStatus
+	(*TaskRunId)(nil),                          // 121: littlehorse.TaskRunId
+	(*NodeRunId)(nil),                          // 122: littlehorse.NodeRunId
+	(UserTaskRunStatus)(0),                     // 123: littlehorse.UserTaskRunStatus
+	(*UserTaskRunId)(nil),                      // 124: littlehorse.UserTaskRunId
+	(*VariableId)(nil),                         // 125: littlehorse.VariableId
+	(*TenantId)(nil),                           // 126: littlehorse.TenantId
+	(*PrincipalId)(nil),                        // 127: littlehorse.PrincipalId
+	(*NodeRun)(nil),                            // 128: littlehorse.NodeRun
+	(*Variable)(nil),                           // 129: littlehorse.Variable
+	(*ExternalEvent)(nil),                      // 130: littlehorse.ExternalEvent
+	(*WorkflowEvent)(nil),                      // 131: littlehorse.WorkflowEvent
+	(*VarNameAndVal)(nil),                      // 132: littlehorse.VarNameAndVal
+	(*TaskRunSource)(nil),                      // 133: littlehorse.TaskRunSource
+	(*LHTaskError)(nil),                        // 134: littlehorse.LHTaskError
+	(*LHTaskException)(nil),                    // 135: littlehorse.LHTaskException
+	(MetricsWindowLength)(0),                   // 136: littlehorse.MetricsWindowLength
+	(*UserTaskRun)(nil),                        // 137: littlehorse.UserTaskRun
+	(*TaskWorkerGroupId)(nil),                  // 138: littlehorse.TaskWorkerGroupId
+	(*TaskRun)(nil),                            // 139: littlehorse.TaskRun
+	(*WfSpecVersionMigration)(nil),             // 140: littlehorse.WfSpecVersionMigration
+	(*ThreadSpec)(nil),                         // 141: littlehorse.ThreadSpec
+	(*AssignUserTaskRunRequest)(nil),           // 142: littlehorse.AssignUserTaskRunRequest
+	(*CompleteUserTaskRunRequest)(nil),         // 143: littlehorse.CompleteUserTaskRunRequest
+	(*CancelUserTaskRunRequest)(nil),           // 144: littlehorse.CancelUserTaskRunRequest
+	(*SaveUserTaskRunProgressRequest)(nil),     // 145: littlehorse.SaveUserTaskRunProgressRequest
+	(*UserTaskRunCommentRequest)(nil),          // 146: littlehorse.UserTaskRunCommentRequest
+	(*EditUserTaskRunCommentRequest)(nil),      // 147: littlehorse.EditUserTaskRunCommentRequest
+	(*DeleteUserTaskRunCommentRequest)(nil),    // 148: littlehorse.DeleteUserTaskRunCommentRequest
+	(*DeletePrincipalRequest)(nil),             // 149: littlehorse.DeletePrincipalRequest
+	(*PutTenantRequest)(nil),                   // 150: littlehorse.PutTenantRequest
+	(*PutPrincipalRequest)(nil),                // 151: littlehorse.PutPrincipalRequest
+	(*emptypb.Empty)(nil),                      // 152: google.protobuf.Empty
+	(*TaskDef)(nil),                            // 153: littlehorse.TaskDef
+	(*ExternalEventDef)(nil),                   // 154: littlehorse.ExternalEventDef
+	(*WorkflowEventDef)(nil),                   // 155: littlehorse.WorkflowEventDef
+	(*WfSpec)(nil),                             // 156: littlehorse.WfSpec
+	(*StructDef)(nil),                          // 157: littlehorse.StructDef
+	(*UserTaskDef)(nil),                        // 158: littlehorse.UserTaskDef
+	(*WfRun)(nil),                              // 159: littlehorse.WfRun
+	(*ScheduledWfRun)(nil),                     // 160: littlehorse.ScheduledWfRun
+	(*CorrelatedEvent)(nil),                    // 161: littlehorse.CorrelatedEvent
+	(*Tenant)(nil),                             // 162: littlehorse.Tenant
+	(*Principal)(nil),                          // 163: littlehorse.Principal
 }
 var file_service_proto_depIdxs = []int32{
-	93,  // 0: littlehorse.PutWfSpecRequest.thread_specs:type_name -> littlehorse.PutWfSpecRequest.ThreadSpecsEntry
-	97,  // 1: littlehorse.PutWfSpecRequest.retention_policy:type_name -> littlehorse.WorkflowRetentionPolicy
-	98,  // 2: littlehorse.PutWfSpecRequest.parent_wf_spec:type_name -> littlehorse.WfSpec.ParentWfSpecReference
+	94,  // 0: littlehorse.PutWfSpecRequest.thread_specs:type_name -> littlehorse.PutWfSpecRequest.ThreadSpecsEntry
+	98,  // 1: littlehorse.PutWfSpecRequest.retention_policy:type_name -> littlehorse.WorkflowRetentionPolicy
+	99,  // 2: littlehorse.PutWfSpecRequest.parent_wf_spec:type_name -> littlehorse.WfSpec.ParentWfSpecReference
 	0,   // 3: littlehorse.PutWfSpecRequest.allowed_updates:type_name -> littlehorse.AllowedUpdateType
-	99,  // 4: littlehorse.PutTaskDefRequest.input_vars:type_name -> littlehorse.VariableDef
-	100, // 5: littlehorse.PutTaskDefRequest.return_type:type_name -> littlehorse.ReturnType
-	101, // 6: littlehorse.PutStructDefRequest.struct_def:type_name -> littlehorse.InlineStructDef
+	100, // 4: littlehorse.PutTaskDefRequest.input_vars:type_name -> littlehorse.VariableDef
+	101, // 5: littlehorse.PutTaskDefRequest.return_type:type_name -> littlehorse.ReturnType
+	102, // 6: littlehorse.PutStructDefRequest.struct_def:type_name -> littlehorse.InlineStructDef
 	1,   // 7: littlehorse.PutStructDefRequest.allowed_updates:type_name -> littlehorse.StructDefCompatibilityType
-	102, // 8: littlehorse.ValidateStructDefEvolutionRequest.struct_def_id:type_name -> littlehorse.StructDefId
-	101, // 9: littlehorse.ValidateStructDefEvolutionRequest.struct_def:type_name -> littlehorse.InlineStructDef
+	103, // 8: littlehorse.ValidateStructDefEvolutionRequest.struct_def_id:type_name -> littlehorse.StructDefId
+	102, // 9: littlehorse.ValidateStructDefEvolutionRequest.struct_def:type_name -> littlehorse.InlineStructDef
 	1,   // 10: littlehorse.ValidateStructDefEvolutionRequest.compatibility_type:type_name -> littlehorse.StructDefCompatibilityType
-	100, // 11: littlehorse.PutWorkflowEventDefRequest.content_type:type_name -> littlehorse.ReturnType
-	103, // 12: littlehorse.PutUserTaskDefRequest.fields:type_name -> littlehorse.UserTaskField
-	104, // 13: littlehorse.PutExternalEventDefRequest.retention_policy:type_name -> littlehorse.ExternalEventRetentionPolicy
-	100, // 14: littlehorse.PutExternalEventDefRequest.content_type:type_name -> littlehorse.ReturnType
-	105, // 15: littlehorse.PutExternalEventDefRequest.correlated_event_config:type_name -> littlehorse.CorrelatedEventConfig
-	106, // 16: littlehorse.PutExternalEventRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	107, // 17: littlehorse.PutExternalEventRequest.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
-	108, // 18: littlehorse.PutExternalEventRequest.content:type_name -> littlehorse.VariableValue
-	107, // 19: littlehorse.PutCorrelatedEventRequest.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
-	108, // 20: littlehorse.PutCorrelatedEventRequest.content:type_name -> littlehorse.VariableValue
-	109, // 21: littlehorse.DeleteExternalEventRequest.id:type_name -> littlehorse.ExternalEventId
-	110, // 22: littlehorse.DeleteScheduledWfRunRequest.id:type_name -> littlehorse.ScheduledWfRunId
-	106, // 23: littlehorse.DeleteWfRunRequest.id:type_name -> littlehorse.WfRunId
-	111, // 24: littlehorse.DeleteTaskDefRequest.id:type_name -> littlehorse.TaskDefId
-	102, // 25: littlehorse.DeleteStructDefRequest.id:type_name -> littlehorse.StructDefId
-	112, // 26: littlehorse.DeleteUserTaskDefRequest.id:type_name -> littlehorse.UserTaskDefId
-	113, // 27: littlehorse.DeleteWfSpecRequest.id:type_name -> littlehorse.WfSpecId
-	107, // 28: littlehorse.DeleteExternalEventDefRequest.id:type_name -> littlehorse.ExternalEventDefId
-	114, // 29: littlehorse.DeleteWorkflowEventDefRequest.id:type_name -> littlehorse.WorkflowEventDefId
-	94,  // 30: littlehorse.RunWfRequest.variables:type_name -> littlehorse.RunWfRequest.VariablesEntry
-	106, // 31: littlehorse.RunWfRequest.parent_wf_run_id:type_name -> littlehorse.WfRunId
-	95,  // 32: littlehorse.ScheduleWfRequest.variables:type_name -> littlehorse.ScheduleWfRequest.VariablesEntry
-	106, // 33: littlehorse.ScheduleWfRequest.parent_wf_run_id:type_name -> littlehorse.WfRunId
-	108, // 34: littlehorse.VariableMatch.value:type_name -> littlehorse.VariableValue
-	106, // 35: littlehorse.AwaitWorkflowEventRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	114, // 36: littlehorse.AwaitWorkflowEventRequest.event_def_ids:type_name -> littlehorse.WorkflowEventDefId
-	115, // 37: littlehorse.AwaitWorkflowEventRequest.workflow_events_to_ignore:type_name -> littlehorse.WorkflowEventId
-	116, // 38: littlehorse.SearchWfRunRequest.status:type_name -> littlehorse.LHStatus
-	117, // 39: littlehorse.SearchWfRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
-	117, // 40: littlehorse.SearchWfRunRequest.latest_start:type_name -> google.protobuf.Timestamp
-	25,  // 41: littlehorse.SearchWfRunRequest.variable_filters:type_name -> littlehorse.VariableMatch
-	106, // 42: littlehorse.WfRunIdList.results:type_name -> littlehorse.WfRunId
-	118, // 43: littlehorse.SearchTaskRunRequest.status:type_name -> littlehorse.TaskStatus
-	117, // 44: littlehorse.SearchTaskRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
-	117, // 45: littlehorse.SearchTaskRunRequest.latest_start:type_name -> google.protobuf.Timestamp
-	119, // 46: littlehorse.TaskRunIdList.results:type_name -> littlehorse.TaskRunId
-	117, // 47: littlehorse.SearchNodeRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
-	117, // 48: littlehorse.SearchNodeRunRequest.latest_start:type_name -> google.protobuf.Timestamp
-	2,   // 49: littlehorse.SearchNodeRunRequest.node_type:type_name -> littlehorse.SearchNodeRunRequest.NodeType
-	116, // 50: littlehorse.SearchNodeRunRequest.status:type_name -> littlehorse.LHStatus
-	120, // 51: littlehorse.NodeRunIdList.results:type_name -> littlehorse.NodeRunId
-	121, // 52: littlehorse.SearchUserTaskRunRequest.status:type_name -> littlehorse.UserTaskRunStatus
-	117, // 53: littlehorse.SearchUserTaskRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
-	117, // 54: littlehorse.SearchUserTaskRunRequest.latest_start:type_name -> google.protobuf.Timestamp
-	122, // 55: littlehorse.UserTaskRunIdList.results:type_name -> littlehorse.UserTaskRunId
-	108, // 56: littlehorse.SearchVariableRequest.value:type_name -> littlehorse.VariableValue
-	123, // 57: littlehorse.VariableIdList.results:type_name -> littlehorse.VariableId
-	111, // 58: littlehorse.TaskDefIdList.results:type_name -> littlehorse.TaskDefId
-	112, // 59: littlehorse.UserTaskDefIdList.results:type_name -> littlehorse.UserTaskDefId
-	113, // 60: littlehorse.WfSpecIdList.results:type_name -> littlehorse.WfSpecId
-	107, // 61: littlehorse.ExternalEventDefIdList.results:type_name -> littlehorse.ExternalEventDefId
-	114, // 62: littlehorse.WorkflowEventDefIdList.results:type_name -> littlehorse.WorkflowEventDefId
-	124, // 63: littlehorse.TenantIdList.results:type_name -> littlehorse.TenantId
-	117, // 64: littlehorse.SearchPrincipalRequest.earliest_start:type_name -> google.protobuf.Timestamp
-	117, // 65: littlehorse.SearchPrincipalRequest.latest_start:type_name -> google.protobuf.Timestamp
-	125, // 66: littlehorse.PrincipalIdList.results:type_name -> littlehorse.PrincipalId
-	117, // 67: littlehorse.SearchExternalEventRequest.earliest_start:type_name -> google.protobuf.Timestamp
-	117, // 68: littlehorse.SearchExternalEventRequest.latest_start:type_name -> google.protobuf.Timestamp
-	107, // 69: littlehorse.SearchExternalEventRequest.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
-	109, // 70: littlehorse.ExternalEventIdList.results:type_name -> littlehorse.ExternalEventId
-	117, // 71: littlehorse.SearchWorkflowEventRequest.earliest_start:type_name -> google.protobuf.Timestamp
-	117, // 72: littlehorse.SearchWorkflowEventRequest.latest_start:type_name -> google.protobuf.Timestamp
-	114, // 73: littlehorse.SearchWorkflowEventRequest.workflow_event_def_id:type_name -> littlehorse.WorkflowEventDefId
-	115, // 74: littlehorse.WorkflowEventIdList.results:type_name -> littlehorse.WorkflowEventId
-	106, // 75: littlehorse.ListNodeRunsRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	126, // 76: littlehorse.NodeRunList.results:type_name -> littlehorse.NodeRun
-	106, // 77: littlehorse.ListVariablesRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	127, // 78: littlehorse.VariableList.results:type_name -> littlehorse.Variable
-	106, // 79: littlehorse.ListExternalEventsRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	128, // 80: littlehorse.ExternalEventList.results:type_name -> littlehorse.ExternalEvent
-	106, // 81: littlehorse.ListWorkflowEventsRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	129, // 82: littlehorse.WorkflowEventList.results:type_name -> littlehorse.WorkflowEvent
-	111, // 83: littlehorse.RegisterTaskWorkerRequest.task_def_id:type_name -> littlehorse.TaskDefId
-	111, // 84: littlehorse.TaskWorkerHeartBeatRequest.task_def_id:type_name -> littlehorse.TaskDefId
-	66,  // 85: littlehorse.RegisterTaskWorkerResponse.your_hosts:type_name -> littlehorse.LHHostInfo
-	111, // 86: littlehorse.PollTaskRequest.task_def_id:type_name -> littlehorse.TaskDefId
-	119, // 87: littlehorse.ScheduledTask.task_run_id:type_name -> littlehorse.TaskRunId
-	111, // 88: littlehorse.ScheduledTask.task_def_id:type_name -> littlehorse.TaskDefId
-	130, // 89: littlehorse.ScheduledTask.variables:type_name -> littlehorse.VarNameAndVal
-	117, // 90: littlehorse.ScheduledTask.created_at:type_name -> google.protobuf.Timestamp
-	131, // 91: littlehorse.ScheduledTask.source:type_name -> littlehorse.TaskRunSource
-	68,  // 92: littlehorse.PollTaskResponse.result:type_name -> littlehorse.ScheduledTask
-	119, // 93: littlehorse.ReportTaskRun.task_run_id:type_name -> littlehorse.TaskRunId
-	117, // 94: littlehorse.ReportTaskRun.time:type_name -> google.protobuf.Timestamp
-	118, // 95: littlehorse.ReportTaskRun.status:type_name -> littlehorse.TaskStatus
-	108, // 96: littlehorse.ReportTaskRun.log_output:type_name -> littlehorse.VariableValue
-	108, // 97: littlehorse.ReportTaskRun.output:type_name -> littlehorse.VariableValue
-	132, // 98: littlehorse.ReportTaskRun.error:type_name -> littlehorse.LHTaskError
-	133, // 99: littlehorse.ReportTaskRun.exception:type_name -> littlehorse.LHTaskException
-	106, // 100: littlehorse.StopWfRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	106, // 101: littlehorse.ResumeWfRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	106, // 102: littlehorse.RescueThreadRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	117, // 103: littlehorse.TaskDefMetricsQueryRequest.window_start:type_name -> google.protobuf.Timestamp
-	134, // 104: littlehorse.TaskDefMetricsQueryRequest.window_type:type_name -> littlehorse.MetricsWindowLength
-	111, // 105: littlehorse.ListTaskMetricsRequest.task_def_id:type_name -> littlehorse.TaskDefId
-	117, // 106: littlehorse.ListTaskMetricsRequest.last_window_start:type_name -> google.protobuf.Timestamp
-	134, // 107: littlehorse.ListTaskMetricsRequest.window_length:type_name -> littlehorse.MetricsWindowLength
-	80,  // 108: littlehorse.ListTaskMetricsResponse.results:type_name -> littlehorse.TaskDefMetrics
-	113, // 109: littlehorse.WfSpecMetricsQueryRequest.wf_spec_id:type_name -> littlehorse.WfSpecId
-	117, // 110: littlehorse.WfSpecMetricsQueryRequest.window_start:type_name -> google.protobuf.Timestamp
-	134, // 111: littlehorse.WfSpecMetricsQueryRequest.window_length:type_name -> littlehorse.MetricsWindowLength
-	113, // 112: littlehorse.ListWfMetricsRequest.wf_spec_id:type_name -> littlehorse.WfSpecId
-	117, // 113: littlehorse.ListWfMetricsRequest.last_window_start:type_name -> google.protobuf.Timestamp
-	134, // 114: littlehorse.ListWfMetricsRequest.window_length:type_name -> littlehorse.MetricsWindowLength
-	81,  // 115: littlehorse.ListWfMetricsResponse.results:type_name -> littlehorse.WfSpecMetrics
-	111, // 116: littlehorse.TaskDefMetrics.task_def_id:type_name -> littlehorse.TaskDefId
-	117, // 117: littlehorse.TaskDefMetrics.window_start:type_name -> google.protobuf.Timestamp
-	134, // 118: littlehorse.TaskDefMetrics.type:type_name -> littlehorse.MetricsWindowLength
-	113, // 119: littlehorse.WfSpecMetrics.wf_spec_id:type_name -> littlehorse.WfSpecId
-	117, // 120: littlehorse.WfSpecMetrics.window_start:type_name -> google.protobuf.Timestamp
-	134, // 121: littlehorse.WfSpecMetrics.type:type_name -> littlehorse.MetricsWindowLength
-	106, // 122: littlehorse.ListUserTaskRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	135, // 123: littlehorse.UserTaskRunList.results:type_name -> littlehorse.UserTaskRun
-	110, // 124: littlehorse.ScheduledWfRunIdList.results:type_name -> littlehorse.ScheduledWfRunId
-	117, // 125: littlehorse.TaskWorkerMetadata.latest_heartbeat:type_name -> google.protobuf.Timestamp
-	66,  // 126: littlehorse.TaskWorkerMetadata.hosts:type_name -> littlehorse.LHHostInfo
-	136, // 127: littlehorse.TaskWorkerGroup.id:type_name -> littlehorse.TaskWorkerGroupId
-	117, // 128: littlehorse.TaskWorkerGroup.created_at:type_name -> google.protobuf.Timestamp
-	96,  // 129: littlehorse.TaskWorkerGroup.task_workers:type_name -> littlehorse.TaskWorkerGroup.TaskWorkersEntry
-	106, // 130: littlehorse.ListTaskRunsRequest.wf_run_id:type_name -> littlehorse.WfRunId
-	137, // 131: littlehorse.TaskRunList.results:type_name -> littlehorse.TaskRun
-	113, // 132: littlehorse.MigrateWfSpecRequest.old_wf_spec:type_name -> littlehorse.WfSpecId
-	138, // 133: littlehorse.MigrateWfSpecRequest.migration:type_name -> littlehorse.WfSpecVersionMigration
-	139, // 134: littlehorse.PutWfSpecRequest.ThreadSpecsEntry.value:type_name -> littlehorse.ThreadSpec
-	108, // 135: littlehorse.RunWfRequest.VariablesEntry.value:type_name -> littlehorse.VariableValue
-	108, // 136: littlehorse.ScheduleWfRequest.VariablesEntry.value:type_name -> littlehorse.VariableValue
-	86,  // 137: littlehorse.TaskWorkerGroup.TaskWorkersEntry.value:type_name -> littlehorse.TaskWorkerMetadata
-	5,   // 138: littlehorse.LittleHorse.PutTaskDef:input_type -> littlehorse.PutTaskDefRequest
-	111, // 139: littlehorse.LittleHorse.GetTaskDef:input_type -> littlehorse.TaskDefId
-	111, // 140: littlehorse.LittleHorse.GetTaskWorkerGroup:input_type -> littlehorse.TaskDefId
-	11,  // 141: littlehorse.LittleHorse.PutExternalEventDef:input_type -> littlehorse.PutExternalEventDefRequest
-	107, // 142: littlehorse.LittleHorse.GetExternalEventDef:input_type -> littlehorse.ExternalEventDefId
-	9,   // 143: littlehorse.LittleHorse.PutWorkflowEventDef:input_type -> littlehorse.PutWorkflowEventDefRequest
-	4,   // 144: littlehorse.LittleHorse.PutWfSpec:input_type -> littlehorse.PutWfSpecRequest
-	113, // 145: littlehorse.LittleHorse.GetWfSpec:input_type -> littlehorse.WfSpecId
-	91,  // 146: littlehorse.LittleHorse.GetLatestWfSpec:input_type -> littlehorse.GetLatestWfSpecRequest
-	90,  // 147: littlehorse.LittleHorse.MigrateWfSpec:input_type -> littlehorse.MigrateWfSpecRequest
-	6,   // 148: littlehorse.LittleHorse.PutStructDef:input_type -> littlehorse.PutStructDefRequest
-	102, // 149: littlehorse.LittleHorse.GetStructDef:input_type -> littlehorse.StructDefId
-	7,   // 150: littlehorse.LittleHorse.ValidateStructDefEvolution:input_type -> littlehorse.ValidateStructDefEvolutionRequest
-	10,  // 151: littlehorse.LittleHorse.PutUserTaskDef:input_type -> littlehorse.PutUserTaskDefRequest
-	112, // 152: littlehorse.LittleHorse.GetUserTaskDef:input_type -> littlehorse.UserTaskDefId
-	3,   // 153: littlehorse.LittleHorse.GetLatestUserTaskDef:input_type -> littlehorse.GetLatestUserTaskDefRequest
-	23,  // 154: littlehorse.LittleHorse.RunWf:input_type -> littlehorse.RunWfRequest
-	24,  // 155: littlehorse.LittleHorse.ScheduleWf:input_type -> littlehorse.ScheduleWfRequest
-	85,  // 156: littlehorse.LittleHorse.SearchScheduledWfRun:input_type -> littlehorse.SearchScheduledWfRunRequest
-	110, // 157: littlehorse.LittleHorse.GetScheduledWfRun:input_type -> littlehorse.ScheduledWfRunId
-	106, // 158: littlehorse.LittleHorse.GetWfRun:input_type -> littlehorse.WfRunId
-	122, // 159: littlehorse.LittleHorse.GetUserTaskRun:input_type -> littlehorse.UserTaskRunId
-	140, // 160: littlehorse.LittleHorse.AssignUserTaskRun:input_type -> littlehorse.AssignUserTaskRunRequest
-	141, // 161: littlehorse.LittleHorse.CompleteUserTaskRun:input_type -> littlehorse.CompleteUserTaskRunRequest
-	142, // 162: littlehorse.LittleHorse.CancelUserTaskRun:input_type -> littlehorse.CancelUserTaskRunRequest
-	143, // 163: littlehorse.LittleHorse.SaveUserTaskRunProgress:input_type -> littlehorse.SaveUserTaskRunProgressRequest
-	82,  // 164: littlehorse.LittleHorse.ListUserTaskRuns:input_type -> littlehorse.ListUserTaskRunRequest
-	144, // 165: littlehorse.LittleHorse.UserTaskRunComment:input_type -> littlehorse.UserTaskRunCommentRequest
-	145, // 166: littlehorse.LittleHorse.EditUserTaskRunComment:input_type -> littlehorse.EditUserTaskRunCommentRequest
-	146, // 167: littlehorse.LittleHorse.DeleteUserTaskRunComment:input_type -> littlehorse.DeleteUserTaskRunCommentRequest
-	120, // 168: littlehorse.LittleHorse.GetNodeRun:input_type -> littlehorse.NodeRunId
-	55,  // 169: littlehorse.LittleHorse.ListNodeRuns:input_type -> littlehorse.ListNodeRunsRequest
-	119, // 170: littlehorse.LittleHorse.GetTaskRun:input_type -> littlehorse.TaskRunId
-	88,  // 171: littlehorse.LittleHorse.ListTaskRuns:input_type -> littlehorse.ListTaskRunsRequest
-	123, // 172: littlehorse.LittleHorse.GetVariable:input_type -> littlehorse.VariableId
-	57,  // 173: littlehorse.LittleHorse.ListVariables:input_type -> littlehorse.ListVariablesRequest
-	12,  // 174: littlehorse.LittleHorse.PutExternalEvent:input_type -> littlehorse.PutExternalEventRequest
-	13,  // 175: littlehorse.LittleHorse.PutCorrelatedEvent:input_type -> littlehorse.PutCorrelatedEventRequest
-	109, // 176: littlehorse.LittleHorse.GetExternalEvent:input_type -> littlehorse.ExternalEventId
-	147, // 177: littlehorse.LittleHorse.GetCorrelatedEvent:input_type -> littlehorse.CorrelatedEventId
-	26,  // 178: littlehorse.LittleHorse.AwaitWorkflowEvent:input_type -> littlehorse.AwaitWorkflowEventRequest
-	114, // 179: littlehorse.LittleHorse.GetWorkflowEventDef:input_type -> littlehorse.WorkflowEventDefId
-	115, // 180: littlehorse.LittleHorse.GetWorkflowEvent:input_type -> littlehorse.WorkflowEventId
-	59,  // 181: littlehorse.LittleHorse.ListExternalEvents:input_type -> littlehorse.ListExternalEventsRequest
-	61,  // 182: littlehorse.LittleHorse.ListWorkflowEvents:input_type -> littlehorse.ListWorkflowEventsRequest
-	27,  // 183: littlehorse.LittleHorse.SearchWfRun:input_type -> littlehorse.SearchWfRunRequest
-	31,  // 184: littlehorse.LittleHorse.SearchNodeRun:input_type -> littlehorse.SearchNodeRunRequest
-	29,  // 185: littlehorse.LittleHorse.SearchTaskRun:input_type -> littlehorse.SearchTaskRunRequest
-	33,  // 186: littlehorse.LittleHorse.SearchUserTaskRun:input_type -> littlehorse.SearchUserTaskRunRequest
-	35,  // 187: littlehorse.LittleHorse.SearchVariable:input_type -> littlehorse.SearchVariableRequest
-	51,  // 188: littlehorse.LittleHorse.SearchExternalEvent:input_type -> littlehorse.SearchExternalEventRequest
-	53,  // 189: littlehorse.LittleHorse.SearchWorkflowEvent:input_type -> littlehorse.SearchWorkflowEventRequest
-	37,  // 190: littlehorse.LittleHorse.SearchTaskDef:input_type -> littlehorse.SearchTaskDefRequest
-	39,  // 191: littlehorse.LittleHorse.SearchUserTaskDef:input_type -> littlehorse.SearchUserTaskDefRequest
-	41,  // 192: littlehorse.LittleHorse.SearchWfSpec:input_type -> littlehorse.SearchWfSpecRequest
-	43,  // 193: littlehorse.LittleHorse.SearchExternalEventDef:input_type -> littlehorse.SearchExternalEventDefRequest
-	45,  // 194: littlehorse.LittleHorse.SearchWorkflowEventDef:input_type -> littlehorse.SearchWorkflowEventDefRequest
-	47,  // 195: littlehorse.LittleHorse.SearchTenant:input_type -> littlehorse.SearchTenantRequest
-	49,  // 196: littlehorse.LittleHorse.SearchPrincipal:input_type -> littlehorse.SearchPrincipalRequest
-	63,  // 197: littlehorse.LittleHorse.RegisterTaskWorker:input_type -> littlehorse.RegisterTaskWorkerRequest
-	67,  // 198: littlehorse.LittleHorse.PollTask:input_type -> littlehorse.PollTaskRequest
-	70,  // 199: littlehorse.LittleHorse.ReportTask:input_type -> littlehorse.ReportTaskRun
-	71,  // 200: littlehorse.LittleHorse.StopWfRun:input_type -> littlehorse.StopWfRunRequest
-	72,  // 201: littlehorse.LittleHorse.ResumeWfRun:input_type -> littlehorse.ResumeWfRunRequest
-	73,  // 202: littlehorse.LittleHorse.RescueThreadRun:input_type -> littlehorse.RescueThreadRunRequest
-	16,  // 203: littlehorse.LittleHorse.DeleteWfRun:input_type -> littlehorse.DeleteWfRunRequest
-	17,  // 204: littlehorse.LittleHorse.DeleteTaskDef:input_type -> littlehorse.DeleteTaskDefRequest
-	18,  // 205: littlehorse.LittleHorse.DeleteStructDef:input_type -> littlehorse.DeleteStructDefRequest
-	20,  // 206: littlehorse.LittleHorse.DeleteWfSpec:input_type -> littlehorse.DeleteWfSpecRequest
-	19,  // 207: littlehorse.LittleHorse.DeleteUserTaskDef:input_type -> littlehorse.DeleteUserTaskDefRequest
-	21,  // 208: littlehorse.LittleHorse.DeleteExternalEventDef:input_type -> littlehorse.DeleteExternalEventDefRequest
-	22,  // 209: littlehorse.LittleHorse.DeleteWorkflowEventDef:input_type -> littlehorse.DeleteWorkflowEventDefRequest
-	148, // 210: littlehorse.LittleHorse.DeletePrincipal:input_type -> littlehorse.DeletePrincipalRequest
-	15,  // 211: littlehorse.LittleHorse.DeleteScheduledWfRun:input_type -> littlehorse.DeleteScheduledWfRunRequest
-	74,  // 212: littlehorse.LittleHorse.GetTaskDefMetricsWindow:input_type -> littlehorse.TaskDefMetricsQueryRequest
-	77,  // 213: littlehorse.LittleHorse.GetWfSpecMetricsWindow:input_type -> littlehorse.WfSpecMetricsQueryRequest
-	75,  // 214: littlehorse.LittleHorse.ListTaskDefMetrics:input_type -> littlehorse.ListTaskMetricsRequest
-	78,  // 215: littlehorse.LittleHorse.ListWfSpecMetrics:input_type -> littlehorse.ListWfMetricsRequest
-	149, // 216: littlehorse.LittleHorse.PutTenant:input_type -> littlehorse.PutTenantRequest
-	124, // 217: littlehorse.LittleHorse.GetTenant:input_type -> littlehorse.TenantId
-	150, // 218: littlehorse.LittleHorse.PutPrincipal:input_type -> littlehorse.PutPrincipalRequest
-	125, // 219: littlehorse.LittleHorse.GetPrincipal:input_type -> littlehorse.PrincipalId
-	151, // 220: littlehorse.LittleHorse.Whoami:input_type -> google.protobuf.Empty
-	151, // 221: littlehorse.LittleHorse.GetServerVersion:input_type -> google.protobuf.Empty
-	152, // 222: littlehorse.LittleHorse.PutTaskDef:output_type -> littlehorse.TaskDef
-	152, // 223: littlehorse.LittleHorse.GetTaskDef:output_type -> littlehorse.TaskDef
-	87,  // 224: littlehorse.LittleHorse.GetTaskWorkerGroup:output_type -> littlehorse.TaskWorkerGroup
-	153, // 225: littlehorse.LittleHorse.PutExternalEventDef:output_type -> littlehorse.ExternalEventDef
-	153, // 226: littlehorse.LittleHorse.GetExternalEventDef:output_type -> littlehorse.ExternalEventDef
-	154, // 227: littlehorse.LittleHorse.PutWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
-	155, // 228: littlehorse.LittleHorse.PutWfSpec:output_type -> littlehorse.WfSpec
-	155, // 229: littlehorse.LittleHorse.GetWfSpec:output_type -> littlehorse.WfSpec
-	155, // 230: littlehorse.LittleHorse.GetLatestWfSpec:output_type -> littlehorse.WfSpec
-	155, // 231: littlehorse.LittleHorse.MigrateWfSpec:output_type -> littlehorse.WfSpec
-	156, // 232: littlehorse.LittleHorse.PutStructDef:output_type -> littlehorse.StructDef
-	156, // 233: littlehorse.LittleHorse.GetStructDef:output_type -> littlehorse.StructDef
-	8,   // 234: littlehorse.LittleHorse.ValidateStructDefEvolution:output_type -> littlehorse.ValidateStructDefEvolutionResponse
-	157, // 235: littlehorse.LittleHorse.PutUserTaskDef:output_type -> littlehorse.UserTaskDef
-	157, // 236: littlehorse.LittleHorse.GetUserTaskDef:output_type -> littlehorse.UserTaskDef
-	157, // 237: littlehorse.LittleHorse.GetLatestUserTaskDef:output_type -> littlehorse.UserTaskDef
-	158, // 238: littlehorse.LittleHorse.RunWf:output_type -> littlehorse.WfRun
-	159, // 239: littlehorse.LittleHorse.ScheduleWf:output_type -> littlehorse.ScheduledWfRun
-	84,  // 240: littlehorse.LittleHorse.SearchScheduledWfRun:output_type -> littlehorse.ScheduledWfRunIdList
-	159, // 241: littlehorse.LittleHorse.GetScheduledWfRun:output_type -> littlehorse.ScheduledWfRun
-	158, // 242: littlehorse.LittleHorse.GetWfRun:output_type -> littlehorse.WfRun
-	135, // 243: littlehorse.LittleHorse.GetUserTaskRun:output_type -> littlehorse.UserTaskRun
-	151, // 244: littlehorse.LittleHorse.AssignUserTaskRun:output_type -> google.protobuf.Empty
-	151, // 245: littlehorse.LittleHorse.CompleteUserTaskRun:output_type -> google.protobuf.Empty
-	151, // 246: littlehorse.LittleHorse.CancelUserTaskRun:output_type -> google.protobuf.Empty
-	135, // 247: littlehorse.LittleHorse.SaveUserTaskRunProgress:output_type -> littlehorse.UserTaskRun
-	83,  // 248: littlehorse.LittleHorse.ListUserTaskRuns:output_type -> littlehorse.UserTaskRunList
-	135, // 249: littlehorse.LittleHorse.UserTaskRunComment:output_type -> littlehorse.UserTaskRun
-	135, // 250: littlehorse.LittleHorse.EditUserTaskRunComment:output_type -> littlehorse.UserTaskRun
-	135, // 251: littlehorse.LittleHorse.DeleteUserTaskRunComment:output_type -> littlehorse.UserTaskRun
-	126, // 252: littlehorse.LittleHorse.GetNodeRun:output_type -> littlehorse.NodeRun
-	56,  // 253: littlehorse.LittleHorse.ListNodeRuns:output_type -> littlehorse.NodeRunList
-	137, // 254: littlehorse.LittleHorse.GetTaskRun:output_type -> littlehorse.TaskRun
-	89,  // 255: littlehorse.LittleHorse.ListTaskRuns:output_type -> littlehorse.TaskRunList
-	127, // 256: littlehorse.LittleHorse.GetVariable:output_type -> littlehorse.Variable
-	58,  // 257: littlehorse.LittleHorse.ListVariables:output_type -> littlehorse.VariableList
-	128, // 258: littlehorse.LittleHorse.PutExternalEvent:output_type -> littlehorse.ExternalEvent
-	160, // 259: littlehorse.LittleHorse.PutCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
-	128, // 260: littlehorse.LittleHorse.GetExternalEvent:output_type -> littlehorse.ExternalEvent
-	160, // 261: littlehorse.LittleHorse.GetCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
-	129, // 262: littlehorse.LittleHorse.AwaitWorkflowEvent:output_type -> littlehorse.WorkflowEvent
-	154, // 263: littlehorse.LittleHorse.GetWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
-	129, // 264: littlehorse.LittleHorse.GetWorkflowEvent:output_type -> littlehorse.WorkflowEvent
-	60,  // 265: littlehorse.LittleHorse.ListExternalEvents:output_type -> littlehorse.ExternalEventList
-	62,  // 266: littlehorse.LittleHorse.ListWorkflowEvents:output_type -> littlehorse.WorkflowEventList
-	28,  // 267: littlehorse.LittleHorse.SearchWfRun:output_type -> littlehorse.WfRunIdList
-	32,  // 268: littlehorse.LittleHorse.SearchNodeRun:output_type -> littlehorse.NodeRunIdList
-	30,  // 269: littlehorse.LittleHorse.SearchTaskRun:output_type -> littlehorse.TaskRunIdList
-	34,  // 270: littlehorse.LittleHorse.SearchUserTaskRun:output_type -> littlehorse.UserTaskRunIdList
-	36,  // 271: littlehorse.LittleHorse.SearchVariable:output_type -> littlehorse.VariableIdList
-	52,  // 272: littlehorse.LittleHorse.SearchExternalEvent:output_type -> littlehorse.ExternalEventIdList
-	54,  // 273: littlehorse.LittleHorse.SearchWorkflowEvent:output_type -> littlehorse.WorkflowEventIdList
-	38,  // 274: littlehorse.LittleHorse.SearchTaskDef:output_type -> littlehorse.TaskDefIdList
-	40,  // 275: littlehorse.LittleHorse.SearchUserTaskDef:output_type -> littlehorse.UserTaskDefIdList
-	42,  // 276: littlehorse.LittleHorse.SearchWfSpec:output_type -> littlehorse.WfSpecIdList
-	44,  // 277: littlehorse.LittleHorse.SearchExternalEventDef:output_type -> littlehorse.ExternalEventDefIdList
-	46,  // 278: littlehorse.LittleHorse.SearchWorkflowEventDef:output_type -> littlehorse.WorkflowEventDefIdList
-	48,  // 279: littlehorse.LittleHorse.SearchTenant:output_type -> littlehorse.TenantIdList
-	50,  // 280: littlehorse.LittleHorse.SearchPrincipal:output_type -> littlehorse.PrincipalIdList
-	65,  // 281: littlehorse.LittleHorse.RegisterTaskWorker:output_type -> littlehorse.RegisterTaskWorkerResponse
-	69,  // 282: littlehorse.LittleHorse.PollTask:output_type -> littlehorse.PollTaskResponse
-	151, // 283: littlehorse.LittleHorse.ReportTask:output_type -> google.protobuf.Empty
-	151, // 284: littlehorse.LittleHorse.StopWfRun:output_type -> google.protobuf.Empty
-	151, // 285: littlehorse.LittleHorse.ResumeWfRun:output_type -> google.protobuf.Empty
-	158, // 286: littlehorse.LittleHorse.RescueThreadRun:output_type -> littlehorse.WfRun
-	151, // 287: littlehorse.LittleHorse.DeleteWfRun:output_type -> google.protobuf.Empty
-	151, // 288: littlehorse.LittleHorse.DeleteTaskDef:output_type -> google.protobuf.Empty
-	151, // 289: littlehorse.LittleHorse.DeleteStructDef:output_type -> google.protobuf.Empty
-	151, // 290: littlehorse.LittleHorse.DeleteWfSpec:output_type -> google.protobuf.Empty
-	151, // 291: littlehorse.LittleHorse.DeleteUserTaskDef:output_type -> google.protobuf.Empty
-	151, // 292: littlehorse.LittleHorse.DeleteExternalEventDef:output_type -> google.protobuf.Empty
-	151, // 293: littlehorse.LittleHorse.DeleteWorkflowEventDef:output_type -> google.protobuf.Empty
-	151, // 294: littlehorse.LittleHorse.DeletePrincipal:output_type -> google.protobuf.Empty
-	151, // 295: littlehorse.LittleHorse.DeleteScheduledWfRun:output_type -> google.protobuf.Empty
-	80,  // 296: littlehorse.LittleHorse.GetTaskDefMetricsWindow:output_type -> littlehorse.TaskDefMetrics
-	81,  // 297: littlehorse.LittleHorse.GetWfSpecMetricsWindow:output_type -> littlehorse.WfSpecMetrics
-	76,  // 298: littlehorse.LittleHorse.ListTaskDefMetrics:output_type -> littlehorse.ListTaskMetricsResponse
-	79,  // 299: littlehorse.LittleHorse.ListWfSpecMetrics:output_type -> littlehorse.ListWfMetricsResponse
-	161, // 300: littlehorse.LittleHorse.PutTenant:output_type -> littlehorse.Tenant
-	161, // 301: littlehorse.LittleHorse.GetTenant:output_type -> littlehorse.Tenant
-	162, // 302: littlehorse.LittleHorse.PutPrincipal:output_type -> littlehorse.Principal
-	162, // 303: littlehorse.LittleHorse.GetPrincipal:output_type -> littlehorse.Principal
-	162, // 304: littlehorse.LittleHorse.Whoami:output_type -> littlehorse.Principal
-	92,  // 305: littlehorse.LittleHorse.GetServerVersion:output_type -> littlehorse.LittleHorseVersion
-	222, // [222:306] is the sub-list for method output_type
-	138, // [138:222] is the sub-list for method input_type
-	138, // [138:138] is the sub-list for extension type_name
-	138, // [138:138] is the sub-list for extension extendee
-	0,   // [0:138] is the sub-list for field type_name
+	101, // 11: littlehorse.PutWorkflowEventDefRequest.content_type:type_name -> littlehorse.ReturnType
+	104, // 12: littlehorse.PutUserTaskDefRequest.fields:type_name -> littlehorse.UserTaskField
+	105, // 13: littlehorse.PutExternalEventDefRequest.retention_policy:type_name -> littlehorse.ExternalEventRetentionPolicy
+	101, // 14: littlehorse.PutExternalEventDefRequest.content_type:type_name -> littlehorse.ReturnType
+	106, // 15: littlehorse.PutExternalEventDefRequest.correlated_event_config:type_name -> littlehorse.CorrelatedEventConfig
+	107, // 16: littlehorse.PutExternalEventRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	108, // 17: littlehorse.PutExternalEventRequest.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
+	109, // 18: littlehorse.PutExternalEventRequest.content:type_name -> littlehorse.VariableValue
+	108, // 19: littlehorse.PutCorrelatedEventRequest.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
+	109, // 20: littlehorse.PutCorrelatedEventRequest.content:type_name -> littlehorse.VariableValue
+	110, // 21: littlehorse.DeleteExternalEventRequest.id:type_name -> littlehorse.ExternalEventId
+	111, // 22: littlehorse.DeleteScheduledWfRunRequest.id:type_name -> littlehorse.ScheduledWfRunId
+	107, // 23: littlehorse.DeleteWfRunRequest.id:type_name -> littlehorse.WfRunId
+	112, // 24: littlehorse.DeleteCorrelatedEventRequest.id:type_name -> littlehorse.CorrelatedEventId
+	113, // 25: littlehorse.DeleteTaskDefRequest.id:type_name -> littlehorse.TaskDefId
+	103, // 26: littlehorse.DeleteStructDefRequest.id:type_name -> littlehorse.StructDefId
+	114, // 27: littlehorse.DeleteUserTaskDefRequest.id:type_name -> littlehorse.UserTaskDefId
+	115, // 28: littlehorse.DeleteWfSpecRequest.id:type_name -> littlehorse.WfSpecId
+	108, // 29: littlehorse.DeleteExternalEventDefRequest.id:type_name -> littlehorse.ExternalEventDefId
+	116, // 30: littlehorse.DeleteWorkflowEventDefRequest.id:type_name -> littlehorse.WorkflowEventDefId
+	95,  // 31: littlehorse.RunWfRequest.variables:type_name -> littlehorse.RunWfRequest.VariablesEntry
+	107, // 32: littlehorse.RunWfRequest.parent_wf_run_id:type_name -> littlehorse.WfRunId
+	96,  // 33: littlehorse.ScheduleWfRequest.variables:type_name -> littlehorse.ScheduleWfRequest.VariablesEntry
+	107, // 34: littlehorse.ScheduleWfRequest.parent_wf_run_id:type_name -> littlehorse.WfRunId
+	109, // 35: littlehorse.VariableMatch.value:type_name -> littlehorse.VariableValue
+	107, // 36: littlehorse.AwaitWorkflowEventRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	116, // 37: littlehorse.AwaitWorkflowEventRequest.event_def_ids:type_name -> littlehorse.WorkflowEventDefId
+	117, // 38: littlehorse.AwaitWorkflowEventRequest.workflow_events_to_ignore:type_name -> littlehorse.WorkflowEventId
+	118, // 39: littlehorse.SearchWfRunRequest.status:type_name -> littlehorse.LHStatus
+	119, // 40: littlehorse.SearchWfRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
+	119, // 41: littlehorse.SearchWfRunRequest.latest_start:type_name -> google.protobuf.Timestamp
+	26,  // 42: littlehorse.SearchWfRunRequest.variable_filters:type_name -> littlehorse.VariableMatch
+	107, // 43: littlehorse.WfRunIdList.results:type_name -> littlehorse.WfRunId
+	120, // 44: littlehorse.SearchTaskRunRequest.status:type_name -> littlehorse.TaskStatus
+	119, // 45: littlehorse.SearchTaskRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
+	119, // 46: littlehorse.SearchTaskRunRequest.latest_start:type_name -> google.protobuf.Timestamp
+	121, // 47: littlehorse.TaskRunIdList.results:type_name -> littlehorse.TaskRunId
+	119, // 48: littlehorse.SearchNodeRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
+	119, // 49: littlehorse.SearchNodeRunRequest.latest_start:type_name -> google.protobuf.Timestamp
+	2,   // 50: littlehorse.SearchNodeRunRequest.node_type:type_name -> littlehorse.SearchNodeRunRequest.NodeType
+	118, // 51: littlehorse.SearchNodeRunRequest.status:type_name -> littlehorse.LHStatus
+	122, // 52: littlehorse.NodeRunIdList.results:type_name -> littlehorse.NodeRunId
+	123, // 53: littlehorse.SearchUserTaskRunRequest.status:type_name -> littlehorse.UserTaskRunStatus
+	119, // 54: littlehorse.SearchUserTaskRunRequest.earliest_start:type_name -> google.protobuf.Timestamp
+	119, // 55: littlehorse.SearchUserTaskRunRequest.latest_start:type_name -> google.protobuf.Timestamp
+	124, // 56: littlehorse.UserTaskRunIdList.results:type_name -> littlehorse.UserTaskRunId
+	109, // 57: littlehorse.SearchVariableRequest.value:type_name -> littlehorse.VariableValue
+	125, // 58: littlehorse.VariableIdList.results:type_name -> littlehorse.VariableId
+	113, // 59: littlehorse.TaskDefIdList.results:type_name -> littlehorse.TaskDefId
+	114, // 60: littlehorse.UserTaskDefIdList.results:type_name -> littlehorse.UserTaskDefId
+	115, // 61: littlehorse.WfSpecIdList.results:type_name -> littlehorse.WfSpecId
+	108, // 62: littlehorse.ExternalEventDefIdList.results:type_name -> littlehorse.ExternalEventDefId
+	116, // 63: littlehorse.WorkflowEventDefIdList.results:type_name -> littlehorse.WorkflowEventDefId
+	126, // 64: littlehorse.TenantIdList.results:type_name -> littlehorse.TenantId
+	119, // 65: littlehorse.SearchPrincipalRequest.earliest_start:type_name -> google.protobuf.Timestamp
+	119, // 66: littlehorse.SearchPrincipalRequest.latest_start:type_name -> google.protobuf.Timestamp
+	127, // 67: littlehorse.PrincipalIdList.results:type_name -> littlehorse.PrincipalId
+	119, // 68: littlehorse.SearchExternalEventRequest.earliest_start:type_name -> google.protobuf.Timestamp
+	119, // 69: littlehorse.SearchExternalEventRequest.latest_start:type_name -> google.protobuf.Timestamp
+	108, // 70: littlehorse.SearchExternalEventRequest.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
+	110, // 71: littlehorse.ExternalEventIdList.results:type_name -> littlehorse.ExternalEventId
+	119, // 72: littlehorse.SearchWorkflowEventRequest.earliest_start:type_name -> google.protobuf.Timestamp
+	119, // 73: littlehorse.SearchWorkflowEventRequest.latest_start:type_name -> google.protobuf.Timestamp
+	116, // 74: littlehorse.SearchWorkflowEventRequest.workflow_event_def_id:type_name -> littlehorse.WorkflowEventDefId
+	117, // 75: littlehorse.WorkflowEventIdList.results:type_name -> littlehorse.WorkflowEventId
+	107, // 76: littlehorse.ListNodeRunsRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	128, // 77: littlehorse.NodeRunList.results:type_name -> littlehorse.NodeRun
+	107, // 78: littlehorse.ListVariablesRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	129, // 79: littlehorse.VariableList.results:type_name -> littlehorse.Variable
+	107, // 80: littlehorse.ListExternalEventsRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	130, // 81: littlehorse.ExternalEventList.results:type_name -> littlehorse.ExternalEvent
+	107, // 82: littlehorse.ListWorkflowEventsRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	131, // 83: littlehorse.WorkflowEventList.results:type_name -> littlehorse.WorkflowEvent
+	113, // 84: littlehorse.RegisterTaskWorkerRequest.task_def_id:type_name -> littlehorse.TaskDefId
+	113, // 85: littlehorse.TaskWorkerHeartBeatRequest.task_def_id:type_name -> littlehorse.TaskDefId
+	67,  // 86: littlehorse.RegisterTaskWorkerResponse.your_hosts:type_name -> littlehorse.LHHostInfo
+	113, // 87: littlehorse.PollTaskRequest.task_def_id:type_name -> littlehorse.TaskDefId
+	121, // 88: littlehorse.ScheduledTask.task_run_id:type_name -> littlehorse.TaskRunId
+	113, // 89: littlehorse.ScheduledTask.task_def_id:type_name -> littlehorse.TaskDefId
+	132, // 90: littlehorse.ScheduledTask.variables:type_name -> littlehorse.VarNameAndVal
+	119, // 91: littlehorse.ScheduledTask.created_at:type_name -> google.protobuf.Timestamp
+	133, // 92: littlehorse.ScheduledTask.source:type_name -> littlehorse.TaskRunSource
+	69,  // 93: littlehorse.PollTaskResponse.result:type_name -> littlehorse.ScheduledTask
+	121, // 94: littlehorse.ReportTaskRun.task_run_id:type_name -> littlehorse.TaskRunId
+	119, // 95: littlehorse.ReportTaskRun.time:type_name -> google.protobuf.Timestamp
+	120, // 96: littlehorse.ReportTaskRun.status:type_name -> littlehorse.TaskStatus
+	109, // 97: littlehorse.ReportTaskRun.log_output:type_name -> littlehorse.VariableValue
+	109, // 98: littlehorse.ReportTaskRun.output:type_name -> littlehorse.VariableValue
+	134, // 99: littlehorse.ReportTaskRun.error:type_name -> littlehorse.LHTaskError
+	135, // 100: littlehorse.ReportTaskRun.exception:type_name -> littlehorse.LHTaskException
+	107, // 101: littlehorse.StopWfRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	107, // 102: littlehorse.ResumeWfRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	107, // 103: littlehorse.RescueThreadRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	119, // 104: littlehorse.TaskDefMetricsQueryRequest.window_start:type_name -> google.protobuf.Timestamp
+	136, // 105: littlehorse.TaskDefMetricsQueryRequest.window_type:type_name -> littlehorse.MetricsWindowLength
+	113, // 106: littlehorse.ListTaskMetricsRequest.task_def_id:type_name -> littlehorse.TaskDefId
+	119, // 107: littlehorse.ListTaskMetricsRequest.last_window_start:type_name -> google.protobuf.Timestamp
+	136, // 108: littlehorse.ListTaskMetricsRequest.window_length:type_name -> littlehorse.MetricsWindowLength
+	81,  // 109: littlehorse.ListTaskMetricsResponse.results:type_name -> littlehorse.TaskDefMetrics
+	115, // 110: littlehorse.WfSpecMetricsQueryRequest.wf_spec_id:type_name -> littlehorse.WfSpecId
+	119, // 111: littlehorse.WfSpecMetricsQueryRequest.window_start:type_name -> google.protobuf.Timestamp
+	136, // 112: littlehorse.WfSpecMetricsQueryRequest.window_length:type_name -> littlehorse.MetricsWindowLength
+	115, // 113: littlehorse.ListWfMetricsRequest.wf_spec_id:type_name -> littlehorse.WfSpecId
+	119, // 114: littlehorse.ListWfMetricsRequest.last_window_start:type_name -> google.protobuf.Timestamp
+	136, // 115: littlehorse.ListWfMetricsRequest.window_length:type_name -> littlehorse.MetricsWindowLength
+	82,  // 116: littlehorse.ListWfMetricsResponse.results:type_name -> littlehorse.WfSpecMetrics
+	113, // 117: littlehorse.TaskDefMetrics.task_def_id:type_name -> littlehorse.TaskDefId
+	119, // 118: littlehorse.TaskDefMetrics.window_start:type_name -> google.protobuf.Timestamp
+	136, // 119: littlehorse.TaskDefMetrics.type:type_name -> littlehorse.MetricsWindowLength
+	115, // 120: littlehorse.WfSpecMetrics.wf_spec_id:type_name -> littlehorse.WfSpecId
+	119, // 121: littlehorse.WfSpecMetrics.window_start:type_name -> google.protobuf.Timestamp
+	136, // 122: littlehorse.WfSpecMetrics.type:type_name -> littlehorse.MetricsWindowLength
+	107, // 123: littlehorse.ListUserTaskRunRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	137, // 124: littlehorse.UserTaskRunList.results:type_name -> littlehorse.UserTaskRun
+	111, // 125: littlehorse.ScheduledWfRunIdList.results:type_name -> littlehorse.ScheduledWfRunId
+	119, // 126: littlehorse.TaskWorkerMetadata.latest_heartbeat:type_name -> google.protobuf.Timestamp
+	67,  // 127: littlehorse.TaskWorkerMetadata.hosts:type_name -> littlehorse.LHHostInfo
+	138, // 128: littlehorse.TaskWorkerGroup.id:type_name -> littlehorse.TaskWorkerGroupId
+	119, // 129: littlehorse.TaskWorkerGroup.created_at:type_name -> google.protobuf.Timestamp
+	97,  // 130: littlehorse.TaskWorkerGroup.task_workers:type_name -> littlehorse.TaskWorkerGroup.TaskWorkersEntry
+	107, // 131: littlehorse.ListTaskRunsRequest.wf_run_id:type_name -> littlehorse.WfRunId
+	139, // 132: littlehorse.TaskRunList.results:type_name -> littlehorse.TaskRun
+	115, // 133: littlehorse.MigrateWfSpecRequest.old_wf_spec:type_name -> littlehorse.WfSpecId
+	140, // 134: littlehorse.MigrateWfSpecRequest.migration:type_name -> littlehorse.WfSpecVersionMigration
+	141, // 135: littlehorse.PutWfSpecRequest.ThreadSpecsEntry.value:type_name -> littlehorse.ThreadSpec
+	109, // 136: littlehorse.RunWfRequest.VariablesEntry.value:type_name -> littlehorse.VariableValue
+	109, // 137: littlehorse.ScheduleWfRequest.VariablesEntry.value:type_name -> littlehorse.VariableValue
+	87,  // 138: littlehorse.TaskWorkerGroup.TaskWorkersEntry.value:type_name -> littlehorse.TaskWorkerMetadata
+	5,   // 139: littlehorse.LittleHorse.PutTaskDef:input_type -> littlehorse.PutTaskDefRequest
+	113, // 140: littlehorse.LittleHorse.GetTaskDef:input_type -> littlehorse.TaskDefId
+	113, // 141: littlehorse.LittleHorse.GetTaskWorkerGroup:input_type -> littlehorse.TaskDefId
+	11,  // 142: littlehorse.LittleHorse.PutExternalEventDef:input_type -> littlehorse.PutExternalEventDefRequest
+	108, // 143: littlehorse.LittleHorse.GetExternalEventDef:input_type -> littlehorse.ExternalEventDefId
+	9,   // 144: littlehorse.LittleHorse.PutWorkflowEventDef:input_type -> littlehorse.PutWorkflowEventDefRequest
+	4,   // 145: littlehorse.LittleHorse.PutWfSpec:input_type -> littlehorse.PutWfSpecRequest
+	115, // 146: littlehorse.LittleHorse.GetWfSpec:input_type -> littlehorse.WfSpecId
+	92,  // 147: littlehorse.LittleHorse.GetLatestWfSpec:input_type -> littlehorse.GetLatestWfSpecRequest
+	91,  // 148: littlehorse.LittleHorse.MigrateWfSpec:input_type -> littlehorse.MigrateWfSpecRequest
+	6,   // 149: littlehorse.LittleHorse.PutStructDef:input_type -> littlehorse.PutStructDefRequest
+	103, // 150: littlehorse.LittleHorse.GetStructDef:input_type -> littlehorse.StructDefId
+	7,   // 151: littlehorse.LittleHorse.ValidateStructDefEvolution:input_type -> littlehorse.ValidateStructDefEvolutionRequest
+	10,  // 152: littlehorse.LittleHorse.PutUserTaskDef:input_type -> littlehorse.PutUserTaskDefRequest
+	114, // 153: littlehorse.LittleHorse.GetUserTaskDef:input_type -> littlehorse.UserTaskDefId
+	3,   // 154: littlehorse.LittleHorse.GetLatestUserTaskDef:input_type -> littlehorse.GetLatestUserTaskDefRequest
+	24,  // 155: littlehorse.LittleHorse.RunWf:input_type -> littlehorse.RunWfRequest
+	25,  // 156: littlehorse.LittleHorse.ScheduleWf:input_type -> littlehorse.ScheduleWfRequest
+	86,  // 157: littlehorse.LittleHorse.SearchScheduledWfRun:input_type -> littlehorse.SearchScheduledWfRunRequest
+	111, // 158: littlehorse.LittleHorse.GetScheduledWfRun:input_type -> littlehorse.ScheduledWfRunId
+	107, // 159: littlehorse.LittleHorse.GetWfRun:input_type -> littlehorse.WfRunId
+	124, // 160: littlehorse.LittleHorse.GetUserTaskRun:input_type -> littlehorse.UserTaskRunId
+	142, // 161: littlehorse.LittleHorse.AssignUserTaskRun:input_type -> littlehorse.AssignUserTaskRunRequest
+	143, // 162: littlehorse.LittleHorse.CompleteUserTaskRun:input_type -> littlehorse.CompleteUserTaskRunRequest
+	144, // 163: littlehorse.LittleHorse.CancelUserTaskRun:input_type -> littlehorse.CancelUserTaskRunRequest
+	145, // 164: littlehorse.LittleHorse.SaveUserTaskRunProgress:input_type -> littlehorse.SaveUserTaskRunProgressRequest
+	83,  // 165: littlehorse.LittleHorse.ListUserTaskRuns:input_type -> littlehorse.ListUserTaskRunRequest
+	146, // 166: littlehorse.LittleHorse.UserTaskRunComment:input_type -> littlehorse.UserTaskRunCommentRequest
+	147, // 167: littlehorse.LittleHorse.EditUserTaskRunComment:input_type -> littlehorse.EditUserTaskRunCommentRequest
+	148, // 168: littlehorse.LittleHorse.DeleteUserTaskRunComment:input_type -> littlehorse.DeleteUserTaskRunCommentRequest
+	122, // 169: littlehorse.LittleHorse.GetNodeRun:input_type -> littlehorse.NodeRunId
+	56,  // 170: littlehorse.LittleHorse.ListNodeRuns:input_type -> littlehorse.ListNodeRunsRequest
+	121, // 171: littlehorse.LittleHorse.GetTaskRun:input_type -> littlehorse.TaskRunId
+	89,  // 172: littlehorse.LittleHorse.ListTaskRuns:input_type -> littlehorse.ListTaskRunsRequest
+	125, // 173: littlehorse.LittleHorse.GetVariable:input_type -> littlehorse.VariableId
+	58,  // 174: littlehorse.LittleHorse.ListVariables:input_type -> littlehorse.ListVariablesRequest
+	12,  // 175: littlehorse.LittleHorse.PutExternalEvent:input_type -> littlehorse.PutExternalEventRequest
+	13,  // 176: littlehorse.LittleHorse.PutCorrelatedEvent:input_type -> littlehorse.PutCorrelatedEventRequest
+	110, // 177: littlehorse.LittleHorse.GetExternalEvent:input_type -> littlehorse.ExternalEventId
+	112, // 178: littlehorse.LittleHorse.GetCorrelatedEvent:input_type -> littlehorse.CorrelatedEventId
+	27,  // 179: littlehorse.LittleHorse.AwaitWorkflowEvent:input_type -> littlehorse.AwaitWorkflowEventRequest
+	116, // 180: littlehorse.LittleHorse.GetWorkflowEventDef:input_type -> littlehorse.WorkflowEventDefId
+	117, // 181: littlehorse.LittleHorse.GetWorkflowEvent:input_type -> littlehorse.WorkflowEventId
+	60,  // 182: littlehorse.LittleHorse.ListExternalEvents:input_type -> littlehorse.ListExternalEventsRequest
+	62,  // 183: littlehorse.LittleHorse.ListWorkflowEvents:input_type -> littlehorse.ListWorkflowEventsRequest
+	28,  // 184: littlehorse.LittleHorse.SearchWfRun:input_type -> littlehorse.SearchWfRunRequest
+	32,  // 185: littlehorse.LittleHorse.SearchNodeRun:input_type -> littlehorse.SearchNodeRunRequest
+	30,  // 186: littlehorse.LittleHorse.SearchTaskRun:input_type -> littlehorse.SearchTaskRunRequest
+	34,  // 187: littlehorse.LittleHorse.SearchUserTaskRun:input_type -> littlehorse.SearchUserTaskRunRequest
+	36,  // 188: littlehorse.LittleHorse.SearchVariable:input_type -> littlehorse.SearchVariableRequest
+	52,  // 189: littlehorse.LittleHorse.SearchExternalEvent:input_type -> littlehorse.SearchExternalEventRequest
+	54,  // 190: littlehorse.LittleHorse.SearchWorkflowEvent:input_type -> littlehorse.SearchWorkflowEventRequest
+	38,  // 191: littlehorse.LittleHorse.SearchTaskDef:input_type -> littlehorse.SearchTaskDefRequest
+	40,  // 192: littlehorse.LittleHorse.SearchUserTaskDef:input_type -> littlehorse.SearchUserTaskDefRequest
+	42,  // 193: littlehorse.LittleHorse.SearchWfSpec:input_type -> littlehorse.SearchWfSpecRequest
+	44,  // 194: littlehorse.LittleHorse.SearchExternalEventDef:input_type -> littlehorse.SearchExternalEventDefRequest
+	46,  // 195: littlehorse.LittleHorse.SearchWorkflowEventDef:input_type -> littlehorse.SearchWorkflowEventDefRequest
+	48,  // 196: littlehorse.LittleHorse.SearchTenant:input_type -> littlehorse.SearchTenantRequest
+	50,  // 197: littlehorse.LittleHorse.SearchPrincipal:input_type -> littlehorse.SearchPrincipalRequest
+	64,  // 198: littlehorse.LittleHorse.RegisterTaskWorker:input_type -> littlehorse.RegisterTaskWorkerRequest
+	68,  // 199: littlehorse.LittleHorse.PollTask:input_type -> littlehorse.PollTaskRequest
+	71,  // 200: littlehorse.LittleHorse.ReportTask:input_type -> littlehorse.ReportTaskRun
+	72,  // 201: littlehorse.LittleHorse.StopWfRun:input_type -> littlehorse.StopWfRunRequest
+	73,  // 202: littlehorse.LittleHorse.ResumeWfRun:input_type -> littlehorse.ResumeWfRunRequest
+	74,  // 203: littlehorse.LittleHorse.RescueThreadRun:input_type -> littlehorse.RescueThreadRunRequest
+	16,  // 204: littlehorse.LittleHorse.DeleteWfRun:input_type -> littlehorse.DeleteWfRunRequest
+	18,  // 205: littlehorse.LittleHorse.DeleteTaskDef:input_type -> littlehorse.DeleteTaskDefRequest
+	19,  // 206: littlehorse.LittleHorse.DeleteStructDef:input_type -> littlehorse.DeleteStructDefRequest
+	21,  // 207: littlehorse.LittleHorse.DeleteWfSpec:input_type -> littlehorse.DeleteWfSpecRequest
+	20,  // 208: littlehorse.LittleHorse.DeleteUserTaskDef:input_type -> littlehorse.DeleteUserTaskDefRequest
+	22,  // 209: littlehorse.LittleHorse.DeleteExternalEventDef:input_type -> littlehorse.DeleteExternalEventDefRequest
+	17,  // 210: littlehorse.LittleHorse.DeleteCorrelatedEvent:input_type -> littlehorse.DeleteCorrelatedEventRequest
+	23,  // 211: littlehorse.LittleHorse.DeleteWorkflowEventDef:input_type -> littlehorse.DeleteWorkflowEventDefRequest
+	149, // 212: littlehorse.LittleHorse.DeletePrincipal:input_type -> littlehorse.DeletePrincipalRequest
+	15,  // 213: littlehorse.LittleHorse.DeleteScheduledWfRun:input_type -> littlehorse.DeleteScheduledWfRunRequest
+	75,  // 214: littlehorse.LittleHorse.GetTaskDefMetricsWindow:input_type -> littlehorse.TaskDefMetricsQueryRequest
+	78,  // 215: littlehorse.LittleHorse.GetWfSpecMetricsWindow:input_type -> littlehorse.WfSpecMetricsQueryRequest
+	76,  // 216: littlehorse.LittleHorse.ListTaskDefMetrics:input_type -> littlehorse.ListTaskMetricsRequest
+	79,  // 217: littlehorse.LittleHorse.ListWfSpecMetrics:input_type -> littlehorse.ListWfMetricsRequest
+	150, // 218: littlehorse.LittleHorse.PutTenant:input_type -> littlehorse.PutTenantRequest
+	126, // 219: littlehorse.LittleHorse.GetTenant:input_type -> littlehorse.TenantId
+	151, // 220: littlehorse.LittleHorse.PutPrincipal:input_type -> littlehorse.PutPrincipalRequest
+	127, // 221: littlehorse.LittleHorse.GetPrincipal:input_type -> littlehorse.PrincipalId
+	152, // 222: littlehorse.LittleHorse.Whoami:input_type -> google.protobuf.Empty
+	152, // 223: littlehorse.LittleHorse.GetServerVersion:input_type -> google.protobuf.Empty
+	153, // 224: littlehorse.LittleHorse.PutTaskDef:output_type -> littlehorse.TaskDef
+	153, // 225: littlehorse.LittleHorse.GetTaskDef:output_type -> littlehorse.TaskDef
+	88,  // 226: littlehorse.LittleHorse.GetTaskWorkerGroup:output_type -> littlehorse.TaskWorkerGroup
+	154, // 227: littlehorse.LittleHorse.PutExternalEventDef:output_type -> littlehorse.ExternalEventDef
+	154, // 228: littlehorse.LittleHorse.GetExternalEventDef:output_type -> littlehorse.ExternalEventDef
+	155, // 229: littlehorse.LittleHorse.PutWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
+	156, // 230: littlehorse.LittleHorse.PutWfSpec:output_type -> littlehorse.WfSpec
+	156, // 231: littlehorse.LittleHorse.GetWfSpec:output_type -> littlehorse.WfSpec
+	156, // 232: littlehorse.LittleHorse.GetLatestWfSpec:output_type -> littlehorse.WfSpec
+	156, // 233: littlehorse.LittleHorse.MigrateWfSpec:output_type -> littlehorse.WfSpec
+	157, // 234: littlehorse.LittleHorse.PutStructDef:output_type -> littlehorse.StructDef
+	157, // 235: littlehorse.LittleHorse.GetStructDef:output_type -> littlehorse.StructDef
+	8,   // 236: littlehorse.LittleHorse.ValidateStructDefEvolution:output_type -> littlehorse.ValidateStructDefEvolutionResponse
+	158, // 237: littlehorse.LittleHorse.PutUserTaskDef:output_type -> littlehorse.UserTaskDef
+	158, // 238: littlehorse.LittleHorse.GetUserTaskDef:output_type -> littlehorse.UserTaskDef
+	158, // 239: littlehorse.LittleHorse.GetLatestUserTaskDef:output_type -> littlehorse.UserTaskDef
+	159, // 240: littlehorse.LittleHorse.RunWf:output_type -> littlehorse.WfRun
+	160, // 241: littlehorse.LittleHorse.ScheduleWf:output_type -> littlehorse.ScheduledWfRun
+	85,  // 242: littlehorse.LittleHorse.SearchScheduledWfRun:output_type -> littlehorse.ScheduledWfRunIdList
+	160, // 243: littlehorse.LittleHorse.GetScheduledWfRun:output_type -> littlehorse.ScheduledWfRun
+	159, // 244: littlehorse.LittleHorse.GetWfRun:output_type -> littlehorse.WfRun
+	137, // 245: littlehorse.LittleHorse.GetUserTaskRun:output_type -> littlehorse.UserTaskRun
+	152, // 246: littlehorse.LittleHorse.AssignUserTaskRun:output_type -> google.protobuf.Empty
+	152, // 247: littlehorse.LittleHorse.CompleteUserTaskRun:output_type -> google.protobuf.Empty
+	152, // 248: littlehorse.LittleHorse.CancelUserTaskRun:output_type -> google.protobuf.Empty
+	137, // 249: littlehorse.LittleHorse.SaveUserTaskRunProgress:output_type -> littlehorse.UserTaskRun
+	84,  // 250: littlehorse.LittleHorse.ListUserTaskRuns:output_type -> littlehorse.UserTaskRunList
+	137, // 251: littlehorse.LittleHorse.UserTaskRunComment:output_type -> littlehorse.UserTaskRun
+	137, // 252: littlehorse.LittleHorse.EditUserTaskRunComment:output_type -> littlehorse.UserTaskRun
+	137, // 253: littlehorse.LittleHorse.DeleteUserTaskRunComment:output_type -> littlehorse.UserTaskRun
+	128, // 254: littlehorse.LittleHorse.GetNodeRun:output_type -> littlehorse.NodeRun
+	57,  // 255: littlehorse.LittleHorse.ListNodeRuns:output_type -> littlehorse.NodeRunList
+	139, // 256: littlehorse.LittleHorse.GetTaskRun:output_type -> littlehorse.TaskRun
+	90,  // 257: littlehorse.LittleHorse.ListTaskRuns:output_type -> littlehorse.TaskRunList
+	129, // 258: littlehorse.LittleHorse.GetVariable:output_type -> littlehorse.Variable
+	59,  // 259: littlehorse.LittleHorse.ListVariables:output_type -> littlehorse.VariableList
+	130, // 260: littlehorse.LittleHorse.PutExternalEvent:output_type -> littlehorse.ExternalEvent
+	161, // 261: littlehorse.LittleHorse.PutCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
+	130, // 262: littlehorse.LittleHorse.GetExternalEvent:output_type -> littlehorse.ExternalEvent
+	161, // 263: littlehorse.LittleHorse.GetCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
+	131, // 264: littlehorse.LittleHorse.AwaitWorkflowEvent:output_type -> littlehorse.WorkflowEvent
+	155, // 265: littlehorse.LittleHorse.GetWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
+	131, // 266: littlehorse.LittleHorse.GetWorkflowEvent:output_type -> littlehorse.WorkflowEvent
+	61,  // 267: littlehorse.LittleHorse.ListExternalEvents:output_type -> littlehorse.ExternalEventList
+	63,  // 268: littlehorse.LittleHorse.ListWorkflowEvents:output_type -> littlehorse.WorkflowEventList
+	29,  // 269: littlehorse.LittleHorse.SearchWfRun:output_type -> littlehorse.WfRunIdList
+	33,  // 270: littlehorse.LittleHorse.SearchNodeRun:output_type -> littlehorse.NodeRunIdList
+	31,  // 271: littlehorse.LittleHorse.SearchTaskRun:output_type -> littlehorse.TaskRunIdList
+	35,  // 272: littlehorse.LittleHorse.SearchUserTaskRun:output_type -> littlehorse.UserTaskRunIdList
+	37,  // 273: littlehorse.LittleHorse.SearchVariable:output_type -> littlehorse.VariableIdList
+	53,  // 274: littlehorse.LittleHorse.SearchExternalEvent:output_type -> littlehorse.ExternalEventIdList
+	55,  // 275: littlehorse.LittleHorse.SearchWorkflowEvent:output_type -> littlehorse.WorkflowEventIdList
+	39,  // 276: littlehorse.LittleHorse.SearchTaskDef:output_type -> littlehorse.TaskDefIdList
+	41,  // 277: littlehorse.LittleHorse.SearchUserTaskDef:output_type -> littlehorse.UserTaskDefIdList
+	43,  // 278: littlehorse.LittleHorse.SearchWfSpec:output_type -> littlehorse.WfSpecIdList
+	45,  // 279: littlehorse.LittleHorse.SearchExternalEventDef:output_type -> littlehorse.ExternalEventDefIdList
+	47,  // 280: littlehorse.LittleHorse.SearchWorkflowEventDef:output_type -> littlehorse.WorkflowEventDefIdList
+	49,  // 281: littlehorse.LittleHorse.SearchTenant:output_type -> littlehorse.TenantIdList
+	51,  // 282: littlehorse.LittleHorse.SearchPrincipal:output_type -> littlehorse.PrincipalIdList
+	66,  // 283: littlehorse.LittleHorse.RegisterTaskWorker:output_type -> littlehorse.RegisterTaskWorkerResponse
+	70,  // 284: littlehorse.LittleHorse.PollTask:output_type -> littlehorse.PollTaskResponse
+	152, // 285: littlehorse.LittleHorse.ReportTask:output_type -> google.protobuf.Empty
+	152, // 286: littlehorse.LittleHorse.StopWfRun:output_type -> google.protobuf.Empty
+	152, // 287: littlehorse.LittleHorse.ResumeWfRun:output_type -> google.protobuf.Empty
+	159, // 288: littlehorse.LittleHorse.RescueThreadRun:output_type -> littlehorse.WfRun
+	152, // 289: littlehorse.LittleHorse.DeleteWfRun:output_type -> google.protobuf.Empty
+	152, // 290: littlehorse.LittleHorse.DeleteTaskDef:output_type -> google.protobuf.Empty
+	152, // 291: littlehorse.LittleHorse.DeleteStructDef:output_type -> google.protobuf.Empty
+	152, // 292: littlehorse.LittleHorse.DeleteWfSpec:output_type -> google.protobuf.Empty
+	152, // 293: littlehorse.LittleHorse.DeleteUserTaskDef:output_type -> google.protobuf.Empty
+	152, // 294: littlehorse.LittleHorse.DeleteExternalEventDef:output_type -> google.protobuf.Empty
+	152, // 295: littlehorse.LittleHorse.DeleteCorrelatedEvent:output_type -> google.protobuf.Empty
+	152, // 296: littlehorse.LittleHorse.DeleteWorkflowEventDef:output_type -> google.protobuf.Empty
+	152, // 297: littlehorse.LittleHorse.DeletePrincipal:output_type -> google.protobuf.Empty
+	152, // 298: littlehorse.LittleHorse.DeleteScheduledWfRun:output_type -> google.protobuf.Empty
+	81,  // 299: littlehorse.LittleHorse.GetTaskDefMetricsWindow:output_type -> littlehorse.TaskDefMetrics
+	82,  // 300: littlehorse.LittleHorse.GetWfSpecMetricsWindow:output_type -> littlehorse.WfSpecMetrics
+	77,  // 301: littlehorse.LittleHorse.ListTaskDefMetrics:output_type -> littlehorse.ListTaskMetricsResponse
+	80,  // 302: littlehorse.LittleHorse.ListWfSpecMetrics:output_type -> littlehorse.ListWfMetricsResponse
+	162, // 303: littlehorse.LittleHorse.PutTenant:output_type -> littlehorse.Tenant
+	162, // 304: littlehorse.LittleHorse.GetTenant:output_type -> littlehorse.Tenant
+	163, // 305: littlehorse.LittleHorse.PutPrincipal:output_type -> littlehorse.Principal
+	163, // 306: littlehorse.LittleHorse.GetPrincipal:output_type -> littlehorse.Principal
+	163, // 307: littlehorse.LittleHorse.Whoami:output_type -> littlehorse.Principal
+	93,  // 308: littlehorse.LittleHorse.GetServerVersion:output_type -> littlehorse.LittleHorseVersion
+	224, // [224:309] is the sub-list for method output_type
+	139, // [139:224] is the sub-list for method input_type
+	139, // [139:139] is the sub-list for extension type_name
+	139, // [139:139] is the sub-list for extension extendee
+	0,   // [0:139] is the sub-list for field type_name
 }
 
 func init() { file_service_proto_init() }
@@ -8695,7 +8759,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteTaskDefRequest); i {
+			switch v := v.(*DeleteCorrelatedEventRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8707,7 +8771,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteStructDefRequest); i {
+			switch v := v.(*DeleteTaskDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8719,7 +8783,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteUserTaskDefRequest); i {
+			switch v := v.(*DeleteStructDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8731,7 +8795,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteWfSpecRequest); i {
+			switch v := v.(*DeleteUserTaskDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8743,7 +8807,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteExternalEventDefRequest); i {
+			switch v := v.(*DeleteWfSpecRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8755,7 +8819,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteWorkflowEventDefRequest); i {
+			switch v := v.(*DeleteExternalEventDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8767,7 +8831,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RunWfRequest); i {
+			switch v := v.(*DeleteWorkflowEventDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8779,7 +8843,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ScheduleWfRequest); i {
+			switch v := v.(*RunWfRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8791,7 +8855,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VariableMatch); i {
+			switch v := v.(*ScheduleWfRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8803,7 +8867,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AwaitWorkflowEventRequest); i {
+			switch v := v.(*VariableMatch); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8815,7 +8879,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchWfRunRequest); i {
+			switch v := v.(*AwaitWorkflowEventRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8827,7 +8891,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WfRunIdList); i {
+			switch v := v.(*SearchWfRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8839,7 +8903,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchTaskRunRequest); i {
+			switch v := v.(*WfRunIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8851,7 +8915,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskRunIdList); i {
+			switch v := v.(*SearchTaskRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8863,7 +8927,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchNodeRunRequest); i {
+			switch v := v.(*TaskRunIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8875,7 +8939,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NodeRunIdList); i {
+			switch v := v.(*SearchNodeRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8887,7 +8951,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchUserTaskRunRequest); i {
+			switch v := v.(*NodeRunIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8899,7 +8963,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserTaskRunIdList); i {
+			switch v := v.(*SearchUserTaskRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8911,7 +8975,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchVariableRequest); i {
+			switch v := v.(*UserTaskRunIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8923,7 +8987,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VariableIdList); i {
+			switch v := v.(*SearchVariableRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8935,7 +8999,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchTaskDefRequest); i {
+			switch v := v.(*VariableIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8947,7 +9011,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskDefIdList); i {
+			switch v := v.(*SearchTaskDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8959,7 +9023,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchUserTaskDefRequest); i {
+			switch v := v.(*TaskDefIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8971,7 +9035,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserTaskDefIdList); i {
+			switch v := v.(*SearchUserTaskDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8983,7 +9047,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchWfSpecRequest); i {
+			switch v := v.(*UserTaskDefIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8995,7 +9059,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WfSpecIdList); i {
+			switch v := v.(*SearchWfSpecRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9007,7 +9071,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchExternalEventDefRequest); i {
+			switch v := v.(*WfSpecIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9019,7 +9083,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExternalEventDefIdList); i {
+			switch v := v.(*SearchExternalEventDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9031,7 +9095,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchWorkflowEventDefRequest); i {
+			switch v := v.(*ExternalEventDefIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9043,7 +9107,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WorkflowEventDefIdList); i {
+			switch v := v.(*SearchWorkflowEventDefRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9055,7 +9119,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchTenantRequest); i {
+			switch v := v.(*WorkflowEventDefIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9067,7 +9131,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TenantIdList); i {
+			switch v := v.(*SearchTenantRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9079,7 +9143,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchPrincipalRequest); i {
+			switch v := v.(*TenantIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9091,7 +9155,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PrincipalIdList); i {
+			switch v := v.(*SearchPrincipalRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9103,7 +9167,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchExternalEventRequest); i {
+			switch v := v.(*PrincipalIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9115,7 +9179,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExternalEventIdList); i {
+			switch v := v.(*SearchExternalEventRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9127,7 +9191,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchWorkflowEventRequest); i {
+			switch v := v.(*ExternalEventIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9139,7 +9203,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WorkflowEventIdList); i {
+			switch v := v.(*SearchWorkflowEventRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9151,7 +9215,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListNodeRunsRequest); i {
+			switch v := v.(*WorkflowEventIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9163,7 +9227,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NodeRunList); i {
+			switch v := v.(*ListNodeRunsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9175,7 +9239,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[54].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListVariablesRequest); i {
+			switch v := v.(*NodeRunList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9187,7 +9251,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VariableList); i {
+			switch v := v.(*ListVariablesRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9199,7 +9263,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListExternalEventsRequest); i {
+			switch v := v.(*VariableList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9211,7 +9275,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExternalEventList); i {
+			switch v := v.(*ListExternalEventsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9223,7 +9287,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListWorkflowEventsRequest); i {
+			switch v := v.(*ExternalEventList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9235,7 +9299,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[59].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WorkflowEventList); i {
+			switch v := v.(*ListWorkflowEventsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9247,7 +9311,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[60].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterTaskWorkerRequest); i {
+			switch v := v.(*WorkflowEventList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9259,7 +9323,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[61].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskWorkerHeartBeatRequest); i {
+			switch v := v.(*RegisterTaskWorkerRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9271,7 +9335,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[62].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterTaskWorkerResponse); i {
+			switch v := v.(*TaskWorkerHeartBeatRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9283,7 +9347,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[63].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LHHostInfo); i {
+			switch v := v.(*RegisterTaskWorkerResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9295,7 +9359,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[64].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PollTaskRequest); i {
+			switch v := v.(*LHHostInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9307,7 +9371,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[65].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ScheduledTask); i {
+			switch v := v.(*PollTaskRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9319,7 +9383,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[66].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PollTaskResponse); i {
+			switch v := v.(*ScheduledTask); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9331,7 +9395,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[67].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReportTaskRun); i {
+			switch v := v.(*PollTaskResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9343,7 +9407,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[68].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StopWfRunRequest); i {
+			switch v := v.(*ReportTaskRun); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9355,7 +9419,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[69].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ResumeWfRunRequest); i {
+			switch v := v.(*StopWfRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9367,7 +9431,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[70].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RescueThreadRunRequest); i {
+			switch v := v.(*ResumeWfRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9379,7 +9443,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[71].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskDefMetricsQueryRequest); i {
+			switch v := v.(*RescueThreadRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9391,7 +9455,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[72].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListTaskMetricsRequest); i {
+			switch v := v.(*TaskDefMetricsQueryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9403,7 +9467,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[73].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListTaskMetricsResponse); i {
+			switch v := v.(*ListTaskMetricsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9415,7 +9479,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[74].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WfSpecMetricsQueryRequest); i {
+			switch v := v.(*ListTaskMetricsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9427,7 +9491,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[75].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListWfMetricsRequest); i {
+			switch v := v.(*WfSpecMetricsQueryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9439,7 +9503,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[76].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListWfMetricsResponse); i {
+			switch v := v.(*ListWfMetricsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9451,7 +9515,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[77].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskDefMetrics); i {
+			switch v := v.(*ListWfMetricsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9463,7 +9527,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[78].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WfSpecMetrics); i {
+			switch v := v.(*TaskDefMetrics); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9475,7 +9539,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[79].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListUserTaskRunRequest); i {
+			switch v := v.(*WfSpecMetrics); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9487,7 +9551,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[80].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserTaskRunList); i {
+			switch v := v.(*ListUserTaskRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9499,7 +9563,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[81].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ScheduledWfRunIdList); i {
+			switch v := v.(*UserTaskRunList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9511,7 +9575,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[82].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchScheduledWfRunRequest); i {
+			switch v := v.(*ScheduledWfRunIdList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9523,7 +9587,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[83].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskWorkerMetadata); i {
+			switch v := v.(*SearchScheduledWfRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9535,7 +9599,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[84].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskWorkerGroup); i {
+			switch v := v.(*TaskWorkerMetadata); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9547,7 +9611,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[85].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListTaskRunsRequest); i {
+			switch v := v.(*TaskWorkerGroup); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9559,7 +9623,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[86].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskRunList); i {
+			switch v := v.(*ListTaskRunsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9571,7 +9635,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[87].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MigrateWfSpecRequest); i {
+			switch v := v.(*TaskRunList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9583,7 +9647,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[88].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetLatestWfSpecRequest); i {
+			switch v := v.(*MigrateWfSpecRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9595,6 +9659,18 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[89].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLatestWfSpecRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[90].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LittleHorseVersion); i {
 			case 0:
 				return &v.state
@@ -9612,9 +9688,8 @@ func file_service_proto_init() {
 	file_service_proto_msgTypes[7].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[8].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[9].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[20].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[21].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[24].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[22].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[25].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[26].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[27].OneofWrappers = []interface{}{}
@@ -9626,53 +9701,54 @@ func file_service_proto_init() {
 	file_service_proto_msgTypes[33].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[34].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[35].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[36].OneofWrappers = []interface{}{
+	file_service_proto_msgTypes[36].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[37].OneofWrappers = []interface{}{
 		(*SearchUserTaskDefRequest_Prefix)(nil),
 		(*SearchUserTaskDefRequest_Name)(nil),
 	}
-	file_service_proto_msgTypes[37].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[38].OneofWrappers = []interface{}{
+	file_service_proto_msgTypes[38].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[39].OneofWrappers = []interface{}{
 		(*SearchWfSpecRequest_Name)(nil),
 		(*SearchWfSpecRequest_Prefix)(nil),
 		(*SearchWfSpecRequest_TaskDefName)(nil),
 	}
-	file_service_proto_msgTypes[39].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[40].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[41].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[42].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[43].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[44].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[45].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[46].OneofWrappers = []interface{}{
+	file_service_proto_msgTypes[46].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[47].OneofWrappers = []interface{}{
 		(*SearchPrincipalRequest_IsAdmin)(nil),
 		(*SearchPrincipalRequest_TenantId)(nil),
 	}
-	file_service_proto_msgTypes[47].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[48].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[49].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[50].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[51].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[52].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[53].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[62].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[64].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[66].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[67].OneofWrappers = []interface{}{
+	file_service_proto_msgTypes[54].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[63].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[65].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[67].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[68].OneofWrappers = []interface{}{
 		(*ReportTaskRun_Output)(nil),
 		(*ReportTaskRun_Error)(nil),
 		(*ReportTaskRun_Exception)(nil),
 	}
-	file_service_proto_msgTypes[71].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[82].OneofWrappers = []interface{}{}
-	file_service_proto_msgTypes[88].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[72].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[83].OneofWrappers = []interface{}{}
 	file_service_proto_msgTypes[89].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[90].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_service_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   94,
+			NumMessages:   95,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

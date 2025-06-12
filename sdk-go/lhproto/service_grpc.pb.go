@@ -91,6 +91,7 @@ const (
 	LittleHorse_DeleteWfSpec_FullMethodName               = "/littlehorse.LittleHorse/DeleteWfSpec"
 	LittleHorse_DeleteUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/DeleteUserTaskDef"
 	LittleHorse_DeleteExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteExternalEventDef"
+	LittleHorse_DeleteCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/DeleteCorrelatedEvent"
 	LittleHorse_DeleteWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteWorkflowEventDef"
 	LittleHorse_DeletePrincipal_FullMethodName            = "/littlehorse.LittleHorse/DeletePrincipal"
 	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
@@ -314,6 +315,8 @@ type LittleHorseClient interface {
 	DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a CorrelatedEvent
+	DeleteCorrelatedEvent(ctx context.Context, in *DeleteCorrelatedEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -1011,6 +1014,15 @@ func (c *littleHorseClient) DeleteExternalEventDef(ctx context.Context, in *Dele
 	return out, nil
 }
 
+func (c *littleHorseClient) DeleteCorrelatedEvent(ctx context.Context, in *DeleteCorrelatedEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteCorrelatedEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteWorkflowEventDef_FullMethodName, in, out, opts...)
@@ -1336,6 +1348,8 @@ type LittleHorseServer interface {
 	DeleteUserTaskDef(context.Context, *DeleteUserTaskDefRequest) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
+	// Deletes a CorrelatedEvent
+	DeleteCorrelatedEvent(context.Context, *DeleteCorrelatedEventRequest) (*emptypb.Empty, error)
 	DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -1581,6 +1595,9 @@ func (UnimplementedLittleHorseServer) DeleteUserTaskDef(context.Context, *Delete
 }
 func (UnimplementedLittleHorseServer) DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExternalEventDef not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteCorrelatedEvent(context.Context, *DeleteCorrelatedEventRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCorrelatedEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkflowEventDef not implemented")
@@ -2920,6 +2937,24 @@ func _LittleHorse_DeleteExternalEventDef_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_DeleteCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCorrelatedEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteCorrelatedEvent(ctx, req.(*DeleteCorrelatedEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_DeleteWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteWorkflowEventDefRequest)
 	if err := dec(in); err != nil {
@@ -3440,6 +3475,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteExternalEventDef",
 			Handler:    _LittleHorse_DeleteExternalEventDef_Handler,
+		},
+		{
+			MethodName: "DeleteCorrelatedEvent",
+			Handler:    _LittleHorse_DeleteCorrelatedEvent_Handler,
 		},
 		{
 			MethodName: "DeleteWorkflowEventDef",

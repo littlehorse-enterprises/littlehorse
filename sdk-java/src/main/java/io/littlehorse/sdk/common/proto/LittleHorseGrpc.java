@@ -2216,6 +2216,37 @@ public final class LittleHorseGrpc {
     return getDeleteExternalEventDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest,
+      com.google.protobuf.Empty> getDeleteCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest,
+      com.google.protobuf.Empty> getDeleteCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest, com.google.protobuf.Empty> getDeleteCorrelatedEventMethod;
+    if ((getDeleteCorrelatedEventMethod = LittleHorseGrpc.getDeleteCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteCorrelatedEventMethod = LittleHorseGrpc.getDeleteCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getDeleteCorrelatedEventMethod = getDeleteCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getDeleteCorrelatedEventMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest,
       com.google.protobuf.Empty> getDeleteWorkflowEventDefMethod;
 
@@ -3427,6 +3458,16 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    default void deleteCorrelatedEvent(io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteCorrelatedEventMethod(), responseObserver);
+    }
+
+    /**
      */
     default void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -4411,6 +4452,17 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    public void deleteCorrelatedEvent(io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
      */
     public void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -5312,6 +5364,16 @@ public final class LittleHorseGrpc {
     public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteCorrelatedEvent(io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteCorrelatedEventMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6276,6 +6338,17 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteCorrelatedEventMethod(), getCallOptions()), request);
+    }
+
+    /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWorkflowEventDef(
         io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
@@ -6485,20 +6558,21 @@ public final class LittleHorseGrpc {
   private static final int METHODID_DELETE_WF_SPEC = 67;
   private static final int METHODID_DELETE_USER_TASK_DEF = 68;
   private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 69;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 70;
-  private static final int METHODID_DELETE_PRINCIPAL = 71;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 72;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 73;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 74;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 75;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 76;
-  private static final int METHODID_PUT_TENANT = 77;
-  private static final int METHODID_GET_TENANT = 78;
-  private static final int METHODID_PUT_PRINCIPAL = 79;
-  private static final int METHODID_GET_PRINCIPAL = 80;
-  private static final int METHODID_WHOAMI = 81;
-  private static final int METHODID_GET_SERVER_VERSION = 82;
-  private static final int METHODID_POLL_TASK = 83;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 70;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 71;
+  private static final int METHODID_DELETE_PRINCIPAL = 72;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 73;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 74;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 75;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 76;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 77;
+  private static final int METHODID_PUT_TENANT = 78;
+  private static final int METHODID_GET_TENANT = 79;
+  private static final int METHODID_PUT_PRINCIPAL = 80;
+  private static final int METHODID_GET_PRINCIPAL = 81;
+  private static final int METHODID_WHOAMI = 82;
+  private static final int METHODID_GET_SERVER_VERSION = 83;
+  private static final int METHODID_POLL_TASK = 84;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6795,6 +6869,10 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_DELETE_EXTERNAL_EVENT_DEF:
           serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_DELETE_CORRELATED_EVENT:
+          serviceImpl.deleteCorrelatedEvent((io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_WORKFLOW_EVENT_DEF:
@@ -7368,6 +7446,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
         .addMethod(
+          getDeleteCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_CORRELATED_EVENT)))
+        .addMethod(
           getDeleteWorkflowEventDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -7577,6 +7662,7 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
+              .addMethod(getDeleteCorrelatedEventMethod())
               .addMethod(getDeleteWorkflowEventDefMethod())
               .addMethod(getDeletePrincipalMethod())
               .addMethod(getDeleteScheduledWfRunMethod())

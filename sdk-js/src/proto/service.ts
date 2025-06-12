@@ -403,6 +403,12 @@ export interface DeleteWfRunRequest {
   id: WfRunId | undefined;
 }
 
+/** Deletes a CorrelatedEvent */
+export interface DeleteCorrelatedEventRequest {
+  /** The ID of the CorrelatedEvent to delete. */
+  id: CorrelatedEventId | undefined;
+}
+
 /** Deletes a TaskDef. */
 export interface DeleteTaskDefRequest {
   /** The ID of the TaskDef to delete. */
@@ -2684,6 +2690,51 @@ export const DeleteWfRunRequest = {
   fromPartial(object: DeepPartial<DeleteWfRunRequest>): DeleteWfRunRequest {
     const message = createBaseDeleteWfRunRequest();
     message.id = (object.id !== undefined && object.id !== null) ? WfRunId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteCorrelatedEventRequest(): DeleteCorrelatedEventRequest {
+  return { id: undefined };
+}
+
+export const DeleteCorrelatedEventRequest = {
+  encode(message: DeleteCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      CorrelatedEventId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = CorrelatedEventId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    return DeleteCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    const message = createBaseDeleteCorrelatedEventRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? CorrelatedEventId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -8927,6 +8978,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a CorrelatedEvent */
+    deleteCorrelatedEvent: {
+      name: "DeleteCorrelatedEvent",
+      requestType: DeleteCorrelatedEventRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     deleteWorkflowEventDef: {
       name: "DeleteWorkflowEventDef",
       requestType: DeleteWorkflowEventDefRequest,
@@ -9414,6 +9474,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: DeleteExternalEventDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeleteCorrelatedEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
   deleteWorkflowEventDef(
     request: DeleteWorkflowEventDefRequest,
     context: CallContext & CallContextExt,
@@ -9834,6 +9899,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeepPartial<DeleteExternalEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeepPartial<DeleteCorrelatedEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
   deleteWorkflowEventDef(

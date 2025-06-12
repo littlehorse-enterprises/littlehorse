@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface UpdateCorrelationmarkerPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.UpdateCorrelationmarkerPb)
+public interface UpdateCorrelationMarkerPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.UpdateCorrelationMarkerPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -50,13 +50,13 @@ public interface UpdateCorrelationmarkerPbOrBuilder extends
   io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getWaitingNodeRunOrBuilder();
 
   /**
-   * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+   * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
    * @return The enum numeric value on the wire for action.
    */
   int getActionValue();
   /**
-   * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+   * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
    * @return The action.
    */
-  io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction getAction();
+  io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction getAction();
 }
