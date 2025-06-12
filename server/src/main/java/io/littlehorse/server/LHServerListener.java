@@ -22,6 +22,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutCorrelatedEventRequestModel;
@@ -457,7 +458,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ctx.onCompleted();
         }
     }
-    ;
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.WRITE_METADATA)
@@ -489,6 +489,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         PutCorrelatedEventRequestModel reqModel =
                 LHSerializable.fromProto(req, PutCorrelatedEventRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), observer, CorrelatedEvent.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.RUN)
+    public void deleteCorrelatedEvent(DeleteCorrelatedEventRequest req, StreamObserver<Empty> observer) {
+        DeleteCorrelatedEventRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteCorrelatedEventRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), observer, Empty.class);
     }
 
     @Override

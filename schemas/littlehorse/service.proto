@@ -285,6 +285,8 @@ service LittleHorse {
   rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
   // Deletes an ExternalEventDef.
   rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
+  // Deletes a CorrelatedEvent
+  rpc DeleteCorrelatedEvent(DeleteCorrelatedEventRequest) returns (google.protobuf.Empty) {}
 
   rpc DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
@@ -537,6 +539,12 @@ message DeleteScheduledWfRunRequest {
 message DeleteWfRunRequest {
   // The ID of the WfRun to delete.
   WfRunId id = 1;
+}
+
+// Deletes a CorrelatedEvent
+message DeleteCorrelatedEventRequest {
+  // The ID of the CorrelatedEvent to delete.
+  CorrelatedEventId id = 1;
 }
 
 // Deletes a TaskDef.

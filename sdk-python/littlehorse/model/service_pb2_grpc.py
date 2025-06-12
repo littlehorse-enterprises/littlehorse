@@ -388,6 +388,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.DeleteExternalEventDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
+        self.DeleteCorrelatedEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteCorrelatedEvent',
+                request_serializer=service__pb2.DeleteCorrelatedEventRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
         self.DeleteWorkflowEventDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteWorkflowEventDef',
                 request_serializer=service__pb2.DeleteWorkflowEventDefRequest.SerializeToString,
@@ -996,6 +1001,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteCorrelatedEvent(self, request, context):
+        """Deletes a CorrelatedEvent
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def DeleteWorkflowEventDef(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -1428,6 +1440,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteExternalEventDef,
                     request_deserializer=service__pb2.DeleteExternalEventDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteCorrelatedEvent,
+                    request_deserializer=service__pb2.DeleteCorrelatedEventRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWorkflowEventDef': grpc.unary_unary_rpc_method_handler(
@@ -3331,6 +3348,33 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/DeleteExternalEventDef',
             service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteCorrelatedEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteCorrelatedEvent',
+            service__pb2.DeleteCorrelatedEventRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
