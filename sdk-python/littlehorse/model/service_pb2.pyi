@@ -180,6 +180,12 @@ class DeleteWfRunRequest(_message.Message):
     id: _object_id_pb2.WfRunId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
+class DeleteCorrelatedEventRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.CorrelatedEventId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.CorrelatedEventId, _Mapping]] = ...) -> None: ...
+
 class DeleteTaskDefRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]

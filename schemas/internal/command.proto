@@ -48,6 +48,7 @@ message Command {
         SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;
         PutCorrelatedEventRequest put_correlated_event = 28;
         UpdateCorrelationMarkerPb update_correlation_marker = 29;
+        DeleteCorrelatedEventRequest delete_correlated_event = 30;
     }
 }
 
