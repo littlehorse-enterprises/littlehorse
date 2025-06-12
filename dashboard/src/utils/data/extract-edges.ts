@@ -40,7 +40,7 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
         target: `${edge.sinkNodeName}:${threadSpecWithName.name}`,
         label,
         data: { edge },
-        type: 'default',
+        type: 'straight',
         animated: true,
       })
     })
@@ -73,7 +73,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       edges.push({
         id: `${sourceId}>${targetId}:${threadName}`,
         source: sourceId,
-        type: 'default',
+        type: 'straight',
         target: targetId,
         animated: true,
       })
@@ -95,7 +95,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
           id: `${sourceId}>${targetId}`,
           source: sourceId,
           target: targetId,
-          type: 'default',
+          type: 'straight',
           animated: true,
         })
       })
