@@ -47,7 +47,7 @@ message Command {
         DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;
         SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;
         PutCorrelatedEventRequest put_correlated_event = 28;
-        UpdateCorrelationmarkerPb update_correlation_marker = 29;
+        UpdateCorrelationMarkerPb update_correlation_marker = 29;
     }
 }
 
@@ -213,7 +213,7 @@ message ExternalEventNodeTimeoutPb {
     NodeRunId node_run_id = 1;
 }
 
-message UpdateCorrelationmarkerPb {
+message UpdateCorrelationMarkerPb {
     string correlation_key = 1;
     ExternalEventDefId external_event_def_id = 2;
     NodeRunId waiting_node_run = 3;

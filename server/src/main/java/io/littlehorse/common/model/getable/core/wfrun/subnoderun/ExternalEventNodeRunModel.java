@@ -18,7 +18,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEv
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
-import io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction;
+import io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
 import io.littlehorse.sdk.common.proto.LHErrorType;
