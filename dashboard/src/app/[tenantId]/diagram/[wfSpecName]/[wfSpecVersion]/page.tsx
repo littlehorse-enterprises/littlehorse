@@ -1,10 +1,12 @@
 import { getWfRunDetails } from "@/actions/getWfRun";
-import DiagramLayout from "@/components/diagram/diagram-layout";
 import { extractEdgeData, extractNodeData } from "@/utils/data/data-extraction";
 import { lhClient } from "@/utils/client/lhClient";
 import { type Edge, type Node } from "@xyflow/react";
 import { SelectionProvider } from "@/components/context/selection-context";
 import { WfRunDetails } from "@/types/wfRunDetails";
+import LeftSidebar from "@/components/diagram/left-sidebar/left-sidebar";
+import WorkflowDiagram from "@/components/diagram/workflow-diagram";
+import RightSidebar from "@/components/diagram/right-sidebar";
 
 interface DiagramPageProps {
     params: Promise<{
@@ -42,14 +44,17 @@ export default async function DiagramPage({
 
     return (
         <SelectionProvider>
-            <DiagramLayout
-                wfSpec={wfSpec}
-                wfRun={wfRunDetails?.wfRun}
-                nodeRuns={wfRunDetails?.nodeRuns}
-                taskRuns={wfRunDetails?.taskRuns}
-                nodes={nodes}
-                edges={edges}
-            />
+            <div className="flex h-full">
+                <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
+                <div className="flex-1 flex">
+                    <WorkflowDiagram nodes={nodes} edges={edges} />
+                    <RightSidebar
+                        wfSpec={wfSpec}
+                        nodeRuns={wfRunDetails?.nodeRuns || []}
+                        taskRuns={wfRunDetails?.taskRuns || []}
+                    />
+                </div>
+            </div>
         </SelectionProvider>
     );
 }

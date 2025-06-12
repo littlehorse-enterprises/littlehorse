@@ -1,4 +1,4 @@
-import { Box, GitBranch, Webhook, CheckCircle, AlertCircle, Loader2, PlayIcon, Mail, MailIcon, CircleSlashIcon } from "lucide-react"
+import { Box, CheckCircle, AlertCircle, Loader2, PlayIcon, MailIcon, CircleSlashIcon } from "lucide-react"
 
 export type NodeType = 'ENTRYPOINT' | 'EXIT' | 'TASK' | 'EXTERNAL_EVENT' | 'DECISION'
 
