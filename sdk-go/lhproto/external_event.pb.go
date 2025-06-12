@@ -229,8 +229,6 @@ type CorrelatedEventConfig struct {
 	// cleaned up based on the provided ttl.
 	TtlSeconds *int64 `protobuf:"varint,1,opt,name=ttl_seconds,json=ttlSeconds,proto3,oneof" json:"ttl_seconds,omitempty"`
 	// If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created.
-	// Also, if set, it is implied that only one `WfRun` can ever be correlated
-	// to this `CorrelatedEvent`.
 	DeleteAfterFirstCorrelation bool `protobuf:"varint,2,opt,name=delete_after_first_correlation,json=deleteAfterFirstCorrelation,proto3" json:"delete_after_first_correlation,omitempty"`
 }
 
