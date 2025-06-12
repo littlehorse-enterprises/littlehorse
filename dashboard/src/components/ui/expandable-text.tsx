@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { ChevronDown, ChevronUp, Maximize2 } from "lucide-react"
+import { useState } from 'react'
+import { ChevronDown, ChevronUp, Maximize2 } from 'lucide-react'
 
 interface ExpandableTextProps {
   text?: string
@@ -12,7 +12,7 @@ interface ExpandableTextProps {
 export default function ExpandableText({ text, maxLength = 50, isCode = false }: ExpandableTextProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  if (text === "") {
+  if (text === '') {
     return <span className="text-gray-500">N/A</span>
   }
 
@@ -22,15 +22,16 @@ export default function ExpandableText({ text, maxLength = 50, isCode = false }:
   return (
     <div className="relative">
       <div
-        className={`${isCode ? "font-mono bg-gray-50 p-1 rounded" : ""
-          } ${isExpanded ? "whitespace-pre-wrap break-words" : "truncate"} relative`}
+        className={`${
+          isCode ? 'rounded bg-gray-50 p-1 font-mono' : ''
+        } ${isExpanded ? 'break-words whitespace-pre-wrap' : 'truncate'} relative`}
       >
         {displayText}
 
         {/* Absolute positioned Full View button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="absolute right-1 text-blue-500 hover:text-blue-700 bg-white bg-opacity-70 rounded-full p-0.5 backdrop-blur-lg"
+          className="bg-opacity-70 absolute right-1 rounded-full bg-white p-0.5 text-blue-500 backdrop-blur-lg hover:text-blue-700"
           title="Full View"
         >
           <Maximize2 className="h-3 w-3" />
@@ -40,15 +41,15 @@ export default function ExpandableText({ text, maxLength = 50, isCode = false }:
       {shouldTruncate && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-xs flex items-center text-blue-500 hover:text-blue-700 mt-1"
+          className="mt-1 flex items-center text-xs text-blue-500 hover:text-blue-700"
         >
           {isExpanded ? (
             <>
-              <ChevronUp className="h-3 w-3 mr-1" /> Show Less
+              <ChevronUp className="mr-1 h-3 w-3" /> Show Less
             </>
           ) : (
             <>
-              <ChevronDown className="h-3 w-3 mr-1" /> Show More
+              <ChevronDown className="mr-1 h-3 w-3" /> Show More
             </>
           )}
         </button>
@@ -56,21 +57,21 @@ export default function ExpandableText({ text, maxLength = 50, isCode = false }:
 
       {/* Modal for full view */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[80vh] flex flex-col">
-            <div className="flex justify-between items-center p-4 border-b">
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+          <div className="flex max-h-[80vh] w-full max-w-3xl flex-col rounded-lg bg-white shadow-lg">
+            <div className="flex items-center justify-between border-b p-4">
               <h3 className="font-medium">Full Content</h3>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700">
                 ✕
               </button>
             </div>
-            <div className="p-4 overflow-auto flex-1">
-              <pre className={`${isCode ? "font-mono text-xs" : "whitespace-pre-wrap"}`}>{text}</pre>
+            <div className="flex-1 overflow-auto p-4">
+              <pre className={`${isCode ? 'font-mono text-xs' : 'whitespace-pre-wrap'}`}>{text}</pre>
             </div>
-            <div className="border-t p-4 flex justify-end">
+            <div className="flex justify-end border-t p-4">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+                className="rounded bg-gray-200 px-4 py-2 text-sm hover:bg-gray-300"
               >
                 Close
               </button>

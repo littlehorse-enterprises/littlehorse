@@ -1,7 +1,7 @@
 export type WithTenant = {
-  tenantId: string;
-};
+  tenantId: string
+}
 
 export type WithBookmark = {
-  bookmark?: string;
-};
+  bookmark?: string
+}

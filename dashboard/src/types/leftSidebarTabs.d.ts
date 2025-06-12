@@ -1,1 +1,1 @@
-export type LeftSidebarTabId = "WfSpec" | "WfRuns" | "ScheduledWfRuns";
+export type LeftSidebarTabId = 'WfSpec' | 'WfRuns' | 'ScheduledWfRuns'

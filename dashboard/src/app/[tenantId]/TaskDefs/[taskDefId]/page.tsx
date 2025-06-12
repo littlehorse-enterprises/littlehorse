@@ -1,5 +1,5 @@
-import { lhClient } from "@/utils/client/lhClient"
-import TaskDefClient from "./TaskDefClient"
+import { lhClient } from '@/utils/client/lhClient'
+import TaskDefClient from './TaskDefClient'
 
 type PageProps = {
   params: Promise<{
@@ -14,9 +14,5 @@ export default async function TaskDefPage({ params }: PageProps) {
 
   const taskDef = await client.getTaskDef({ name: taskDefId })
 
-  return (
-    <TaskDefClient
-      taskDef={taskDef}
-    />
-  )
+  return <TaskDefClient taskDef={taskDef} />
 }

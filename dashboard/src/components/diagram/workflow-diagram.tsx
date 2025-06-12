@@ -1,101 +1,96 @@
-"use client";
+'use client'
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react'
 import {
-    ReactFlow,
-    Background,
-    Controls,
-    MiniMap,
-    type NodeTypes,
-    useNodesState,
-    useEdgesState,
-    type Node,
-    type Edge,
-    BackgroundVariant,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-import { getLayoutedElements } from '@/utils/ui/layout-utils';
-import { useSelection } from '../context/selection-context';
+  ReactFlow,
+  Background,
+  Controls,
+  MiniMap,
+  type NodeTypes,
+  useNodesState,
+  useEdgesState,
+  type Node,
+  type Edge,
+  BackgroundVariant,
+} from '@xyflow/react'
+import '@xyflow/react/dist/style.css'
+import { getLayoutedElements } from '@/utils/ui/layout-utils'
+import { useSelection } from '../context/selection-context'
 import NodeComponent from '@/components/diagram/node'
 
 // Define custom node types
 const nodeTypes: NodeTypes = {
-    node: NodeComponent,
-};
+  node: NodeComponent,
+}
 
 interface WorkflowDiagramProps {
-    className?: string;
-    nodes: Node[];
-    edges: Edge[];
+  className?: string
+  nodes: Node[]
+  edges: Edge[]
 }
 
 export default function WorkflowDiagram({
-    className = '',
-    nodes: customNodes,
-    edges: customEdges
+  className = '',
+  nodes: customNodes,
+  edges: customEdges,
 }: WorkflowDiagramProps) {
-    const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-    const { selectedId, setSelectedId } = useSelection();
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const { selectedId, setSelectedId } = useSelection()
 
-    // Use custom nodes/edges if provided, otherwise use mock data
-    const sourceNodes = customNodes;
-    const sourceEdges = customEdges;
+  // Use custom nodes/edges if provided, otherwise use mock data
+  const sourceNodes = customNodes
+  const sourceEdges = customEdges
 
-    // Apply layout when component mounts or when source data changes
-    useEffect(() => {
-        const applyLayout = async () => {
-            const { nodes: layoutedNodes, edges: layoutedEdges } = await getLayoutedElements(
-                sourceNodes,
-                sourceEdges
-            );
-            setNodes(layoutedNodes);
-            setEdges(layoutedEdges);
-        };
+  // Apply layout when component mounts or when source data changes
+  useEffect(() => {
+    const applyLayout = async () => {
+      const { nodes: layoutedNodes, edges: layoutedEdges } = await getLayoutedElements(sourceNodes, sourceEdges)
+      setNodes(layoutedNodes)
+      setEdges(layoutedEdges)
+    }
 
-        applyLayout();
-    }, [sourceNodes, sourceEdges, setNodes, setEdges]);
+    applyLayout()
+  }, [sourceNodes, sourceEdges, setNodes, setEdges])
 
-    // Update node selection when selectedId changes
-    useEffect(() => {
-        setNodes((nds) =>
-            nds.map((node) => ({
-                ...node,
-                selected: node.id === selectedId
-            }))
-        );
-    }, [selectedId, setNodes]);
+  // Update node selection when selectedId changes
+  useEffect(() => {
+    setNodes(nds =>
+      nds.map(node => ({
+        ...node,
+        selected: node.id === selectedId,
+      }))
+    )
+  }, [selectedId, setNodes])
 
-    const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-        setSelectedId(node.id);
-    }, [setSelectedId]);
+  const handleNodeClick = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      setSelectedId(node.id)
+    },
+    [setSelectedId]
+  )
 
-    return (
-        <div className={`h-full w-full ${className}`}>
-            <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onNodeClick={handleNodeClick}
-                nodeTypes={nodeTypes}
-                defaultEdgeOptions={{ type: 'step' }}
-                fitView
-                attributionPosition="bottom-right"
-                nodesDraggable={false}
-                nodesConnectable={false}
-                connectOnClick={false}
-                onPaneClick={() => setSelectedId(null)}
-            >
-                <Controls />
-                <MiniMap />
-                <Background
-                    color="#aaa"
-                    gap={16}
-                    size={1}
-                    variant={BackgroundVariant.Dots}
-                />
-            </ReactFlow>
-        </div>
-    );
-} 
+  return (
+    <div className={`h-full w-full ${className}`}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onNodeClick={handleNodeClick}
+        nodeTypes={nodeTypes}
+        defaultEdgeOptions={{ type: 'step' }}
+        fitView
+        attributionPosition="bottom-right"
+        nodesDraggable={false}
+        nodesConnectable={false}
+        connectOnClick={false}
+        onPaneClick={() => setSelectedId(null)}
+      >
+        <Controls />
+        <MiniMap />
+        <Background color="#aaa" gap={16} size={1} variant={BackgroundVariant.Dots} />
+      </ReactFlow>
+    </div>
+  )
+}

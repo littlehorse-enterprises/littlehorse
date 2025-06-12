@@ -1,9 +1,9 @@
-"use server"
+'use server'
 
-import { LHMethodParamType } from "@/types/executeRPCTypes"
-import { WithBookmark, WithTenant } from "@/types/withs"
-import { UserTaskRunId } from "littlehorse-client/proto"
-import { executeRpc } from "./executeRPC"
+import { LHMethodParamType } from '@/types/executeRPCTypes'
+import { WithBookmark, WithTenant } from '@/types/withs'
+import { UserTaskRunId } from 'littlehorse-client/proto'
+import { executeRpc } from './executeRPC'
 
 export interface SearchUserTaskRunResponse {
   results: UserTaskRunId[]
@@ -15,15 +15,21 @@ export const searchUserTaskRun = async ({
   tenantId,
   bookmark,
   limit,
-}: Omit<LHMethodParamType<"searchUserTaskRun">, "bookmark"> & WithBookmark & WithTenant): Promise<SearchUserTaskRunResponse> => {
-  const results = await executeRpc("searchUserTaskRun", {
-    userTaskDefName,
-    limit,
-    bookmark: bookmark ? Buffer.from(bookmark, 'base64') : undefined,
-  }, tenantId)
+}: Omit<LHMethodParamType<'searchUserTaskRun'>, 'bookmark'> &
+  WithBookmark &
+  WithTenant): Promise<SearchUserTaskRunResponse> => {
+  const results = await executeRpc(
+    'searchUserTaskRun',
+    {
+      userTaskDefName,
+      limit,
+      bookmark: bookmark ? Buffer.from(bookmark, 'base64') : undefined,
+    },
+    tenantId
+  )
 
   return {
     results: results.results,
-    bookmark: results.bookmark?.toString("base64"),
+    bookmark: results.bookmark?.toString('base64'),
   }
-} 
+}

@@ -1,13 +1,12 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import TenantHeader from "./TenantHeader";
-
+import Image from 'next/image'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import TenantHeader from './TenantHeader'
 
 export default function Header() {
-  const tenantId = useParams().tenantId as string;
+  const tenantId = useParams().tenantId as string
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
@@ -24,16 +23,10 @@ export default function Header() {
         </div>
 
         <nav className="flex space-x-8">
-          <Link
-            href={`/${tenantId}`}
-            className="hover:text-[#3b81f5] text-[#656565]"
-          >
+          <Link href={`/${tenantId}`} className="text-[#656565] hover:text-[#3b81f5]">
             Dashboard
           </Link>
-          <Link
-            href="/dashboard"
-            className="hover:text-[#3b81f5] text-[#656565]"
-          >
+          <Link href="/dashboard" className="text-[#656565] hover:text-[#3b81f5]">
             Metrics
           </Link>
         </nav>

@@ -1,9 +1,9 @@
-import { MetadataSearchClient } from "@/components/metadata/metadata-search-client"
+import { MetadataSearchClient } from '@/components/metadata/metadata-search-client'
 
 export default function MetadataSearchPage() {
-    return (
-        <div className="flex-1 overflow-auto container mx-auto py-6">
-            <MetadataSearchClient />
-        </div>
-    )
+  return (
+    <div className="container mx-auto flex-1 overflow-auto py-6">
+      <MetadataSearchClient />
+    </div>
+  )
 }

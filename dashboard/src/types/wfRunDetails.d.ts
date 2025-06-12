@@ -1,4 +1,4 @@
-import { WfRun, NodeRun, Variable, ThreadRun } from "littlehorse-client/proto"
+import { WfRun, NodeRun, Variable, ThreadRun } from 'littlehorse-client/proto'
 
 export type ThreadRunWithNodeRuns = ThreadRun & { nodeRuns: NodeRun[] }
 
@@ -7,4 +7,4 @@ export type WfRunDetails = {
   nodeRuns: NodeRun[]
   variables: Variable[]
   taskRuns: TaskRun[]
-} 
+}

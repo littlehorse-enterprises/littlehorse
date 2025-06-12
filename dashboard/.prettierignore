@@ -1,1 +1,8 @@
 node_modules
+.next
+build
+dist
+coverage
+*.lock
+package-lock.json
+*.log

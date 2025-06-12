@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useCallback } from "react"
+import { useState, useCallback } from 'react'
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -10,9 +10,9 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from '@tanstack/react-table'
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -24,7 +24,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  idField = "id" as keyof TData,
+  idField = 'id' as keyof TData,
   onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -48,14 +48,14 @@ export function DataTable<TData, TValue>({
 
       // Check for any interactive elements in the click path
       const isInteractiveElement =
-        target.closest("button") ||
+        target.closest('button') ||
         target.closest('[role="menuitem"]') ||
         target.closest('[data-interactive="true"]') ||
-        target.closest("[data-radix-collection-item]") ||
-        target.closest("[data-state]") // Radix UI elements often have data-state
+        target.closest('[data-radix-collection-item]') ||
+        target.closest('[data-state]') // Radix UI elements often have data-state
 
       if (isInteractiveElement) {
-        console.log("Click on interactive element detected, not selecting row")
+        console.log('Click on interactive element detected, not selecting row')
         return
       }
 
@@ -67,20 +67,20 @@ export function DataTable<TData, TValue>({
         onRowClick(rowData, e)
       }
     },
-    [setSelectedId, onRowClick],
+    [setSelectedId, onRowClick]
   )
 
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map(header => (
                 <TableHead
                   key={header.id}
                   className="h-8 font-medium text-[#656565]"
-                  onClick={(e) => {
+                  onClick={e => {
                     // Only stop propagation if this is a filter header
                     if (header.column.getCanFilter()) {
                       e.stopPropagation()
@@ -95,22 +95,23 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => {
-              const rowValue = row.original[idField];
+            table.getRowModel().rows.map(row => {
+              const rowValue = row.original[idField]
               // Handle complex ID objects
-              const rowId = typeof rowValue === 'object' && rowValue !== null && 'id' in rowValue
-                ? String((rowValue as { id: string }).id)
-                : String(rowValue);
-              const isSelected = selectedId === rowId;
+              const rowId =
+                typeof rowValue === 'object' && rowValue !== null && 'id' in rowValue
+                  ? String((rowValue as { id: string }).id)
+                  : String(rowValue)
+              const isSelected = selectedId === rowId
 
               return (
                 <TableRow
                   key={row.id}
-                  className={`hover:bg-gray-50 cursor-pointer ${isSelected ? "bg-blue-50" : ""}`}
-                  onClick={(e) => handleRowClick(rowId, e, row.original)}
-                  data-state={isSelected ? "selected" : undefined}
+                  className={`cursor-pointer hover:bg-gray-50 ${isSelected ? 'bg-blue-50' : ''}`}
+                  onClick={e => handleRowClick(rowId, e, row.original)}
+                  data-state={isSelected ? 'selected' : undefined}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} className="py-1">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
