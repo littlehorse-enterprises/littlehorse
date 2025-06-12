@@ -1,6 +1,6 @@
 package io.littlehorse.server;
 
-import io.littlehorse.sdk.common.proto.ServerVersion;
+import io.littlehorse.sdk.common.proto.LittleHorseVersion;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,9 +9,9 @@ public class Version {
             Pattern.compile("(?<major>0|[1-9]\\d*)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-(?<prerelease>[a-zA-Z0-9]+))?");
     private static final Matcher matcher = pattern.matcher(io.littlehorse.server.ServerVersion.VERSION);
 
-    public static ServerVersion getServerVersion() {
+    public static LittleHorseVersion getCurrentServerVersion() {
         if (matcher.matches()) {
-            ServerVersion.Builder builder = ServerVersion.newBuilder()
+            LittleHorseVersion.Builder builder = LittleHorseVersion.newBuilder()
                     .setMajorVersion(Integer.parseInt(matcher.group("major")))
                     .setMinorVersion(Integer.parseInt(matcher.group("minor")))
                     .setPatchVersion(Integer.parseInt(matcher.group("patch")));

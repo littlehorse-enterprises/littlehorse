@@ -13,18 +13,19 @@ namespace LittleHorse.Sdk
             return "client-" + Guid.NewGuid().ToString().Replace("-", "");
         }
 
-        internal string LHC_API_HOST { get; set; } = "localhost";
-        internal int LHC_API_PORT { get; set; } = 2023;
-        internal string LHC_API_PROTOCOL { get; set; } = "PLAIN";
-        internal string LHC_CLIENT_ID { get; set; } = GenerateClientId();
-        internal string? LHC_CA_CERT { get; set; }
-        internal string? LHC_CLIENT_CERT { get; set; }
-        internal string? LHC_CLIENT_KEY { get; set; }
-        internal string? LHC_OAUTH_CLIENT_ID { get; set; }
-        internal string? LHC_OAUTH_CLIENT_SECRET { get; set; }
-        internal string? LHC_OAUTH_ACCESS_TOKEN_URL { get; set; }
-        internal int LHW_NUM_WORKER_THREADS { get; set; } = 8;
-        internal string LHW_TASK_WORKER_VERSION { get; set; } = string.Empty;
+        internal string LHC_API_HOST { get; } = "localhost";
+        internal int LHC_API_PORT { get; } = 2023;
+        internal string LHC_API_PROTOCOL { get; } = "PLAINTEXT";
+        internal string LHC_CLIENT_ID { get; } = GenerateClientId();
+        internal string? LHC_CA_CERT { get; }
+        internal string? LHC_CLIENT_CERT { get; }
+        internal string? LHC_CLIENT_KEY { get; }
+        internal string? LHC_OAUTH_CLIENT_ID { get; }
+        internal string? LHC_OAUTH_CLIENT_SECRET { get; }
+        internal string? LHC_OAUTH_ACCESS_TOKEN_URL { get; }
+        internal string? LHC_TENANT_ID { get; }
+        internal int LHW_NUM_WORKER_THREADS { get; } = 8;
+        internal string LHW_TASK_WORKER_VERSION { get; } = string.Empty;
 
 
         internal LHInputVariables()
@@ -34,7 +35,7 @@ namespace LittleHorse.Sdk
                 LHC_API_HOST = apiHost;
             var apiPort = Environment.GetEnvironmentVariable("LHC_API_PORT");
             if (!string.IsNullOrEmpty(apiPort))
-                LHC_API_PORT = IntegerConverter.FromString(apiPort);
+                LHC_API_PORT = int.Parse(apiPort);
             var apiProtocol = Environment.GetEnvironmentVariable("LHC_API_PROTOCOL");
             if (!string.IsNullOrEmpty(apiProtocol))
                 LHC_API_PROTOCOL = apiProtocol;
@@ -61,10 +62,13 @@ namespace LittleHorse.Sdk
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
             var numberWorkerThreads = Environment.GetEnvironmentVariable("LHW_NUM_WORKER_THREADS");
             if (!string.IsNullOrEmpty(numberWorkerThreads))
-                LHW_NUM_WORKER_THREADS = IntegerConverter.FromString(numberWorkerThreads);
+                LHW_NUM_WORKER_THREADS = int.Parse(numberWorkerThreads);
             var taskWorkerVersion = Environment.GetEnvironmentVariable("LHW_TASK_WORKER_VERSION");
             if (!string.IsNullOrEmpty(taskWorkerVersion))
                 LHW_TASK_WORKER_VERSION = taskWorkerVersion;
+            var tenantId = Environment.GetEnvironmentVariable("LHC_TENANT_ID");
+            if (!string.IsNullOrEmpty(tenantId))
+                LHC_TENANT_ID = tenantId;
         }
         
         internal LHInputVariables(string filePath)
@@ -78,7 +82,7 @@ namespace LittleHorse.Sdk
                 LHC_API_HOST = host;
             var port = properties["LHC_API_PORT"];
             if (!string.IsNullOrEmpty(port))
-                LHC_API_PORT = IntegerConverter.FromString(port);
+                LHC_API_PORT = int.Parse(port);
             var apiProtocol = properties[ "LHC_API_PROTOCOL"];
             if (!string.IsNullOrEmpty(apiProtocol))
                 LHC_API_PROTOCOL = apiProtocol;
@@ -105,10 +109,13 @@ namespace LittleHorse.Sdk
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
             var numberWorkerThreads = properties["LHW_NUM_WORKER_THREADS"];
             if (!string.IsNullOrEmpty(numberWorkerThreads))
-                LHW_NUM_WORKER_THREADS = IntegerConverter.FromString(numberWorkerThreads);
+                LHW_NUM_WORKER_THREADS = int.Parse(numberWorkerThreads);
             var taskWorkerVersion = properties["LHW_TASK_WORKER_VERSION"];
             if (!string.IsNullOrEmpty(taskWorkerVersion))
                 LHW_TASK_WORKER_VERSION = taskWorkerVersion;
+            var tenantId = properties["LHC_TENANT_ID"];
+            if (!string.IsNullOrEmpty(tenantId))
+                LHC_TENANT_ID = tenantId;
         }
 
         internal LHInputVariables(Dictionary<string, string> configArguments)
@@ -118,7 +125,7 @@ namespace LittleHorse.Sdk
                 LHC_API_HOST = host;
             var port = GetValueIfKeyIsPresent(configArguments!, "LHC_API_PORT");
             if (!string.IsNullOrEmpty(port))
-                LHC_API_PORT = IntegerConverter.FromString(port);
+                LHC_API_PORT =  int.Parse(port);
             var apiProtocol = GetValueIfKeyIsPresent(configArguments!,  "LHC_API_PROTOCOL");
             if (!string.IsNullOrEmpty(apiProtocol))
                 LHC_API_PROTOCOL = apiProtocol;
@@ -146,10 +153,13 @@ namespace LittleHorse.Sdk
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
             var numberWorkerThreads = GetValueIfKeyIsPresent(configArguments!, "LHW_NUM_WORKER_THREADS");
             if (!string.IsNullOrEmpty(numberWorkerThreads))
-                LHW_NUM_WORKER_THREADS = IntegerConverter.FromString(numberWorkerThreads);
+                LHW_NUM_WORKER_THREADS = int.Parse(numberWorkerThreads);
             var taskWorkerVersion = GetValueIfKeyIsPresent(configArguments!, "LHW_TASK_WORKER_VERSION");
             if (!string.IsNullOrEmpty(taskWorkerVersion))
                 LHW_TASK_WORKER_VERSION = taskWorkerVersion;
+            var tenantId = GetValueIfKeyIsPresent(configArguments!, "LHC_TENANT_ID");
+            if (!string.IsNullOrEmpty(tenantId))
+                LHC_TENANT_ID = tenantId;
         }
 
         private string GetValueIfKeyIsPresent(Dictionary<string, string?> pairInFile, string keyName)

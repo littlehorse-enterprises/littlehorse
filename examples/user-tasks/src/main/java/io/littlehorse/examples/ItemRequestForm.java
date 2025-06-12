@@ -6,7 +6,7 @@ public class ItemRequestForm {
 
     @UserTaskField(
         description = "The item you are requesting.",
-        displayName = "Your Requst"
+        displayName = "Your Request"
     )
     public String requestedItem;
 

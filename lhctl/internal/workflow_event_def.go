@@ -14,7 +14,7 @@ var putWorkflowEventDefCmd = &cobra.Command{
 	Short: "Create a WorkflowEventDef.",
 	Long: `Create a WorkflowEventDef.
 	`,
-	Args: cobra.MatchAll(cobra.ExactArgs(2)),
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
 		contentTypeStr := args[1]
@@ -28,9 +28,16 @@ var putWorkflowEventDefCmd = &cobra.Command{
 		}
 		contentTypeEnum := lhproto.VariableType(contentType)
 
+		returnType := lhproto.ReturnType{
+			ReturnType: &lhproto.TypeDefinition{
+				Type:   contentTypeEnum,
+				Masked: false,
+			},
+		}
+
 		pwed := lhproto.PutWorkflowEventDefRequest{
-			Name: name,
-			Type: contentTypeEnum,
+			Name:        name,
+			ContentType: &returnType,
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).PutWorkflowEventDef(requestContext(cmd), &pwed))
@@ -41,7 +48,7 @@ var putWorkflowEventDefCmd = &cobra.Command{
 var getWorkflowEventDefCmd = &cobra.Command{
 	Use:   "workflowEventDef <name>",
 	Short: "Get an WorkflowEventDef by name.",
-	Args:  cobra.MatchAll(cobra.ExactArgs(1)),
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		littlehorse.PrintResp(
@@ -63,6 +70,7 @@ var searchWorkflowEventDefCmd = &cobra.Command{
 No option groups for Search WorkflowEventDef are supported. Therefore, this command
 searches for all WorkflowEventDefs.
 	`,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
@@ -86,7 +94,7 @@ var deleteWorkflowEventDefCmd = &cobra.Command{
 	Long: `Delete a WorkflowEventDef. You must provide the name of the
 WorkflowEventDef to delete.
 	`,
-	Args: cobra.MatchAll(cobra.ExactArgs(2)),
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		name := args[0]

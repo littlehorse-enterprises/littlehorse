@@ -1,6 +1,7 @@
 ﻿using Examples.BasicExample;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Worker;
+using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -44,6 +45,17 @@ public class Program
         return config;
     }
 
+    private static Workflow GetWorkflow()
+    {
+        void MyEntryPoint(WorkflowThread wf)
+        {
+            var name = wf.DeclareStr("input-name").Searchable();
+            wf.Execute("greet", name);
+        }
+        
+        return new Workflow("example-basic", MyEntryPoint);
+    }
+
     static void Main(string[] args)
     {
         SetupApplication();
@@ -51,11 +63,13 @@ public class Program
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
-            
-            MyWorker executable = new MyWorker();
-            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 
+            MyWorker executable = new MyWorker();
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet", config);
             taskWorker.RegisterTaskDef();
+            
+            var workflow = GetWorkflow();
+            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
 
             Thread.Sleep(1000);
 

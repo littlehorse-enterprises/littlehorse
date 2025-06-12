@@ -1,11 +1,12 @@
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -13,13 +14,10 @@ import (
 )
 
 var getWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <name> [<major version> [<minor version>]]",
+	Use:   "wfSpec <name> [<majorVersion>] [<revision>]",
 	Short: "Get a WfSpec by Name and optionally Major Version and Revision.",
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfSpec to get.")
-		}
-
 		name := args[0]
 
 		var majorVersion *int32
@@ -64,10 +62,8 @@ var getWfSpecCmd = &cobra.Command{
 var deployWfSpecCmd = &cobra.Command{
 	Use:   "wfSpec <filename>",
 	Short: "Deploy a wfSpec from a JSON or Protobuf file.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the filename to deploy from.")
-		}
 		pws := &lhproto.PutWfSpecRequest{}
 
 		// First, read the file
@@ -105,6 +101,7 @@ If you provide no optional arguments, searches for all WfSpecs.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
 	`,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 		taskDef, _ := cmd.Flags().GetString("taskDef")
@@ -140,16 +137,13 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
 }
 
 var deleteWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <name> <version>",
+	Use:   "wfSpec <name> <majorVersionNumber> <revisionNumber>",
 	Short: "Delete a WfSpec.",
 	Long: `Delete a WfSpec. You must provide the name and exact version of the
 WfSpec to delete.
 	`,
+	Args: cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 3 {
-			log.Fatal("You must provide three arguments: Name, Major Version, and Revision of WfSpec to Delete")
-		}
-
 		name := args[0]
 		majorVersionRaw := args[1]
 		revisionRaw := args[2]

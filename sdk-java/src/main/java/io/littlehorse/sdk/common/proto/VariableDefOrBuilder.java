@@ -9,19 +9,40 @@ public interface VariableDefOrBuilder extends
 
   /**
    * <pre>
-   * The Type of the variable.
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
+   * <code>optional .littlehorse.VariableType type = 1;</code>
+   * @return Whether the type field is set.
+   */
+  boolean hasType();
+  /**
+   * <pre>
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in a future release.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType type = 1;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
    * <pre>
-   * The Type of the variable.
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
+   * <code>optional .littlehorse.VariableType type = 1;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.VariableType getType();
@@ -81,11 +102,64 @@ public interface VariableDefOrBuilder extends
 
   /**
    * <pre>
-   * If true, the variable value will show as a masked string.
+   * DEPRECATED: If true, the variable value will show as a masked string.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in a future release.
    * </pre>
    *
-   * <code>bool masked_value = 4;</code>
+   * <code>optional bool masked_value = 4;</code>
+   * @return Whether the maskedValue field is set.
+   */
+  boolean hasMaskedValue();
+  /**
+   * <pre>
+   * DEPRECATED: If true, the variable value will show as a masked string.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in a future release.
+   * </pre>
+   *
+   * <code>optional bool masked_value = 4;</code>
    * @return The maskedValue.
    */
   boolean getMaskedValue();
+
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type_def = 5;</code>
+   * @return Whether the typeDef field is set.
+   */
+  boolean hasTypeDef();
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type_def = 5;</code>
+   * @return The typeDef.
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinition getTypeDef();
+  /**
+   * <pre>
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition type_def = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTypeDefOrBuilder();
 }

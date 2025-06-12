@@ -9,7 +9,7 @@ import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetr
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateTaskMetrics;
 import io.littlehorse.common.proto.TaskMetricUpdate;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -39,7 +39,7 @@ public class AggregateTaskMetricsModel extends LHSerializable<AggregateTaskMetri
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         AggregateTaskMetrics p = (AggregateTaskMetrics) proto;
         this.taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);

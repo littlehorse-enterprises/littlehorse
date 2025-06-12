@@ -6,6 +6,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'io.freefair.lombok' version '8.4'
     id 'com.google.protobuf' version '0.9.4'
+    id 'maven-publish'
+    id 'signing'
 }
 
 repositories {
@@ -35,7 +37,7 @@ dependencies {
     implementation 'io.javalin:javalin-micrometer:6.3.0'
 
     // Prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.12.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.6'
 
     // RocksDB
     implementation 'org.rocksdb:rocksdbjni:9.0.0'
@@ -75,8 +77,8 @@ shadowJar {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 compileJava {
@@ -86,11 +88,11 @@ compileJava {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.25.2'
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.61.0'
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}sdfsd"
         }
     }
 }
@@ -102,4 +104,65 @@ checkstyle {
 
 tasks.withType(Checkstyle).configureEach {
     exclude('**io/littlehorse/canary/proto**')
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = 'littlehorse-canary'
+            version = version
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'LittleHorse Canary'
+                description = 'LittleHorse Canary is a Synthetic Monitoring Tool'
+                url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                licenses {
+                    license {
+                        name = 'GNU Affero General Public License Version 3'
+                        url = 'https://www.gnu.org/licenses/agpl-3.0.en.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'LittleHorse Engineering'
+                        email = 'engineering@littlehorse.io'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                    connection = 'scm:git://github.com/littlehorse-enterprises/littlehorse.git'
+                    developerConnection = 'scm:git:ssh://github.com/littlehorse-enterprises/littlehorse.git'
+                }
+                packaging = 'jar'
+            }
+        }
+    }
+}
+
+signing {
+    required { gradle.taskGraph.hasTask("publish") }
+
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    excludes = []
+    options.memberLevel = JavadocMemberLevel.PUBLIC
 }

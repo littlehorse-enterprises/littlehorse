@@ -1,8 +1,9 @@
-using Examples.BasicExample;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Worker;
 
-public class Program
+namespace MaskedFieldsExample;
+
+public abstract class Program
 {
     private static ServiceProvider? _serviceProvider;
     private static void SetupApplication()
@@ -26,6 +27,19 @@ public class Program
 
         return config;
     }
+    
+    private static List<LHTaskWorker<MyWorker>> GetTaskWorkers(LHConfig config)
+    {
+        MyWorker executableExceptionHandling = new MyWorker();
+        var workers = new List<LHTaskWorker<MyWorker>>
+        {
+            new(executableExceptionHandling, "create-greet", config),
+            new(executableExceptionHandling, "update-greet", config),
+            new(executableExceptionHandling, "delete-greet", config)
+        };
+        
+        return workers;
+    }
 
     static void Main(string[] args)
     {
@@ -34,23 +48,18 @@ public class Program
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
+            var workers = GetTaskWorkers(config);
+            foreach (var worker in workers)
+            {
+                worker.RegisterTaskDef();
+            }
             
-            MyWorker executableCreateGreet = new MyWorker();
-            var taskWorkerCreate = new LHTaskWorker<MyWorker>(executableCreateGreet, "create-greet", config);
-            MyWorker executableUpdateGreet = new MyWorker();
-            var taskWorkerUpdate = new LHTaskWorker<MyWorker>(executableUpdateGreet, "update-greet", config);
-            MyWorker executableDeleteGreet = new MyWorker();
-            var taskWorkerDelete = new LHTaskWorker<MyWorker>(executableDeleteGreet, "delete-greet", config);
+            Thread.Sleep(300);
 
-            taskWorkerCreate.RegisterTaskDef();
-            taskWorkerUpdate.RegisterTaskDef();
-            taskWorkerDelete.RegisterTaskDef();
-
-            Thread.Sleep(1000);
-
-            taskWorkerCreate.Start();
-            taskWorkerUpdate.Start();
-            taskWorkerDelete.Start();
+            foreach (var worker in workers)
+            {
+                worker.Start();
+            }
         }
     }
 }

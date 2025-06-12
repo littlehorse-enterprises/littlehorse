@@ -4,18 +4,16 @@ package littlehorse;
 option java_multiple_files = true;
 option java_package = "io.littlehorse.canary.proto";
 
-import "google/protobuf/timestamp.proto";
-
 message MetricKey {
   string server_host = 1;
   int32 server_port = 2;
   string server_version = 3;
-  string id = 4;
+  string name = 4;
   repeated Tag tags = 5;
 }
 
 message MetricValue {
-  double value = 1;
+    map<string, double> values = 1;
 }
 
 message Tag {

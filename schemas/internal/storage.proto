@@ -5,6 +5,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
+import "object_id.proto";
 
 
 enum LHStoreType {
@@ -23,6 +24,8 @@ enum StoreableType {
     PARTITION_METRICS = 6;
     METRIC_WINDOW = 7;
     INITIALIZATION_LOG = 8;
+    WFRUN_STORED_INVENTORY = 9;
+    CORRELATION_MARKER = 10;
 }
 
 enum GetableClassEnum {
@@ -44,6 +47,8 @@ enum GetableClassEnum {
     WORKFLOW_EVENT_DEF = 15;
     WORKFLOW_EVENT = 16;
     SCHEDULED_WF_RUN = 17;
+    STRUCT_DEF = 18;
+    CORRELATED_EVENT = 19;
 }
 
 message AttributePb {
@@ -72,6 +77,21 @@ message TagPb {
     // the code a bit and may just be premature optimization.
 }
 
+// This is a hack to remove the need for doing range scans during the WfRun Deletion
+// process. We can iterate through nodeRun's just by knowing their id's; however, it
+// turns out that we can't guess all of the External Event Id's without journalling
+// them somewhere.
+message WfRunStoredInventory {
+    WfRunId wf_run_id = 1;
+    repeated ExternalEventId external_events = 3;
+
+    // Don't need to store NodeRunId's because we can get them from the WfRun
+    // Don't need to store TaskRunid's because we can get them from the NodeRun
+    // Don't need to store Variable's because we can get them from the WfSpec
+    // Don't need to store UserTaskRun's because we can get them from the NodeRun
+    // Don't need to store WorkflowEvent's because we can get them from the NodeRun's
+}
+
 message TagsCachePb {
     message CachedTagPb {
         string id = 1;
@@ -84,4 +104,15 @@ message StoredGetablePb {
     TagsCachePb index_cache = 1;
     bytes getable_payload = 2;
     GetableClassEnum type = 3;
+}
+
+message EventCorrelationMarker {
+  // NodeRunId of the `ExternalEventNodeRun` that are waiting
+  repeated NodeRunId source_node_runs = 1;
+
+  // ExternalEventDefId that we're waiting for
+  ExternalEventDefId event_def_id = 2;
+
+  // Correlation key
+  string correlation_key = 3;
 }

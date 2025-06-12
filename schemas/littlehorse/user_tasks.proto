@@ -10,7 +10,7 @@ import "variable.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // UserTaskDef is the metadata blueprint for UserTaskRuns.
 message UserTaskDef {
@@ -40,7 +40,7 @@ message UserTaskField {
   // single-level JSON_OBJ. Each key is the name of the field. Must be unique.
   string name = 1;
 
-  // The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+  // The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
   VariableType type = 2;
 
   // Optional description which can be displayed by the User Task UI application.
@@ -214,8 +214,8 @@ message UserTaskTriggerReference {
   // asigned to a specific user_id.
   optional string user_id = 3;
 
-  // Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-  // asigned to a specific user_id.
+  // Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+  // asigned to a specific user_group.
   optional string user_group = 4;
 }
 

@@ -1,7 +1,9 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -14,8 +16,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Slf4j
 public class WorkflowImpl extends Workflow {
 
     private PutWfSpecRequest compiledWorkflow;
@@ -23,6 +28,7 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
     private Set<String> requiredWorkflowEventDefNames;
+    private Stack<WorkflowThreadImpl> threads;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
@@ -31,6 +37,27 @@ public class WorkflowImpl extends Workflow {
         this.requiredTaskDefNames = new HashSet<>();
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
+        this.threads = new Stack<>();
+    }
+
+    @Override
+    public void registerWfSpec(LittleHorseBlockingStub client) {
+        // Must compile the workflow so that we can hydrate the externaleventdef's to create
+        PutWfSpecRequest wfRequest = compileWorkflow();
+
+        // Create externalEventDef's that the user wanted us to create
+        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+            log.info(
+                    "Creating externalEventDef:\n {}",
+                    LHLibUtil.protoToJson(client.putExternalEventDef(node.toPutExtDefRequest())));
+        }
+
+        // Now we do the dancin'
+        log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(wfRequest)));
+    }
+
+    public void addExternalEventDefToRegister(ExternalEventNodeOutputImpl node) {
+        externalEventsToRegister.add(node);
     }
 
     public Set<PutTaskDefRequest> compileTaskDefs() {
@@ -147,5 +174,9 @@ public class WorkflowImpl extends Workflow {
 
     protected int getDefaultSimpleRetries() {
         return defaultSimpleRetries;
+    }
+
+    Stack<WorkflowThreadImpl> getThreads() {
+        return this.threads;
     }
 }

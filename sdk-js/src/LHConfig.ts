@@ -67,7 +67,7 @@ export class LHConfig {
   /**
    * Get gRPC client for littlehorse
    *
-   * For more documentation about it's method please go to {@link https://littlehorse.dev}
+   * For more documentation about it's method please go to {@link https://littlehorse.io/docs/server}
    *
    * @param options - An object optionally containing `accessToken` and `tenantId`
    * @returns a gRPC client for littlehorse

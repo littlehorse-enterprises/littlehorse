@@ -4,7 +4,7 @@ namespace Examples.BasicExample
 {
     public class MyWorker
     {
-        [LHTaskMethod("greet-dotnet")]
+        [LHTaskMethod("greet")]
         public string Greeting(string name)
         {
             var message = $"Hello team, This is a Dotnet Worker";

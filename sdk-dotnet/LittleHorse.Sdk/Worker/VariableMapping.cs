@@ -1,4 +1,4 @@
-﻿using LittleHorse.Common.Proto;
+﻿using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Utils;
@@ -6,14 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
 {
-    public class VariableMapping
+    internal class VariableMapping
     {
         private ILogger<VariableMapping>? _logger;
-        private string? _name;
+        private readonly string? _name;
         private Type _type;
         private int _position;
 
-        public VariableMapping(TaskDef taskDef, int position, Type type, string? paramName)
+        internal VariableMapping(TaskDef taskDef, int position, Type type, string? paramName)
         {
             _type = type;
             _name = paramName;
@@ -30,9 +30,9 @@ namespace LittleHorse.Sdk.Worker
             ValidateType(input.Type, _type, _name);
         }
 
-        public object? Assign(ScheduledTask taskInstance, LHWorkerContext workerContext)
+        internal object? Assign(ScheduledTask taskInstance, LHWorkerContext workerContext)
         {
-            if (_type.GetType() == typeof(LHWorkerContext))
+            if (_type == typeof(LHWorkerContext))
             {
                 return workerContext;
             }
@@ -45,7 +45,7 @@ namespace LittleHorse.Sdk.Worker
             switch (val.ValueCase)
             {
                 case VariableValue.ValueOneofCase.Int:
-                    if (LHMappingHelper.isInt64Type(_type))
+                    if (LHMappingHelper.IsInt64Type(_type))
                     {
                         return val.Int;
                     }
@@ -70,6 +70,8 @@ namespace LittleHorse.Sdk.Worker
                 case VariableValue.ValueOneofCase.JsonObj:
                     jsonStr = val.JsonObj;
                     return JsonHandler.DeserializeFromJson(jsonStr, _type);
+                case VariableValue.ValueOneofCase.None:
+                    return null;
                 default:
                     throw new InvalidOperationException("Unrecognized variable value type");
             }

@@ -20,4 +20,10 @@ public class TaskNodeOutputImpl extends NodeOutputImpl implements TaskNodeOutput
         parent.overrideTaskRetries(this, retries);
         return this;
     }
+
+    @Override
+    public TaskNodeOutput timeout(int timeoutSeconds) {
+        parent.addTimeoutToTaskNode(this, timeoutSeconds);
+        return this;
+    }
 }

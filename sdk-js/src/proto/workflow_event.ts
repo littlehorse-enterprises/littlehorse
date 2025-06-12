@@ -6,9 +6,9 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { VariableType, variableTypeFromJSON, variableTypeToNumber } from "./common_enums";
+import { ReturnType } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { WorkflowEventDefId, WorkflowEventId } from "./object_id";
+import { NodeRunId, WorkflowEventDefId, WorkflowEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /**
@@ -29,7 +29,11 @@ export interface WorkflowEvent {
     | VariableValue
     | undefined;
   /** The time that the WorkflowEvent was created. */
-  createdAt: string | undefined;
+  createdAt:
+    | string
+    | undefined;
+  /** The NodeRun with which the WorkflowEvent is associated. */
+  nodeRunId: NodeRunId | undefined;
 }
 
 /** The WorkflowEventDef defines the blueprint for a WorkflowEvent. */
@@ -43,11 +47,11 @@ export interface WorkflowEventDef {
     | string
     | undefined;
   /** The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. */
-  type: VariableType;
+  contentType: ReturnType | undefined;
 }
 
 function createBaseWorkflowEvent(): WorkflowEvent {
-  return { id: undefined, content: undefined, createdAt: undefined };
+  return { id: undefined, content: undefined, createdAt: undefined, nodeRunId: undefined };
 }
 
 export const WorkflowEvent = {
@@ -60,6 +64,9 @@ export const WorkflowEvent = {
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.nodeRunId !== undefined) {
+      NodeRunId.encode(message.nodeRunId, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -92,6 +99,13 @@ export const WorkflowEvent = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.nodeRunId = NodeRunId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -111,12 +125,15 @@ export const WorkflowEvent = {
       ? VariableValue.fromPartial(object.content)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
+    message.nodeRunId = (object.nodeRunId !== undefined && object.nodeRunId !== null)
+      ? NodeRunId.fromPartial(object.nodeRunId)
+      : undefined;
     return message;
   },
 };
 
 function createBaseWorkflowEventDef(): WorkflowEventDef {
-  return { id: undefined, createdAt: undefined, type: VariableType.JSON_OBJ };
+  return { id: undefined, createdAt: undefined, contentType: undefined };
 }
 
 export const WorkflowEventDef = {
@@ -127,8 +144,8 @@ export const WorkflowEventDef = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(24).int32(variableTypeToNumber(message.type));
+    if (message.contentType !== undefined) {
+      ReturnType.encode(message.contentType, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -155,11 +172,11 @@ export const WorkflowEventDef = {
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.type = variableTypeFromJSON(reader.int32());
+          message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -179,7 +196,9 @@ export const WorkflowEventDef = {
       ? WorkflowEventDefId.fromPartial(object.id)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.contentType = (object.contentType !== undefined && object.contentType !== null)
+      ? ReturnType.fromPartial(object.contentType)
+      : undefined;
     return message;
   },
 };

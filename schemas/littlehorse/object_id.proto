@@ -8,7 +8,7 @@ import "common_enums.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // The ID of a WfSpec.
 message WfSpecId {
@@ -42,9 +42,18 @@ message TaskDefId {
   string name = 1;
 }
 
+// Unique identifier for a `StructDef`.
+message StructDefId {
+  // The name of the `StructDef`.
+  string name = 1;
+
+  // The version of the `StructDef`.
+  int32 version = 2;
+}
+
 // ID for ExternalEventDef
 message ExternalEventDefId {
-  // ExternalEventDef's are uniquedly identified by their name.
+  // ExternalEventDef's are uniquedly identified by their name and version.
   string name = 1;
 }
 
@@ -95,6 +104,16 @@ message ExternalEventId {
   // A unique guid allowing for distinguishing this ExternalEvent from other events
   // of the same ExternalEventDef and WfRun.
   string guid = 3;
+}
+
+// ID for a CorrelatedEvent
+message CorrelatedEventId {
+  // The key of a CorrelatedEvent is used as the correlation ID for ExternalEventNodeRuns.
+  string key = 1;
+
+  // The ExternalEventDef for this CorrelatedEvent and any ExternalEvent's that are created
+  // by it.
+  ExternalEventDefId external_event_def_id = 2;
 }
 
 // ID for a WfRun

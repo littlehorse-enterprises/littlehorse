@@ -4,24 +4,24 @@ using LittleHorse.Sdk.Exceptions;
 
 namespace LittleHorse.Sdk.Authentication
 {
-    public class OAuthClient
+    internal class OAuthClient
     {
         private OAuthConfig _oAuthConfig;
 
-        public OAuthClient(OAuthConfig oAuthConfig)
+        internal OAuthClient(OAuthConfig oAuthConfig)
         {
             _oAuthConfig = oAuthConfig;
         }
 
-        public async Task<TokenInfo> GetAccessTokenAsync()
+        internal async Task<TokenInfo> GetAccessTokenAsync()
         {
             var tokenResponseFromApi = await GetTokenResponseFromApi();
             var responseTokenApiAsString = await tokenResponseFromApi.Content.ReadAsStringAsync();
 
             var tokenApiFields = 
-                JsonSerializer.Deserialize<Dictionary<string, Object>>(responseTokenApiAsString) ?? 
+                JsonSerializer.Deserialize<Dictionary<string, object>>(responseTokenApiAsString) ?? 
                                  throw new ArgumentNullException(
-                                     $"JsonSerializer.Deserialize<Dictionary<string, Object>>(tokenInfo)");
+                                     $"JsonSerializer.Deserialize<Dictionary<string, object>>(tokenInfo)");
 
             if (ValidateRequiredTokenFields(tokenApiFields))
             {
@@ -60,7 +60,7 @@ namespace LittleHorse.Sdk.Authentication
             return response;
         }
 
-        private Boolean ValidateRequiredTokenFields(Dictionary<string, Object> tokenApiFields)
+        private bool ValidateRequiredTokenFields(Dictionary<string, object> tokenApiFields)
         {
             return !(string.IsNullOrEmpty(tokenApiFields["access_token"].ToString())
                     && string.IsNullOrEmpty(tokenApiFields["expires_in"].ToString()));

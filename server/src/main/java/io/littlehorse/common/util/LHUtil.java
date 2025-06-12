@@ -7,15 +7,16 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
@@ -36,7 +37,9 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class LHUtil {
 
-    public static final ObjectMapper mapper = new ObjectMapper();
+    public static final Gson LH_GSON = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
 
     public static Timestamp fromDate(Date date) {
         if (date == null) return null;
@@ -188,20 +191,11 @@ public class LHUtil {
         return str;
     }
 
+    @Deprecated
     public static boolean isPrimitive(VariableType variableType) {
-        switch (variableType) {
-            case INT:
-            case BOOL:
-            case DOUBLE:
-            case STR:
-                return true;
-            case JSON_OBJ:
-            case JSON_ARR:
-            case BYTES:
-            case UNRECOGNIZED:
-                return false;
-        }
-        return false;
+        TypeDefinitionModel temp = new TypeDefinitionModel();
+        temp.setType(variableType);
+        return temp.isPrimitive();
     }
 
     /**
@@ -219,21 +213,13 @@ public class LHUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Object> strToJsonArr(String jsonStr) throws LHApiException {
-        try {
-            return mapper.readValue(jsonStr, List.class);
-        } catch (JsonProcessingException exn) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid JSON_ARR value: %s".formatted(exn.getMessage()));
-        }
+    public static List<Object> strToJsonArr(String jsonStr) {
+        return LH_GSON.fromJson(jsonStr, List.class);
     }
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> strToJsonObj(String jsonStr) {
-        try {
-            return mapper.readValue(jsonStr, Map.class);
-        } catch (JsonProcessingException exn) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid JSON_OBJ value: %s".formatted(exn.getMessage()));
-        }
+        return LH_GSON.fromJson(jsonStr, Map.class);
     }
 
     public static String b64Encode(byte[] bytes) {
@@ -243,12 +229,7 @@ public class LHUtil {
     public static String objToString(Object obj) {
         if (obj == null) return null;
         if (obj instanceof Map || obj instanceof List) {
-            try {
-                return mapper.writeValueAsString(obj);
-            } catch (Exception exn) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Unable to serialize argument: %s".formatted(exn.getMessage()));
-            }
+            return LH_GSON.toJson(obj);
         }
         return obj.toString();
     }

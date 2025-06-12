@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
@@ -131,10 +132,14 @@ public class ReadOnlyGetableManager {
      * @return Null if not found
      */
     public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
-        return store.get(scheduledTaskId.toString(), ScheduledTaskModel.class);
+        return getScheduledTask(scheduledTaskId.toString());
     }
 
-    public ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefId) {
+    public ScheduledTaskModel getScheduledTask(String scheduledTaskId) {
+        return store.get(scheduledTaskId, ScheduledTaskModel.class);
+    }
+
+    public ExternalEventModel getUnclaimedEvent(NodeRunIdModel nodeRunId, ExternalEventDefIdModel externalEventDefId) {
         // We want to find the first Event that has the following characteristics:
         // - matches the wfRunId
         // - matches the externalEventDefName
@@ -150,6 +155,7 @@ public class ReadOnlyGetableManager {
         // 2. Get the first (if any) from the buffer (getablesToStore())
         // 3. Return whichever of the first two was created earlier.
 
+        WfRunIdModel wfRunId = nodeRunId.getWfRunId();
         ExternalEventModel earliestFromTags = null;
         ExternalEventModel earliestFromGetablesToStore = null;
         // Tag Scan
@@ -161,12 +167,16 @@ public class ReadOnlyGetableManager {
         String prefixToScan = Tag.getAttributeString(GetableClassEnum.EXTERNAL_EVENT, attributes) + "/";
 
         try (LHKeyValueIterator<Tag> iterator = store.prefixScan(prefixToScan, Tag.class)) {
-            if (iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 LHIterKeyValue<Tag> next = iterator.next();
                 Tag tag = next.getValue();
                 ExternalEventIdModel externalEventId = (ExternalEventIdModel)
                         ObjectIdModel.fromString(tag.getDescribedObjectId(), ExternalEventIdModel.class);
-                earliestFromTags = get(externalEventId);
+                ExternalEventModel candidate = get(externalEventId);
+                if (externalEventCanBeUsedFor(candidate, nodeRunId)) {
+                    earliestFromTags = candidate;
+                    break;
+                }
             }
         }
 
@@ -180,7 +190,8 @@ public class ReadOnlyGetableManager {
             ExternalEventModel candidate = (ExternalEventModel) getableInBuffer.getObjectToStore();
             if (!candidate.getId().getWfRunId().equals(wfRunId)
                     || !candidate.getId().getExternalEventDefId().equals(externalEventDefId)
-                    || candidate.isClaimed()) {
+                    || candidate.isClaimed()
+                    || !externalEventCanBeUsedFor(candidate, nodeRunId)) {
                 continue;
             }
             if (earliestFromGetablesToStore == null
@@ -198,6 +209,20 @@ public class ReadOnlyGetableManager {
         } else {
             return earliestFromGetablesToStore;
         }
+    }
+
+    private boolean externalEventCanBeUsedFor(ExternalEventModel candidate, NodeRunIdModel nodeRunId) {
+        if (!candidate.getId().getWfRunId().equals(nodeRunId.getWfRunId())) {
+            return false;
+        }
+        if (candidate.getThreadRunNumber() != null
+                && candidate.getThreadRunNumber() != nodeRunId.getThreadRunNumber()) {
+            return false;
+        }
+        if (candidate.getNodeRunPosition() != null && candidate.getNodeRunPosition() != nodeRunId.getPosition()) {
+            return false;
+        }
+        return true;
     }
 
     // Note that this is an expensive operation. It's used by External Event Nodes.

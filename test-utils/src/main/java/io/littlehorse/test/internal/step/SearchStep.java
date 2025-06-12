@@ -9,14 +9,17 @@ import java.util.function.Function;
 
 public class SearchStep<I, O> implements Step {
 
-    private final CapturedResult<O> resultHolder;
+    private final CapturedResultImpl<O> resultHolder;
     private final Function<TestExecutionContext, I> requestBuilder;
 
     private final Method targetRpc;
 
     public SearchStep(
             Class<I> requestType, Function<TestExecutionContext, I> requestBuilder, CapturedResult<O> resultHolder) {
-        this.resultHolder = resultHolder;
+        if (!(resultHolder instanceof CapturedResultImpl)) {
+            throw new IllegalArgumentException("resultHolder must be CapturedResultImpl");
+        }
+        this.resultHolder = (CapturedResultImpl) resultHolder;
         this.requestBuilder = requestBuilder;
         this.targetRpc = findTargetRpc(requestType, resultHolder.type());
     }
@@ -29,8 +32,9 @@ public class SearchStep<I, O> implements Step {
                 return declaredMethod;
             }
         }
-        throw new IllegalArgumentException("There is no RPC method registered for Request type %s and Response type %s"
-                .formatted(requestType.getSimpleName(), responseType.getSimpleName()));
+        throw new IllegalArgumentException(String.format(
+                "There is no RPC method registered for Request type %s and Response type %s",
+                requestType.getSimpleName(), responseType.getSimpleName()));
     }
 
     @Override

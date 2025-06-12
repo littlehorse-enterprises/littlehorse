@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Worker.Internal;
@@ -7,22 +7,22 @@ using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
 {
-    public class LHTaskSignature<T>
+    internal class LHTaskSignature<T>
     {
         private readonly List<LHMethodParam> _lhMethodParams;
         internal List<LHMethodParam> LhMethodParams => _lhMethodParams;
-        public MethodInfo TaskMethod { get; init; }
-        public bool HasWorkerContextAtEnd { get; set; }
-        public string TaskDefName { get; init; }
-        public T? Executable { get; init; }
+        internal MethodInfo TaskMethod { get; init; }
+        internal bool HasWorkerContextAtEnd { get; set; }
+        internal string TaskDefName { get; init; }
+        internal T? Executable { get; init; }
         
         private ILogger<LHTaskSignature<T>?> _logger;
 
-        private TaskDefOutputSchema? _taskDefOutputSchema;
+        private ReturnType? _outputSchema;
 
-        internal TaskDefOutputSchema? TaskDefOutputSchema => _taskDefOutputSchema;
+        internal ReturnType? ReturnType => _outputSchema;
 
-        public LHTaskSignature(string taskDefName, T executable)
+        internal LHTaskSignature(string taskDefName, T executable)
         {
             _logger = LHLoggerFactoryProvider.GetLogger<LHTaskSignature<T>>();
             _lhMethodParams = new List<LHMethodParam>();
@@ -50,9 +50,9 @@ namespace LittleHorse.Sdk.Worker
 
             var methodParams = TaskMethod.GetParameters();
 
-            CreateInputVarsSignature(methodParams);
+            BuildInputVarsSignature(methodParams);
 
-            CreateOutputSchemaSignature();
+            _outputSchema = BuildReturnType();
         }
         
         private bool IsValidLHTaskWorkerValue(Attribute? lhtaskWorkerAttribute, string taskDefName)
@@ -65,7 +65,7 @@ namespace LittleHorse.Sdk.Worker
             return false;
         }
 
-        private void CreateInputVarsSignature(ParameterInfo[] methodParams)
+        private void BuildInputVarsSignature(ParameterInfo[] methodParams)
         {
             for (int i = 0; i < methodParams.Length; i++)
             {
@@ -84,7 +84,7 @@ namespace LittleHorse.Sdk.Worker
                     continue;
                 }
 
-                var paramLHType = LHMappingHelper.MapDotNetTypeToLHVariableType(paramType);
+                var paramLHType = LHMappingHelper.DotNetTypeToLHVariableType(paramType);
 
                 bool maskedParam = false;
                 var paramName = defaultParamName; 
@@ -107,30 +107,26 @@ namespace LittleHorse.Sdk.Worker
             }
         }
         
-        private void CreateOutputSchemaSignature()
+        private ReturnType BuildReturnType()
         {
-            var returnType = LHMappingHelper.MapDotNetTypeToLHVariableType(TaskMethod.ReturnType);
-            var maskedValue = false;
-            String outputSchemaVarName = "output";
+            if (TaskMethod.ReturnType == typeof(void)) {
+                return new ReturnType{};
+            } else {
+                var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType);
+                var maskedValue = false;
 
-            if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
-                maskedValue = lhType!.Masked;
-                if (lhType.Name.Trim() != "") {
-                    outputSchemaVarName = lhType.Name;
+                if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
+                    maskedValue = lhType!.Masked;
                 }
+
+                return new ReturnType
+                {
+                    ReturnType_ = new TypeDefinition{
+                        Type = returnType,
+                        Masked = maskedValue
+                    }
+                };
             }
-
-            var variableDef = new VariableDef
-            {
-                Name = outputSchemaVarName,
-                Type = returnType,
-                MaskedValue = maskedValue
-            };
-
-            _taskDefOutputSchema = new TaskDefOutputSchema
-            {
-                ValueDef = variableDef
-            };
         }
     }
 }

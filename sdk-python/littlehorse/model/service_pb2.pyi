@@ -11,6 +11,7 @@ import littlehorse.model.task_run_pb2 as _task_run_pb2
 import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
 import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
 import littlehorse.model.task_def_pb2 as _task_def_pb2
+import littlehorse.model.struct_def_pb2 as _struct_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
@@ -27,9 +28,16 @@ class AllowedUpdateType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     ALL_UPDATES: _ClassVar[AllowedUpdateType]
     MINOR_REVISION_UPDATES: _ClassVar[AllowedUpdateType]
     NO_UPDATES: _ClassVar[AllowedUpdateType]
+
+class StructDefCompatibilityType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    NO_SCHEMA_UPDATES: _ClassVar[StructDefCompatibilityType]
+    FULLY_COMPATIBLE_SCHEMA_UPDATES: _ClassVar[StructDefCompatibilityType]
 ALL_UPDATES: AllowedUpdateType
 MINOR_REVISION_UPDATES: AllowedUpdateType
 NO_UPDATES: AllowedUpdateType
+NO_SCHEMA_UPDATES: StructDefCompatibilityType
+FULLY_COMPATIBLE_SCHEMA_UPDATES: StructDefCompatibilityType
 
 class GetLatestUserTaskDefRequest(_message.Message):
     __slots__ = ["name"]
@@ -61,22 +69,50 @@ class PutWfSpecRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
-    __slots__ = ["name", "input_vars", "output_schema"]
+    __slots__ = ["name", "input_vars", "return_type"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     INPUT_VARS_FIELD_NUMBER: _ClassVar[int]
-    OUTPUT_SCHEMA_FIELD_NUMBER: _ClassVar[int]
+    RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
-    output_schema: _task_def_pb2.TaskDefOutputSchema
-    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., output_schema: _Optional[_Union[_task_def_pb2.TaskDefOutputSchema, _Mapping]] = ...) -> None: ...
+    return_type: _common_wfspec_pb2.ReturnType
+    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+
+class PutStructDefRequest(_message.Message):
+    __slots__ = ["name", "description", "struct_def", "allowed_updates"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
+    ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    description: str
+    struct_def: _struct_def_pb2.InlineStructDef
+    allowed_updates: StructDefCompatibilityType
+    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+
+class ValidateStructDefEvolutionRequest(_message.Message):
+    __slots__ = ["struct_def_id", "struct_def", "compatibility_type"]
+    STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
+    COMPATIBILITY_TYPE_FIELD_NUMBER: _ClassVar[int]
+    struct_def_id: _object_id_pb2.StructDefId
+    struct_def: _struct_def_pb2.InlineStructDef
+    compatibility_type: StructDefCompatibilityType
+    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., compatibility_type: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+
+class ValidateStructDefEvolutionResponse(_message.Message):
+    __slots__ = ["is_valid"]
+    IS_VALID_FIELD_NUMBER: _ClassVar[int]
+    is_valid: bool
+    def __init__(self, is_valid: bool = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
-    __slots__ = ["name", "type"]
+    __slots__ = ["name", "content_type"]
     NAME_FIELD_NUMBER: _ClassVar[int]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     name: str
-    type: _common_enums_pb2.VariableType
-    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
+    content_type: _common_wfspec_pb2.ReturnType
+    def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
     __slots__ = ["name", "fields", "description"]
@@ -89,12 +125,16 @@ class PutUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
-    __slots__ = ["name", "retention_policy"]
+    __slots__ = ["name", "retention_policy", "content_type", "correlated_event_config"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
+    CORRELATED_EVENT_CONFIG_FIELD_NUMBER: _ClassVar[int]
     name: str
     retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
-    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ...) -> None: ...
+    content_type: _common_wfspec_pb2.ReturnType
+    correlated_event_config: _external_event_pb2.CorrelatedEventConfig
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[_external_event_pb2.CorrelatedEventConfig, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ["wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position"]
@@ -111,6 +151,16 @@ class PutExternalEventRequest(_message.Message):
     thread_run_number: int
     node_run_position: int
     def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ...) -> None: ...
+
+class PutCorrelatedEventRequest(_message.Message):
+    __slots__ = ["key", "external_event_def_id", "content"]
+    KEY_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    key: str
+    external_event_def_id: _object_id_pb2.ExternalEventDefId
+    content: _variable_pb2.VariableValue
+    def __init__(self, key: _Optional[str] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class DeleteExternalEventRequest(_message.Message):
     __slots__ = ["id"]
@@ -130,11 +180,23 @@ class DeleteWfRunRequest(_message.Message):
     id: _object_id_pb2.WfRunId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
+class DeleteCorrelatedEventRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.CorrelatedEventId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.CorrelatedEventId, _Mapping]] = ...) -> None: ...
+
 class DeleteTaskDefRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.TaskDefId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
+
+class DeleteStructDefRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.StructDefId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ...) -> None: ...
 
 class DeleteUserTaskDefRequest(_message.Message):
     __slots__ = ["id"]
@@ -913,7 +975,7 @@ class GetLatestWfSpecRequest(_message.Message):
     major_version: int
     def __init__(self, name: _Optional[str] = ..., major_version: _Optional[int] = ...) -> None: ...
 
-class ServerVersion(_message.Message):
+class LittleHorseVersion(_message.Message):
     __slots__ = ["major_version", "minor_version", "patch_version", "pre_release_identifier"]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
     MINOR_VERSION_FIELD_NUMBER: _ClassVar[int]

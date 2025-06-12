@@ -1,7 +1,6 @@
 package e2e;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -70,8 +69,7 @@ public class ExpressionTest {
         verifier.prepareRun(expressionWf, Arg.of("thing-to-divide-by-zero", 1))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> {
-                    // TODO: Issue #1083 will allow us to uncomment this assertion.
-                    // Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
+                    Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
                     Failure mathTest = nodeRun.getFailures(0);
                     Assertions.assertEquals(mathTest.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
                     Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("divide by zero"));
@@ -135,8 +133,7 @@ public class ExpressionTest {
                         expressionWf, Arg.of("quantity", 5), Arg.of("price", 2.5), Arg.of("discount-percentage", null))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> {
-                    // TODO: Issue #1083 will allow us to uncomment this assertion.
-                    // Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
+                    Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
                     Failure mathTest = nodeRun.getFailures(0);
                     Assertions.assertEquals(mathTest.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
                     Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("value_not_set")
@@ -173,13 +170,9 @@ public class ExpressionTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "json", variable -> {
                     String jsonStr = variable.getJsonObj();
-                    try {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
-                        Assertions.assertEquals("bar", jsonMap.get("foo"));
-                    } catch (JsonProcessingException exn) {
-                        throw new RuntimeException(exn);
-                    }
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
+                    Assertions.assertEquals("bar", jsonMap.get("foo"));
                 })
                 .start();
     }
@@ -190,13 +183,9 @@ public class ExpressionTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "json", variable -> {
                     String jsonStr = variable.getJsonObj();
-                    try {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
-                        Assertions.assertEquals("bar", jsonMap.get("foo"));
-                    } catch (JsonProcessingException exn) {
-                        throw new RuntimeException(exn);
-                    }
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
+                    Assertions.assertEquals("bar", jsonMap.get("foo"));
                 })
                 .start();
     }
@@ -219,14 +208,11 @@ public class ExpressionTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "nested-json", variable -> {
                     String jsonStr = variable.getJsonObj();
-                    try {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
-                        Map<String, String> fooMap = (Map<String, String>) jsonMap.get("foo");
-                        Assertions.assertEquals("baz", fooMap.get("bar"));
-                    } catch (JsonProcessingException exn) {
-                        throw new RuntimeException(exn);
-                    }
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
+                    @SuppressWarnings("unchecked")
+                    Map<String, String> fooMap = (Map<String, String>) jsonMap.get("foo");
+                    Assertions.assertEquals("baz", fooMap.get("bar"));
                 })
                 .start();
     }
@@ -247,7 +233,7 @@ public class ExpressionTest {
             // EXTEND a String test
             var myStr = wf.declareStr("my-str");
             wf.doIf(myStr.isNotEqualTo(null), then -> {
-                myStr.assignTo(myStr.extend("-suffix"));
+                myStr.assign(myStr.extend("-suffix"));
             });
 
             // Add an int and composite expressions
@@ -255,14 +241,14 @@ public class ExpressionTest {
             var intToAddResult = wf.declareInt("int-to-add-result");
             wf.doIf(intToAdd.isNotEqualTo(null), then -> {
                 // Tests compound expressions
-                intToAddResult.assignTo(wf.execute("expr-add-one", intToAdd.add(1)));
+                intToAddResult.assign(wf.execute("expr-add-one", intToAdd.add(1)));
             });
 
             // Division By Zero test
             var thingToDivideByZero = wf.declareInt("thing-to-divide-by-zero");
             var divideByZeroResult = wf.declareInt("divide-by-zero-result");
             wf.doIf(thingToDivideByZero.isNotEqualTo(null), then -> {
-                divideByZeroResult.assignTo(thingToDivideByZero.divide(0));
+                divideByZeroResult.assign(thingToDivideByZero.divide(0));
             });
 
             // Test precision of arithmetic. Make use of the fact that we don't have
@@ -273,8 +259,8 @@ public class ExpressionTest {
             var divisionResultInt = wf.declareInt("division-result-int");
             wf.doIf(divisionTestJson.isNotEqualTo(null), then -> {
                 LHExpression foobar = divisionTestJson.jsonPath("$.lhs").divide(divisionTestJson.jsonPath("$.rhs"));
-                divisionResult.assignTo(foobar);
-                divisionResultInt.assignTo(foobar);
+                divisionResult.assign(foobar);
+                divisionResultInt.assign(foobar);
             });
 
             // This test uses a complex expression where the things we are computing over
@@ -289,20 +275,20 @@ public class ExpressionTest {
                 // TotalPrice = Quantity * Price * (1 - DiscountPercentage / 100)
                 LHExpression pedro =
                         quantity.multiply(price).multiply(wf.subtract(1.0, discountPercentage.divide(100.0)));
-                totalPriceInt.assignTo(pedro);
-                totalPriceDouble.assignTo(pedro);
+                totalPriceInt.assign(pedro);
+                totalPriceDouble.assign(pedro);
             });
 
             // Test mutating sub-fields of a json object
             var json = wf.declareJsonObj("json");
             wf.doIf(json.isNotEqualTo(null), then -> {
-                json.jsonPath("$.foo").assignTo("bar");
+                json.jsonPath("$.foo").assign("bar");
             });
 
             // Test mutating doubly-nested fields of a Json Object
             var nestedJson = wf.declareJsonObj("nested-json");
             wf.doIf(nestedJson.isNotEqualTo(null), then -> {
-                nestedJson.jsonPath("$.foo.bar").assignTo("baz");
+                nestedJson.jsonPath("$.foo.bar").assign("baz");
             });
         });
     }

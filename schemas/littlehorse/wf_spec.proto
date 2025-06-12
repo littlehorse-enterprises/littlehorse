@@ -10,7 +10,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A `WfSpec` defines the logic for a workflow in LittleHorse. It is a metadata object
 // and is a blueprint for a `WfRun` execution.
@@ -274,6 +274,10 @@ message ExternalEventNode {
   // Determines the maximum amount of time that the NodeRun will wait for the
   // ExternalEvent to arrive.
   VariableAssignment timeout_seconds = 2;
+
+  // If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+  // using the correlation key provided here.
+  optional VariableAssignment correlation_key = 3;
 }
 
 // Defines the beginning of the ThreadRun execution.

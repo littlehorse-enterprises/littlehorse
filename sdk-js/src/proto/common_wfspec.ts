@@ -304,10 +304,18 @@ export interface VariableMutation_NodeOutputSource {
   jsonpath?: string | undefined;
 }
 
-/** Declares a Variable. */
+/** Declares a Variable; used in a ThreadSpec and a TaskDef. */
 export interface VariableDef {
-  /** The Type of the variable. */
-  type: VariableType;
+  /**
+   * DEPRECATED: The Type of the variable.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in a future release.
+   */
+  type?:
+    | VariableType
+    | undefined;
   /** The name of the variable. */
   name: string;
   /**
@@ -318,8 +326,49 @@ export interface VariableDef {
   defaultValue?:
     | VariableValue
     | undefined;
-  /** If true, the variable value will show as a masked string. */
-  maskedValue: boolean;
+  /**
+   * DEPRECATED: If true, the variable value will show as a masked string.
+   *
+   * After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+   * We retain this field for compatibility purposes but clients should not use
+   * it going forward. To be removed in a future release.
+   */
+  maskedValue?:
+    | boolean
+    | undefined;
+  /**
+   * Type Information for this variable.
+   *
+   * This is the default as of 0.13.2 and will become the only supported way
+   * (i.e. it will be no longer `optional`).
+   */
+  typeDef?: TypeDefinition | undefined;
+}
+
+/**
+ * Defines the type of a value in LittleHorse. Can be used for Task Parameters,
+ * Task return types, External Event types, ThreadSpec variables, etc.
+ */
+export interface TypeDefinition {
+  /**
+   * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
+   * are implemented according to issue #880.
+   */
+  type: VariableType;
+  /** Set to true if values of this type contain sensitive information and must be masked. */
+  masked: boolean;
+}
+
+/**
+ * Utility used among metadata objects to define their output type. For example, used in
+ * TaskDef and ExternalEventDef to represent the output.
+ */
+export interface ReturnType {
+  /**
+   * The type of the output. If it is not present, it is interpred as the output type
+   * being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
+   */
+  returnType?: TypeDefinition | undefined;
 }
 
 /**
@@ -473,7 +522,7 @@ export interface TaskNode {
    * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
    *   the Task Function.
    *
-   * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+   * Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
    * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
    */
   retries: number;
@@ -933,12 +982,12 @@ export const VariableMutation_NodeOutputSource = {
 };
 
 function createBaseVariableDef(): VariableDef {
-  return { type: VariableType.JSON_OBJ, name: "", defaultValue: undefined, maskedValue: false };
+  return { type: undefined, name: "", defaultValue: undefined, maskedValue: undefined, typeDef: undefined };
 }
 
 export const VariableDef = {
   encode(message: VariableDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.type !== VariableType.JSON_OBJ) {
+    if (message.type !== undefined) {
       writer.uint32(8).int32(variableTypeToNumber(message.type));
     }
     if (message.name !== "") {
@@ -947,8 +996,11 @@ export const VariableDef = {
     if (message.defaultValue !== undefined) {
       VariableValue.encode(message.defaultValue, writer.uint32(26).fork()).ldelim();
     }
-    if (message.maskedValue !== false) {
+    if (message.maskedValue !== undefined) {
       writer.uint32(32).bool(message.maskedValue);
+    }
+    if (message.typeDef !== undefined) {
+      TypeDefinition.encode(message.typeDef, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -988,6 +1040,13 @@ export const VariableDef = {
 
           message.maskedValue = reader.bool();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.typeDef = TypeDefinition.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1002,12 +1061,118 @@ export const VariableDef = {
   },
   fromPartial(object: DeepPartial<VariableDef>): VariableDef {
     const message = createBaseVariableDef();
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.type = object.type ?? undefined;
     message.name = object.name ?? "";
     message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
       ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
-    message.maskedValue = object.maskedValue ?? false;
+    message.maskedValue = object.maskedValue ?? undefined;
+    message.typeDef = (object.typeDef !== undefined && object.typeDef !== null)
+      ? TypeDefinition.fromPartial(object.typeDef)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseTypeDefinition(): TypeDefinition {
+  return { type: VariableType.JSON_OBJ, masked: false };
+}
+
+export const TypeDefinition = {
+  encode(message: TypeDefinition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.type !== VariableType.JSON_OBJ) {
+      writer.uint32(8).int32(variableTypeToNumber(message.type));
+    }
+    if (message.masked !== false) {
+      writer.uint32(32).bool(message.masked);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TypeDefinition {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTypeDefinition();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = variableTypeFromJSON(reader.int32());
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.masked = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<TypeDefinition>): TypeDefinition {
+    return TypeDefinition.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TypeDefinition>): TypeDefinition {
+    const message = createBaseTypeDefinition();
+    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.masked = object.masked ?? false;
+    return message;
+  },
+};
+
+function createBaseReturnType(): ReturnType {
+  return { returnType: undefined };
+}
+
+export const ReturnType = {
+  encode(message: ReturnType, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.returnType !== undefined) {
+      TypeDefinition.encode(message.returnType, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReturnType {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReturnType();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.returnType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ReturnType>): ReturnType {
+    return ReturnType.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ReturnType>): ReturnType {
+    const message = createBaseReturnType();
+    message.returnType = (object.returnType !== undefined && object.returnType !== null)
+      ? TypeDefinition.fromPartial(object.returnType)
+      : undefined;
     return message;
   },
 };

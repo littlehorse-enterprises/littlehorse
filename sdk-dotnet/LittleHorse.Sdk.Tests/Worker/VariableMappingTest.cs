@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Google.Protobuf;
 using Type = System.Type;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Worker;
@@ -32,16 +32,16 @@ public class VariableMappingTest
             , typeof(sbyte), typeof(byte), typeof(short), typeof(ushort)
             , typeof(int), typeof(uint), typeof(long) 
             , typeof(ulong), typeof(nint), typeof(nuint), typeof(float), typeof(double)
-            , typeof(String), typeof(bool), typeof(byte[]), typeof(List<string>)
+            , typeof(string), typeof(bool), typeof(byte[]), typeof(List<string>)
             , typeof(List<object>), typeof(List<string>), typeof(List<int>)
         };
 
         foreach (var type in testAllowedTypes)
         {
-            var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
-            TaskDef taskDef = getTaskDefForTest(variableType);
+            var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type);
+            TaskDef? taskDef = getTaskDefForTest(variableType);
         
-            var result = new VariableMapping(taskDef, position, type, paramName);
+            var result = new VariableMapping(taskDef!, position, type, paramName);
         
             Assert.True(result is not null);   
         }
@@ -52,13 +52,13 @@ public class VariableMappingTest
     {
         Type type1 = typeof(Int64);
         Type type2 = typeof(string);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
-        TaskDef taskDef = getTaskDefForTest(variableType);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
+        TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides INT, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides INT, func accepts", exception.Message);
     }
     
     [Fact]
@@ -66,13 +66,13 @@ public class VariableMappingTest
     {
         Type type1 = typeof(double);
         Type type2 = typeof(Int64);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
-        TaskDef taskDef = getTaskDefForTest(variableType);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
+        TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides DOUBLE, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides DOUBLE, func accepts", exception.Message);
     }
     
     [Fact]
@@ -80,13 +80,13 @@ public class VariableMappingTest
     {
         Type type1 = typeof(string);
         Type type2 = typeof(double);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
-        TaskDef taskDef = getTaskDefForTest(variableType);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
+        TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides STRING, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides STRING, func accepts", exception.Message);
     }
 
     [Fact]
@@ -94,13 +94,13 @@ public class VariableMappingTest
     {
         Type type1 = typeof(bool);
         Type type2 = typeof(string);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
-        TaskDef taskDef = getTaskDefForTest(variableType);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
+        TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides BOOL, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides BOOL, func accepts", exception.Message);
     }
     
     [Fact]
@@ -108,13 +108,13 @@ public class VariableMappingTest
     {
         Type type1 = typeof(byte[]);
         Type type2 = typeof(string);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
-        TaskDef taskDef = getTaskDefForTest(variableType);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
+        TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides BYTES, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides BYTES, func accepts", exception.Message);
     }
     
     [Fact]
@@ -143,6 +143,22 @@ public class VariableMappingTest
         }
     }
     
+    [Fact]
+    public void VariableMapping_WithNoValue_ShouldReturnNull()
+    {
+        Type type = typeof(string);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue();
+        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+
+        Assert.Null(result);
+    }
+
     [Fact]
     public void VariableMapping_WithAssignLongValue_ShouldReturnInt64Object()
     {
@@ -281,6 +297,29 @@ public class VariableMappingTest
     }
     
     [Fact]
+    public void VariableMapping_WithAssignJsonObjectValue_ShouldReturnDictionaryObject()
+    {
+        string value = "{\"FirstName\":\"Test\",\"Age\":\"35\",\"Address\":\"NA-Street\"}";
+        Type type = typeof(Dictionary<string, string>);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue { JsonObj = value};
+        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+        
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+        
+        var expectedList = (Dictionary<string, string>)JsonConvert.DeserializeObject(value, type)!;
+        var actualList = (Dictionary<string, string>)result!;
+        
+        Assert.Equal(expectedList.Count, actualList.Count);
+        Assert.Equal(expectedList["FirstName"], actualList["FirstName"]);
+        Assert.Equal(expectedList["Age"], actualList["Age"]);
+        Assert.Equal(expectedList["Address"], actualList["Address"]);
+    }
+    
+    [Fact]
     public void VariableMapping_WithAssignJsonStringValue_ShouldReturnCustomObject()
     {
         string value = "{\"FirstName\":\"Test\",\"Age\":35,\"Cars\":[{\"Id\":1,\"Cost\":1.3445}]}";
@@ -302,11 +341,11 @@ public class VariableMappingTest
         Assert.Equal(expectedObject.Cars!.Count, actualObject.Cars!.Count);
     }
 
-    private TaskDef getTaskDefForTest(VariableType type)
+    private TaskDef? getTaskDefForTest(VariableType type)
     {
         var inputVar = new VariableDef();
         inputVar.Type = type;
-        TaskDef taskDef = new TaskDef();
+        TaskDef? taskDef = new TaskDef();
         TaskDefId taskDefId = new TaskDefId();
         taskDef.Id = taskDefId;
         taskDef.InputVars.Add(inputVar);
@@ -316,10 +355,10 @@ public class VariableMappingTest
 
     private VariableMapping getVariableMappingForTest(Type type, string paramName, int position)
     {
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
-        TaskDef taskDef = getTaskDefForTest(variableType);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type);
+        TaskDef? taskDef = getTaskDefForTest(variableType);
         
-        var variableMapping = new VariableMapping(taskDef, position, type, paramName);
+        var variableMapping = new VariableMapping(taskDef!, position, type, paramName);
         
         return variableMapping;
     }

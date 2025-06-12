@@ -8,6 +8,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
 import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
@@ -60,7 +61,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Getter
 @Setter
-public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
+public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOutputTopicGetable<UserTaskRun> {
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
@@ -236,6 +237,20 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             String newUserGroup = node.getUserGroup() == null
                     ? null
                     : thread.assignVariable(node.getUserGroup()).asStr().getStrVal();
+
+            if (newUserId == null && newUserGroup == null) {
+                throw new NodeFailureException(new FailureModel("Invalid user task assignment", LHConstants.VAR_ERROR));
+            }
+
+            if (newUserId != null && newUserId.trim().isEmpty()) {
+                throw new NodeFailureException(
+                        new FailureModel("Invalid user task assignment. UserId can't be empty", LHConstants.VAR_ERROR));
+            }
+
+            if (newUserGroup != null && newUserGroup.trim().isEmpty()) {
+                throw new NodeFailureException(new FailureModel(
+                        "Invalid group task assignment. UserGroup can't be empty", LHConstants.VAR_ERROR));
+            }
 
             // Set owners and schedule all on-assignment hooks
             this.assignTo(newUserId, newUserGroup, true);

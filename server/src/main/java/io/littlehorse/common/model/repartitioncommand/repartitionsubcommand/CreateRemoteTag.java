@@ -5,7 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.CreateRemoteTagPb;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -37,7 +37,7 @@ public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implement
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CreateRemoteTagPb remoteTagSubCommandPb = (CreateRemoteTagPb) proto;
         this.tag = LHSerializable.fromProto(remoteTagSubCommandPb.getTag(), Tag.class, context);
     }

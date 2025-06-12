@@ -22,6 +22,14 @@ class TaskDefId(_message.Message):
     name: str
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
+class StructDefId(_message.Message):
+    __slots__ = ["name", "version"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    version: int
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
+
 class ExternalEventDefId(_message.Message):
     __slots__ = ["name"]
     NAME_FIELD_NUMBER: _ClassVar[int]
@@ -67,6 +75,14 @@ class ExternalEventId(_message.Message):
     external_event_def_id: ExternalEventDefId
     guid: str
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ...) -> None: ...
+
+class CorrelatedEventId(_message.Message):
+    __slots__ = ["key", "external_event_def_id"]
+    KEY_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    key: str
+    external_event_def_id: ExternalEventDefId
+    def __init__(self, key: _Optional[str] = ..., external_event_def_id: _Optional[_Union[ExternalEventDefId, _Mapping]] = ...) -> None: ...
 
 class WfRunId(_message.Message):
     __slots__ = ["id", "parent_wf_run_id"]

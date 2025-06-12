@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.awaitility.Awaitility;
 
@@ -48,7 +49,7 @@ public class TestContext {
 
     public TestContext(TestBootstrapper bootstrapper) {
         this.config = bootstrapper.getWorkerConfig();
-        this.lhClient = bootstrapper.getLhClient();
+        this.lhClient = this.config.getBlockingStub();
         this.wfSpecStoreLock = new ReentrantLock();
     }
 
@@ -100,7 +101,7 @@ public class TestContext {
                     .map(externalEventName -> ExternalEventDef.newBuilder()
                             .setId(ExternalEventDefId.newBuilder().setName(externalEventName))
                             .build())
-                    .toList();
+                    .collect(Collectors.toList());
         }
         return List.of();
     }

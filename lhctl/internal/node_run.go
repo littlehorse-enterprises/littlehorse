@@ -1,12 +1,14 @@
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"errors"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -23,31 +25,35 @@ var getNodeRunCmd = &cobra.Command{
 
 	You may provide all three identifiers as three separate arguments or you may provide
 	them delimited by the '/' character, as returned in all 'search' command queries.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Args: func(cmd *cobra.Command, args []string) error {
 		needsHelp := false
 		if len(args) == 1 {
 			args = strings.Split(args[0], "/")
 		}
 
-		if len(args) != 1 && len(args) != 3 {
+		if len(args) != 3 {
 			needsHelp = true
 		}
 
 		if needsHelp {
-			log.Fatal("Must provide 1 or 3 arguments. See 'lhctl get nodeRun -h'")
+			return errors.New("must provide 1 or 3 arguments. See 'lhctl get nodeRun -h'")
+		}
 
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 1 {
+			args = strings.Split(args[0], "/")
 		}
 
 		trn, err := strconv.Atoi(args[1])
 		if err != nil {
 			log.Fatal("Couldn't convert threadRunNumber to int.")
-
 		}
 
 		pos, err := strconv.Atoi(args[2])
 		if err != nil {
 			log.Fatal("Couldn't convert nodeRunPosition to int.")
-
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).GetNodeRun(
@@ -64,7 +70,7 @@ var getNodeRunCmd = &cobra.Command{
 var listNodeRunCmd = &cobra.Command{
 	Use:   "nodeRun <wfRunId>",
 	Short: "List all NodeRun's for a given WfRun Id.",
-	Args:  cobra.MinimumNArgs(1),
+	Args:  cobra.ExactArgs(1),
 	Long: `
 Lists all NodeRun's for a given WfRun Id.
 `,
@@ -92,7 +98,7 @@ Lists all NodeRun's for a given WfRun Id.
 }
 
 var searchNodeRunCmd = &cobra.Command{
-	Use:   "nodeRun <node_type> <status>",
+	Use:   "nodeRun <nodeType> <status>",
 	Short: "Search for NodeRun's by providing Node Type and Status",
 	Long: `
 Search for NodeRun's by providing the type of the Node and the status of the NodeRun.
@@ -124,12 +130,8 @@ Valid options for Status:
   options to filter returned NodeRun ID's based on the NodeRun creation
   time.
 `,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-
-		if len(args) != 2 {
-			log.Fatal("Must provide two arguments: Node Type and NodeRun Status")
-		}
-
 		nodeTypeStr, statusStr := args[0], args[1]
 
 		nodeTypeInt, ok := lhproto.SearchNodeRunRequest_NodeType_value[nodeTypeStr]
@@ -193,5 +195,5 @@ func init() {
 
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
-	listNodeRunCmd.Flags().Int32("thread-run-number", -1, "Filter by ThreadRun Number")
+	listNodeRunCmd.Flags().Int32("threadRunNumber", -1, "Filter by ThreadRun Number")
 }

@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
@@ -132,7 +133,7 @@ public class WorkflowThreadImplTest {
 
         VariableDef objVar = varDefs.get(1).getVarDef();
         assertThat(objVar.getDefaultValue()).isNotEqualTo(null);
-        assertEquals(objVar.getType(), VariableType.JSON_OBJ);
+        assertEquals(objVar.getTypeDef().getType(), VariableType.JSON_OBJ);
     }
 
     @Test
@@ -550,7 +551,7 @@ public class WorkflowThreadImplTest {
         // Deprecated the literal_value and node_output approach
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assignTo("some-value");
+            myVar.assign("some-value");
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -570,7 +571,7 @@ public class WorkflowThreadImplTest {
         // Deprecated the literal_value and node_output approach
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assignTo(wf.execute("use-the-force"));
+            myVar.assign(wf.execute("use-the-force"));
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -590,7 +591,7 @@ public class WorkflowThreadImplTest {
         // Deprecated the literal_value and node_output approach
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assignTo(wf.execute("use-the-force").jsonPath("$.hello.there"));
+            myVar.assign(wf.execute("use-the-force").jsonPath("$.hello.there"));
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -614,7 +615,7 @@ public class WorkflowThreadImplTest {
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
             WfRunVariable otherVar = wf.addVariable("other-var", VariableType.STR);
-            myVar.assignTo(otherVar);
+            myVar.assign(otherVar);
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -632,7 +633,7 @@ public class WorkflowThreadImplTest {
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
             WfRunVariable otherVar = wf.addVariable("other-var", VariableType.JSON_OBJ);
-            myVar.assignTo(otherVar.jsonPath("$.hello.there"));
+            myVar.assign(otherVar.jsonPath("$.hello.there"));
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -645,5 +646,37 @@ public class WorkflowThreadImplTest {
 
         assertThat(edge.getVariableMutations(0).getRhsAssignment().getJsonPath())
                 .isEqualTo("$.hello.there");
+    }
+
+    @Test
+    public void ShouldThrowANullPointerExceptionWhenParentWorkflowIsNull() {
+        NullPointerException e =
+                assertThrows(NullPointerException.class, () -> new WorkflowThreadImpl("my-thread", null, null));
+
+        assertEquals("Parent workflow can not be null.", e.getMessage());
+    }
+
+    @Test()
+    public void shouldValidateEmptyUserNameOnUserTaskDefinition() {
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            Workflow.newWorkflow("my-wf", thread -> {
+                        thread.assignUserTask("some-usertaskdef", "", null);
+                    })
+                    .compileWorkflow();
+        });
+        Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(throwable.getMessage()).isEqualTo("UserId can't be empty");
+    }
+
+    @Test()
+    public void shouldValidateEmptyGroupNameOnUserTaskDefinition() {
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            Workflow.newWorkflow("my-wf", thread -> {
+                        thread.assignUserTask("some-usertaskdef", null, "");
+                    })
+                    .compileWorkflow();
+        });
+        Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(throwable.getMessage()).isEqualTo("UserGroup can't be empty");
     }
 }

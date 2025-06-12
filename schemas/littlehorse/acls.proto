@@ -7,7 +7,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A Principal represents the identity of a client of LittleHorse, whether human or
 // machine. The ACL's on the Principal control what actions the client is allowed
@@ -44,6 +44,10 @@ message Tenant {
 
     // The time at which the Tenant was created.
     google.protobuf.Timestamp created_at = 2;
+
+    // Configuration for the output topic associated with this Tenant. If not set,
+    // then the output topic is not enabled.
+    optional OutputTopicConfig output_topic_config = 3;
 }
 
 // List of ACL's for LittleHorse
@@ -113,6 +117,9 @@ enum ACLResource {
 
     // Refers to `WorkflowEventDef` and `WorkflowEvent`
     ACL_WORKFLOW_EVENT = 8;
+
+    // Refers to `StructDef`
+    ACL_STRUCT = 9;
 }
 
 // Describes an Action that can be taken over a specific set of resources.
@@ -162,8 +169,31 @@ message DeletePrincipalRequest {
   PrincipalId id = 1;
 }
 
+// Configurations for the Output Topic of a certain Tenant.
+message OutputTopicConfig {
+    // Enum to configure default recording level of Output Topic events.
+    enum OutputTopicRecordingLevel {
+        // Records all updates for entities from all `WfSpec`s, `TaskDef`s,
+        // `WorkflowEventDef`s, `UserTaskDef`s, and `ExternalEventDef`s to 
+        // the Output Topic by default.
+        ALL_ENTITY_EVENTS = 0;
+
+        // With this configuration, no events are sent to the Output Topic unless
+        // explicitly enabled in the metadata object itself (to do with future work).
+        NO_ENTITY_EVENTS = 1;
+    }
+
+    OutputTopicRecordingLevel default_recording_level = 1;
+}
+
+// The request used to create a Tenant
 message PutTenantRequest {
+    // The ID of the tenant to put
     string id = 1;
+
+    // Configures the behavior of the Output Topic for this Tenant. If not set,
+    // then the OutputTopic is not considered to be enabled.
+    optional OutputTopicConfig output_topic_config = 2;
 }
 
 // DeleteTenant not yet supported.

@@ -11,7 +11,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThrowEventNodeRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -36,7 +36,7 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         this.processorExecutionContext = context.castOnSupport(ProcessorExecutionContext.class);
         ThrowEventNodeRun p = (ThrowEventNodeRun) proto;
         this.workflowEventId = LHSerializable.fromProto(p.getWorkflowEventId(), WorkflowEventIdModel.class, context);
@@ -67,7 +67,7 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
             VariableValueModel content = getNodeRun()
                     .getThreadRun()
                     .assignVariable(getNode().getThrowEventNode().getContent());
-            WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content);
+            WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content, nodeRun);
             processorContext.getableManager().put(event);
 
             processorContext.notifyOfEventThrown(event);
@@ -93,5 +93,10 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
         return processorContext.getableManager().getWorkflowEvents(wfRunId, eventDefId).stream()
                 .max(Comparator.comparingInt(
                         workflowEvent -> workflowEvent.getId().getId()));
+    }
+
+    @Override
+    public Optional<WorkflowEventIdModel> getCreatedSubGetableId() {
+        return Optional.ofNullable(workflowEventId);
     }
 }

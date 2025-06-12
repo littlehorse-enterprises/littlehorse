@@ -4,7 +4,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import lombok.Getter;
 
 /**
- * Thrown to indicate that a Task method reached a client specific error.
+ * Maps an Exception that contains a client specific error in a Task Method.
  */
 @Getter
 public class LHTaskException extends RuntimeException {

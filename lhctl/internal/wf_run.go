@@ -1,9 +1,11 @@
 package internal
 
 import (
+	"log"
+	"strconv"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -11,12 +13,8 @@ import (
 var getWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Get a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to get.")
-
-		}
-
 		littlehorse.PrintResp(getGlobalClient(cmd).GetWfRun(
 			requestContext(cmd),
 			littlehorse.StrToWfRunId(args[0]),
@@ -27,12 +25,8 @@ var getWfRunCmd = &cobra.Command{
 var getScheduledWfRun = &cobra.Command{
 	Use:   "scheduled <id>",
 	Short: "Get a scheduled run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of ScheduledWfRun to get.")
-
-		}
-
 		littlehorse.PrintResp(getGlobalClient(cmd).GetScheduledWfRun(
 			requestContext(cmd),
 			&lhproto.ScheduledWfRunId{
@@ -43,37 +37,48 @@ var getScheduledWfRun = &cobra.Command{
 }
 
 var searchWfRunCmd = &cobra.Command{
-	Use:   "wfRun",
+	Use:   "wfRun <wfSpecName> [<majorVersion>] [<revision>]",
 	Short: "Search for WfRuns",
 	Long: `
-Search for WfRuns. You may provide any of the following option groups:
+Search for WfRuns. You may provide the optional arguments:
+- [<majorVersion>]
+- [<revision>]
 
-[wfSpecName, majorVersion, revision, status]
-[wfSpecName, majorVersion, revision]
-[wfSpecName, status]
-[wfSpecName]
+And the optional flag:
+- [--status]
 
   * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-    options with this group to put a time bound on WfRun's which are returned.
-	The time bound applies to the time that the WfRun was created.
+          flags to put a time bound on WfRun's which are returned.
+          The time bound applies to the time that the WfRun was created.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
+	Args: cobra.MaximumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+		wfSpecName := args[0]
 		statusRaw, _ := cmd.Flags().GetString("status")
-		majorVersionRaw, _ := cmd.Flags().GetInt32("majorVersion")
-		revisionRaw, _ := cmd.Flags().GetInt32("revision")
-
-		var majorVersion, revision *int32 = nil, nil
 		var status *lhproto.LHStatus
+		var majorVersion *int32 = nil
+		var revision *int32 = nil
 
-		if majorVersionRaw != -1 {
-			majorVersion = &majorVersionRaw
+		if len(args) > 1 {
+			majorVersionInt, err := strconv.Atoi(args[1])
+			if err != nil {
+				log.Fatal("Couldn't convert majorVersion to int:\n", err)
+			}
+			val := int32(majorVersionInt)
+			majorVersion = &val
 		}
-		if revisionRaw != -1 {
-			revision = &revisionRaw
+
+		if len(args) > 2 {
+			revisionInt, err := strconv.Atoi(args[2])
+			if err != nil {
+				log.Fatal("Couldn't convert revision to int:\n", err)
+			}
+			val := int32(revisionInt)
+			revision = &val
 		}
+
 		if statusRaw != "" {
 			statusTmp := lhproto.LHStatus(lhproto.LHStatus_value[statusRaw])
 			status = &statusTmp
@@ -109,17 +114,15 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 var stopWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Stop a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to stop.")
-
-		}
+		wfRunId := args[0]
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).StopWfRun(
 			requestContext(cmd),
 			&lhproto.StopWfRunRequest{
-				WfRunId:         littlehorse.StrToWfRunId(args[0]),
+				WfRunId:         littlehorse.StrToWfRunId(wfRunId),
 				ThreadRunNumber: trn,
 			},
 		))
@@ -129,17 +132,15 @@ var stopWfRunCmd = &cobra.Command{
 var resumeWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Stop a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to resume.")
-
-		}
+		wfRunId := args[0]
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ResumeWfRun(
 			requestContext(cmd),
 			&lhproto.ResumeWfRunRequest{
-				WfRunId:         littlehorse.StrToWfRunId(args[0]),
+				WfRunId:         littlehorse.StrToWfRunId(wfRunId),
 				ThreadRunNumber: trn,
 			},
 		))
@@ -149,17 +150,14 @@ var resumeWfRunCmd = &cobra.Command{
 var deleteWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Delete a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to delete.")
-
-		}
-
+		wfRunId := args[0]
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteWfRunRequest{
 				Id: &lhproto.WfRunId{
-					Id: args[0],
+					Id: wfRunId,
 				},
 			},
 		))
@@ -169,16 +167,14 @@ var deleteWfRunCmd = &cobra.Command{
 var deleteScheduledWfRun = &cobra.Command{
 	Use:   "schedule <id>",
 	Short: "Delete a Scheduled Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of ScheduledWfRun to delete.")
-		}
-
+		wfRunId := args[0]
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteScheduledWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteScheduledWfRunRequest{
 				Id: &lhproto.ScheduledWfRunId{
-					Id: args[0],
+					Id: wfRunId,
 				},
 			},
 		))
@@ -188,11 +184,8 @@ var deleteScheduledWfRun = &cobra.Command{
 var scheduleWfCmd = &cobra.Command{
 	Use:   "run <cronExpression> <wfSpecName> <<var1 name>> <<var1 val>>...",
 	Short: "Run an instance of a WfSpec with provided Name and Input Variables.",
+	Args:  cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
-			log.Fatal("You must provide at least 2 arg: Cron expression and WfSpec name.")
-		}
-
 		scheduleWfReq := &lhproto.ScheduleWfRequest{}
 
 		cronExpression := args[0]
@@ -230,7 +223,7 @@ var scheduleWfCmd = &cobra.Command{
 
 		// Now parse variables
 		if len(args) > 2 {
-			if len(args)%2 != 1 {
+			if len(args)%2 == 1 {
 				log.Fatal(`
 If you provide variables, you must provide pairs of <name, val>.
 Therefore, you must have an even number of args after the WfSpec Id, for an
@@ -245,7 +238,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
 					requestContext(cmd),
 					&lhproto.GetLatestWfSpecRequest{
-						Name:         args[0],
+						Name:         wfSpecName,
 						MajorVersion: majorVersion,
 					},
 				)
@@ -253,7 +246,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
 					requestContext(cmd),
 					&lhproto.WfSpecId{
-						Name:         args[0],
+						Name:         wfSpecName,
 						MajorVersion: *majorVersion,
 						Revision:     *revision,
 					})
@@ -266,7 +259,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			scheduleWfReq.Variables = make(map[string]*lhproto.VariableValue)
 			varDefs := littlehorse.GetInputVarDefs(wfSpec)
 
-			for i := 1; i+1 < len(args); i += 2 {
+			for i := 2; i+1 < len(args); i += 2 {
 				varName := args[i]
 				varValStr := args[i+1]
 
@@ -276,7 +269,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				}
 
 				scheduleWfReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, varDef.Type,
+					varValStr, varDef.TypeDef.Type,
 				)
 
 				if err != nil {
@@ -291,8 +284,9 @@ odd total number of args. See 'lhctl run --help' for details.`)
 }
 
 var searchScheduledWfsCmd = &cobra.Command{
-	Use:   "schedule <wfSpecName> <majorVersion> <revision>",
+	Use:   "schedule <wfSpecName> [<majorVersion>] [<revision>]",
 	Short: "List all scheduled wf runs for a given wf spec",
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var majorVersion *int32
@@ -308,7 +302,7 @@ var searchScheduledWfsCmd = &cobra.Command{
 		} else {
 			revision = &raw
 		}
-		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+		wfSpecName := args[0]
 		req := &lhproto.SearchScheduledWfRunRequest{
 			WfSpecName:   wfSpecName,
 			MajorVersion: majorVersion,
@@ -334,18 +328,9 @@ func init() {
 	searchCmd.AddCommand(searchScheduledWfsCmd)
 
 	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
-	searchWfRunCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
-	searchWfRunCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
-	searchWfRunCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
-	searchWfRunCmd.MarkFlagRequired("wfSpecName")
-	searchWfRunCmd.MarkFlagsRequiredTogether("revision", "majorVersion")
-	searchScheduledWfsCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
-	searchScheduledWfsCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
-	searchScheduledWfsCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 
-	scheduleWfCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 	scheduleWfCmd.Flags().String("id", "", "")

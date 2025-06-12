@@ -40,3 +40,20 @@ export const formatTime = (seconds: number | undefined): string => {
 
   return parts.join(' ')
 }
+
+export function formatDuration(durationMs: number) {
+  // Negative durations don't make sense, so we clamp them at 0
+  durationMs = Math.max(durationMs, 0)
+
+  let durationDisplay
+  if (durationMs < 1000) {
+    durationDisplay = `${durationMs} ms`
+  } else if (durationMs < 60000) {
+    durationDisplay = `${(durationMs / 1000).toFixed(2)} s`
+  } else if (durationMs < 3600000) {
+    durationDisplay = `${(durationMs / 60000).toFixed(2)} min`
+  } else {
+    durationDisplay = `${(durationMs / 3600000).toFixed(2)} h`
+  }
+  return durationDisplay
+}

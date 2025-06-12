@@ -53,7 +53,7 @@ public class AssignUserTask extends AbstractStep {
             lhClient.assignUserTaskRun(requestBuilder.build());
         } else {
             throw new IllegalArgumentException(
-                    "Node run %s in thread %s is not a user task".formatted(nodeRunNumber, threadRunNumber));
+                    String.format("Node run %s in thread %s is not a user task", nodeRunNumber, threadRunNumber));
         }
     }
 }

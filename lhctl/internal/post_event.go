@@ -4,16 +4,19 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
+	"errors"
+	"log"
+	"strconv"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"log"
 
 	"github.com/spf13/cobra"
 )
 
 // postEventCmd represents the postEvent command
 var postEventCmd = &cobra.Command{
-	Use:   "postEvent <wfRunId> <externalEventName> <varType> <payload>",
+	Use:   "postEvent <wfRunId> <externalEventName> [(<varType> <payload>)]",
 	Short: "Post an ExternalEvent to a WfRun.",
 	Long: `
 Post an ExternalEvent of a specified Event Type and Variable Type to a WfRun. Specifying
@@ -23,15 +26,42 @@ currently do not carry Schema information (this will change in a future release)
 The payload is deserialized according to the type. JSON objects should be provided as
 a string; BYTES objects should be b64-encoded.
 
-It's also possible to pass an empty input:
+It's also possible to pass an empty input by excluding the last two arguments:
 lhctl postEvent <wfRunId> <externalEventName>
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
-			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> (to send an empty payload)")
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 3 {
+			return errors.New("requires 2 or 4 args. Note: When a <varType> is specified, a <payload> is also required")
+		}
+		if len(args) != 2 && len(args) != 4 {
+			return errors.New("requires 2 or 4 args")
 		}
 
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
 		wfRunIdStr, eedName := args[0], args[1]
+		var guid *string = nil
+		if cmd.Flag("guid").Changed {
+			guidTmp := cmd.Flag("guid").Value.String()
+			guid = &guidTmp
+		}
+		threadRunNumber := int32(-1)
+		nodeRunNumber := int32(-1)
+		if cmd.Flag("threadRunNumber").Changed {
+			threadRunFlag, err := strconv.ParseInt(cmd.Flag("threadRunNumber").Value.String(), 10, 32)
+			if err != nil {
+				panic("Must provide a valid threadRunNumber")
+			}
+			threadRunNumber = int32(threadRunFlag)
+		}
+		if cmd.Flag("nodeRunNumber").Changed {
+			nodeRunFlag, err := strconv.ParseInt(cmd.Flag("nodeRunNumber").Value.String(), 10, 32)
+			if err != nil {
+				panic("Must provide a valid nodeRunNumber")
+			}
+			nodeRunNumber = int32(nodeRunFlag)
+		}
 
 		wfRunId := littlehorse.StrToWfRunId(wfRunIdStr)
 
@@ -59,6 +89,13 @@ lhctl postEvent <wfRunId> <externalEventName>
 			WfRunId:            wfRunId,
 			ExternalEventDefId: &lhproto.ExternalEventDefId{Name: eedName},
 			Content:            content,
+			Guid:               guid,
+		}
+		if threadRunNumber != -1 {
+			req.ThreadRunNumber = &threadRunNumber
+		}
+		if nodeRunNumber != -1 {
+			req.NodeRunPosition = &nodeRunNumber
 		}
 
 		littlehorse.PrintResp(

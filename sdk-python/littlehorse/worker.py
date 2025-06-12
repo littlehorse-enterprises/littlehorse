@@ -32,12 +32,13 @@ from littlehorse.model import (
     WfRunId,
     PollTaskRequest,
     PutTaskDefRequest,
-    TaskDefOutputSchema,
     RegisterTaskWorkerRequest,
     RegisterTaskWorkerResponse,
     ReportTaskRun,
+    ReturnType,
     ScheduledTask,
     TaskDef,
+    TypeDefinition,
     LHTaskError,
     LHTaskException,
     VariableValue,
@@ -176,7 +177,7 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [to_type(var.type) for var in self.task_def.input_vars]
+        task_def_vars = [to_type(var.type_def.type) for var in self.task_def.input_vars]
 
         callable_params = [
             param.annotation
@@ -310,7 +311,7 @@ class LHConnection:
                 output = None
                 stacktrace = traceback.format_exc()
                 logging.error(stacktrace)
-                status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
+                status = TaskStatus.TASK_OUTPUT_SERDE_ERROR
                 task_error = LHTaskError(
                     type=LHErrorType.VAR_SUB_ERROR,
                     message=f"Failed serializing output: {stacktrace}",
@@ -651,9 +652,9 @@ def _create_task_def(
         for param in task_signature.parameters.values()
         if param.annotation is not WorkerContext
     ]
-    output_schema = _return_to_lh_schema(task_signature.return_annotation)
+    return_type = _return_to_lh_schema(task_signature.return_annotation)
     request = PutTaskDefRequest(
-        name=name, input_vars=input_vars, output_schema=output_schema
+        name=name, input_vars=input_vars, return_type=return_type
     )
     stub.PutTaskDef(request, timeout=timeout)
     logging.info(f"TaskDef {name} was created:\n{MessageToJson(request)}")
@@ -678,22 +679,20 @@ def _param_to_lh_type(annotated_type: type) -> Optional[LHType]:
     return None
 
 
-def _return_to_lh_schema(return_type: type) -> Optional[TaskDefOutputSchema]:
+def _return_to_lh_schema(return_type: type) -> Optional[ReturnType]:
     if return_type is None:
         return None
     lh_type = _param_to_lh_type(return_type)
-    var = VariableDef(
-        name="output",
+    var = TypeDefinition(
         type=to_variable_type(return_type),
-        masked_value=False,
+        masked=False,
     )
     if lh_type is not None:
-        var = VariableDef(
-            name=lh_type.name,
+        var = TypeDefinition(
             type=to_variable_type(return_type),
-            masked_value=lh_type.masked,
+            masked=lh_type.masked,
         )
-    return TaskDefOutputSchema(value_def=var)
+    return ReturnType(return_type=var)
 
 
 def shutdown_hook(*workers: LHTaskWorker) -> None:
@@ -705,7 +704,7 @@ def shutdown_hook(*workers: LHTaskWorker) -> None:
 
     loop = asyncio.get_running_loop()
 
-    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+    for sig in (signal.SIGTERM, signal.SIGINT):
         loop.add_signal_handler(sig, functools.partial(stop_workers, *workers))
 
 

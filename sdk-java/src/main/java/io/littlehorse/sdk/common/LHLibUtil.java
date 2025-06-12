@@ -2,8 +2,11 @@ package io.littlehorse.sdk.common;
 
 import static com.google.protobuf.util.Timestamps.fromMillis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.ToNumberPolicy;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -11,7 +14,7 @@ import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -20,6 +23,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.util.JsonResult;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;
@@ -43,7 +47,7 @@ public class LHLibUtil {
         return fromMillis(date.getTime());
     }
 
-    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeError {
+    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeException {
         try {
             return cls.cast(cls.getMethod("parseFrom", byte[].class).invoke(null, data));
         } catch (NoSuchMethodException | IllegalAccessException exn) {
@@ -51,7 +55,7 @@ public class LHLibUtil {
             throw new RuntimeException("Passed in an invalid proto class. Not possible");
         } catch (InvocationTargetException exn) {
             exn.printStackTrace();
-            throw new LHSerdeError(exn.getCause(), "Failed loading protobuf: " + exn.getMessage());
+            throw new LHSerdeException(exn.getCause(), "Failed loading protobuf: " + exn.getMessage());
         }
     }
 
@@ -68,21 +72,32 @@ public class LHLibUtil {
         return builder.build().toByteArray();
     }
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    public static final Gson LH_GSON = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
 
-    public static String serializeToJson(Object o) throws LHJsonProcessingException {
-        try {
-            return mapper.writeValueAsString(o);
-        } catch (JsonProcessingException exn) {
-            throw new LHJsonProcessingException(exn);
+    public static JsonResult serializeToJson(Object o) {
+        JsonElement jsonElement = LH_GSON.toJsonTree(o);
+        JsonResult.JsonType jsonType = null;
+
+        if (jsonElement.isJsonObject()) {
+            jsonType = JsonResult.JsonType.OBJECT;
+        } else if (jsonElement.isJsonArray()) {
+            jsonType = JsonResult.JsonType.ARRAY;
+        } else if (jsonElement.isJsonNull()) {
+            jsonType = JsonResult.JsonType.NULL;
+        } else if (jsonElement.isJsonPrimitive()) {
+            jsonType = JsonResult.JsonType.PRIMITIVE;
         }
+
+        return new JsonResult(jsonElement.toString(), jsonType);
     }
 
     public static <T extends Object> T deserializeFromjson(String json, Class<T> cls) throws LHJsonProcessingException {
         try {
-            return mapper.readValue(json, cls);
-        } catch (JsonProcessingException exn) {
-            throw new LHJsonProcessingException(exn);
+            return LH_GSON.fromJson(json, cls);
+        } catch (JsonSyntaxException exn) {
+            throw new LHJsonProcessingException(exn.getMessage());
         }
     }
 
@@ -132,7 +147,7 @@ public class LHLibUtil {
         return wfRunIdToString(taskRunId.getWfRunId()) + "/" + taskRunId.getTaskGuid();
     }
 
-    public static VariableValue objToVarVal(Object o) throws LHSerdeError {
+    public static VariableValue objToVarVal(Object o) throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
 
         VariableValue.Builder out = VariableValue.newBuilder();
@@ -154,18 +169,25 @@ public class LHLibUtil {
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else {
             // At this point, all we can do is try to make it a JSON type.
-            String jsonStr;
-            try {
-                jsonStr = LHLibUtil.serializeToJson(o);
-            } catch (LHJsonProcessingException exn) {
-                exn.printStackTrace();
-                throw new LHSerdeError(exn, "Failed deserializing json");
-            }
+            JsonResult jsonResult = LHLibUtil.serializeToJson(o);
 
-            if (List.class.isAssignableFrom(o.getClass())) {
-                out.setJsonArr(jsonStr);
-            } else {
-                out.setJsonObj(jsonStr);
+            switch (jsonResult.getType()) {
+                case ARRAY:
+                    out.setJsonArr(jsonResult.getJsonStr());
+                    break;
+                case OBJECT:
+                    out.setJsonObj(jsonResult.getJsonStr());
+                    break;
+                case PRIMITIVE:
+                    // Trims the quotes off the string
+                    out.setStr(jsonResult
+                            .getJsonStr()
+                            .substring(1, jsonResult.getJsonStr().length() - 1));
+                    break;
+                case NULL:
+                    break;
+                default:
+                    throw new LHSerdeException("Failed serializing object to Json: " + o.toString());
             }
         }
 
@@ -226,7 +248,7 @@ public class LHLibUtil {
     }
 
     public static boolean isJSON_ARR(Class<?> cls) {
-        return List.class.isAssignableFrom(cls);
+        return List.class.isAssignableFrom(cls) || cls.isArray();
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {

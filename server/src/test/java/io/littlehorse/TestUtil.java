@@ -17,6 +17,8 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRun
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
@@ -26,6 +28,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -75,6 +78,7 @@ public class TestUtil {
     public static TaskDefModel taskDef(String name) {
         TaskDefModel taskDef = new TaskDefModel();
         taskDef.setId(new TaskDefIdModel(name));
+        taskDef.setReturnType(new ReturnTypeModel(VariableType.STR));
         return taskDef;
     }
 
@@ -228,9 +232,8 @@ public class TestUtil {
     public static ExternalEventModel externalEvent() {
         ExternalEventModel externalEvent = new ExternalEventModel(
                 variableValue(),
-                new WfRunIdModel("0000000"),
-                new ExternalEventDefIdModel("test-name"),
-                "0000001",
+                new ExternalEventIdModel(
+                        new WfRunIdModel("0000000"), new ExternalEventDefIdModel("test-name"), "0000001"),
                 null,
                 null,
                 null);
@@ -240,9 +243,8 @@ public class TestUtil {
     public static ExternalEventModel externalEvent(String wfRunId) {
         ExternalEventModel externalEvent = new ExternalEventModel(
                 variableValue(),
-                new WfRunIdModel(wfRunId),
-                new ExternalEventDefIdModel("test-name"),
-                "0000001",
+                new ExternalEventIdModel(
+                        new WfRunIdModel(wfRunId), new ExternalEventDefIdModel("test-name"), "0000001"),
                 null,
                 null,
                 null);
@@ -252,14 +254,15 @@ public class TestUtil {
     public static WorkflowEventModel workflowEvent(String wfRunId) {
         WorkflowEventModel workflowEvent = new WorkflowEventModel(
                 new WorkflowEventIdModel(new WfRunIdModel(wfRunId), new WorkflowEventDefIdModel("test-name"), 0),
-                variableValue());
+                variableValue(),
+                nodeRun(wfRunId));
         return workflowEvent;
     }
 
     public static VariableDefModel variableDef(String name, VariableType variableTypePb) {
         VariableDefModel variableDef = new VariableDefModel();
         variableDef.setName(name);
-        variableDef.setType(variableTypePb);
+        variableDef.setTypeDef(new TypeDefinitionModel(variableTypePb));
         return variableDef;
     }
 

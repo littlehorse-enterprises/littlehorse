@@ -1,6 +1,6 @@
 package io.littlehorse.server;
 
-import io.littlehorse.sdk.common.proto.ServerVersion;
+import io.littlehorse.sdk.common.proto.LittleHorseVersion;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,20 +8,20 @@ public class VersionTest {
     @Test
     void testDevelopmentVersion() {
 
-        Assertions.assertThat(io.littlehorse.server.ServerVersion.VERSION).isNotNull();
+        Assertions.assertThat(ServerVersion.VERSION).isNotNull();
 
-        ServerVersion serverVersionResponse = Version.getServerVersion();
+        LittleHorseVersion LittleHorseVersionResponse = Version.getCurrentServerVersion();
 
         String version = String.format(
                 "%s.%s.%s",
-                serverVersionResponse.getMajorVersion(),
-                serverVersionResponse.getMinorVersion(),
-                serverVersionResponse.getPatchVersion());
+                LittleHorseVersionResponse.getMajorVersion(),
+                LittleHorseVersionResponse.getMinorVersion(),
+                LittleHorseVersionResponse.getPatchVersion());
 
         Assertions.assertThat(
-                        serverVersionResponse.getPreReleaseIdentifier().isEmpty()
+                        LittleHorseVersionResponse.getPreReleaseIdentifier().isEmpty()
                                 ? version
-                                : String.format("%s-%s", version, serverVersionResponse.getPreReleaseIdentifier()))
-                .isEqualTo(io.littlehorse.server.ServerVersion.VERSION);
+                                : String.format("%s-%s", version, LittleHorseVersionResponse.getPreReleaseIdentifier()))
+                .isEqualTo(ServerVersion.VERSION);
     }
 }

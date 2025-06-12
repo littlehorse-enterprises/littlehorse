@@ -13,13 +13,13 @@ class ProtobufSerializerTest {
     Faker faker = new Faker();
 
     @Test
-    void returnNullInCaseOfNull() {
+    void shouldReturnNullInCaseOfNull() {
         ProtobufSerializer serializer = new ProtobufSerializer();
         assertNull(serializer.serialize(null, null));
     }
 
     @Test
-    void beatSerialization() {
+    void shouldSerializeProtobufMessage() {
         ProtobufSerializer serializer = new ProtobufSerializer();
         BeatValue metric = BeatValue.newBuilder().setTime(Timestamps.now()).build();
 

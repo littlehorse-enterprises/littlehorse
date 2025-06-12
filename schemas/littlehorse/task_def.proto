@@ -9,7 +9,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers.
 message TaskDef {
@@ -22,12 +22,10 @@ message TaskDef {
   // The time at which this TaskDef was created.
   google.protobuf.Timestamp created_at = 3;
 
-  // Schema that validates the TaskDef's output
-  optional TaskDefOutputSchema schema_output = 4;
-}
-
-// Schema that validates the TaskDef's output
-message TaskDefOutputSchema {
-  // The definition for the output content
-  VariableDef value_def = 1;
+  // Schema that validates the TaskDef's output. If not set, we infer that the TaskDef
+  // was created prior to version 0.13.2, and validation will not occur on the WfSpec side.
+  //
+  // Versions after 0.13.2 require that typing information is provided when creating
+  // TaskDef's.
+  optional ReturnType return_type = 4;
 }

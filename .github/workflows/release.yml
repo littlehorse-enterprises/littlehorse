@@ -26,7 +26,7 @@ jobs:
     with:
       tag: ${{ needs.prepare.outputs.tag }}
 
-  sdk-java:
+  publish-java-libraries:
     runs-on: ubuntu-latest
     needs:
       - publish-docker
@@ -47,25 +47,57 @@ jobs:
         run: sed -i "s/version=.*/version=${TAG}/g" gradle.properties
 
       - name: Tests
-        run: ./gradlew sdk-java:test
-
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Generate KeyRing
-        run: |
-          gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
-          ls ~/.gnupg/
+        run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
 
       - name: Publish
-        run: |
-          ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-          echo Login at https://s01.oss.sonatype.org/
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: >
+          ./gradlew
+          sdk-java:publishToSonatype
+          test-utils:publishToSonatype
+          test-utils-container:publishToSonatype
+          closeAndReleaseSonatypeStagingRepository
 
-  sdk-python:
+  publish-java-server:
+    runs-on: ubuntu-latest
+    needs:
+      - publish-docker
+      - prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "21"
+
+      - name: Dump version
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: sed -i "s/version=.*/version=${TAG}/g" gradle.properties
+
+      - name: Tests
+        run: ./gradlew server:test canary:test
+
+      - name: Publish
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: >
+          ./gradlew
+          server:publishToSonatype
+          canary:publishToSonatype
+          closeAndReleaseSonatypeStagingRepository
+
+  publish-sdk-python:
     runs-on: ubuntu-latest
     needs:
       - publish-docker
@@ -97,13 +129,13 @@ jobs:
           poetry build
 
       - name: Publish Package
-        uses: pypa/gh-action-pypi-publish@v1.8.10
+        uses: pypa/gh-action-pypi-publish@v1.12.3
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages-dir: ./sdk-python/dist/
 
-  sdk-js:
+  publish-sdk-js:
     runs-on: ubuntu-latest
     needs:
       - publish-docker
@@ -146,7 +178,32 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: npm publish --access public
 
-  lhctl:
+  publish-sdk-dotnet:
+    runs-on: ubuntu-latest
+    needs:
+      - publish-docker
+      - prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6'
+      - name: Bump version
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: sed -i "s/<PackageVersion>.*<\/PackageVersion>/<PackageVersion>${TAG}<\/PackageVersion>/g" sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+      - name: Build Project
+        run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+      - name: Create Package
+        run: dotnet pack --configuration Release sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+      - name: Publish Package to nuget.org
+        run: dotnet nuget push --skip-duplicate sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
+
+  build-lhctl:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -170,10 +227,12 @@ jobs:
 
   create-release:
     needs:
-      - lhctl
-      - sdk-java
-      - sdk-python
-      - sdk-js
+      - build-lhctl
+      - publish-java-libraries
+      - publish-java-server
+      - publish-sdk-python
+      - publish-sdk-js
+      - publish-sdk-dotnet
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -16,7 +16,7 @@ import littlehorse.model.common_wfspec_pb2 as common__wfspec__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0etask_def.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x13\x63ommon_wfspec.proto\x1a\x0fobject_id.proto\"\xdb\x01\n\x07TaskDef\x12\"\n\x02id\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefId\x12,\n\ninput_vars\x18\x02 \x03(\x0b\x32\x18.littlehorse.VariableDef\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12<\n\rschema_output\x18\x04 \x01(\x0b\x32 .littlehorse.TaskDefOutputSchemaH\x00\x88\x01\x01\x42\x10\n\x0e_schema_output\"B\n\x13TaskDefOutputSchema\x12+\n\tvalue_def\x18\x01 \x01(\x0b\x32\x18.littlehorse.VariableDefBI\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x18LittleHorse.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0etask_def.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x13\x63ommon_wfspec.proto\x1a\x0fobject_id.proto\"\xce\x01\n\x07TaskDef\x12\"\n\x02id\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefId\x12,\n\ninput_vars\x18\x02 \x03(\x0b\x32\x18.littlehorse.VariableDef\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x0breturn_type\x18\x04 \x01(\x0b\x32\x17.littlehorse.ReturnTypeH\x00\x88\x01\x01\x42\x0e\n\x0c_return_typeBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,9 +24,7 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'task_def_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\030LittleHorse.Common.Proto'
+  DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
   _globals['_TASKDEF']._serialized_start=103
-  _globals['_TASKDEF']._serialized_end=322
-  _globals['_TASKDEFOUTPUTSCHEMA']._serialized_start=324
-  _globals['_TASKDEFOUTPUTSCHEMA']._serialized_end=390
+  _globals['_TASKDEF']._serialized_end=309
 # @@protoc_insertion_point(module_scope)

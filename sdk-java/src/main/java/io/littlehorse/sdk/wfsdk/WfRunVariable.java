@@ -138,7 +138,7 @@ public interface WfRunVariable extends LHExpression {
      * Equivalent to WorkflowThread#condition(this, Comparator.EQUALS, rhs);
      *
      * @param rhs is the RHS to compare this WfRunVariable to.
-     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     * @return true if this WfRunVariable is EQUALS the provided rhs.
      */
     WorkflowCondition isEqualTo(Serializable rhs);
 
@@ -146,10 +146,10 @@ public interface WfRunVariable extends LHExpression {
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
      * evaluates to true if this WfRunVariable is NOT_EQUALS to the provided rhs.
      *
-     * Equivalent to WorkflowThread#condition(this, Comparator.EQUALS, rhs);
+     * Equivalent to WorkflowThread#condition(this, Comparator.NOT_EQUALS, rhs);
      *
      * @param rhs is the RHS to compare this WfRunVariable to.
-     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     * @return true if this WfRunVariable is NOT_EQUALS the provided rhs.
      */
     WorkflowCondition isNotEqualTo(Serializable rhs);
 
@@ -159,10 +159,10 @@ public interface WfRunVariable extends LHExpression {
      * true if the RHS is a key. For JSON_ARR, returns true if the RHS is equal to one of the
      * elements in the array.
      *
-     * Equivalent to WorkflowThread#condition(this, Comparator.BETWEEN, rhs);
+     * Equivalent to WorkflowThread#condition(rhs, Comparator.IN, this);
      *
      * @param rhs is the RHS to compare this WfRunVariable to.
-     * @return true if this WfRunVariable is BETWEEN the provided rhs.
+     * @return true if the provided rhs is INSIDE this WfRunVariable.
      */
     WorkflowCondition doesContain(Serializable rhs);
 
@@ -172,10 +172,10 @@ public interface WfRunVariable extends LHExpression {
      * true if the RHS is not a key. For JSON_ARR, returns true if the RHS is not equal to any of
      * the elements in the array.
      *
-     * Equivalent to WorkflowThread#condition(this, Comparator.NOT_BETWEEN, rhs);
+     * Equivalent to WorkflowThread#condition(rhs, Comparator.NOT_IN, this);
      *
      * @param rhs is the RHS to compare this WfRunVariable to.
-     * @return true if this WfRunVariable is NOT_BETWEEN the provided rhs.
+     * @return true if this WfRunVariable is NOT INSIDE the provided rhs.
      */
     WorkflowCondition doesNotContain(Serializable rhs);
 
@@ -186,10 +186,10 @@ public interface WfRunVariable extends LHExpression {
      * value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS contains
      * an element that is equal to the value of this WfRunVariable.
      *
-     * Equivalent to WorkflowThread#condition(this, Comparator.BETWEEN, rhs);
+     * Equivalent to WorkflowThread#condition(this, Comparator.IN, rhs);
      *
      * @param rhs is the RHS to compare this WfRunVariable to.
-     * @return true if this WfRunVariable is BETWEEN the provided rhs.
+     * @return true if this WfRunVariable is INSIDE the provided rhs.
      */
     WorkflowCondition isIn(Serializable rhs);
 
@@ -200,10 +200,10 @@ public interface WfRunVariable extends LHExpression {
      * to the value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS does
      * not contain an element that is equal to the value of this WfRunVariable.
      *
-     * Equivalent to WorkflowThread#condition(this, Comparator.NOT_BETWEEN, rhs);
+     * Equivalent to WorkflowThread#condition(this, Comparator.NOT_IN, rhs);
      *
      * @param rhs is the RHS to compare this WfRunVariable to.
-     * @return true if this WfRunVariable is NOT_BETWEEN the provided rhs.
+     * @return true if this WfRunVariable is NOT INSIDE the provided rhs.
      */
     WorkflowCondition isNotIn(Serializable rhs);
 
@@ -214,5 +214,5 @@ public interface WfRunVariable extends LHExpression {
      * provided by the Json Path is mutated.
      * @param rhs is the value to set this WfRunVariable to.
      */
-    void assignTo(Serializable rhs);
+    void assign(Serializable rhs);
 }

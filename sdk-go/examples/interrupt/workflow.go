@@ -1,8 +1,9 @@
 package interrupt
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
@@ -23,13 +24,13 @@ const (
 )
 
 func InterruptWorkflow(wf *littlehorse.WorkflowThread) {
-	tally := wf.AddVariable("tally", lhproto.VariableType_INT)
+	tally := wf.DeclareInt("tally")
 	wf.Execute(ChildFooTaskName, 5)
 	wf.Mutate(tally, lhproto.VariableMutationType_ASSIGN, 0)
 
 	// The interrupt handler
 	wf.HandleInterrupt(UpdateTallyInterruptName, func(handler *littlehorse.WorkflowThread) {
-		eventContent := handler.AddVariable("INPUT", lhproto.VariableType_INT)
+		eventContent := handler.DeclareInt("INPUT")
 		handler.Execute(ChildFooTaskName, eventContent)
 		handler.Mutate(tally, lhproto.VariableMutationType_ADD, eventContent)
 	})

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Properties;
 
 public class UserTasksExample {
@@ -39,17 +38,6 @@ public class UserTasksExample {
             "is-approved",
             VariableType.BOOL
         );
-
-        WfRunVariable temperature = wf.addVariable("temperature", VariableType.INT);
-        WfRunVariable isActive = wf.addVariable("is_active", VariableType.BOOL); 
-        WfRunVariable price = wf.addVariable("price", VariableType.DOUBLE);
-        WfRunVariable metadata = wf.addVariable("metadata", VariableType.JSON_OBJ);
-        WfRunVariable tags = wf.addVariable("tags", VariableType.JSON_ARR);
-        WfRunVariable timestamp = wf.addVariable("timestamp", VariableType.INT);
-        WfRunVariable description = wf.addVariable("description", VariableType.STR);
-        WfRunVariable bytes = wf.addVariable("bytes", VariableType.BYTES);
-        WfRunVariable count = wf.addVariable("count", VariableType.INT);
-        WfRunVariable enabled = wf.addVariable("enabled", VariableType.BOOL);
 
         // Get the IT Request
         UserTaskOutput formOutput = wf.assignUserTask(
@@ -102,7 +90,7 @@ public class UserTasksExample {
             financeUserTaskOutput.jsonPath("$.isApproved")
         );
 
-        wf.doIfElse(
+        wf.doIf(
             wf.condition(isApproved, Comparator.EQUALS, true),
             // Request approved!
             ifBody -> {
@@ -115,7 +103,8 @@ public class UserTasksExample {
                         itRequest.jsonPath("$.requestedItem")
                     )
                 );
-            },
+            }
+        ).doElse(
             // Request denied ):
             elseBody -> {
                 elseBody.execute(
@@ -127,8 +116,8 @@ public class UserTasksExample {
                         itRequest.jsonPath("$.requestedItem")
                     )
                 );
-            }
-        );
+        });
+
     }
 
     public static Properties getConfigProps() throws IOException {

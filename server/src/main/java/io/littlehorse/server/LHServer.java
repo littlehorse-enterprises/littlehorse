@@ -1,53 +1,40 @@
 package io.littlehorse.server;
 
-import com.google.protobuf.Message;
 import io.grpc.Context;
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import io.littlehorse.server.streams.topology.core.WfService;
-import io.littlehorse.server.streams.util.HeadersUtil;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
-import io.littlehorse.server.streams.util.POSTStreamObserver;
 import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
@@ -66,8 +53,11 @@ public class LHServer {
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
-    private final ScheduledExecutorService networkThreadpool;
+    private final ExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
+    private final CommandSender commandSender;
+    private final LHInternalClient lhInternalClient;
+    private final AsyncWaiters asyncWaiters = new AsyncWaiters();
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -76,15 +66,16 @@ public class LHServer {
     public LHServer(LHServerConfig config) throws LHMisconfigurationException {
         this.metadataCache = new MetadataCache();
         this.config = config;
+        this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
-
+        this.lhInternalClient = new LHInternalClient(config.getInternalClientCreds(), this.networkThreadpool);
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
             overrideStreamsProcessId("core");
             overrideStreamsProcessId("timer");
         }
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
+                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, asyncWaiters),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
 
@@ -97,32 +88,42 @@ public class LHServer {
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
 
-        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
+                config, coreStreams, timerStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
 
         // Health Server Setup
         this.healthService =
                 new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
-
-        this.listeners =
-                config.getListeners().stream().map(this::createListener).toList();
+        this.commandSender = new CommandSender(
+                internalComms,
+                networkThreadpool,
+                internalComms.getCommandProducer(),
+                internalComms.getTaskClaimProducer(),
+                config.getStreamsSessionTimeout(),
+                config,
+                internalComms.getAsyncWaiters());
+        this.listeners = config.getListeners().stream()
+                .map(s -> this.createListener(s, networkThreadpool))
+                .toList();
     }
 
-    private LHServerListener createListener(ServerListenerConfig listenerConfig) {
+    private LHServerListener createListener(ServerListenerConfig listenerConfig, ExecutorService networkThreads) {
         return new LHServerListener(
                 listenerConfig,
                 taskQueueManager,
                 internalComms,
-                networkThreadpool,
+                networkThreads,
                 coreStoreProvider,
                 metadataCache,
                 List.of(
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
                         listenerConfig.getRequestAuthenticator()),
-                contextKey);
+                contextKey,
+                commandSender,
+                internalComms.getAsyncWaiters(),
+                lhInternalClient);
     }
 
     public String getInstanceName() {
@@ -135,105 +136,7 @@ public class LHServer {
      * infers the request context from the GRPC Context.
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
-
-        processCommand(
-                new CommandModel(claimEvent),
-                client.getResponseObserver(),
-                PollTaskResponse.class,
-                false,
-                client.getPrincipalId(),
-                client.getTenantId(),
-                client.getRequestContext());
-    }
-
-    public LHProducer getProducer() {
-        return internalComms.getProducer();
-    }
-
-    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        internalComms.onResponseReceived(commandId, response);
-    }
-
-    public void sendErrorToClient(String commandId, Throwable caught) {
-        internalComms.sendErrorToClientForCommand(commandId, caught);
-    }
-
-    /*
-     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
-     * grpc call that asynchronously waits for the command to be processed.
-     *
-     * Explicit request context. Useful for callers who do not have access to the GRPC
-     * context, for example the `returnTaskToClient()` method. That method is called
-     * from within the CommandProcessor#process() method.
-     *
-     * REFACTOR_SUGGESTION: We should create a CommandSender.java class which is responsible
-     * for sending commands to Kafka and waiting for the execution. That class should
-     * not depend on RequestExecutionContext but rather the AuthorizationContext. The
-     * `TaskClaimEvent#reportTaskToClient()` flow should not go through KafkaStreamsServerImpl
-     * anymore.
-     */
-    private <AC extends Message, RC extends Message> void processCommand(
-            AbstractCommand<AC> command,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
-            boolean shouldCompleteStream) {
-        RequestExecutionContext requestContext = requestContext();
-        processCommand(
-                command,
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                requestContext.authorization().principalId(),
-                requestContext.authorization().tenantId(),
-                requestContext);
-    }
-
-    /*
-     * This method is called from within the `CommandProcessor#process()` method (specifically, on the
-     * TaskClaimEvent#process()) method. Therefore, we cannot infer the RequestExecutionContext like
-     * we do in the other places, because the GRPC context does not exist in this case.
-     * Note that this is not a GRPC method that @Override's a super method and takes in
-     * a protobuf + StreamObserver.
-     */
-    private <AC extends Message, RC extends Message> void processCommand(
-            AbstractCommand<AC> command,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
-            boolean shouldCompleteStream,
-            PrincipalIdModel principalId,
-            TenantIdModel tenantId,
-            RequestExecutionContext context) {
-        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                internalComms,
-                command,
-                context,
-                // Streams Session Timeout is how long it takes to notice that the server is down.
-                // Then we need the rebalance to occur, and the new server must process the command.
-                // So we give it a buffer of 10 additional seconds.
-                Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
-                networkThreadpool);
-
-        Callback callback = internalComms.createProducerCommandCallback(command, commandObserver, context);
-
-        command.setCommandId(LHUtil.generateGuid());
-
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        internalComms
-                .getProducer()
-                .send(
-                        command.getPartitionKey(),
-                        command,
-                        command.getTopic(config),
-                        callback,
-                        commandMetadata.toArray());
-    }
-
-    private WfService getServiceFromContext() {
-        return requestContext().service();
+        commandSender.doSend(scheduledTask, client);
     }
 
     public void onTaskScheduled(
@@ -336,7 +239,7 @@ public class LHServer {
         return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
     }
 
-    public void onEventThrown(WorkflowEventModel event) {
-        internalComms.onWorkflowEventThrown(event);
+    public void onEventThrown(Collection<WorkflowEventModel> eventsToThrow, TenantIdModel tenantId) {
+        internalComms.onWorkflowEventThrown(eventsToThrow, tenantId);
     }
 }

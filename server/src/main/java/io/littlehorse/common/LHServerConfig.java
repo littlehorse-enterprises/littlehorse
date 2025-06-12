@@ -5,6 +5,8 @@ import io.grpc.ChannelCredentials;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.RocksConfigSetter;
 import io.littlehorse.sdk.common.config.ConfigBase;
@@ -34,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -64,6 +67,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String LHS_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
     public static final String REPLICATION_FACTOR_KEY = "LHS_REPLICATION_FACTOR";
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
+    public static final String OUTPUT_TOPIC_PARTITIONS_KEY = "LHS_OUTPUT_TOPIC_PARTITIONS";
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
 
@@ -78,6 +82,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String TIMER_STATESTORE_CACHE_BYTES_KEY = "LHS_TIMER_STATESTORE_CACHE_BYTES";
     public static final String ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES";
     public static final String ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES";
+    public static final String ROCKSDB_USE_DIRECT_IO_KEY = "LHS_ROCKSDB_USE_DIRECT_IO";
+    public static final String ROCKSDB_RATE_LIMIT_BYTES_KEY = "LHS_ROCKSDB_RATE_LIMIT_BYTES";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
@@ -145,6 +151,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
 
+    public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
+
     // Instance configs
     private final String lhsMetricsLevel;
 
@@ -181,8 +189,8 @@ public class LHServerConfig extends ConfigBase {
     }
 
     private Admin kafkaAdmin;
-    private LHProducer producer;
-    private LHProducer txnProducer;
+    private LHProducer commandProducer;
+    private LHProducer taskClaimProducer;
 
     public int getHotMetadataPartition() {
         return (Utils.toPositive(Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes())) % getClusterPartitions());
@@ -352,6 +360,40 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(String.class.cast(props.getOrDefault(LHServerConfig.CLUSTER_PARTITIONS_KEY, "12")));
     }
 
+    public int getOutputToppicPartitions() {
+        return Integer.valueOf(String.class.cast(props.getOrDefault(
+                LHServerConfig.OUTPUT_TOPIC_PARTITIONS_KEY, String.valueOf(getClusterPartitions()))));
+    }
+
+    public static String getExecutionOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "_" + tenantId.toString() + "_execution";
+    }
+
+    public static String getMetadataOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "_" + tenantId.toString() + "_metadata";
+    }
+
+    public String getExecutionOutputTopicName(TenantIdModel tenant) {
+        return getExecutionOutputTopicName(getLHClusterId(), tenant);
+    }
+
+    public String getMetadataOutputTopicName(TenantIdModel tenant) {
+        return getMetadataOutputTopicName(getLHClusterId(), tenant);
+    }
+
+    public Pair<NewTopic, NewTopic> getOutputTopicsFor(TenantModel tenant) {
+        String executionTopicName = getExecutionOutputTopicName(tenant.getId());
+        String metadataTopicName = getMetadataOutputTopicName(tenant.getId());
+
+        // metadata topic is compacted
+        Map<String, String> compactedTopicConfig =
+                Map.of(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+
+        return Pair.of(
+                new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
+                new NewTopic(executionTopicName, getClusterPartitions(), getReplicationFactor()));
+    }
+
     public String getKafkaGroupId(String component) {
         return getLHClusterId() + "-" + component;
     }
@@ -421,6 +463,10 @@ public class LHServerConfig extends ConfigBase {
 
     public String getStatusPath() {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_STATUS_KEY, "/status");
+    }
+
+    public long getCoreStoreRateLimitBytes() {
+        return Long.valueOf(getOrSetDefault(LHServerConfig.ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
     }
 
     public String getDiskUsagePath() {
@@ -662,15 +708,22 @@ public class LHServerConfig extends ConfigBase {
 
     public void cleanup() {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
-        if (this.producer != null) this.producer.close();
-        if (this.txnProducer != null) this.txnProducer.close();
+        if (this.commandProducer != null) this.commandProducer.close();
+        if (this.taskClaimProducer != null) this.taskClaimProducer.close();
     }
 
-    public LHProducer getProducer() {
-        if (producer == null) {
-            producer = new LHProducer(this);
+    public LHProducer getCommandProducer() {
+        if (commandProducer == null) {
+            commandProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
         }
-        return producer;
+        return commandProducer;
+    }
+
+    public LHProducer getTaskClaimProducer() {
+        if (taskClaimProducer == null) {
+            taskClaimProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
+        }
+        return taskClaimProducer;
     }
 
     public boolean shouldCreateTopics() {
@@ -684,6 +737,10 @@ public class LHServerConfig extends ConfigBase {
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
+    }
+
+    public boolean useDirectIOForRocksDB() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_DIRECT_IO_KEY, "false"));
     }
 
     // Timer Topology generally has smaller values that are written. The majority of them
@@ -834,7 +891,7 @@ public class LHServerConfig extends ConfigBase {
         // changelog (the WfRun, NodeRun, and TaskRun each are saved on the first two commands).
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
-        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "3000"));
+        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "500"));
         result.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
         result.put(
                 "statestore.cache.max.bytes",
@@ -1008,6 +1065,10 @@ public class LHServerConfig extends ConfigBase {
 
     public int getStreamsSessionTimeout() {
         return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
+    }
+
+    public boolean areStructDefsEnabled() {
+        return Boolean.valueOf(getOrSetDefault(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "false"));
     }
 
     public int getNumNetworkThreads() {

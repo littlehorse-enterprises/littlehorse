@@ -1,14 +1,15 @@
 # LittleHorse Python SDK
 
-For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
+For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.io).
 
 For examples go to the [examples](./examples/) folder.
 
 ## Dependencies
 
 - Install python.
-- Install [poetry](https://python-poetry.org/): `brew install poetry`
-- Install grpc tools: `pip3 install grpcio-tools`
+- Install [pipx](https://github.com/pypa/pipx): `brew install pipx`
+- Install [poetry](https://python-poetry.org/): `pipx install poetry`
+- Install [poetry shell plugin](https://github.com/python-poetry/poetry-plugin-shell): `poetry self add poetry-plugin-shell`
 
 ## Initialize
 
@@ -49,4 +50,11 @@ VariableType.BOOL:     bool
 VariableType.STR:      str
 VariableType.INT:      int
 VariableType.BYTES:    bytes
+```
+
+## Python Code Formatter 
+
+```
+poetry shell
+black . 
 ```

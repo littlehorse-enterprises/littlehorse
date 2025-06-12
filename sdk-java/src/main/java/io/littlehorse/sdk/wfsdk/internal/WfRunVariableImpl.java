@@ -2,10 +2,11 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -16,6 +17,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 
 @Getter
@@ -37,8 +39,13 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
         this.name = name;
+        this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
+
+        if (typeOrDefaultVal == null) {
+            throw new IllegalArgumentException(
+                    "The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
+        }
         this.typeOrDefaultVal = typeOrDefaultVal;
-        this.parent = parent;
 
         // As per GH Issue #582, the default is now PRIVATE_VAR.
         this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
@@ -49,13 +56,8 @@ class WfRunVariableImpl implements WfRunVariable {
         if (typeOrDefaultVal instanceof VariableType) {
             this.type = (VariableType) typeOrDefaultVal;
         } else {
-            try {
-                this.defaultValue = LHLibUtil.objToVarVal(typeOrDefaultVal);
-                this.type = LHLibUtil.fromValueCase(defaultValue.getValueCase());
-            } catch (LHSerdeError e) {
-                throw new IllegalArgumentException(
-                        "Was unable to convert provided default value to LH Variable Type", e);
-            }
+            setDefaultValue(typeOrDefaultVal);
+            this.type = LHLibUtil.fromValueCase(defaultValue.getValueCase());
         }
     }
 
@@ -98,15 +100,21 @@ class WfRunVariableImpl implements WfRunVariable {
 
     @Override
     public WfRunVariable withDefault(Object defaultVal) {
+        setDefaultValue(defaultVal);
+
+        if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(type)) {
+            throw new IllegalArgumentException("Default value type does not match LH variable type " + type);
+        }
+
+        return this;
+    }
+
+    private void setDefaultValue(Object defaultVal) {
         try {
-            VariableValue attempt = LHLibUtil.objToVarVal(defaultVal);
-            if (!LHLibUtil.fromValueCase(attempt.getValueCase()).equals(type)) {
-                throw new IllegalArgumentException("Default value type does not match variable type");
-            }
-        } catch (LHSerdeError e) {
+            this.defaultValue = LHLibUtil.objToVarVal(defaultVal);
+        } catch (LHSerdeException e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }
-        return this;
     }
 
     @Override
@@ -175,8 +183,16 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public void assignTo(Serializable rhs) {
-        parent.mutate(this, VariableMutationType.ASSIGN, rhs);
+    public void assign(Serializable rhs) {
+        WorkflowThreadImpl activeThread = parent;
+
+        WorkflowThreadImpl lastThread = parent.getParent().getThreads().peek();
+
+        if (lastThread.isActive()) {
+            activeThread = lastThread;
+        }
+
+        activeThread.mutate(this, VariableMutationType.ASSIGN, rhs);
     }
 
     @Override
@@ -226,9 +242,8 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public ThreadVarDef getSpec() {
         VariableDef.Builder varDef = VariableDef.newBuilder()
-                .setType(this.getType())
-                .setName(this.getName())
-                .setMaskedValue(masked);
+                .setTypeDef(TypeDefinition.newBuilder().setMasked(masked).setType(this.getType()))
+                .setName(this.getName());
 
         if (this.defaultValue != null) {
             varDef.setDefaultValue(defaultValue);

@@ -5,16 +5,20 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
-import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
-import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
-import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
-import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import java.util.Optional;
 
 public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> {
 
@@ -40,14 +44,44 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        executionContext.getableManager().delete(wfRunId);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), TaskRunModel.class);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), VariableModel.class);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), ExternalEventModel.class);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), UserTaskRunModel.class);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), WorkflowEventModel.class);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), NodeRunModel.class);
+        GetableManager manager = executionContext.getableManager();
+        WfRunModel wfRun = manager.get(wfRunId);
+        if (wfRun == null) return Empty.getDefaultInstance();
 
+        // We use our brains here to delete things we know are there rather than using a range scan.
+        // Better to rely on our brainpower rather than RocksDB, since RocksDB gets grumpy when we ask
+        // it to do work.
+        for (ThreadRunModel thread : wfRun.getThreadRunsUseMeCarefully()) {
+            for (int i = 0; i <= thread.getCurrentNodePosition(); i++) {
+                NodeRunModel nodeRun = thread.getNodeRun(i);
+
+                // Delete things created by the NodeRun, eg TaskRun / UserTaskRun / WorkflowEvent
+                Optional<? extends CoreObjectId<?, ?, ?>> createdGetable =
+                        nodeRun.getSubNodeRun().getCreatedSubGetableId();
+                if (createdGetable.isPresent()) {
+                    manager.delete((CoreObjectId<?, ?, ?>) createdGetable.get());
+                }
+
+                // Delete the NodeRun
+                manager.delete(nodeRun.getObjectId());
+            }
+
+            // Delete the variables belonging to that ThreadRun
+            ThreadSpecModel threadSpec = thread.getThreadSpec();
+            for (ThreadVarDefModel varDef : threadSpec.getVariableDefs()) {
+                if (varDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) continue;
+
+                VariableIdModel id = new VariableIdModel(
+                        wfRunId, thread.getNumber(), varDef.getVarDef().getName());
+                manager.delete(id);
+            }
+        }
+
+        // Delete the ExternalEvents, which can be done by the GetableManager itself
+        manager.deleteAllExternalEventsFor(wfRunId);
+
+        // Now we delete the WfRun itself
+        executionContext.getableManager().delete(wfRunId);
         return Empty.getDefaultInstance();
     }
 

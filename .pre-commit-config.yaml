@@ -59,7 +59,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: poetry -C ./sdk-python run black sdk-python/
+        entry: poetry -C ./sdk-python run black .
 
       - id: format-go
         name: Format Go Code
@@ -82,14 +82,14 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: poetry -C ./sdk-python run ruff check --fix sdk-python/
+        entry: poetry -C ./sdk-python run ruff check --fix .
 
       - id: mypy
         name: Validating Python Types
         language: system
         always_run: true
         pass_filenames: false
-        entry: poetry -C ./sdk-python run mypy --config-file sdk-python/pyproject.toml sdk-python/
+        entry: poetry -C ./sdk-python run mypy .
 
       # Tests
 
@@ -105,7 +105,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: ./gradlew sdk-java:javadoc
+        entry: bash -c './gradlew sdk-java:javadoc && ./gradlew test-utils:javadoc && ./gradlew test-utils-container:javadoc'
 
       - id: go-tests
         name: Running SDK Go Tests
@@ -119,7 +119,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: poetry -C ./sdk-python run python -m unittest discover -s sdk-python/
+        entry: poetry -C ./sdk-python run python -m unittest discover -s .
 
       - id: sdk-js-tests
         name: Running SDK Javascript tests

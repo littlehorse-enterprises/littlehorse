@@ -1,25 +1,17 @@
 package io.littlehorse.server.streams.taskqueue;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
-import io.littlehorse.server.streams.storeinternals.index.Attribute;
-import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.TaskId;
@@ -29,33 +21,28 @@ import org.apache.kafka.streams.processor.TaskId;
 @Slf4j
 public class OneTaskQueue {
 
-    private Queue<PollTaskRequestObserver> hungryClients;
-    private Lock lock;
+    @Getter
+    private final String taskDefName;
 
-    private LinkedBlockingQueue<QueueItem> pendingTasks;
-    private TaskQueueManager parent;
+    private final TaskQueueManager parent;
+    private final int capacity;
 
     @Getter
-    private String taskDefName;
+    private final TenantIdModel tenantId;
 
-    @Getter
-    private TenantIdModel tenantId;
+    private final Lock lock = new ReentrantLock();
+    private final Queue<PollTaskRequestObserver> hungryClients = new LinkedList<>();
+    private final String instanceName;
+    private final LinkedHashSet<QueueItem> pendingTasks;
+    private final AtomicLong numberOfInMemoryTasks = new AtomicLong(0);
 
-    private String instanceName;
-
-    private final Map<TaskId, TrackedPartition> taskTrack = new ConcurrentHashMap<>();
-
-    /*
-     * If it is true, the queue should execute a task rehydration from store
-     */
     public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
-        this.tenantId = tenantId;
-        this.pendingTasks = new LinkedBlockingQueue<>(capacity);
-        this.hungryClients = new LinkedList<>();
-        this.lock = new ReentrantLock();
         this.parent = parent;
-        instanceName = parent.getBackend().getInstanceName();
+        this.capacity = capacity;
+        this.tenantId = tenantId;
+        this.instanceName = parent.getBackend().getInstanceName();
+        this.pendingTasks = new LinkedHashSet<>();
     }
 
     /**
@@ -69,21 +56,17 @@ public class OneTaskQueue {
     public void onRequestDisconnected(PollTaskRequestObserver disconnectedObserver) {
         // Remove the request listener when the gRPC stream is completed (i.e.
         // graceful shutdown) or when the connection is broken.
-
-        try {
-            lock.lock();
+        synchronizedBlock(() -> {
             hungryClients.removeIf(thing -> {
                 log.trace(
                         "Instance {}: Removing task queue observer for taskdef {} with" + " client id {}: {}",
-                        parent.getBackend().getInstanceName(),
+                        instanceName,
                         taskDefName,
                         disconnectedObserver.getClientId(),
                         disconnectedObserver);
                 return thing.equals(disconnectedObserver);
             });
-        } finally {
-            lock.unlock();
-        }
+        });
     }
 
     /**
@@ -104,9 +87,8 @@ public class OneTaskQueue {
      * @param scheduledTask is the ::getObjectId() for the TaskScheduleRequest
      *                        that was just
      *                        scheduled.
-     * @return True if the task was successfully scheduled, or False if the queue is full.
      */
-    public boolean onTaskScheduled(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {
+    public void onTaskScheduled(TaskId taskId, ScheduledTaskModel scheduledTask) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         // the pendingTaskIds queue/list must be empty.
@@ -118,37 +100,21 @@ public class OneTaskQueue {
                 LHLibUtil.getWfRunId(scheduledTask.getSource().toProto()),
                 hungryClients.isEmpty());
 
-        PollTaskRequestObserver luckyClient = null;
-        try {
-            lock.lock();
+        PollTaskRequestObserver luckyClient = synchronizedBlock(() -> {
             if (!hungryClients.isEmpty()) {
-                // This is case 1.
                 if (!pendingTasks.isEmpty()) {
                     throw new RuntimeException("Can't have pending tasks and hungry clients");
                 }
+                return hungryClients.poll();
 
-                luckyClient = hungryClients.poll();
             } else {
-                // case 2
-                TrackedPartition trackedPartition = taskTrack.getOrDefault(
-                        streamsTaskId, new TrackedPartition(false, scheduledTask.getCreatedAt(), scheduledTask));
-                boolean hasMoreTasksOnDisk = !pendingTasks.offer(new QueueItem(streamsTaskId, scheduledTask))
-                        || trackedPartition.hasMoreDataOnDisk();
-                taskTrack.put(
-                        streamsTaskId,
-                        new TrackedPartition(hasMoreTasksOnDisk, trackedPartition.lastRehydratedTask(), scheduledTask));
-                return !hasMoreTasksOnDisk;
+                pendingTasks.add(new QueueItem(taskId, scheduledTask));
+                return null;
             }
-        } finally {
-            lock.unlock();
-        }
-
-        // pull this outside of protected zone for performance.
+        });
         if (luckyClient != null) {
             parent.itsAMatch(scheduledTask, luckyClient);
-            return true;
         }
-        return hungryClients.isEmpty();
     }
 
     /**
@@ -160,127 +126,85 @@ public class OneTaskQueue {
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
 
-        if (taskDefName == null) {
-            taskDefName = requestObserver.getTaskDefId();
-        }
-        if (!taskDefName.equals(requestObserver.getTaskDefId())) {
-            throw new RuntimeException("Not possible, got mismatched taskdef name");
-        }
-
-        log.trace("Instance {}: Poll request received for taskDef {}", instanceName, taskDefName);
-
-        // There's two cases here:
-        // 1. There are pending Task Id's in the queue, which means that there
-        // are no "hungry clients" in the queue.
-        // 2. There are no pending Taskid's in the queue, in which case we simply
-        // push the request client observer thing onto the back of the
-        // `hungryClients` list.
-        ScheduledTaskModel nextTask = null;
-
-        try {
-            lock.lock();
+        QueueItem nextItem = synchronizedBlock(() -> {
             if (pendingTasks.isEmpty()) {
-                for (Map.Entry<TaskId, TrackedPartition> taskHasMoreDataOnDisk : taskTrack.entrySet()) {
-                    if (taskHasMoreDataOnDisk.getValue().hasMoreDataOnDisk()) {
-                        rehydrateFromStore(requestContext.getableManager(taskHasMoreDataOnDisk.getKey()));
-                    }
-                }
-            }
-
-            if (!pendingTasks.isEmpty()) {
-                // This is case 1.
-                if (!hungryClients.isEmpty()) {
-                    throw new RuntimeException("Can't have pending tasks and hungry clients");
-                }
-                QueueItem poll = pendingTasks.poll();
-                nextTask = poll.scheduledTask();
-                TrackedPartition trackedPartition = taskTrack.getOrDefault(
-                        poll.streamsTaskId(), new TrackedPartition(true, nextTask.getCreatedAt(), nextTask));
-                taskTrack.put(
-                        poll.streamsTaskId(),
-                        new TrackedPartition(
-                                trackedPartition.hasMoreDataOnDisk(), trackedPartition.lastRehydratedTask(), nextTask));
-            } else {
-                // case 2
                 hungryClients.add(requestObserver);
+                return null;
             }
-        } finally {
-            lock.unlock();
+            return pendingTasks.removeFirst();
+        });
+        if (nextItem != null) {
+            parent.itsAMatch(nextItem.resolveTask(requestContext), requestObserver);
         }
-
-        if (nextTask != null) {
-            parent.itsAMatch(nextTask, requestObserver);
-        }
-    }
-
-    public boolean hasMoreTasksOnDisk(TaskId streamsTaskId) {
-        return taskTrack.get(streamsTaskId).hasMoreDataOnDisk();
-    }
-
-    /**
-     * Can only be called within a lock
-     */
-    private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
-        log.debug("Rehydrating");
-        if (readOnlyGetableManager.getSpecificTask().isEmpty()) {
-            throw new IllegalStateException("Only specific task rehydration is permitted.");
-        }
-        String startKey = Tag.getAttributeString(
-                        GetableClassEnum.TASK_RUN,
-                        List.of(
-                                new Attribute("taskDefName", taskDefName),
-                                new Attribute("status", TaskStatus.TASK_SCHEDULED.name())))
-                + "/";
-        String endKey = startKey + "~";
-        TaskId taskId = readOnlyGetableManager.getSpecificTask().get();
-        boolean hasMoreTasksOnDisk;
-        Date lastRehydratedTask = taskTrack.get(taskId).lastRehydratedTask();
-        ScheduledTaskModel scheduledTaskModel = taskTrack.get(taskId).lastReturnedTask();
-        try (LHKeyValueIterator<Tag> result = readOnlyGetableManager.tagScan(startKey, endKey)) {
-            boolean queueOutOfCapacity = false;
-            while (result.hasNext() && !queueOutOfCapacity) {
-                Tag tag = result.next().getValue();
-                String describedObjectId = tag.getDescribedObjectId();
-                TaskRunIdModel taskRunId =
-                        (TaskRunIdModel) TaskRunIdModel.fromString(describedObjectId, TaskRunIdModel.class);
-                ScheduledTaskModel scheduledTask = readOnlyGetableManager.getScheduledTask(taskRunId);
-                if (scheduledTask != null && notRehydratedYet(scheduledTask, lastRehydratedTask, scheduledTaskModel)) {
-                    if (!hungryClients.isEmpty()) {
-                        parent.itsAMatch(scheduledTask, hungryClients.remove());
-                    } else {
-                        queueOutOfCapacity = !pendingTasks.offer(new QueueItem(taskId, scheduledTask));
-                        if (!queueOutOfCapacity) {
-                            lastRehydratedTask = scheduledTask.getCreatedAt();
-                        }
-                    }
-                }
-            }
-            hasMoreTasksOnDisk = queueOutOfCapacity;
-        }
-        taskTrack.put(taskId, new TrackedPartition(hasMoreTasksOnDisk, lastRehydratedTask, null));
-    }
-
-    private record TrackedPartition(
-            Boolean hasMoreDataOnDisk, Date lastRehydratedTask, ScheduledTaskModel lastReturnedTask) {}
-
-    private boolean notRehydratedYet(
-            ScheduledTaskModel scheduledTask, Date lastRehydratedTask, ScheduledTaskModel lastReturnedTask) {
-        if (lastReturnedTask == null) {
-            return true;
-        }
-        return (lastRehydratedTask == null && !scheduledTask.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
-                || (!scheduledTask.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
-                        && scheduledTask.getCreatedAt().compareTo(lastRehydratedTask) >= 0));
     }
 
     public void drainPartition(TaskId partitionToDrain) {
-        taskTrack.remove(partitionToDrain);
-        pendingTasks.removeIf(queueItem -> queueItem.streamsTaskId().equals(partitionToDrain));
+        synchronizedBlock(() -> {
+            pendingTasks.removeIf(queueItem -> queueItem.taskId.equals(partitionToDrain));
+        });
     }
 
-    public int size() {
+    public long size() {
         return pendingTasks.size();
     }
 
-    private record QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {}
+    private class QueueItem {
+        private final TaskId taskId;
+        private final ScheduledTaskModel scheduledTask;
+        private final String scheduledTaskStoreKey;
+
+        public QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {
+            this.taskId = streamsTaskId;
+            if (numberOfInMemoryTasks.get() > capacity) {
+                this.scheduledTask = null;
+            } else {
+                this.scheduledTask = scheduledTask;
+                numberOfInMemoryTasks.incrementAndGet();
+            }
+            this.scheduledTaskStoreKey = scheduledTask.getTaskRunId().toString();
+        }
+
+        private ScheduledTaskModel resolveTask(RequestExecutionContext context) {
+            if (scheduledTask != null) {
+                numberOfInMemoryTasks.decrementAndGet();
+                return scheduledTask;
+            } else {
+                ScheduledTaskModel task = context.getableManager(taskId).getScheduledTask(scheduledTaskStoreKey);
+                if (task == null) {
+                    throw new RuntimeException("Unable to find scheduled task for " + scheduledTaskStoreKey);
+                }
+                return task;
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            QueueItem queueItem = (QueueItem) o;
+            return Objects.equals(scheduledTaskStoreKey, queueItem.scheduledTaskStoreKey);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(scheduledTaskStoreKey);
+        }
+    }
+
+    private void synchronizedBlock(Runnable runnable) {
+        try {
+            lock.lock();
+            runnable.run();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private <T> T synchronizedBlock(Supplier<T> runnable) {
+        try {
+            lock.lock();
+            return runnable.get();
+        } finally {
+            lock.unlock();
+        }
+    }
 }

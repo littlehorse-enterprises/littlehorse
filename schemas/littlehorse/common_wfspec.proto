@@ -10,7 +10,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A VariableAssignment is used within a WfSpec to determine how a value should be
 // assigned in the context of a specific WfRun. For example, in a TASK node, you
@@ -132,10 +132,14 @@ message VariableMutation {
   }
 }
 
-// Declares a Variable.
+// Declares a Variable; used in a ThreadSpec and a TaskDef.
 message VariableDef {
-  // The Type of the variable.
-  VariableType type = 1;
+  // DEPRECATED: The Type of the variable.
+  //
+  // After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+  // We retain this field for compatibility purposes but clients should not use
+  // it going forward. To be removed in a future release.
+  optional VariableType type = 1;
 
   // The name of the variable.
   string name = 2;
@@ -145,8 +149,40 @@ message VariableDef {
   // used.
   optional VariableValue default_value = 3;
 
-  // If true, the variable value will show as a masked string.
-  bool masked_value = 4;
+  // DEPRECATED: If true, the variable value will show as a masked string.
+  //
+  // After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
+  // We retain this field for compatibility purposes but clients should not use
+  // it going forward. To be removed in a future release.
+  optional bool masked_value = 4;
+
+  // Type Information for this variable.
+  //
+  // This is the default as of 0.13.2 and will become the only supported way
+  // (i.e. it will be no longer `optional`).
+  optional TypeDefinition type_def = 5;
+}
+
+// Defines the type of a value in LittleHorse. Can be used for Task Parameters,
+// Task return types, External Event types, ThreadSpec variables, etc.
+message TypeDefinition {
+  // The basic type of the value. Will become a `oneof` once StructDef's and Struct's
+  // are implemented according to issue #880.
+  VariableType type = 1;
+
+  // For compatibility purposes.
+  reserved 2, 3;
+
+  // Set to true if values of this type contain sensitive information and must be masked.
+  bool masked = 4;
+}
+
+// Utility used among metadata objects to define their output type. For example, used in
+// TaskDef and ExternalEventDef to represent the output.
+message ReturnType {
+  // The type of the output. If it is not present, it is interpred as the output type
+  // being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
+  optional TypeDefinition return_type = 1;
 }
 
 // Operator for comparing two values to create a boolean expression.
@@ -289,7 +325,7 @@ message TaskNode {
   // - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
   //   the Task Function.
   //
-  // Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+  // Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
   // TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
   int32 retries = 3;
 

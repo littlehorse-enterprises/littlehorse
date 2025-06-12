@@ -2,8 +2,8 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.TaskDefOutputSchema;
-import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
@@ -25,7 +25,7 @@ public class LHTaskSignature {
     String taskDefName;
     String lhTaskMethodAnnotationValue;
     Object executable;
-    TaskDefOutputSchema outputSchema;
+    ReturnType outputSchema;
 
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
@@ -60,23 +60,6 @@ public class LHTaskSignature {
                     + " on "
                     + executable.getClass());
         }
-        VariableType returnType = LHLibUtil.javaClassToLHVarType(taskMethod.getReturnType());
-        boolean maskedValue = false;
-        String outputSchemaVarName = "output";
-        if (taskMethod.isAnnotationPresent(LHType.class)) {
-            LHType type = taskMethod.getAnnotation(LHType.class);
-            maskedValue = type.masked();
-            if (!type.name().isEmpty() || !type.name().isBlank()) {
-                outputSchemaVarName = type.name();
-            }
-        }
-        outputSchema = TaskDefOutputSchema.newBuilder()
-                .setValueDef(VariableDef.newBuilder()
-                        .setType(returnType)
-                        .setName(outputSchemaVarName)
-                        .setMaskedValue(maskedValue)
-                        .build())
-                .build();
 
         for (int i = 0; i < taskMethod.getParameterCount(); i++) {
             Parameter param = taskMethod.getParameters()[i];
@@ -102,6 +85,27 @@ public class LHTaskSignature {
                 maskedParams.add(false);
                 varNames.add(varNameFromParameterName(param));
             }
+        }
+        outputSchema = buildReturnType(taskMethod.getReturnType());
+    }
+
+    private ReturnType buildReturnType(Class<?> classReturnType) {
+        if (void.class.isAssignableFrom(classReturnType)) {
+            // Empty `type` field signifies that it's void.
+            return ReturnType.newBuilder().build();
+        } else {
+            VariableType returnType = LHLibUtil.javaClassToLHVarType(classReturnType);
+            boolean maskedValue = false;
+            if (taskMethod.isAnnotationPresent(LHType.class)) {
+                LHType type = taskMethod.getAnnotation(LHType.class);
+                maskedValue = type.masked();
+            }
+            return ReturnType.newBuilder()
+                    .setReturnType(TypeDefinition.newBuilder()
+                            .setType(returnType)
+                            .setMasked(maskedValue)
+                            .build())
+                    .build();
         }
     }
 
@@ -143,7 +147,7 @@ public class LHTaskSignature {
         return varNames;
     }
 
-    public TaskDefOutputSchema getOutputSchema() {
+    public ReturnType getReturnType() {
         return outputSchema;
     }
 

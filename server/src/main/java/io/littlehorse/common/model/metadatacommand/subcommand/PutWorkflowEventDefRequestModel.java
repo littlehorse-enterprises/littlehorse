@@ -2,14 +2,15 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
@@ -20,27 +21,27 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
         implements ClusterLevelCommand {
 
     private String name;
-    private VariableType type;
+    private ReturnTypeModel contentType;
 
     public PutWorkflowEventDefRequestModel() {
         // used by LHSerializable
     }
 
-    public PutWorkflowEventDefRequestModel(String name, VariableType contentType) {
+    public PutWorkflowEventDefRequestModel(String name, ReturnTypeModel contentType) {
         this.name = name;
-        this.type = contentType;
+        this.contentType = contentType;
     }
 
     @Override
     public PutWorkflowEventDefRequest.Builder toProto() {
-        return PutWorkflowEventDefRequest.newBuilder().setName(name).setType(type);
+        return PutWorkflowEventDefRequest.newBuilder().setName(name).setContentType(contentType.toProto());
     }
 
     @Override
-    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         PutWorkflowEventDefRequest p = (PutWorkflowEventDefRequest) proto;
         name = p.getName();
-        this.type = p.getType();
+        this.contentType = LHSerializable.fromProto(p.getContentType(), ReturnTypeModel.class, context);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
 
         WorkflowEventDefModel old = executionContext.metadataManager().get(id);
         if (old != null) {
-            if (old.getType() != type) {
+            if (!old.getContentType().equals(contentType)) {
                 throw new LHApiException(
                         Status.ALREADY_EXISTS,
                         "WorkflowEventDef with name %s already exists with different type!".formatted(name));
@@ -67,7 +68,7 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
             return old.toProto().build();
         }
 
-        WorkflowEventDefModel newEventDef = new WorkflowEventDefModel(id, type);
+        WorkflowEventDefModel newEventDef = new WorkflowEventDefModel(id, contentType);
         executionContext.metadataManager().put(newEventDef);
         return newEventDef.toProto().build();
     }

@@ -7,12 +7,16 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
@@ -22,7 +26,9 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
+import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
+import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -33,10 +39,11 @@ import io.littlehorse.test.CapturedResult;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
-import io.littlehorse.test.SearchResultCaptor;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
+import io.littlehorse.test.internal.step.SearchResultCaptor;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
@@ -61,6 +68,15 @@ public class UserTaskTest {
 
     @LHWorkflow("cancel-user-task-on-deadline")
     private Workflow userTaskCancelOnDeadline;
+
+    @LHWorkflow("schedule-reminder-task-without-user-fields-workflow")
+    private Workflow scheduleReminderTaskWithoutUserFields;
+
+    @LHWorkflow("worker-context-receives-user-details")
+    private Workflow workerContextReceivesUserDetails;
+
+    @LHWorkflow("user-task-assignment")
+    private Workflow userTaskAssignment;
 
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
@@ -259,6 +275,90 @@ public class UserTaskTest {
     }
 
     @Test
+    public void shouldValidateUserIdNotEmptyFromResultTask() {
+        Workflow workflow = new WorkflowImpl("test-wf", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+
+            TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, result, null);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow)
+                .waitForStatus(ERROR)
+                .waitForNodeRunStatus(0, 2, ERROR)
+                .thenVerifyNodeRun(0, 2, nodeRun -> {
+                    List<Failure> failures = nodeRun.getFailuresList();
+                    Assertions.assertThat(failures).hasSize(1);
+                    Failure nodeFailure = failures.get(0);
+                    Assertions.assertThat(nodeFailure.getFailureName()).isEqualTo("VAR_ERROR");
+                    Assertions.assertThat(nodeFailure.getMessage())
+                            .isEqualTo("Invalid user task assignment. UserId can't be empty");
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldValidateGroupIdNotEmptyFromResultTask() {
+        Workflow workflow = new WorkflowImpl("test-wf-group", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+
+            TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, result);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow)
+                .waitForStatus(ERROR)
+                .waitForNodeRunStatus(0, 2, ERROR)
+                .thenVerifyNodeRun(0, 2, nodeRun -> {
+                    List<Failure> failures = nodeRun.getFailuresList();
+                    Assertions.assertThat(failures).hasSize(1);
+                    Failure nodeFailure = failures.get(0);
+                    Assertions.assertThat(nodeFailure.getFailureName()).isEqualTo("VAR_ERROR");
+                    Assertions.assertThat(nodeFailure.getMessage())
+                            .isEqualTo("Invalid group task assignment. UserGroup can't be empty");
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldValidateUserIdIsNotEmptyInClientRequest() {
+        Workflow workflow = new WorkflowImpl("test-wf-2-group", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
+        });
+
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            workflowVerifier
+                    .prepareRun(workflow, Arg.of("name", "test-name"))
+                    .waitForStatus(RUNNING)
+                    .thenAssignUserTask(0, 1, false, "", null)
+                    .start();
+        });
+
+        Assertions.assertThat(throwable.getMessage()).contains("UserId can't be empty");
+    }
+
+    @Test
+    public void shouldValidateUserGroupIsNotEmptyInClientRequest() {
+        Workflow workflow = new WorkflowImpl("test-wf-2-group", entrypointThread -> {
+            entrypointThread.addVariable("name", VariableType.STR);
+            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
+        });
+
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            workflowVerifier
+                    .prepareRun(workflow, Arg.of("name", "test-name"))
+                    .waitForStatus(RUNNING)
+                    .thenAssignUserTask(0, 1, false, null, "  ")
+                    .start();
+        });
+
+        Assertions.assertThat(throwable.getMessage()).contains("UserGroup can't be empty");
+    }
+
+    @Test
     void shouldTransferOwnershipFromUserToSpecificGroupOnDeadline() {
         SearchResultCaptor<WfRunIdList> instanceCaptor = SearchResultCaptor.of(WfRunIdList.class);
         Function<TestExecutionContext, SearchWfRunRequest> buildId = context -> SearchWfRunRequest.newBuilder()
@@ -296,6 +396,58 @@ public class UserTaskTest {
                 .start();
     }
 
+    @Test
+    void shouldScheduleAndExecuteReminderTask() {
+        workflowVerifier
+                .prepareRun(scheduleReminderTaskWithoutUserFields)
+                .waitForStatus(ERROR, Duration.ofSeconds(6))
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
+                    UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
+                    UserTaskEvent userTaskEvent = userTaskRun.getEvents(1);
+                    TaskRunId taskRunId = userTaskEvent.getTaskExecuted().getTaskRun();
+                    TaskRun taskRun = client.getTaskRun(taskRunId);
+                    TaskStatus taskRunStatus = taskRun.getStatus();
+
+                    Assertions.assertThat(taskRunStatus).isEqualTo(TaskStatus.TASK_SUCCESS);
+                })
+                .start();
+    }
+
+    @Test
+    void shouldValidateUserIdOrUserGroup() {
+        workflowVerifier
+                .prepareRun(userTaskAssignment)
+                .waitForStatus(ERROR)
+                .waitForNodeRunStatus(0, 1, ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    List<Failure> failures = nodeRun.getFailuresList();
+                    Assertions.assertThat(failures).hasSize(1);
+                    Failure nodeFailure = failures.get(0);
+                    Assertions.assertThat(nodeFailure.getFailureName()).isEqualTo("VAR_ERROR");
+                    Assertions.assertThat(nodeFailure.getMessage()).isEqualTo("Invalid user task assignment");
+                })
+                .start();
+    }
+
+    @Test
+    void verifyWorkerContextHasUserIdOrUserGroup() {
+        workflowVerifier
+                .prepareRun(workerContextReceivesUserDetails)
+                .waitForStatus(ERROR, Duration.ofSeconds(6))
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
+                    UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
+                    UserTaskEvent userTaskEvent = userTaskRun.getEvents(1);
+                    TaskRunId taskRunId = userTaskEvent.getTaskExecuted().getTaskRun();
+                    TaskRun taskRun = client.getTaskRun(taskRunId);
+                    TaskStatus taskRunStatus = taskRun.getStatus();
+
+                    Assertions.assertThat(taskRunStatus).isEqualTo(TaskStatus.TASK_SUCCESS);
+                })
+                .start();
+    }
+
     @LHWorkflow("deadline-reassignment-workflow")
     public Workflow buildDeadlineReassignmentWorkflow() {
         return new WorkflowImpl("deadline-reassignment-workflow", entrypointThread -> {
@@ -312,6 +464,30 @@ public class UserTaskTest {
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
             entrypointThread.execute("my-custom-task", formVar);
+        });
+    }
+
+    @LHWorkflow("schedule-reminder-task-without-user-fields-workflow")
+    public Workflow buildReminderTaskWorkflowWithUserGroupField() {
+        return new WorkflowImpl("reminder-task-without-user-fields-workflow", entrypointThread -> {
+            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
+
+            // Schedule a reminder immediately
+            entrypointThread.scheduleReminderTask(formOutput, 0, "reminder-task");
+
+            entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
+        });
+    }
+
+    @LHWorkflow("worker-context-receives-user-details")
+    public Workflow workerContextReceivesUserDetails() {
+        return new WorkflowImpl("worker-context-receives-user-details", entrypointThread -> {
+            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
+
+            // Schedule a reminder immediately
+            entrypointThread.scheduleReminderTask(formOutput, 0, "verify-worker-context", "jacob", null);
+
+            entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
         });
     }
 
@@ -355,6 +531,15 @@ public class UserTaskTest {
         });
     }
 
+    @LHWorkflow("user-task-assignment")
+    public Workflow buildUserTaskAssignmentWorkflow() {
+        return new WorkflowImpl("user-task-assignment", wf -> {
+            WfRunVariable userId = wf.declareStr("userId");
+            WfRunVariable userGroup = wf.declareStr("userGroup");
+            wf.assignUserTask(USER_TASK_DEF_NAME, userId, userGroup);
+        });
+    }
+
     @LHTaskMethod("my-custom-task")
     public String obiwan(MyForm formData) {
         return "String was " + formData.myStr + " and int was " + formData.myInt;
@@ -368,6 +553,29 @@ public class UserTaskTest {
     @LHTaskMethod("reminder-task")
     public void doReminder(WorkerContext ctx) {
         cache.put(ctx.getWfRunId().getId(), "hello there!");
+    }
+
+    @LHTaskMethod("return-empty-string-task")
+    public String returnEmptyString() {
+        return "";
+    }
+
+    @LHTaskMethod("verify-worker-context")
+    public void verifyWorkerContext(String userId, String userGroup, WorkerContext ctx) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalStateException("At least one of userId or userGroup must be specified");
+        }
+
+        if (userId != null) {
+            if (!userId.equals(ctx.getUserId())) {
+                throw new IllegalStateException("WorkerContext UserId does not match expected value.");
+            }
+        }
+        if (userGroup != null) {
+            if (!userGroup.equals(ctx.getUserGroup())) {
+                throw new IllegalStateException("WorkerContext UserGroup does not match expected value.");
+            }
+        }
     }
 }
 

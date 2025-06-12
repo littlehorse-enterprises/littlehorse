@@ -144,8 +144,8 @@ export enum TaskStatus {
   TASK_FAILED = "TASK_FAILED",
   /** TASK_TIMEOUT - Task Worker did not report a result in time. */
   TASK_TIMEOUT = "TASK_TIMEOUT",
-  /** TASK_OUTPUT_SERIALIZING_ERROR - Task Worker reported that it was unable to serialize the output of the TaskRun. */
-  TASK_OUTPUT_SERIALIZING_ERROR = "TASK_OUTPUT_SERIALIZING_ERROR",
+  /** TASK_OUTPUT_SERDE_ERROR - The output of the TaskRun was unable to be serialized or deserialized. */
+  TASK_OUTPUT_SERDE_ERROR = "TASK_OUTPUT_SERDE_ERROR",
   /**
    * TASK_INPUT_VAR_SUB_ERROR - Task Worker was unable to deserialize the input variables into appropriate language-specific
    * objects to pass into the Task Function
@@ -180,8 +180,8 @@ export function taskStatusFromJSON(object: any): TaskStatus {
     case "TASK_TIMEOUT":
       return TaskStatus.TASK_TIMEOUT;
     case 5:
-    case "TASK_OUTPUT_SERIALIZING_ERROR":
-      return TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR;
+    case "TASK_OUTPUT_SERDE_ERROR":
+      return TaskStatus.TASK_OUTPUT_SERDE_ERROR;
     case 6:
     case "TASK_INPUT_VAR_SUB_ERROR":
       return TaskStatus.TASK_INPUT_VAR_SUB_ERROR;
@@ -210,7 +210,7 @@ export function taskStatusToNumber(object: TaskStatus): number {
       return 3;
     case TaskStatus.TASK_TIMEOUT:
       return 4;
-    case TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR:
+    case TaskStatus.TASK_OUTPUT_SERDE_ERROR:
       return 5;
     case TaskStatus.TASK_INPUT_VAR_SUB_ERROR:
       return 6;
@@ -264,10 +264,7 @@ export function metricsWindowLengthToNumber(object: MetricsWindowLength): number
   }
 }
 
-/**
- * Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
- * VariableValue.
- */
+/** Specifies a primitive type in LittleHorse. */
 export enum VariableType {
   /**
    * JSON_OBJ - An object represented as a json string. <br/>

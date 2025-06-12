@@ -5,7 +5,6 @@ import logging
 import typing
 from collections import deque
 from enum import Enum
-from inspect import signature
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Union
 
@@ -42,6 +41,7 @@ from littlehorse.model import (
     JsonIndex,
     Node,
     NopNode,
+    ReturnType,
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
@@ -49,6 +49,7 @@ from littlehorse.model import (
     ThreadSpec,
     ThreadVarDef,
     ThrowEventNode,
+    TypeDefinition,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -131,9 +132,61 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             variable_name=variable_name,
         )
 
+    if isinstance(value, LHExpression):
+        expression: LHExpression = value
+        return VariableAssignment(
+            expression=VariableAssignment.Expression(
+                lhs=to_variable_assignment(expression.lhs()),
+                operation=expression.operation(),
+                rhs=to_variable_assignment(expression.rhs()),
+            )
+        )
+
     return VariableAssignment(
         literal_value=to_variable_value(value),
     )
+
+
+class LHExpression:
+    def __init__(self, lhs: Any, operation: VariableMutationType, rhs: Any) -> None:
+        self._lhs = lhs
+        self._operation = operation
+        self._rhs = rhs
+
+    def add(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.ADD, other)
+
+    def subtract(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.SUBTRACT, other)
+
+    def multiply(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.MULTIPLY, other)
+
+    def divide(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def extend(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.EXTEND, other)
+
+    def remove_if_present(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
+
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
+
+    def remove_key(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
+
+    def lhs(self) -> Any:
+        return self._lhs
+
+    def rhs(self) -> Any:
+        return self._rhs
+
+    def operation(self) -> Any:
+        return self._operation
 
 
 class WorkflowCondition:
@@ -246,7 +299,7 @@ class LHFormatString:
         self._args = args
 
 
-class NodeOutput:
+class NodeOutput(LHExpression):
     def __init__(self, node_name: str) -> None:
         self.node_name = node_name
         self._json_path: Optional[str] = None
@@ -285,24 +338,122 @@ class NodeOutput:
         out.json_path = json_path
         return out
 
+    def add(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.ADD, other)
+
+    def subtract(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.SUBTRACT, other)
+
+    def multiply(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.MULTIPLY, other)
+
+    def divide(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def extend(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.EXTEND, other)
+
+    def remove_if_present(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
+
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
+
+    def remove_key(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
+
+
+class WorkflowIfStatement:
+    def __init__(
+        self,
+        parent_workflow_thread: WorkflowThread,
+        first_nop_node_name: str,
+        last_nop_node_name: str,
+    ) -> None:
+        self._parent_workflow_thread = parent_workflow_thread
+        self._first_nop_node_name = first_nop_node_name
+        self._last_nop_node_name = last_nop_node_name
+        self._was_else_executed = False
+
+    def get_first_nop_node_name(self) -> str:
+        return self._first_nop_node_name
+
+    def get_last_nop_node_name(self) -> str:
+        return self._last_nop_node_name
+
+    def _is_not_initialized(self) -> bool:
+        return self._first_nop_node_name == "" and self._last_nop_node_name == ""
+
+    def do_else_if(
+        self, condition: WorkflowCondition, body: "ThreadInitializer"
+    ) -> WorkflowIfStatement:
+        """After checking the previous condition(s) of the If Statement,
+        conditionally executes some workflow code; equivalent to
+        an elseif() statement in programming.
+
+        Args:
+            condition (WorkflowCondition): is the WorkflowCondition
+            to be satisfied.
+            body (ThreadInitializer): is the block of
+            ThreadSpec code to be executed if the provided
+            WorkflowCondition is satisfied.
+        """
+        if self._is_not_initialized():
+            raise AttributeError(
+                "'WorkflowIfStatement' object has no attribute 'do_else_if'"
+            )
+        self._parent_workflow_thread.organize_edges_for_else_if_execution(
+            self, condition, body
+        )
+
+        return self
+
+    def do_else(self, body: "ThreadInitializer") -> None:
+        """After checking all previous condition(s) of the If Statement,
+        executes some workflow code; equivalent to
+        an else block in programming.
+
+        Args:
+            body (ThreadInitializer): the block of
+            ThreadSpec code to be executed if all previous
+            WorkflowConditions were not satisfied.
+        """
+        if self._is_not_initialized():
+            raise AttributeError(
+                "'WorkflowIfStatement' object has no attribute 'do_else'"
+            )
+        if self._was_else_executed:
+            raise RuntimeError(
+                "Else block has already been executed. Cannot add another else block."
+            )
+
+        self._was_else_executed = True
+        self._parent_workflow_thread.organize_edges_for_else_if_execution(
+            self, None, body
+        )
+
 
 class WfRunVariable:
     def __init__(
         self,
         variable_name: str,
         variable_type: VariableType,
+        parent: WorkflowThread,
         default_value: Any = None,
         access_level: Optional[
             Union[WfRunVariableAccessLevel, str]
-        ] = WfRunVariableAccessLevel.PUBLIC_VAR,
+        ] = WfRunVariableAccessLevel.PRIVATE_VAR,
     ) -> None:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
         Args:
             variable_name (str): The name of the variable.
             variable_type (VariableType): The variable type.
-            access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
+            parent (WorkflowThread): The parent WorkflowThread of this WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
+            access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
@@ -310,8 +461,12 @@ class WfRunVariable:
         Raises:
             TypeError: If variable_type and type(default_value) are not compatible.
         """
+        if parent is None:
+            raise ValueError("Parent workflow thread cannot be None.")
+
         self.name = variable_name
         self.type = variable_type
+        self.parent = parent
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
         self._required = False
@@ -321,14 +476,7 @@ class WfRunVariable:
         self._access_level = access_level
 
         if default_value is not None:
-            self.default_value = to_variable_value(default_value)
-            if (
-                self.default_value.WhichOneof("value")
-                != str(VariableType.Name(self.type)).lower()
-            ):
-                raise TypeError(
-                    f"Default value is not a {VariableType.Name(variable_type)}"
-                )
+            self._set_default(default_value)
 
     @property
     def json_path(self) -> Optional[str]:
@@ -368,7 +516,7 @@ class WfRunVariable:
                 f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
             )
 
-        out = WfRunVariable(self.name, self.type, self.default_value)
+        out = WfRunVariable(self.name, self.type, self.parent, self.default_value)
         out.json_path = json_path
         return out
 
@@ -446,6 +594,21 @@ class WfRunVariable:
         self._required = True
         return self
 
+    def with_default(self, default_value: Any) -> WfRunVariable:
+        self._set_default(default_value)
+
+        return self
+
+    def _set_default(self, default_value: Any) -> None:
+        self.default_value = to_variable_value(default_value)
+        if (
+            self.default_value.WhichOneof("value")
+            != str(VariableType.Name(self.type)).lower()
+        ):
+            raise TypeError(
+                f"Default value type does not match LH variable type {VariableType.Name(self.type)}"
+            )
+
     def masked(self) -> "WfRunVariable":
         self._masked = True
         return self
@@ -458,16 +621,79 @@ class WfRunVariable:
         """
         return ThreadVarDef(
             var_def=VariableDef(
-                type=self.type,
+                type_def=TypeDefinition(type=self.type, masked=self._masked),
                 name=self.name,
                 default_value=self.default_value,
-                masked_value=self._masked,
             ),
             json_indexes=self._json_indexes.copy(),
             searchable=self._searchable,
             required=self._required,
             access_level=self._access_level,
         )
+
+    def is_equal_to(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.EQUALS, rhs)
+
+    def is_not_equal_to(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.NOT_EQUALS, rhs)
+
+    def is_greater_than(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.GREATER_THAN, rhs)
+
+    def is_greater_than_eq(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.GREATER_THAN_EQ, rhs)
+
+    def is_less_than_eq(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.LESS_THAN_EQ, rhs)
+
+    def is_less_than(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.LESS_THAN, rhs)
+
+    def does_contain(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(rhs, Comparator.IN, self)
+
+    def does_not_contain(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(rhs, Comparator.NOT_IN, self)
+
+    def is_in(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.IN, rhs)
+
+    def is_not_in(self, rhs: Any) -> WorkflowCondition:
+        return self.parent.condition(self, Comparator.NOT_IN, rhs)
+
+    def assign(self, rhs: Any) -> None:
+        active_thread = self.parent
+        last_thread = self.parent.get_parent_workflow().get_threads()[-1]
+        if last_thread.is_active:
+            active_thread = last_thread
+
+        active_thread.mutate(self, VariableMutationType.ASSIGN, rhs)
+
+    def add(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.ADD, other)
+
+    def subtract(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.SUBTRACT, other)
+
+    def multiply(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.MULTIPLY, other)
+
+    def divide(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def extend(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.EXTEND, other)
+
+    def remove_if_present(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
+
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
+
+    def remove_key(self, key: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_KEY, key)
 
     def __str__(self) -> str:
         return to_json(self.compile())
@@ -583,6 +809,9 @@ class WorkflowNode:
                 return edge
 
         raise ValueError("Edge not found")
+
+    def _has_outgoing_edge(self) -> bool:
+        return len(self.outgoing_edges) > 0
 
     def compile(self) -> Node:
         """Compile this into Protobuf Objects.
@@ -793,7 +1022,7 @@ class WorkflowThread:
         self._retention_policy: Optional[ThreadRetentionPolicy] = None
 
         if workflow is None:
-            raise ValueError("Workflow must be not None")
+            raise ValueError("Workflow cannot be None.")
 
         self._workflow = workflow
         self._workflow._builders.append(self)
@@ -801,10 +1030,17 @@ class WorkflowThread:
         self._validate_initializer(initializer)
 
         self.is_active = True
-        self.add_node("entrypoint", EntrypointNode())
+        self._last_node_name: str = self.add_node("entrypoint", EntrypointNode())
+
         initializer(self)
-        self.add_node("exit", ExitNode())
+        node = self._last_node()
+        if node.node_case != NodeCase.EXIT:
+            self.add_node("exit", ExitNode())
         self.is_active = False
+
+    def get_parent_workflow(self) -> "Workflow":
+        """Returns the parent workflow of this ThreadSpec."""
+        return self._workflow
 
     def spawn_thread(
         self,
@@ -967,17 +1203,6 @@ class WorkflowThread:
         if not inspect.isfunction(initializer) and not inspect.ismethod(initializer):
             raise TypeError("Object is not a ThreadInitializer")
 
-        sig = signature(initializer)
-
-        if len(sig.parameters) != 1:
-            raise TypeError("ThreadInitializer receives only one parameter")
-
-        if list(sig.parameters.values())[0].annotation is not WorkflowThread:
-            raise TypeError("ThreadInitializer receives a ThreadBuilder")
-
-        if sig.return_annotation is not None:
-            raise TypeError("ThreadInitializer returns None")
-
     def compile(self) -> ThreadSpec:
         """Compile this into Protobuf Objects.
 
@@ -1004,9 +1229,7 @@ class WorkflowThread:
             raise ReferenceError("Using an inactive thread, check your workflow")
 
     def _last_node(self) -> WorkflowNode:
-        if len(self._nodes) == 0:
-            raise ReferenceError("No node found")
-        return self._nodes[-1]
+        return self._find_node(self._last_node_name)
 
     def _find_node(self, name: str) -> WorkflowNode:
         for node in self._nodes:
@@ -1128,6 +1351,57 @@ class WorkflowThread:
 
         node_name = self.add_node(readable_name, task_node)
         return NodeOutput(node_name)
+
+    def multiply(self, lhs: Any, rhs: Any) -> LHExpression:
+        return LHExpression(lhs, VariableMutationType.MULTIPLY, rhs)
+
+    def add(self, lhs: Any, rhs: Any) -> LHExpression:
+        return LHExpression(lhs, VariableMutationType.ADD, rhs)
+
+    def divide(self, lhs: Any, rhs: Any) -> LHExpression:
+        return LHExpression(lhs, VariableMutationType.DIVIDE, rhs)
+
+    def subtract(self, lhs: Any, rhs: Any) -> LHExpression:
+        return LHExpression(lhs, VariableMutationType.SUBTRACT, rhs)
+
+    def extend(self, lhs: Any, rhs: Any) -> LHExpression:
+        return LHExpression(lhs, VariableMutationType.EXTEND, rhs)
+
+    def remove_if_present(self, lhs: Any, rhs: Any) -> LHExpression:
+        return LHExpression(lhs, VariableMutationType.REMOVE_IF_PRESENT, rhs)
+
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
+
+    def remove_key(self, lhs: Any, rhs: Any) -> LHExpression:
+        return LHExpression(lhs, VariableMutationType.REMOVE_KEY, rhs)
+
+    def declare_bool(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.BOOL, default_value=default_value)
+
+    def declare_int(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.INT, default_value=default_value)
+
+    def declare_str(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.STR, default_value=default_value)
+
+    def declare_double(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.DOUBLE, default_value=default_value)
+
+    def declare_bytes(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.BYTES, default_value=default_value)
+
+    def declare_json_arr(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(
+            name, VariableType.JSON_ARR, default_value=default_value
+        )
+
+    def declare_json_obj(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(
+            name, VariableType.JSON_OBJ, default_value=default_value
+        )
 
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
@@ -1254,6 +1528,11 @@ class WorkflowThread:
             ),
         )
 
+    def complete(self) -> None:
+        """Adds an Exit Node, returning from the WorkflowThread early"""
+        self._check_if_active()
+        self.add_node("complete", ExitNode())
+
     def assign_user_task(
         self,
         user_task_def_name: str,
@@ -1283,6 +1562,16 @@ class WorkflowThread:
             raise ValueError(
                 "Must provide either user_id or user_group to assign_user_task()"
             )
+
+        if user_id is not None and isinstance(user_id, str) and user_id.strip() == "":
+            raise ValueError("UserId can't be empty to assign_user_task()")
+
+        if (
+            user_group is not None
+            and isinstance(user_group, str)
+            and user_group.strip() == ""
+        ):
+            raise ValueError("UserGroup can't be empty to assign_user_task()")
 
         ug = to_variable_assignment(user_group) if user_group else None
         ui = to_variable_assignment(user_id) if user_id else None
@@ -1385,7 +1674,7 @@ class WorkflowThread:
             delay_in_seconds_var,
             task_def_name,
             UTActionTrigger.ON_ARRIVAL,
-            args,
+            *args,
         )
 
     def schedule_reminder_task_on_assignment(
@@ -1404,7 +1693,12 @@ class WorkflowThread:
             args,
         )
 
-    def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
+    def wait_for_event(
+        self,
+        event_name: str,
+        timeout: int = -1,
+        correlation_id: Optional[Union[str, LHFormatString, WfRunVariable]] = None,
+    ) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
 
@@ -1412,14 +1706,22 @@ class WorkflowThread:
             event_name (str): The name of ExternalEvent to wait for
             timeout (int, optional): Timeout in seconds. If
             it is 0 or less it does not set a timeout. Defaults to -1.
+            correlation_id (Union[str, LHFormatString, WfRunVariable]): the
+            correlation id to be used for CorrelatedEvents.
 
         Returns:
             NodeOutput: A NodeOutput for this event.
         """
         self._check_if_active()
+
+        correlation_var_assn: Optional[VariableAssignment] = None
+        if correlation_id is not None:
+            correlation_var_assn = to_variable_assignment(correlation_id)
+
         wait_node = ExternalEventNode(
             external_event_def_id=ExternalEventDefId(name=event_name),
             timeout_seconds=None if timeout <= 0 else to_variable_assignment(timeout),
+            correlation_key=correlation_var_assn,
         )
         node_name = self.add_node(event_name, wait_node)
         return NodeOutput(node_name)
@@ -1458,22 +1760,15 @@ class WorkflowThread:
             use the output of a Node Run to mutate variables).
         """
         self._check_if_active()
-        last_node = self._last_node()
+
+        if self._last_node().node_case == NodeCase.EXIT:
+            raise TypeError(
+                "You cannot mutate a variable in a given thread after the thread has completed."
+            )
 
         node_output: Optional[VariableMutation.NodeOutputSource] = None
-        rhs_assignment: Optional[VariableAssignment] = None
         literal_value: Optional[VariableValue] = None
-
-        if isinstance(right_hand, NodeOutput):
-            if last_node.name != right_hand.node_name:
-                raise ReferenceError("NodeOutput does not match with last node")
-            node_output = VariableMutation.NodeOutputSource(
-                jsonpath=right_hand.json_path
-            )
-        elif isinstance(right_hand, WfRunVariable):
-            rhs_assignment = to_variable_assignment(right_hand)
-        else:
-            literal_value = to_variable_value(right_hand)
+        rhs_assignment = to_variable_assignment(right_hand)
 
         mutation = VariableMutation(
             lhs_name=left_hand.name,
@@ -1519,12 +1814,18 @@ class WorkflowThread:
             WfRunVariable: A handle to the created WfRunVariable.
         """
         self._check_if_active()
+
+        if len(self._nodes) > 0 and self._last_node().node_case == NodeCase.EXIT:
+            raise TypeError(
+                "You cannot add a variable in a given thread after the thread has completed."
+            )
+
         for var in self._wf_run_variables:
             if var.name == variable_name:
                 raise ValueError(f"Variable {variable_name} already added")
 
         new_var = WfRunVariable(
-            variable_name, variable_type, default_value, access_level
+            variable_name, variable_type, self, default_value, access_level
         )
         self._wf_run_variables.append(new_var)
         return new_var
@@ -1574,16 +1875,23 @@ class WorkflowThread:
 
         if len(self._nodes) > 0:
             last_node = self._last_node()
-            last_node.outgoing_edges.append(
-                Edge(
-                    sink_node_name=next_node_name,
-                    variable_mutations=self._collect_variable_mutations(),
-                    condition=self._last_node_condition,
+
+            if last_node.node_case != NodeCase.EXIT:
+                last_node.outgoing_edges.append(
+                    Edge(
+                        sink_node_name=next_node_name,
+                        variable_mutations=self._collect_variable_mutations(),
+                        condition=self._last_node_condition,
+                    )
                 )
-            )
-            self._last_node_condition = None
+                self._last_node_condition = None
+            elif node_type != NodeCase.NOP:
+                raise TypeError(
+                    "You cannot add a Node in a given thread after the thread has completed."
+                )
 
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
+        self._last_node_name = next_node_name
 
         return next_node_name
 
@@ -1654,7 +1962,7 @@ class WorkflowThread:
         condition: WorkflowCondition,
         if_body: "ThreadInitializer",
         else_body: Optional["ThreadInitializer"] = None,
-    ) -> None:
+    ) -> WorkflowIfStatement:
         """Conditionally executes some workflow code; equivalent
         to an if() statement in programming.
 
@@ -1671,56 +1979,93 @@ class WorkflowThread:
         self._check_if_active()
         self._validate_initializer(if_body)
 
-        # execute if branch
-        start_node_name = self.add_node("nop", NopNode())
-        self._last_node_condition = condition.compile()
-        if_body(self)
+        # Adds new chain-able else if functionality
+        if else_body is None:
+            return self._do_if(condition, if_body)
 
-        last_condition_from_if_block = self._last_node_condition
-        last_node_from_if_block = self._last_node()
-        variables_from_if_block = self._collect_variable_mutations()
+        self._validate_initializer(else_body)
+        self._do_if(condition, if_body).do_else(else_body)
 
-        start_node = self._find_node(start_node_name)
+        return WorkflowIfStatement(self, "", "")
 
-        # execute else branch
-        if else_body is not None:
-            self._validate_initializer(else_body)
+    def organize_edges_for_else_if_execution(
+        self,
+        if_statement: WorkflowIfStatement,
+        input_condition: Optional[WorkflowCondition],
+        body: "ThreadInitializer",
+    ) -> None:
+        first_nop_node = self._find_node(if_statement.get_first_nop_node_name())
+        else_edge = first_nop_node.outgoing_edges.pop()
 
-            # change positions
-            self._nodes.remove(start_node)
-            self._nodes.append(start_node)
-            self._last_node_condition = condition.negate().compile()
-            else_body(self)
+        else_if_condition = input_condition.compile() if input_condition else None
 
-            # adds edge final NOP node
-            end_node_name = self.add_node("nop", NopNode())
+        # Get the last node of the parent thread
+        last_node_of_parent_thread_name = self._last_node_name
+        last_node_of_parent_thread = self._last_node()
 
-            last_node_from_if_block.outgoing_edges.append(
+        # Execute the Else If body
+        body(self)
+
+        # Get the last node of the Else If body to reference later
+        last_node_of_body = self._last_node()
+
+        # If no nodes were added from body
+        if last_node_of_parent_thread.name == last_node_of_body.name:
+            # Add edge from nop 1 to nop 2 with variable mutations
+            first_nop_node.outgoing_edges.append(
                 Edge(
-                    sink_node_name=end_node_name,
-                    variable_mutations=variables_from_if_block,
-                    condition=(
-                        last_condition_from_if_block
-                        if last_node_from_if_block.name == start_node.name
-                        else None
-                    ),
+                    sink_node_name=if_statement.get_last_nop_node_name(),
+                    variable_mutations=self._collect_variable_mutations(),
+                    condition=else_if_condition,
                 )
             )
-
+        # Otherwise, move nodes that were added
         else:
-            end_node_name = self.add_node("nop", NopNode())
+            # Remove edge between last node of parent thread and first node of body
+            last_outgoing_edge = last_node_of_parent_thread.outgoing_edges.pop()
 
-            last_node_from_if_block._find_outgoing_edge(end_node_name).MergeFrom(
-                Edge(variable_mutations=variables_from_if_block)
-            )
+            # Get the first node of the body
+            first_node_of_body_name = last_outgoing_edge.sink_node_name
 
-            # add else
-            start_node.outgoing_edges.append(
+            # Add an edge from the first NOP node to the first node of the body
+            first_nop_node.outgoing_edges.append(
                 Edge(
-                    sink_node_name=end_node_name,
-                    condition=condition.negate().compile(),
+                    sink_node_name=first_node_of_body_name,
+                    variable_mutations=last_outgoing_edge.variable_mutations,
+                    condition=else_if_condition,
                 )
             )
+
+            # Add edge from last node of the body to last NOP node
+            if last_node_of_body.node_case != NodeCase.EXIT:
+                last_node_of_body.outgoing_edges.append(
+                    Edge(
+                        sink_node_name=if_statement.get_last_nop_node_name(),
+                        variable_mutations=self._collect_variable_mutations(),
+                    )
+                )
+
+        # If else condition was not replaced, add it back
+        if else_if_condition is not None:
+            first_nop_node.outgoing_edges.append(else_edge)
+
+        self._last_node_name = last_node_of_parent_thread_name
+
+    def _do_if(
+        self, condition: WorkflowCondition, body: "ThreadInitializer"
+    ) -> WorkflowIfStatement:
+        first_nop_node_name = self.add_node("nop", NopNode())
+        self._last_node_condition = condition.compile()
+
+        body(self)
+
+        last_nop_node_name = self.add_node("nop", NopNode())
+
+        # Add else edge, which should always be LAST
+        first_nop_node = self._find_node(first_nop_node_name)
+        first_nop_node.outgoing_edges.append(Edge(sink_node_name=last_nop_node_name))
+
+        return WorkflowIfStatement(self, first_nop_node_name, last_nop_node_name)
 
     def _collect_variable_mutations(self) -> list[VariableMutation]:
         variables_from_if_block = []
@@ -1811,6 +2156,14 @@ class Workflow:
         self._default_retries: Optional[int] = None
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
+
+    def get_threads(self) -> list[WorkflowThread]:
+        """Get the threads.
+
+        Returns:
+            list[WorkflowThread]: The threads.
+        """
+        return self._builders
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1992,6 +2345,9 @@ def create_workflow_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutWorkflowEventDefRequest(name=name, type=type)
+    request = PutWorkflowEventDefRequest(
+        name=name,
+        content_type=ReturnType(TypeDefinition(type=type)),
+    )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")

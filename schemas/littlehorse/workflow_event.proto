@@ -5,12 +5,12 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "variable.proto";
 import "object_id.proto";
-import "common_enums.proto";
+import "common_wfspec.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A WorkflowEvent represents a "Thing That Happened" *INSIDE* a WfRun. It is DIFFERENT from
 // an ExternalEvent, because an ExternalEvent represents something that happened OUTSIDE the WfRun,
@@ -27,6 +27,9 @@ message WorkflowEvent {
 
   // The time that the WorkflowEvent was created.
   google.protobuf.Timestamp created_at = 3;
+
+  // The NodeRun with which the WorkflowEvent is associated.
+  NodeRunId node_run_id = 4;
 }
 
 // The WorkflowEventDef defines the blueprint for a WorkflowEvent.
@@ -38,5 +41,5 @@ message WorkflowEventDef {
   google.protobuf.Timestamp created_at = 2;
 
   // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
-  VariableType type = 3;
+  ReturnType content_type = 3;
 }

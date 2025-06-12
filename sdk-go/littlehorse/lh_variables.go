@@ -3,9 +3,10 @@ package littlehorse
 import (
 	"encoding/base64"
 	"encoding/json"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"reflect"
 	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 func StrToVarVal(input string, varType lhproto.VariableType) (*lhproto.VariableValue, error) {
@@ -143,13 +144,19 @@ func GetVarType(thing interface{}) *lhproto.VariableType {
 }
 
 func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error) {
-	out := &lhproto.VariableValue{}
-	var err error
-
-	isPtr, _ := GetIsPtrAndType(reflect.TypeOf(someInterface))
 	if someInterface == nil {
 		return &lhproto.VariableValue{}, nil
 	}
+
+	out := &lhproto.VariableValue{}
+	var err error
+
+	interfaceAsVarVal, isVarVal := someInterface.(*lhproto.VariableValue)
+	if isVarVal {
+		return interfaceAsVarVal, nil
+	}
+
+	isPtr, _ := GetIsPtrAndType(reflect.TypeOf(someInterface))
 
 	var actualThing interface{}
 	if isPtr {

@@ -1,6 +1,6 @@
 # Developing LittleHorse
 
-The LittleHorse Server project is open-source according to the Server-Side Public License 1.0, and as such we appreciate any contributions to our codebase. Please note that all contributions will be subject to that license agreement, and that by contributing to LittleHorse you accept the terms of that license.
+We appreciate any contributions to our codebase. Please note that by contributing to LittleHorse you accept the terms of the AGPLv3 License.
 
 - [Developing LittleHorse](#developing-littlehorse)
   - [Repository Inventory](#repository-inventory)
@@ -41,20 +41,14 @@ The LittleHorse repository contains the following components:
   - Synthetic Monitoring Tool for LH Server.
 - [`lhctl`](../lhctl)
     - The `lhctl` command line interface.
-- [`e2e-tests`](../e2e-tests)
-    - A series of system integration tests used to verify the cohesive behavior of
-    the LH Server, Java Workflow SDK, and Java Task Library together.
-    - Note: this framework is deprecated in favor of `test-utils`.
-  - [`test-utils`](../test-utils/)
-    - A new framework for running end-to-end tests in our pipeline.
+- [`test-utils`](../test-utils/)
+  - A new framework for running end-to-end tests in our pipeline.
 - [`examples`](../examples)
     - A series of examples with different level of complexity.
 - [`schemas`](../schemas)
     - The LittleHorse Protocol Buffer Specification.
 - [`docker`](../docker)
     - Code for building the LittleHorse docker images.
-- [`docs`](../docs)
-    - Code for the documentation on [our website](https://littlehorse.dev).
 
 ## Setting Up Your Local Env
 
@@ -64,7 +58,7 @@ This repository requires the following system dependencies:
 
 - `java`
     - [sdk-java](sdk-java): Java 11
-    - [server](server): Java 17
+    - [server](server): Java 21
 - `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
 - `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
@@ -261,7 +255,6 @@ LHS_LISTENER_MTLS_CERT=local-dev/certs/server/server.crt LHS_LISTENER_MTLS_KEY=l
 6. Set up your LittleHorse Worker configuration file:
 ```
 LHW_TASK_WORKER_VERSION=local.dev
-LHW_SERVER_CONNECT_LISTENER=MTLS
 LHC_API_HOST=localhost
 LHC_API_PORT=2023
 LHC_API_PROTOCOL=TLS

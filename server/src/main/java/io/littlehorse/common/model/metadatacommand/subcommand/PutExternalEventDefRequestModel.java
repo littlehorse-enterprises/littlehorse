@@ -2,11 +2,12 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventRetentionPolicyModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
@@ -19,20 +20,27 @@ import lombok.Getter;
 @Getter
 public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExternalEventDefRequest> {
 
-    public String name;
-    public ExternalEventRetentionPolicyModel retentionPolicy;
+    private String name;
+    private ExternalEventRetentionPolicyModel retentionPolicy;
+    private ReturnTypeModel contentType;
+    private CorrelatedEventConfigModel correlatedEventConfig;
 
-    public String getPartitionKey() {
-        return LHConstants.META_PARTITION_KEY;
-    }
-
+    @Override
     public Class<PutExternalEventDefRequest> getProtoBaseClass() {
         return PutExternalEventDefRequest.class;
     }
 
+    @Override
     public PutExternalEventDefRequest.Builder toProto() {
         PutExternalEventDefRequest.Builder out =
                 PutExternalEventDefRequest.newBuilder().setName(name).setRetentionPolicy(retentionPolicy.toProto());
+
+        if (contentType != null) {
+            out.setContentType(contentType.toProto());
+        }
+        if (correlatedEventConfig != null) {
+            out.setCorrelatedEventConfig(correlatedEventConfig.toProto());
+        }
 
         return out;
     }
@@ -43,12 +51,21 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         name = p.getName();
         retentionPolicy =
                 LHSerializable.fromProto(p.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
+        if (p.hasContentType()) {
+            contentType = LHSerializable.fromProto(p.getContentType(), ReturnTypeModel.class, context);
+        }
+        if (p.hasCorrelatedEventConfig()) {
+            correlatedEventConfig =
+                    LHSerializable.fromProto(p.getCorrelatedEventConfig(), CorrelatedEventConfigModel.class, context);
+        }
     }
 
+    @Override
     public boolean hasResponse() {
         return true;
     }
 
+    @Override
     public ExternalEventDef process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
 
@@ -56,7 +73,10 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
             throw new LHApiException(Status.INVALID_ARGUMENT, "ExternalEventDefName must be a valid hostname");
         }
 
-        ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy);
+        ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy, contentType);
+        if (correlatedEventConfig != null) {
+            spec.setCorrelatedEventConfig(correlatedEventConfig);
+        }
 
         metadataManager.put(spec);
         return spec.toProto().build();

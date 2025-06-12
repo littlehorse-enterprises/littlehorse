@@ -3,21 +3,79 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
     id 'maven-publish'
+    id 'signing'
     id 'com.diffplug.spotless' version '6.25.0'
 }
 
-sourceCompatibility=21
-targetCompatibility=21
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+javadoc {
+    excludes = [
+        'io/littlehorse/common/model/**',
+        'io/littlehorse/server/streams/storeinternals/ReadOnlyGetableManager.java',
+        'io/littlehorse/server/streams/taskqueue/OneTaskQueue.java',
+        'io/littlehorse/common/util/LHUtil.java'
+    ]
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             groupId = group
             artifactId = 'littlehorse-server'
             version = version
             from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'LittleHorse Server'
+                description = 'LittleHorse Server. LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications.'
+                url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                licenses {
+                    license {
+                        name = 'GNU Affero General Public License Version 3'
+                        url = 'https://www.gnu.org/licenses/agpl-3.0.en.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'LittleHorse Engineering'
+                        email = 'engineering@littlehorse.io'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                    connection = 'scm:git://github.com/littlehorse-enterprises/littlehorse.git'
+                    developerConnection = 'scm:git:ssh://github.com/littlehorse-enterprises/littlehorse.git'
+                }
+                packaging = 'jar'
+            }
         }
     }
+}
+
+signing {
+    required { gradle.taskGraph.hasTask("publish") }
+
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
+    sign publishing.publications.mavenJava
 }
 
 repositories {
@@ -58,7 +116,7 @@ dependencies {
     implementation project(':sdk-java')
 
     // Prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.11.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.6'
     implementation 'io.javalin:javalin:6.3.0'
 
     // Lombok stuff
@@ -67,16 +125,17 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation project(":test-utils")
+    testImplementation project(":test-utils-container")
 
     // JSON and YAML processing
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2'
     implementation 'com.jayway.jsonpath:json-path:2.9.0'
+    implementation 'com.google.code.gson:gson:2.12.1'
+
+    // To run scheduled wfs
+    implementation 'com.cronutils:cron-utils:9.2.1'
 
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
-    implementation group: 'com.cronutils', name: 'cron-utils', version: '9.2.1'
-
 }
 
 

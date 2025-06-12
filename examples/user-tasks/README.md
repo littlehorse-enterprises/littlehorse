@@ -7,7 +7,7 @@ User Tasks are a type of `Node` in LittleHorse which allow you to assign a task 
 - Reminder Tasks are supported, such that a regular `TaskRun` is executed some period of time after the User Task is scheduled (if the User Task has not been completed yet). This is not included in this example.
 - Can include notes which are presented to the person executing the User Task. Notes are unique for each instance of the Workflow.
 
-For more information about User Tasks, please consult the [User Task Documentation](https://littlehorse.dev/docs/Concepts/12User%20Tasks) on our website.
+For more information about User Tasks, please consult the [User Task Documentation](https://littlehorse.io/docs/server/concepts/user-tasks) on our website.
 
 ### The Business Logic
 
@@ -47,7 +47,7 @@ We check the status of the `WfRun` and see that it's running:
 lhctl get wfRun <wf_run_id>
 ```
 
-Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfSpec`, we've arrived at a User Task Run, and it should be assigned to `anakin`.
+Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfSpec`, we've arrived at a User Task Run, and it should be assigned to `anakin`, but if the assigned user does not complete the task in less than 1 minute, then the task will be released to `testGroup` group.
 
 #### Find the User Task
 
@@ -102,17 +102,15 @@ Follow the prompts, entering your user-id (be sure to enter `anakin`), the item 
 Executing UserTaskRun  89962fbd15e748358f2df1c130b34403   4579d4bd166d4156bda49042b10ad7bb
 Enter the userId of the person completing the task: anakin
 
-Field:  Your Requst
+Field:  Your Request
 The item you are requesting.
 Please enter the response for this field (STR): the rank of master
 
 Field:  Request Justification
 Why you need this request.
 Please enter the response for this field (STR): it's not fair to be on this council and not be a Master!
-completing userTaskRun!
-{
-  "code":  "OK"
-}
+Saving userTaskRun progress!
+{}
 ```
 
 Now let's get the `userTaskRun` again:

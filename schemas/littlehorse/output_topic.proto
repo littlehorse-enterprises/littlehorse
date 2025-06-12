@@ -1,0 +1,69 @@
+syntax = "proto3";
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "workflow_event.proto";
+import "user_tasks.proto";
+import "task_run.proto";
+import "task_def.proto";
+import "wf_spec.proto";
+import "wf_run.proto";
+import "variable.proto";
+import "external_event.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// An OutputTopicRecord is a single record in the output topic, which can
+// denote one of several different types of events.
+message OutputTopicRecord {
+    // The time at which the event occurred.
+    google.protobuf.Timestamp timestamp = 1;
+
+    oneof payload {
+        // Records the results of a TaskRun in the Output Topic.
+        TaskRun task_run = 2;
+
+        // Records a WorkflowEvent that was thrown into the Output Topic.
+        WorkflowEvent workflow_event = 3;
+
+        // Records an update to a WfRun, triggered by a change to the status of a
+        // `ThreadRun`.
+        WfRun wf_run = 4;
+
+        // Updates about a user task run.
+        UserTaskRun user_task_run = 5;
+
+        // Updates about a specific Variable changing.
+        Variable variable = 6;
+
+        // Updates about an `ExternalEvent` changing.
+        ExternalEvent external_event = 7;
+
+        // Updates about a `CorrelatedEvent` changing.
+        CorrelatedEvent correlated_event = 8;
+    }
+}
+
+// Message to configure data sent to the Metadata Output Topic
+message MetadataOutputTopicRecord {
+    // The data that was sent
+    oneof metadata_record {
+        // A WfSpec update
+        WfSpec wf_spec = 1;
+
+        // A TaskDef update
+        TaskDef task_def = 2;
+
+        // An ExternalEventDef Update
+        ExternalEventDef external_event_def = 3;
+
+        // A WorkflowEventDef update
+        WorkflowEventDef workflow_event_def = 4;
+
+        // A UserTaskDef update
+        UserTaskDef user_task_def = 5;
+    }
+}

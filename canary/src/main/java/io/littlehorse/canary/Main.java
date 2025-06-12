@@ -3,19 +3,20 @@ package io.littlehorse.canary;
 import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
+import io.littlehorse.canary.infra.HealthExporter;
+import io.littlehorse.canary.infra.PrometheusExporter;
+import io.littlehorse.canary.infra.ShutdownHook;
+import io.littlehorse.canary.infra.WebServer;
+import io.littlehorse.canary.infra.WebServiceBinder;
 import io.littlehorse.canary.kafka.TopicCreator;
+import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.MetronomeGetWfRunExecutor;
 import io.littlehorse.canary.metronome.MetronomeRunWfExecutor;
 import io.littlehorse.canary.metronome.MetronomeWorker;
 import io.littlehorse.canary.metronome.MetronomeWorkflow;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
-import io.littlehorse.canary.prometheus.PrometheusExporter;
-import io.littlehorse.canary.prometheus.PrometheusServerExporter;
-import io.littlehorse.canary.util.LHClient;
-import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.config.LHConfig;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -27,7 +28,8 @@ public class Main {
 
     public static void main(final String[] args) throws InterruptedException {
         try {
-            initialize(args);
+            final CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
+            initialize(config);
         } catch (Exception e) {
             log.error("Error starting application", e);
             System.exit(-1);
@@ -38,81 +40,116 @@ public class Main {
         latch.await();
     }
 
-    private static void initialize(final String[] args) throws IOException {
-        // dependencies
-        final CanaryConfig canaryConfig = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
+    private static void initialize(final CanaryConfig config) {
+        final PrometheusExporter prometheusExporter =
+                new PrometheusExporter(config.getMetricsPath(), config.getCommonTags());
+        final HealthExporter healthExporter = new HealthExporter(config.getHealthPath());
 
-        final PrometheusExporter prometheusExporter = new PrometheusExporter(canaryConfig.getCommonTags());
-        // create topics
-        if (canaryConfig.isTopicCreationEnabled()) {
-            final NewTopic topic = new NewTopic(
-                    canaryConfig.getTopicName(), canaryConfig.getTopicPartitions(), canaryConfig.getTopicReplicas());
+        maybeCreateTopics(config);
+        maybeStartMetronome(config, healthExporter);
+        maybeStartAggregator(config, prometheusExporter, healthExporter);
+        startWebServer(config, prometheusExporter, healthExporter);
+    }
 
-            new TopicCreator(
-                    canaryConfig.toKafkaConfig().toMap(), canaryConfig.getTopicCreationTimeout(), List.of(topic));
-        }
-        final boolean metronomeOrWorkerEnabled =
-                canaryConfig.isMetronomeEnabled() || canaryConfig.isMetronomeWorkerEnabled();
+    private static void maybeStartMetronome(final CanaryConfig config, final HealthExporter healthExporter) {
+        if (!config.isMetronomeEnabled() && !config.isMetronomeWorkerEnabled()) return;
 
-        if (metronomeOrWorkerEnabled) {
-            final LHConfig lhConfig =
-                    new LHConfig(canaryConfig.toLittleHorseConfig().toMap());
-            final LHClient lhClient = new LHClient(
-                    lhConfig,
-                    canaryConfig.getWorkflowName(),
-                    canaryConfig.getWorkflowVersion(),
-                    canaryConfig.getWorkflowRevision());
-            prometheusExporter.addMeasurable(lhClient);
-            final BeatProducer producer = new BeatProducer(
-                    lhConfig.getApiBootstrapHost(),
-                    lhConfig.getApiBootstrapPort(),
-                    lhClient.getServerVersion(),
-                    canaryConfig.getTopicName(),
-                    canaryConfig.toKafkaConfig().toMap());
+        final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
 
-            // start worker
-            if (canaryConfig.isMetronomeWorkerEnabled()) {
-                new MetronomeWorker(producer, lhConfig);
-            }
+        final LHClient lhClient = new LHClient(
+                lhConfig, config.getWorkflowName(), config.getWorkflowVersion(), config.getWorkflowRevision());
 
-            // start metronome client
-            if (canaryConfig.isMetronomeEnabled()) {
+        final BeatProducer producer = new BeatProducer(
+                lhConfig.getApiBootstrapHost(),
+                lhConfig.getApiBootstrapPort(),
+                lhClient.getServerVersion(),
+                config.getTopicName(),
+                config.toKafkaConfig().toMap(),
+                config.getMetronomeBeatExtraTags());
 
-                // register wf
-                if (canaryConfig.isWorkflowCreationEnabled()) {
-                    new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
-                }
+        maybeStartMetronomeWorker(config, producer, lhConfig, healthExporter);
+        maybeRegisterWorkflow(config, lhClient);
+        maybeStartMetronomeExecutors(config, producer, lhClient, healthExporter);
+    }
 
-                final LocalRepository repository = new LocalRepository(canaryConfig.getMetronomeDataPath());
+    private static void maybeStartMetronomeExecutors(
+            final CanaryConfig config,
+            final BeatProducer producer,
+            final LHClient lhClient,
+            final HealthExporter healthExporter) {
+        if (!config.isMetronomeEnabled()) return;
 
-                new MetronomeRunWfExecutor(
-                        producer,
-                        lhClient,
-                        canaryConfig.getMetronomeRunFrequency(),
-                        canaryConfig.getMetronomeRunThreads(),
-                        canaryConfig.getMetronomeRunRequests(),
-                        canaryConfig.getMetronomeSampleRate(),
-                        repository);
+        final LocalRepository repository = new LocalRepository(config.getMetronomeDataPath());
 
-                new MetronomeGetWfRunExecutor(
-                        producer,
-                        lhClient,
-                        canaryConfig.getMetronomeGetFrequency(),
-                        canaryConfig.getMetronomeGetThreads(),
-                        canaryConfig.getMetronomeGetRetries(),
-                        repository);
-            }
-        }
+        final MetronomeRunWfExecutor runWfExecutor = new MetronomeRunWfExecutor(
+                producer,
+                lhClient,
+                config.getMetronomeRunFrequency(),
+                config.getMetronomeRunThreads(),
+                config.getMetronomeRunRequests(),
+                config.getMetronomeSamplePercentage(),
+                repository);
+        healthExporter.addStatus(runWfExecutor);
+        runWfExecutor.start();
 
-        // start the aggregator
-        if (canaryConfig.isAggregatorEnabled()) {
-            new PrometheusServerExporter(
-                    canaryConfig.getMetricsPort(), canaryConfig.getMetricsPath(), prometheusExporter);
-            final Aggregator aggregator = new Aggregator(
-                    canaryConfig.toKafkaConfig().toMap(),
-                    canaryConfig.getTopicName(),
-                    canaryConfig.getAggregatorStoreRetention());
-            prometheusExporter.addMeasurable(aggregator);
-        }
+        final MetronomeGetWfRunExecutor getWfRunExecutor = new MetronomeGetWfRunExecutor(
+                producer, lhClient, config.getMetronomeGetFrequency(), config.getMetronomeGetRetries(), repository);
+        healthExporter.addStatus(getWfRunExecutor);
+        getWfRunExecutor.start();
+    }
+
+    private static void maybeRegisterWorkflow(final CanaryConfig config, final LHClient lhClient) {
+        if (!config.isWorkflowCreationEnabled()) return;
+
+        final MetronomeWorkflow workflow =
+                new MetronomeWorkflow(lhClient, config.getWorkflowName(), config.getWorkflowRetention());
+        workflow.register();
+    }
+
+    private static void maybeStartMetronomeWorker(
+            final CanaryConfig config,
+            final BeatProducer producer,
+            final LHConfig lhConfig,
+            final HealthExporter healthExporter) {
+        if (!config.isMetronomeWorkerEnabled()) return;
+
+        final MetronomeWorker worker = new MetronomeWorker(producer, lhConfig);
+        healthExporter.addStatus(worker);
+        worker.start();
+    }
+
+    private static void startWebServer(final CanaryConfig config, final WebServiceBinder... services) {
+        final WebServer webServer = new WebServer(config.getMetricsPort());
+        webServer.addServices(services);
+        webServer.start();
+    }
+
+    private static void maybeStartAggregator(
+            final CanaryConfig config,
+            final PrometheusExporter prometheusExporter,
+            final HealthExporter healthExporter) {
+        if (!config.isAggregatorEnabled()) return;
+
+        final Aggregator aggregator = new Aggregator(
+                config.toKafkaConfig().toMap(),
+                config.getTopicName(),
+                config.getAggregatorStoreRetention(),
+                config.getAggregatorExportFrequency());
+
+        prometheusExporter.addMeasurable(aggregator);
+        healthExporter.addStatus(aggregator);
+        aggregator.start();
+    }
+
+    private static void maybeCreateTopics(final CanaryConfig config) {
+        if (!config.isTopicCreationEnabled()) return;
+
+        final NewTopic topic =
+                new NewTopic(config.getTopicName(), config.getTopicPartitions(), config.getTopicReplicas());
+
+        final TopicCreator topicCreator =
+                new TopicCreator(config.toKafkaConfig().toMap(), config.getTopicCreationTimeout());
+
+        topicCreator.create(List.of(topic));
     }
 }

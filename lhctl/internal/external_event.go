@@ -1,11 +1,10 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 LittleHorse Enterprises LLC <engineering@littlehorse.io>
 */
 package internal
 
 import (
-	"fmt"
-	"log"
+	"errors"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -26,7 +25,7 @@ var getExternalEventCmd = &cobra.Command{
 	You may provide all three identifiers as three separate arguments or you may provide
 	them delimited by the '/' character, as returned in all 'search' command queries.
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Args: func(cmd *cobra.Command, args []string) error {
 		needsHelp := false
 		if len(args) == 1 {
 			args = strings.Split(args[0], "/")
@@ -37,10 +36,15 @@ var getExternalEventCmd = &cobra.Command{
 		}
 
 		if needsHelp {
-			log.Fatal("Must provide 1 or 3 arguments. See 'lhctl get externalEvent -h'")
+			return errors.New("must provide 1 or 3 arguments. See 'lhctl get externalEvent -h'")
 		}
 
-		fmt.Println(args)
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 1 {
+			args = strings.Split(args[0], "/")
+		}
 
 		ctx := requestContext(cmd)
 
@@ -56,7 +60,7 @@ var getExternalEventCmd = &cobra.Command{
 }
 
 var searchExternalEventCmd = &cobra.Command{
-	Use:   "externalEvent",
+	Use:   "externalEvent [<externalEventDefName>]",
 	Short: "Search for ExternalEvent's by ExternalEventDef Name",
 	Long: `
 Search for ExternalEvent's by their ExternalEventDef Name.
@@ -64,22 +68,26 @@ Search for ExternalEvent's by their ExternalEventDef Name.
 Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 
 * Note: '--isClaimed' is a Boolean flag with 3 states:
-	- return ALL (flag is not present)
-	- return only TRUE (flag is present or reads '--isClaimed=true')
-	- return only FALSE (flag reads '--isClaimed=false')
+	- return ALL          Flag is not present
+	- return only TRUE    Flag is present or reads '--isClaimed=true'
+	- return only FALSE   Flag reads '--isClaimed=false'
 
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
 	options with this group to put a time bound on ExternalEvents which are
 	returned. The time bound applies to the time that the ExternalEvents
 	were created.
 `,
+	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		externalEventDefName := ""
+
+		if len(args) == 1 {
+			externalEventDefName = args[0]
+		}
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		externalEventDefName, _ := cmd.Flags().GetString("externalEventDefName")
 		isClaimed, _ := cmd.Flags().GetBool("isClaimed")
-
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		search := &lhproto.SearchExternalEventRequest{
@@ -106,13 +114,8 @@ var listExternalEventCmd = &cobra.Command{
 	Long: `
 Lists all ExternalEvent's for a given WfRun Id.
 `,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		// bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
-		// limit, _ := cmd.Flags().GetInt32("limit")
-
-		if len(args) != 1 {
-			log.Fatal("Must provide one arg: the WfRun ID!")
-		}
 		wfRunId := args[0]
 
 		req := &lhproto.ListExternalEventsRequest{

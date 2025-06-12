@@ -1,8 +1,9 @@
 # LittleHorse
 
-<a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-io.svg"/></a>
-<a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-dev.svg"/></a>
-[![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity)
+<a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/site-badge.svg"/></a>
+<a href="https://littlehorse.io/docs/getting-started/quickstart"><img alt="littlehorse.io/docs/server/concepts" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
+<a href="https://littlehorse.io/docs"><img alt="littlehorse.io/docs" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/docs-badge.svg"/></a>
+[![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity/free)
 
 <a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="java" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client?logo=openjdk&logoColor=white&color=orange&label=java"></a>
 <a href="https://github.com/littlehorse-enterprises/littlehorse/tags"><img alt="go" src="https://img.shields.io/github/v/tag/littlehorse-enterprises/littlehorse?logo=go&logoColor=white&color=00aed8&label=go"></a>
@@ -10,10 +11,10 @@
 
 
 <p align="center">
-<img alt="LH" src="./docs/static/img/2024-08-28-workflowRun.png" width="80%">
+<img alt="LH" src="./img/wfRun.png" width="80%">
 </p>
 
-[LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
+[LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
 
 * Wiring microservices together with RPC calls or message queues.
 * Retries, timeouts, dead-letter queues.
@@ -44,13 +45,13 @@ docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-e
 
 ```
 -> lhctl version
-lhctl version: 0.11.0 (Git SHA homebrew)
-Server version: 0.11.1
+lhctl version: 0.12.1 (Git SHA homebrew)
+Server version: 0.12.1
 ```
 
-4. Navigate to the dashboard at `http://localhost:3000`
+4. Navigate to the dashboard at `http://localhost:8080`
 
-For more information go to our [Quickstart Installation Docs](https://littlehorse.dev/docs/developer-guide/install).
+For more information go to our [Quickstart Installation Docs](https://littlehorse.io/docs/server/developer-guide/install).
 
 ### Running Your First Workflow
 
@@ -62,21 +63,27 @@ To run a workflow with LittleHorse, you need to:
 - The workflow engine ensures that your process gets executed correctly.
 
 <p align="center">
-<img src="./docs/static/img/2024-08-28-lh-application.png" width="75%">
+<img src="./img/architecture.png" width="75%">
 </p>
 
 To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-quickstart-java), [Go](https://github.com/littlehorse-enterprises/lh-quickstart-go), and [Python](https://github.com/littlehorse-enterprises/lh-quickstart-python). For more detailed examples, you can check out:
 - The [examples directory](./examples) in this repo
 - The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
 
-For documentation, visit [littlehorse.dev](https://www.littlehorse.dev/).
+For documentation, visit [littlehorse.io/docs/server](https://www.littlehorse.io/docs/server).
 
-## Developing
+## About the Project
+
+### Lifecycle and Release Plan
+
+The LittleHorse Server plans to follow [Semantic Versioning](https://semver.org) after the release of version 1.0. You can find our (non-binding) project guidelines regarding our release schedule and deprecation strategy for after the 1.0 release in our [project lifecycle document](./PROJECT_LIFECYCLE.md). We plan to release version 1.0 in the 2025 calendar year.
+
+### Developing
 
 For information about developing LittleHorse, see the guide in our [local-dev README](./local-dev/README.md).
 
 ### License
 
-<a href="https://spdx.org/licenses/SSPL-1.0.html"><img alt="SSPL LICENSE" src="https://img.shields.io/badge/covered%20by-SSPL%201.0-blue"></a>
+<a href="https://www.gnu.org/licenses/agpl-3.0.en.html"><img alt="AGPLv3 License" src="https://img.shields.io/badge/covered%20by-AGPLv3-blue"></a>
 
-All code in this repository is covered by the [Server Side Public License, Version 1](https://spdx.org/licenses/SSPL-1.0.html) and is copyright of LittleHorse Enterprises LLC.
+All code in this repository is licensed by the [GNU Affero General Public License, Version 3](https://www.gnu.org/licenses/agpl-3.0.en.html) and is copyright of LittleHorse Enterprises LLC.

@@ -1,0 +1,106 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.diffplug.spotless' version '6.25.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+var testcontainersVersion = "1.20.4"
+var slf4jVersion = "2.0.7"
+
+dependencies {
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    api "org.testcontainers:kafka:${testcontainersVersion}"
+    api "org.testcontainers:testcontainers:${testcontainersVersion}"
+
+    testImplementation project(':sdk-java')
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
+}
+
+tasks.register('javadocJar', Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+tasks.register('sourcesJar', Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = 'littlehorse-test-utils-container'
+            version = version
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'LittleHorse Test Utils Container'
+                description = 'LittleHorse Test Utils for Testcontainers'
+                url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                licenses {
+                    license {
+                        name = 'GNU Affero General Public License Version 3'
+                        url = 'https://www.gnu.org/licenses/agpl-3.0.en.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'LittleHorse Engineering'
+                        email = 'engineering@littlehorse.io'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                    connection = 'scm:git://github.com/littlehorse-enterprises/littlehorse.git'
+                    developerConnection = 'scm:git:ssh://github.com/littlehorse-enterprises/littlehorse.git'
+                }
+                packaging = 'jar'
+            }
+        }
+    }
+}
+
+signing {
+    required { gradle.taskGraph.hasTask("publish") }
+
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    excludes = []
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
