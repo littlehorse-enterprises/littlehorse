@@ -24,7 +24,11 @@ namespace LittleHorse.Sdk.Worker.Internal
         private const int MaxReportRetries = 15;
         private const int PollTaskSleepTime = 5000;
         
-        private bool _running;
+        /// <summary>
+        /// Needs to be volatile because it's accessed from other tasks
+        /// </summary>
+        private volatile bool _running;
+
         private readonly LittleHorseClient _client;
         private readonly AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _pollTask;
         private readonly ILogger? _logger;
@@ -79,7 +83,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, "Api connection error. Stopping connection: {}", exception.Message);
+                _logger?.LogError(exception, "Connection error. Stopping connection: {}", exception.Message);
             }
 
             _running = false;
@@ -87,7 +91,7 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         internal bool IsRunning()
         {
-            return true;
+            return _running;
         }
 
         private async Task RequestWorkLoop()
@@ -256,7 +260,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             if (result is not Task task)
                 throw new InvalidConstraintException("Task method must return Task<type> or Task");
 
-            // DO NOT MOVE THIS LINE AS WE NEED THE TASK TO BE AWAITED BEFORE RETURNING NULL
+            // DO NOT MOVE THIS LINE AS WE NEED THE TASK TO BE AWAITED BEFORE RETURNING THE RESULT
             await task;
 
             return !_task.TaskMethod.ReturnType.IsGenericType ? null : ((dynamic)task).Result;

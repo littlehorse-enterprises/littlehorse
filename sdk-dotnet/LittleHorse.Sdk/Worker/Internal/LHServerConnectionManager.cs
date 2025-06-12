@@ -1,6 +1,4 @@
-﻿using Google.Protobuf.Collections;
-using Grpc.Core;
-using LittleHorse.Sdk.Common.Proto;
+﻿using LittleHorse.Sdk.Common.Proto;
 using Microsoft.Extensions.Logging;
 using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
@@ -12,7 +10,7 @@ namespace LittleHorse.Sdk.Worker.Internal
     /// <typeparam name="T">It is the custom task worker.</typeparam>
     internal class LHServerConnectionManager<T>
     {
-        private const int BalancerSleepTime = 5000;
+        private const int HeartBeatIntervalMs = 5000;
         private const int GrpcUnaryCallTimeoutSeconds = 30;
 
         private readonly LHConfig _config;
@@ -49,7 +47,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             while (!_cancellationToken.IsCancellationRequested)
             {
                 await DoHeartBeat();
-                await Task.Delay(BalancerSleepTime);
+                await Task.Delay(HeartBeatIntervalMs);
             }
         }
 
@@ -68,10 +66,13 @@ namespace LittleHorse.Sdk.Worker.Internal
             {
                 _logger?.LogError(ex, "Error when registering task worker.");
                 CloseAllConnections();
-                await Task.Delay(BalancerSleepTime);
             }
         }
 
+        /// <summary>
+        /// Removes connections that are no longer running, either because they were signaled a cancellation
+        /// or encountered an exception during processing.
+        /// </summary>
         private void RemoveDeadConnections()
         {
             foreach (var host in _runningConnections.Keys.ToList())
@@ -88,7 +89,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             {
                 var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
                 _cancellationTokenSource[host] = cancellationTokenSource;
-                _runningConnections[host] = ListOfConnections(host, cancellationTokenSource.Token);
+                _runningConnections[host] = ListOfConnections(host, _config.WorkerThreads, cancellationTokenSource.Token);
                 _logger?.LogInformation("Added {} connections for host {}:{}", _runningConnections[host].Count, host.Host, host.Port);
             }
         }
@@ -98,6 +99,12 @@ namespace LittleHorse.Sdk.Worker.Internal
                 .Where(host => !_runningConnections.ContainsKey(host))
                 .ToList();
 
+        /// <summary>
+        /// Signals a cancellation for connections that are no longer assigned to the worker. The connection task is not immediately disposed
+        /// because it might be in the middle of executing a ScheduledTask, thus a cancellation signal is emitted for the connection task
+        /// to gracefully finish whatever it's doing..
+        /// </summary>
+        /// <param name="assignedHosts">Hosts assigned to the worker</param>
         private void CancelUnassignedHosts(IList<LHHostInfo> assignedHosts)
         {
             foreach (var host in HostsToRemove(assignedHosts))
@@ -114,8 +121,8 @@ namespace LittleHorse.Sdk.Worker.Internal
                 .Where(host => !hosts.Contains(host))
                 .ToList();
 
-        private List<Task<LHServerConnection<T>>> ListOfConnections(LHHostInfo host, CancellationToken cancellationToken) =>
-            Enumerable.Range(0, _config.WorkerThreads).Select(index => Task.Run(() =>
+        private List<Task<LHServerConnection<T>>> ListOfConnections(LHHostInfo host, int numberOfConnections, CancellationToken cancellationToken) =>
+            Enumerable.Range(0, numberOfConnections).Select(index => Task.Run(() =>
                 {
                     _logger?.LogDebug("Adding connection #{} to: {}:{} for task '{}'", index, host.Host, host.Port, _task.TaskDef!.Id);
                     var client = _config.GetGrpcClientInstance(host.Host, host.Port);
@@ -135,7 +142,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                     cancellationTokenSource.Cancel();
                     cancellationTokenSource.Dispose();
                 });
-            
+
             _cancellationTokenSource.Clear();
         }
     }

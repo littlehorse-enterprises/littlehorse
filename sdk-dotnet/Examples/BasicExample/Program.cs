@@ -69,7 +69,7 @@ public class Program
 
             await GetWorkflow().RegisterWfSpec(config.GetGrpcClientInstance());
 
-            await Task.Delay(1000);
+            await Task.Delay(300);
 
             await worker.Start();
         }
