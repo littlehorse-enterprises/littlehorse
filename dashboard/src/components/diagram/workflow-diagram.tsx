@@ -31,37 +31,32 @@ interface WorkflowDiagramProps {
 
 export default function WorkflowDiagram({
   className = '',
-  nodes: customNodes,
-  edges: customEdges,
+  nodes,
+  edges,
 }: WorkflowDiagramProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const [nodesState, setNodesState, onNodesStateChange] = useNodesState<Node>([])
+  const [edgesState, setEdgesState, onEdgesStateChange] = useEdgesState<Edge>([])
   const { selectedId, setSelectedId } = useSelection()
 
-  // Use custom nodes/edges if provided, otherwise use mock data
-  const sourceNodes = customNodes
-  const sourceEdges = customEdges
-
-  // Apply layout when component mounts or when source data changes
   useEffect(() => {
     const applyLayout = async () => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = await getLayoutedElements(sourceNodes, sourceEdges)
-      setNodes(layoutedNodes)
-      setEdges(layoutedEdges)
+      const { nodes: layoutedNodes, edges: layoutedEdges } = await getLayoutedElements(nodes, edges)
+      setNodesState(layoutedNodes)
+      setEdgesState(layoutedEdges)
     }
 
     applyLayout()
-  }, [sourceNodes, sourceEdges, setNodes, setEdges])
+  }, [nodes, edges, setNodesState, setEdgesState])
 
   // Update node selection when selectedId changes
   useEffect(() => {
-    setNodes(nds =>
+    setNodesState(nds =>
       nds.map(node => ({
         ...node,
         selected: node.id === selectedId,
       }))
     )
-  }, [selectedId, setNodes])
+  }, [selectedId, setNodesState])
 
   const handleNodeClick = useCallback(
     (event: React.MouseEvent, node: Node) => {
@@ -73,10 +68,10 @@ export default function WorkflowDiagram({
   return (
     <div className={`h-full w-full ${className}`}>
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        nodes={nodesState}
+        edges={edgesState}
+        onNodesChange={onNodesStateChange}
+        onEdgesChange={onEdgesStateChange}
         onNodeClick={handleNodeClick}
         nodeTypes={nodeTypes}
         defaultEdgeOptions={{ type: 'step' }}

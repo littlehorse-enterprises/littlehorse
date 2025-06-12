@@ -1,16 +1,16 @@
 import { getVariable } from '@/utils/data/variables'
-import { getComparatorSymbol } from '@/utils/ui/comparator-utils'
+import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
 import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
-import { Edge, MarkerType } from '@xyflow/react'
-import { ThreadSpecWithName } from '../Diagram'
-import { getNodeType } from '../NodeTypes/extractNodes'
+import { Edge } from '@xyflow/react'
+import { ThreadSpecWithName } from '@/types/withs'
+import { getNodeType } from './node'
 
 const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSpecWithName): Edge[] => {
   const edges: Edge[] = []
 
   const targetMap = new Map<string, number>()
   const sourceMap = new Map<string, number>()
-  Object.entries(threadSpecWithName.threadSpec.nodes).forEach(([source, node]) => {
+  Object.entries(threadSpecWithName.threadSpec.nodes as ThreadSpec['nodes']).forEach(([source, node]) => {
     if (getNodeType(node) === 'START_THREAD') {
       const startThreadNodeName = node.startThread?.threadSpecName
       if (!startThreadNodeName) return
@@ -37,15 +37,10 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
       edges.push({
         id,
         source: `${source}:${threadSpecWithName.name}`,
-        type: 'custom',
         target: `${edge.sinkNodeName}:${threadSpecWithName.name}`,
         label,
-        data: edge,
-        targetHandle: `target-${targetIndex}`,
-        sourceHandle: `source-${sourceIndex}`,
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-        },
+        data: { edge },
+        type: 'default',
         animated: true,
       })
     })
@@ -78,12 +73,8 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       edges.push({
         id: `${sourceId}>${targetId}:${threadName}`,
         source: sourceId,
-        type: 'custom',
-        sourceHandle: 'bottom-0',
+        type: 'default',
         target: targetId,
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-        },
         animated: true,
       })
     }
@@ -92,10 +83,10 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       node.waitForThreads?.threads?.threads.forEach(thread => {
         const startThreadNodeName = thread.threadRunNumber?.variableName ?? ''
         const waitingThreadSpecName =
-          Object.entries(threadSpec.nodes).find(([id, node]) => id == startThreadNodeName)?.[1].startThread
-            ?.threadSpecName ?? ''
+          Object.entries(threadSpec.nodes).find(([id]) => id == startThreadNodeName)?.[1].startThread?.threadSpecName ??
+          ''
         const waitingThreadSpec = wfSpec.threadSpecs[waitingThreadSpecName]
-        const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(([id, _], [id2, __]) => id.localeCompare(id2))
+        const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(([id], [id2]) => id.localeCompare(id2))
         const exitNodeId = sortedNodes[sortedNodes.length - 1][0]
 
         const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
@@ -103,10 +94,8 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
         edges.push({
           id: `${sourceId}>${targetId}`,
           source: sourceId,
-          type: 'custom',
           target: targetId,
-          targetHandle: 'bottom-0',
-          markerEnd: { type: MarkerType.ArrowClosed },
+          type: 'default',
           animated: true,
         })
       })

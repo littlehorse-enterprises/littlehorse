@@ -33,6 +33,9 @@ export const getLayoutedElements = async (
 ): Promise<{ nodes: Node[]; edges: Edge[] }> => {
   if (!nodes.length) return { nodes, edges }
 
+  console.log('nodes', nodes)
+  console.log('edges', edges)
+
   const { algorithm = 'layered', nodeSpacing = '600', layerSpacing = '50', customOptions = {} } = options
 
   // Direction is always horizontal (LEFT_TO_RIGHT)
