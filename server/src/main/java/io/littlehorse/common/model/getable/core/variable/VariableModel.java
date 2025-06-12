@@ -17,6 +17,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -167,7 +168,9 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
         if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
             return false;
         }
-
+        if (id.getName().equals(WorkflowThread.HANDLER_INPUT_VAR)) {
+            return false;
+        }
         // Only PUBLIC_VAR variables should be pushed out.
         ThreadVarDefModel variableDef =
                 getWfSpec(metadataManager).getAllVariables().get(id.getName());
