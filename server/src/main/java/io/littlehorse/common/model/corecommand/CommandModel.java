@@ -9,6 +9,7 @@ import io.littlehorse.common.model.corecommand.subcommand.BulkUpdateJobModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
@@ -74,6 +75,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private DeleteScheduledWfRunRequestModel deleteScheduledWfRun;
     private PutCorrelatedEventRequestModel putCorrelatedEvent;
     private UpdateCorrelationMarkerModel updateCorrellationMarker;
+    private DeleteCorrelatedEventRequestModel deleteCorrelatedEvent;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -177,6 +179,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case UPDATE_CORRELATION_MARKER:
                 out.setUpdateCorrelationMarker(updateCorrellationMarker.toProto());
+                break;
+            case DELETE_CORRELATED_EVENT:
+                out.setDeleteCorrelatedEvent(deleteCorrelatedEvent.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -286,6 +291,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 updateCorrellationMarker = LHSerializable.fromProto(
                         p.getUpdateCorrelationMarker(), UpdateCorrelationMarkerModel.class, context);
                 break;
+            case DELETE_CORRELATED_EVENT:
+                deleteCorrelatedEvent = LHSerializable.fromProto(
+                        p.getDeleteCorrelatedEvent(), DeleteCorrelatedEventRequestModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -346,6 +355,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return putCorrelatedEvent;
             case UPDATE_CORRELATION_MARKER:
                 return updateCorrellationMarker;
+            case DELETE_CORRELATED_EVENT:
+                return deleteCorrelatedEvent;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -431,6 +442,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(UpdateCorrelationMarkerModel.class)) {
             type = CommandCase.UPDATE_CORRELATION_MARKER;
             updateCorrellationMarker = (UpdateCorrelationMarkerModel) cmd;
+        } else if (cls.equals(DeleteCorrelatedEventRequestModel.class)) {
+            type = CommandCase.DELETE_CORRELATED_EVENT;
+            deleteCorrelatedEvent = (DeleteCorrelatedEventRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }
