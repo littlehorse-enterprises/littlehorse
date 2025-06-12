@@ -7,8 +7,8 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
-import io.littlehorse.common.proto.UpdateCorrelationmarkerPb;
-import io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction;
+import io.littlehorse.common.proto.UpdateCorrelationMarkerPb;
+import io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction;
 import io.littlehorse.server.streams.storeinternals.EventCorrelationMarkerModel;
 import io.littlehorse.server.streams.topology.core.CorrelationMarkerManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 @Slf4j
-public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelationmarkerPb> {
+public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelationMarkerPb> {
 
     private String correlationKey;
     private ExternalEventDefIdModel externalEventDefId;
@@ -28,13 +28,13 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
     private CorrelationUpdateAction action;
 
     @Override
-    public Class<UpdateCorrelationmarkerPb> getProtoBaseClass() {
-        return UpdateCorrelationmarkerPb.class;
+    public Class<UpdateCorrelationMarkerPb> getProtoBaseClass() {
+        return UpdateCorrelationMarkerPb.class;
     }
 
     @Override
-    public UpdateCorrelationmarkerPb.Builder toProto() {
-        UpdateCorrelationmarkerPb.Builder out = UpdateCorrelationmarkerPb.newBuilder()
+    public UpdateCorrelationMarkerPb.Builder toProto() {
+        UpdateCorrelationMarkerPb.Builder out = UpdateCorrelationMarkerPb.newBuilder()
                 .setCorrelationKey(correlationKey)
                 .setExternalEventDefId(externalEventDefId.toProto())
                 .setWaitingNodeRun(waitingNodeRun.toProto())
@@ -45,7 +45,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
 
     @Override
     public void initFrom(Message proto, ExecutionContext ignored) {
-        UpdateCorrelationmarkerPb p = (UpdateCorrelationmarkerPb) proto;
+        UpdateCorrelationMarkerPb p = (UpdateCorrelationMarkerPb) proto;
         this.correlationKey = p.getCorrelationKey();
         this.action = p.getAction();
         this.waitingNodeRun = LHSerializable.fromProto(p.getWaitingNodeRun(), NodeRunIdModel.class, ignored);
