@@ -38,7 +38,7 @@ public class StructDefLifecycleTest {
                                 "model",
                                 StructFieldDef.newBuilder()
                                         .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                         .build()))
                 .setDescription("This StructDef describes a car")
                 .build());
@@ -60,7 +60,7 @@ public class StructDefLifecycleTest {
                                 "model",
                                 StructFieldDef.newBuilder()
                                         .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                         .build()))
                 .build());
 
@@ -73,13 +73,13 @@ public class StructDefLifecycleTest {
                                 "model",
                                 StructFieldDef.newBuilder()
                                         .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                         .build())
                         .putFields(
                                 "year",
                                 StructFieldDef.newBuilder()
                                         .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.INT))
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                         .setDefaultValue(
                                                 VariableValue.newBuilder().setInt(1970))
                                         .build()))
@@ -100,7 +100,7 @@ public class StructDefLifecycleTest {
                                 "model",
                                 StructFieldDef.newBuilder()
                                         .setFieldType(
-                                                TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                         .build()))
                 .build());
 
@@ -114,13 +114,13 @@ public class StructDefLifecycleTest {
                                             "model",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.STR))
+                                                            .setPrimitiveType(VariableType.STR))
                                                     .build())
                                     .putFields(
                                             "year",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.INT))
+                                                            .setPrimitiveType(VariableType.INT))
                                                     .build()))
                             .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
                             .build());
@@ -145,7 +145,7 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build()))
                     .build());
 
@@ -157,13 +157,13 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build())
                             .putFields(
                                     "year",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.INT))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                             .build()))
                     .build();
 
@@ -182,7 +182,7 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build()))
                     .build());
 
@@ -197,13 +197,13 @@ public class StructDefLifecycleTest {
                                             "model",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.STR))
+                                                            .setPrimitiveType(VariableType.STR))
                                                     .build())
                                     .putFields(
                                             "year",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.INT))
+                                                            .setPrimitiveType(VariableType.INT))
                                                     .setDefaultValue(VariableValue.newBuilder()
                                                             .setInt(1970))
                                                     .build()))
@@ -221,7 +221,7 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build()))
                     .build());
 
@@ -236,7 +236,7 @@ public class StructDefLifecycleTest {
                                             "model",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.STR))
+                                                            .setPrimitiveType(VariableType.STR))
                                                     .build()))
                             .build());
 
@@ -256,7 +256,7 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build()))
                     .build());
 
@@ -268,13 +268,13 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build())
                             .putFields(
                                     "year",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.INT))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                             .setDefaultValue(
                                                     VariableValue.newBuilder().setInt(10))
                                             .build())
@@ -282,7 +282,7 @@ public class StructDefLifecycleTest {
                                     "sold",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.BOOL))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
                                             .setDefaultValue(
                                                     VariableValue.newBuilder().setBool(false))
                                             .build()))
@@ -303,13 +303,13 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build())
                             .putFields(
                                     "is-sold",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.BOOL))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
                                             .build()))
                     .build());
 
@@ -321,13 +321,13 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.INT))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                             .build())
                             .putFields(
                                     "year",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.INT))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                             .build()))
                     .build();
 
@@ -346,7 +346,7 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build()))
                     .build());
 
@@ -361,13 +361,13 @@ public class StructDefLifecycleTest {
                                             "model",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.STR))
+                                                            .setPrimitiveType(VariableType.STR))
                                                     .build())
                                     .putFields(
                                             "year",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.INT))
+                                                            .setPrimitiveType(VariableType.INT))
                                                     .setDefaultValue(VariableValue.newBuilder()
                                                             .setInt(1970))
                                                     .build()))
@@ -385,7 +385,7 @@ public class StructDefLifecycleTest {
                                     "model",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
-                                                    TypeDefinition.newBuilder().setType(VariableType.STR))
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build()))
                     .build());
 
@@ -400,13 +400,13 @@ public class StructDefLifecycleTest {
                                             "model",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.STR))
+                                                            .setPrimitiveType(VariableType.STR))
                                                     .build())
                                     .putFields(
                                             "year",
                                             StructFieldDef.newBuilder()
                                                     .setFieldType(TypeDefinition.newBuilder()
-                                                            .setType(VariableType.INT))
+                                                            .setPrimitiveType(VariableType.INT))
                                                     .build()))
                             .build());
 

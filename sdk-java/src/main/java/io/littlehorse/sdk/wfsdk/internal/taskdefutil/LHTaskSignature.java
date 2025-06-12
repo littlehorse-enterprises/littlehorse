@@ -102,7 +102,7 @@ public class LHTaskSignature {
             }
             return ReturnType.newBuilder()
                     .setReturnType(TypeDefinition.newBuilder()
-                            .setType(returnType)
+                            .setPrimitiveType(returnType)
                             .setMasked(maskedValue)
                             .build())
                     .build();

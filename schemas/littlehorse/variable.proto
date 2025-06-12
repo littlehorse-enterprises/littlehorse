@@ -40,6 +40,8 @@ message VariableValue {
 
     // An arbitrary String of bytes.
     bytes bytes = 8;
+
+    Struct struct = 9;
   }
 }
 
@@ -60,4 +62,36 @@ message Variable {
 
   // Marks a variable to show masked values
   bool masked = 5;
+}
+
+// A Struct is a strongly-typed structure containing fields. The Struct is defined
+// according to the `Schema` object.
+message Struct {
+  // The id of the schema.
+  StructDefId struct_def_id = 1;
+  // The content of the Struct
+  InlineStruct struct = 2;
+}
+
+// An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
+message InlineStruct {
+  // The fields in the inline struct.
+  repeated StructField fields = 1;
+}
+
+// A StructField represents the value for a single field in a struct.
+message StructField {
+  // The value, which can be primitive or complex.
+  oneof struct_value {
+    // The `value` of the field is an untyped primitive `VariableValue`.
+    VariableValue primitive = 1;
+    // The `value` of the field is a complex `Struct`.
+    InlineStruct struct = 2;
+    // The `value` of the field is a list of fields.
+    FieldList list = 3;
+  }
+  // A FieldList is a sub-structure of a `Struct`
+  message FieldList {
+    repeated StructField fields = 1;
+  }
 }

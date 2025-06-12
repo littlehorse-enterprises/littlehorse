@@ -122,12 +122,16 @@ class VariableDef(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
-    __slots__ = ["type", "masked"]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["primitive_type", "struct", "inline_struct", "masked"]
+    PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_FIELD_NUMBER: _ClassVar[int]
+    INLINE_STRUCT_FIELD_NUMBER: _ClassVar[int]
     MASKED_FIELD_NUMBER: _ClassVar[int]
-    type: _common_enums_pb2.VariableType
+    primitive_type: _common_enums_pb2.VariableType
+    struct: _object_id_pb2.StructDefId
+    inline_struct: InlineStructDef
     masked: bool
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., masked: bool = ...) -> None: ...
+    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_struct: _Optional[_Union[InlineStructDef, _Mapping]] = ..., masked: bool = ...) -> None: ...
 
 class ReturnType(_message.Message):
     __slots__ = ["return_type"]
@@ -197,3 +201,24 @@ class TaskNode(_message.Message):
     exponential_backoff: ExponentialBackoffRetryPolicy
     variables: _containers.RepeatedCompositeFieldContainer[VariableAssignment]
     def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., dynamic_task: _Optional[_Union[VariableAssignment, _Mapping]] = ..., timeout_seconds: _Optional[int] = ..., retries: _Optional[int] = ..., exponential_backoff: _Optional[_Union[ExponentialBackoffRetryPolicy, _Mapping]] = ..., variables: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...
+
+class InlineStructDef(_message.Message):
+    __slots__ = ["fields"]
+    class FieldsEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: StructFieldDef
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[StructFieldDef, _Mapping]] = ...) -> None: ...
+    FIELDS_FIELD_NUMBER: _ClassVar[int]
+    fields: _containers.MessageMap[str, StructFieldDef]
+    def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
+
+class StructFieldDef(_message.Message):
+    __slots__ = ["field_type", "default_value"]
+    FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
+    field_type: TypeDefinition
+    default_value: _variable_pb2.VariableValue
+    def __init__(self, field_type: _Optional[_Union[TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...

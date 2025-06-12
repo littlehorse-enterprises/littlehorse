@@ -30,7 +30,7 @@ public class TaskDefBuilder {
             out.addInputVars(VariableDef.newBuilder()
                     .setName(varNames.get(i))
                     .setTypeDef(
-                            TypeDefinition.newBuilder().setType(varTypes.get(i)).setMasked(maskedParams.get(i))));
+                            TypeDefinition.newBuilder().setPrimitiveType(varTypes.get(i)).setMasked(maskedParams.get(i))));
         }
         out.setName(this.signature.taskDefName);
         if (signature.getReturnType() != null) {

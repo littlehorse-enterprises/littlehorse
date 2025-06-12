@@ -42,7 +42,7 @@ public class WfSpecModelTest {
         childEntrypointThread = spy(new ThreadSpecModel());
         VariableDef variableDefProto = VariableDef.newBuilder()
                 .setName("my-var")
-                .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.BOOL))
+                .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
                 .build();
         variableDef = LHSerializable.fromProto(variableDefProto, VariableDefModel.class, mockContext);
         ThreadVarDefModel inheritedVariable =

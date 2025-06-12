@@ -32,7 +32,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     @Override
     public TypeDefinition.Builder toProto() {
         TypeDefinition.Builder out =
-                TypeDefinition.newBuilder().setMasked(masked).setType(type);
+                TypeDefinition.newBuilder().setMasked(masked).setPrimitiveType(type);
         return out;
     }
 
@@ -40,7 +40,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
-        this.type = p.getType();
+        this.type = p.getPrimitiveType();
     }
 
     public boolean isPrimitive() {

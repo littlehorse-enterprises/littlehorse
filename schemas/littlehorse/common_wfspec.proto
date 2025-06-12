@@ -166,9 +166,14 @@ message VariableDef {
 // Defines the type of a value in LittleHorse. Can be used for Task Parameters,
 // Task return types, External Event types, ThreadSpec variables, etc.
 message TypeDefinition {
-  // The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-  // are implemented according to issue #880.
-  VariableType type = 1;
+  // The type of this definition. One of the following will be set.
+  oneof defined_type {
+    VariableType primitive_type = 1;
+
+    StructDefId struct = 5;
+    
+    InlineStructDef inline_struct = 6;
+  }
 
   // For compatibility purposes.
   reserved 2, 3;
@@ -334,4 +339,20 @@ message TaskNode {
 
   // Input variables into the TaskDef.
   repeated VariableAssignment variables = 4;
+}
+
+// An `InlineStructDef` is the actual representation of the Schema.
+message InlineStructDef {
+  // The fields in this schema.
+  map<string, StructFieldDef> fields = 1;
+}
+
+// A `SchemaFieldDef` defines a field inside a `StructDef`.
+message StructFieldDef {
+  // The type of the field.
+  TypeDefinition field_type = 1;
+  
+  // The default value of the field, which should match the Field Type. If not
+   // provided, then the field is treated as required.
+  optional VariableValue default_value = 2;
 }
