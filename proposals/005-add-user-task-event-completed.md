@@ -14,10 +14,8 @@ Add new message:
 message UserTaskEvent {
   //...
 
-  // Empty message used to denote that the `UserTaskRun` was completed.
-  message UTECompleted {
-    string message = 1;
-  }
+  // Empty event used to denote that the `UserTaskRun` was completed.
+  message UTECompleted {}
   ...
 }
 ```
