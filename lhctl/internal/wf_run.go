@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"errors"
 	"log"
 	"strconv"
 
@@ -54,13 +53,7 @@ And the optional flag:
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) < 1 || len(args) > 3 {
-			return errors.New("must provide 1 to 3 arguments. See 'lhctl search wfRun -h'")
-		}
-
-		return nil
-	},
+	Args: cobra.RangeArgs(1, 3),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName := args[0]
 		statusRaw, _ := cmd.Flags().GetString("status")
