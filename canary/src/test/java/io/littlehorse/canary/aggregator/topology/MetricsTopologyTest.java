@@ -181,11 +181,8 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "ok"));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "ok"));
 
-        await(() -> {
-            assertThat(getCount()).isEqualTo(1);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok")))
-                    .isEqualTo(newMetricValue(20., 30., 3.));
-        });
+        assertThat(getCount()).isEqualTo(1);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok"))).isEqualTo(newMetricValue(20., 30., 3.));
     }
 
     @Test
@@ -197,13 +194,10 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok", expectedTags));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok"));
 
-        await(() -> {
-            assertThat(getCount()).isEqualTo(2);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok", expectedTags)))
-                    .isEqualTo(newMetricValue(20., 20., 1.));
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok")))
-                    .isEqualTo(newMetricValue(20., 20., 1.));
-        });
+        assertThat(getCount()).isEqualTo(2);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok", expectedTags)))
+                .isEqualTo(newMetricValue(20., 20., 1.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok"))).isEqualTo(newMetricValue(20., 20., 1.));
     }
 
     @Test
@@ -215,11 +209,10 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null, "error", reason));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null, "error", reason));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null, "error", reason));
-        await(() -> {
-            assertThat(getCount()).isEqualTo(1);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "error", reason)))
-                    .isEqualTo(newMetricValue(3.));
-        });
+
+        assertThat(getCount()).isEqualTo(1);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "error", reason)))
+                .isEqualTo(newMetricValue(3.));
     }
 
     @Test
@@ -234,13 +227,11 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "error"));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "error"));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "error"));
-        await(() -> {
-            assertThat(getCount()).isEqualTo(2);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok")))
-                    .isEqualTo(newMetricValue(20., 30., 3.));
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "error")))
-                    .isEqualTo(newMetricValue(20., 30., 3.));
-        });
+
+        assertThat(getCount()).isEqualTo(2);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok"))).isEqualTo(newMetricValue(20., 30., 3.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "error")))
+                .isEqualTo(newMetricValue(20., 30., 3.));
     }
 
     @Test
@@ -251,11 +242,10 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "completed"));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "completed"));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "completed"));
-        await(() -> {
-            assertThat(getCount()).isEqualTo(1);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "completed")))
-                    .isEqualTo(newMetricValue(20., 30., 3.));
-        });
+
+        assertThat(getCount()).isEqualTo(1);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "completed")))
+                .isEqualTo(newMetricValue(20., 30., 3.));
     }
 
     @Test
@@ -266,10 +256,9 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L));
-        await(() -> {
-            assertThat(getCount()).isEqualTo(1);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(20., 30., 3.));
-        });
+
+        assertThat(getCount()).isEqualTo(1);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(20., 30., 3.));
     }
 
     @Test
@@ -282,11 +271,9 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10L));
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30L));
 
-        await(() -> {
-            assertThat(getCount()).isEqualTo(2);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(20., 30., 3.));
-            assertThat(store.get(newMetricKey("canary_duplicated_task_run"))).isEqualTo(newMetricValue(1.));
-        });
+        assertThat(getCount()).isEqualTo(2);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(20., 30., 3.));
+        assertThat(store.get(newMetricKey("canary_duplicated_task_run"))).isEqualTo(newMetricValue(1.));
     }
 
     @Test
@@ -303,11 +290,10 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 20L));
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 30L));
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 40L));
-        await(() -> {
-            assertThat(getCount()).isEqualTo(2);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(25., 40., 6.));
-            assertThat(store.get(newMetricKey("canary_duplicated_task_run"))).isEqualTo(newMetricValue(2.));
-        });
+
+        assertThat(getCount()).isEqualTo(2);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(25., 40., 6.));
+        assertThat(store.get(newMetricKey("canary_duplicated_task_run"))).isEqualTo(newMetricValue(2.));
     }
 
     @Test
@@ -324,15 +310,13 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10L, null, null));
         inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30L, null, null));
 
-        await(() -> {
-            assertThat(getCount()).isEqualTo(4);
-            assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(20., 30., 3.));
-            assertThat(store.get(newMetricKey("canary_duplicated_task_run"))).isEqualTo(newMetricValue(1.));
-            assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_" + expectedTypeName)))
-                    .isEqualTo(newMetricValue(20., 30., 3.));
-            assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_duplicated_task_run")))
-                    .isEqualTo(newMetricValue(1.));
-        });
+        assertThat(getCount()).isEqualTo(4);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(20., 30., 3.));
+        assertThat(store.get(newMetricKey("canary_duplicated_task_run"))).isEqualTo(newMetricValue(1.));
+        assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_" + expectedTypeName)))
+                .isEqualTo(newMetricValue(20., 30., 3.));
+        assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_duplicated_task_run")))
+                .isEqualTo(newMetricValue(1.));
     }
 
     public void await(ThrowingRunnable runnable) {
