@@ -93,7 +93,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 if (missingConnections <= 0) continue;
 
                 var cancellationTokenSource = GetCancellationTokenSource(host);
-                var newConnections = ListOfConnections(host, missingConnections, cancellationTokenSource.Token);
+                var newConnections = CreateConnections(host, missingConnections, cancellationTokenSource.Token);
 
                 existingConnections.AddRange(newConnections);
                 _runningConnections[host] = existingConnections;
@@ -138,7 +138,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 .Where(host => !hosts.Contains(host))
                 .ToList();
 
-        private List<Task<LHServerConnection<T>>> ListOfConnections(LHHostInfo host, int numberOfConnections, CancellationToken cancellationToken) =>
+        private List<Task<LHServerConnection<T>>> CreateConnections(LHHostInfo host, int numberOfConnections, CancellationToken cancellationToken) =>
             Enumerable.Range(0, numberOfConnections).Select(index => Task.Run(() =>
                 {
                     _logger?.LogDebug("Adding connection #{} to: {}:{} for task '{}'", index, host.Host, host.Port, _task.TaskDef!.Id);
