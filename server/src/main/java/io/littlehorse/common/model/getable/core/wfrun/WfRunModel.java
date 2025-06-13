@@ -44,6 +44,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -198,7 +199,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     @Override
     public boolean shouldProduceToOutputTopic(
-            WfRun previousValue, ReadOnlyMetadataManager metadataManager, OutputTopicConfigModel config) {
+            WfRun previousValue,
+            ReadOnlyMetadataManager metadataManager,
+            ReadOnlyGetableManager getableManager,
+            OutputTopicConfigModel config) {
         if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
             return false;
         }

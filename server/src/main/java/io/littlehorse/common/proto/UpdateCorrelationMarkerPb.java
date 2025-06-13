@@ -4,18 +4,18 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.UpdateCorrelationmarkerPb}
+ * Protobuf type {@code littlehorse.UpdateCorrelationMarkerPb}
  */
-public final class UpdateCorrelationmarkerPb extends
+public final class UpdateCorrelationMarkerPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.UpdateCorrelationmarkerPb)
-    UpdateCorrelationmarkerPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UpdateCorrelationMarkerPb)
+    UpdateCorrelationMarkerPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use UpdateCorrelationmarkerPb.newBuilder() to construct.
-  private UpdateCorrelationmarkerPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UpdateCorrelationMarkerPb.newBuilder() to construct.
+  private UpdateCorrelationMarkerPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private UpdateCorrelationmarkerPb() {
+  private UpdateCorrelationMarkerPb() {
     correlationKey_ = "";
     action_ = 0;
   }
@@ -24,24 +24,24 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new UpdateCorrelationmarkerPb();
+    return new UpdateCorrelationMarkerPb();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationmarkerPb_descriptor;
+    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationMarkerPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationmarkerPb_fieldAccessorTable
+    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationMarkerPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.UpdateCorrelationmarkerPb.class, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder.class);
+            io.littlehorse.common.proto.UpdateCorrelationMarkerPb.class, io.littlehorse.common.proto.UpdateCorrelationMarkerPb.Builder.class);
   }
 
   /**
-   * Protobuf enum {@code littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction}
+   * Protobuf enum {@code littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction}
    */
   public enum CorrelationUpdateAction
       implements com.google.protobuf.ProtocolMessageEnum {
@@ -122,7 +122,7 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDescriptor().getEnumTypes().get(0);
+      return io.littlehorse.common.proto.UpdateCorrelationMarkerPb.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final CorrelationUpdateAction[] VALUES = values();
@@ -145,7 +145,7 @@ private static final long serialVersionUID = 0L;
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction)
+    // @@protoc_insertion_point(enum_scope:littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction)
   }
 
   public static final int CORRELATION_KEY_FIELD_NUMBER = 1;
@@ -242,19 +242,19 @@ private static final long serialVersionUID = 0L;
   public static final int ACTION_FIELD_NUMBER = 4;
   private int action_ = 0;
   /**
-   * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+   * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
    * @return The enum numeric value on the wire for action.
    */
   @java.lang.Override public int getActionValue() {
     return action_;
   }
   /**
-   * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+   * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
    * @return The action.
    */
-  @java.lang.Override public io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction getAction() {
-    io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction result = io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction.forNumber(action_);
-    return result == null ? io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction getAction() {
+    io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction result = io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction.forNumber(action_);
+    return result == null ? io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -280,7 +280,7 @@ private static final long serialVersionUID = 0L;
     if (waitingNodeRun_ != null) {
       output.writeMessage(3, getWaitingNodeRun());
     }
-    if (action_ != io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction.CORRELATE.getNumber()) {
+    if (action_ != io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction.CORRELATE.getNumber()) {
       output.writeEnum(4, action_);
     }
     getUnknownFields().writeTo(output);
@@ -303,7 +303,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getWaitingNodeRun());
     }
-    if (action_ != io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction.CORRELATE.getNumber()) {
+    if (action_ != io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction.CORRELATE.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, action_);
     }
@@ -317,10 +317,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.UpdateCorrelationmarkerPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.UpdateCorrelationMarkerPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.UpdateCorrelationmarkerPb other = (io.littlehorse.common.proto.UpdateCorrelationmarkerPb) obj;
+    io.littlehorse.common.proto.UpdateCorrelationMarkerPb other = (io.littlehorse.common.proto.UpdateCorrelationMarkerPb) obj;
 
     if (!getCorrelationKey()
         .equals(other.getCorrelationKey())) return false;
@@ -363,44 +363,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -408,26 +408,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb parseFrom(
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -440,7 +440,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.UpdateCorrelationmarkerPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.UpdateCorrelationMarkerPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -456,26 +456,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.UpdateCorrelationmarkerPb}
+   * Protobuf type {@code littlehorse.UpdateCorrelationMarkerPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.UpdateCorrelationmarkerPb)
-      io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UpdateCorrelationMarkerPb)
+      io.littlehorse.common.proto.UpdateCorrelationMarkerPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationmarkerPb_descriptor;
+      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationMarkerPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationmarkerPb_fieldAccessorTable
+      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationMarkerPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.UpdateCorrelationmarkerPb.class, io.littlehorse.common.proto.UpdateCorrelationmarkerPb.Builder.class);
+              io.littlehorse.common.proto.UpdateCorrelationMarkerPb.class, io.littlehorse.common.proto.UpdateCorrelationMarkerPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.UpdateCorrelationmarkerPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.UpdateCorrelationMarkerPb.newBuilder()
     private Builder() {
 
     }
@@ -507,17 +507,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationmarkerPb_descriptor;
+      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_UpdateCorrelationMarkerPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance();
+    public io.littlehorse.common.proto.UpdateCorrelationMarkerPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.UpdateCorrelationMarkerPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb build() {
-      io.littlehorse.common.proto.UpdateCorrelationmarkerPb result = buildPartial();
+    public io.littlehorse.common.proto.UpdateCorrelationMarkerPb build() {
+      io.littlehorse.common.proto.UpdateCorrelationMarkerPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -525,14 +525,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb buildPartial() {
-      io.littlehorse.common.proto.UpdateCorrelationmarkerPb result = new io.littlehorse.common.proto.UpdateCorrelationmarkerPb(this);
+    public io.littlehorse.common.proto.UpdateCorrelationMarkerPb buildPartial() {
+      io.littlehorse.common.proto.UpdateCorrelationMarkerPb result = new io.littlehorse.common.proto.UpdateCorrelationMarkerPb(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.common.proto.UpdateCorrelationmarkerPb result) {
+    private void buildPartial0(io.littlehorse.common.proto.UpdateCorrelationMarkerPb result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.correlationKey_ = correlationKey_;
@@ -586,16 +586,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.UpdateCorrelationmarkerPb) {
-        return mergeFrom((io.littlehorse.common.proto.UpdateCorrelationmarkerPb)other);
+      if (other instanceof io.littlehorse.common.proto.UpdateCorrelationMarkerPb) {
+        return mergeFrom((io.littlehorse.common.proto.UpdateCorrelationMarkerPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.UpdateCorrelationmarkerPb other) {
-      if (other == io.littlehorse.common.proto.UpdateCorrelationmarkerPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.UpdateCorrelationMarkerPb other) {
+      if (other == io.littlehorse.common.proto.UpdateCorrelationMarkerPb.getDefaultInstance()) return this;
       if (!other.getCorrelationKey().isEmpty()) {
         correlationKey_ = other.correlationKey_;
         bitField0_ |= 0x00000001;
@@ -989,14 +989,14 @@ private static final long serialVersionUID = 0L;
 
     private int action_ = 0;
     /**
-     * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+     * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
      * @return The enum numeric value on the wire for action.
      */
     @java.lang.Override public int getActionValue() {
       return action_;
     }
     /**
-     * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+     * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
      * @param value The enum numeric value on the wire for action to set.
      * @return This builder for chaining.
      */
@@ -1007,20 +1007,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+     * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
      * @return The action.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction getAction() {
-      io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction result = io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction.forNumber(action_);
-      return result == null ? io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction.UNRECOGNIZED : result;
+    public io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction getAction() {
+      io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction result = io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction.forNumber(action_);
+      return result == null ? io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+     * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
      * @param value The action to set.
      * @return This builder for chaining.
      */
-    public Builder setAction(io.littlehorse.common.proto.UpdateCorrelationmarkerPb.CorrelationUpdateAction value) {
+    public Builder setAction(io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -1030,7 +1030,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UpdateCorrelationmarkerPb.CorrelationUpdateAction action = 4;</code>
+     * <code>.littlehorse.UpdateCorrelationMarkerPb.CorrelationUpdateAction action = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearAction() {
@@ -1052,23 +1052,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.UpdateCorrelationmarkerPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UpdateCorrelationMarkerPb)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.UpdateCorrelationmarkerPb)
-  private static final io.littlehorse.common.proto.UpdateCorrelationmarkerPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UpdateCorrelationMarkerPb)
+  private static final io.littlehorse.common.proto.UpdateCorrelationMarkerPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.UpdateCorrelationmarkerPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.UpdateCorrelationMarkerPb();
   }
 
-  public static io.littlehorse.common.proto.UpdateCorrelationmarkerPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.UpdateCorrelationMarkerPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<UpdateCorrelationmarkerPb>
-      PARSER = new com.google.protobuf.AbstractParser<UpdateCorrelationmarkerPb>() {
+  private static final com.google.protobuf.Parser<UpdateCorrelationMarkerPb>
+      PARSER = new com.google.protobuf.AbstractParser<UpdateCorrelationMarkerPb>() {
     @java.lang.Override
-    public UpdateCorrelationmarkerPb parsePartialFrom(
+    public UpdateCorrelationMarkerPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1087,17 +1087,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<UpdateCorrelationmarkerPb> parser() {
+  public static com.google.protobuf.Parser<UpdateCorrelationMarkerPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<UpdateCorrelationmarkerPb> getParserForType() {
+  public com.google.protobuf.Parser<UpdateCorrelationMarkerPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.UpdateCorrelationmarkerPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.UpdateCorrelationMarkerPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 
