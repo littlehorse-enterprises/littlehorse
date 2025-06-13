@@ -197,7 +197,7 @@ public class GetableManager extends ReadOnlyGetableManager {
                 U previouslyStoredProto = entity.getPreviouslyStoredProto();
 
                 if (outputTopicCandidate.shouldProduceToOutputTopic(
-                        previouslyStoredProto, ctx.metadataManager(), outputTopicConfig)) {
+                        previouslyStoredProto, ctx.metadataManager(), this, outputTopicConfig)) {
                     return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
                 }
             }
