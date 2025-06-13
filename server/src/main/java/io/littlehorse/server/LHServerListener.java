@@ -1131,7 +1131,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                     futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
             Throwable cause = e.getCause() == null ? e : e.getCause();
             log.error("Failed to process command %s".formatted(command), cause);
             responseObserver.onError(cause);
@@ -1139,8 +1139,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
                     "Could not process command in time id: %s".formatted(command.getCommandId()))));
         } catch (Throwable e) {
-            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
-            log.error("Failed processing command", e);
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            if (cause instanceof StatusRuntimeException) {
+                responseObserver.onError(cause);
+            } else {
+                responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
+                log.error("Failed processing command", e);
+            }
         } finally {
             command.getCommandId().ifPresent(asyncWaiters::removeCommand);
         }
