@@ -83,6 +83,10 @@ namespace LittleHorse.Sdk.Worker.Internal
             }
         }
 
+        /// <summary>
+        /// Makes sure the assigned hosts have at least the number of connections specified on LHW_NUM_WORKER_THREADS
+        /// </summary>
+        /// <param name="assignedHosts">Hosts assigned to the worker</param>
         private void AddNewConnections(IList<LHHostInfo> assignedHosts)
         {
             foreach (var host in assignedHosts)

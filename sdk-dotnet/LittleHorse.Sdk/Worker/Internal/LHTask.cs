@@ -34,7 +34,7 @@ internal class LHTask<T>
         _taskSignature = new LHTaskSignature<T>(_taskDefName, _executable);
         _taskMethod = _taskSignature.TaskMethod;
 
-        ValidateTaskMethodParameters(_taskMethod, _taskSignature);
+        await ValidateTaskMethodParameters(_taskMethod, _taskSignature);
         _taskMethodMappings = await CreateVariableMappings(_taskMethod, _taskSignature);
     }
 
