@@ -111,7 +111,29 @@ lhctl put correlatedEvent <key> <externalEventName>
 	},
 }
 
+var deleteCorrelatedEventCmd = &cobra.Command{
+	Use:   "correlatedEvent <key> <externalEventDefName>",
+	Short: "Delete a CorrelatedEvent.",
+	Args:  cobra.ExactArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		key := args[0]
+		externalEventDefName := args[1]
+		littlehorse.PrintResp(getGlobalClient(cmd).DeleteCorrelatedEvent(
+			requestContext(cmd),
+			&lhproto.DeleteCorrelatedEventRequest{
+				Id: &lhproto.CorrelatedEventId{
+					Key: key,
+					ExternalEventDefId: &lhproto.ExternalEventDefId{
+						Name: externalEventDefName,
+					},
+				},
+			},
+		))
+	},
+}
+
 func init() {
 	getCmd.AddCommand(getCorrelatedEventCmd)
 	putCmd.AddCommand(putCorrelatedEventCmd)
+	deleteCmd.AddCommand(deleteCorrelatedEventCmd)
 }
