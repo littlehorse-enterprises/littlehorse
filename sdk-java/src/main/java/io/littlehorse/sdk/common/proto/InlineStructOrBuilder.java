@@ -12,24 +12,7 @@ public interface InlineStructOrBuilder extends
    * The fields in the inline struct.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.StructField> 
-      getFieldsList();
-  /**
-   * <pre>
-   * The fields in the inline struct.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.StructField getFields(int index);
-  /**
-   * <pre>
-   * The fields in the inline struct.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
    */
   int getFieldsCount();
   /**
@@ -37,17 +20,44 @@ public interface InlineStructOrBuilder extends
    * The fields in the inline struct.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-      getFieldsOrBuilderList();
+  boolean containsFields(
+      java.lang.String key);
+  /**
+   * Use {@link #getFieldsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+  getFields();
   /**
    * <pre>
    * The fields in the inline struct.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.StructFieldOrBuilder getFieldsOrBuilder(
-      int index);
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+  getFieldsMap();
+  /**
+   * <pre>
+   * The fields in the inline struct.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.StructField getFieldsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.StructField defaultValue);
+  /**
+   * <pre>
+   * The fields in the inline struct.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructField getFieldsOrThrow(
+      java.lang.String key);
 }

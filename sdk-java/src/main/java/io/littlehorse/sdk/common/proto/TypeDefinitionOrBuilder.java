@@ -24,34 +24,34 @@ public interface TypeDefinitionOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
 
   /**
-   * <code>.littlehorse.StructDefId struct = 5;</code>
-   * @return Whether the struct field is set.
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+   * @return Whether the structDefId field is set.
    */
-  boolean hasStruct();
+  boolean hasStructDefId();
   /**
-   * <code>.littlehorse.StructDefId struct = 5;</code>
-   * @return The struct.
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+   * @return The structDefId.
    */
-  io.littlehorse.sdk.common.proto.StructDefId getStruct();
+  io.littlehorse.sdk.common.proto.StructDefId getStructDefId();
   /**
-   * <code>.littlehorse.StructDefId struct = 5;</code>
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructOrBuilder();
+  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();
 
   /**
-   * <code>.littlehorse.InlineStructDef inline_struct = 6;</code>
-   * @return Whether the inlineStruct field is set.
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+   * @return Whether the inlineStructDef field is set.
    */
-  boolean hasInlineStruct();
+  boolean hasInlineStructDef();
   /**
-   * <code>.littlehorse.InlineStructDef inline_struct = 6;</code>
-   * @return The inlineStruct.
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+   * @return The inlineStructDef.
    */
-  io.littlehorse.sdk.common.proto.InlineStructDef getInlineStruct();
+  io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef();
   /**
-   * <code>.littlehorse.InlineStructDef inline_struct = 6;</code>
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
    */
-  io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructOrBuilder();
+  io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder();
 
   /**
    * <pre>

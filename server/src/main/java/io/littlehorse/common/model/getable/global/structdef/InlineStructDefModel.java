@@ -39,6 +39,12 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         }
     }
 
+    public static InlineStructDefModel fromProto(InlineStructDef proto, ExecutionContext context) {
+        InlineStructDefModel out = new InlineStructDefModel();
+        out.initFrom(proto, context);
+        return out;
+    }
+
     @Override
     public Class<InlineStructDef> getProtoBaseClass() {
         return InlineStructDef.class;

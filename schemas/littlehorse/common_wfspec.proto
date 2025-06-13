@@ -170,9 +170,9 @@ message TypeDefinition {
   oneof defined_type {
     VariableType primitive_type = 1;
 
-    StructDefId struct = 5;
+    StructDefId struct_def_id = 5;
     
-    InlineStructDef inline_struct = 6;
+    InlineStructDef inline_struct_def = 6;
   }
 
   // For compatibility purposes.

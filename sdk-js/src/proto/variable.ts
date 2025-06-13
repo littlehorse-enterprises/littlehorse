@@ -89,7 +89,12 @@ export interface Struct {
 /** An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`. */
 export interface InlineStruct {
   /** The fields in the inline struct. */
-  fields: StructField[];
+  fields: { [key: string]: StructField };
+}
+
+export interface InlineStruct_FieldsEntry {
+  key: string;
+  value: StructField | undefined;
 }
 
 /** A StructField represents the value for a single field in a struct. */
@@ -398,14 +403,14 @@ export const Struct = {
 };
 
 function createBaseInlineStruct(): InlineStruct {
-  return { fields: [] };
+  return { fields: {} };
 }
 
 export const InlineStruct = {
   encode(message: InlineStruct, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.fields) {
-      StructField.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
+    Object.entries(message.fields).forEach(([key, value]) => {
+      InlineStruct_FieldsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
+    });
     return writer;
   },
 
@@ -421,7 +426,10 @@ export const InlineStruct = {
             break;
           }
 
-          message.fields.push(StructField.decode(reader, reader.uint32()));
+          const entry1 = InlineStruct_FieldsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.fields[entry1.key] = entry1.value;
+          }
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -437,7 +445,70 @@ export const InlineStruct = {
   },
   fromPartial(object: DeepPartial<InlineStruct>): InlineStruct {
     const message = createBaseInlineStruct();
-    message.fields = object.fields?.map((e) => StructField.fromPartial(e)) || [];
+    message.fields = Object.entries(object.fields ?? {}).reduce<{ [key: string]: StructField }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = StructField.fromPartial(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+function createBaseInlineStruct_FieldsEntry(): InlineStruct_FieldsEntry {
+  return { key: "", value: undefined };
+}
+
+export const InlineStruct_FieldsEntry = {
+  encode(message: InlineStruct_FieldsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      StructField.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStruct_FieldsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStruct_FieldsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = StructField.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<InlineStruct_FieldsEntry>): InlineStruct_FieldsEntry {
+    return InlineStruct_FieldsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStruct_FieldsEntry>): InlineStruct_FieldsEntry {
+    const message = createBaseInlineStruct_FieldsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? StructField.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };

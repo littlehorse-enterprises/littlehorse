@@ -11,6 +11,7 @@ import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.global.wfspec.variable.StructModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -42,6 +43,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private String strVal;
     private Long intVal;
     private byte[] bytesVal;
+    
+    private StructModel structVal;
 
     private ExecutionContext context;
 
@@ -103,6 +106,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case BYTES:
                 bytesVal = p.getBytes().toByteArray();
+                break;
+            case STRUCT:
+                structVal = StructModel.fromProto(p.getStruct(), context);
                 break;
             case VALUE_NOT_SET:
                 // it's a null variable! Nothing to do.
@@ -203,6 +209,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     out.setBytes(ByteString.copyFrom(bytesVal));
                 }
                 break;
+            case STRUCT:
+                if (structVal != null) {
+                    out.setStruct(structVal.toProto());
+                }
             case VALUE_NOT_SET:
                 // nothing to do
                 break;

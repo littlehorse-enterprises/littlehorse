@@ -76,7 +76,7 @@ message Struct {
 // An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
 message InlineStruct {
   // The fields in the inline struct.
-  repeated StructField fields = 1;
+  map<string, StructField> fields = 1;
 }
 
 // A StructField represents the value for a single field in a struct.

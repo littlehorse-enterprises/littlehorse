@@ -51,9 +51,16 @@ class Struct(_message.Message):
 
 class InlineStruct(_message.Message):
     __slots__ = ["fields"]
+    class FieldsEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: StructField
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[StructField, _Mapping]] = ...) -> None: ...
     FIELDS_FIELD_NUMBER: _ClassVar[int]
-    fields: _containers.RepeatedCompositeFieldContainer[StructField]
-    def __init__(self, fields: _Optional[_Iterable[_Union[StructField, _Mapping]]] = ...) -> None: ...
+    fields: _containers.MessageMap[str, StructField]
+    def __init__(self, fields: _Optional[_Mapping[str, StructField]] = ...) -> None: ...
 
 class StructField(_message.Message):
     __slots__ = ["primitive", "struct", "list"]

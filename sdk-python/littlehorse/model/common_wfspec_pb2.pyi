@@ -122,16 +122,16 @@ class VariableDef(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
-    __slots__ = ["primitive_type", "struct", "inline_struct", "masked"]
+    __slots__ = ["primitive_type", "struct_def_id", "inline_struct_def", "masked"]
     PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    STRUCT_FIELD_NUMBER: _ClassVar[int]
-    INLINE_STRUCT_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    INLINE_STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
     MASKED_FIELD_NUMBER: _ClassVar[int]
     primitive_type: _common_enums_pb2.VariableType
-    struct: _object_id_pb2.StructDefId
-    inline_struct: InlineStructDef
+    struct_def_id: _object_id_pb2.StructDefId
+    inline_struct_def: InlineStructDef
     masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_struct: _Optional[_Union[InlineStructDef, _Mapping]] = ..., masked: bool = ...) -> None: ...
+    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_struct_def: _Optional[_Union[InlineStructDef, _Mapping]] = ..., masked: bool = ...) -> None: ...
 
 class ReturnType(_message.Message):
     __slots__ = ["return_type"]

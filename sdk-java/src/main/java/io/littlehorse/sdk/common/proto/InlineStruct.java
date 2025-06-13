@@ -20,7 +20,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private InlineStruct() {
-    fields_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -35,6 +34,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_InlineStruct_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 1:
+        return internalGetFields();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -44,64 +55,98 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int FIELDS_FIELD_NUMBER = 1;
+  private static final class FieldsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.sdk.common.proto.StructField> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.sdk.common.proto.StructField>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_InlineStruct_FieldsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.sdk.common.proto.StructField.getDefaultInstance());
+  }
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.StructField> fields_;
-  /**
-   * <pre>
-   * The fields in the inline struct.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.StructField> getFieldsList() {
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.sdk.common.proto.StructField> fields_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+  internalGetFields() {
+    if (fields_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          FieldsDefaultEntryHolder.defaultEntry);
+    }
     return fields_;
   }
-  /**
-   * <pre>
-   * The fields in the inline struct.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-      getFieldsOrBuilderList() {
-    return fields_;
-  }
-  /**
-   * <pre>
-   * The fields in the inline struct.
-   * </pre>
-   *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
-   */
-  @java.lang.Override
   public int getFieldsCount() {
-    return fields_.size();
+    return internalGetFields().getMap().size();
   }
   /**
    * <pre>
    * The fields in the inline struct.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StructField getFields(int index) {
-    return fields_.get(index);
+  public boolean containsFields(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetFields().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getFieldsMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> getFields() {
+    return getFieldsMap();
   }
   /**
    * <pre>
    * The fields in the inline struct.
    * </pre>
    *
-   * <code>repeated .littlehorse.StructField fields = 1;</code>
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StructFieldOrBuilder getFieldsOrBuilder(
-      int index) {
-    return fields_.get(index);
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> getFieldsMap() {
+    return internalGetFields().getMap();
+  }
+  /**
+   * <pre>
+   * The fields in the inline struct.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
+   */
+  @java.lang.Override
+  public /* nullable */
+io.littlehorse.sdk.common.proto.StructField getFieldsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.StructField defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> map =
+        internalGetFields().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <pre>
+   * The fields in the inline struct.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructField getFieldsOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> map =
+        internalGetFields().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -118,9 +163,12 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    for (int i = 0; i < fields_.size(); i++) {
-      output.writeMessage(1, fields_.get(i));
-    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetFields(),
+        FieldsDefaultEntryHolder.defaultEntry,
+        1);
     getUnknownFields().writeTo(output);
   }
 
@@ -130,9 +178,15 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    for (int i = 0; i < fields_.size(); i++) {
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.StructField> entry
+         : internalGetFields().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+      fields__ = FieldsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, fields_.get(i));
+          .computeMessageSize(1, fields__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -149,8 +203,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.InlineStruct other = (io.littlehorse.sdk.common.proto.InlineStruct) obj;
 
-    if (!getFieldsList()
-        .equals(other.getFieldsList())) return false;
+    if (!internalGetFields().equals(
+        other.internalGetFields())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -162,9 +216,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (getFieldsCount() > 0) {
+    if (!internalGetFields().getMap().isEmpty()) {
       hash = (37 * hash) + FIELDS_FIELD_NUMBER;
-      hash = (53 * hash) + getFieldsList().hashCode();
+      hash = (53 * hash) + internalGetFields().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -279,6 +333,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_InlineStruct_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 1:
+          return internalGetFields();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 1:
+          return internalGetMutableFields();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -301,13 +377,7 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      if (fieldsBuilder_ == null) {
-        fields_ = java.util.Collections.emptyList();
-      } else {
-        fields_ = null;
-        fieldsBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000001);
+      internalGetMutableFields().clear();
       return this;
     }
 
@@ -334,26 +404,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.InlineStruct buildPartial() {
       io.littlehorse.sdk.common.proto.InlineStruct result = new io.littlehorse.sdk.common.proto.InlineStruct(this);
-      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.InlineStruct result) {
-      if (fieldsBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
-          fields_ = java.util.Collections.unmodifiableList(fields_);
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.fields_ = fields_;
-      } else {
-        result.fields_ = fieldsBuilder_.build();
-      }
-    }
-
     private void buildPartial0(io.littlehorse.sdk.common.proto.InlineStruct result) {
       int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.fields_ = internalGetFields();
+        result.fields_.makeImmutable();
+      }
     }
 
     @java.lang.Override
@@ -400,32 +461,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.InlineStruct other) {
       if (other == io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance()) return this;
-      if (fieldsBuilder_ == null) {
-        if (!other.fields_.isEmpty()) {
-          if (fields_.isEmpty()) {
-            fields_ = other.fields_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureFieldsIsMutable();
-            fields_.addAll(other.fields_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.fields_.isEmpty()) {
-          if (fieldsBuilder_.isEmpty()) {
-            fieldsBuilder_.dispose();
-            fieldsBuilder_ = null;
-            fields_ = other.fields_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-            fieldsBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getFieldsFieldBuilder() : null;
-          } else {
-            fieldsBuilder_.addAllMessages(other.fields_);
-          }
-        }
-      }
+      internalGetMutableFields().mergeFrom(
+          other.internalGetFields());
+      bitField0_ |= 0x00000001;
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -453,16 +491,12 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              io.littlehorse.sdk.common.proto.StructField m =
-                  input.readMessage(
-                      io.littlehorse.sdk.common.proto.StructField.parser(),
-                      extensionRegistry);
-              if (fieldsBuilder_ == null) {
-                ensureFieldsIsMutable();
-                fields_.add(m);
-              } else {
-                fieldsBuilder_.addMessage(m);
-              }
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+              fields__ = input.readMessage(
+                  FieldsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableFields().getMutableMap().put(
+                  fields__.getKey(), fields__.getValue());
+              bitField0_ |= 0x00000001;
               break;
             } // case 10
             default: {
@@ -482,210 +516,104 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.sdk.common.proto.StructField> fields_ =
-      java.util.Collections.emptyList();
-    private void ensureFieldsIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        fields_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.StructField>(fields_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StructField, io.littlehorse.sdk.common.proto.StructField.Builder, io.littlehorse.sdk.common.proto.StructFieldOrBuilder> fieldsBuilder_;
-
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.StructField> getFieldsList() {
-      if (fieldsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(fields_);
-      } else {
-        return fieldsBuilder_.getMessageList();
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.sdk.common.proto.StructField> fields_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+        internalGetFields() {
+      if (fields_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            FieldsDefaultEntryHolder.defaultEntry);
       }
+      return fields_;
     }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+        internalGetMutableFields() {
+      if (fields_ == null) {
+        fields_ = com.google.protobuf.MapField.newMapField(
+            FieldsDefaultEntryHolder.defaultEntry);
+      }
+      if (!fields_.isMutable()) {
+        fields_ = fields_.copy();
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return fields_;
+    }
     public int getFieldsCount() {
-      if (fieldsBuilder_ == null) {
-        return fields_.size();
-      } else {
-        return fieldsBuilder_.getCount();
-      }
+      return internalGetFields().getMap().size();
     }
     /**
      * <pre>
      * The fields in the inline struct.
      * </pre>
      *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
+     * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.StructField getFields(int index) {
-      if (fieldsBuilder_ == null) {
-        return fields_.get(index);
-      } else {
-        return fieldsBuilder_.getMessage(index);
-      }
+    @java.lang.Override
+    public boolean containsFields(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetFields().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getFieldsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> getFields() {
+      return getFieldsMap();
     }
     /**
      * <pre>
      * The fields in the inline struct.
      * </pre>
      *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
+     * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
      */
-    public Builder setFields(
-        int index, io.littlehorse.sdk.common.proto.StructField value) {
-      if (fieldsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureFieldsIsMutable();
-        fields_.set(index, value);
-        onChanged();
-      } else {
-        fieldsBuilder_.setMessage(index, value);
-      }
-      return this;
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> getFieldsMap() {
+      return internalGetFields().getMap();
     }
     /**
      * <pre>
      * The fields in the inline struct.
      * </pre>
      *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
+     * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
      */
-    public Builder setFields(
-        int index, io.littlehorse.sdk.common.proto.StructField.Builder builderForValue) {
-      if (fieldsBuilder_ == null) {
-        ensureFieldsIsMutable();
-        fields_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        fieldsBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.sdk.common.proto.StructField getFieldsOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.sdk.common.proto.StructField defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> map =
+          internalGetFields().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
      * <pre>
      * The fields in the inline struct.
      * </pre>
      *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
+     * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
      */
-    public Builder addFields(io.littlehorse.sdk.common.proto.StructField value) {
-      if (fieldsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureFieldsIsMutable();
-        fields_.add(value);
-        onChanged();
-      } else {
-        fieldsBuilder_.addMessage(value);
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructField getFieldsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> map =
+          internalGetFields().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
       }
-      return this;
+      return map.get(key);
     }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public Builder addFields(
-        int index, io.littlehorse.sdk.common.proto.StructField value) {
-      if (fieldsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureFieldsIsMutable();
-        fields_.add(index, value);
-        onChanged();
-      } else {
-        fieldsBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public Builder addFields(
-        io.littlehorse.sdk.common.proto.StructField.Builder builderForValue) {
-      if (fieldsBuilder_ == null) {
-        ensureFieldsIsMutable();
-        fields_.add(builderForValue.build());
-        onChanged();
-      } else {
-        fieldsBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public Builder addFields(
-        int index, io.littlehorse.sdk.common.proto.StructField.Builder builderForValue) {
-      if (fieldsBuilder_ == null) {
-        ensureFieldsIsMutable();
-        fields_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        fieldsBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public Builder addAllFields(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.StructField> values) {
-      if (fieldsBuilder_ == null) {
-        ensureFieldsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, fields_);
-        onChanged();
-      } else {
-        fieldsBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
     public Builder clearFields() {
-      if (fieldsBuilder_ == null) {
-        fields_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-      } else {
-        fieldsBuilder_.clear();
-      }
+      bitField0_ = (bitField0_ & ~0x00000001);
+      internalGetMutableFields().getMutableMap()
+          .clear();
       return this;
     }
     /**
@@ -693,16 +621,39 @@ private static final long serialVersionUID = 0L;
      * The fields in the inline struct.
      * </pre>
      *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
+     * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
      */
-    public Builder removeFields(int index) {
-      if (fieldsBuilder_ == null) {
-        ensureFieldsIsMutable();
-        fields_.remove(index);
-        onChanged();
-      } else {
-        fieldsBuilder_.remove(index);
-      }
+    public Builder removeFields(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableFields().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField>
+        getMutableFields() {
+      bitField0_ |= 0x00000001;
+      return internalGetMutableFields().getMutableMap();
+    }
+    /**
+     * <pre>
+     * The fields in the inline struct.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
+     */
+    public Builder putFields(
+        java.lang.String key,
+        io.littlehorse.sdk.common.proto.StructField value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutableFields().getMutableMap()
+          .put(key, value);
+      bitField0_ |= 0x00000001;
       return this;
     }
     /**
@@ -710,88 +661,14 @@ private static final long serialVersionUID = 0L;
      * The fields in the inline struct.
      * </pre>
      *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
+     * <code>map&lt;string, .littlehorse.StructField&gt; fields = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.StructField.Builder getFieldsBuilder(
-        int index) {
-      return getFieldsFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.StructFieldOrBuilder getFieldsOrBuilder(
-        int index) {
-      if (fieldsBuilder_ == null) {
-        return fields_.get(index);  } else {
-        return fieldsBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-         getFieldsOrBuilderList() {
-      if (fieldsBuilder_ != null) {
-        return fieldsBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(fields_);
-      }
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.StructField.Builder addFieldsBuilder() {
-      return getFieldsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.StructField.getDefaultInstance());
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public io.littlehorse.sdk.common.proto.StructField.Builder addFieldsBuilder(
-        int index) {
-      return getFieldsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.StructField.getDefaultInstance());
-    }
-    /**
-     * <pre>
-     * The fields in the inline struct.
-     * </pre>
-     *
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.StructField.Builder> 
-         getFieldsBuilderList() {
-      return getFieldsFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StructField, io.littlehorse.sdk.common.proto.StructField.Builder, io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-        getFieldsFieldBuilder() {
-      if (fieldsBuilder_ == null) {
-        fieldsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.StructField, io.littlehorse.sdk.common.proto.StructField.Builder, io.littlehorse.sdk.common.proto.StructFieldOrBuilder>(
-                fields_,
-                ((bitField0_ & 0x00000001) != 0),
-                getParentForChildren(),
-                isClean());
-        fields_ = null;
-      }
-      return fieldsBuilder_;
+    public Builder putAllFields(
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.StructField> values) {
+      internalGetMutableFields().getMutableMap()
+          .putAll(values);
+      bitField0_ |= 0x00000001;
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

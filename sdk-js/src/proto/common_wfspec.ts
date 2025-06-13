@@ -351,8 +351,8 @@ export interface VariableDef {
  */
 export interface TypeDefinition {
   primitiveType?: VariableType | undefined;
-  struct?: StructDefId | undefined;
-  inlineStruct?:
+  structDefId?: StructDefId | undefined;
+  inlineStructDef?:
     | InlineStructDef
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
@@ -1099,7 +1099,7 @@ export const VariableDef = {
 };
 
 function createBaseTypeDefinition(): TypeDefinition {
-  return { primitiveType: undefined, struct: undefined, inlineStruct: undefined, masked: false };
+  return { primitiveType: undefined, structDefId: undefined, inlineStructDef: undefined, masked: false };
 }
 
 export const TypeDefinition = {
@@ -1107,11 +1107,11 @@ export const TypeDefinition = {
     if (message.primitiveType !== undefined) {
       writer.uint32(8).int32(variableTypeToNumber(message.primitiveType));
     }
-    if (message.struct !== undefined) {
-      StructDefId.encode(message.struct, writer.uint32(42).fork()).ldelim();
+    if (message.structDefId !== undefined) {
+      StructDefId.encode(message.structDefId, writer.uint32(42).fork()).ldelim();
     }
-    if (message.inlineStruct !== undefined) {
-      InlineStructDef.encode(message.inlineStruct, writer.uint32(50).fork()).ldelim();
+    if (message.inlineStructDef !== undefined) {
+      InlineStructDef.encode(message.inlineStructDef, writer.uint32(50).fork()).ldelim();
     }
     if (message.masked !== false) {
       writer.uint32(32).bool(message.masked);
@@ -1138,14 +1138,14 @@ export const TypeDefinition = {
             break;
           }
 
-          message.struct = StructDefId.decode(reader, reader.uint32());
+          message.structDefId = StructDefId.decode(reader, reader.uint32());
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.inlineStruct = InlineStructDef.decode(reader, reader.uint32());
+          message.inlineStructDef = InlineStructDef.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 32) {
@@ -1169,11 +1169,11 @@ export const TypeDefinition = {
   fromPartial(object: DeepPartial<TypeDefinition>): TypeDefinition {
     const message = createBaseTypeDefinition();
     message.primitiveType = object.primitiveType ?? undefined;
-    message.struct = (object.struct !== undefined && object.struct !== null)
-      ? StructDefId.fromPartial(object.struct)
+    message.structDefId = (object.structDefId !== undefined && object.structDefId !== null)
+      ? StructDefId.fromPartial(object.structDefId)
       : undefined;
-    message.inlineStruct = (object.inlineStruct !== undefined && object.inlineStruct !== null)
-      ? InlineStructDef.fromPartial(object.inlineStruct)
+    message.inlineStructDef = (object.inlineStructDef !== undefined && object.inlineStructDef !== null)
+      ? InlineStructDef.fromPartial(object.inlineStructDef)
       : undefined;
     message.masked = object.masked ?? false;
     return message;
