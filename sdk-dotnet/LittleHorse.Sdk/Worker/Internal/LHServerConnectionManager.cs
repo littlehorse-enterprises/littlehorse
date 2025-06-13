@@ -60,12 +60,12 @@ namespace LittleHorse.Sdk.Worker.Internal
                 
                 CancelUnassignedHosts(response.YourHosts);
                 RemoveDeadConnections();
-                AddNewHosts(response.YourHosts);
+                AddNewConnections(response.YourHosts);
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Error when registering task worker.");
-                CloseAllConnections();
+                CancelUnassignedHosts(new List<LHHostInfo>());
             }
         }
 
@@ -83,21 +83,38 @@ namespace LittleHorse.Sdk.Worker.Internal
             }
         }
 
-        private void AddNewHosts(IList<LHHostInfo> assignedHosts)
+        private void AddNewConnections(IList<LHHostInfo> assignedHosts)
         {
-            foreach (var host in HostsToAdd(assignedHosts))
+            foreach (var host in assignedHosts)
             {
-                var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
-                _cancellationTokenSource[host] = cancellationTokenSource;
-                _runningConnections[host] = ListOfConnections(host, _config.WorkerThreads, cancellationTokenSource.Token);
-                _logger?.LogInformation("Added {} connections for host {}:{}", _runningConnections[host].Count, host.Host, host.Port);
+                var existingConnections = GetExistingConnections(host);
+                var missingConnections = Math.Max(_config.WorkerThreads - existingConnections.Count, 0);
+
+                if (missingConnections <= 0) continue;
+
+                var cancellationTokenSource = GetCancellationTokenSource(host);
+                var newConnections = ListOfConnections(host, missingConnections, cancellationTokenSource.Token);
+
+                existingConnections.AddRange(newConnections);
+                _runningConnections[host] = existingConnections;
+                _logger?.LogInformation("Added {} connections for host {}:{}", missingConnections, host.Host, host.Port);
             }
         }
 
-        private List<LHHostInfo> HostsToAdd(IList<LHHostInfo> hosts) =>
-            hosts
-                .Where(host => !_runningConnections.ContainsKey(host))
-                .ToList();
+        private List<Task<LHServerConnection<T>>> GetExistingConnections(LHHostInfo host)
+        {
+            _runningConnections.TryGetValue(host, out var connections);
+            connections ??= new List<Task<LHServerConnection<T>>>();
+            return connections;
+        }
+
+        private CancellationTokenSource GetCancellationTokenSource(LHHostInfo host)
+        {
+            _cancellationTokenSource.TryGetValue(host, out var cancellationTokenSource);
+            cancellationTokenSource ??= CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
+            _cancellationTokenSource[host] = cancellationTokenSource;
+            return cancellationTokenSource;
+        }
 
         /// <summary>
         /// Signals a cancellation for connections that are no longer assigned to the worker. The connection task is not immediately disposed
@@ -131,19 +148,5 @@ namespace LittleHorse.Sdk.Worker.Internal
                     return Task.FromResult(newConnection);
                 })
             ).ToList();
-        
-        private void CloseAllConnections()
-        {
-            _cancellationTokenSource
-                .Values
-                .ToList()
-                .ForEach(cancellationTokenSource =>
-                {
-                    cancellationTokenSource.Cancel();
-                    cancellationTokenSource.Dispose();
-                });
-
-            _cancellationTokenSource.Clear();
-        }
     }
 }
