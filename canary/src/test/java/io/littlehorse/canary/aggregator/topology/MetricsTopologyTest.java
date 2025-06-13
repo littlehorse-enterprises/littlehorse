@@ -45,11 +45,11 @@ class MetricsTopologyTest {
         return UUID.randomUUID().toString();
     }
 
-    private MetricValue newMetricValue(double count) {
+    private static MetricValue newMetricValue(double count) {
         return MetricValue.newBuilder().putValues("count", count).build();
     }
 
-    private MetricValue newMetricValue(double avg, double max, double count) {
+    private static MetricValue newMetricValue(double avg, double max, double count) {
         return MetricValue.newBuilder()
                 .putValues("avg", avg)
                 .putValues("max", max)
@@ -57,23 +57,23 @@ class MetricsTopologyTest {
                 .build();
     }
 
-    private MetricKey newMetricKey(String id) {
+    private static MetricKey newMetricKey(String id) {
         return newMetricKey(HOST_1, PORT_1, id);
     }
 
-    private MetricKey newMetricKey(String id, String status) {
+    private static MetricKey newMetricKey(String id, String status) {
         return newMetricKey(HOST_1, PORT_1, id, status, null);
     }
 
-    private MetricKey newMetricKey(String host, int port, String id) {
+    private static MetricKey newMetricKey(String host, int port, String id) {
         return newMetricKey(host, port, id, null, null);
     }
 
-    private MetricKey newMetricKey(String id, String status, Map<String, String> tags) {
+    private static MetricKey newMetricKey(String id, String status, Map<String, String> tags) {
         return newMetricKey(HOST_1, PORT_1, id, status, tags);
     }
 
-    private MetricKey newMetricKey(String host, int port, String id, String status, Map<String, String> tags) {
+    private static MetricKey newMetricKey(String host, int port, String id, String status, Map<String, String> tags) {
         MetricKey.Builder builder =
                 MetricKey.newBuilder().setServerHost(host).setServerPort(port).setName(id);
 
@@ -94,20 +94,20 @@ class MetricsTopologyTest {
         return builder.build();
     }
 
-    private TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency) {
+    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency) {
         return newBeat(HOST_1, PORT_1, type, id, latency, null, null);
     }
 
-    private TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency, String beatStatus) {
+    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency, String beatStatus) {
         return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus, null);
     }
 
-    private TestRecord<BeatKey, BeatValue> newBeat(
+    private static TestRecord<BeatKey, BeatValue> newBeat(
             BeatType type, String id, Long latency, String beatStatus, Map<String, String> tags) {
         return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus, tags);
     }
 
-    private TestRecord<BeatKey, BeatValue> newBeat(
+    private static TestRecord<BeatKey, BeatValue> newBeat(
             String host,
             int port,
             BeatType type,
@@ -300,7 +300,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void shouldCalculateCountAndLatencyForTaskRunWithDuplicatedAndTwoServers() throws InterruptedException {
+    void shouldCalculateCountAndLatencyForTaskRunWithDuplicatedAndTwoServers() {
         BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
         String expectedTypeName = expectedType.name().toLowerCase();
         String expectedUniqueId = getRandomId();
