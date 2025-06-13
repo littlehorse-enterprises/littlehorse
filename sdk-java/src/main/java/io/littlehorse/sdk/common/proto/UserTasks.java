@@ -65,6 +65,21 @@ public final class UserTasks {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_CancelUserTaskRunRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PutUserTaskRunCommentRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_PutUserTaskRunCommentRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_EditUserTaskRunCommentRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_EditUserTaskRunCommentRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_DeleteUserTaskRunCommentRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_DeleteUserTaskRunCommentRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_UserTaskTriggerReference_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -99,6 +114,16 @@ public final class UserTasks {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_UserTaskEvent_UTEAssigned_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_UserTaskEvent_UTECommented_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_UserTaskEvent_UTECommented_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -156,35 +181,54 @@ public final class UserTasks {
       "unAssignmentPolicy\022\034\n\030FAIL_IF_CLAIMED_BY" +
       "_OTHER\020\000\022\020\n\014IGNORE_CLAIM\020\001\"P\n\030CancelUser" +
       "TaskRunRequest\0224\n\020user_task_run_id\030\001 \001(\013" +
-      "2\032.littlehorse.UserTaskRunId\"\261\001\n\030UserTas" +
-      "kTriggerReference\022+\n\013node_run_id\030\001 \001(\0132\026" +
-      ".littlehorse.NodeRunId\022\036\n\026user_task_even" +
-      "t_number\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000\210\001\001\022\027\n\n" +
-      "user_group\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_us" +
-      "er_group\"\206\006\n\rUserTaskEvent\022(\n\004time\030\001 \001(\013" +
-      "2\032.google.protobuf.Timestamp\022C\n\rtask_exe" +
-      "cuted\030\002 \001(\0132*.littlehorse.UserTaskEvent." +
-      "UTETaskExecutedH\000\022:\n\010assigned\030\003 \001(\0132&.li" +
-      "ttlehorse.UserTaskEvent.UTEAssignedH\000\022<\n" +
-      "\tcancelled\030\004 \001(\0132\'.littlehorse.UserTaskE" +
-      "vent.UTECancelledH\000\0224\n\005saved\030\005 \001(\0132#.lit" +
-      "tlehorse.UserTaskEvent.UTESavedH\000\032\037\n\014UTE" +
-      "Cancelled\022\017\n\007message\030\001 \001(\t\032;\n\017UTETaskExe" +
-      "cuted\022(\n\010task_run\030\001 \001(\0132\026.littlehorse.Ta" +
-      "skRunId\032\252\001\n\010UTESaved\022\017\n\007user_id\030\001 \001(\t\022A\n" +
-      "\007results\030\002 \003(\01320.littlehorse.UserTaskEve" +
-      "nt.UTESaved.ResultsEntry\032J\n\014ResultsEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehor" +
-      "se.VariableValue:\0028\001\032\301\001\n\013UTEAssigned\022\030\n\013" +
-      "old_user_id\030\001 \001(\tH\000\210\001\001\022\033\n\016old_user_group" +
-      "\030\002 \001(\tH\001\210\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033\n" +
-      "\016new_user_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user_" +
-      "idB\021\n\017_old_user_groupB\016\n\014_new_user_idB\021\n" +
-      "\017_new_user_groupB\007\n\005event*J\n\021UserTaskRun" +
-      "Status\022\016\n\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004" +
-      "DONE\020\003\022\r\n\tCANCELLED\020\004BM\n\037io.littlehorse." +
-      "sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHo" +
-      "rse.Sdk.Common.Protob\006proto3"
+      "2\032.littlehorse.UserTaskRunId\"v\n\034PutUserT" +
+      "askRunCommentRequest\0224\n\020user_task_run_id" +
+      "\030\001 \001(\0132\032.littlehorse.UserTaskRunId\022\017\n\007us" +
+      "er_id\030\002 \001(\t\022\017\n\007comment\030\003 \001(\t\"\220\001\n\035EditUse" +
+      "rTaskRunCommentRequest\022\027\n\017user_comment_i" +
+      "d\030\001 \001(\005\0224\n\020user_task_run_id\030\002 \001(\0132\032.litt" +
+      "lehorse.UserTaskRunId\022\017\n\007user_id\030\003 \001(\t\022\017" +
+      "\n\007comment\030\004 \001(\t\"\201\001\n\037DeleteUserTaskRunCom" +
+      "mentRequest\0224\n\020user_task_run_id\030\001 \001(\0132\032." +
+      "littlehorse.UserTaskRunId\022\027\n\017user_commen" +
+      "t_id\030\002 \001(\005\022\017\n\007user_id\030\003 \001(\t\"\261\001\n\030UserTask" +
+      "TriggerReference\022+\n\013node_run_id\030\001 \001(\0132\026." +
+      "littlehorse.NodeRunId\022\036\n\026user_task_event" +
+      "_number\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000\210\001\001\022\027\n\nu" +
+      "ser_group\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_use" +
+      "r_group\"\336\010\n\rUserTaskEvent\022(\n\004time\030\001 \001(\0132" +
+      "\032.google.protobuf.Timestamp\022C\n\rtask_exec" +
+      "uted\030\002 \001(\0132*.littlehorse.UserTaskEvent.U" +
+      "TETaskExecutedH\000\022:\n\010assigned\030\003 \001(\0132&.lit" +
+      "tlehorse.UserTaskEvent.UTEAssignedH\000\022<\n\t" +
+      "cancelled\030\004 \001(\0132\'.littlehorse.UserTaskEv" +
+      "ent.UTECancelledH\000\0224\n\005saved\030\005 \001(\0132#.litt" +
+      "lehorse.UserTaskEvent.UTESavedH\000\022@\n\rcomm" +
+      "ent_added\030\006 \001(\0132\'.littlehorse.UserTaskEv" +
+      "ent.UTECommentedH\000\022A\n\016comment_edited\030\007 \001" +
+      "(\0132\'.littlehorse.UserTaskEvent.UTECommen" +
+      "tedH\000\022G\n\017comment_deleted\030\010 \001(\0132,.littleh" +
+      "orse.UserTaskEvent.UTECommentDeletedH\000\032\037" +
+      "\n\014UTECancelled\022\017\n\007message\030\001 \001(\t\032;\n\017UTETa" +
+      "skExecuted\022(\n\010task_run\030\001 \001(\0132\026.littlehor" +
+      "se.TaskRunId\032\252\001\n\010UTESaved\022\017\n\007user_id\030\001 \001" +
+      "(\t\022A\n\007results\030\002 \003(\01320.littlehorse.UserTa" +
+      "skEvent.UTESaved.ResultsEntry\032J\n\014Results" +
+      "Entry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.litt" +
+      "lehorse.VariableValue:\0028\001\032\301\001\n\013UTEAssigne" +
+      "d\022\030\n\013old_user_id\030\001 \001(\tH\000\210\001\001\022\033\n\016old_user_" +
+      "group\030\002 \001(\tH\001\210\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210" +
+      "\001\001\022\033\n\016new_user_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_" +
+      "user_idB\021\n\017_old_user_groupB\016\n\014_new_user_" +
+      "idB\021\n\017_new_user_group\032I\n\014UTECommented\022\027\n" +
+      "\017user_comment_id\030\001 \001(\005\022\017\n\007user_id\030\002 \001(\t\022" +
+      "\017\n\007comment\030\003 \001(\t\032=\n\021UTECommentDeleted\022\027\n" +
+      "\017user_comment_id\030\001 \001(\005\022\017\n\007user_id\030\002 \001(\tB" +
+      "\007\n\005event*J\n\021UserTaskRunStatus\022\016\n\nUNASSIG" +
+      "NED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCANCELL" +
+      "ED\020\004BM\n\037io.littlehorse.sdk.common.protoP" +
+      "\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Pr" +
+      "otob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -254,18 +298,36 @@ public final class UserTasks {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_CancelUserTaskRunRequest_descriptor,
         new java.lang.String[] { "UserTaskRunId", });
-    internal_static_littlehorse_UserTaskTriggerReference_descriptor =
+    internal_static_littlehorse_PutUserTaskRunCommentRequest_descriptor =
       getDescriptor().getMessageTypes().get(7);
+    internal_static_littlehorse_PutUserTaskRunCommentRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_PutUserTaskRunCommentRequest_descriptor,
+        new java.lang.String[] { "UserTaskRunId", "UserId", "Comment", });
+    internal_static_littlehorse_EditUserTaskRunCommentRequest_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_littlehorse_EditUserTaskRunCommentRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_EditUserTaskRunCommentRequest_descriptor,
+        new java.lang.String[] { "UserCommentId", "UserTaskRunId", "UserId", "Comment", });
+    internal_static_littlehorse_DeleteUserTaskRunCommentRequest_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_littlehorse_DeleteUserTaskRunCommentRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_DeleteUserTaskRunCommentRequest_descriptor,
+        new java.lang.String[] { "UserTaskRunId", "UserCommentId", "UserId", });
+    internal_static_littlehorse_UserTaskTriggerReference_descriptor =
+      getDescriptor().getMessageTypes().get(10);
     internal_static_littlehorse_UserTaskTriggerReference_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskTriggerReference_descriptor,
         new java.lang.String[] { "NodeRunId", "UserTaskEventNumber", "UserId", "UserGroup", "UserId", "UserGroup", });
     internal_static_littlehorse_UserTaskEvent_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_UserTaskEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskEvent_descriptor,
-        new java.lang.String[] { "Time", "TaskExecuted", "Assigned", "Cancelled", "Saved", "Event", });
+        new java.lang.String[] { "Time", "TaskExecuted", "Assigned", "Cancelled", "Saved", "CommentAdded", "CommentEdited", "CommentDeleted", "Event", });
     internal_static_littlehorse_UserTaskEvent_UTECancelled_descriptor =
       internal_static_littlehorse_UserTaskEvent_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_UserTaskEvent_UTECancelled_fieldAccessorTable = new
@@ -296,6 +358,18 @@ public final class UserTasks {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskEvent_UTEAssigned_descriptor,
         new java.lang.String[] { "OldUserId", "OldUserGroup", "NewUserId", "NewUserGroup", "OldUserId", "OldUserGroup", "NewUserId", "NewUserGroup", });
+    internal_static_littlehorse_UserTaskEvent_UTECommented_descriptor =
+      internal_static_littlehorse_UserTaskEvent_descriptor.getNestedTypes().get(4);
+    internal_static_littlehorse_UserTaskEvent_UTECommented_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_UserTaskEvent_UTECommented_descriptor,
+        new java.lang.String[] { "UserCommentId", "UserId", "Comment", });
+    internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_descriptor =
+      internal_static_littlehorse_UserTaskEvent_descriptor.getNestedTypes().get(5);
+    internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_descriptor,
+        new java.lang.String[] { "UserCommentId", "UserId", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
