@@ -25,8 +25,6 @@ import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.test.TestRecord;
-import org.awaitility.Awaitility;
-import org.awaitility.core.ThrowingRunnable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -322,14 +320,6 @@ class MetricsTopologyTest {
                 .isEqualTo(newMetricValue(20., 30., 3.));
         assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_duplicated_task_run")))
                 .isEqualTo(newMetricValue(1.));
-    }
-
-    public void await(ThrowingRunnable runnable) {
-        Awaitility.with()
-                .pollInterval(Duration.ofSeconds(1))
-                .await()
-                .atMost(Duration.ofSeconds(10))
-                .untilAsserted(runnable);
     }
 
     private long getCount() {
