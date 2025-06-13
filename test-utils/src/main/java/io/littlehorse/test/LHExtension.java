@@ -1,8 +1,12 @@
 package io.littlehorse.test;
 
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -226,16 +230,32 @@ public class LHExtension
         if (testContext.getConfig().getTenantId() == null) {
             return;
         }
+
+        LittleHorseBlockingStub client = testContext.getLhClient();
+
         Awaitility.await()
                 .atMost(Duration.ofSeconds(25))
                 .ignoreExceptionsMatching(exn -> RuntimeException.class.isAssignableFrom(exn.getClass()))
                 .until(() -> {
-                    testContext
-                            .getLhClient()
-                            .withDeadlineAfter(2, TimeUnit.SECONDS)
-                            .putTenant(PutTenantRequest.newBuilder()
-                                    .setId(testContext.getConfig().getTenantId().getId())
-                                    .build());
+                    try {
+                        testContext
+                                .getLhClient()
+                                .withDeadlineAfter(2, TimeUnit.SECONDS)
+                                .getTenant(testContext.getConfig().getTenantId());
+                    } catch (StatusRuntimeException exn) {
+                        if (exn.getStatus().getCode() == Code.NOT_FOUND) {
+                            client.withDeadlineAfter(2, TimeUnit.SECONDS)
+                                    .putTenant(PutTenantRequest.newBuilder()
+                                            .setId(testContext
+                                                    .getConfig()
+                                                    .getTenantId()
+                                                    .getId())
+                                            .setOutputTopicConfig(OutputTopicConfig.newBuilder())
+                                            .build());
+                        } else {
+                            throw exn;
+                        }
+                    }
                     return true;
                 });
     }

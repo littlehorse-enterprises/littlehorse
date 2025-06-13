@@ -3,6 +3,7 @@ package io.littlehorse.common.model;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 
 /**
@@ -16,7 +17,10 @@ public interface CoreOutputTopicGetable<T extends Message> {
      * @param previousValue must be a T, but generics are hard.
      */
     default boolean shouldProduceToOutputTopic(
-            T previousValue, ReadOnlyMetadataManager metadataManager, OutputTopicConfigModel config) {
+            T previousValue,
+            ReadOnlyMetadataManager metadataManager,
+            ReadOnlyGetableManager getableManager,
+            OutputTopicConfigModel config) {
         return config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.ALL_ENTITY_EVENTS;
     }
 }
