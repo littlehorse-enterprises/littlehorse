@@ -415,19 +415,34 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.PutCorrelatedEventRequestOrBuilder getPutCorrelatedEventOrBuilder();
 
   /**
-   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * <code>.littlehorse.UpdateCorrelationMarkerPb update_correlation_marker = 29;</code>
    * @return Whether the updateCorrelationMarker field is set.
    */
   boolean hasUpdateCorrelationMarker();
   /**
-   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * <code>.littlehorse.UpdateCorrelationMarkerPb update_correlation_marker = 29;</code>
    * @return The updateCorrelationMarker.
    */
-  io.littlehorse.common.proto.UpdateCorrelationmarkerPb getUpdateCorrelationMarker();
+  io.littlehorse.common.proto.UpdateCorrelationMarkerPb getUpdateCorrelationMarker();
   /**
-   * <code>.littlehorse.UpdateCorrelationmarkerPb update_correlation_marker = 29;</code>
+   * <code>.littlehorse.UpdateCorrelationMarkerPb update_correlation_marker = 29;</code>
    */
-  io.littlehorse.common.proto.UpdateCorrelationmarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder();
+  io.littlehorse.common.proto.UpdateCorrelationMarkerPbOrBuilder getUpdateCorrelationMarkerOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeleteCorrelatedEventRequest delete_correlated_event = 30;</code>
+   * @return Whether the deleteCorrelatedEvent field is set.
+   */
+  boolean hasDeleteCorrelatedEvent();
+  /**
+   * <code>.littlehorse.DeleteCorrelatedEventRequest delete_correlated_event = 30;</code>
+   * @return The deleteCorrelatedEvent.
+   */
+  io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest getDeleteCorrelatedEvent();
+  /**
+   * <code>.littlehorse.DeleteCorrelatedEventRequest delete_correlated_event = 30;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequestOrBuilder getDeleteCorrelatedEventOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

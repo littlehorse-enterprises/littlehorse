@@ -77,8 +77,6 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created.
-   * Also, if set, it is implied that only one `WfRun` can ever be correlated
-   * to this `CorrelatedEvent`.
    * </pre>
    *
    * <code>bool delete_after_first_correlation = 2;</code>
@@ -515,8 +513,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created.
-     * Also, if set, it is implied that only one `WfRun` can ever be correlated
-     * to this `CorrelatedEvent`.
      * </pre>
      *
      * <code>bool delete_after_first_correlation = 2;</code>
@@ -529,8 +525,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created.
-     * Also, if set, it is implied that only one `WfRun` can ever be correlated
-     * to this `CorrelatedEvent`.
      * </pre>
      *
      * <code>bool delete_after_first_correlation = 2;</code>
@@ -547,8 +541,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created.
-     * Also, if set, it is implied that only one `WfRun` can ever be correlated
-     * to this `CorrelatedEvent`.
      * </pre>
      *
      * <code>bool delete_after_first_correlation = 2;</code>
