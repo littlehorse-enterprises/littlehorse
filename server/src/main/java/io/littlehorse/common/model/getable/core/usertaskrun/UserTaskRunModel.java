@@ -88,6 +88,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     private ProcessorExecutionContext processorContext;
     private FailureModel failureToThrowKenobi;
     private transient Map<Integer, UserTaskEventModel> lastEventForComment = new HashMap<>();
+    private int commentIdCounter;
 
     public UserTaskRunModel() {}
 
@@ -167,9 +168,11 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         }
 
         lastEventForComment = new HashMap<>();
+        commentIdCounter = 0;
         for (UserTaskEventModel event : events) {
             if (event.getType().equals(EventCase.COMMENT_ADDED)) {
                 lastEventForComment.put(event.getCommented().getUserCommentId(), event);
+                commentIdCounter++;
             }
             if (event.getType().equals(EventCase.COMMENT_EDITED)) {
                 lastEventForComment.put(event.getCommentEdited().getUserCommentId(), event);
@@ -333,12 +336,11 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     }
 
     public UserTaskEventModel comment(String userId, String comment) {
-        int commentId = lastEventForComment.size() + 1;
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
-                new UTECommentedModel(userId, comment, commentId),
+                new UTECommentedModel(userId, comment, ++commentIdCounter),
                 processorContext.currentCommand().getTime());
         this.events.add(userTaskEventModel);
-        this.lastEventForComment.put(commentId, userTaskEventModel);
+        this.lastEventForComment.put(commentIdCounter, userTaskEventModel);
         return userTaskEventModel;
     }
 

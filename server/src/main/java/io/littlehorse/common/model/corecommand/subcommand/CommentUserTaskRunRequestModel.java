@@ -12,11 +12,11 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
-import io.littlehorse.sdk.common.proto.UserTaskRunCommentRequest;
+import io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
-public class UserTaskRunCommentRequestModel extends CoreSubCommand<UserTaskRunCommentRequest> {
+public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
@@ -42,7 +42,7 @@ public class UserTaskRunCommentRequestModel extends CoreSubCommand<UserTaskRunCo
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }
 
-        UserTaskEventModel userTaskEventModel = utr.comment(userId, comment);
+        utr.comment(userId, comment);
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
         if (wfRunModel == null) {
@@ -58,8 +58,8 @@ public class UserTaskRunCommentRequestModel extends CoreSubCommand<UserTaskRunCo
     }
 
     @Override
-    public UserTaskRunCommentRequest.Builder toProto() {
-        UserTaskRunCommentRequest.Builder out = UserTaskRunCommentRequest.newBuilder();
+    public CommentUserTaskRunRequest.Builder toProto() {
+        CommentUserTaskRunRequest.Builder out = CommentUserTaskRunRequest.newBuilder();
         out.setUserTaskRunId(userTaskRunId.toProto());
         out.setUserId(userId);
         out.setComment(comment);
@@ -68,14 +68,14 @@ public class UserTaskRunCommentRequestModel extends CoreSubCommand<UserTaskRunCo
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        UserTaskRunCommentRequest p = (UserTaskRunCommentRequest) proto;
+        CommentUserTaskRunRequest p = (CommentUserTaskRunRequest) proto;
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         userId = p.getUserId();
         comment = p.getComment();
     }
 
     @Override
-    public Class<UserTaskRunCommentRequest> getProtoBaseClass() {
-        return UserTaskRunCommentRequest.class;
+    public Class<CommentUserTaskRunRequest> getProtoBaseClass() {
+        return CommentUserTaskRunRequest.class;
     }
 }

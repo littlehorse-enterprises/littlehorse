@@ -916,9 +916,9 @@ public final class Service {
       "horse.SaveUserTaskRunProgressRequest\032\030.l" +
       "ittlehorse.UserTaskRun\"\000\022W\n\020ListUserTask" +
       "Runs\022#.littlehorse.ListUserTaskRunReques" +
-      "t\032\034.littlehorse.UserTaskRunList\"\000\022X\n\022Use" +
-      "rTaskRunComment\022&.littlehorse.UserTaskRu" +
-      "nCommentRequest\032\030.littlehorse.UserTaskRu" +
+      "t\032\034.littlehorse.UserTaskRunList\"\000\022X\n\022Com" +
+      "mentUserTaskRun\022&.littlehorse.CommentUse" +
+      "rTaskRunRequest\032\030.littlehorse.UserTaskRu" +
       "n\"\000\022`\n\026EditUserTaskRunComment\022*.littleho" +
       "rse.EditUserTaskRunCommentRequest\032\030.litt" +
       "lehorse.UserTaskRun\"\000\022d\n\030DeleteUserTaskR" +

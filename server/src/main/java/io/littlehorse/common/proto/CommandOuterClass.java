@@ -215,8 +215,8 @@ public final class CommandOuterClass {
       "arker\030\035 \001(\0132&.littlehorse.UpdateCorrelat" +
       "ionMarkerPbH\000\022L\n\027delete_correlated_event" +
       "\030\036 \001(\0132).littlehorse.DeleteCorrelatedEve" +
-      "ntRequestH\000\022G\n\025user_task_run_comment\030\037 \001" +
-      "(\0132&.littlehorse.UserTaskRunCommentReque" +
+      "ntRequestH\000\022G\n\025comment_user_task_run\030\037 \001" +
+      "(\0132&.littlehorse.CommentUserTaskRunReque" +
       "stH\000\022P\n\032edit_user_task_run_comment\030  \001(\013" +
       "2*.littlehorse.EditUserTaskRunCommentReq" +
       "uestH\000\022T\n\034delete_user_task_run_comment\030!" +
@@ -378,7 +378,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_Command_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Command_descriptor,
-        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "ScheduleWfRun", "ScheduleWfRunRequest", "DeleteScheduledWfRun", "SaveUserTaskRunProgress", "PutCorrelatedEvent", "UpdateCorrelationMarker", "DeleteCorrelatedEvent", "UserTaskRunComment", "EditUserTaskRunComment", "DeleteUserTaskRunComment", "Command", "CommandId", });
+        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "ScheduleWfRun", "ScheduleWfRunRequest", "DeleteScheduledWfRun", "SaveUserTaskRunProgress", "PutCorrelatedEvent", "UpdateCorrelationMarker", "DeleteCorrelatedEvent", "CommentUserTaskRun", "EditUserTaskRunComment", "DeleteUserTaskRunComment", "Command", "CommandId", });
     internal_static_littlehorse_ScheduleWfRun_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_ScheduleWfRun_fieldAccessorTable = new

@@ -146,7 +146,7 @@ service LittleHorse {
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
   // Adds userComment to a UserTaskRun
-  rpc UserTaskRunComment(UserTaskRunCommentRequest) returns (UserTaskRun) {};
+  rpc CommentUserTaskRun(CommentUserTaskRunRequest) returns (UserTaskRun) {};
 
   // Edits userComment with the correlated userCommentId 
   rpc EditUserTaskRunComment(EditUserTaskRunCommentRequest) returns (UserTaskRun) {};

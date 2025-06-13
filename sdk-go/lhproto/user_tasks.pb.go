@@ -749,7 +749,7 @@ func (x *CancelUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
 }
 
 // Adds a comment to a UserTaskRun.
-type UserTaskRunCommentRequest struct {
+type CommentUserTaskRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -762,8 +762,8 @@ type UserTaskRunCommentRequest struct {
 	Comment string `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
 }
 
-func (x *UserTaskRunCommentRequest) Reset() {
-	*x = UserTaskRunCommentRequest{}
+func (x *CommentUserTaskRunRequest) Reset() {
+	*x = CommentUserTaskRunRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_user_tasks_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -771,13 +771,13 @@ func (x *UserTaskRunCommentRequest) Reset() {
 	}
 }
 
-func (x *UserTaskRunCommentRequest) String() string {
+func (x *CommentUserTaskRunRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UserTaskRunCommentRequest) ProtoMessage() {}
+func (*CommentUserTaskRunRequest) ProtoMessage() {}
 
-func (x *UserTaskRunCommentRequest) ProtoReflect() protoreflect.Message {
+func (x *CommentUserTaskRunRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_tasks_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -789,26 +789,26 @@ func (x *UserTaskRunCommentRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UserTaskRunCommentRequest.ProtoReflect.Descriptor instead.
-func (*UserTaskRunCommentRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CommentUserTaskRunRequest.ProtoReflect.Descriptor instead.
+func (*CommentUserTaskRunRequest) Descriptor() ([]byte, []int) {
 	return file_user_tasks_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *UserTaskRunCommentRequest) GetUserTaskRunId() *UserTaskRunId {
+func (x *CommentUserTaskRunRequest) GetUserTaskRunId() *UserTaskRunId {
 	if x != nil {
 		return x.UserTaskRunId
 	}
 	return nil
 }
 
-func (x *UserTaskRunCommentRequest) GetUserId() string {
+func (x *CommentUserTaskRunRequest) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *UserTaskRunCommentRequest) GetComment() string {
+func (x *CommentUserTaskRunRequest) GetComment() string {
 	if x != nil {
 		return x.Comment
 	}
@@ -1702,8 +1702,8 @@ var file_user_tasks_proto_rawDesc = []byte{
 	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73,
 	0x65, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x52,
 	0x0d, 0x75, 0x73, 0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x22, 0x93,
-	0x01, 0x0a, 0x19, 0x55, 0x73, 0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x43, 0x6f,
-	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x43, 0x0a, 0x10,
+	0x01, 0x0a, 0x19, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x55, 0x73, 0x65, 0x72, 0x54, 0x61,
+	0x73, 0x6b, 0x52, 0x75, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x43, 0x0a, 0x10,
 	0x75, 0x73, 0x65, 0x72, 0x5f, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x72, 0x75, 0x6e, 0x5f, 0x69, 0x64,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
 	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e,
@@ -1867,7 +1867,7 @@ var file_user_tasks_proto_goTypes = []interface{}{
 	(*CompleteUserTaskRunRequest)(nil),      // 6: littlehorse.CompleteUserTaskRunRequest
 	(*SaveUserTaskRunProgressRequest)(nil),  // 7: littlehorse.SaveUserTaskRunProgressRequest
 	(*CancelUserTaskRunRequest)(nil),        // 8: littlehorse.CancelUserTaskRunRequest
-	(*UserTaskRunCommentRequest)(nil),       // 9: littlehorse.UserTaskRunCommentRequest
+	(*CommentUserTaskRunRequest)(nil),       // 9: littlehorse.CommentUserTaskRunRequest
 	(*EditUserTaskRunCommentRequest)(nil),   // 10: littlehorse.EditUserTaskRunCommentRequest
 	(*DeleteUserTaskRunCommentRequest)(nil), // 11: littlehorse.DeleteUserTaskRunCommentRequest
 	(*UserTaskTriggerReference)(nil),        // 12: littlehorse.UserTaskTriggerReference
@@ -1908,7 +1908,7 @@ var file_user_tasks_proto_depIdxs = []int32{
 	16, // 14: littlehorse.SaveUserTaskRunProgressRequest.results:type_name -> littlehorse.SaveUserTaskRunProgressRequest.ResultsEntry
 	1,  // 15: littlehorse.SaveUserTaskRunProgressRequest.policy:type_name -> littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy
 	26, // 16: littlehorse.CancelUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	26, // 17: littlehorse.UserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 17: littlehorse.CommentUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
 	26, // 18: littlehorse.EditUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
 	26, // 19: littlehorse.DeleteUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
 	28, // 20: littlehorse.UserTaskTriggerReference.node_run_id:type_name -> littlehorse.NodeRunId
@@ -2027,7 +2027,7 @@ func file_user_tasks_proto_init() {
 			}
 		}
 		file_user_tasks_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserTaskRunCommentRequest); i {
+			switch v := v.(*CommentUserTaskRunRequest); i {
 			case 0:
 				return &v.state
 			case 1:

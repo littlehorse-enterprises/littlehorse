@@ -551,9 +551,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
-    public void userTaskRunComment(UserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
-        UserTaskRunCommentRequestModel reqModel =
-                LHSerializable.fromProto(req, UserTaskRunCommentRequestModel.class, requestContext());
+    public void commentUserTaskRun(CommentUserTaskRunRequest req, StreamObserver<UserTaskRun> ctx) {
+        CommentUserTaskRunRequestModel reqModel =
+                LHSerializable.fromProto(req, CommentUserTaskRunRequestModel.class, requestContext());
 
         processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
     }

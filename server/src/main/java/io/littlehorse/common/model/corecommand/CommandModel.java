@@ -66,7 +66,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public TriggeredTaskRun triggeredTaskRun;
     private DeadlineReassignUserTaskModel reassignUserTask;
     private CancelUserTaskRunRequestModel cancelUserTaskRun;
-    private UserTaskRunCommentRequestModel userTaskRunComment;
+    private CommentUserTaskRunRequestModel commentUserTaskRun;
     private EditUserTaskRunCommentRequestModel editUserTaskRunComment;
     private DeleteUserTaskRunCommentRequestModel deleteUserTaskRunComment;
     private TaskAttemptRetryReadyModel taskAttemptRetryReady;
@@ -154,8 +154,8 @@ public class CommandModel extends AbstractCommand<Command> {
             case CANCEL_USER_TASK:
                 out.setCancelUserTask(cancelUserTaskRun.toProto());
                 break;
-            case USER_TASK_RUN_COMMENT:
-                out.setUserTaskRunComment(userTaskRunComment.toProto());
+            case COMMENT_USER_TASK_RUN:
+                out.setCommentUserTaskRun(commentUserTaskRun.toProto());
                 break;
             case EDIT_USER_TASK_RUN_COMMENT:
                 out.setEditUserTaskRunComment(editUserTaskRunComment.toProto());
@@ -265,9 +265,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 cancelUserTaskRun =
                         LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class, context);
                 break;
-            case USER_TASK_RUN_COMMENT:
-                userTaskRunComment = LHSerializable.fromProto(
-                        p.getUserTaskRunComment(), UserTaskRunCommentRequestModel.class, context);
+            case COMMENT_USER_TASK_RUN:
+                commentUserTaskRun = LHSerializable.fromProto(
+                        p.getCommentUserTaskRun(), CommentUserTaskRunRequestModel.class, context);
                 break;
             case EDIT_USER_TASK_RUN_COMMENT:
                 editUserTaskRunComment = LHSerializable.fromProto(
@@ -360,8 +360,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return reassignUserTask;
             case CANCEL_USER_TASK:
                 return cancelUserTaskRun;
-            case USER_TASK_RUN_COMMENT:
-                return userTaskRunComment;
+            case COMMENT_USER_TASK_RUN:
+                return commentUserTaskRun;
             case EDIT_USER_TASK_RUN_COMMENT:
                 return editUserTaskRunComment;
             case DELETE_USER_TASK_RUN_COMMENT:
@@ -443,9 +443,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(CancelUserTaskRunRequestModel.class)) {
             type = CommandCase.CANCEL_USER_TASK;
             cancelUserTaskRun = (CancelUserTaskRunRequestModel) cmd;
-        } else if (cls.equals(UserTaskRunCommentRequestModel.class)) {
-            type = CommandCase.USER_TASK_RUN_COMMENT;
-            userTaskRunComment = (UserTaskRunCommentRequestModel) cmd;
+        } else if (cls.equals(CommentUserTaskRunRequestModel.class)) {
+            type = CommandCase.COMMENT_USER_TASK_RUN;
+            commentUserTaskRun = (CommentUserTaskRunRequestModel) cmd;
         } else if (cls.equals(EditUserTaskRunCommentRequestModel.class)) {
             type = CommandCase.EDIT_USER_TASK_RUN_COMMENT;
             editUserTaskRunComment = (EditUserTaskRunCommentRequestModel) cmd;

@@ -142,7 +142,7 @@ class CancelUserTaskRunRequest(_message.Message):
     user_task_run_id: _object_id_pb2.UserTaskRunId
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ...) -> None: ...
 
-class UserTaskRunCommentRequest(_message.Message):
+class CommentUserTaskRunRequest(_message.Message):
     __slots__ = ["user_task_run_id", "user_id", "comment"]
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]

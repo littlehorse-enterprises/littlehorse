@@ -65,10 +65,10 @@ public final class UserTasks {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_CancelUserTaskRunRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_UserTaskRunCommentRequest_descriptor;
+    internal_static_littlehorse_CommentUserTaskRunRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_UserTaskRunCommentRequest_fieldAccessorTable;
+      internal_static_littlehorse_CommentUserTaskRunRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_EditUserTaskRunCommentRequest_descriptor;
   static final 
@@ -181,8 +181,8 @@ public final class UserTasks {
       "unAssignmentPolicy\022\034\n\030FAIL_IF_CLAIMED_BY" +
       "_OTHER\020\000\022\020\n\014IGNORE_CLAIM\020\001\"P\n\030CancelUser" +
       "TaskRunRequest\0224\n\020user_task_run_id\030\001 \001(\013" +
-      "2\032.littlehorse.UserTaskRunId\"s\n\031UserTask" +
-      "RunCommentRequest\0224\n\020user_task_run_id\030\001 " +
+      "2\032.littlehorse.UserTaskRunId\"s\n\031CommentU" +
+      "serTaskRunRequest\0224\n\020user_task_run_id\030\001 " +
       "\001(\0132\032.littlehorse.UserTaskRunId\022\017\n\007user_" +
       "id\030\002 \001(\t\022\017\n\007comment\030\003 \001(\t\"\220\001\n\035EditUserTa" +
       "skRunCommentRequest\022\027\n\017user_comment_id\030\001" +
@@ -297,11 +297,11 @@ public final class UserTasks {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_CancelUserTaskRunRequest_descriptor,
         new java.lang.String[] { "UserTaskRunId", });
-    internal_static_littlehorse_UserTaskRunCommentRequest_descriptor =
+    internal_static_littlehorse_CommentUserTaskRunRequest_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_littlehorse_UserTaskRunCommentRequest_fieldAccessorTable = new
+    internal_static_littlehorse_CommentUserTaskRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_UserTaskRunCommentRequest_descriptor,
+        internal_static_littlehorse_CommentUserTaskRunRequest_descriptor,
         new java.lang.String[] { "UserTaskRunId", "UserId", "Comment", });
     internal_static_littlehorse_EditUserTaskRunCommentRequest_descriptor =
       getDescriptor().getMessageTypes().get(8);

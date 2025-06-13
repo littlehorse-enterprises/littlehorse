@@ -319,7 +319,7 @@ export interface CancelUserTaskRunRequest {
 }
 
 /** Adds a comment to a UserTaskRun. */
-export interface UserTaskRunCommentRequest {
+export interface CommentUserTaskRunRequest {
   /** The id of `UserTaskRun` to save. */
   userTaskRunId:
     | UserTaskRunId
@@ -1327,12 +1327,12 @@ export const CancelUserTaskRunRequest = {
   },
 };
 
-function createBaseUserTaskRunCommentRequest(): UserTaskRunCommentRequest {
+function createBaseCommentUserTaskRunRequest(): CommentUserTaskRunRequest {
   return { userTaskRunId: undefined, userId: "", comment: "" };
 }
 
-export const UserTaskRunCommentRequest = {
-  encode(message: UserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const CommentUserTaskRunRequest = {
+  encode(message: CommentUserTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userTaskRunId !== undefined) {
       UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
     }
@@ -1345,10 +1345,10 @@ export const UserTaskRunCommentRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskRunCommentRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CommentUserTaskRunRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUserTaskRunCommentRequest();
+    const message = createBaseCommentUserTaskRunRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1382,11 +1382,11 @@ export const UserTaskRunCommentRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<UserTaskRunCommentRequest>): UserTaskRunCommentRequest {
-    return UserTaskRunCommentRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<CommentUserTaskRunRequest>): CommentUserTaskRunRequest {
+    return CommentUserTaskRunRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<UserTaskRunCommentRequest>): UserTaskRunCommentRequest {
-    const message = createBaseUserTaskRunCommentRequest();
+  fromPartial(object: DeepPartial<CommentUserTaskRunRequest>): CommentUserTaskRunRequest {
+    const message = createBaseCommentUserTaskRunRequest();
     message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
       ? UserTaskRunId.fromPartial(object.userTaskRunId)
       : undefined;

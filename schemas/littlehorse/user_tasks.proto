@@ -195,7 +195,7 @@ message CancelUserTaskRunRequest {
 }
 
 // Adds a comment to a UserTaskRun.
-message UserTaskRunCommentRequest {
+message CommentUserTaskRunRequest {
   // The id of `UserTaskRun` to save.
   UserTaskRunId user_task_run_id = 1;
 

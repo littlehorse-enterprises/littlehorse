@@ -32,10 +32,6 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
         if (userCommentId == 0) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");
         }
-        if (userTaskRunId.getUserTaskGuid().isBlank()
-                || userTaskRunId.getWfRunId().getId().isBlank()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The userTaskRunId must be provided.");
-        }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
 
