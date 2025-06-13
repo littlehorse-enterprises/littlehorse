@@ -20,6 +20,7 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
 
     Integer userCommentId;
     private UserTaskRunIdModel userTaskRunId;
+    private String userId;
 
     @Override
     public boolean hasResponse() {
@@ -31,6 +32,10 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
 
         if (userCommentId == 0) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");
+        }
+
+        if (userId.isBlank()) {
+            throw new LHApiException(Status.FAILED_PRECONDITION, "The User Id must be provide");
         }
 
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
@@ -49,7 +54,7 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
                     "The specified comment cannot be deleted because it has already been deleted.");
         }
 
-        utr.deleteComment(userCommentId);
+        utr.deleteComment(userCommentId, userId);
 
         WfRunModel wfRunModel = executionContext.getableManager().get(userTaskRunId.getWfRunId());
         if (wfRunModel == null) {
@@ -69,6 +74,7 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
         DeleteUserTaskRunCommentRequest.Builder out = DeleteUserTaskRunCommentRequest.newBuilder();
         if (userCommentId != null) out.setUserCommentId(userCommentId);
         if (userTaskRunId != null) out.setUserTaskRunId(userTaskRunId.toProto());
+        if (userId != null) out.setUserId(userId);
         return out;
     }
 
@@ -77,6 +83,7 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
         DeleteUserTaskRunCommentRequest p = (DeleteUserTaskRunCommentRequest) proto;
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         userCommentId = p.getUserCommentId();
+        userId = p.getUserId();
     }
 
     @Override

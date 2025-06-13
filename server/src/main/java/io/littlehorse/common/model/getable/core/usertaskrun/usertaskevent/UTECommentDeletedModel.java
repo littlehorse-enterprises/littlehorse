@@ -17,11 +17,13 @@ import lombok.NoArgsConstructor;
 public class UTECommentDeletedModel extends LHSerializable<UTECommentDeleted> {
 
     private Integer userCommentId;
+    private String userId;
 
     @Override
     public UTECommentDeleted.Builder toProto() {
         UTECommentDeleted.Builder out = UTECommentDeleted.newBuilder();
         if (userCommentId != null) out.setUserCommentId(userCommentId);
+        if (userId != null) out.setUserId(userId);
         return out;
     }
 
@@ -29,6 +31,7 @@ public class UTECommentDeletedModel extends LHSerializable<UTECommentDeleted> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         UTECommentDeleted p = (UTECommentDeleted) proto;
         userCommentId = p.getUserCommentId();
+        userId = p.getUserId();
     }
 
     @Override

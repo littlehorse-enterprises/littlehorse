@@ -49,7 +49,7 @@ message Command {
         PutCorrelatedEventRequest put_correlated_event = 28;
         UpdateCorrelationMarkerPb update_correlation_marker = 29;
         DeleteCorrelatedEventRequest delete_correlated_event = 30;
-        CommentUserTaskRunRequest comment_user_task_run = 31;
+        PutUserTaskRunCommentRequest put_user_task_run_comment = 31;
         EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;
         DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
     }

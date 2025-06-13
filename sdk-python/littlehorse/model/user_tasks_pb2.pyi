@@ -142,7 +142,7 @@ class CancelUserTaskRunRequest(_message.Message):
     user_task_run_id: _object_id_pb2.UserTaskRunId
     def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ...) -> None: ...
 
-class CommentUserTaskRunRequest(_message.Message):
+class PutUserTaskRunCommentRequest(_message.Message):
     __slots__ = ["user_task_run_id", "user_id", "comment"]
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
@@ -165,12 +165,14 @@ class EditUserTaskRunCommentRequest(_message.Message):
     def __init__(self, user_comment_id: _Optional[int] = ..., user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_id: _Optional[str] = ..., comment: _Optional[str] = ...) -> None: ...
 
 class DeleteUserTaskRunCommentRequest(_message.Message):
-    __slots__ = ["user_task_run_id", "user_comment_id"]
+    __slots__ = ["user_task_run_id", "user_comment_id", "user_id"]
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]
+    USER_ID_FIELD_NUMBER: _ClassVar[int]
     user_task_run_id: _object_id_pb2.UserTaskRunId
     user_comment_id: int
-    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_comment_id: _Optional[int] = ...) -> None: ...
+    user_id: str
+    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_comment_id: _Optional[int] = ..., user_id: _Optional[str] = ...) -> None: ...
 
 class UserTaskTriggerReference(_message.Message):
     __slots__ = ["node_run_id", "user_task_event_number", "user_id", "user_group"]
@@ -231,10 +233,12 @@ class UserTaskEvent(_message.Message):
         comment: str
         def __init__(self, user_comment_id: _Optional[int] = ..., user_id: _Optional[str] = ..., comment: _Optional[str] = ...) -> None: ...
     class UTECommentDeleted(_message.Message):
-        __slots__ = ["user_comment_id"]
+        __slots__ = ["user_comment_id", "user_id"]
         USER_COMMENT_ID_FIELD_NUMBER: _ClassVar[int]
+        USER_ID_FIELD_NUMBER: _ClassVar[int]
         user_comment_id: int
-        def __init__(self, user_comment_id: _Optional[int] = ...) -> None: ...
+        user_id: str
+        def __init__(self, user_comment_id: _Optional[int] = ..., user_id: _Optional[str] = ...) -> None: ...
     TIME_FIELD_NUMBER: _ClassVar[int]
     TASK_EXECUTED_FIELD_NUMBER: _ClassVar[int]
     ASSIGNED_FIELD_NUMBER: _ClassVar[int]

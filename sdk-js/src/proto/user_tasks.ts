@@ -319,7 +319,7 @@ export interface CancelUserTaskRunRequest {
 }
 
 /** Adds a comment to a UserTaskRun. */
-export interface CommentUserTaskRunRequest {
+export interface PutUserTaskRunCommentRequest {
   /** The id of `UserTaskRun` to save. */
   userTaskRunId:
     | UserTaskRunId
@@ -352,6 +352,8 @@ export interface DeleteUserTaskRunCommentRequest {
     | undefined;
   /** The id of the comment you are deleting */
   userCommentId: number;
+  /** The id of the user who deleted the comment */
+  userId: string;
 }
 
 /**
@@ -485,6 +487,8 @@ export interface UserTaskEvent_UTECommented {
 export interface UserTaskEvent_UTECommentDeleted {
   /** The id of the comment that will be deleted */
   userCommentId: number;
+  /** The id of the person user who deleted the comment */
+  userId: string;
 }
 
 function createBaseUserTaskDef(): UserTaskDef {
@@ -1327,12 +1331,12 @@ export const CancelUserTaskRunRequest = {
   },
 };
 
-function createBaseCommentUserTaskRunRequest(): CommentUserTaskRunRequest {
+function createBasePutUserTaskRunCommentRequest(): PutUserTaskRunCommentRequest {
   return { userTaskRunId: undefined, userId: "", comment: "" };
 }
 
-export const CommentUserTaskRunRequest = {
-  encode(message: CommentUserTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const PutUserTaskRunCommentRequest = {
+  encode(message: PutUserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userTaskRunId !== undefined) {
       UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
     }
@@ -1345,10 +1349,10 @@ export const CommentUserTaskRunRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CommentUserTaskRunRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutUserTaskRunCommentRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCommentUserTaskRunRequest();
+    const message = createBasePutUserTaskRunCommentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1382,11 +1386,11 @@ export const CommentUserTaskRunRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<CommentUserTaskRunRequest>): CommentUserTaskRunRequest {
-    return CommentUserTaskRunRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<PutUserTaskRunCommentRequest>): PutUserTaskRunCommentRequest {
+    return PutUserTaskRunCommentRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<CommentUserTaskRunRequest>): CommentUserTaskRunRequest {
-    const message = createBaseCommentUserTaskRunRequest();
+  fromPartial(object: DeepPartial<PutUserTaskRunCommentRequest>): PutUserTaskRunCommentRequest {
+    const message = createBasePutUserTaskRunCommentRequest();
     message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
       ? UserTaskRunId.fromPartial(object.userTaskRunId)
       : undefined;
@@ -1477,7 +1481,7 @@ export const EditUserTaskRunCommentRequest = {
 };
 
 function createBaseDeleteUserTaskRunCommentRequest(): DeleteUserTaskRunCommentRequest {
-  return { userTaskRunId: undefined, userCommentId: 0 };
+  return { userTaskRunId: undefined, userCommentId: 0, userId: "" };
 }
 
 export const DeleteUserTaskRunCommentRequest = {
@@ -1487,6 +1491,9 @@ export const DeleteUserTaskRunCommentRequest = {
     }
     if (message.userCommentId !== 0) {
       writer.uint32(16).int32(message.userCommentId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(26).string(message.userId);
     }
     return writer;
   },
@@ -1512,6 +1519,13 @@ export const DeleteUserTaskRunCommentRequest = {
 
           message.userCommentId = reader.int32();
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1530,6 +1544,7 @@ export const DeleteUserTaskRunCommentRequest = {
       ? UserTaskRunId.fromPartial(object.userTaskRunId)
       : undefined;
     message.userCommentId = object.userCommentId ?? 0;
+    message.userId = object.userId ?? "";
     return message;
   },
 };
@@ -2122,13 +2137,16 @@ export const UserTaskEvent_UTECommented = {
 };
 
 function createBaseUserTaskEvent_UTECommentDeleted(): UserTaskEvent_UTECommentDeleted {
-  return { userCommentId: 0 };
+  return { userCommentId: 0, userId: "" };
 }
 
 export const UserTaskEvent_UTECommentDeleted = {
   encode(message: UserTaskEvent_UTECommentDeleted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userCommentId !== 0) {
       writer.uint32(8).int32(message.userCommentId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
     }
     return writer;
   },
@@ -2147,6 +2165,13 @@ export const UserTaskEvent_UTECommentDeleted = {
 
           message.userCommentId = reader.int32();
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2162,6 +2187,7 @@ export const UserTaskEvent_UTECommentDeleted = {
   fromPartial(object: DeepPartial<UserTaskEvent_UTECommentDeleted>): UserTaskEvent_UTECommentDeleted {
     const message = createBaseUserTaskEvent_UTECommentDeleted();
     message.userCommentId = object.userCommentId ?? 0;
+    message.userId = object.userId ?? "";
     return message;
   },
 };

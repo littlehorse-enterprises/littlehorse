@@ -353,9 +353,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         return userTaskEventModel;
     }
 
-    public void deleteComment(Integer userCommentId) {
+    public void deleteComment(Integer userCommentId, String userId) {
         UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
-                new UTECommentDeletedModel(userCommentId),
+                new UTECommentDeletedModel(userCommentId, userId),
                 processorContext.currentCommand().getTime());
         this.events.addLast(userTaskEventModel);
         this.lastEventForComment.put(userCommentId, userTaskEventModel);

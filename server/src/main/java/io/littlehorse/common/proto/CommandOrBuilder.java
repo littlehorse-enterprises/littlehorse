@@ -445,19 +445,19 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequestOrBuilder getDeleteCorrelatedEventOrBuilder();
 
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 31;</code>
-   * @return Whether the commentUserTaskRun field is set.
+   * <code>.littlehorse.PutUserTaskRunCommentRequest put_user_task_run_comment = 31;</code>
+   * @return Whether the putUserTaskRunComment field is set.
    */
-  boolean hasCommentUserTaskRun();
+  boolean hasPutUserTaskRunComment();
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 31;</code>
-   * @return The commentUserTaskRun.
+   * <code>.littlehorse.PutUserTaskRunCommentRequest put_user_task_run_comment = 31;</code>
+   * @return The putUserTaskRunComment.
    */
-  io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest getCommentUserTaskRun();
+  io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest getPutUserTaskRunComment();
   /**
-   * <code>.littlehorse.CommentUserTaskRunRequest comment_user_task_run = 31;</code>
+   * <code>.littlehorse.PutUserTaskRunCommentRequest put_user_task_run_comment = 31;</code>
    */
-  io.littlehorse.sdk.common.proto.CommentUserTaskRunRequestOrBuilder getCommentUserTaskRunOrBuilder();
+  io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequestOrBuilder getPutUserTaskRunCommentOrBuilder();
 
   /**
    * <code>.littlehorse.EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;</code>

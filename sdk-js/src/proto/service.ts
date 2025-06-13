@@ -58,10 +58,10 @@ import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } f
 import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
-  CommentUserTaskRunRequest,
   CompleteUserTaskRunRequest,
   DeleteUserTaskRunCommentRequest,
   EditUserTaskRunCommentRequest,
+  PutUserTaskRunCommentRequest,
   SaveUserTaskRunProgressRequest,
   UserTaskDef,
   UserTaskField,
@@ -8536,9 +8536,9 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /** Adds userComment to a UserTaskRun */
-    commentUserTaskRun: {
-      name: "CommentUserTaskRun",
-      requestType: CommentUserTaskRunRequest,
+    putUserTaskRunComment: {
+      name: "PutUserTaskRunComment",
+      requestType: PutUserTaskRunCommentRequest,
       requestStream: false,
       responseType: UserTaskRun,
       responseStream: false,
@@ -9256,8 +9256,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskRunList>>;
   /** Adds userComment to a UserTaskRun */
-  commentUserTaskRun(
-    request: CommentUserTaskRunRequest,
+  putUserTaskRunComment(
+    request: PutUserTaskRunCommentRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskRun>>;
   /** Edits userComment with the correlated userCommentId */
@@ -9677,8 +9677,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskRunList>;
   /** Adds userComment to a UserTaskRun */
-  commentUserTaskRun(
-    request: DeepPartial<CommentUserTaskRunRequest>,
+  putUserTaskRunComment(
+    request: DeepPartial<PutUserTaskRunCommentRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskRun>;
   /** Edits userComment with the correlated userCommentId */

@@ -130,7 +130,7 @@ public class UserTaskRunModelTest {
         UserTaskEventModel addEvent = utr.comment("user1", "hello world");
         Integer commentId = addEvent.getCommented().getUserCommentId();
 
-        utr.deleteComment(commentId);
+        utr.deleteComment(commentId, "user1");
 
         Assertions.assertThat(utr.getEvents().get(1).getType()).isEqualTo(EventCase.COMMENT_DELETED);
         Assertions.assertThat(utr.getEvents().get(1).getCommentDeleted().getUserCommentId())
@@ -154,17 +154,17 @@ public class UserTaskRunModelTest {
         UserTaskEventModel addEvent = utr.comment("user1", "hello world");
         Integer commentId = addEvent.getCommented().getUserCommentId();
 
-        utr.deleteComment(commentId);
+        utr.deleteComment(commentId, "user1");
 
         UserTaskEventModel addEventTwo = utr.comment("user2", "hello world");
         int commentIdTwo = addEventTwo.getCommented().getUserCommentId();
 
-        utr.deleteComment(commentIdTwo);
+        utr.deleteComment(commentIdTwo, "user1");
 
         UserTaskEventModel addEventThree = utr.comment("user3", "hello world");
         int commentIdThree = addEventThree.getCommented().getUserCommentId();
-        UserTaskEventModel addEventFour = utr.editComment("user2", "comment", commentIdThree);
-        UserTaskEventModel addEventFive = utr.comment("user", "comment");
+        utr.editComment("user2", "comment", commentIdThree);
+        utr.comment("user", "comment");
 
         Assertions.assertThat(utr.getLastEventForComment().size()).isEqualTo(4);
         Assertions.assertThat(utr.getLastEventForComment().get(commentIdTwo).getType())

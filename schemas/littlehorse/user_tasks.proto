@@ -195,7 +195,7 @@ message CancelUserTaskRunRequest {
 }
 
 // Adds a comment to a UserTaskRun.
-message CommentUserTaskRunRequest {
+message PutUserTaskRunCommentRequest {
   // The id of `UserTaskRun` to save.
   UserTaskRunId user_task_run_id = 1;
 
@@ -229,6 +229,9 @@ message DeleteUserTaskRunCommentRequest {
 
   // The id of the comment you are deleting
   int32 user_comment_id = 2;
+
+  // The id of the user who deleted the comment
+  string user_id = 3;
 }
 
 // All TaskRun's have a "trigger reference" which refers to the WfRun Element that
@@ -326,6 +329,9 @@ message UserTaskEvent {
   message UTECommentDeleted {
   // The id of the comment that will be deleted
   int32 user_comment_id = 1;
+
+  // The id of the user who deleted the comment
+  string user_id = 2;
   }
 
   // The event that occurred.

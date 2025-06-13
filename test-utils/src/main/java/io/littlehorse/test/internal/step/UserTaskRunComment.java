@@ -31,7 +31,7 @@ public class UserTaskRunComment extends AbstractStep {
                     .setWfRunId(context.getWfRunId())
                     .setUserTaskGuid(userTaskGuid)
                     .build();
-            lhClient.commentUserTaskRun(CommentUserTaskRunRequest.newBuilder()
+            lhClient.putUserTaskRunComment(PutUserTaskRunCommentRequest.newBuilder()
                     .setUserTaskRunId(userTaskId)
                     .setUserId(userId)
                     .setComment(comment)

@@ -10,12 +10,12 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.CommentUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
-public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTaskRunRequest> {
+public class PutUserTaskRunCommentReqeustModel extends CoreSubCommand<PutUserTaskRunCommentRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
@@ -57,8 +57,8 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
     }
 
     @Override
-    public CommentUserTaskRunRequest.Builder toProto() {
-        CommentUserTaskRunRequest.Builder out = CommentUserTaskRunRequest.newBuilder();
+    public PutUserTaskRunCommentRequest.Builder toProto() {
+        PutUserTaskRunCommentRequest.Builder out = PutUserTaskRunCommentRequest.newBuilder();
         out.setUserTaskRunId(userTaskRunId.toProto());
         out.setUserId(userId);
         out.setComment(comment);
@@ -67,14 +67,14 @@ public class CommentUserTaskRunRequestModel extends CoreSubCommand<CommentUserTa
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        CommentUserTaskRunRequest p = (CommentUserTaskRunRequest) proto;
+        PutUserTaskRunCommentRequest p = (PutUserTaskRunCommentRequest) proto;
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         userId = p.getUserId();
         comment = p.getComment();
     }
 
     @Override
-    public Class<CommentUserTaskRunRequest> getProtoBaseClass() {
-        return CommentUserTaskRunRequest.class;
+    public Class<PutUserTaskRunCommentRequest> getProtoBaseClass() {
+        return PutUserTaskRunCommentRequest.class;
     }
 }

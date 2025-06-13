@@ -47,7 +47,7 @@ const (
 	LittleHorse_CancelUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/CancelUserTaskRun"
 	LittleHorse_SaveUserTaskRunProgress_FullMethodName    = "/littlehorse.LittleHorse/SaveUserTaskRunProgress"
 	LittleHorse_ListUserTaskRuns_FullMethodName           = "/littlehorse.LittleHorse/ListUserTaskRuns"
-	LittleHorse_CommentUserTaskRun_FullMethodName         = "/littlehorse.LittleHorse/CommentUserTaskRun"
+	LittleHorse_PutUserTaskRunComment_FullMethodName      = "/littlehorse.LittleHorse/PutUserTaskRunComment"
 	LittleHorse_EditUserTaskRunComment_FullMethodName     = "/littlehorse.LittleHorse/EditUserTaskRunComment"
 	LittleHorse_DeleteUserTaskRunComment_FullMethodName   = "/littlehorse.LittleHorse/DeleteUserTaskRunComment"
 	LittleHorse_GetNodeRun_FullMethodName                 = "/littlehorse.LittleHorse/GetNodeRun"
@@ -201,7 +201,7 @@ type LittleHorseClient interface {
 	// to model an entity.
 	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
 	// Adds userComment to a UserTaskRun
-	CommentUserTaskRun(ctx context.Context, in *CommentUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
+	PutUserTaskRunComment(ctx context.Context, in *PutUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
 	// Edits userComment with the correlated userCommentId
 	EditUserTaskRunComment(ctx context.Context, in *EditUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
 	// Deletes a comment logically, this does not affect the userTaskEvent Log
@@ -596,9 +596,9 @@ func (c *littleHorseClient) ListUserTaskRuns(ctx context.Context, in *ListUserTa
 	return out, nil
 }
 
-func (c *littleHorseClient) CommentUserTaskRun(ctx context.Context, in *CommentUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+func (c *littleHorseClient) PutUserTaskRunComment(ctx context.Context, in *PutUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
 	out := new(UserTaskRun)
-	err := c.cc.Invoke(ctx, LittleHorse_CommentUserTaskRun_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, LittleHorse_PutUserTaskRunComment_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1234,7 +1234,7 @@ type LittleHorseServer interface {
 	// to model an entity.
 	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
 	// Adds userComment to a UserTaskRun
-	CommentUserTaskRun(context.Context, *CommentUserTaskRunRequest) (*UserTaskRun, error)
+	PutUserTaskRunComment(context.Context, *PutUserTaskRunCommentRequest) (*UserTaskRun, error)
 	// Edits userComment with the correlated userCommentId
 	EditUserTaskRunComment(context.Context, *EditUserTaskRunCommentRequest) (*UserTaskRun, error)
 	// Deletes a comment logically, this does not affect the userTaskEvent Log
@@ -1464,8 +1464,8 @@ func (UnimplementedLittleHorseServer) SaveUserTaskRunProgress(context.Context, *
 func (UnimplementedLittleHorseServer) ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserTaskRuns not implemented")
 }
-func (UnimplementedLittleHorseServer) CommentUserTaskRun(context.Context, *CommentUserTaskRunRequest) (*UserTaskRun, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommentUserTaskRun not implemented")
+func (UnimplementedLittleHorseServer) PutUserTaskRunComment(context.Context, *PutUserTaskRunCommentRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskRunComment not implemented")
 }
 func (UnimplementedLittleHorseServer) EditUserTaskRunComment(context.Context, *EditUserTaskRunCommentRequest) (*UserTaskRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditUserTaskRunComment not implemented")
@@ -2137,20 +2137,20 @@ func _LittleHorse_ListUserTaskRuns_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_CommentUserTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommentUserTaskRunRequest)
+func _LittleHorse_PutUserTaskRunComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutUserTaskRunCommentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LittleHorseServer).CommentUserTaskRun(ctx, in)
+		return srv.(LittleHorseServer).PutUserTaskRunComment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LittleHorse_CommentUserTaskRun_FullMethodName,
+		FullMethod: LittleHorse_PutUserTaskRunComment_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).CommentUserTaskRun(ctx, req.(*CommentUserTaskRunRequest))
+		return srv.(LittleHorseServer).PutUserTaskRunComment(ctx, req.(*PutUserTaskRunCommentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3305,8 +3305,8 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_ListUserTaskRuns_Handler,
 		},
 		{
-			MethodName: "CommentUserTaskRun",
-			Handler:    _LittleHorse_CommentUserTaskRun_Handler,
+			MethodName: "PutUserTaskRunComment",
+			Handler:    _LittleHorse_PutUserTaskRunComment_Handler,
 		},
 		{
 			MethodName: "EditUserTaskRunComment",

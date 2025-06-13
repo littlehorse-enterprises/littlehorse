@@ -489,7 +489,7 @@ public class UserTaskTest {
                 .prepareRun(workflow)
                 .waitForStatus(RUNNING)
                 .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
-                .thenDeleteCommentUserTaskRun(0, 1, 1)
+                .thenDeleteCommentUserTaskRun(0, 1, 1, TEST_USER_ID)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
                     UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
@@ -543,7 +543,7 @@ public class UserTaskTest {
                 .prepareRun(workflow)
                 .waitForStatus(RUNNING)
                 .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
-                .thenDeleteCommentUserTaskRun(0, 1, 1)
+                .thenDeleteCommentUserTaskRun(0, 1, 1, TEST_USER_ID)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
 
@@ -622,6 +622,7 @@ public class UserTaskTest {
                                 client.deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest.newBuilder()
                                         .setUserTaskRunId(userTaskId)
                                         .setUserCommentId(2)
+                                        .setUserId("user")
                                         .build());
                             })
                             .matches(exn -> {
@@ -647,7 +648,7 @@ public class UserTaskTest {
                 .prepareRun(workflow)
                 .waitForStatus(RUNNING)
                 .thenCommentUserTaskRun(0, 1, TEST_USER_ID, comment)
-                .thenDeleteCommentUserTaskRun(0, 1, 1)
+                .thenDeleteCommentUserTaskRun(0, 1, 1, TEST_USER_ID)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
 

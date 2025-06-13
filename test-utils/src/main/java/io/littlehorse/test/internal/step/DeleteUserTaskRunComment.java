@@ -12,12 +12,14 @@ public class DeleteUserTaskRunComment extends AbstractStep {
     private final int threadRunNumber;
     private final int nodeRunNumber;
     private final int userCommentId;
+    private final String userId;
 
-    public DeleteUserTaskRunComment(int id, int threadRunNumber, int nodeRunNumber, int userCommentId) {
+    public DeleteUserTaskRunComment(int id, int threadRunNumber, int nodeRunNumber, int userCommentId, String userId) {
         super(id);
         this.threadRunNumber = threadRunNumber;
         this.nodeRunNumber = nodeRunNumber;
         this.userCommentId = userCommentId;
+        this.userId = userId;
     }
 
     @Override
@@ -37,6 +39,7 @@ public class DeleteUserTaskRunComment extends AbstractStep {
             lhClient.deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest.newBuilder()
                     .setUserTaskRunId(userTaskId)
                     .setUserCommentId(userCommentId)
+                    .setUserId(userId)
                     .build());
         } else {
             throw new IllegalArgumentException(

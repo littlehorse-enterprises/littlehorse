@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface CommentUserTaskRunRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.CommentUserTaskRunRequest)
+public interface PutUserTaskRunCommentRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.PutUserTaskRunCommentRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

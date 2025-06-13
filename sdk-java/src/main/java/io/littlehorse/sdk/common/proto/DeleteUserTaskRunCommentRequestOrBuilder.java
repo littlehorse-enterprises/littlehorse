@@ -43,4 +43,24 @@ public interface DeleteUserTaskRunCommentRequestOrBuilder extends
    * @return The userCommentId.
    */
   int getUserCommentId();
+
+  /**
+   * <pre>
+   * The id of the user who deleted the comment
+   * </pre>
+   *
+   * <code>string user_id = 3;</code>
+   * @return The userId.
+   */
+  java.lang.String getUserId();
+  /**
+   * <pre>
+   * The id of the user who deleted the comment
+   * </pre>
+   *
+   * <code>string user_id = 3;</code>
+   * @return The bytes for userId.
+   */
+  com.google.protobuf.ByteString
+      getUserIdBytes();
 }
