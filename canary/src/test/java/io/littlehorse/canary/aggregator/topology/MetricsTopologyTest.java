@@ -15,6 +15,7 @@ import io.littlehorse.canary.proto.Tag;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -46,11 +47,11 @@ class MetricsTopologyTest {
         return UUID.randomUUID().toString();
     }
 
-    private static MetricValue newMetricValue(double count) {
+    private MetricValue newMetricValue(double count) {
         return MetricValue.newBuilder().putValues("count", count).build();
     }
 
-    private static MetricValue newMetricValue(double avg, double max, double count) {
+    private MetricValue newMetricValue(double avg, double max, double count) {
         return MetricValue.newBuilder()
                 .putValues("avg", avg)
                 .putValues("max", max)
@@ -58,23 +59,23 @@ class MetricsTopologyTest {
                 .build();
     }
 
-    private static MetricKey newMetricKey(String id) {
+    private MetricKey newMetricKey(String id) {
         return newMetricKey(HOST_1, PORT_1, id);
     }
 
-    private static MetricKey newMetricKey(String id, String status) {
+    private MetricKey newMetricKey(String id, String status) {
         return newMetricKey(HOST_1, PORT_1, id, status, null);
     }
 
-    private static MetricKey newMetricKey(String host, int port, String id) {
+    private MetricKey newMetricKey(String host, int port, String id) {
         return newMetricKey(host, port, id, null, null);
     }
 
-    private static MetricKey newMetricKey(String id, String status, Map<String, String> tags) {
+    private MetricKey newMetricKey(String id, String status, Map<String, String> tags) {
         return newMetricKey(HOST_1, PORT_1, id, status, tags);
     }
 
-    private static MetricKey newMetricKey(String host, int port, String id, String status, Map<String, String> tags) {
+    private MetricKey newMetricKey(String host, int port, String id, String status, Map<String, String> tags) {
         MetricKey.Builder builder =
                 MetricKey.newBuilder().setServerHost(host).setServerPort(port).setName(id);
 
@@ -95,20 +96,20 @@ class MetricsTopologyTest {
         return builder.build();
     }
 
-    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency) {
+    private TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency) {
         return newBeat(HOST_1, PORT_1, type, id, latency, null, null);
     }
 
-    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency, String beatStatus) {
+    private TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency, String beatStatus) {
         return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus, null);
     }
 
-    private static TestRecord<BeatKey, BeatValue> newBeat(
+    private TestRecord<BeatKey, BeatValue> newBeat(
             BeatType type, String id, Long latency, String beatStatus, Map<String, String> tags) {
         return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus, tags);
     }
 
-    private static TestRecord<BeatKey, BeatValue> newBeat(
+    private TestRecord<BeatKey, BeatValue> newBeat(
             String host,
             int port,
             BeatType type,
@@ -122,7 +123,10 @@ class MetricsTopologyTest {
                 .setServerPort(port)
                 .setType(type)
                 .setId(id);
-        BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
+
+        BeatValue.Builder valueBuilder =
+                // set time to 0 (Timestamps.EPOCH) to prevent windows to be closed
+                BeatValue.newBuilder().setTime(Timestamps.EPOCH);
 
         if (beatStatus != null) {
             keyBuilder.addTags(
@@ -157,7 +161,8 @@ class MetricsTopologyTest {
                 StreamsConfig.STATE_DIR_CONFIG,
                 Files.createTempDirectory("canaryStreamUnitTest").toString());
 
-        testDriver = new TopologyTestDriver(metricsTopology.toTopology(), properties);
+        // set time to 0 (Instant.EPOCH) to prevent windows to be closed
+        testDriver = new TopologyTestDriver(metricsTopology.toTopology(), properties, Instant.EPOCH);
         inputTopic = testDriver.createInputTopic(
                 inputTopicName,
                 ProtobufSerdes.BeatKey().serializer(),
