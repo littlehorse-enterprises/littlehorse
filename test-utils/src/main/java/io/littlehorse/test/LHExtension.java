@@ -1,6 +1,5 @@
 package io.littlehorse.test;
 
-import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
@@ -232,26 +231,22 @@ public class LHExtension
         try {
             testContext.getLhClient().getTenant(testContext.getConfig().getTenantId());
         } catch (StatusRuntimeException sre) {
-            if (sre.getStatus().getCode() == Code.NOT_FOUND) {
-                Awaitility.await()
-                        .atMost(Duration.ofSeconds(25))
-                        .ignoreExceptionsMatching(exn -> RuntimeException.class.isAssignableFrom(exn.getClass()))
-                        .until(() -> {
-                            testContext
-                                    .getLhClient()
-                                    .withDeadlineAfter(2, TimeUnit.SECONDS)
-                                    .putTenant(PutTenantRequest.newBuilder()
-                                            .setId(testContext
-                                                    .getConfig()
-                                                    .getTenantId()
-                                                    .getId())
-                                            .setOutputTopicConfig(OutputTopicConfig.newBuilder())
-                                            .build());
-                            return true;
-                        });
-            } else {
-                throw sre;
-            }
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(25))
+                    .ignoreExceptionsMatching(exn -> RuntimeException.class.isAssignableFrom(exn.getClass()))
+                    .until(() -> {
+                        testContext
+                                .getLhClient()
+                                .withDeadlineAfter(2, TimeUnit.SECONDS)
+                                .putTenant(PutTenantRequest.newBuilder()
+                                        .setId(testContext
+                                                .getConfig()
+                                                .getTenantId()
+                                                .getId())
+                                        .setOutputTopicConfig(OutputTopicConfig.newBuilder())
+                                        .build());
+                        return true;
+                    });
         }
     }
 
