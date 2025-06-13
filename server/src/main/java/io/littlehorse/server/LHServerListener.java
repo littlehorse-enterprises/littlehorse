@@ -1132,9 +1132,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
         } catch (InterruptedException e) {
-            Throwable cause = e.getCause() == null ? e : e.getCause();
-            log.error("Failed to process command %s".formatted(command), cause);
-            responseObserver.onError(cause);
+            responseObserver.onError(new StatusRuntimeException(
+                    Status.UNAVAILABLE.withDescription("This Server instance shutting down")));
         } catch (TimeoutException e) {
             responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
                     "Could not process command in time id: %s".formatted(command.getCommandId()))));
