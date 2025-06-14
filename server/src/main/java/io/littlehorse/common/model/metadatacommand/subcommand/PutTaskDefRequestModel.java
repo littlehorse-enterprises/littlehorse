@@ -62,10 +62,6 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         }
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public TaskDef process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
         if (!LHUtil.isValidLHName(name)) {

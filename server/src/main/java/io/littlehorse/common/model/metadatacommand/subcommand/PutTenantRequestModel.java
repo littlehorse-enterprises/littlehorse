@@ -64,11 +64,6 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public Tenant process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
 

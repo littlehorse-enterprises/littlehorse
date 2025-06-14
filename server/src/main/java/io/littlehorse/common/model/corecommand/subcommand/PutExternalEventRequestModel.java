@@ -62,11 +62,6 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public ExternalEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfService service = executionContext.service();
         ExternalEventDefModel eed = service.getExternalEventDef(externalEventDefId.getName());

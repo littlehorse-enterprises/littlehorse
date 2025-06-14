@@ -105,9 +105,4 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
 
         return correlatedEvent.toProto().build();
     }
-
-    @Override
-    public boolean hasResponse() {
-        return true;
-    }
 }

@@ -102,7 +102,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
 
-            if (command.hasResponse() && command.getCommandId().isPresent()) {
+            if (command.hasResponse()) {
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                         command.getCommandId().get(), Message.class, new CompletableFuture<>());
                 completable.complete(response);

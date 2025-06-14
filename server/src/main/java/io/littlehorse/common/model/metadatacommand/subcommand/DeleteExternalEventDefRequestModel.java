@@ -40,10 +40,6 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public static DeleteExternalEventDefRequestModel fromProto(
             DeleteExternalEventDefRequest p, ExecutionContext context) {
         DeleteExternalEventDefRequestModel out = new DeleteExternalEventDefRequestModel();

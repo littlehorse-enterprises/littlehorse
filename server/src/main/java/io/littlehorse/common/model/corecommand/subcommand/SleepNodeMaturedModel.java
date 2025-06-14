@@ -51,10 +51,6 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
         return out;
     }
 
-    public boolean hasResponse() {
-        return false;
-    }
-
     public String getPartitionKey() {
         return nodeRunId.getPartitionKey().get();
     }

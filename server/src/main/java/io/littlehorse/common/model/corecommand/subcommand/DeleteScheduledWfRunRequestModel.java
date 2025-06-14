@@ -34,11 +34,6 @@ public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteSched
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         executionContext.getableManager().delete(id);
         return Empty.getDefaultInstance();

@@ -39,10 +39,6 @@ public class DeleteWfSpecRequestModel extends MetadataSubCommand<DeleteWfSpecReq
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public static DeleteWfSpecRequestModel fromProto(DeleteWfSpecRequest p, ExecutionContext context) {
         DeleteWfSpecRequestModel out = new DeleteWfSpecRequestModel();
         out.initFrom(p, context);

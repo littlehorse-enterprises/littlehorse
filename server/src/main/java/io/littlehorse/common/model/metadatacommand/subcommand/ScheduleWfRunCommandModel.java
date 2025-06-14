@@ -102,11 +102,6 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     }
 
     @Override
-    public boolean hasResponse() {
-        return false;
-    }
-
-    @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         ScheduledWfRunModel scheduledWfRun = executionContext.getableManager().get(scheduledId);
         if (scheduledWfRun != null) {

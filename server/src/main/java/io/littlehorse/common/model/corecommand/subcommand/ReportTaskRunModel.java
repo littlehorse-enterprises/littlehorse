@@ -34,16 +34,14 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     private LHTaskErrorModel error;
     private LHTaskExceptionModel exception;
 
+    @Override
     public String getPartitionKey() {
         return taskRunId.getPartitionKey().get();
     }
 
+    @Override
     public Class<ReportTaskRun> getProtoBaseClass() {
         return ReportTaskRun.class;
-    }
-
-    public boolean hasResponse() {
-        return false;
     }
 
     @Override
@@ -57,6 +55,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         return Empty.getDefaultInstance();
     }
 
+    @Override
     public ReportTaskRun.Builder toProto() {
         ReportTaskRun.Builder b = ReportTaskRun.newBuilder()
                 .setTaskRunId(taskRunId.toProto())
