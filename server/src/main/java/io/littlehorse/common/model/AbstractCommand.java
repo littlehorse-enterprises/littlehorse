@@ -4,16 +4,11 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.LHStoreType;
-import io.littlehorse.common.util.LHUtil;
 import java.util.Optional;
 import lombok.Setter;
 
 @Setter
 public abstract class AbstractCommand<T extends Message> extends LHSerializable<T> {
-
-    public AbstractCommand() {
-        commandId = LHUtil.generateGuid();
-    }
 
     protected String commandId;
 
