@@ -60,10 +60,6 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         return LHConstants.META_PARTITION_KEY;
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     @Override
     public UserTaskDef process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();

@@ -192,7 +192,8 @@ public class CorrelatedEventTest {
 
     @Test
     void correlatedEventsGoToCorrectNodeRun() {
-        List<String> documents = List.of("doc-1", "doc-2", "doc-3");
+        String randomStr = LHUtil.generateGuid(); // avoid ALREADY_EXISTS on repeated test runs
+        List<String> documents = List.of("doc-1" + randomStr, "doc-2" + randomStr, "doc-3" + randomStr);
         ExternalEventDefId evtId = ExternalEventDefId.newBuilder()
                 .setName("correlated-document-signed")
                 .build();
@@ -200,7 +201,7 @@ public class CorrelatedEventTest {
                 .thenVerifyWfRun(wfRun -> {
                     client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                             .setExternalEventDefId(evtId)
-                            .setKey("doc-2")
+                            .setKey("doc-2" + randomStr)
                             .build());
                 })
                 .waitForThreadRunStatus(2, LHStatus.COMPLETED)
@@ -209,14 +210,14 @@ public class CorrelatedEventTest {
                 .thenVerifyWfRun(wfRun -> {
                     client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                             .setExternalEventDefId(evtId)
-                            .setKey("doc-1")
+                            .setKey("doc-1" + randomStr)
                             .build());
                 })
                 .waitForThreadRunStatus(1, LHStatus.COMPLETED)
                 .thenVerifyWfRun(wfRun -> {
                     client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                             .setExternalEventDefId(evtId)
-                            .setKey("doc-3")
+                            .setKey("doc-3" + randomStr)
                             .build());
                 })
                 .waitForStatus(LHStatus.COMPLETED)

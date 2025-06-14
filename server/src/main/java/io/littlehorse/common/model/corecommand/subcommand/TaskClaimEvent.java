@@ -65,11 +65,6 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
         return b;
     }
 
-    public boolean hasResponse() {
-        // TaskClaimEvents are always due to a Task Worker's poll request.
-        return true;
-    }
-
     @Override
     public PollTaskResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         TaskRunModel taskRun = executionContext.getableManager().get(taskRunId);

@@ -44,11 +44,6 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public WfSpec process(MetadataCommandExecution metadataContext) {
         WfService service = metadataContext.service();
         MetadataManager metadataManager = metadataContext.metadataManager();

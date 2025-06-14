@@ -40,10 +40,6 @@ public class DeleteWorkflowEventDefRequestModel extends MetadataSubCommand<Delet
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return false;
-    }
-
     public static DeleteWorkflowEventDefRequestModel fromProto(
             DeleteWorkflowEventDefRequest p, ExecutionContext context) {
         DeleteWorkflowEventDefRequestModel out = new DeleteWorkflowEventDefRequestModel();

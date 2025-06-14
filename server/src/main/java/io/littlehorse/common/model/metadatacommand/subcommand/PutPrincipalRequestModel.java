@@ -180,9 +180,4 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                     "Cannot remove admin privileges from Principal %s: %s is the last Admin left.".formatted(id, id));
         }
     }
-
-    @Override
-    public boolean hasResponse() {
-        return true;
-    }
 }

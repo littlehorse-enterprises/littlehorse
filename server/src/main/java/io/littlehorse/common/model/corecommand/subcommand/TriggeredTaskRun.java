@@ -136,11 +136,4 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
     public String getPartitionKey() {
         return source.getWfRunId().getPartitionKey().get();
     }
-
-    @Override
-    public boolean hasResponse() {
-        // Triggered Task Runs are sent by the LHTimer infrastructure, which means
-        // there is no actual client waiting for the response.
-        return false;
-    }
 }

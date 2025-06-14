@@ -51,10 +51,6 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public static StopWfRunRequestModel fromProto(StopWfRunRequest p, ExecutionContext context) {
         StopWfRunRequestModel out = new StopWfRunRequestModel();
         out.initFrom(p, context);

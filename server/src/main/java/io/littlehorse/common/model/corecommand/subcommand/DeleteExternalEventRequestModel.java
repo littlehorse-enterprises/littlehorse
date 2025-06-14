@@ -38,10 +38,6 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
         return out;
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         ExternalEventModel externalEvent = executionContext.getableManager().get(id);
         if (!externalEvent.isClaimed()) {

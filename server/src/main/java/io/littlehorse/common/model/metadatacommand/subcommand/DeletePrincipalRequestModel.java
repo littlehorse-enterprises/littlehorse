@@ -40,11 +40,6 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public Empty process(MetadataCommandExecution context) {
         if (id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             throw new LHApiException(

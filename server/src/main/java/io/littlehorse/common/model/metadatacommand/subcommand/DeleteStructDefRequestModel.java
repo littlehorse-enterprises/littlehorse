@@ -15,11 +15,6 @@ public class DeleteStructDefRequestModel extends MetadataSubCommand<DeleteStruct
     private StructDefIdModel id;
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public Message process(MetadataCommandExecution context) {
         context.metadataManager().delete(id);
         return Empty.getDefaultInstance();

@@ -191,7 +191,6 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         }
     }
 
-    @Override
     public MetadataSubCommand<?> getSubCommand() {
         switch (type) {
             case PUT_WF_SPEC:
@@ -277,7 +276,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     }
 
     public boolean hasResponse() {
-        return getSubCommand().hasResponse();
+        return getCommandId().isPresent();
     }
 
     public Message process(MetadataCommandExecution context) {

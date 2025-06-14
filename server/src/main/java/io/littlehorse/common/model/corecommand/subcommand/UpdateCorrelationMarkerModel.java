@@ -54,11 +54,6 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
     }
 
     @Override
-    public boolean hasResponse() {
-        return false;
-    }
-
-    @Override
     public Empty process(ProcessorExecutionContext context, LHServerConfig config) {
         CorrelationMarkerManager manager = context.getCorrelationMarkerManager();
         EventCorrelationMarkerModel marker = manager.getOrCreateMarker(correlationKey, externalEventDefId);

@@ -40,10 +40,6 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public static DeleteUserTaskDefRequestModel fromProto(DeleteUserTaskDefRequest p, ExecutionContext context) {
         DeleteUserTaskDefRequestModel out = new DeleteUserTaskDefRequestModel();
         out.initFrom(p, context);
