@@ -5,7 +5,7 @@ namespace UserTasksExample;
 public class EmailSender
 {
     [LHTaskMethod("send-email")]
-    public void SendEmail(string address, string content, LHWorkerContext workerContext) 
+    public async Task SendEmail(string address, string content, LHWorkerContext workerContext) 
     {
         if (workerContext.GetUserId() != null) 
         {

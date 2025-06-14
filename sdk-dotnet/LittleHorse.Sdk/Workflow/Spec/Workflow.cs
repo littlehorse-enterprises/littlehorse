@@ -68,9 +68,10 @@ public class Workflow
     /// <param name="client">
     /// It is a LHClient.
     /// </param>
-    public void RegisterWfSpec(LittleHorseClient client)
+    public async Task RegisterWfSpec(LittleHorseClient client)
     {
-        _logger!.LogInformation($"Created wfSpec:\n{LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile()))}");
+        var wfSpec = await client.PutWfSpecAsync(Compile());
+        _logger!.LogInformation($"Created wfSpec:\n{LHMappingHelper.ProtoToJson(wfSpec)}");
     }
 
     internal string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
