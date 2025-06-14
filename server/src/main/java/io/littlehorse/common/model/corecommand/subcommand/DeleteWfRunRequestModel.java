@@ -85,10 +85,6 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public static DeleteWfRunRequestModel fromProto(DeleteWfRunRequest p, ExecutionContext context) {
         DeleteWfRunRequestModel out = new DeleteWfRunRequestModel();
         out.initFrom(p, context);

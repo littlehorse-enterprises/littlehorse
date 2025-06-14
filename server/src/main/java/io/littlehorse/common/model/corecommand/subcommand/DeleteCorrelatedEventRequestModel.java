@@ -37,11 +37,6 @@ public class DeleteCorrelatedEventRequestModel extends CoreSubCommand<DeleteCorr
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public Empty process(ProcessorExecutionContext ctx, LHServerConfig config) {
         GetableManager manager = ctx.getableManager();
 

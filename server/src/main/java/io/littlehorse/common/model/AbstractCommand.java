@@ -24,8 +24,6 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
     // Metadata commands will return a dummy value
     public abstract String getPartitionKey();
 
-    public abstract SubCommand<? extends Message> getSubCommand();
-
     public Optional<String> getCommandId() {
         return Optional.ofNullable(commandId);
     }

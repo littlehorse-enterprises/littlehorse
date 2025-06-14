@@ -61,11 +61,6 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public ExternalEventDef process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
 

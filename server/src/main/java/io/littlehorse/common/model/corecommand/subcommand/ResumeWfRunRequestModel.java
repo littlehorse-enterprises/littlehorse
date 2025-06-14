@@ -50,10 +50,6 @@ public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> 
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public static ResumeWfRunRequestModel fromProto(ResumeWfRunRequest p, ExecutionContext context) {
         ResumeWfRunRequestModel out = new ResumeWfRunRequestModel();
         out.initFrom(p, context);
