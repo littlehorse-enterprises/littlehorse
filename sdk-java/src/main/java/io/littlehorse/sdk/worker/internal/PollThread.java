@@ -46,6 +46,9 @@ public class PollThread extends Thread implements Closeable {
     @Override
     public void close() {
         this.stillRunning = false;
+        for (PollTaskStub pollClient : pollClients) {
+            pollClient.close();
+        }
     }
 
     public boolean isRunning() {
