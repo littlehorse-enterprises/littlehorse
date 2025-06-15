@@ -142,5 +142,86 @@ public interface UserTaskEventOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTESavedOrBuilder getSavedOrBuilder();
 
+  /**
+   * <pre>
+   * Denotes that there was a comment on a `userTaskRun`
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+   * @return Whether the commentAdded field is set.
+   */
+  boolean hasCommentAdded();
+  /**
+   * <pre>
+   * Denotes that there was a comment on a `userTaskRun`
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+   * @return The commentAdded.
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getCommentAdded();
+  /**
+   * <pre>
+   * Denotes that there was a comment on a `userTaskRun`
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder getCommentAddedOrBuilder();
+
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` has been edited
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+   * @return Whether the commentEdited field is set.
+   */
+  boolean hasCommentEdited();
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` has been edited
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+   * @return The commentEdited.
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getCommentEdited();
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` has been edited
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder getCommentEditedOrBuilder();
+
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` was deleted
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+   * @return Whether the commentDeleted field is set.
+   */
+  boolean hasCommentDeleted();
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` was deleted
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+   * @return The commentDeleted.
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted getCommentDeleted();
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` was deleted
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder getCommentDeletedOrBuilder();
+
   io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase getEventCase();
 }
