@@ -32,6 +32,7 @@ public class WorkflowThread
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     private ThreadRetentionPolicy? _retentionPolicy;
+    private bool _isStartNopActive;
     
     internal bool IsActive { get; }
     
@@ -107,24 +108,19 @@ public class WorkflowThread
         {
             throw new InvalidOperationException("Not possible to have null last node here");
         }
+        
+        AddEdgeToFeederNode(nextNodeName);
+        
+        Node node = BuildNode(type, subNode);
+    
+        _spec.Nodes.Add(nextNodeName, node);
+        LastNodeName = nextNodeName;
 
-        var feederNode = FindNode(LastNodeName);
-        var edge = new Edge { SinkNodeName = nextNodeName };
-        
-        edge.VariableMutations.AddRange(CollectVariableMutations());
-        
-        if (_lastNodeCondition != null) 
-        {
-            edge.Condition = _lastNodeCondition;
-            _lastNodeCondition = null;
-        }
-        
-        if (feederNode.NodeCase != Node.NodeOneofCase.Exit) 
-        {
-            feederNode.OutgoingEdges.Add(edge);
-            _spec.Nodes[LastNodeName] = feederNode;
-        }
+        return nextNodeName;
+    }
 
+    private Node BuildNode(Node.NodeOneofCase type, IMessage subNode)
+    {
         Node node = new Node();
         switch (type) 
         {
@@ -168,10 +164,39 @@ public class WorkflowThread
                 throw new InvalidOperationException("Not possible");
         }
 
-        _spec.Nodes.Add(nextNodeName, node);
-        LastNodeName = nextNodeName;
+        return node;
+    }
 
-        return nextNodeName;
+    private void AddEdgeToFeederNode(string nextNodeName)
+    {
+        var feederNode = FindNode(LastNodeName);
+        var edge = new Edge { SinkNodeName = nextNodeName };
+        
+        edge.VariableMutations.AddRange(CollectVariableMutations());
+        
+        if (_lastNodeCondition != null) 
+        {
+            edge.Condition = _lastNodeCondition;
+            _lastNodeCondition = null;
+        }
+        
+        feederNode.OutgoingEdges.Add(edge);
+        _spec.Nodes[LastNodeName] = feederNode;
+
+        if (feederNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            if (feederNode.OutgoingEdges[0].SinkNodeName == nextNodeName && _isStartNopActive)
+            {
+                // If the last node is an exit node, and we are in a StartNop block,
+                // we remove the outgoing edge to the next node
+                // because we cannot add a new node after the thread has completed.
+                feederNode.OutgoingEdges.RemoveAt(0);
+                throw new InvalidOperationException(
+                    "You cannot add a Node in a given thread after the thread has completed.");
+            }
+            // If the last node is an exit node, we remove the outgoing edge to the next node
+            feederNode.OutgoingEdges.RemoveAt(0);
+        }
     }
     
     private string GetNodeName(string name, Node.NodeOneofCase type) 
@@ -196,6 +221,13 @@ public class WorkflowThread
     public WfRunVariable AddVariable(string name, object typeOrDefaultVal) 
     {
         CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot add a variable in a given thread after the thread has completed.");
+        }
+        
         var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
         _wfRunVariables.Add(wfRunVariable);
         
@@ -484,11 +516,13 @@ public class WorkflowThread
     public WorkflowIfStatement DoIf(WorkflowCondition condition, Action<WorkflowThread> body)
     {
         CheckIfWorkflowThreadIsActive();
+        _isStartNopActive = true;
         var firstNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         _lastNodeCondition = condition.Compile();
 
         body.Invoke(this);
 
+        _isStartNopActive = false;
         var lastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
 
         var firstNopeNode = FindNode(firstNodeName);
@@ -525,9 +559,12 @@ public class WorkflowThread
             firstNopNode.OutgoingEdges.Add(edge);
             
             var lastNodeOfBody = FindNode(lastNodeNameOfBody);
-            var edgeFromLastNodeOfBody = GetNewEdge(ifStatement.LastNopNodeName, null,
-                CollectVariableMutations());
-            lastNodeOfBody.OutgoingEdges.Add(edgeFromLastNodeOfBody);
+            if (lastNodeOfBody.NodeCase != Node.NodeOneofCase.Exit)
+            {
+                var edgeFromLastNodeOfBody = GetNewEdge(ifStatement.LastNopNodeName, null,
+                    CollectVariableMutations());
+                lastNodeOfBody.OutgoingEdges.Add(edgeFromLastNodeOfBody);
+            }
         }
         
         if (condition != null)
@@ -587,15 +624,15 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
 
+        _isStartNopActive = true;
         AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         var treeRootNodeName = LastNodeName;
         _lastNodeCondition = condition.Compile();
         
         whileThread.Invoke(this);
         
-        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        
-        var treeLastNodeName = LastNodeName;
+        var treeLastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        _isStartNopActive = false;
         
         var treeRoot = FindNode(treeRootNodeName);
         treeRoot.OutgoingEdges.Add(new Edge
@@ -647,6 +684,13 @@ public class WorkflowThread
     public void Mutate(WfRunVariable lhs, VariableMutationType type, object rhs)
     {
         CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot mutate a variable in a given thread after the thread has completed.");
+        }
+        
         var mutation = new VariableMutation
         {
             LhsName = lhs.Name,
@@ -960,9 +1004,7 @@ public class WorkflowThread
     public void Complete() 
     {
         CheckIfWorkflowThreadIsActive();
-        var exitNode = new ExitNode();
-        
-        AddNode("complete", Node.NodeOneofCase.Exit, exitNode);
+        AddNode("complete", Node.NodeOneofCase.Exit, new ExitNode());
     }
     
     /// <summary>

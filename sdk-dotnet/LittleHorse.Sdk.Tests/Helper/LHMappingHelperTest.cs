@@ -13,13 +13,13 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithSystemIntegralVariableType_ShouldReturnLHVariableIntType()
     {
-        var test_allowed_types = new List<Type>() { typeof(Int64), typeof(Int32), typeof(Int16) 
+        var testAllowedTypes = new List<Type>() { typeof(Int64), typeof(Int32), typeof(Int16) 
             , typeof(UInt16), typeof(UInt32), typeof(UInt64)
             , typeof(sbyte), typeof(byte), typeof(short), typeof(ushort)
             , typeof(int), typeof(uint), typeof(long) 
             , typeof(ulong), typeof(nint), typeof(nuint)};
         
-        foreach (var type in test_allowed_types)
+        foreach (var type in testAllowedTypes)
         {
             var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
@@ -30,9 +30,9 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithSystemFloatingVariableType_ShouldReturnLHVariableDoubleType()
     {
-        var test_allowed_types = new List<Type>() { typeof(float), typeof(double)};
+        var testAllowedTypes = new List<Type>() { typeof(float), typeof(double)};
         
-        foreach (var type in test_allowed_types)
+        foreach (var type in testAllowedTypes)
         {
             var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
@@ -73,9 +73,9 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithIlistObjectType_ShouldReturnLHVariableJsonArrType()
     {
-        var test_allowed_types = new List<Type>() { typeof(List<object>), typeof(List<string>), typeof(List<int>)};
+        var testAllowedTypes = new List<Type>() { typeof(List<object>), typeof(List<string>), typeof(List<int>)};
         
-        foreach (var type in test_allowed_types)
+        foreach (var type in testAllowedTypes)
         {
             var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
@@ -86,10 +86,10 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithNotAllowedSystemVariableTypes_ShouldReturnLHJsonObj()
     {
-        var test_not_allowed_types = new List<Type>() { typeof(decimal), typeof(char), typeof(void), 
+        var testNotAllowedTypes = new List<Type>() { typeof(decimal), typeof(char), typeof(void), 
             typeof(Dictionary<string, string>) };
         
-        foreach (var type in test_not_allowed_types)
+        foreach (var type in testNotAllowedTypes)
         {
             var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
@@ -157,11 +157,11 @@ public class LHMappingHelperTest
     public void LHHelper_WithIntegerValue_ShouldReturnLHIntegerValue()
     {
         int expectedValue = 23;
-        var test_int_values = new List<object>() { (sbyte)expectedValue, (byte)expectedValue, (short)expectedValue, 
+        var testIntValues = new List<object>() { (sbyte)expectedValue, (byte)expectedValue, (short)expectedValue, 
             (ushort)expectedValue, expectedValue, (uint)expectedValue, (long)expectedValue, (ulong)expectedValue, 
             (nint)expectedValue, (nuint)expectedValue };
         
-        foreach (var obj in test_int_values)
+        foreach (var obj in testIntValues)
         {
             var result = LHMappingHelper.ObjectToVariableValue(obj);
             
