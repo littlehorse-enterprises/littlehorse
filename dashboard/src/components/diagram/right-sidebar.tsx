@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import SidebarExpandButton from '@/components/ui/sidebar-expand-button'
 import ExpandableText from '@/components/ui/expandable-text'
 import VariableDisplay from '@/components/ui/variable-display'
@@ -32,7 +32,14 @@ export default function RightSidebar({ wfSpec, nodeRuns, taskRuns }: RightSideba
   const [sidebarState, setSidebarState] = useState<SidebarState>('normal')
   const [selectedAttempt, setSelectedAttempt] = useState<string | null>(null)
   const [selectedNodeRun, setSelectedNodeRun] = useState<NodeRun | null>(null)
-  const { selectedId } = useSelection()
+  const { selectedId: selectedIdFromContext } = useSelection()
+  console.log(nodeRuns)
+
+  // todo: need to rework node id from extraction utils to use noderun.id instead of appending `:${threadRun}`
+  const selectedId = useMemo(() => {
+    return selectedIdFromContext?.split(':')[0]
+  }, [selectedIdFromContext])
+
 
   // Find the selected node data
   const selectedNodeRuns = nodeRuns.filter(nodeRun => nodeRun.nodeName === selectedId)
@@ -41,10 +48,10 @@ export default function RightSidebar({ wfSpec, nodeRuns, taskRuns }: RightSideba
   // Find TaskRuns that correspond to the selected specific node run (not all node runs)
   const selectedTaskRuns = selectedNodeRun
     ? taskRuns.filter(
-        taskRun =>
-          taskRun.source?.taskNode?.nodeRunId?.wfRunId?.id === selectedNodeRun.id?.wfRunId?.id &&
-          taskRun.source?.taskNode?.nodeRunId?.position === selectedNodeRun.id?.position
-      )
+      taskRun =>
+        taskRun.source?.taskNode?.nodeRunId?.wfRunId?.id === selectedNodeRun.id?.wfRunId?.id &&
+        taskRun.source?.taskNode?.nodeRunId?.position === selectedNodeRun.id?.position
+    )
     : []
 
   useEffect(() => {
@@ -124,22 +131,20 @@ export default function RightSidebar({ wfSpec, nodeRuns, taskRuns }: RightSideba
             {nodeRuns.length > 0 && (
               <button
                 onClick={() => setActiveTab('runs')}
-                className={`border-b-2 pb-2 text-xs font-medium transition-colors ${
-                  activeTab === 'runs'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`border-b-2 pb-2 text-xs font-medium transition-colors ${activeTab === 'runs'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 Runs
               </button>
             )}
             <button
               onClick={() => setActiveTab('definition')}
-              className={`border-b-2 pb-2 text-xs font-medium transition-colors ${
-                activeTab === 'definition'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
+              className={`border-b-2 pb-2 text-xs font-medium transition-colors ${activeTab === 'definition'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
             >
               Definition
             </button>
@@ -158,12 +163,11 @@ export default function RightSidebar({ wfSpec, nodeRuns, taskRuns }: RightSideba
                   {selectedNodeRuns.map((nodeRun, index) => (
                     <div
                       key={nodeRun.id?.wfRunId?.id + '-' + nodeRun.id?.position}
-                      className={`cursor-pointer rounded-md border p-3 transition-colors ${
-                        selectedNodeRun?.id?.wfRunId?.id === nodeRun.id?.wfRunId?.id &&
+                      className={`cursor-pointer rounded-md border p-3 transition-colors ${selectedNodeRun?.id?.wfRunId?.id === nodeRun.id?.wfRunId?.id &&
                         selectedNodeRun?.id?.position === nodeRun.id?.position
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:bg-gray-50'
-                      }`}
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:bg-gray-50'
+                        }`}
                       onClick={() => setSelectedNodeRun(nodeRun)}
                     >
                       <div className="mb-1 flex items-center justify-between">

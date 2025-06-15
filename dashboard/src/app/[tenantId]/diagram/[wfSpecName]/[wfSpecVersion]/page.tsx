@@ -1,4 +1,4 @@
-import { getWfRunDetails } from '@/actions/getWfRun'
+import { getWfRunDetails } from '@/actions/getWfRunDetails'
 import { lhClient } from '@/utils/client/lhClient'
 import { type Edge, type Node } from '@xyflow/react'
 import { SelectionProvider } from '@/components/context/selection-context'
