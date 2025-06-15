@@ -710,4 +710,55 @@ public class WorkflowIfStatementTest
         
         Assert.Equal(threadSpec, compiledWfThread);
     }
+    
+    [Fact]
+    public void WorkflowThread_WithDoIfAfterComplete_ShouldThrownException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        
+        void MyEntrypoint(WorkflowThread thread)
+        {
+            thread.DoIf(thread.Condition(9, Comparator.GreaterThanEq, 4),
+                body =>
+                {
+                    body.Complete();
+                    body.DoIf(body.Condition(5, Comparator.LessThan, 9), newBody =>
+                    {
+                        newBody.Execute("task-a");
+                    });
+                });
+        }
+        
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint));
+        Assert.Equal("You cannot add a Node in a given thread after the thread has completed.", 
+            exception.Message);
+    }
+    
+    [Fact]
+    public void WorkflowThread_WithDoWhileAfterComplete_ShouldThrownException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        
+        void MyEntrypoint(WorkflowThread thread)
+        {
+            thread.DoIf(thread.Condition(9, Comparator.GreaterThanEq, 4),
+                body =>
+                {
+                    body.Complete();
+                    body.DoWhile(body.Condition(7, Comparator.LessThan, 15), newBody =>
+                    {
+                        var input = newBody.DeclareInt("input");
+                        newBody.Execute("task-a", input);
+                    });
+                });
+        }
+        
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint));
+        Assert.Equal("You cannot add a Node in a given thread after the thread has completed.", 
+            exception.Message);
+    }
 }
