@@ -63,4 +63,34 @@ public interface ExternalEventNodeOrBuilder extends
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder();
+
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   * @return Whether the correlationKey field is set.
+   */
+  boolean hasCorrelationKey();
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   * @return The correlationKey.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getCorrelationKey();
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getCorrelationKeyOrBuilder();
 }

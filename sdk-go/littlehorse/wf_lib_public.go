@@ -125,6 +125,11 @@ func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutpu
 	return n
 }
 
+func (n *ExternalEventNodeOutput) SetCorrelationId(id interface{}) *ExternalEventNodeOutput {
+	n.parent.setCorrelationId(n, id)
+	return n
+}
+
 func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
 	n.parent.addTimeoutToTaskNode(n, timeout)
 	return n

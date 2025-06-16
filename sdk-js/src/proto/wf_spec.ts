@@ -422,7 +422,14 @@ export interface ExternalEventNode {
    * Determines the maximum amount of time that the NodeRun will wait for the
    * ExternalEvent to arrive.
    */
-  timeoutSeconds: VariableAssignment | undefined;
+  timeoutSeconds:
+    | VariableAssignment
+    | undefined;
+  /**
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   */
+  correlationKey?: VariableAssignment | undefined;
 }
 
 /**
@@ -1897,7 +1904,7 @@ export const WaitForThreadsNode_ThreadsToWaitFor = {
 };
 
 function createBaseExternalEventNode(): ExternalEventNode {
-  return { externalEventDefId: undefined, timeoutSeconds: undefined };
+  return { externalEventDefId: undefined, timeoutSeconds: undefined, correlationKey: undefined };
 }
 
 export const ExternalEventNode = {
@@ -1907,6 +1914,9 @@ export const ExternalEventNode = {
     }
     if (message.timeoutSeconds !== undefined) {
       VariableAssignment.encode(message.timeoutSeconds, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.correlationKey !== undefined) {
+      VariableAssignment.encode(message.correlationKey, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1932,6 +1942,13 @@ export const ExternalEventNode = {
 
           message.timeoutSeconds = VariableAssignment.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.correlationKey = VariableAssignment.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1951,6 +1968,9 @@ export const ExternalEventNode = {
       : undefined;
     message.timeoutSeconds = (object.timeoutSeconds !== undefined && object.timeoutSeconds !== null)
       ? VariableAssignment.fromPartial(object.timeoutSeconds)
+      : undefined;
+    message.correlationKey = (object.correlationKey !== undefined && object.correlationKey !== null)
+      ? VariableAssignment.fromPartial(object.correlationKey)
       : undefined;
     return message;
   },

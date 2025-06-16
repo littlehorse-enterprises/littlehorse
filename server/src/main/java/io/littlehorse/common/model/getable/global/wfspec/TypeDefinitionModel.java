@@ -1,7 +1,5 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
-import java.util.Optional;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -9,6 +7,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +45,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.type = p.getType();
     }
 
-    public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(VariableMutationType operation, TypeDefinitionModel rhs) {
+    public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
+            VariableMutationType operation, TypeDefinitionModel rhs) {
         // TODO
         return Optional.empty();
     }
@@ -65,6 +65,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case UNRECOGNIZED:
         }
         return false;
+    }
+
+    public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {
+        TypeDefinitionModel out = new TypeDefinitionModel();
+        out.initFrom(proto, context);
+        return out;
     }
 
     public boolean isJson() {

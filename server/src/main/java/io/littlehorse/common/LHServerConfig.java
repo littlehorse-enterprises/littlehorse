@@ -82,6 +82,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String TIMER_STATESTORE_CACHE_BYTES_KEY = "LHS_TIMER_STATESTORE_CACHE_BYTES";
     public static final String ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES";
     public static final String ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES";
+    public static final String ROCKSDB_USE_DIRECT_IO_KEY = "LHS_ROCKSDB_USE_DIRECT_IO";
     public static final String ROCKSDB_RATE_LIMIT_BYTES_KEY = "LHS_ROCKSDB_RATE_LIMIT_BYTES";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
@@ -149,6 +150,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
+
+    public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
     // Instance configs
     private final String lhsMetricsLevel;
@@ -736,6 +739,10 @@ public class LHServerConfig extends ConfigBase {
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
     }
 
+    public boolean useDirectIOForRocksDB() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_DIRECT_IO_KEY, "false"));
+    }
+
     // Timer Topology generally has smaller values that are written. The majority of them
     // are LHTimer's with short (i.e. 10-second) TTL's (i.e. TaskRun Timeout timers), so
     // we don't expect the timer memtable to overflow that quickly.
@@ -1058,6 +1065,10 @@ public class LHServerConfig extends ConfigBase {
 
     public int getStreamsSessionTimeout() {
         return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
+    }
+
+    public boolean areStructDefsEnabled() {
+        return Boolean.valueOf(getOrSetDefault(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "false"));
     }
 
     public int getNumNetworkThreads() {

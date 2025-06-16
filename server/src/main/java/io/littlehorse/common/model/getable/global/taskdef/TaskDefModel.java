@@ -86,7 +86,6 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
         for (VariableDef entry : proto.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
         }
-        returnType = LHSerializable.fromProto(proto.getReturnType(), ReturnTypeModel.class, context);
 
         // The `return_type` was introduced over a year ago; we don't have anyone using LittleHorse without
         // return types now. Safe to ignore / evolve it.

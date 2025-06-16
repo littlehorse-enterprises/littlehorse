@@ -9,14 +9,20 @@ import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.util.AsyncWaiters;
+import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.common.errors.InvalidProducerEpochException;
 import org.apache.kafka.common.errors.RecordTooLargeException;
+import org.apache.logging.log4j.message.Message;
 import org.junit.jupiter.api.Test;
 
 public class LHProcessingExceptionHandlerTest {
 
     private final LHServer mockServer = mock();
-    private final LHProcessingExceptionHandler exceptionHandler = new LHProcessingExceptionHandler(mockServer);
+    private final AsyncWaiters asyncWaiters = mock();
+    private final LHProcessingExceptionHandler exceptionHandler =
+            new LHProcessingExceptionHandler(mockServer, asyncWaiters);
+    private final CompletableFuture<Message> futureResponse = new CompletableFuture<>();
 
     @Test
     public void shouldIgnoreRecordTooLargeException() {
@@ -39,10 +45,12 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         StatusRuntimeException sre = new StatusRuntimeException(io.grpc.Status.INVALID_ARGUMENT);
         CoreCommandException cce = new CoreCommandException(sre, command);
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
+                .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw cce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
+        assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(StatusRuntimeException.class);
     }
 
     @Test
@@ -51,22 +59,12 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         NullPointerException npe = new NullPointerException();
         CoreCommandException cce = new CoreCommandException(npe, command);
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
+                .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw cce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
-    }
-
-    @Test
-    public void shouldIgnoreExceptionsWhenSendingErrorsToClients() {
-        CommandModel command = new CommandModel(new RunWfRequestModel());
-        command.setCommandId("myCommand");
-        NullPointerException npe = new NullPointerException();
-        CoreCommandException cce = new CoreCommandException(npe, command);
-        doThrow(new RuntimeException("oops!")).when(mockServer).sendErrorToClient(any(), any());
-        exceptionHandler.tryRun(() -> {
-            throw cce;
-        });
+        assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -75,10 +73,12 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         NullPointerException npe = new NullPointerException();
         MetadataCommandException mce = new MetadataCommandException(npe, command);
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
+                .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw mce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
+        assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -87,9 +87,11 @@ public class LHProcessingExceptionHandlerTest {
         command.setCommandId("myCommand");
         StatusRuntimeException sre = new StatusRuntimeException(io.grpc.Status.INVALID_ARGUMENT);
         MetadataCommandException mce = new MetadataCommandException(sre, command);
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId().get()), any(), any(CompletableFuture.class)))
+                .thenReturn(futureResponse);
         exceptionHandler.tryRun(() -> {
             throw mce;
         });
-        verify(mockServer).sendErrorToClient(eq("myCommand"), any());
+        assertThatThrownBy(() -> futureResponse.getNow(null)).hasCauseInstanceOf(StatusRuntimeException.class);
     }
 }

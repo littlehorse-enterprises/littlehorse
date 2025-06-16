@@ -123,7 +123,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public Optional<TypeDefinitionModel> resolveType(
             ReadOnlyMetadataManager manager,
             Map<String, ThreadVarDefModel> variableDefs,
-            TypeDefinitionModel nodeOutputType) throws LHApiException {
+            TypeDefinitionModel nodeOutputType)
+            throws LHApiException {
         if (jsonPath != null) {
             // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
             // which is why we are killing JSONPath with fire

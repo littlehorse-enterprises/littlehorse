@@ -36,7 +36,13 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
 
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
-        timerStore.put(timer.getStoreKey(), timer);
+
+        // If the timer is already matured, no sense in putting it into the store. Just forward now.
+        if (timer.maturationTime.getTime() <= System.currentTimeMillis()) {
+            sendOneTimer(timer);
+        } else {
+            timerStore.put(timer.getStoreKey(), timer);
+        }
     }
 
     private void clearTimers(long timestamp) {
@@ -46,15 +52,17 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
         try (KeyValueIterator<String, LHTimer> iter = timerStore.range(start, end)) {
             while (iter.hasNext()) {
                 KeyValue<String, LHTimer> entry = iter.next();
-                LHTimer timer = entry.value;
-                if (!entry.key.equals(timer.getStoreKey())) throw new RuntimeException("WTF?");
-                Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
-                // Now we gotta forward the timer.
-                Record<String, LHTimer> record =
-                        new Record<String, LHTimer>(timer.key, timer, timer.maturationTime.getTime(), metadata);
-                context.forward(record);
+                sendOneTimer(entry.value);
                 timerStore.delete(entry.key);
             }
         }
+    }
+
+    private void sendOneTimer(LHTimer timer) {
+        Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
+        // Now we gotta forward the timer.
+        Record<String, LHTimer> toSend =
+                new Record<String, LHTimer>(timer.key, timer, timer.maturationTime.getTime(), metadata);
+        context.forward(toSend);
     }
 }

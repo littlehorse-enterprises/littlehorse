@@ -2,7 +2,6 @@ syntax = "proto3";
 package littlehorse;
 
 import "google/protobuf/timestamp.proto";
-import "object_id.proto";
 import "workflow_event.proto";
 import "user_tasks.proto";
 import "task_run.proto";
@@ -10,6 +9,7 @@ import "task_def.proto";
 import "wf_spec.proto";
 import "wf_run.proto";
 import "variable.proto";
+import "struct_def.proto";
 import "external_event.proto";
 
 option go_package = ".;lhproto";
@@ -42,6 +42,9 @@ message OutputTopicRecord {
 
         // Updates about an `ExternalEvent` changing.
         ExternalEvent external_event = 7;
+
+        // Updates about a `CorrelatedEvent` changing.
+        CorrelatedEvent correlated_event = 8;
     }
 }
 
@@ -63,5 +66,8 @@ message MetadataOutputTopicRecord {
 
         // A UserTaskDef update
         UserTaskDef user_task_def = 5;
+
+        // A StructDef update
+        StructDef struct_def = 6;
     }
 }

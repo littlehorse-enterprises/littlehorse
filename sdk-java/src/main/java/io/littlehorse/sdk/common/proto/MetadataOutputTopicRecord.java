@@ -53,6 +53,7 @@ private static final long serialVersionUID = 0L;
     EXTERNAL_EVENT_DEF(3),
     WORKFLOW_EVENT_DEF(4),
     USER_TASK_DEF(5),
+    STRUCT_DEF(6),
     METADATARECORD_NOT_SET(0);
     private final int value;
     private MetadataRecordCase(int value) {
@@ -75,6 +76,7 @@ private static final long serialVersionUID = 0L;
         case 3: return EXTERNAL_EVENT_DEF;
         case 4: return WORKFLOW_EVENT_DEF;
         case 5: return USER_TASK_DEF;
+        case 6: return STRUCT_DEF;
         case 0: return METADATARECORD_NOT_SET;
         default: return null;
       }
@@ -305,6 +307,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance();
   }
 
+  public static final int STRUCT_DEF_FIELD_NUMBER = 6;
+  /**
+   * <pre>
+   * A StructDef update
+   * </pre>
+   *
+   * <code>.littlehorse.StructDef struct_def = 6;</code>
+   * @return Whether the structDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasStructDef() {
+    return metadataRecordCase_ == 6;
+  }
+  /**
+   * <pre>
+   * A StructDef update
+   * </pre>
+   *
+   * <code>.littlehorse.StructDef struct_def = 6;</code>
+   * @return The structDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDef getStructDef() {
+    if (metadataRecordCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_;
+    }
+    return io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * A StructDef update
+   * </pre>
+   *
+   * <code>.littlehorse.StructDef struct_def = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDefOrBuilder getStructDefOrBuilder() {
+    if (metadataRecordCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_;
+    }
+    return io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -334,6 +379,9 @@ private static final long serialVersionUID = 0L;
     if (metadataRecordCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.sdk.common.proto.UserTaskDef) metadataRecord_);
     }
+    if (metadataRecordCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -362,6 +410,10 @@ private static final long serialVersionUID = 0L;
     if (metadataRecordCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (io.littlehorse.sdk.common.proto.UserTaskDef) metadataRecord_);
+    }
+    if (metadataRecordCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -400,6 +452,10 @@ private static final long serialVersionUID = 0L;
         if (!getUserTaskDef()
             .equals(other.getUserTaskDef())) return false;
         break;
+      case 6:
+        if (!getStructDef()
+            .equals(other.getStructDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -434,6 +490,10 @@ private static final long serialVersionUID = 0L;
       case 5:
         hash = (37 * hash) + USER_TASK_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getUserTaskDef().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + STRUCT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getStructDef().hashCode();
         break;
       case 0:
       default:
@@ -588,6 +648,9 @@ private static final long serialVersionUID = 0L;
       if (userTaskDefBuilder_ != null) {
         userTaskDefBuilder_.clear();
       }
+      if (structDefBuilder_ != null) {
+        structDefBuilder_.clear();
+      }
       metadataRecordCase_ = 0;
       metadataRecord_ = null;
       return this;
@@ -648,6 +711,10 @@ private static final long serialVersionUID = 0L;
       if (metadataRecordCase_ == 5 &&
           userTaskDefBuilder_ != null) {
         result.metadataRecord_ = userTaskDefBuilder_.build();
+      }
+      if (metadataRecordCase_ == 6 &&
+          structDefBuilder_ != null) {
+        result.metadataRecord_ = structDefBuilder_.build();
       }
     }
 
@@ -716,6 +783,10 @@ private static final long serialVersionUID = 0L;
           mergeUserTaskDef(other.getUserTaskDef());
           break;
         }
+        case STRUCT_DEF: {
+          mergeStructDef(other.getStructDef());
+          break;
+        }
         case METADATARECORD_NOT_SET: {
           break;
         }
@@ -781,6 +852,13 @@ private static final long serialVersionUID = 0L;
               metadataRecordCase_ = 5;
               break;
             } // case 42
+            case 50: {
+              input.readMessage(
+                  getStructDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataRecordCase_ = 6;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1701,6 +1779,184 @@ private static final long serialVersionUID = 0L;
       metadataRecordCase_ = 5;
       onChanged();
       return userTaskDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StructDef, io.littlehorse.sdk.common.proto.StructDef.Builder, io.littlehorse.sdk.common.proto.StructDefOrBuilder> structDefBuilder_;
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     * @return Whether the structDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasStructDef() {
+      return metadataRecordCase_ == 6;
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     * @return The structDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructDef getStructDef() {
+      if (structDefBuilder_ == null) {
+        if (metadataRecordCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_;
+        }
+        return io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance();
+      } else {
+        if (metadataRecordCase_ == 6) {
+          return structDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     */
+    public Builder setStructDef(io.littlehorse.sdk.common.proto.StructDef value) {
+      if (structDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataRecord_ = value;
+        onChanged();
+      } else {
+        structDefBuilder_.setMessage(value);
+      }
+      metadataRecordCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     */
+    public Builder setStructDef(
+        io.littlehorse.sdk.common.proto.StructDef.Builder builderForValue) {
+      if (structDefBuilder_ == null) {
+        metadataRecord_ = builderForValue.build();
+        onChanged();
+      } else {
+        structDefBuilder_.setMessage(builderForValue.build());
+      }
+      metadataRecordCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     */
+    public Builder mergeStructDef(io.littlehorse.sdk.common.proto.StructDef value) {
+      if (structDefBuilder_ == null) {
+        if (metadataRecordCase_ == 6 &&
+            metadataRecord_ != io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance()) {
+          metadataRecord_ = io.littlehorse.sdk.common.proto.StructDef.newBuilder((io.littlehorse.sdk.common.proto.StructDef) metadataRecord_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataRecord_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataRecordCase_ == 6) {
+          structDefBuilder_.mergeFrom(value);
+        } else {
+          structDefBuilder_.setMessage(value);
+        }
+      }
+      metadataRecordCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     */
+    public Builder clearStructDef() {
+      if (structDefBuilder_ == null) {
+        if (metadataRecordCase_ == 6) {
+          metadataRecordCase_ = 0;
+          metadataRecord_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataRecordCase_ == 6) {
+          metadataRecordCase_ = 0;
+          metadataRecord_ = null;
+        }
+        structDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructDef.Builder getStructDefBuilder() {
+      return getStructDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructDefOrBuilder getStructDefOrBuilder() {
+      if ((metadataRecordCase_ == 6) && (structDefBuilder_ != null)) {
+        return structDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataRecordCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_;
+        }
+        return io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A StructDef update
+     * </pre>
+     *
+     * <code>.littlehorse.StructDef struct_def = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StructDef, io.littlehorse.sdk.common.proto.StructDef.Builder, io.littlehorse.sdk.common.proto.StructDefOrBuilder> 
+        getStructDefFieldBuilder() {
+      if (structDefBuilder_ == null) {
+        if (!(metadataRecordCase_ == 6)) {
+          metadataRecord_ = io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance();
+        }
+        structDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.StructDef, io.littlehorse.sdk.common.proto.StructDef.Builder, io.littlehorse.sdk.common.proto.StructDefOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_,
+                getParentForChildren(),
+                isClean());
+        metadataRecord_ = null;
+      }
+      metadataRecordCase_ = 6;
+      onChanged();
+      return structDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

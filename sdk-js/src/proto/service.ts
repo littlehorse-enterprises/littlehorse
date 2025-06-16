@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import Long from "long";
-import { type CallContext, type CallOptions } from "nice-grpc-common";
+import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
@@ -21,16 +21,24 @@ import {
   taskStatusToNumber,
 } from "./common_enums";
 import { ReturnType, VariableDef } from "./common_wfspec";
-import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
+import {
+  CorrelatedEvent,
+  CorrelatedEventConfig,
+  ExternalEvent,
+  ExternalEventDef,
+  ExternalEventRetentionPolicy,
+} from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
+  CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
+  StructDefId,
   TaskDefId,
   TaskRunId,
   TaskWorkerGroupId,
@@ -44,6 +52,7 @@ import {
   WorkflowEventId,
 } from "./object_id";
 import { ScheduledWfRun } from "./scheduled_wf_run";
+import { InlineStructDef, StructDef } from "./struct_def";
 import { TaskDef } from "./task_def";
 import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
 import {
@@ -121,6 +130,44 @@ export function allowedUpdateTypeToNumber(object: AllowedUpdateType): number {
   }
 }
 
+export enum StructDefCompatibilityType {
+  /** NO_SCHEMA_UPDATES - No updates are allowed. */
+  NO_SCHEMA_UPDATES = "NO_SCHEMA_UPDATES",
+  /**
+   * FULLY_COMPATIBLE_SCHEMA_UPDATES - Allowed to make fully compatible (both backward-and-forward compatible)
+   * changes to the `struct_def` in this request.
+   */
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = "FULLY_COMPATIBLE_SCHEMA_UPDATES",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function structDefCompatibilityTypeFromJSON(object: any): StructDefCompatibilityType {
+  switch (object) {
+    case 0:
+    case "NO_SCHEMA_UPDATES":
+      return StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+    case 1:
+    case "FULLY_COMPATIBLE_SCHEMA_UPDATES":
+      return StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return StructDefCompatibilityType.UNRECOGNIZED;
+  }
+}
+
+export function structDefCompatibilityTypeToNumber(object: StructDefCompatibilityType): number {
+  switch (object) {
+    case StructDefCompatibilityType.NO_SCHEMA_UPDATES:
+      return 0;
+    case StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES:
+      return 1;
+    case StructDefCompatibilityType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /** Returns the UserTaskDef with a given name and the highest version number. */
 export interface GetLatestUserTaskDefRequest {
   /** The name of the UserTaskDef to search for. */
@@ -178,6 +225,55 @@ export interface PutTaskDefRequest {
   returnType: ReturnType | undefined;
 }
 
+/** Creates a new StructDef. */
+export interface PutStructDefRequest {
+  /** The name of the StructDef. */
+  name: string;
+  /** The descripton of the StructDef. */
+  description?:
+    | string
+    | undefined;
+  /** The actual schema for the StructDef. */
+  structDef:
+    | InlineStructDef
+    | undefined;
+  /**
+   * If both of the following are true: <br/>
+   * - A `StructDef` with the specified `name` already exists, AND <br/>
+   * - The `InlineStructDef` is different <br/>
+   *
+   * Then the request will be accepted or rejected based on the value of the
+   * allowed_update_types.
+   */
+  allowedUpdates: StructDefCompatibilityType;
+}
+
+/**
+ * Request to validate the evolution of an existing StructDef to a new StructDef
+ * based on a compatibility type.
+ */
+export interface ValidateStructDefEvolutionRequest {
+  /** The ID of the StructDef you want to compare against that already exists on the server. */
+  structDefId:
+    | StructDefId
+    | undefined;
+  /** The new StructDef schema. */
+  structDef:
+    | InlineStructDef
+    | undefined;
+  /**
+   * The server will validate the new StructDef schema against
+   * the existing StructDef schema based on this compatibility type.
+   */
+  compatibilityType: StructDefCompatibilityType;
+}
+
+/** Response detailing the validity of a StructDef evolution. */
+export interface ValidateStructDefEvolutionResponse {
+  /** Whether or not the StructDef evolution specified in the request is valid. */
+  isValid: boolean;
+}
+
 /** Creates a WorkflowEventDef */
 export interface PutWorkflowEventDefRequest {
   /** The name of the resulting WorkflowEventDef. */
@@ -221,7 +317,11 @@ export interface PutExternalEventDefRequest {
     | ExternalEventRetentionPolicy
     | undefined;
   /** Typing information for the content of ExternalEvent's associated with this ExternalEventDef. */
-  contentType?: ReturnType | undefined;
+  contentType?:
+    | ReturnType
+    | undefined;
+  /** If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature. */
+  correlatedEventConfig?: CorrelatedEventConfig | undefined;
 }
 
 /** Request used to create an ExternalEvent. */
@@ -260,6 +360,28 @@ export interface PutExternalEventRequest {
   nodeRunPosition?: number | undefined;
 }
 
+/**
+ * Request used to record a `CorrelatedEvent`, which is a precursor to zero or more
+ * `ExternalEvent`s.
+ */
+export interface PutCorrelatedEventRequest {
+  /** The correlation key of the CorrelatedEvent. */
+  key: string;
+  /**
+   * The `ExternalEventDef` that is associated with this `CorrelatedEvent`. This is
+   * also the `ExternalEventDef` of any `ExternalEvent`s that are generated after
+   * this `CorrelatedEvent` is correlated to `WfRun`s.
+   */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * The content of the CorrelatedEvent and any `ExternalEvent`s created after
+   * correlating this `CorrelatedEvent`.
+   */
+  content: VariableValue | undefined;
+}
+
 /** Deletes an ExternalEvent. */
 export interface DeleteExternalEventRequest {
   /** The ID of the ExternalEvent to delete. */
@@ -278,10 +400,22 @@ export interface DeleteWfRunRequest {
   id: WfRunId | undefined;
 }
 
+/** Deletes a CorrelatedEvent */
+export interface DeleteCorrelatedEventRequest {
+  /** The ID of the CorrelatedEvent to delete. */
+  id: CorrelatedEventId | undefined;
+}
+
 /** Deletes a TaskDef. */
 export interface DeleteTaskDefRequest {
   /** The ID of the TaskDef to delete. */
   id: TaskDefId | undefined;
+}
+
+/** Deletes a StructDef. */
+export interface DeleteStructDefRequest {
+  /** The ID of the StructDef to delete. */
+  id: StructDefId | undefined;
 }
 
 /** Deletes a UserTaskDef. */
@@ -1823,6 +1957,211 @@ export const PutTaskDefRequest = {
   },
 };
 
+function createBasePutStructDefRequest(): PutStructDefRequest {
+  return {
+    name: "",
+    description: undefined,
+    structDef: undefined,
+    allowedUpdates: StructDefCompatibilityType.NO_SCHEMA_UPDATES,
+  };
+}
+
+export const PutStructDefRequest = {
+  encode(message: PutStructDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.structDef !== undefined) {
+      InlineStructDef.encode(message.structDef, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.allowedUpdates !== StructDefCompatibilityType.NO_SCHEMA_UPDATES) {
+      writer.uint32(32).int32(structDefCompatibilityTypeToNumber(message.allowedUpdates));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutStructDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutStructDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.structDef = InlineStructDef.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.allowedUpdates = structDefCompatibilityTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutStructDefRequest>): PutStructDefRequest {
+    return PutStructDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutStructDefRequest>): PutStructDefRequest {
+    const message = createBasePutStructDefRequest();
+    message.name = object.name ?? "";
+    message.description = object.description ?? undefined;
+    message.structDef = (object.structDef !== undefined && object.structDef !== null)
+      ? InlineStructDef.fromPartial(object.structDef)
+      : undefined;
+    message.allowedUpdates = object.allowedUpdates ?? StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+    return message;
+  },
+};
+
+function createBaseValidateStructDefEvolutionRequest(): ValidateStructDefEvolutionRequest {
+  return {
+    structDefId: undefined,
+    structDef: undefined,
+    compatibilityType: StructDefCompatibilityType.NO_SCHEMA_UPDATES,
+  };
+}
+
+export const ValidateStructDefEvolutionRequest = {
+  encode(message: ValidateStructDefEvolutionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.structDefId !== undefined) {
+      StructDefId.encode(message.structDefId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.structDef !== undefined) {
+      InlineStructDef.encode(message.structDef, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.compatibilityType !== StructDefCompatibilityType.NO_SCHEMA_UPDATES) {
+      writer.uint32(24).int32(structDefCompatibilityTypeToNumber(message.compatibilityType));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ValidateStructDefEvolutionRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateStructDefEvolutionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.structDefId = StructDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.structDef = InlineStructDef.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.compatibilityType = structDefCompatibilityTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ValidateStructDefEvolutionRequest>): ValidateStructDefEvolutionRequest {
+    return ValidateStructDefEvolutionRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ValidateStructDefEvolutionRequest>): ValidateStructDefEvolutionRequest {
+    const message = createBaseValidateStructDefEvolutionRequest();
+    message.structDefId = (object.structDefId !== undefined && object.structDefId !== null)
+      ? StructDefId.fromPartial(object.structDefId)
+      : undefined;
+    message.structDef = (object.structDef !== undefined && object.structDef !== null)
+      ? InlineStructDef.fromPartial(object.structDef)
+      : undefined;
+    message.compatibilityType = object.compatibilityType ?? StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+    return message;
+  },
+};
+
+function createBaseValidateStructDefEvolutionResponse(): ValidateStructDefEvolutionResponse {
+  return { isValid: false };
+}
+
+export const ValidateStructDefEvolutionResponse = {
+  encode(message: ValidateStructDefEvolutionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.isValid !== false) {
+      writer.uint32(8).bool(message.isValid);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ValidateStructDefEvolutionResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateStructDefEvolutionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isValid = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ValidateStructDefEvolutionResponse>): ValidateStructDefEvolutionResponse {
+    return ValidateStructDefEvolutionResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ValidateStructDefEvolutionResponse>): ValidateStructDefEvolutionResponse {
+    const message = createBaseValidateStructDefEvolutionResponse();
+    message.isValid = object.isValid ?? false;
+    return message;
+  },
+};
+
 function createBasePutWorkflowEventDefRequest(): PutWorkflowEventDefRequest {
   return { name: "", contentType: undefined };
 }
@@ -1949,7 +2288,7 @@ export const PutUserTaskDefRequest = {
 };
 
 function createBasePutExternalEventDefRequest(): PutExternalEventDefRequest {
-  return { name: "", retentionPolicy: undefined, contentType: undefined };
+  return { name: "", retentionPolicy: undefined, contentType: undefined, correlatedEventConfig: undefined };
 }
 
 export const PutExternalEventDefRequest = {
@@ -1962,6 +2301,9 @@ export const PutExternalEventDefRequest = {
     }
     if (message.contentType !== undefined) {
       ReturnType.encode(message.contentType, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.correlatedEventConfig !== undefined) {
+      CorrelatedEventConfig.encode(message.correlatedEventConfig, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -1994,6 +2336,13 @@ export const PutExternalEventDefRequest = {
 
           message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.correlatedEventConfig = CorrelatedEventConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2015,6 +2364,10 @@ export const PutExternalEventDefRequest = {
     message.contentType = (object.contentType !== undefined && object.contentType !== null)
       ? ReturnType.fromPartial(object.contentType)
       : undefined;
+    message.correlatedEventConfig =
+      (object.correlatedEventConfig !== undefined && object.correlatedEventConfig !== null)
+        ? CorrelatedEventConfig.fromPartial(object.correlatedEventConfig)
+        : undefined;
     return message;
   },
 };
@@ -2128,6 +2481,77 @@ export const PutExternalEventRequest = {
       : undefined;
     message.threadRunNumber = object.threadRunNumber ?? undefined;
     message.nodeRunPosition = object.nodeRunPosition ?? undefined;
+    return message;
+  },
+};
+
+function createBasePutCorrelatedEventRequest(): PutCorrelatedEventRequest {
+  return { key: "", externalEventDefId: undefined, content: undefined };
+}
+
+export const PutCorrelatedEventRequest = {
+  encode(message: PutCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.content !== undefined) {
+      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutCorrelatedEventRequest>): PutCorrelatedEventRequest {
+    return PutCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutCorrelatedEventRequest>): PutCorrelatedEventRequest {
+    const message = createBasePutCorrelatedEventRequest();
+    message.key = object.key ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.content = (object.content !== undefined && object.content !== null)
+      ? VariableValue.fromPartial(object.content)
+      : undefined;
     return message;
   },
 };
@@ -2267,6 +2691,51 @@ export const DeleteWfRunRequest = {
   },
 };
 
+function createBaseDeleteCorrelatedEventRequest(): DeleteCorrelatedEventRequest {
+  return { id: undefined };
+}
+
+export const DeleteCorrelatedEventRequest = {
+  encode(message: DeleteCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      CorrelatedEventId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = CorrelatedEventId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    return DeleteCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    const message = createBaseDeleteCorrelatedEventRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? CorrelatedEventId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
 function createBaseDeleteTaskDefRequest(): DeleteTaskDefRequest {
   return { id: undefined };
 }
@@ -2308,6 +2777,51 @@ export const DeleteTaskDefRequest = {
   fromPartial(object: DeepPartial<DeleteTaskDefRequest>): DeleteTaskDefRequest {
     const message = createBaseDeleteTaskDefRequest();
     message.id = (object.id !== undefined && object.id !== null) ? TaskDefId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteStructDefRequest(): DeleteStructDefRequest {
+  return { id: undefined };
+}
+
+export const DeleteStructDefRequest = {
+  encode(message: DeleteStructDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      StructDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteStructDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteStructDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = StructDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteStructDefRequest>): DeleteStructDefRequest {
+    return DeleteStructDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteStructDefRequest>): DeleteStructDefRequest {
+    const message = createBaseDeleteStructDefRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? StructDefId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -7820,6 +8334,43 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * EXPERIMENTAL: Creates a new `StructDef``.
+     *
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     *
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     */
+    putStructDef: {
+      name: "PutStructDef",
+      requestType: PutStructDefRequest,
+      requestStream: false,
+      responseType: StructDef,
+      responseStream: false,
+      options: {},
+    },
+    /** EXPERIMENTAL: Get a StructDef. */
+    getStructDef: {
+      name: "GetStructDef",
+      requestType: StructDefId,
+      requestStream: false,
+      responseType: StructDef,
+      responseStream: false,
+      options: {},
+    },
+    /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
+    validateStructDefEvolution: {
+      name: "ValidateStructDefEvolution",
+      requestType: ValidateStructDefEvolutionRequest,
+      requestStream: false,
+      responseType: ValidateStructDefEvolutionResponse,
+      responseStream: false,
+      options: {},
+    },
     /** Creates a UserTaskDef. */
     putUserTaskDef: {
       name: "PutUserTaskDef",
@@ -8039,12 +8590,21 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Post an ExternalEvent. This RPC is highly useful for */
+    /** Post an ExternalEvent. */
     putExternalEvent: {
       name: "PutExternalEvent",
       requestType: PutExternalEventRequest,
       requestStream: false,
       responseType: ExternalEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+    putCorrelatedEvent: {
+      name: "PutCorrelatedEvent",
+      requestType: PutCorrelatedEventRequest,
+      requestStream: false,
+      responseType: CorrelatedEvent,
       responseStream: false,
       options: {},
     },
@@ -8054,6 +8614,15 @@ export const LittleHorseDefinition = {
       requestType: ExternalEventId,
       requestStream: false,
       responseType: ExternalEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Get a specific CorrelatedEvent */
+    getCorrelatedEvent: {
+      name: "GetCorrelatedEvent",
+      requestType: CorrelatedEventId,
+      requestStream: false,
+      responseType: CorrelatedEvent,
       responseStream: false,
       options: {},
     },
@@ -8343,6 +8912,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** EXPERIMENTAL: Deletes a StructDef. */
+    deleteStructDef: {
+      name: "DeleteStructDef",
+      requestType: DeleteStructDefRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Deletes a WfSpec. */
     deleteWfSpec: {
       name: "DeleteWfSpec",
@@ -8365,6 +8943,15 @@ export const LittleHorseDefinition = {
     deleteExternalEventDef: {
       name: "DeleteExternalEventDef",
       requestType: DeleteExternalEventDefRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes a CorrelatedEvent */
+    deleteCorrelatedEvent: {
+      name: "DeleteCorrelatedEvent",
+      requestType: DeleteCorrelatedEventRequest,
       requestStream: false,
       responseType: Empty,
       responseStream: false,
@@ -8529,6 +9116,25 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
+  /**
+   * EXPERIMENTAL: Creates a new `StructDef``.
+   *
+   * Note that this request is idempotent: if you
+   * make a request to create a `StructDef` identical to the currently-created
+   * one with the same `name`, no new `StructDef` will be created. This is the
+   * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+   *
+   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+   * enum within the `PutStructDefRequest`.
+   */
+  putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
+  /** EXPERIMENTAL: Get a StructDef. */
+  getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
+  validateStructDefEvolution(
+    request: ValidateStructDefEvolutionRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ValidateStructDefEvolutionResponse>>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: PutUserTaskDefRequest,
@@ -8638,16 +9244,26 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListVariablesRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<VariableList>>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: PutExternalEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+  putCorrelatedEvent(
+    request: PutCorrelatedEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEvent>>;
   /** Get a specific ExternalEvent. */
   getExternalEvent(
     request: ExternalEventId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /** Get a specific CorrelatedEvent */
+  getCorrelatedEvent(
+    request: CorrelatedEventId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEvent>>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -8799,6 +9415,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   deleteWfRun(request: DeleteWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeleteTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /** EXPERIMENTAL: Deletes a StructDef. */
+  deleteStructDef(request: DeleteStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeleteWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a UserTaskDef. */
@@ -8809,6 +9427,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeleteExternalEventDefRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeleteCorrelatedEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
   deleteWorkflowEventDef(
@@ -8899,6 +9522,25 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
+  /**
+   * EXPERIMENTAL: Creates a new `StructDef``.
+   *
+   * Note that this request is idempotent: if you
+   * make a request to create a `StructDef` identical to the currently-created
+   * one with the same `name`, no new `StructDef` will be created. This is the
+   * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+   *
+   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+   * enum within the `PutStructDefRequest`.
+   */
+  putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
+  /** EXPERIMENTAL: Get a StructDef. */
+  getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
+  validateStructDefEvolution(
+    request: DeepPartial<ValidateStructDefEvolutionRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ValidateStructDefEvolutionResponse>;
   /** Creates a UserTaskDef. */
   putUserTaskDef(
     request: DeepPartial<PutUserTaskDefRequest>,
@@ -9008,16 +9650,26 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListVariablesRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<VariableList>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: DeepPartial<PutExternalEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+  putCorrelatedEvent(
+    request: DeepPartial<PutCorrelatedEventRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEvent>;
   /** Get a specific ExternalEvent. */
   getExternalEvent(
     request: DeepPartial<ExternalEventId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /** Get a specific CorrelatedEvent */
+  getCorrelatedEvent(
+    request: DeepPartial<CorrelatedEventId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEvent>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -9175,6 +9827,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   deleteWfRun(request: DeepPartial<DeleteWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeepPartial<DeleteTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /** EXPERIMENTAL: Deletes a StructDef. */
+  deleteStructDef(request: DeepPartial<DeleteStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeepPartial<DeleteWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a UserTaskDef. */
@@ -9185,6 +9839,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeepPartial<DeleteExternalEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeepPartial<DeleteCorrelatedEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
   deleteWorkflowEventDef(
