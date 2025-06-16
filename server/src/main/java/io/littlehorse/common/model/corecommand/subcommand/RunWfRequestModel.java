@@ -87,11 +87,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         }
     }
 
-    @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
     private boolean isIdValid() {
         return (!id.equals("") && LHUtil.isValidLHName(id));
     }

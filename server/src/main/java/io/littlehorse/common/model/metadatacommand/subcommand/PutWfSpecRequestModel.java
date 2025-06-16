@@ -83,10 +83,6 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         }
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     @Override
     public WfSpec process(MetadataCommandExecution executionContext) {
         MetadataManager metadataManager = executionContext.metadataManager();

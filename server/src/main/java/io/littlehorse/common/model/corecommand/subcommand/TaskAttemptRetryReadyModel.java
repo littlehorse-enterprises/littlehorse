@@ -55,9 +55,4 @@ public class TaskAttemptRetryReadyModel extends CoreSubCommand<TaskAttemptRetryR
     public String getPartitionKey() {
         return id.getPartitionKey().get();
     }
-
-    @Override
-    public boolean hasResponse() {
-        return false;
-    }
 }
