@@ -1,29 +1,28 @@
 'use client'
 
-import { createContext, useContext, type ReactNode, useState } from 'react'
+import { createContext, useContext, useState, type ReactNode } from 'react'
 
-interface SelectionContextValue {
+interface NodeSelectionContextValue {
   selectedId: string | null
   setSelectedId: (id: string | null) => void
 }
 
-interface SelectionProviderProps {
+interface NodeSelectionProviderProps {
   children: ReactNode
 }
 
-const SelectionContext = createContext<SelectionContextValue | undefined>(undefined)
+const NodeSelectionContext = createContext<NodeSelectionContextValue | undefined>(undefined)
 
-export function SelectionProvider({ children }: SelectionProviderProps) {
+export function NodeSelectionProvider({ children }: NodeSelectionProviderProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  console.log('selectedId', selectedId)
 
-  return <SelectionContext.Provider value={{ selectedId, setSelectedId }}>{children}</SelectionContext.Provider>
+  return <NodeSelectionContext.Provider value={{ selectedId, setSelectedId }}>{children}</NodeSelectionContext.Provider>
 }
 
-export function useSelection() {
-  const context = useContext(SelectionContext)
+export function useNodeSelection() {
+  const context = useContext(NodeSelectionContext)
   if (context === undefined) {
-    throw new Error('useSelection must be used within a SelectionProvider')
+    throw new Error('useNodeSelection must be used within a NodeSelectionProvider')
   }
   return context
 }

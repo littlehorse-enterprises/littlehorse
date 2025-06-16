@@ -46,7 +46,7 @@ function Node({ data, selected }: NodeProps) {
         <Handle type="source" position={Position.Right} className="!bg-gray-400" />
       </div>
 
-      {(data.type === 'TASK' || data.type === 'EXTERNAL_EVENT') && (
+      {data.label && (
         <div className="absolute top-full left-1/2 mt-1 -translate-x-1/2 transform text-center text-xs font-medium whitespace-nowrap text-gray-700">
           {data.label.match(/^[^-]*-(.+)-[^-]*$/)?.[1] || data.label}
         </div>

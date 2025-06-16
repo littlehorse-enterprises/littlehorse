@@ -1,22 +1,22 @@
 'use client'
 
-import React, { useCallback, useEffect } from 'react'
+import NodeComponent from '@/components/diagram/node'
+import { getLayoutedElements } from '@/utils/ui/layout-utils'
 import {
-  ReactFlow,
   Background,
+  BackgroundVariant,
   Controls,
   MiniMap,
-  type NodeTypes,
-  useNodesState,
+  ReactFlow,
   useEdgesState,
-  type Node,
+  useNodesState,
   type Edge,
-  BackgroundVariant,
+  type Node,
+  type NodeTypes,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { getLayoutedElements } from '@/utils/ui/layout-utils'
-import { useSelection } from '../context/selection-context'
-import NodeComponent from '@/components/diagram/node'
+import React, { useCallback, useEffect } from 'react'
+import { useNodeSelection } from '../context/selection-context'
 
 // Define custom node types
 const nodeTypes: NodeTypes = {
@@ -36,7 +36,7 @@ export default function WorkflowDiagram({
 }: WorkflowDiagramProps) {
   const [nodesState, setNodesState, onNodesStateChange] = useNodesState<Node>([])
   const [edgesState, setEdgesState, onEdgesStateChange] = useEdgesState<Edge>([])
-  const { selectedId, setSelectedId } = useSelection()
+  const { selectedId, setSelectedId } = useNodeSelection()
 
   useEffect(() => {
     const applyLayout = async () => {

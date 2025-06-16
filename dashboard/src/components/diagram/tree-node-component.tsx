@@ -1,11 +1,10 @@
 'use client'
 
 import { TreeNode } from '@/types/buildNodeTree'
-import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide-react'
-import React from 'react'
-import { useState, useEffect, useMemo } from 'react'
-import { useSelection } from '../context/selection-context'
 import { getNodeIcon, NodeType } from '@/utils/ui/node-utils'
+import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide-react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useNodeSelection } from '../context/selection-context'
 
 interface TreeNodeComponentProps {
   node: TreeNode
@@ -16,7 +15,7 @@ interface TreeNodeComponentProps {
 export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNodeComponentProps) {
   const [isExpanded, setIsExpanded] = useState(isRoot)
   const hasChildren = node.children && node.children.length > 0
-  const { selectedId, setSelectedId } = useSelection()
+  const { selectedId, setSelectedId } = useNodeSelection()
   const isSelected = useMemo(() => selectedId === node.id, [selectedId, node.id])
 
   // Expand parent nodes when a child is selected

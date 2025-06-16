@@ -9,7 +9,7 @@ import { Play } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import WfRunTab from './tab-content/wf-run-tab'
 import WfSpecTab from './tab-content/wf-spec-tab'
-import LeftSidebarTabs from './left-sidebar-tabs'
+import LeftSidebarTabs from './tabs'
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
   WfSpec: 'Workflow Specification',

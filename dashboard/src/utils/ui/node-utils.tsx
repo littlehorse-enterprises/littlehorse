@@ -1,13 +1,14 @@
 import { Box, CheckCircle, AlertCircle, Loader2, PlayIcon, MailIcon, CircleSlashIcon } from 'lucide-react'
 
-export type NodeType = 'ENTRYPOINT' | 'EXIT' | 'TASK' | 'EXTERNAL_EVENT' | 'DECISION'
+export type NodeType = 'ENTRYPOINT' | 'EXIT' | 'NOP' | 'TASK' | 'EXTERNAL_EVENT' 
 
-export function getNodeType(nodeName: string): NodeType {
-  if (nodeName.startsWith('ENTRYPOINT')) return 'ENTRYPOINT'
-  if (nodeName.startsWith('EXIT')) return 'EXIT'
+
+export function getNodeType(nodeName: string): NodeType | undefined {
+  if (nodeName.includes('ENTRYPOINT')) return 'ENTRYPOINT'
+  if (nodeName.includes('EXIT')) return 'EXIT'
   if (nodeName.includes('EXTERNAL_EVENT')) return 'EXTERNAL_EVENT'
-  if (nodeName.includes('DECISION')) return 'DECISION'
-  return 'TASK'
+  if (nodeName.includes('NOP')) return 'NOP'
+  if (nodeName.includes('TASK')) return 'TASK'
 }
 
 export function getIconColor(nodeType: NodeType): string {
@@ -18,7 +19,7 @@ export function getIconColor(nodeType: NodeType): string {
       return 'text-red-600'
     case 'EXTERNAL_EVENT':
       return 'text-purple-600'
-    case 'DECISION':
+    case 'NOP':
       return 'text-orange-600'
     default:
       return 'text-blue-600'
@@ -33,7 +34,7 @@ export function getBorderColor(nodeType: NodeType): string {
       return 'border-red-200'
     case 'EXTERNAL_EVENT':
       return 'border-purple-200'
-    case 'DECISION':
+    case 'NOP':
       return 'border-orange-200'
     default:
       return 'border-blue-200'
@@ -48,7 +49,7 @@ export function getBackgroundColor(nodeType: NodeType): string {
       return 'bg-red-100'
     case 'EXTERNAL_EVENT':
       return 'bg-purple-100'
-    case 'DECISION':
+    case 'NOP':
       return 'bg-orange-100'
     default:
       return 'bg-blue-100'
@@ -63,7 +64,7 @@ export function getTextColor(nodeType: NodeType): string {
       return 'text-red-700'
     case 'EXTERNAL_EVENT':
       return 'text-purple-700'
-    case 'DECISION':
+    case 'NOP':
       return 'text-orange-700'
     default:
       return 'text-blue-700'

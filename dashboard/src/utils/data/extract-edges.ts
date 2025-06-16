@@ -2,23 +2,20 @@ import { getVariable } from '@/utils/data/variables'
 import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
 import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
 import { Edge } from '@xyflow/react'
-import { ThreadSpecWithName } from '@/types/withs'
 import { getNodeType } from './node'
 
-const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSpecWithName): Edge[] => {
+const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpec: ThreadSpec): Edge[] => {
+  const threadSpecName = Object.keys(wfSpec.threadSpecs).find(key => wfSpec.threadSpecs[key] === threadSpec) as string
   const edges: Edge[] = []
 
   const targetMap = new Map<string, number>()
   const sourceMap = new Map<string, number>()
-  Object.entries(threadSpecWithName.threadSpec.nodes as ThreadSpec['nodes']).forEach(([source, node]) => {
+  Object.entries(threadSpec.nodes).forEach(([source, node]) => {
     if (getNodeType(node) === 'START_THREAD') {
       const startThreadNodeName = node.startThread?.threadSpecName
       if (!startThreadNodeName) return
 
-      const moreEdges = extractEdgesFromThreadSpec(wfSpec, {
-        name: startThreadNodeName,
-        threadSpec: wfSpec.threadSpecs[startThreadNodeName],
-      })
+      const moreEdges = extractEdgesFromThreadSpec(wfSpec, wfSpec.threadSpecs[startThreadNodeName])
       edges.push(...moreEdges)
     }
 
@@ -36,8 +33,8 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSp
       const label = extractEdgeLabel(edge)
       edges.push({
         id,
-        source: `${source}:${threadSpecWithName.name}`,
-        target: `${edge.sinkNodeName}:${threadSpecWithName.name}`,
+        source: `${source}:${threadSpecName}`,
+        target: `${edge.sinkNodeName}:${threadSpecName}`,
         label,
         data: { edge },
         type: 'straight',
@@ -104,7 +101,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   return edges
 }
 
-export function extractEdges(wfSpec: WfSpec, threadSpec: ThreadSpecWithName): Edge[] {
+export function extractEdges(wfSpec: WfSpec, threadSpec: ThreadSpec): Edge[] {
   return [
     ...extractEdgesFromThreadSpec(wfSpec, threadSpec),
     ...Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) => {

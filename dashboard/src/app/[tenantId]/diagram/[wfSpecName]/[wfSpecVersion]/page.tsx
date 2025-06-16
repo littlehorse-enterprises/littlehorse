@@ -1,13 +1,12 @@
-import { getWfRunDetails } from '@/actions/getWfRunDetails'
-import { lhClient } from '@/utils/client/lhClient'
-import { type Edge, type Node } from '@xyflow/react'
-import { SelectionProvider } from '@/components/context/selection-context'
-import { WfRunDetails } from '@/types/wfRunDetails'
-import LeftSidebar from '@/components/diagram/left-sidebar/left-sidebar'
-import WorkflowDiagram from '@/components/diagram/workflow-diagram'
+import { getWfRunDetails, WfRunDetails } from '@/actions/getWfRunDetails'
+import { NodeSelectionProvider } from '@/components/context/selection-context'
+import LeftSidebar from '@/components/diagram/left-sidebar'
 import RightSidebar from '@/components/diagram/right-sidebar'
+import WorkflowDiagram from '@/components/diagram/workflow-diagram'
+import { lhClient } from '@/utils/client/lhClient'
 import { extractEdges } from '@/utils/data/extract-edges'
 import { extractNodes } from '@/utils/data/extract-nodes'
+import { type Edge, type Node } from '@xyflow/react'
 
 interface DiagramPageProps {
   params: Promise<{
@@ -37,26 +36,21 @@ export default async function DiagramPage({ params, searchParams }: DiagramPageP
     wfRunDetails = await getWfRunDetails({ wfRunId: { id: wfRunId }, tenantId })
   }
 
-  const entryThreadSpecWithName = {
-    name: wfSpec.entrypointThreadName,
-    threadSpec: wfSpec.threadSpecs[wfSpec.entrypointThreadName],
-  }
-  const nodes: Node[] = extractNodes(wfSpec, entryThreadSpecWithName)
-  const edges: Edge[] = extractEdges(wfSpec, entryThreadSpecWithName)
+  const nodes: Node[] = extractNodes(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
+  const edges: Edge[] = extractEdges(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
 
   return (
-    <SelectionProvider>
+    <NodeSelectionProvider>
       <div className="flex h-full">
         <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
         <div className="flex flex-1">
           <WorkflowDiagram nodes={nodes} edges={edges} />
           <RightSidebar
             wfSpec={wfSpec}
-            nodeRuns={wfRunDetails?.nodeRuns || []}
-            taskRuns={wfRunDetails?.taskRuns || []}
+            wfRunDetails={wfRunDetails}
           />
         </div>
       </div>
-    </SelectionProvider>
+    </NodeSelectionProvider>
   )
 }
