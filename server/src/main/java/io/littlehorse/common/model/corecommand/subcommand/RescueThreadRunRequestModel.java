@@ -73,9 +73,4 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
 
         return wfRun.toProto().build();
     }
-
-    @Override
-    public boolean hasResponse() {
-        return true;
-    }
 }

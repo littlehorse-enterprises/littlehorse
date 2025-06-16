@@ -23,11 +23,6 @@ public class DeleteTaskWorkerGroupRequestModel extends CoreSubCommand<DeleteTask
     }
 
     @Override
-    public boolean hasResponse() {
-        return false;
-    }
-
-    @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         executionContext.getableManager().delete(new TaskWorkerGroupIdModel(taskDefId));
         return Empty.getDefaultInstance();

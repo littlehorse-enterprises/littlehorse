@@ -35,6 +35,9 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         }
         payload = command.toProto().build().toByteArray();
         key = command.getPartitionKey();
+        if (command.hasResponse()) {
+            throw new IllegalArgumentException("Timer commands cannot have a response");
+        }
     }
 
     @Override

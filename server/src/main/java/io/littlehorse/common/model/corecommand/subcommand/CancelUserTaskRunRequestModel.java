@@ -56,11 +56,6 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public String getPartitionKey() {
         return userTaskRunId.getPartitionKey().get();
     }

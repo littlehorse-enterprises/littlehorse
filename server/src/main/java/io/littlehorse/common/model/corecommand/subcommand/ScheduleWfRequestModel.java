@@ -79,11 +79,6 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public ScheduledWfRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
