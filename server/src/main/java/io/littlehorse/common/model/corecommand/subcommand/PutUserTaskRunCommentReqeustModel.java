@@ -21,7 +21,6 @@ public class PutUserTaskRunCommentReqeustModel extends CoreSubCommand<PutUserTas
     private String userId;
     private String comment;
 
-
     @Override
     public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         if (userId.isBlank()) {

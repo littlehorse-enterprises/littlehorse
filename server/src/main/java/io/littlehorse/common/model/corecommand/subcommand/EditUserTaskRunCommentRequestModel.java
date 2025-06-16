@@ -23,8 +23,6 @@ public class EditUserTaskRunCommentRequestModel extends CoreSubCommand<EditUserT
     private String userId;
     private String comment;
 
-  
-
     @Override
     public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         if (userCommentId == 0) {
