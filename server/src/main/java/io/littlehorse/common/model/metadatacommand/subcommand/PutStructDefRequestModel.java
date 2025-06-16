@@ -57,11 +57,6 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public Message process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
 

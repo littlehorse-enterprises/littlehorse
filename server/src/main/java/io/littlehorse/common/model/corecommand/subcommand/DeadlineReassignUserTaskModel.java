@@ -82,13 +82,6 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     }
 
     @Override
-    public boolean hasResponse() {
-        // Reassigned User Task are sent by the LHTimer infrastructure, which means
-        // there is no actual client waiting for the response.
-        return false;
-    }
-
-    @Override
     public String getPartitionKey() {
         return this.source.getPartitionKey().get();
     }

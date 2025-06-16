@@ -162,7 +162,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
         try {
             Message response = command.process(metadataContext);
-            if (command.getCommandId().isPresent() && command.hasResponse()) {
+            if (command.hasResponse()) {
 
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                         command.getCommandId().get(), Message.class, new CompletableFuture<>());

@@ -127,11 +127,6 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public String getPartitionKey() {
         return taskDefId.getName();
     }

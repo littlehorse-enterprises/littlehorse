@@ -50,11 +50,6 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public WorkflowEventDef process(MetadataCommandExecution executionContext) {
         WorkflowEventDefIdModel id = new WorkflowEventDefIdModel(name);
 

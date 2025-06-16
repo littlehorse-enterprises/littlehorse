@@ -145,6 +145,15 @@ service LittleHorse {
   // to model an entity.
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
+  // Adds userComment to a UserTaskRun
+  rpc PutUserTaskRunComment(PutUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
+  // Edits userComment with the correlated userCommentId 
+  rpc EditUserTaskRunComment(EditUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
+  // Deletes a comment logically, this does not affect the userTaskEvent Log
+  rpc DeleteUserTaskRunComment(DeleteUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
   // Gets a specific NodeRun.
   rpc GetNodeRun(NodeRunId) returns (NodeRun) {}
 
