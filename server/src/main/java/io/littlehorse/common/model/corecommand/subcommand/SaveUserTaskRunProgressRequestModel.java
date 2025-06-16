@@ -61,11 +61,6 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
     public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {

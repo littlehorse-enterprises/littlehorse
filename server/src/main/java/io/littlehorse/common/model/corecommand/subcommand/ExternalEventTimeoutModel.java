@@ -62,10 +62,6 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return false;
-    }
-
     public static ExternalEventTimeoutModel fromProto(ExternalEventNodeTimeoutPb p, ExecutionContext context) {
         ExternalEventTimeoutModel out = new ExternalEventTimeoutModel();
         out.initFrom(p, context);

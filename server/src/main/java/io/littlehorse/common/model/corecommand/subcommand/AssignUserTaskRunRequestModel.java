@@ -95,10 +95,6 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         return Empty.getDefaultInstance();
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     public String getPartitionKey() {
         return userTaskRunId.getPartitionKey().get();
     }

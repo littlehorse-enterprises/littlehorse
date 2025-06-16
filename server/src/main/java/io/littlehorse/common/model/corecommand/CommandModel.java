@@ -325,7 +325,6 @@ public class CommandModel extends AbstractCommand<Command> {
         }
     }
 
-    @Override
     public CoreSubCommand<?> getSubCommand() {
         switch (type) {
             case REPORT_TASK_RUN:
@@ -511,7 +510,7 @@ public class CommandModel extends AbstractCommand<Command> {
     }
 
     public boolean hasResponse() {
-        return getSubCommand().hasResponse();
+        return commandId != null;
     }
 
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
