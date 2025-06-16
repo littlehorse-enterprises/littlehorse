@@ -11,7 +11,6 @@ readme = "README.md"
 license = { text = "AGPLv3" }
 keywords = ["littlehorse"]
 classifiers = [
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -25,7 +24,7 @@ dependencies = [
     "grpcio==1.69.0",
     # other utilities
     "jproperties>=2.1,<2.2",
-    "authlib>=1.4,<1.5",
+    "authlib>=1.6,<1.7",
     "requests>=2.32,<2.33"
 ]
 
