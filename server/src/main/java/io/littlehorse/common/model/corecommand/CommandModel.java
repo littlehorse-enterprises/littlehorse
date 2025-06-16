@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.BulkUpdateJobModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
@@ -65,6 +66,9 @@ public class CommandModel extends AbstractCommand<Command> {
     public TriggeredTaskRun triggeredTaskRun;
     private DeadlineReassignUserTaskModel reassignUserTask;
     private CancelUserTaskRunRequestModel cancelUserTaskRun;
+    private PutUserTaskRunCommentReqeustModel putUserTaskRunComment;
+    private EditUserTaskRunCommentRequestModel editUserTaskRunComment;
+    private DeleteUserTaskRunCommentRequestModel deleteUserTaskRunComment;
     private TaskAttemptRetryReadyModel taskAttemptRetryReady;
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
@@ -149,6 +153,15 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case CANCEL_USER_TASK:
                 out.setCancelUserTask(cancelUserTaskRun.toProto());
+                break;
+            case PUT_USER_TASK_RUN_COMMENT:
+                out.setPutUserTaskRunComment(putUserTaskRunComment.toProto());
+                break;
+            case EDIT_USER_TASK_RUN_COMMENT:
+                out.setEditUserTaskRunComment(editUserTaskRunComment.toProto());
+                break;
+            case DELETE_USER_TASK_RUN_COMMENT:
+                out.setDeleteUserTaskRunComment(deleteUserTaskRunComment.toProto());
                 break;
             case BULK_JOB:
                 out.setBulkJob(bulkJob.toProto());
@@ -252,6 +265,18 @@ public class CommandModel extends AbstractCommand<Command> {
                 cancelUserTaskRun =
                         LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class, context);
                 break;
+            case PUT_USER_TASK_RUN_COMMENT:
+                putUserTaskRunComment = LHSerializable.fromProto(
+                        p.getPutUserTaskRunComment(), PutUserTaskRunCommentReqeustModel.class, context);
+                break;
+            case EDIT_USER_TASK_RUN_COMMENT:
+                editUserTaskRunComment = LHSerializable.fromProto(
+                        p.getEditUserTaskRunComment(), EditUserTaskRunCommentRequestModel.class, context);
+                break;
+            case DELETE_USER_TASK_RUN_COMMENT:
+                deleteUserTaskRunComment = LHSerializable.fromProto(
+                        p.getDeleteUserTaskRunComment(), DeleteUserTaskRunCommentRequestModel.class, context);
+                break;
             case BULK_JOB:
                 bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);
                 break;
@@ -334,6 +359,12 @@ public class CommandModel extends AbstractCommand<Command> {
                 return reassignUserTask;
             case CANCEL_USER_TASK:
                 return cancelUserTaskRun;
+            case PUT_USER_TASK_RUN_COMMENT:
+                return putUserTaskRunComment;
+            case EDIT_USER_TASK_RUN_COMMENT:
+                return editUserTaskRunComment;
+            case DELETE_USER_TASK_RUN_COMMENT:
+                return deleteUserTaskRunComment;
             case BULK_JOB:
                 return bulkJob;
             case TASK_ATTEMPT_RETRY_READY:
@@ -411,6 +442,15 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(CancelUserTaskRunRequestModel.class)) {
             type = CommandCase.CANCEL_USER_TASK;
             cancelUserTaskRun = (CancelUserTaskRunRequestModel) cmd;
+        } else if (cls.equals(PutUserTaskRunCommentReqeustModel.class)) {
+            type = CommandCase.PUT_USER_TASK_RUN_COMMENT;
+            putUserTaskRunComment = (PutUserTaskRunCommentReqeustModel) cmd;
+        } else if (cls.equals(EditUserTaskRunCommentRequestModel.class)) {
+            type = CommandCase.EDIT_USER_TASK_RUN_COMMENT;
+            editUserTaskRunComment = (EditUserTaskRunCommentRequestModel) cmd;
+        } else if (cls.equals(DeleteUserTaskRunCommentRequestModel.class)) {
+            type = CommandCase.DELETE_USER_TASK_RUN_COMMENT;
+            deleteUserTaskRunComment = (DeleteUserTaskRunCommentRequestModel) cmd;
         } else if (cls.equals(BulkUpdateJobModel.class)) {
             type = CommandCase.BULK_JOB;
             bulkJob = (BulkUpdateJobModel) cmd;
