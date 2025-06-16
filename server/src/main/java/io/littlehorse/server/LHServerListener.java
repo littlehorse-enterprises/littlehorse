@@ -19,6 +19,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
@@ -549,7 +550,34 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void putUserTaskRunComment(PutUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        PutUserTaskRunCommentReqeustModel reqModel =
+                LHSerializable.fromProto(req, PutUserTaskRunCommentReqeustModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        DeleteUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteUserTaskRunCommentRequestModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void editUserTaskRunComment(EditUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        EditUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, EditUserTaskRunCommentRequestModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);

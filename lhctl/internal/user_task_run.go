@@ -384,6 +384,7 @@ func getUserTaskRun(
 		WfRunId:      littlehorse.StrToWfRunId(wfRunId),
 		UserTaskGuid: userTaskGuid,
 	})
+
 	if err != nil {
 		return nil, err
 	}
