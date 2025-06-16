@@ -22,10 +22,6 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
 
-    @Override
-    public boolean hasResponse() {
-        return true;
-    }
 
     @Override
     public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {

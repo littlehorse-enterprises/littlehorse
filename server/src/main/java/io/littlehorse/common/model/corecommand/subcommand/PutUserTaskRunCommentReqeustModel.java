@@ -21,10 +21,6 @@ public class PutUserTaskRunCommentReqeustModel extends CoreSubCommand<PutUserTas
     private String userId;
     private String comment;
 
-    @Override
-    public boolean hasResponse() {
-        return true;
-    }
 
     @Override
     public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
