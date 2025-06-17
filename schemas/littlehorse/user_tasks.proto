@@ -335,7 +335,7 @@ message UserTaskEvent {
   }
 
   // Empty message denoting a `userTaskRunCompleted`
-  message UTECompleted {};
+  message UTECompleted {}
 
   // The event that occurred.
   oneof event {
