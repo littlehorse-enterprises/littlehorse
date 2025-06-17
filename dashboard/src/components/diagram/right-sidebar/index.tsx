@@ -19,12 +19,11 @@ interface RightSidebarProps {
 export default function RightSidebar({ wfSpec, wfRunDetails }: RightSidebarProps) {
   const [sidebarState, setSidebarState] = useState<SidebarState>('normal')
   const { selectedId } = useNodeSelection()
-  
 
   // Sidebar width based on state
-  const sidebarWidth = sidebarState === 'expanded' ? 'w-full md:w-4/5 lg:w-1/2' : sidebarState === 'normal' ? 'w-[280px]' : 'w-0 min-w-0'
+  const sidebarWidth =
+    sidebarState === 'expanded' ? 'w-full md:w-4/5 lg:w-1/2' : sidebarState === 'normal' ? 'w-[280px]' : 'w-0 min-w-0'
   const node = selectedId ? wfSpec.threadSpecs[selectedId.split(':')[1]].nodes[selectedId.split(':')[0]] : undefined
-
 
   return (
     <aside
@@ -67,41 +66,35 @@ export default function RightSidebar({ wfSpec, wfRunDetails }: RightSidebarProps
           <div className="flex flex-1 items-center justify-center p-4 text-xs italic">
             Select a node to view details
           </div>
-        ): (
-        <>
-          {/* Node Properties Header - Fixed at top */}
-          <div className="sticky top-0 z-10 border-b border-gray-200 bg-background p-4">
-            <div className="text-xs text-neutral">
-              <span className="font-medium">Node Details</span>
-            </div>
-            <div className="mb-1 flex items-center justify-between font-medium">
-              <div className="flex items-center">
-                {selectedId}
+        ) : (
+          <>
+            {/* Node Properties Header - Fixed at top */}
+            <div className="bg-background sticky top-0 z-10 border-b border-gray-200 p-4">
+              <div className="text-neutral text-xs">
+                <span className="font-medium">Node Details</span>
+              </div>
+              <div className="mb-1 flex items-center justify-between font-medium">
+                <div className="flex items-center">{selectedId}</div>
               </div>
             </div>
-          </div>
 
-          <div className='w-full flex justify-center pt-2 h-full'>
-          <Tabs defaultValue="definition">
-            <TabsList>
-              {wfRunDetails && (
-                <TabsTrigger value="runs">Runs</TabsTrigger>
-              )}
-              <TabsTrigger value="definition">Definition</TabsTrigger>
-            </TabsList>
-            {wfRunDetails && (
-              <TabsContent value="runs">
-                <NodeRuns selectedId={selectedId} wfRun={wfRunDetails.wfRun} />
-              </TabsContent>
-              )}
-            <TabsContent value="definition">
-              <NodeDefinition node={node} />
-            </TabsContent>
-          </Tabs>
-  
-          </div>
-
-        </>
+            <div className="flex h-full w-full justify-center px-4 pt-2">
+              <Tabs defaultValue="definition">
+                <TabsList>
+                  {wfRunDetails && <TabsTrigger value="runs">Runs</TabsTrigger>}
+                  <TabsTrigger value="definition">Definition</TabsTrigger>
+                </TabsList>
+                {wfRunDetails && (
+                  <TabsContent value="runs">
+                    <NodeRuns selectedId={selectedId} wfRun={wfRunDetails.wfRun} />
+                  </TabsContent>
+                )}
+                <TabsContent value="definition">
+                  <NodeDefinition node={node} />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </>
         )}
       </div>
     </aside>
