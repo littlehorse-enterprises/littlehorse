@@ -6,7 +6,7 @@ import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.concurrent.Executor;
 
@@ -47,7 +47,7 @@ public class InternalCallCredentials extends CallCredentials {
         return new InternalCallCredentials(requestContext.authorization());
     }
 
-    public static InternalCallCredentials forContext(ProcessorExecutionContext processorContext) {
+    public static InternalCallCredentials forContext(CoreProcessorContext processorContext) {
         return new InternalCallCredentials(processorContext.authorization());
     }
 }

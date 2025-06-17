@@ -17,7 +17,7 @@ import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         }
     }
 
-    public TaskDef process(MetadataCommandExecution context) {
+    public TaskDef process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "TaskDefName must be a valid hostname");

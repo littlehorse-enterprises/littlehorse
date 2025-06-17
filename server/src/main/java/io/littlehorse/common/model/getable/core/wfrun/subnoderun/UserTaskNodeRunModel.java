@@ -15,8 +15,8 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,13 +30,13 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
     private UserTaskRunIdModel userTaskRunId;
     private ExecutionContext executionContext;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public UserTaskNodeRunModel() {
         // used by lh deserializer
     }
 
-    public UserTaskNodeRunModel(ProcessorExecutionContext processorContext) {
+    public UserTaskNodeRunModel(CoreProcessorContext processorContext) {
         this.executionContext = processorContext;
         this.processorContext = processorContext;
     }
@@ -53,7 +53,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
             userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         }
         this.executionContext = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         UserTaskRunModel utr = processorContext.getableManager().get(userTaskRunId);
         if (utr.getFailureToThrowKenobi() != null) {
             NodeFailureException toThrow = new NodeFailureException(utr.getFailureToThrowKenobi());
@@ -77,7 +77,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         UserTaskRunModel userTask = processorContext.getableManager().get(userTaskRunId);
 
         if (userTask.getStatus() != UserTaskRunStatus.DONE) {
@@ -92,7 +92,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         // The UserTaskNode arrive() function should create a UserTaskRun.
         NodeModel node = getNodeRun().getNode();
         UserTaskNodeModel utn = node.getUserTaskNode();

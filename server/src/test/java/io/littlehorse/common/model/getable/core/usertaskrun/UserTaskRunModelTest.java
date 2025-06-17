@@ -8,7 +8,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -76,7 +76,7 @@ public class UserTaskRunModelTest {
     @Test
     void commentMethodShouldProperlyAddCommentEvent() {
         // Mock the context and command
-        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CoreProcessorContext mockContext = mock(CoreProcessorContext.class);
         CommandModel mockCommand = mock(CommandModel.class);
         when(mockCommand.getTime()).thenReturn(new java.util.Date());
         when(mockContext.currentCommand()).thenReturn(mockCommand);
@@ -97,7 +97,7 @@ public class UserTaskRunModelTest {
     @Test
     void editCommentMethodShouldProperlyAddCommentEventAndReplaceInLastEventForComment() {
         // Mock the context and command
-        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CoreProcessorContext mockContext = mock(CoreProcessorContext.class);
         CommandModel mockCommand = mock(CommandModel.class);
         when(mockCommand.getTime()).thenReturn(new java.util.Date());
         when(mockContext.currentCommand()).thenReturn(mockCommand);
@@ -119,7 +119,7 @@ public class UserTaskRunModelTest {
     @Test
     void deleteCommentMethodShouldProperlyAddToEventsAndLastEventForComment() {
         // Mock the context and command
-        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CoreProcessorContext mockContext = mock(CoreProcessorContext.class);
         CommandModel mockCommand = mock(CommandModel.class);
         when(mockCommand.getTime()).thenReturn(new java.util.Date());
         when(mockContext.currentCommand()).thenReturn(mockCommand);
@@ -143,7 +143,7 @@ public class UserTaskRunModelTest {
     @Test
     void getLastEventForCommentShouldProperlyMaintainKeyAndValueStore() {
         // Mock the context and command
-        ProcessorExecutionContext mockContext = mock(ProcessorExecutionContext.class);
+        CoreProcessorContext mockContext = mock(CoreProcessorContext.class);
         CommandModel mockCommand = mock(CommandModel.class);
         when(mockCommand.getTime()).thenReturn(new java.util.Date());
         when(mockContext.currentCommand()).thenReturn(mockCommand);

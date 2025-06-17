@@ -8,8 +8,8 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskAttemptRetryReady;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 
@@ -43,7 +43,7 @@ public class TaskAttemptRetryReadyModel extends CoreSubCommand<TaskAttemptRetryR
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext context, LHServerConfig config) {
+    public Empty process(CoreProcessorContext context, LHServerConfig config) {
         TaskRunModel taskRun = context.getableManager().get(id);
         Date time = new Date();
         taskRun.markAttemptReadyToSchedule();

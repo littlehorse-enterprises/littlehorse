@@ -5,8 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +21,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
 
     public TaskRunSourceModel() {}
 
-    public TaskRunSourceModel(TaskRunSubSource source, ProcessorExecutionContext processorContext) {
+    public TaskRunSourceModel(TaskRunSubSource source, CoreProcessorContext processorContext) {
         if (source.getClass().equals(TaskNodeReferenceModel.class)) {
             this.type = TaskRunSourceCase.TASK_NODE;
             this.taskNode = (TaskNodeReferenceModel) source;

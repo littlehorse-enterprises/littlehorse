@@ -15,8 +15,8 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +45,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         TaskRunModel task = executionContext.getableManager().get(taskRunId);
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");

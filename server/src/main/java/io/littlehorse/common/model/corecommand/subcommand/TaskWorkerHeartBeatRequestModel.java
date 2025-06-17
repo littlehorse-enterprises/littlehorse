@@ -19,8 +19,8 @@ import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -55,7 +55,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     }
 
     @Override
-    public RegisterTaskWorkerResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public RegisterTaskWorkerResponse process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager getableManager = executionContext.getableManager();
         // Get the group, a group contains all the task worker for that specific task
         TaskWorkerGroupModel taskWorkerGroup = getableManager.get(new TaskWorkerGroupIdModel(taskDefId));

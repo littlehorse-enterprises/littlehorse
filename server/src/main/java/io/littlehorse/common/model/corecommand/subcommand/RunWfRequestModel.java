@@ -19,8 +19,8 @@ import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -92,7 +92,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     }
 
     @Override
-    public WfRun process(ProcessorExecutionContext processorContext, LHServerConfig config) {
+    public WfRun process(CoreProcessorContext processorContext, LHServerConfig config) {
         if (Strings.isNullOrEmpty(wfSpecName)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
         }

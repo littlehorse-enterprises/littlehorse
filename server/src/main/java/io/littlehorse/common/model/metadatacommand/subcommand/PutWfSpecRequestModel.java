@@ -19,7 +19,7 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +84,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     }
 
     @Override
-    public WfSpec process(MetadataCommandExecution executionContext) {
+    public WfSpec process(MetadataProcessorContext executionContext) {
         MetadataManager metadataManager = executionContext.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "WfSpecName must be a valid hostname");

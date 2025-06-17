@@ -8,8 +8,8 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +34,7 @@ public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteSched
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
         executionContext.getableManager().delete(id);
         return Empty.getDefaultInstance();
     }

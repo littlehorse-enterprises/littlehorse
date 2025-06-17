@@ -16,8 +16,8 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Optional;
 
 public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> {
@@ -43,7 +43,7 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager manager = executionContext.getableManager();
         WfRunModel wfRun = manager.get(wfRunId);
         if (wfRun == null) return Empty.getDefaultInstance();
