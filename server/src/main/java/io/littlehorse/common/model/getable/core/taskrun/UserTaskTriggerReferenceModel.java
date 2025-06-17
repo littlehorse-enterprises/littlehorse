@@ -7,7 +7,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +24,7 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
 
     public UserTaskTriggerReferenceModel() {}
 
-    public UserTaskTriggerReferenceModel(UserTaskRunModel utr, ProcessorExecutionContext processorContext) {
+    public UserTaskTriggerReferenceModel(UserTaskRunModel utr, CoreProcessorContext processorContext) {
         nodeRunId = utr.getNodeRunId();
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();

@@ -14,7 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +45,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
             TaskDefIdModel taskDefId,
             List<VarNameAndValModel> variables,
             UserTaskRunModel userTaskRun,
-            ProcessorExecutionContext processorContext) {
+            CoreProcessorContext processorContext) {
         this.variables = variables;
         this.createdAt = new Date();
         this.source = new TaskRunSourceModel(

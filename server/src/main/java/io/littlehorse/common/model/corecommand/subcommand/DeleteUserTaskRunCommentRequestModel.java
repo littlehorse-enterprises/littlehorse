@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 
 public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteUserTaskRunCommentRequest> {
 
@@ -23,7 +23,7 @@ public class DeleteUserTaskRunCommentRequestModel extends CoreSubCommand<DeleteU
     private String userId;
 
     @Override
-    public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public UserTaskRun process(CoreProcessorContext executionContext, LHServerConfig config) {
 
         if (userCommentId == 0) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "The User Comment Id must be provided");

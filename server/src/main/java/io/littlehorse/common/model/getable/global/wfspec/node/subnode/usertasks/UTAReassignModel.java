@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.LHTaskManager;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -50,7 +50,7 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         return UTAReassign.class;
     }
 
-    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger, ProcessorExecutionContext processorContext)
+    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger, CoreProcessorContext processorContext)
             throws LHVarSubError {
         LHTaskManager taskManager = processorContext.getTaskManager();
         NodeRunModel nodeRunModel = utr.getNodeRun();

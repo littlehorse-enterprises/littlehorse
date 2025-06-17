@@ -17,7 +17,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +102,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
         ScheduledWfRunModel scheduledWfRun = executionContext.getableManager().get(scheduledId);
         if (scheduledWfRun != null) {
             Date currentDate = new Date();

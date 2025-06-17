@@ -13,7 +13,7 @@ import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.WfRunId;
-import io.littlehorse.server.TestProcessorExecutionContext;
+import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -27,7 +27,7 @@ public class DeleteWfRunRequestModelTest {
     private final WfRunModel wfRun = TestUtil.wfRun(wfRunId);
     private final Command command = commandProto();
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
-    private final TestProcessorExecutionContext testProcessorContext = TestProcessorExecutionContext.create(
+    private final TestCoreProcessorContext testProcessorContext = TestCoreProcessorContext.create(
             command,
             HeadersUtil.metadataHeadersFor(
                     new TenantIdModel(LHConstants.DEFAULT_TENANT),

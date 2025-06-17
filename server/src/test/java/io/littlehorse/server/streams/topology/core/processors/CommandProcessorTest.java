@@ -13,7 +13,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.server.LHServer;
-import io.littlehorse.server.TestProcessorExecutionContext;
+import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -72,8 +72,8 @@ public class CommandProcessorTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
-    private TestProcessorExecutionContext tenantProcessorContext;
-    private TestProcessorExecutionContext defaultProcessorContext;
+    private TestCoreProcessorContext tenantProcessorContext;
+    private TestCoreProcessorContext defaultProcessorContext;
 
     @BeforeEach
     public void setup() {
@@ -87,9 +87,9 @@ public class CommandProcessorTest {
         Command commandToExecute =
                 Command.newBuilder().setRunWf(runWfSubCommand).build();
 
-        tenantProcessorContext = TestProcessorExecutionContext.create(
+        tenantProcessorContext = TestCoreProcessorContext.create(
                 commandToExecute, HeadersUtil.metadataHeadersFor("my-tenant", "tyler"), mockProcessorContext);
-        defaultProcessorContext = new TestProcessorExecutionContext(
+        defaultProcessorContext = new TestCoreProcessorContext(
                 commandToExecute,
                 HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.DEFAULT_TENANT),
                 tenantProcessorContext.getLhConfig(),

@@ -44,7 +44,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -85,14 +85,14 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     // Below are non-proto fields
     private UserTaskNodeModel userTaskNode;
     private ExecutionContext executionContext;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
     private FailureModel failureToThrowKenobi;
     private transient Map<Integer, UserTaskEventModel> lastEventForComment = new HashMap<>();
     private int commentIdCounter;
 
     public UserTaskRunModel() {}
 
-    public UserTaskRunModel(ProcessorExecutionContext processorContext) {
+    public UserTaskRunModel(CoreProcessorContext processorContext) {
         this.processorContext = processorContext;
     }
 
@@ -100,7 +100,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             UserTaskDefModel utd,
             UserTaskNodeModel userTaskNode,
             NodeRunModel nodeRunModel,
-            ProcessorExecutionContext processorContext) {
+            CoreProcessorContext processorContext) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRunModel.getObjectId();
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
@@ -183,7 +183,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         }
         this.epoch = p.getEpoch();
         this.executionContext = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     public boolean isTerminated() {
@@ -361,7 +361,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         this.lastEventForComment.put(userCommentId, userTaskEventModel);
     }
 
-    public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx)
+    public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, CoreProcessorContext ctx)
             throws LHApiException {
         if (isTerminated()) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is in status " + status);

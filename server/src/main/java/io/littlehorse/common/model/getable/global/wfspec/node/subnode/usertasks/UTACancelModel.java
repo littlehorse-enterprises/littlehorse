@@ -12,7 +12,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -32,7 +32,7 @@ public class UTACancelModel extends LHSerializable<UTActionTrigger.UTACancel> {
         return UTActionTrigger.UTACancel.class;
     }
 
-    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger, ProcessorExecutionContext processorContext)
+    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger, CoreProcessorContext processorContext)
             throws LHVarSubError {
         VariableValueModel delaySeconds = utr.getNodeRun().getThreadRun().assignVariable(trigger.delaySeconds);
         if (delaySeconds.getType() != VariableType.INT) {

@@ -16,7 +16,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.LHTaskManager;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -65,7 +65,7 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
         Date limitTime = DateUtils.addMilliseconds(new Date(), config.getMaxBulkJobIterDurationMs());
         try (LHKeyValueIterator<?> range =
                 executionContext.getableManager().range(startKey, endKey, StoredGetable.class)) {

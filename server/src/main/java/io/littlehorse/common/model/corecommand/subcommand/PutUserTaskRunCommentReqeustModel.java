@@ -13,7 +13,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 
 public class PutUserTaskRunCommentReqeustModel extends CoreSubCommand<PutUserTaskRunCommentRequest> {
 
@@ -22,7 +22,7 @@ public class PutUserTaskRunCommentReqeustModel extends CoreSubCommand<PutUserTas
     private String comment;
 
     @Override
-    public UserTaskRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public UserTaskRun process(CoreProcessorContext executionContext, LHServerConfig config) {
         if (userId.isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "The userId must be provided.");
         }

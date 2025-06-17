@@ -7,8 +7,8 @@ import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,11 +38,11 @@ public class ExitNodeModel extends SubNode<ExitNode> {
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws LHApiException {
         if (failureDef != null) failureDef.validate();
     }
 
-    public ExitRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public ExitRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new ExitRunModel();
     }
 

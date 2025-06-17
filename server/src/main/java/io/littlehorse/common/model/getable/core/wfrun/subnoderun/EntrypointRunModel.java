@@ -6,7 +6,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.sdk.common.proto.EntrypointRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
 
-    private ProcessorExecutionContext context;
+    private CoreProcessorContext context;
 
     @Override
     public Class<EntrypointRun> getProtoBaseClass() {
@@ -30,17 +30,17 @@ public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         return Optional.empty();
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         return true;
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {}
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {}
 
     public static EntrypointRunModel fromProto(EntrypointRun p, ExecutionContext context) {
         EntrypointRunModel out = new EntrypointRunModel();

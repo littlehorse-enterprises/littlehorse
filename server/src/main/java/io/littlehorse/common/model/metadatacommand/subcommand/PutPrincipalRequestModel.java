@@ -20,7 +20,7 @@ import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -70,7 +70,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     }
 
     @Override
-    public Principal process(MetadataCommandExecution context) {
+    public Principal process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
         PrincipalModel oldPrincipal = context.service().getPrincipal(new PrincipalIdModel(id));
         PrincipalModel requester =
@@ -154,7 +154,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                                         || aclResource.equals(ACLResource.ACL_PRINCIPAL))));
     }
 
-    private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataCommandExecution context) {
+    private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataProcessorContext context) {
         if (!old.isAdmin()) {
             // If the old isn't admin, then we aren't taking away admin privileges, so we
             // don't need to worry.

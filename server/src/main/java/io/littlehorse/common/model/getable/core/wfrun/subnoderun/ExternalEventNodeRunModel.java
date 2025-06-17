@@ -25,7 +25,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -39,13 +39,13 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     private Date eventTime;
     private ExternalEventIdModel externalEventId;
     private ExecutionContext executionContext;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
     private boolean timedOut;
     private String correlationKey;
 
     public ExternalEventNodeRunModel() {}
 
-    public ExternalEventNodeRunModel(ExternalEventDefIdModel extEvtId, ProcessorExecutionContext processorContext) {
+    public ExternalEventNodeRunModel(ExternalEventDefIdModel extEvtId, CoreProcessorContext processorContext) {
         this.externalEventDefId = extEvtId;
         this.executionContext = processorContext;
         this.processorContext = processorContext;
@@ -95,7 +95,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         if (externalEventId != null) return true;
 
         if (timedOut) {
@@ -121,7 +121,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         if (externalEventId == null) {
             throw new IllegalStateException("called getOutput() before node finished!");
         }
@@ -136,12 +136,12 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
      * happen.
      */
     @Override
-    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
         return true;
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         // Two things may or may not happen on arrival:
         // 1. Schedule the timeout
         // 2. Send a CorrelationMarker
@@ -149,7 +149,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         maybeSendCorrelationMarker(processorContext);
     }
 
-    private void maybeScheduleTimeoutTimer(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    private void maybeScheduleTimeoutTimer(CoreProcessorContext processorContext) throws NodeFailureException {
         if (getNode().getExternalEventNode().getTimeoutSeconds() == null) return;
         try {
             VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
@@ -180,7 +180,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         }
     }
 
-    private void maybeSendCorrelationMarker(ProcessorExecutionContext context) throws NodeFailureException {
+    private void maybeSendCorrelationMarker(CoreProcessorContext context) throws NodeFailureException {
         VariableAssignmentModel correlationIdAssn =
                 getNode().getExternalEventNode().getCorrrelationId();
         if (correlationIdAssn == null) return;

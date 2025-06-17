@@ -16,7 +16,7 @@ import io.littlehorse.sdk.common.proto.CorrelatedEvent;
 import io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +61,7 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
     }
 
     @Override
-    public CorrelatedEvent process(ProcessorExecutionContext context, LHServerConfig config) {
+    public CorrelatedEvent process(CoreProcessorContext context, LHServerConfig config) {
         // Validate the name. Only `/` is prohibited.
         if (key.contains("/") || key.contains("~")) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "CorrelatedEvent keys cannot contain '/' or '~'");

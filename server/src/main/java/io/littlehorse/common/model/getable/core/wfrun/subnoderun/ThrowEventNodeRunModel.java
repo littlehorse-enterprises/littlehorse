@@ -15,7 +15,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThrowEventNodeRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
@@ -25,19 +25,19 @@ import lombok.Setter;
 public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
 
     private WorkflowEventIdModel workflowEventId;
-    private ProcessorExecutionContext processorExecutionContext;
+    private CoreProcessorContext processorExecutionContext;
     private WorkflowEventDefIdModel eventDefId;
 
     public ThrowEventNodeRunModel() {}
 
-    public ThrowEventNodeRunModel(WorkflowEventDefIdModel defId, ProcessorExecutionContext processorContext) {
+    public ThrowEventNodeRunModel(WorkflowEventDefIdModel defId, CoreProcessorContext processorContext) {
         this.eventDefId = defId;
         this.processorExecutionContext = processorContext;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        this.processorExecutionContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorExecutionContext = context.castOnSupport(CoreProcessorContext.class);
         ThrowEventNodeRun p = (ThrowEventNodeRun) proto;
         this.workflowEventId = LHSerializable.fromProto(p.getWorkflowEventId(), WorkflowEventIdModel.class, context);
     }
@@ -53,7 +53,7 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         Optional<WorkflowEventModel> currentWorkflowEvent =
                 getCurrentWorkflowEventId(nodeRun.getId().getWfRunId(), this.eventDefId, processorContext);
         if (currentWorkflowEvent.isPresent()) {
@@ -79,17 +79,17 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         return Optional.empty();
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         return true;
     }
 
     private Optional<WorkflowEventModel> getCurrentWorkflowEventId(
-            WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId, ProcessorExecutionContext processorContext) {
+            WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId, CoreProcessorContext processorContext) {
         return processorContext.getableManager().getWorkflowEvents(wfRunId, eventDefId).stream()
                 .max(Comparator.comparingInt(
                         workflowEvent -> workflowEvent.getId().getId()));

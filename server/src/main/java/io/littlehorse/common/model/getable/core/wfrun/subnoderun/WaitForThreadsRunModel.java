@@ -22,7 +22,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,12 +74,12 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     @Override
-    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
         return true;
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         boolean allCompleteOrHandled = true;
 
         // This is stupid but it's required to make things work.
@@ -96,7 +96,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         // Need to initialize all of the threads.
         WaitForThreadsNodeModel node = getNode().getWaitForThreadsNode();
         nodeRun.setStatus(LHStatus.RUNNING);
@@ -110,7 +110,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         // Currently, the WaitForThreads node does not have output. This is because we haven't yet implemented
         // ThreadRun outputs.
         return Optional.empty();
@@ -121,7 +121,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
      * @param child is the child we're looking at.
      * @throws NodeFailureException if the child failed with an unrecoverable error.
      */
-    private void updateStatusOfAndMaybeThrow(WaitForThreadModel child, ProcessorExecutionContext processorContext)
+    private void updateStatusOfAndMaybeThrow(WaitForThreadModel child, CoreProcessorContext processorContext)
             throws NodeFailureException {
         if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
             return;
@@ -200,7 +200,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             FailureModel failure,
             ThreadRunModel failedChildThreadRun,
             WaitForThreadModel failedChildThread,
-            ProcessorExecutionContext processorContext)
+            CoreProcessorContext processorContext)
             throws NodeFailureException {
         /*
          * The logic for the ThreadRunModel starting a FailureHandler is more complex

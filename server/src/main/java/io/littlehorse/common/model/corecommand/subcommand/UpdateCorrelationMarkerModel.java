@@ -12,7 +12,7 @@ import io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAc
 import io.littlehorse.server.streams.storeinternals.EventCorrelationMarkerModel;
 import io.littlehorse.server.streams.topology.core.CorrelationMarkerManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext context, LHServerConfig config) {
+    public Empty process(CoreProcessorContext context, LHServerConfig config) {
         CorrelationMarkerManager manager = context.getCorrelationMarkerManager();
         EventCorrelationMarkerModel marker = manager.getOrCreateMarker(correlationKey, externalEventDefId);
 

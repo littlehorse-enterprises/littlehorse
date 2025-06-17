@@ -9,7 +9,7 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.ActionCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,7 +52,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
         return out;
     }
 
-    public void schedule(UserTaskRunModel utr, ProcessorExecutionContext processorContext) throws LHVarSubError {
+    public void schedule(UserTaskRunModel utr, CoreProcessorContext processorContext) throws LHVarSubError {
         switch (actionType) {
             case TASK:
                 task.schedule(utr, this, processorContext);

@@ -1522,7 +1522,7 @@ type UserTaskEvent_UTECommentDeleted struct {
 
 	// The id of the comment that will be deleted
 	UserCommentId int32 `protobuf:"varint,1,opt,name=user_comment_id,json=userCommentId,proto3" json:"user_comment_id,omitempty"`
-	// The id of the person user who deleted the comment
+	// The id of the user who deleted the comment
 	UserId string `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 }
 

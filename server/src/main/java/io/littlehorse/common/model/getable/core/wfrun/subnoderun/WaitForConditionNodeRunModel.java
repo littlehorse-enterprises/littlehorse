@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForCon
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.WaitForConditionRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class WaitForConditionNodeRunModel extends SubNodeRun<WaitForConditionRun
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext ctx) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext ctx) throws NodeFailureException {
         // First, evaluate the edge conditions
         WaitForConditionNodeModel wfcNode = nodeRun.getNode().getWaitForConditionNode();
         EdgeConditionModel condition = wfcNode.getCondition();
@@ -50,18 +50,18 @@ public class WaitForConditionNodeRunModel extends SubNodeRun<WaitForConditionRun
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext ctx) {
+    public void arrive(Date time, CoreProcessorContext ctx) {
         // Nothing to do on arrival.
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext ctx) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext ctx) {
         // There is no output from a `WAIT_FOR_CONDITION` node.
         return Optional.empty();
     }
 
     @Override
-    public boolean maybeHalt(ProcessorExecutionContext ctx) {
+    public boolean maybeHalt(CoreProcessorContext ctx) {
         // There is never an action (eg. TaskAttempt) in progress during a
         // WaitForConditionRun, so it's safe to always halt.
         return true;

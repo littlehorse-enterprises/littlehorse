@@ -28,7 +28,7 @@ import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -90,7 +90,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void processHelper(final Record<String, Command> commandRecord) {
-        ProcessorExecutionContext executionContext = buildExecutionContext(commandRecord);
+        CoreProcessorContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
@@ -114,10 +114,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         }
     }
 
-    private ProcessorExecutionContext buildExecutionContext(Record<String, Command> commandRecord) {
+    private CoreProcessorContext buildExecutionContext(Record<String, Command> commandRecord) {
         Headers metadataHeaders = commandRecord.headers();
         Command commandToProcess = commandRecord.value();
-        return new ProcessorExecutionContext(
+        return new CoreProcessorContext(
                 commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
     }
 

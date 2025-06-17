@@ -14,7 +14,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeM
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -26,13 +26,13 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     private boolean matured;
 
     // Only contains value in Processor execution context.
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public SleepNodeRunModel() {
         // used by lhdeserializer
     }
 
-    public SleepNodeRunModel(ProcessorExecutionContext processorContext) {
+    public SleepNodeRunModel(CoreProcessorContext processorContext) {
         this.processorContext = processorContext;
     }
 
@@ -46,7 +46,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         SleepNodeRun p = (SleepNodeRun) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
         matured = p.getMatured();
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override
@@ -57,12 +57,12 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) {
         return this.isMatured();
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         // We need to schedule the timer that says "hey the node is done"
         SleepNodeModel sleepNode = getNode().sleepNode;
         if (sleepNode == null) {
@@ -83,12 +83,12 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     }
 
     @Override
-    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
         return true;
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         return Optional.empty();
     }
 

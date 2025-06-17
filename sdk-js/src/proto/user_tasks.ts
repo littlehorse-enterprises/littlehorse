@@ -487,7 +487,7 @@ export interface UserTaskEvent_UTECommented {
 export interface UserTaskEvent_UTECommentDeleted {
   /** The id of the comment that will be deleted */
   userCommentId: number;
-  /** The id of the person user who deleted the comment */
+  /** The id of the user who deleted the comment */
   userId: string;
 }
 

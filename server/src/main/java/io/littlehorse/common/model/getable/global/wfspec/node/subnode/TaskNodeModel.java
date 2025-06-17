@@ -21,8 +21,8 @@ import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,7 +120,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws LHApiException {
         // Can only validate the type of TaskDef if we know it ahead of time...
         if (taskToExecuteType == TaskToExecuteCase.TASK_DEF_ID) {
             TaskDefModel taskDef = ctx.metadataManager().get(new TaskDefIdModel(taskDefId.getName()));
@@ -209,7 +209,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         throw new LHApiException(Status.INVALID_ARGUMENT, "Node does not specify Task to execute");
     }
 
-    public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread, ProcessorExecutionContext processorContext)
+    public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread, CoreProcessorContext processorContext)
             throws LHVarSubError {
         TaskDefModel taskDef = getTaskDef(thread, processorContext);
 
@@ -236,7 +236,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     @Override
-    public TaskNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public TaskNodeRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         TaskNodeRunModel out = new TaskNodeRunModel(processorContext);
         // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;

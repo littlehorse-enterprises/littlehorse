@@ -7,7 +7,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> im
 
     private NodeRunIdModel nodeRunId;
     private ExecutionContext context;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public TaskNodeReferenceModel() {}
 
@@ -42,7 +42,7 @@ public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> im
         TaskNodeReference p = (TaskNodeReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         this.context = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override

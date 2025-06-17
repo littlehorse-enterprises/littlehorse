@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 
 public class DeleteTaskWorkerGroupRequestModel extends CoreSubCommand<DeleteTaskWorkerGroupRequest> {
 
@@ -23,7 +23,7 @@ public class DeleteTaskWorkerGroupRequestModel extends CoreSubCommand<DeleteTask
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
         executionContext.getableManager().delete(new TaskWorkerGroupIdModel(taskDefId));
         return Empty.getDefaultInstance();
     }

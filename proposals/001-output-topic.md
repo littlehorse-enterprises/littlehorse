@@ -271,11 +271,11 @@ WfRunVariable myVar = wf.declareStr("some-var").asPublic().withoutOutputTopic();
 
 We will add another sink to the Core Processor (in `ServerTopology.java`) which determines the topic dynamically based on the `Tenant` information.
 
-We will place a "sniffer" in the `ProcessorExecutionContext` that watches for `put()`'s with updates to `Getable`s, and then in the `endExecution()` method does a series of `context.forward()`'s for any `Getable`s that changed and are configured to be sent to the Output Topic.
+We will place a "sniffer" in the `CoreProcessorContext` that watches for `put()`'s with updates to `Getable`s, and then in the `endExecution()` method does a series of `context.forward()`'s for any `Getable`s that changed and are configured to be sent to the Output Topic.
 
 ### Reads vs Puts
 
-Currently, we have a weakness in the `GetableUpdates` inside the `ProcessorExecutionContext`. Every time we _read_ a `Getable`, we put it in the buffer of changes. The reason for this is:
+Currently, we have a weakness in the `GetableUpdates` inside the `CoreProcessorContext`. Every time we _read_ a `Getable`, we put it in the buffer of changes. The reason for this is:
 
 * To cache reads, meaning that we only read a single `Getable` from RocksDB once per `Command`.
 * To prevent multiple `Model` copies of the same `Getable` from floating around in the code during one single `Command` processing.

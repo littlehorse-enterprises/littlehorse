@@ -4444,7 +4444,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     /**
      * <pre>
-     * The id of the person user who deleted the comment
+     * The id of the user who deleted the comment
      * </pre>
      *
      * <code>string user_id = 2;</code>
@@ -4453,7 +4453,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     java.lang.String getUserId();
     /**
      * <pre>
-     * The id of the person user who deleted the comment
+     * The id of the user who deleted the comment
      * </pre>
      *
      * <code>string user_id = 2;</code>
@@ -4522,7 +4522,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private volatile java.lang.Object userId_ = "";
     /**
      * <pre>
-     * The id of the person user who deleted the comment
+     * The id of the user who deleted the comment
      * </pre>
      *
      * <code>string user_id = 2;</code>
@@ -4543,7 +4543,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The id of the person user who deleted the comment
+     * The id of the user who deleted the comment
      * </pre>
      *
      * <code>string user_id = 2;</code>
@@ -4964,7 +4964,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       private java.lang.Object userId_ = "";
       /**
        * <pre>
-       * The id of the person user who deleted the comment
+       * The id of the user who deleted the comment
        * </pre>
        *
        * <code>string user_id = 2;</code>
@@ -4984,7 +4984,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The id of the person user who deleted the comment
+       * The id of the user who deleted the comment
        * </pre>
        *
        * <code>string user_id = 2;</code>
@@ -5005,7 +5005,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The id of the person user who deleted the comment
+       * The id of the user who deleted the comment
        * </pre>
        *
        * <code>string user_id = 2;</code>
@@ -5022,7 +5022,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The id of the person user who deleted the comment
+       * The id of the user who deleted the comment
        * </pre>
        *
        * <code>string user_id = 2;</code>
@@ -5036,7 +5036,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The id of the person user who deleted the comment
+       * The id of the user who deleted the comment
        * </pre>
        *
        * <code>string user_id = 2;</code>

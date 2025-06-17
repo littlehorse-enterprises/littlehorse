@@ -33,7 +33,7 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +62,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public TaskRunModel() {
         scheduledAt = new Date();
@@ -74,7 +74,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             List<VarNameAndValModel> inputVars,
             TaskRunSourceModel source,
             TaskNodeModel node,
-            ProcessorExecutionContext processorContext,
+            CoreProcessorContext processorContext,
             TaskRunIdModel id,
             TaskDefIdModel taskDefId) {
         this();
@@ -123,7 +123,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         }
 
         this.executionContext = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override
