@@ -174,24 +174,7 @@ public class CorrelatedEventTest {
         String key = LHUtil.generateGuid();
         verifier.prepareRun(correlatedWithDeletionAndMask, Arg.of("key", key))
                 .waitForStatus(LHStatus.RUNNING)
-                // TODO (#1593): make this native in the e2e framework
-                .thenVerifyWfRun(wfRun -> {
-                    try {
-                        // The sleep is because there is a delay between the WfRun being
-                        // run and the CorrelationMarker arriving at the correct partition.
-                        // This is because it must go through the timer topology.
-                        //
-                        // We want to make sure that the marker gets there before the
-                        // WfRun, hence the sleep.
-                        Thread.sleep(1000);
-                    } catch (Exception exn) {
-                    }
-                    client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
-                            .setContent(LHLibUtil.objToVarVal(42))
-                            .setKey(key)
-                            .setExternalEventDefId(DELETION_EVT)
-                            .build());
-                })
+                .thenSendCorrelatedEvent(DELETION_EVT.getName(), key, 42)
                 .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
                 .thenVerifyVariable(0, "event-result", variable -> {
                     Assertions.assertThat(variable.getInt()).isEqualTo(42L);
@@ -229,11 +212,16 @@ public class CorrelatedEventTest {
 
     @Test
     void correlatedEventsGoToCorrectNodeRun() {
+        String randomStr = LHUtil.generateGuid(); // avoid ALREADY_EXISTS on repeated test runs
+        List<String> documents = List.of("doc-1" + randomStr, "doc-2" + randomStr, "doc-3" + randomStr);
+        String evtId = "correlated-document-signed";
+
         List<String> documents = List.of("doc-1", "doc-2", "doc-3");
         ExternalEventDefId evtId = ExternalEventDefId.newBuilder()
                 .setName("correlated-document-signed")
                 .build();
         verifier.prepareRun(multiThreadCorrelation, Arg.of("documents", documents))
+                .thenSendCorrelatedEvent(evtId, "doc-2" + randomStr, null)
                 .thenVerifyWfRun(wfRun -> {
                     client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                             .setExternalEventDefId(evtId)
@@ -243,6 +231,7 @@ public class CorrelatedEventTest {
                 .waitForThreadRunStatus(2, LHStatus.COMPLETED)
                 .waitForThreadRunStatus(0, LHStatus.RUNNING)
                 .waitForThreadRunStatus(1, LHStatus.RUNNING)
+                .thenSendCorrelatedEvent(evtId, "doc-1" + randomStr, null)
                 .thenVerifyWfRun(wfRun -> {
                     client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                             .setExternalEventDefId(evtId)
@@ -256,6 +245,7 @@ public class CorrelatedEventTest {
                             .setKey("doc-3")
                             .build());
                 })
+                .thenSendCorrelatedEvent(evtId, "doc-3" + randomStr, null)
                 .waitForStatus(LHStatus.COMPLETED)
                 .start();
     }
