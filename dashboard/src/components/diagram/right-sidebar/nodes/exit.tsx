@@ -34,7 +34,6 @@ export function ExitNodeComponent({ exitNode }: ExitNodeComponentProps) {
     <BaseNodeComponent
       title="Exit Properties"
       type="EXIT"
-      description="This node completes the thread execution."
       additionalSections={additionalSections}
     />
   )

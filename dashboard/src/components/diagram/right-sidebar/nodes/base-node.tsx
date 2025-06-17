@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 interface BaseNodeComponentProps {
   title: string
   type: string
-  description?: string
   children?: ReactNode
   additionalSections?: {
     title: string
@@ -11,9 +10,9 @@ interface BaseNodeComponentProps {
   }[]
 }
 
-export function BaseNodeComponent({ title, type, description, children, additionalSections }: BaseNodeComponentProps) {
+export function BaseNodeComponent({ title, type, children, additionalSections }: BaseNodeComponentProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
         <h4 className="mb-2 text-xs font-medium">{title}</h4>
         <div className="space-y-1 text-xs">
@@ -21,11 +20,6 @@ export function BaseNodeComponent({ title, type, description, children, addition
             <span className="text-[#656565]">Type:</span>
             <span className="font-mono">{type}</span>
           </div>
-          {description && (
-            <div className="text-[#656565] text-xs">
-              {description}
-            </div>
-          )}
           {children}
         </div>
       </div>

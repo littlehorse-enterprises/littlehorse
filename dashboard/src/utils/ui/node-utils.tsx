@@ -1,7 +1,18 @@
-import { Box, CheckCircle, AlertCircle, Loader2, PlayIcon, MailIcon, CircleSlashIcon } from 'lucide-react'
+import { AlertCircle, Bell, Box, CheckCircle, CircleSlashIcon, Clock, GitBranch, Loader2, MailIcon, Minus, PlayIcon, Timer, User } from 'lucide-react'
 
-export type NodeType = 'ENTRYPOINT' | 'EXIT' | 'NOP' | 'TASK' | 'EXTERNAL_EVENT' 
-
+export type NodeType = 
+  | 'ENTRYPOINT' 
+  | 'EXIT' 
+  | 'NOP' 
+  | 'TASK' 
+  | 'EXTERNAL_EVENT'
+  | 'SLEEP'
+  | 'START_THREAD'
+  | 'START_MULTIPLE_THREADS'
+  | 'THROW_EVENT'
+  | 'USER_TASK'
+  | 'WAIT_FOR_CONDITION'
+  | 'WAIT_FOR_THREADS'
 
 export function getNodeType(nodeName: string): NodeType | undefined {
   if (nodeName.includes('ENTRYPOINT')) return 'ENTRYPOINT'
@@ -9,6 +20,13 @@ export function getNodeType(nodeName: string): NodeType | undefined {
   if (nodeName.includes('EXTERNAL_EVENT')) return 'EXTERNAL_EVENT'
   if (nodeName.includes('NOP')) return 'NOP'
   if (nodeName.includes('TASK')) return 'TASK'
+  if (nodeName.includes('SLEEP')) return 'SLEEP'
+  if (nodeName.includes('START_THREAD')) return 'START_THREAD'
+  if (nodeName.includes('START_MULTIPLE_THREADS')) return 'START_MULTIPLE_THREADS'
+  if (nodeName.includes('THROW_EVENT')) return 'THROW_EVENT'
+  if (nodeName.includes('USER_TASK')) return 'USER_TASK'
+  if (nodeName.includes('WAIT_FOR_CONDITION')) return 'WAIT_FOR_CONDITION'
+  if (nodeName.includes('WAIT_FOR_THREADS')) return 'WAIT_FOR_THREADS'
 }
 
 export function getIconColor(nodeType: NodeType): string {
@@ -21,6 +39,20 @@ export function getIconColor(nodeType: NodeType): string {
       return 'text-purple-600'
     case 'NOP':
       return 'text-orange-600'
+    case 'SLEEP':
+      return 'text-indigo-600'
+    case 'START_THREAD':
+      return 'text-cyan-600'
+    case 'START_MULTIPLE_THREADS':
+      return 'text-cyan-600'
+    case 'THROW_EVENT':
+      return 'text-pink-600'
+    case 'USER_TASK':
+      return 'text-emerald-600'
+    case 'WAIT_FOR_CONDITION':
+      return 'text-amber-600'
+    case 'WAIT_FOR_THREADS':
+      return 'text-violet-600'
     default:
       return 'text-blue-600'
   }
@@ -36,6 +68,20 @@ export function getBorderColor(nodeType: NodeType): string {
       return 'border-purple-200'
     case 'NOP':
       return 'border-orange-200'
+    case 'SLEEP':
+      return 'border-indigo-200'
+    case 'START_THREAD':
+      return 'border-cyan-200'
+    case 'START_MULTIPLE_THREADS':
+      return 'border-cyan-200'
+    case 'THROW_EVENT':
+      return 'border-pink-200'
+    case 'USER_TASK':
+      return 'border-emerald-200'
+    case 'WAIT_FOR_CONDITION':
+      return 'border-amber-200'
+    case 'WAIT_FOR_THREADS':
+      return 'border-violet-200'
     default:
       return 'border-blue-200'
   }
@@ -51,6 +97,20 @@ export function getBackgroundColor(nodeType: NodeType): string {
       return 'bg-purple-100'
     case 'NOP':
       return 'bg-orange-100'
+    case 'SLEEP':
+      return 'bg-indigo-100'
+    case 'START_THREAD':
+      return 'bg-cyan-100'
+    case 'START_MULTIPLE_THREADS':
+      return 'bg-cyan-100'
+    case 'THROW_EVENT':
+      return 'bg-pink-100'
+    case 'USER_TASK':
+      return 'bg-emerald-100'
+    case 'WAIT_FOR_CONDITION':
+      return 'bg-amber-100'
+    case 'WAIT_FOR_THREADS':
+      return 'bg-violet-100'
     default:
       return 'bg-blue-100'
   }
@@ -66,6 +126,20 @@ export function getTextColor(nodeType: NodeType): string {
       return 'text-purple-700'
     case 'NOP':
       return 'text-orange-700'
+    case 'SLEEP':
+      return 'text-indigo-700'
+    case 'START_THREAD':
+      return 'text-cyan-700'
+    case 'START_MULTIPLE_THREADS':
+      return 'text-cyan-700'
+    case 'THROW_EVENT':
+      return 'text-pink-700'
+    case 'USER_TASK':
+      return 'text-emerald-700'
+    case 'WAIT_FOR_CONDITION':
+      return 'text-amber-700'
+    case 'WAIT_FOR_THREADS':
+      return 'text-violet-700'
     default:
       return 'text-blue-700'
   }
@@ -83,6 +157,22 @@ export function getNodeIcon(nodeType: NodeType) {
       return <CircleSlashIcon className={iconClass} />
     case 'TASK':
       return <Box className={iconClass} />
+    case 'NOP':
+      return <Minus className={iconClass} />
+    case 'SLEEP':
+      return <Timer className={iconClass} />
+    case 'START_THREAD':
+      return <GitBranch className={iconClass} />
+    case 'START_MULTIPLE_THREADS':
+      return <GitBranch className={iconClass} />
+    case 'THROW_EVENT':
+      return <Bell className={iconClass} />
+    case 'USER_TASK':
+      return <User className={iconClass} />
+    case 'WAIT_FOR_CONDITION':
+      return <Clock className={iconClass} />
+    case 'WAIT_FOR_THREADS':
+      return <GitBranch className={iconClass} />
     default:
       return null
   }

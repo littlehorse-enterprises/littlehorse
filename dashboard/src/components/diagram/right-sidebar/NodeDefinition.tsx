@@ -36,4 +36,4 @@ export default function NodeDefinition({ node }: NodeDefinitionProps) {
       {node.waitForCondition && <WaitForConditionNodeComponent waitForConditionNode={node as Node & { waitForCondition: WaitForConditionNode }} />}
     </div>
   )
-} 
+}

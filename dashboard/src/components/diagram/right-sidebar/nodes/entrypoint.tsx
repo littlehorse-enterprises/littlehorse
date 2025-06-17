@@ -10,7 +10,6 @@ export function EntrypointNodeComponent({ }: EntrypointNodeComponentProps) {
     <BaseNodeComponent
       title="Entrypoint Properties"
       type="ENTRYPOINT"
-      description="This is the entry point node where the workflow execution begins."
     />
   )
 }
