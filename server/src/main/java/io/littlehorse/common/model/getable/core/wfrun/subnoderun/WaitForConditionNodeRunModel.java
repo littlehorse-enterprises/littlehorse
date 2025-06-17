@@ -11,8 +11,8 @@ import io.littlehorse.common.model.getable.global.wfspec.node.EdgeConditionModel
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForConditionNodeModel;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.WaitForConditionRun;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 

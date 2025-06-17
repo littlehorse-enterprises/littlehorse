@@ -36,8 +36,8 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -350,8 +350,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      */
     public ThreadRunModel getThreadRun() {
         if (threadRunDoNotUseMe == null) {
-            CoreProcessorContext processorContext =
-                    executionContext.castOnSupport(CoreProcessorContext.class);
+            CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
             WfRunModel wfRunModel = processorContext.getableManager().get(id.getWfRunId());
             threadRunDoNotUseMe = wfRunModel.getThreadRun(id.getThreadRunNumber());
         }

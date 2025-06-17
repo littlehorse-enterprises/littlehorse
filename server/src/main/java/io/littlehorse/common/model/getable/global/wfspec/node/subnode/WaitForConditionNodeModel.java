@@ -6,9 +6,9 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForConditio
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeConditionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.sdk.common.proto.WaitForConditionNode;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.Set;
 import lombok.Getter;
