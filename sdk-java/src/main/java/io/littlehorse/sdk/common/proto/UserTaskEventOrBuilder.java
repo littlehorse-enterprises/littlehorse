@@ -223,5 +223,32 @@ public interface UserTaskEventOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder getCommentDeletedOrBuilder();
 
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   * @return Whether the completed field is set.
+   */
+  boolean hasCompleted();
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   * @return The completed.
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getCompleted();
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder getCompletedOrBuilder();
+
   io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase getEventCase();
 }

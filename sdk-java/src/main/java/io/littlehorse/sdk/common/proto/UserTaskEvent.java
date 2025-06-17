@@ -5116,6 +5116,411 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
   }
 
+  public interface UTECompletedOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEvent.UTECompleted)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * Empty message denoting a `userTaskRunCompleted`
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.UserTaskEvent.UTECompleted}
+   */
+  public static final class UTECompleted extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent.UTECompleted)
+      UTECompletedOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UTECompleted.newBuilder() to construct.
+    private UTECompleted(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UTECompleted() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UTECompleted();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted other = (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Empty message denoting a `userTaskRunCompleted`
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.UserTaskEvent.UTECompleted}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent.UTECompleted)
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted build() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted result = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTECompleted)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent.UTECompleted)
+    private static final io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted();
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UTECompleted>
+        PARSER = new com.google.protobuf.AbstractParser<UTECompleted>() {
+      @java.lang.Override
+      public UTECompleted parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UTECompleted> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UTECompleted> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int eventCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object event_;
@@ -5129,6 +5534,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     COMMENT_ADDED(6),
     COMMENT_EDITED(7),
     COMMENT_DELETED(8),
+    COMPLETED(9),
     EVENT_NOT_SET(0);
     private final int value;
     private EventCase(int value) {
@@ -5153,6 +5559,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         case 6: return COMMENT_ADDED;
         case 7: return COMMENT_EDITED;
         case 8: return COMMENT_DELETED;
+        case 9: return COMPLETED;
         case 0: return EVENT_NOT_SET;
         default: return null;
       }
@@ -5507,6 +5914,49 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
   }
 
+  public static final int COMPLETED_FIELD_NUMBER = 9;
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   * @return Whether the completed field is set.
+   */
+  @java.lang.Override
+  public boolean hasCompleted() {
+    return eventCase_ == 9;
+  }
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   * @return The completed.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getCompleted() {
+    if (eventCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder getCompletedOrBuilder() {
+    if (eventCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -5544,6 +5994,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (eventCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_);
+    }
+    if (eventCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -5585,6 +6038,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (eventCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_);
+    }
+    if (eventCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -5636,6 +6093,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         if (!getCommentDeleted()
             .equals(other.getCommentDeleted())) return false;
         break;
+      case 9:
+        if (!getCompleted()
+            .equals(other.getCompleted())) return false;
+        break;
       case 0:
       default:
     }
@@ -5682,6 +6143,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       case 8:
         hash = (37 * hash) + COMMENT_DELETED_FIELD_NUMBER;
         hash = (53 * hash) + getCommentDeleted().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + COMPLETED_FIELD_NUMBER;
+        hash = (53 * hash) + getCompleted().hashCode();
         break;
       case 0:
       default:
@@ -5848,6 +6313,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (commentDeletedBuilder_ != null) {
         commentDeletedBuilder_.clear();
       }
+      if (completedBuilder_ != null) {
+        completedBuilder_.clear();
+      }
       eventCase_ = 0;
       event_ = null;
       return this;
@@ -5921,6 +6389,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (eventCase_ == 8 &&
           commentDeletedBuilder_ != null) {
         result.event_ = commentDeletedBuilder_.build();
+      }
+      if (eventCase_ == 9 &&
+          completedBuilder_ != null) {
+        result.event_ = completedBuilder_.build();
       }
     }
 
@@ -5998,6 +6470,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         }
         case COMMENT_DELETED: {
           mergeCommentDeleted(other.getCommentDeleted());
+          break;
+        }
+        case COMPLETED: {
+          mergeCompleted(other.getCompleted());
           break;
         }
         case EVENT_NOT_SET: {
@@ -6086,6 +6562,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               eventCase_ = 8;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  getCompletedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              eventCase_ = 9;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -7517,6 +8000,184 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       eventCase_ = 8;
       onChanged();
       return commentDeletedBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder> completedBuilder_;
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     * @return Whether the completed field is set.
+     */
+    @java.lang.Override
+    public boolean hasCompleted() {
+      return eventCase_ == 9;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     * @return The completed.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getCompleted() {
+      if (completedBuilder_ == null) {
+        if (eventCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      } else {
+        if (eventCase_ == 9) {
+          return completedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder setCompleted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted value) {
+      if (completedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        event_ = value;
+        onChanged();
+      } else {
+        completedBuilder_.setMessage(value);
+      }
+      eventCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder setCompleted(
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder builderForValue) {
+      if (completedBuilder_ == null) {
+        event_ = builderForValue.build();
+        onChanged();
+      } else {
+        completedBuilder_.setMessage(builderForValue.build());
+      }
+      eventCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder mergeCompleted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted value) {
+      if (completedBuilder_ == null) {
+        if (eventCase_ == 9 &&
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          event_ = value;
+        }
+        onChanged();
+      } else {
+        if (eventCase_ == 9) {
+          completedBuilder_.mergeFrom(value);
+        } else {
+          completedBuilder_.setMessage(value);
+        }
+      }
+      eventCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder clearCompleted() {
+      if (completedBuilder_ == null) {
+        if (eventCase_ == 9) {
+          eventCase_ = 0;
+          event_ = null;
+          onChanged();
+        }
+      } else {
+        if (eventCase_ == 9) {
+          eventCase_ = 0;
+          event_ = null;
+        }
+        completedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder getCompletedBuilder() {
+      return getCompletedFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder getCompletedOrBuilder() {
+      if ((eventCase_ == 9) && (completedBuilder_ != null)) {
+        return completedBuilder_.getMessageOrBuilder();
+      } else {
+        if (eventCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder> 
+        getCompletedFieldBuilder() {
+      if (completedBuilder_ == null) {
+        if (!(eventCase_ == 9)) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+        }
+        completedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_,
+                getParentForChildren(),
+                isClean());
+        event_ = null;
+      }
+      eventCase_ = 9;
+      onChanged();
+      return completedBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

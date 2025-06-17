@@ -19,6 +19,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECan
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentDeletedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentEditedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentedModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECompletedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -414,6 +415,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         validateMandatoryFieldsFromCompletedEvent(
                 userTaskFieldsGroupedByName.values(), event.getResults().keySet());
         this.status = UserTaskRunStatus.DONE;
+        this.events.add(new UserTaskEventModel(
+                new UTECompletedModel(), processorContext.currentCommand().getTime()));
     }
 
     private void validateMandatoryFieldsFromCompletedEvent(
