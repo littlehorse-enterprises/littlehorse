@@ -1,29 +1,32 @@
 package io.littlehorse.test.internal.step;
 
-import io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.test.internal.TestExecutionContext;
 
-public class DeleteUserTaskRunComment extends AbstractStep {
+public class EditUserTaskRunCommentStep extends AbstractStep {
 
     private final int threadRunNumber;
     private final int nodeRunNumber;
-    private final int userCommentId;
     private final String userId;
+    private final String comment;
+    private final int comment_id;
 
-    public DeleteUserTaskRunComment(int id, int threadRunNumber, int nodeRunNumber, int userCommentId, String userId) {
+    public EditUserTaskRunCommentStep(
+            int id, int threadRunNumber, int nodeRunNumber, String userId, String comment, int comment_id) {
         super(id);
         this.threadRunNumber = threadRunNumber;
         this.nodeRunNumber = nodeRunNumber;
-        this.userCommentId = userCommentId;
         this.userId = userId;
+        this.comment = comment;
+        this.comment_id = comment_id;
     }
 
     @Override
-    void tryExecute(TestExecutionContext context, LittleHorseBlockingStub lhClient) {
+    void tryExecute(TestExecutionContext context, LittleHorseGrpc.LittleHorseBlockingStub lhClient) {
         NodeRunId nodeId = NodeRunId.newBuilder()
                 .setWfRunId(context.getWfRunId())
                 .setThreadRunNumber(threadRunNumber)
@@ -36,10 +39,11 @@ public class DeleteUserTaskRunComment extends AbstractStep {
                     .setWfRunId(context.getWfRunId())
                     .setUserTaskGuid(userTaskGuid)
                     .build();
-            lhClient.deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest.newBuilder()
+            lhClient.editUserTaskRunComment(EditUserTaskRunCommentRequest.newBuilder()
                     .setUserTaskRunId(userTaskId)
-                    .setUserCommentId(userCommentId)
                     .setUserId(userId)
+                    .setComment(comment)
+                    .setUserCommentId(comment_id)
                     .build());
         } else {
             throw new IllegalArgumentException(
