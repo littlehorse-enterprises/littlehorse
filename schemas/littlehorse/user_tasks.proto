@@ -334,6 +334,9 @@ message UserTaskEvent {
   string user_id = 2;
   }
 
+  // Empty message denoting a `userTaskRunCompleted`
+  message UTECompleted {};
+
   // The event that occurred.
   oneof event {
     // Denotes that a TaskRun was scheduled via a trigger.
@@ -356,5 +359,8 @@ message UserTaskEvent {
 
     // Denotes that a comment on a `userTaskRun` was deleted
     UTECommentDeleted comment_deleted = 8;
+
+    // Denotes that a `userTaskRun` has been completed
+    UTECompleted completed = 9 ;
   }
 }
