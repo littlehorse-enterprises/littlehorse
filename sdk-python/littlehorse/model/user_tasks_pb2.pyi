@@ -187,7 +187,7 @@ class UserTaskTriggerReference(_message.Message):
     def __init__(self, node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., user_task_event_number: _Optional[int] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ...) -> None: ...
 
 class UserTaskEvent(_message.Message):
-    __slots__ = ["time", "task_executed", "assigned", "cancelled", "saved", "comment_added", "comment_edited", "comment_deleted"]
+    __slots__ = ["time", "task_executed", "assigned", "cancelled", "saved", "comment_added", "comment_edited", "comment_deleted", "completed"]
     class UTECancelled(_message.Message):
         __slots__ = ["message"]
         MESSAGE_FIELD_NUMBER: _ClassVar[int]
@@ -239,6 +239,9 @@ class UserTaskEvent(_message.Message):
         user_comment_id: int
         user_id: str
         def __init__(self, user_comment_id: _Optional[int] = ..., user_id: _Optional[str] = ...) -> None: ...
+    class UTECompleted(_message.Message):
+        __slots__ = []
+        def __init__(self) -> None: ...
     TIME_FIELD_NUMBER: _ClassVar[int]
     TASK_EXECUTED_FIELD_NUMBER: _ClassVar[int]
     ASSIGNED_FIELD_NUMBER: _ClassVar[int]
@@ -247,6 +250,7 @@ class UserTaskEvent(_message.Message):
     COMMENT_ADDED_FIELD_NUMBER: _ClassVar[int]
     COMMENT_EDITED_FIELD_NUMBER: _ClassVar[int]
     COMMENT_DELETED_FIELD_NUMBER: _ClassVar[int]
+    COMPLETED_FIELD_NUMBER: _ClassVar[int]
     time: _timestamp_pb2.Timestamp
     task_executed: UserTaskEvent.UTETaskExecuted
     assigned: UserTaskEvent.UTEAssigned
@@ -255,4 +259,5 @@ class UserTaskEvent(_message.Message):
     comment_added: UserTaskEvent.UTECommented
     comment_edited: UserTaskEvent.UTECommented
     comment_deleted: UserTaskEvent.UTECommentDeleted
-    def __init__(self, time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_executed: _Optional[_Union[UserTaskEvent.UTETaskExecuted, _Mapping]] = ..., assigned: _Optional[_Union[UserTaskEvent.UTEAssigned, _Mapping]] = ..., cancelled: _Optional[_Union[UserTaskEvent.UTECancelled, _Mapping]] = ..., saved: _Optional[_Union[UserTaskEvent.UTESaved, _Mapping]] = ..., comment_added: _Optional[_Union[UserTaskEvent.UTECommented, _Mapping]] = ..., comment_edited: _Optional[_Union[UserTaskEvent.UTECommented, _Mapping]] = ..., comment_deleted: _Optional[_Union[UserTaskEvent.UTECommentDeleted, _Mapping]] = ...) -> None: ...
+    completed: UserTaskEvent.UTECompleted
+    def __init__(self, time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_executed: _Optional[_Union[UserTaskEvent.UTETaskExecuted, _Mapping]] = ..., assigned: _Optional[_Union[UserTaskEvent.UTEAssigned, _Mapping]] = ..., cancelled: _Optional[_Union[UserTaskEvent.UTECancelled, _Mapping]] = ..., saved: _Optional[_Union[UserTaskEvent.UTESaved, _Mapping]] = ..., comment_added: _Optional[_Union[UserTaskEvent.UTECommented, _Mapping]] = ..., comment_edited: _Optional[_Union[UserTaskEvent.UTECommented, _Mapping]] = ..., comment_deleted: _Optional[_Union[UserTaskEvent.UTECommentDeleted, _Mapping]] = ..., completed: _Optional[_Union[UserTaskEvent.UTECompleted, _Mapping]] = ...) -> None: ...

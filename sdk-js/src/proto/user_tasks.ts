@@ -425,7 +425,11 @@ export interface UserTaskEvent {
     | UserTaskEvent_UTECommented
     | undefined;
   /** Denotes that a comment on a `userTaskRun` was deleted */
-  commentDeleted?: UserTaskEvent_UTECommentDeleted | undefined;
+  commentDeleted?:
+    | UserTaskEvent_UTECommentDeleted
+    | undefined;
+  /** Denotes that a `userTaskRun` has been completed */
+  completed?: UserTaskEvent_UTECompleted | undefined;
 }
 
 /** Empty message used to denote that the `UserTaskRun` was cancelled. */
@@ -487,8 +491,12 @@ export interface UserTaskEvent_UTECommented {
 export interface UserTaskEvent_UTECommentDeleted {
   /** The id of the comment that will be deleted */
   userCommentId: number;
-  /** The id of the person user who deleted the comment */
+  /** The id of the user who deleted the comment */
   userId: string;
+}
+
+/** Empty message denoting a `userTaskRunCompleted` */
+export interface UserTaskEvent_UTECompleted {
 }
 
 function createBaseUserTaskDef(): UserTaskDef {
@@ -1639,6 +1647,7 @@ function createBaseUserTaskEvent(): UserTaskEvent {
     commentAdded: undefined,
     commentEdited: undefined,
     commentDeleted: undefined,
+    completed: undefined,
   };
 }
 
@@ -1667,6 +1676,9 @@ export const UserTaskEvent = {
     }
     if (message.commentDeleted !== undefined) {
       UserTaskEvent_UTECommentDeleted.encode(message.commentDeleted, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.completed !== undefined) {
+      UserTaskEvent_UTECompleted.encode(message.completed, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -1734,6 +1746,13 @@ export const UserTaskEvent = {
 
           message.commentDeleted = UserTaskEvent_UTECommentDeleted.decode(reader, reader.uint32());
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.completed = UserTaskEvent_UTECompleted.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1769,6 +1788,9 @@ export const UserTaskEvent = {
       : undefined;
     message.commentDeleted = (object.commentDeleted !== undefined && object.commentDeleted !== null)
       ? UserTaskEvent_UTECommentDeleted.fromPartial(object.commentDeleted)
+      : undefined;
+    message.completed = (object.completed !== undefined && object.completed !== null)
+      ? UserTaskEvent_UTECompleted.fromPartial(object.completed)
       : undefined;
     return message;
   },
@@ -2188,6 +2210,40 @@ export const UserTaskEvent_UTECommentDeleted = {
     const message = createBaseUserTaskEvent_UTECommentDeleted();
     message.userCommentId = object.userCommentId ?? 0;
     message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseUserTaskEvent_UTECompleted(): UserTaskEvent_UTECompleted {
+  return {};
+}
+
+export const UserTaskEvent_UTECompleted = {
+  encode(_: UserTaskEvent_UTECompleted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskEvent_UTECompleted {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserTaskEvent_UTECompleted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<UserTaskEvent_UTECompleted>): UserTaskEvent_UTECompleted {
+    return UserTaskEvent_UTECompleted.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<UserTaskEvent_UTECompleted>): UserTaskEvent_UTECompleted {
+    const message = createBaseUserTaskEvent_UTECompleted();
     return message;
   },
 };
