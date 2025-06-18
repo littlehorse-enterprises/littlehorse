@@ -251,7 +251,6 @@ This command allows you to attach feedback or notes to a specific UserTaskRun fo
 	},
 }
 
-
 var DeleteUserTaskRunCommentCmd = &cobra.Command{
 	Use:   "userTaskRunComment <wfRunId> <userTaskGuid> <commentId> <userId>",
 	Short: "Delete a comment from a userTaskRun",
@@ -267,7 +266,7 @@ This command allows you to remove a previously added comment from a UserTaskRun.
 
 		commentId, err := strconv.Atoi(args[2])
 		if err != nil {
-			log.Fatal("Unable to convert commentId to int:\n",err)
+			log.Fatal("Unable to convert commentId to int:\n", err)
 		}
 		deleteUserTaskRunComment := &lhproto.DeleteUserTaskRunCommentRequest{
 			UserTaskRunId: &lhproto.UserTaskRunId{
@@ -280,7 +279,6 @@ This command allows you to remove a previously added comment from a UserTaskRun.
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteUserTaskRunComment(requestContext(cmd), deleteUserTaskRunComment))
 	},
 }
-
 
 var editUserTaskRunCommentCmd = &cobra.Command{
 	Use:   "userTaskRunComment <wfRunId> <userTaskGuid> <commentId> <userId> <comment>",
