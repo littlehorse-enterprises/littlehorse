@@ -6,6 +6,7 @@ import {
   Background,
   BackgroundVariant,
   Controls,
+  EdgeTypes,
   MiniMap,
   ReactFlow,
   useEdgesState,
@@ -16,10 +17,15 @@ import '@xyflow/react/dist/style.css'
 import React, { useCallback, useEffect } from 'react'
 import { useNodeSelection } from '../context/selection-context'
 import { CustomNode, CustomEdge } from '@/types/node'
+import { CustomEdgeComponent } from './edge'
 
 // Define custom node types
 const nodeTypes: NodeTypes = {
   node: NodeComponent,
+}
+
+const edgeTypes: EdgeTypes = {
+  edge: CustomEdgeComponent,
 }
 
 interface WorkflowDiagramProps {
@@ -74,7 +80,8 @@ export default function WorkflowDiagram({
         onEdgesChange={onEdgesStateChange}
         onNodeClick={handleNodeClick}
         nodeTypes={nodeTypes}
-        defaultEdgeOptions={{ type: 'step' }}
+        edgeTypes={edgeTypes}
+        defaultEdgeOptions={{ type: 'edge', selectable: false, animated: true }}
         fitView
         attributionPosition="bottom-right"
         nodesDraggable={false}

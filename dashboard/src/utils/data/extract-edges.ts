@@ -4,11 +4,6 @@ import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littl
 import { CustomEdge } from '@/types/node'
 import { getNodeType } from './node'
 
-const defaultEdgeProperties: Omit<CustomEdge, 'id' | 'source' | 'target'> = {
-  type: 'step',
-  animated: true,
-}
-
 function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomEdge[] {
   const threadSpecName = Object.keys(wfSpec.threadSpecs).find(function (key) {
     return wfSpec.threadSpecs[key] === threadSpec
@@ -40,7 +35,6 @@ function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): Cus
 
       const label = extractEdgeLabel(edge)
       edges.push({
-        ...defaultEdgeProperties,
         id,
         source: `${source}:${threadSpecName}`,
         target: `${edge.sinkNodeName}:${threadSpecName}`,
@@ -63,7 +57,6 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       const targetId = `0-entrypoint-ENTRYPOINT:${startedThreadSpecName}`
 
       edges.push({
-        ...defaultEdgeProperties,
         id: `${sourceId}>${targetId}:${threadName}`,
         source: sourceId,
         target: targetId,
@@ -86,7 +79,6 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
         const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
         const targetId = `${id}:${threadName}`
         edges.push({
-          ...defaultEdgeProperties,
           id: `${sourceId}>${targetId}`,
           source: sourceId,
           target: targetId,

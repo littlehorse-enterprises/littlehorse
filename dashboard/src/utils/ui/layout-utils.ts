@@ -5,13 +5,13 @@ const dagreGraph = new dagre.graphlib.Graph()
 
 export function getLayoutedElements(nodes: CustomNode[], edges: CustomEdge[]) {
   // #region GraphSetup
-  dagreGraph.setGraph({ rankdir: 'LR', align: 'DL' })
+  dagreGraph.setGraph({ rankdir: 'LR', align: 'UR' })
 
   nodes.forEach(node => {
     dagreGraph.setNode(node.id, { width: 100, height: 100 })
   })
   edges.forEach(edge => {
-    dagreGraph.setEdge(edge.source, edge.target, { width: edge.label ? 100 : 10 })
+    dagreGraph.setEdge(edge.source, edge.target, { width: edge.label ? 200 : 10 })
   })
 
   dagre.layout(dagreGraph)
