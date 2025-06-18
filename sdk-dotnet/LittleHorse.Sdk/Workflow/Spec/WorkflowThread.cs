@@ -102,14 +102,21 @@ public class WorkflowThread
     private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode)
     {
         CheckIfWorkflowThreadIsActive();
-        string nextNodeName = GetNodeName(name, type);
-        
+
         if (LastNodeName == null) 
         {
             throw new InvalidOperationException("Not possible to have null last node here");
         }
         
-        AddEdgeToFeederNode(nextNodeName);
+        string nextNodeName = GetNodeName(name, type);
+        Node feederNode = FindNode(LastNodeName);
+        
+        ValidateNodesAfterComplete(type, feederNode);
+        
+        if (feederNode.NodeCase != Node.NodeOneofCase.Exit)
+        {
+            AddEdgeToFeederNode(nextNodeName, feederNode);
+        }
         
         Node node = BuildNode(type, subNode);
     
@@ -167,35 +174,41 @@ public class WorkflowThread
         return node;
     }
 
-    private void AddEdgeToFeederNode(string nextNodeName)
+    private void AddEdgeToFeederNode(string nextNodeName, Node feederNode)
     {
-        var feederNode = FindNode(LastNodeName);
         var edge = new Edge { SinkNodeName = nextNodeName };
-        
+    
         edge.VariableMutations.AddRange(CollectVariableMutations());
-        
+    
         if (_lastNodeCondition != null) 
         {
             edge.Condition = _lastNodeCondition;
             _lastNodeCondition = null;
         }
-        
+    
         feederNode.OutgoingEdges.Add(edge);
         _spec.Nodes[LastNodeName] = feederNode;
+    }
 
+    private void ValidateNodesAfterComplete(Node.NodeOneofCase type, Node feederNode)
+    {
         if (feederNode.NodeCase == Node.NodeOneofCase.Exit)
         {
-            if (feederNode.OutgoingEdges[0].SinkNodeName == nextNodeName && _isStartNopActive)
+            string errorMessage = "You cannot add a Node in a given thread after the thread has completed.";
+            if (_isStartNopActive)
             {
                 // If the last node is an exit node, and we are in a StartNop block,
-                // we remove the outgoing edge to the next node
+                // we throw an exception
                 // because we cannot add a new node after the thread has completed.
-                feederNode.OutgoingEdges.RemoveAt(0);
-                throw new InvalidOperationException(
-                    "You cannot add a Node in a given thread after the thread has completed.");
+                throw new InvalidOperationException(errorMessage);
+            } 
+            if (type != Node.NodeOneofCase.Nop)
+            {
+                // If the last node is an exit node, and the node to be added is not a Nop node,
+                // we throw an exception
+                // because we cannot add a new node after the thread has completed.
+                throw new InvalidOperationException(errorMessage);
             }
-            // If the last node is an exit node, we remove the outgoing edge to the next node
-            feederNode.OutgoingEdges.RemoveAt(0);
         }
     }
     
@@ -631,8 +644,8 @@ public class WorkflowThread
         
         whileThread.Invoke(this);
         
-        var treeLastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         _isStartNopActive = false;
+        var treeLastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         
         var treeRoot = FindNode(treeRootNodeName);
         treeRoot.OutgoingEdges.Add(new Edge
