@@ -764,6 +764,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
+    public void searchCorrelatedEvent(SearchCorrelatedEventRequest req, StreamObserver<CorrelatedEventIdList> ctx) {
+        handleScan(
+                SearchCorrelatedEventRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchCorrelatedEventReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void searchExternalEvent(SearchExternalEventRequest req, StreamObserver<ExternalEventIdList> ctx) {
         SearchExternalEventRequestModel see =
                 LHSerializable.fromProto(req, SearchExternalEventRequestModel.class, requestContext());
