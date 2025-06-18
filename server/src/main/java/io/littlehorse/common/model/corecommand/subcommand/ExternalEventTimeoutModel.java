@@ -53,7 +53,7 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
         WfRunModel wfRunModel = executionContext.getableManager().get(nodeRunId.getWfRunId());
 
         if (wfRunModel == null) {
-            log.warn("Got an externalEventTimeout for missing wfRun {}", nodeRunId.getWfRunId());
+            log.debug("Got an externalEventTimeout for missing wfRun {}", nodeRunId.getWfRunId());
             return null;
         }
 
