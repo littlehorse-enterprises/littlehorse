@@ -445,7 +445,7 @@ public interface WorkflowThread {
      * @param workflowEventDefName is the name of the WorkflowEvent to throw.
      * @param content is the content of the WorkflowEvent that is thrown.
      */
-    void throwEvent(String workflowEventDefName, Serializable content);
+    ThrowEventNodeOutput throwEvent(String workflowEventDefName, Serializable content);
 
     /**
      * Given a WfRunVariable of type JSON_ARR, this function iterates over each object in that list
