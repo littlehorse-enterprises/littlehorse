@@ -36,8 +36,8 @@ export default async function DiagramPage({ params, searchParams }: DiagramPageP
     wfRunDetails = await getWfRunDetails({ wfRunId: { id: wfRunId }, tenantId })
   }
 
-  const nodes: Node[] = extractNodes(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
-  const edges: Edge[] = extractEdges(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
+  const nodes = extractNodes(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
+  const edges = extractEdges(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
 
   return (
     <NodeSelectionProvider>

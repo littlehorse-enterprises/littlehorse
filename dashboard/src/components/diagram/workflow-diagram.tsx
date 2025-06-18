@@ -10,13 +10,12 @@ import {
   ReactFlow,
   useEdgesState,
   useNodesState,
-  type Edge,
-  type Node,
   type NodeTypes,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import React, { useCallback, useEffect } from 'react'
 import { useNodeSelection } from '../context/selection-context'
+import { CustomNode, CustomEdge } from '@/types/node'
 
 // Define custom node types
 const nodeTypes: NodeTypes = {
@@ -25,8 +24,8 @@ const nodeTypes: NodeTypes = {
 
 interface WorkflowDiagramProps {
   className?: string
-  nodes: Node[]
-  edges: Edge[]
+  nodes: CustomNode[]
+  edges: CustomEdge[]
 }
 
 export default function WorkflowDiagram({
@@ -34,13 +33,14 @@ export default function WorkflowDiagram({
   nodes,
   edges,
 }: WorkflowDiagramProps) {
-  const [nodesState, setNodesState, onNodesStateChange] = useNodesState<Node>([])
-  const [edgesState, setEdgesState, onEdgesStateChange] = useEdgesState<Edge>([])
+  const [nodesState, setNodesState, onNodesStateChange] = useNodesState<CustomNode>([])
+  const [edgesState, setEdgesState, onEdgesStateChange] = useEdgesState<CustomEdge>([])
   const { selectedId, setSelectedId } = useNodeSelection()
 
   useEffect(() => {
-    const applyLayout = async () => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = await getLayoutedElements(nodes, edges)
+    const applyLayout = () => {
+      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges)
+      console.log('layoutedNodes', layoutedNodes)
       setNodesState(layoutedNodes)
       setEdgesState(layoutedEdges)
     }
@@ -59,7 +59,7 @@ export default function WorkflowDiagram({
   }, [selectedId, setNodesState])
 
   const handleNodeClick = useCallback(
-    (event: React.MouseEvent, node: Node) => {
+    (event: React.MouseEvent, node: CustomNode) => {
       setSelectedId(node.id)
     },
     [setSelectedId]

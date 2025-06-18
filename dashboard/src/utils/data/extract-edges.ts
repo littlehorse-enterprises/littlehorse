@@ -1,16 +1,24 @@
 import { getVariable } from '@/utils/data/variables'
 import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
 import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
-import { Edge } from '@xyflow/react'
+import { CustomEdge } from '@/types/node'
 import { getNodeType } from './node'
 
-const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpec: ThreadSpec): Edge[] => {
-  const threadSpecName = Object.keys(wfSpec.threadSpecs).find(key => wfSpec.threadSpecs[key] === threadSpec) as string
-  const edges: Edge[] = []
+const defaultEdgeProperties: Omit<CustomEdge, 'id' | 'source' | 'target'> = {
+  type: 'step',
+  animated: true,
+}
+
+function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomEdge[] {
+  const threadSpecName = Object.keys(wfSpec.threadSpecs).find(function (key) {
+    return wfSpec.threadSpecs[key] === threadSpec
+  })
+  const edges: CustomEdge[] = []
 
   const targetMap = new Map<string, number>()
   const sourceMap = new Map<string, number>()
-  Object.entries(threadSpec.nodes).forEach(([source, node]) => {
+
+  Object.entries(threadSpec.nodes).forEach(function ([source, node]) {
     if (getNodeType(node) === 'START_THREAD') {
       const startThreadNodeName = node.startThread?.threadSpecName
       if (!startThreadNodeName) return
@@ -19,7 +27,7 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpec: ThreadSpec): Edg
       edges.push(...moreEdges)
     }
 
-    node.outgoingEdges.forEach(edge => {
+    node.outgoingEdges.forEach(function (edge) {
       const sourceIndex = sourceMap.get(source) ?? 0
       let targetIndex = targetMap.get(edge.sinkNodeName) ?? 0
       const sourceTarget = sourceMap.get(edge.sinkNodeName) ?? 0
@@ -32,35 +40,22 @@ const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpec: ThreadSpec): Edg
 
       const label = extractEdgeLabel(edge)
       edges.push({
+        ...defaultEdgeProperties,
         id,
         source: `${source}:${threadSpecName}`,
         target: `${edge.sinkNodeName}:${threadSpecName}`,
         label,
         data: { edge },
-        type: 'straight',
-        animated: true,
       })
     })
   })
   return edges
 }
 
-const formatVariableValue = (value?: VariableAssignment) => {
-  if (value?.literalValue?.str === undefined) return getVariable(value)
-  return `"${getVariable(value)}"`
-}
+function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string, wfSpec: WfSpec): CustomEdge[] {
+  const edges: CustomEdge[] = []
 
-const extractEdgeLabel = ({ condition }: EdgeProto) => {
-  if (!condition) return
-
-  const { left, right, comparator } = condition
-  return `${formatVariableValue(left)} ${getComparatorSymbol(comparator)} ${formatVariableValue(right)}`
-}
-
-function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string, wfSpec: WfSpec): Edge[] {
-  const edges: Edge[] = []
-
-  Object.entries(threadSpec.nodes).forEach(([id, node]) => {
+  Object.entries(threadSpec.nodes).forEach(function ([id, node]) {
     const type = getNodeType(node)
     if (type === 'START_THREAD') {
       const startedThreadSpecName = node.startThread?.threadSpecName ?? ''
@@ -68,32 +63,33 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       const targetId = `0-entrypoint-ENTRYPOINT:${startedThreadSpecName}`
 
       edges.push({
+        ...defaultEdgeProperties,
         id: `${sourceId}>${targetId}:${threadName}`,
         source: sourceId,
-        type: 'straight',
         target: targetId,
-        animated: true,
       })
     }
 
     if (type === 'WAIT_FOR_THREADS') {
-      node.waitForThreads?.threads?.threads.forEach(thread => {
+      node.waitForThreads?.threads?.threads.forEach(function (thread) {
         const startThreadNodeName = thread.threadRunNumber?.variableName ?? ''
         const waitingThreadSpecName =
-          Object.entries(threadSpec.nodes).find(([id]) => id == startThreadNodeName)?.[1].startThread?.threadSpecName ??
-          ''
+          Object.entries(threadSpec.nodes).find(function ([id]) {
+            return id == startThreadNodeName
+          })?.[1].startThread?.threadSpecName ?? ''
         const waitingThreadSpec = wfSpec.threadSpecs[waitingThreadSpecName]
-        const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(([id], [id2]) => id.localeCompare(id2))
+        const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(function ([id], [id2]) {
+          return id.localeCompare(id2)
+        })
         const exitNodeId = sortedNodes[sortedNodes.length - 1][0]
 
         const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
         const targetId = `${id}:${threadName}`
         edges.push({
+          ...defaultEdgeProperties,
           id: `${sourceId}>${targetId}`,
           source: sourceId,
           target: targetId,
-          type: 'straight',
-          animated: true,
         })
       })
     }
@@ -101,11 +97,23 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   return edges
 }
 
-export function extractEdges(wfSpec: WfSpec, threadSpec: ThreadSpec): Edge[] {
+export function extractEdges(wfSpec: WfSpec): CustomEdge[] {
   return [
-    ...extractEdgesFromThreadSpec(wfSpec, threadSpec),
-    ...Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) => {
+    ...extractEdgesFromThreadSpec(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName]),
+    ...Object.entries(wfSpec.threadSpecs).flatMap(function ([threadName, threadSpec]) {
       return extractThreadConnectionEdges(threadSpec, threadName, wfSpec)
     }),
   ]
+}
+
+function formatVariableValue(value?: VariableAssignment) {
+  if (value?.literalValue?.str === undefined) return getVariable(value)
+  return `"${getVariable(value)}"`
+}
+
+function extractEdgeLabel({ condition }: EdgeProto) {
+  if (!condition) return
+
+  const { left, right, comparator } = condition
+  return `${formatVariableValue(left)} ${getComparatorSymbol(comparator)} ${formatVariableValue(right)}`
 }
