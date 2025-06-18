@@ -99,6 +99,10 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         if (externalEventId != null) return true;
 
         if (timedOut) {
+            if (correlationKey != null) {
+                // Don't want to leave dangling EventCorrelationMarker's as they don't have a TTL
+                sendRemoveCorrelationMarkerCommand(processorContext);
+            }
             FailureModel failure = new FailureModel("ExternalEvent did not arrive in time", LHErrorType.TIMEOUT.name());
             throw new NodeFailureException(failure);
         }
@@ -211,6 +215,26 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             throw new NodeFailureException(new FailureModel(
                     "Failed determining correlationId for ext evt node: " + exn.getMessage(), LHConstants.VAR_ERROR));
         }
+    }
+
+    public void sendRemoveCorrelationMarkerCommand(ProcessorExecutionContext context) {
+        if (correlationKey == null) {
+            throw new IllegalStateException("Not a correlated node. Code better!");
+        }
+        LHTimer timer = new LHTimer();
+        timer.key = correlationKey;
+        timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
+
+        UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
+        update.setAction(CorrelationUpdateAction.UNCORRELATE);
+        update.setWaitingNodeRun(nodeRun.getId());
+        update.setCorrelationKey(correlationKey);
+        update.setExternalEventDefId(externalEventDefId);
+
+        CommandModel command = new CommandModel(update);
+        command.setTime(new Date());
+        timer.setPayload(command.toBytes());
+        context.getTaskManager().scheduleTimer(timer);
     }
 
     public void processExternalEventTimeout(ExternalEventTimeoutModel timeout) {
