@@ -17,7 +17,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -28,7 +28,7 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
-    private final ProcessorExecutionContext ctx;
+    private final CoreProcessorContext ctx;
     private final OutputTopicConfigModel outputTopicConfig;
 
     public GetableManager(
@@ -36,7 +36,7 @@ public class GetableManager extends ReadOnlyGetableManager {
             final ProcessorContext<String, CommandProcessorOutput> streamsContext,
             final LHServerConfig config,
             final CommandModel command,
-            final ProcessorExecutionContext executionContext,
+            final CoreProcessorContext executionContext,
             final OutputTopicConfigModel outputTopicConfig) {
         super(store);
         this.store = store;

@@ -12,7 +12,7 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
@@ -26,7 +26,7 @@ import org.apache.kafka.streams.state.Stores;
 import org.mockito.Mockito;
 
 @Getter
-public class TestProcessorExecutionContext extends ProcessorExecutionContext {
+public class TestCoreProcessorContext extends CoreProcessorContext {
 
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
@@ -38,7 +38,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final LHServer server;
     private GetableManager getableManager;
 
-    public TestProcessorExecutionContext(
+    public TestCoreProcessorContext(
             Command currentCommand,
             Headers recordMetadata,
             LHServerConfig config,
@@ -65,7 +65,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         getableManager = Mockito.spy(super.getableManager());
     }
 
-    public static TestProcessorExecutionContext create(
+    public static TestCoreProcessorContext create(
             Command currentCommand,
             Headers recordMetadata,
             MockProcessorContext<String, CommandProcessorOutput> processorContext) {
@@ -90,7 +90,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         nativeMetadataStore.init(processorContext.getStateStoreContext(), nativeMetadataStore);
         nativeCoreStore.init(processorContext.getStateStoreContext(), nativeCoreStore);
         nativeGlobalStore.init(processorContext.getStateStoreContext(), nativeGlobalStore);
-        return new TestProcessorExecutionContext(
+        return new TestCoreProcessorContext(
                 currentCommand,
                 recordMetadata,
                 lhConfig,

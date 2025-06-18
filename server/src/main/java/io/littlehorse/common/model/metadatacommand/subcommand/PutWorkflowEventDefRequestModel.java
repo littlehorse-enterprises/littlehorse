@@ -13,7 +13,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import lombok.Getter;
 
 @Getter
@@ -50,7 +50,7 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     }
 
     @Override
-    public WorkflowEventDef process(MetadataCommandExecution executionContext) {
+    public WorkflowEventDef process(MetadataProcessorContext executionContext) {
         WorkflowEventDefIdModel id = new WorkflowEventDefIdModel(name);
 
         WorkflowEventDefModel old = executionContext.metadataManager().get(id);

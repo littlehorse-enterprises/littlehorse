@@ -71,6 +71,12 @@ public class WfRunVerifier extends AbstractVerifier {
         return this;
     }
 
+    public WfRunVerifier thenSendCorrelatedEvent(String externalEventName, String key, Object content) {
+        VariableValue contentVal = LHLibUtil.objToVarVal(content);
+        steps.add(new SendCorrelatedEventStep(externalEventName, key, contentVal, steps.size() + 1));
+        return this;
+    }
+
     public WfRunVerifier thenSendExternalEventWithContent(String externalEventName, Object content) {
         VariableValue externalEventContent = LHLibUtil.objToVarVal(content);
         steps.add(new SendExternalEventStep(externalEventName, externalEventContent, steps.size() + 1));
@@ -203,20 +209,20 @@ public class WfRunVerifier extends AbstractVerifier {
     }
 
     public WfRunVerifier thenCommentUserTaskRun(int threadRunNumber, int nodeRunNumber, String userId, String comment) {
-        steps.add(new UserTaskRunComment(steps.size() + 1, threadRunNumber, nodeRunNumber, userId, comment));
+        steps.add(new UserTaskRunCommentStep(steps.size() + 1, threadRunNumber, nodeRunNumber, userId, comment));
         return this;
     }
 
     public WfRunVerifier thenDeleteCommentUserTaskRun(
             int threadNumber, int nodeRunNumber, int commentId, String userId) {
-        steps.add(new DeleteUserTaskRunComment(steps.size() + 1, threadNumber, nodeRunNumber, commentId, userId));
+        steps.add(new DeleteUserTaskRunCommentStep(steps.size() + 1, threadNumber, nodeRunNumber, commentId, userId));
         return this;
     }
 
     public WfRunVerifier thenEditComment(
             int threadNumber, int nodeRunNumber, String userId, String comment, int commentId) {
-        steps.add(
-                new EditUserTaskRunComment(steps.size() + 1, threadNumber, nodeRunNumber, userId, comment, commentId));
+        steps.add(new EditUserTaskRunCommentStep(
+                steps.size() + 1, threadNumber, nodeRunNumber, userId, comment, commentId));
         return this;
     }
 }

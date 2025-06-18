@@ -23,7 +23,7 @@ import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -279,7 +279,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         return getCommandId().isPresent();
     }
 
-    public Message process(MetadataCommandExecution context) {
+    public Message process(MetadataProcessorContext context) {
         return getSubCommand().process(context);
     }
 

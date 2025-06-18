@@ -20,8 +20,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduledWfRun;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     }
 
     @Override
-    public ScheduledWfRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public ScheduledWfRun process(CoreProcessorContext executionContext, LHServerConfig config) {
         WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
             throw new LHApiException(

@@ -28,7 +28,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class MetadataCommandExecution implements ExecutionContext {
+public class MetadataProcessorContext implements ExecutionContext {
 
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
@@ -37,7 +37,7 @@ public class MetadataCommandExecution implements ExecutionContext {
     private LHServerConfig lhConfig;
     private final MetadataCommandModel currentCommand;
 
-    public MetadataCommandExecution(
+    public MetadataProcessorContext(
             Headers recordMetadata,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             MetadataCache metadataCache,

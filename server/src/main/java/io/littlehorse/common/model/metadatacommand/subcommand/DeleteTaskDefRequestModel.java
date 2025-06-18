@@ -8,7 +8,7 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 
 public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefRequest> {
 
@@ -34,7 +34,7 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
     }
 
     @Override
-    public Empty process(MetadataCommandExecution context) {
+    public Empty process(MetadataProcessorContext context) {
         context.metadataManager().delete(id);
         context.forward(new DeleteTaskWorkerGroupRequestModel(id));
         return Empty.getDefaultInstance();

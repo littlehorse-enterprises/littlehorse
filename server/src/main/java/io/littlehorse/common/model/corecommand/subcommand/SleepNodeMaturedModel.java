@@ -13,8 +13,8 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +56,7 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager getableManager = executionContext.getableManager();
         ReadOnlyMetadataManager metadataManager = executionContext.metadataManager();
         WfService service = executionContext.service();
