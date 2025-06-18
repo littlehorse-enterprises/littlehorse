@@ -308,17 +308,17 @@ public class WorkflowIfStatementTest
     {
         var workflowName = "TestWorkflow";
         var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
-        new WorkflowThread(mockParentWorkflow.Object, thread =>
+        void MyEntrypoint(WorkflowThread thread)
         {
             WorkflowIfStatement ifStatement = thread.DoIf(thread.Condition(5, Comparator.GreaterThanEq, 9),
                 body => body.Execute("task-a"));
             ifStatement.DoElse(body => body.Execute("task-b"));
-            
-            var exception = Assert.Throws<InvalidOperationException>(() =>
-                ifStatement.DoElse(body => body.Execute("task-c")));
+            ifStatement.DoElse(body => body.Execute("task-c"));
+        }
         
-            Assert.Equal("Else block has already been executed. Cannot add another else block.", exception.Message);
-        });
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint));
+        Assert.Equal("Else block has already been executed. Cannot add another else block.", exception.Message);
     }
     
     [Fact]
@@ -550,15 +550,15 @@ public class WorkflowIfStatementTest
                 body =>
                 {
                     body.Complete();
-                    var exception = Assert.Throws<InvalidOperationException>(() =>
-                        body.Execute("task-a"));
-        
-                    Assert.Equal("You cannot add a Node in a given thread after the thread has completed.", exception.Message);
+                    body.Execute("task-a");
                 });
             ifStatement.DoElse(body => body.Execute("task-b"));
         }
 
-        _ = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint));
+        
+        Assert.Equal("You cannot add a Node in a given thread after the thread has completed.", exception.Message);
     }
     
     [Fact]
@@ -574,14 +574,15 @@ public class WorkflowIfStatementTest
                 body =>
                 {
                     body.Complete();
-                    var exception = Assert.Throws<InvalidOperationException>(() => test.Assign(10));
-        
-                    Assert.Equal("You cannot mutate a variable in a given thread after the thread has completed.", exception.Message);
+                    test.Assign(10);
                 });
             ifStatement.DoElse(body => body.Execute("task-b"));
         }
-
-        _ = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+        
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint));
+        
+        Assert.Equal("You cannot mutate a variable in a given thread after the thread has completed.", exception.Message);
     }
 
     [Fact] public void WorkflowThread_DeclaringAVariableAfterCompleteMethod_ShouldThrowAnException()
@@ -596,15 +597,16 @@ public class WorkflowIfStatementTest
                 body =>
                 {
                     body.Complete();
-                    var exception = Assert.Throws<InvalidOperationException>(() => body.DeclareStr("other-var"));
-        
-                    Assert.Equal("You cannot add a variable in a given thread after the thread has completed.", 
-                        exception.Message);
+                    body.DeclareStr("other-var");
                 });
             ifStatement.DoElse(body => body.Execute("task-b"));
         }
-
-        _ = new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint);
+        
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, MyEntrypoint));
+        
+        Assert.Equal("You cannot add a variable in a given thread after the thread has completed.", 
+            exception.Message);
     }
 
     [Fact]

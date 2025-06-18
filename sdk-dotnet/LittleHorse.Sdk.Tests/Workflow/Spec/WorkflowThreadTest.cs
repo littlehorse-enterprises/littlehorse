@@ -1559,13 +1559,13 @@ public class WorkflowThreadTest
             var input = wf.DeclareStr("input");
             wf.Execute("any-task-def-name", input);
             wf.Complete();
-            var exception = Assert.Throws<InvalidOperationException>(() => 
-                wf.Execute("another-task-def-name", input));
-
-            Assert.Equal("You cannot add a Node in a given thread after the thread has completed.",
-                exception.Message);
+            wf.Execute("another-task-def-name", input);
         }
         
-        _ = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, EntryPointAction));
+
+        Assert.Equal("You cannot add a Node in a given thread after the thread has completed.",
+            exception.Message);
     }
 }
