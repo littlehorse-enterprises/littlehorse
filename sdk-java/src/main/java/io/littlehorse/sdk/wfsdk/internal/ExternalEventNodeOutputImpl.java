@@ -2,9 +2,6 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.ReturnType;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.ExternalEventNodeOutput;
 import java.io.Serializable;
 
@@ -63,30 +60,9 @@ public class ExternalEventNodeOutputImpl extends NodeOutputImpl implements Exter
     }
 
     public PutExternalEventDefRequest toPutExtDefRequest() {
-        PutExternalEventDefRequest.Builder builder;
-        if (payloadClass == null) {
-            // We don't set the typeDef: the event has no payload
-            builder = PutExternalEventDefRequest.newBuilder()
-                    .setName(externalEventDefName)
-                    .setContentType(ReturnType.newBuilder());
-        } else {
-            TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
-            if (String.class.isAssignableFrom(payloadClass)) {
-                typeDef.setType(VariableType.STR);
-            } else if (Double.class.isAssignableFrom(payloadClass)) {
-                typeDef.setType(VariableType.DOUBLE);
-            } else if (Integer.class.isAssignableFrom(payloadClass)) {
-                typeDef.setType(VariableType.INT);
-            } else if (Boolean.class.isAssignableFrom(payloadClass)) {
-                typeDef.setType(VariableType.BOOL);
-            } else {
-                throw new IllegalArgumentException(
-                        "ExternalEventDef payload class must be one of String, Double, Integer or Boolean");
-            }
-            builder = PutExternalEventDefRequest.newBuilder()
-                    .setContentType(ReturnType.newBuilder().setReturnType(typeDef))
-                    .setName(externalEventDefName);
-        }
+        PutExternalEventDefRequest.Builder builder = PutExternalEventDefRequest.newBuilder()
+                .setName(externalEventDefName)
+                .setContentType(BuilderUtil.javaTypeToReturnType(payloadClass));
 
         if (correlatedEventConfig != null) {
             builder.setCorrelatedEventConfig(correlatedEventConfig);

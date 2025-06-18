@@ -271,6 +271,10 @@ final class WorkflowThreadImpl implements WorkflowThread {
         parent.addExternalEventDefToRegister(nodeOutputImpl);
     }
 
+    public void registerWorkflowEventDef(ThrowEventNodeOutputImpl nodeOutputImpl) {
+        parent.addWorkflowEventDefToRegister(nodeOutputImpl);
+    }
+
     @Override
     public void cancelUserTaskRunAfter(UserTaskOutput userTask, Serializable delaySeconds) {
         checkIfIsActive();
@@ -796,7 +800,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void throwEvent(String workflowEventDefName, Serializable content) {
+    public ThrowEventNodeOutputImpl throwEvent(String workflowEventDefName, Serializable content) {
         checkIfIsActive();
         parent.addWorkflowEventDefName(workflowEventDefName);
         ThrowEventNode node = ThrowEventNode.newBuilder()
@@ -806,6 +810,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 .setContent(assignVariable(content))
                 .build();
         addNode("throw-" + workflowEventDefName, NodeCase.THROW_EVENT, node);
+        return new ThrowEventNodeOutputImpl(workflowEventDefName, this);
     }
 
     @Override
