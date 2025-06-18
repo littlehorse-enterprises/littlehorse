@@ -41,9 +41,6 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
         if (metadataCache != null) {
             metadataCache.evictCache(fullKey);
         }
-        Bytes delete = nativeStore.delete(fullKey);
-        if (delete == null) {
-            log.warn("Not deleted! " + fullKey);
-        }
+        nativeStore.delete(fullKey);
     }
 }
