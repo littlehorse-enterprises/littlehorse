@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
@@ -67,7 +68,7 @@ var assignUserTaskRunCmd = &cobra.Command{
 to reassign the specified UserTaskRun.
 
 The --overrideClaim option allows you to override an assignment if the UserTaskRun
-is already claimedby a specific UserId.
+is already claimed by a specific UserId.
 
 The following option groups are supported:
 [userId] -> assign to a specific userId.
@@ -149,7 +150,7 @@ var getUserTaskRunCmd = &cobra.Command{
 var saveUserTaskRunProgressCmd = &cobra.Command{
 	Use:   "userTaskRun",
 	Short: "Save progress on UserTaskRuns",
-	Long: `Given a provied WfRunId and UserTaskGuid, this utility allows you
+	Long: `Given a provided WfRunId and UserTaskGuid, this utility allows you
 to save current progress on a UserTask before executing the it.
 `,
 	Args: cobra.ExactArgs(0),
@@ -221,6 +222,122 @@ to save current progress on a UserTask before executing the it.
 		littlehorse.PrintResp(
 			(client).SaveUserTaskRunProgress(requestContext(cmd), saveUserTaskRunProgress),
 		)
+	},
+}
+
+var PutUserTaskRunCommentCmd = &cobra.Command{
+	Use:   "userTaskRunComment <wfRunId> <userTaskGuid> ",
+	Short: "Add a comment to a UserTaskRun",
+	Long: `
+Add a comment to a UserTaskRun.
+
+Requires the WfRunId and the UserTaskGuid.
+This command allows you to attach feedback or notes to a specific UserTaskRun for tracking or collaboration purposes.
+`,
+	Args: cobra.ExactArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		userId, err := promptFor(
+			"Enter the userId of the person adding the comment",
+			lhproto.VariableType_STR,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		comment, err1 := promptFor(
+			"Enter the comment",
+			lhproto.VariableType_STR,
+		)
+		if err1 != nil {
+			log.Fatal(err1)
+		}
+
+		userTaskRunComment := &lhproto.PutUserTaskRunCommentRequest{
+			UserTaskRunId: &lhproto.UserTaskRunId{
+				WfRunId:      littlehorse.StrToWfRunId(args[0]),
+				UserTaskGuid: args[1],
+			},
+			UserId:  userId.GetStr(),
+			Comment: comment.GetStr(),
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).PutUserTaskRunComment(requestContext(cmd), userTaskRunComment))
+	},
+}
+
+var DeleteUserTaskRunCommentCmd = &cobra.Command{
+	Use:   "userTaskRunComment <wfRunId> <userTaskGuid> <commentId> <userId>",
+	Short: "Delete a comment from a userTaskRun",
+	Long: `
+Delete a comment from a UserTaskRun.
+
+Requires the WfRunId, UserTaskGuid, userId, and the commentId of the comment to delete.
+If userId contains spaces, enclose the argument in quotation marks " ".
+This command allows you to remove a previously added comment from a UserTaskRun.
+`,
+	Args: cobra.ExactArgs(4),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		commentId, err := strconv.Atoi(args[2])
+		if err != nil {
+			log.Fatal("Unable to convert commentId to int:\n", err)
+		}
+		deleteUserTaskRunComment := &lhproto.DeleteUserTaskRunCommentRequest{
+			UserTaskRunId: &lhproto.UserTaskRunId{
+				WfRunId:      littlehorse.StrToWfRunId(args[0]),
+				UserTaskGuid: args[1],
+			},
+			UserId:        args[3],
+			UserCommentId: int32(commentId),
+		}
+		littlehorse.PrintResp(getGlobalClient(cmd).DeleteUserTaskRunComment(requestContext(cmd), deleteUserTaskRunComment))
+	},
+}
+
+var editUserTaskRunCommentCmd = &cobra.Command{
+	Use:   "userTaskRunComment <wfRunId> <userTaskGuid> <commentId> ",
+	Short: "Edit a comment on a UserTaskRun",
+	Long: `
+Edit a comment on a UserTaskRun.
+
+Requires the WfRunId, UserTaskGuid, and the commentId of the comment to edit.
+This command allows you to update the content of a previously added comment on a UserTaskRun for correction or clarification purposes.
+`,
+	Args: cobra.ExactArgs(3),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		commentId, err := strconv.Atoi(args[2])
+		if err != nil {
+			log.Fatal("Unable to convert commentId to integer:\n", err)
+		}
+
+		userId, err := promptFor(
+			"Enter the userId of the person editing the comment",
+			lhproto.VariableType_STR,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		comment, err1 := promptFor(
+			"Enter the new comment",
+			lhproto.VariableType_STR,
+		)
+		if err1 != nil {
+			log.Fatal(err1)
+		}
+		userTaskRunComment := &lhproto.EditUserTaskRunCommentRequest{
+			UserTaskRunId: &lhproto.UserTaskRunId{
+				WfRunId:      littlehorse.StrToWfRunId(args[0]),
+				UserTaskGuid: args[1],
+			},
+			UserId:        userId.GetStr(),
+			Comment:       comment.GetStr(),
+			UserCommentId: int32(commentId),
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).EditUserTaskRunComment(requestContext(cmd), userTaskRunComment))
 	},
 }
 
@@ -402,6 +519,9 @@ func init() {
 	assignCmd.AddCommand(assignUserTaskRunCmd)
 	listCmd.AddCommand(listUserTaskRunCmd)
 	cancelUserTaskCmd.AddCommand(cancelUserTaskRunCmd)
+	putCmd.AddCommand(PutUserTaskRunCommentCmd)
+	deleteCmd.AddCommand(DeleteUserTaskRunCommentCmd)
+	editCmd.AddCommand(editUserTaskRunCommentCmd)
 
 	saveCmd.AddCommand(saveUserTaskRunProgressCmd)
 	saveUserTaskRunProgressCmd.Flags().String("wfRunId", "", "WfRunId of the WfRun the UserTaskRun belongs to.")
