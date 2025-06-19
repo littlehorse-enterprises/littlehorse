@@ -238,7 +238,7 @@ This command allows you to attach feedback or notes to a specific UserTaskRun fo
 	Run: func(cmd *cobra.Command, args []string) {
 
 		userId, err := promptFor(
-			"Enter the userId of the person completing the task",
+			"Enter the userId of the person adding the comment",
 			lhproto.VariableType_STR,
 		)
 		if err != nil {
@@ -313,7 +313,7 @@ This command allows you to update the content of a previously added comment on a
 		}
 
 		userId, err := promptFor(
-			"Enter the userId of the person completing the task",
+			"Enter the userId of the person editing the comment",
 			lhproto.VariableType_STR,
 		)
 		if err != nil {
