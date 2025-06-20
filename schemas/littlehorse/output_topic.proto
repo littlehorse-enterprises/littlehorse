@@ -2,7 +2,6 @@ syntax = "proto3";
 package littlehorse;
 
 import "google/protobuf/timestamp.proto";
-import "object_id.proto";
 import "workflow_event.proto";
 import "user_tasks.proto";
 import "task_run.proto";
@@ -42,6 +41,9 @@ message OutputTopicRecord {
 
         // Updates about an `ExternalEvent` changing.
         ExternalEvent external_event = 7;
+
+        // Updates about a `CorrelatedEvent` changing.
+        CorrelatedEvent correlated_event = 8;
     }
 }
 

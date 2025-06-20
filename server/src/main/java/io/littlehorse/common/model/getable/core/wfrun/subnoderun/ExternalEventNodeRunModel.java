@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarkerModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -14,8 +15,10 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEventNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.proto.UpdateCorrelationMarkerPb.CorrelationUpdateAction;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
 import io.littlehorse.sdk.common.proto.LHErrorType;
@@ -38,6 +41,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     private ExecutionContext executionContext;
     private ProcessorExecutionContext processorContext;
     private boolean timedOut;
+    private String correlationKey;
 
     public ExternalEventNodeRunModel() {}
 
@@ -61,6 +65,9 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         if (p.hasExternalEventId()) {
             externalEventId = LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class, context);
         }
+        if (p.hasCorrelationKey()) {
+            correlationKey = p.getCorrelationKey();
+        }
         externalEventDefId =
                 LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         timedOut = p.getTimedOut();
@@ -80,6 +87,9 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         if (externalEventId != null) {
             out.setExternalEventId(externalEventId.toProto());
         }
+        if (correlationKey != null) {
+            out.setCorrelationKey(correlationKey);
+        }
 
         return out;
     }
@@ -96,9 +106,8 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         NodeModel node = nodeRun.getNode();
         ExternalEventNodeModel eNode = node.getExternalEventNode();
 
-        ExternalEventModel evt = processorContext
-                .getableManager()
-                .getUnclaimedEvent(nodeRun.getId().getWfRunId(), eNode.getExternalEventDefId());
+        ExternalEventModel evt =
+                processorContext.getableManager().getUnclaimedEvent(nodeRun.getId(), eNode.getExternalEventDefId());
         if (evt == null) {
             // It hasn't come in yet.
             return false;
@@ -113,7 +122,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
 
     @Override
     public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
-        if (externalEventDefId == null) {
+        if (externalEventId == null) {
             throw new IllegalStateException("called getOutput() before node finished!");
         }
         return Optional.of(
@@ -133,35 +142,74 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
 
     @Override
     public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
-        // Only thing to do is maybe schedule a timeout.
-        if (getNode().getExternalEventNode().getTimeoutSeconds() != null) {
-            try {
-                VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
-                        .assignVariable(getNode().externalEventNode.getTimeoutSeconds());
-                if (timeoutSeconds.getType() != VariableType.INT) {
-                    throw new LHVarSubError(
-                            null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.getType() + " not INT!");
-                }
+        // Two things may or may not happen on arrival:
+        // 1. Schedule the timeout
+        // 2. Send a CorrelationMarker
+        maybeScheduleTimeoutTimer(processorContext);
+        maybeSendCorrelationMarker(processorContext);
+    }
 
-                LHTimer timer = new LHTimer();
-                timer.key = nodeRun.getPartitionKey().get();
-                timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.getIntVal() * 1000));
-
-                CommandModel cmd = new CommandModel();
-                ExternalEventTimeoutModel timeoutEvt = new ExternalEventTimeoutModel(nodeRun.getId());
-                cmd.setSubCommand(timeoutEvt);
-                cmd.time = timer.getMaturationTime();
-
-                timer.payload = cmd.toProto().build().toByteArray();
-                processorContext.getTaskManager().scheduleTimer(timer);
-                log.trace(
-                        "Scheduled timeout at {} for external event noderun {}",
-                        timer.getMaturationTime(),
-                        nodeRun.getId());
-            } catch (LHVarSubError exn) {
-                throw new NodeFailureException(new FailureModel(
-                        "Failed determining timeout for ext evt node: " + exn.getMessage(), LHConstants.VAR_ERROR));
+    private void maybeScheduleTimeoutTimer(ProcessorExecutionContext processorContext) throws NodeFailureException {
+        if (getNode().getExternalEventNode().getTimeoutSeconds() == null) return;
+        try {
+            VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
+                    .assignVariable(getNode().externalEventNode.getTimeoutSeconds());
+            if (timeoutSeconds.getType() != VariableType.INT) {
+                throw new LHVarSubError(
+                        null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.getType() + " not INT!");
             }
+
+            LHTimer timer = new LHTimer();
+            timer.key = nodeRun.getPartitionKey().get();
+            timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.getIntVal() * 1000));
+
+            CommandModel cmd = new CommandModel();
+            ExternalEventTimeoutModel timeoutEvt = new ExternalEventTimeoutModel(nodeRun.getId());
+            cmd.setSubCommand(timeoutEvt);
+            cmd.time = timer.getMaturationTime();
+
+            timer.payload = cmd.toProto().build().toByteArray();
+            processorContext.getTaskManager().scheduleTimer(timer);
+            log.trace(
+                    "Scheduled timeout at {} for external event noderun {}",
+                    timer.getMaturationTime(),
+                    nodeRun.getId());
+        } catch (LHVarSubError exn) {
+            throw new NodeFailureException(new FailureModel(
+                    "Failed determining timeout for ext evt node: " + exn.getMessage(), LHConstants.VAR_ERROR));
+        }
+    }
+
+    private void maybeSendCorrelationMarker(ProcessorExecutionContext context) throws NodeFailureException {
+        VariableAssignmentModel correlationIdAssn =
+                getNode().getExternalEventNode().getCorrrelationId();
+        if (correlationIdAssn == null) return;
+        try {
+            VariableValueModel correlationIdVar = nodeRun.getThreadRun().assignVariable(correlationIdAssn);
+            if (correlationIdVar.getType() != VariableType.STR) {
+                throw new LHVarSubError(
+                        null, "Resulting correlation id was of type " + correlationIdVar.getType() + " not STR!");
+            }
+            this.correlationKey = correlationIdVar.getStrVal();
+
+            LHTimer timer = new LHTimer();
+            timer.key = correlationKey;
+            timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
+
+            UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
+            update.setAction(CorrelationUpdateAction.CORRELATE);
+            update.setWaitingNodeRun(nodeRun.getId());
+            update.setCorrelationKey(correlationKey);
+            update.setExternalEventDefId(externalEventDefId);
+
+            CommandModel command = new CommandModel(update);
+            command.setTime(new Date());
+            timer.setPayload(command.toBytes());
+            processorContext.getTaskManager().scheduleTimer(timer);
+
+        } catch (LHVarSubError exn) {
+            throw new NodeFailureException(new FailureModel(
+                    "Failed determining correlationId for ext evt node: " + exn.getMessage(), LHConstants.VAR_ERROR));
         }
     }
 

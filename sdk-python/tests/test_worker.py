@@ -171,7 +171,14 @@ class TestLHTask(unittest.TestCase):
 
         task = LHTask(
             my_method,
-            TaskDef(input_vars=[VariableDef(name="param", type_def=TypeDefinition(type=VariableType.STR, masked=False))]),
+            TaskDef(
+                input_vars=[
+                    VariableDef(
+                        name="param",
+                        type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                    )
+                ]
+            ),
         )
 
         self.assertFalse(task.has_context())
@@ -215,8 +222,14 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="paramA", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
-                VariableDef(name="paramB", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
+                VariableDef(
+                    name="paramA",
+                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                ),
+                VariableDef(
+                    name="paramB",
+                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                ),
             ]
         )
 
@@ -231,8 +244,14 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="param2", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
-                VariableDef(name="param1", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
+                VariableDef(
+                    name="param2",
+                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                ),
+                VariableDef(
+                    name="param1",
+                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                ),
             ]
         )
 
@@ -250,8 +269,14 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="param1", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
-                VariableDef(name="param2", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
+                VariableDef(
+                    name="param1",
+                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                ),
+                VariableDef(
+                    name="param2",
+                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                ),
             ]
         )
 
@@ -269,8 +294,14 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDef(
             input_vars=[
-                VariableDef(name="param1", type_def=TypeDefinition(type=VariableType.STR, masked=False)),
-                VariableDef(name="param2", type_def=TypeDefinition(type=VariableType.INT, masked=False)),
+                VariableDef(
+                    name="param1",
+                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                ),
+                VariableDef(
+                    name="param2",
+                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                ),
             ]
         )
 
@@ -288,7 +319,12 @@ class TestLHTask(unittest.TestCase):
                 pass
 
             task_def = TaskDef(
-                input_vars=[VariableDef(name="param", type_def=TypeDefinition(type=variable_type, masked=False))]
+                input_vars=[
+                    VariableDef(
+                        name="param",
+                        type_def=TypeDefinition(type=variable_type, masked=False),
+                    )
+                ]
             )
 
             with self.assertRaises(TaskSchemaMismatchException):
@@ -312,7 +348,10 @@ class TestLHTask(unittest.TestCase):
 
             task_def = TaskDef(
                 input_vars=[
-                    VariableDef(name="param", type_def=TypeDefinition(type=variable_type, masked=False)),
+                    VariableDef(
+                        name="param",
+                        type_def=TypeDefinition(type=variable_type, masked=False),
+                    ),
                 ]
             )
 

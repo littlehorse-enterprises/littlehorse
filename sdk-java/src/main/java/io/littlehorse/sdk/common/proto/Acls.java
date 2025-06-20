@@ -107,16 +107,17 @@ public final class Acls {
       "ITY_EVENTS\020\000\022\024\n\020NO_ENTITY_EVENTS\020\001\"x\n\020Pu" +
       "tTenantRequest\022\n\n\002id\030\001 \001(\t\022@\n\023output_top" +
       "ic_config\030\002 \001(\0132\036.littlehorse.OutputTopi" +
-      "cConfigH\000\210\001\001B\026\n\024_output_topic_config*\305\001\n" +
+      "cConfigH\000\210\001\001B\026\n\024_output_topic_config*\325\001\n" +
       "\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TA" +
       "SK\020\001\022\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER" +
       "_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT" +
       "\020\005\022\025\n\021ACL_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WO" +
-      "RKER_GROUP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010*C\n\t" +
-      "ACLAction\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_ME" +
-      "TADATA\020\002\022\017\n\013ALL_ACTIONS\020\003BM\n\037io.littleho" +
-      "rse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Litt" +
-      "leHorse.Sdk.Common.Protob\006proto3"
+      "RKER_GROUP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010\022\016\n\n" +
+      "ACL_STRUCT\020\t*C\n\tACLAction\022\010\n\004READ\020\000\022\007\n\003R" +
+      "UN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS\020" +
+      "\003BM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
+      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
