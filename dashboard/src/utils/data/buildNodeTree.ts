@@ -1,13 +1,12 @@
 import { TreeNode } from '@/types/buildNodeTree'
-import { ThreadSpec } from 'littlehorse-client/proto'
+import { WfSpec } from 'littlehorse-client/proto'
 
-export function buildNodeTree(nodes: ThreadSpec['nodes']): TreeNode[] {
-  if (!nodes) return []
+export function buildNodeTree(wfSpec: WfSpec, threadSpecName: string): TreeNode[] {
   const result: TreeNode[] = []
 
-  Object.entries(nodes).forEach(([nodeId]) => {
+  Object.entries(wfSpec.threadSpecs[threadSpecName].nodes).forEach(([nodeId]) => {
     result.push({
-      id: nodeId,
+      id: `${nodeId}:${threadSpecName}`,
       label: nodeId,
       type: undefined,
       status: undefined,

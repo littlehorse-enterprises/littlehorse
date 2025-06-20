@@ -13,10 +13,9 @@ interface WfSpecTabProps {
 }
 
 export default function WfSpecTab({ wfSpec }: WfSpecTabProps) {
-  const nodes = wfSpec.threadSpecs.entrypoint.nodes
   const [searchTerm, setSearchTerm] = useState('')
 
-  const nodeTree = buildNodeTree(nodes)
+  const nodeTree = buildNodeTree(wfSpec, wfSpec.entrypointThreadName)
   const sortedNodeTree = sortNodeTree(nodeTree)
 
   return (
