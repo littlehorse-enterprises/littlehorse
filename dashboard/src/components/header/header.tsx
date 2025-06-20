@@ -26,9 +26,6 @@ export default function Header() {
           <Link href={`/${tenantId}`} className="text-[#656565] hover:text-[#3b81f5]">
             Dashboard
           </Link>
-          <Link href="/dashboard" className="text-[#656565] hover:text-[#3b81f5]">
-            Metrics
-          </Link>
         </nav>
       </div>
 
