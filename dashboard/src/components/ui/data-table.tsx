@@ -54,12 +54,6 @@ export function DataTable<TData, TValue>({
         target.closest('[data-radix-collection-item]') ||
         target.closest('[data-state]') // Radix UI elements often have data-state
 
-      if (isInteractiveElement) {
-        console.log('Click on interactive element detected, not selecting row')
-        return
-      }
-
-      console.log(`Row clicked: ${rowId}`)
       setSelectedId(rowId)
 
       // Call the custom row click handler if provided

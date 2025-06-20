@@ -41,7 +41,6 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
     if (label.includes('EXIT') || label.includes('exit')) return 'EXIT'
     if (label.includes('TASK') || label.includes('task')) return 'TASK'
     if (label.includes('EXTERNAL_EVENT') || label.includes('external')) return 'EXTERNAL_EVENT'
-    if (label.includes('DECISION') || label.includes('decision')) return 'DECISION'
     return null
   }
 

@@ -41,7 +41,6 @@ export function SimpleStatusFilter({ title, options, onFilterChange, initialSele
 
     setSelectedValues(newSelected)
     onFilterChange(Array.from(newSelected))
-    console.log(`Option ${value} ${checked ? 'selected' : 'deselected'}, new selection:`, Array.from(newSelected))
   }
 
   return (

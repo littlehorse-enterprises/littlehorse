@@ -46,7 +46,6 @@ export default function WorkflowDiagram({
   useEffect(() => {
     const applyLayout = () => {
       const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges)
-      console.log('layoutedNodes', layoutedNodes)
       setNodesState(layoutedNodes)
       setEdgesState(layoutedEdges)
     }
