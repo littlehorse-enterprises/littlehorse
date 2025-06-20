@@ -122,12 +122,12 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
         </div>
 
         {/* Run Workflow Button */}
-        <div className="mt-auto border-t border-gray-200 p-4">
+        {/* <div className="mt-auto border-t border-gray-200 p-4">
           <Button className="w-full bg-[#3b81f5] hover:bg-[#3b81f5]/90">
             <Play className="mr-2 h-4 w-4" />
             Run Workflow
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   )
