@@ -13,7 +13,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
-import io.littlehorse.server.TestProcessorExecutionContext;
+import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.UUID;
@@ -30,8 +30,8 @@ public class ThreadRunModelTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
     private final Headers metadata = HeadersUtil.metadataHeadersFor("my-tenant", "my-principal");
     private final Command dummyCommand = buildCommand();
-    private final TestProcessorExecutionContext testProcessorContext =
-            TestProcessorExecutionContext.create(dummyCommand, metadata, mockProcessor);
+    private final TestCoreProcessorContext testProcessorContext =
+            TestCoreProcessorContext.create(dummyCommand, metadata, mockProcessor);
 
     private final WfRunModel wfRun = new WfRunModel(testProcessorContext);
 

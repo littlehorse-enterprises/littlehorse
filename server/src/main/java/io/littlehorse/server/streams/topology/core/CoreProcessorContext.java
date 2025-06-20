@@ -50,7 +50,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * scheduling WfRun's is actually done.
  */
 @Slf4j
-public class ProcessorExecutionContext implements ExecutionContext {
+public class CoreProcessorContext implements ExecutionContext {
 
     private final LHServerConfig config;
 
@@ -74,7 +74,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
     private MetricsUpdater metricsAggregator;
     private final TenantIdModel tenantId;
 
-    public ProcessorExecutionContext(
+    public CoreProcessorContext(
             Command currentCommand,
             Headers recordHeaders,
             LHServerConfig config,

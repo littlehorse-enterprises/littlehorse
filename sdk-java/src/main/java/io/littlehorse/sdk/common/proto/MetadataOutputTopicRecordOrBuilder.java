@@ -142,5 +142,32 @@ public interface MetadataOutputTopicRecordOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder getUserTaskDefOrBuilder();
 
+  /**
+   * <pre>
+   * A StructDef update
+   * </pre>
+   *
+   * <code>.littlehorse.StructDef struct_def = 6;</code>
+   * @return Whether the structDef field is set.
+   */
+  boolean hasStructDef();
+  /**
+   * <pre>
+   * A StructDef update
+   * </pre>
+   *
+   * <code>.littlehorse.StructDef struct_def = 6;</code>
+   * @return The structDef.
+   */
+  io.littlehorse.sdk.common.proto.StructDef getStructDef();
+  /**
+   * <pre>
+   * A StructDef update
+   * </pre>
+   *
+   * <code>.littlehorse.StructDef struct_def = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructDefOrBuilder getStructDefOrBuilder();
+
   io.littlehorse.sdk.common.proto.MetadataOutputTopicRecord.MetadataRecordCase getMetadataRecordCase();
 }

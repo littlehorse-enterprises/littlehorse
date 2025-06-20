@@ -19,32 +19,34 @@ dependencies {
     implementation project(':sdk-java')
 
     // Tools
-    implementation 'com.google.guava:guava:33.0.0-jre'
+    implementation "com.google.guava:guava:${guavaVersion}"
 
     // Configurations
     implementation 'io.smallrye.config:smallrye-config:3.5.2'
 
     // Logging
-    implementation 'org.slf4j:slf4j-api:2.0.11'
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1'
 
     // Kafka
-    implementation 'org.apache.kafka:kafka-streams:3.6.1'
-    testImplementation 'org.apache.kafka:kafka-streams-test-utils:3.6.1'
+    implementation "org.apache.kafka:kafka-streams:${kafkaVersion}"
+    testImplementation "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
 
     // Web API
-    implementation 'io.javalin:javalin:6.3.0'
-    implementation 'io.javalin:javalin-micrometer:6.3.0'
+    implementation "io.javalin:javalin:${javalinVersion}"
 
     // Prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.6'
+    implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
 
     // RocksDB
     implementation 'org.rocksdb:rocksdbjni:9.0.0'
 
     // Tests
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+
+    // Test utils
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
     testImplementation 'org.mockito:mockito-core:5.11.0'
@@ -89,11 +91,6 @@ compileJava {
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
-    }
-    plugins {
-        grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}sdfsd"
-        }
     }
 }
 

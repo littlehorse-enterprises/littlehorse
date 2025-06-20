@@ -16,7 +16,7 @@ import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,12 +60,8 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         return LHConstants.META_PARTITION_KEY;
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     @Override
-    public UserTaskDef process(MetadataCommandExecution context) {
+    public UserTaskDef process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "UserTaskDefName must be a valid hostname");

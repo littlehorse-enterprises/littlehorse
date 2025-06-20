@@ -19,6 +19,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
@@ -549,7 +550,34 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void putUserTaskRunComment(PutUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        PutUserTaskRunCommentReqeustModel reqModel =
+                LHSerializable.fromProto(req, PutUserTaskRunCommentReqeustModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        DeleteUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteUserTaskRunCommentRequestModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void editUserTaskRunComment(EditUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        EditUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, EditUserTaskRunCommentRequestModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);
@@ -1131,16 +1159,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                     futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
-        } catch (InterruptedException | ExecutionException e) {
-            Throwable cause = e.getCause() == null ? e : e.getCause();
-            log.error("Failed to process command %s".formatted(command), cause);
-            responseObserver.onError(cause);
+        } catch (InterruptedException e) {
+            responseObserver.onError(new StatusRuntimeException(
+                    Status.UNAVAILABLE.withDescription("This Server instance shutting down")));
         } catch (TimeoutException e) {
             responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
                     "Could not process command in time id: %s".formatted(command.getCommandId()))));
         } catch (Throwable e) {
-            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
-            log.error("Failed processing command", e);
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            if (cause instanceof StatusRuntimeException) {
+                responseObserver.onError(cause);
+            } else {
+                responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
+                log.error("Failed processing command", e);
+            }
         } finally {
             command.getCommandId().ifPresent(asyncWaiters::removeCommand);
         }

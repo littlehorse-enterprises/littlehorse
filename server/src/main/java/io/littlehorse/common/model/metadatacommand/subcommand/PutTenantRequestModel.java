@@ -17,7 +17,7 @@ import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -64,12 +64,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public Tenant process(MetadataCommandExecution context) {
+    public Tenant process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
 
         PrincipalModel caller =

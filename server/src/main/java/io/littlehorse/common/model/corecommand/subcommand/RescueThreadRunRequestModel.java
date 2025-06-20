@@ -14,8 +14,8 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.RescueThreadRunRequest;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 
 @Getter
@@ -52,7 +52,7 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
     }
 
     @Override
-    public WfRun process(ProcessorExecutionContext ctx, LHServerConfig config) {
+    public WfRun process(CoreProcessorContext ctx, LHServerConfig config) {
         GetableManager getableManager = ctx.getableManager();
         WfRunModel wfRun = getableManager.get(wfRunId);
         if (wfRun == null) {
@@ -72,10 +72,5 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
         }
 
         return wfRun.toProto().build();
-    }
-
-    @Override
-    public boolean hasResponse() {
-        return true;
     }
 }

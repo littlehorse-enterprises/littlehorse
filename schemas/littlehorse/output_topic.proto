@@ -9,6 +9,7 @@ import "task_def.proto";
 import "wf_spec.proto";
 import "wf_run.proto";
 import "variable.proto";
+import "struct_def.proto";
 import "external_event.proto";
 
 option go_package = ".;lhproto";
@@ -65,5 +66,8 @@ message MetadataOutputTopicRecord {
 
         // A UserTaskDef update
         UserTaskDef user_task_def = 5;
+
+        // A StructDef update
+        StructDef struct_def = 6;
     }
 }

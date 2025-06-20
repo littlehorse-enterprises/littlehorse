@@ -39,7 +39,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,7 +84,7 @@ public class GetableManagerTest {
     private GetableManager getableManager;
 
     @Mock
-    private ProcessorExecutionContext executionContext;
+    private CoreProcessorContext executionContext;
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
             new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);

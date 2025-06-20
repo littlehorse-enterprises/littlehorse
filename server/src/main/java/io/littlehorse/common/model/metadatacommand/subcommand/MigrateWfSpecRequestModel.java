@@ -12,7 +12,7 @@ import io.littlehorse.sdk.common.proto.MigrateWfSpecRequest;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import lombok.Getter;
 
@@ -44,12 +44,7 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public WfSpec process(MetadataCommandExecution metadataContext) {
+    public WfSpec process(MetadataProcessorContext metadataContext) {
         WfService service = metadataContext.service();
         MetadataManager metadataManager = metadataContext.metadataManager();
         WfSpecModel oldWfSpec = service.getWfSpec(oldWfSpecId);

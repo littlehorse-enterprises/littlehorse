@@ -8,8 +8,8 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,21 +49,17 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         WfRunModel wfRunModel = executionContext.getableManager().get(nodeRunId.getWfRunId());
 
         if (wfRunModel == null) {
-            log.warn("Got an externalEventTimeout for missing wfRun {}", nodeRunId.getWfRunId());
+            log.debug("Got an externalEventTimeout for missing wfRun {}", nodeRunId.getWfRunId());
             return null;
         }
 
         wfRunModel.processExtEvtTimeout(this);
 
         return Empty.getDefaultInstance();
-    }
-
-    public boolean hasResponse() {
-        return false;
     }
 
     public static ExternalEventTimeoutModel fromProto(ExternalEventNodeTimeoutPb p, ExecutionContext context) {
