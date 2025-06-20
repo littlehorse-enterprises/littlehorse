@@ -6,15 +6,15 @@ import { TreeNode } from '@/types/buildNodeTree'
  */
 export function sortNodeTree(nodeTree: TreeNode[]): TreeNode[] {
   return [...nodeTree].sort((a, b) => {
-    const aFirstChar = a.id.charAt(0)
-    const bFirstChar = b.id.charAt(0)
+    const aFirstPart = a.id.split('-')[0]
+    const bFirstPart = b.id.split('-')[0]
 
-    // If the first character is a number, sort numerically in ascending order
-    if (!isNaN(Number(aFirstChar)) && !isNaN(Number(bFirstChar))) {
-      return Number(aFirstChar) - Number(bFirstChar)
+    // If the first part is a number, sort numerically in ascending order
+    if (!isNaN(Number(aFirstPart)) && !isNaN(Number(bFirstPart))) {
+      return Number(aFirstPart) - Number(bFirstPart)
     }
 
     // Fallback to alphabetical sorting if not numbers
-    return bFirstChar.localeCompare(aFirstChar)
+    return bFirstPart.localeCompare(aFirstPart)
   })
 }
