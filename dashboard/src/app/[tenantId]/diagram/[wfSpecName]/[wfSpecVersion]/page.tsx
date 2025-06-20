@@ -6,7 +6,6 @@ import WorkflowDiagram from '@/components/diagram/workflow-diagram'
 import { lhClient } from '@/utils/client/lhClient'
 import { extractEdges } from '@/utils/data/extract-edges'
 import { extractNodes } from '@/utils/data/extract-nodes'
-import { type Edge, type Node } from '@xyflow/react'
 
 interface DiagramPageProps {
   params: Promise<{
@@ -37,7 +36,7 @@ export default async function DiagramPage({ params, searchParams }: DiagramPageP
   }
 
   const nodes = extractNodes(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
-  const edges = extractEdges(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName])
+  const edges = extractEdges(wfSpec)
 
   return (
     <NodeSelectionProvider>

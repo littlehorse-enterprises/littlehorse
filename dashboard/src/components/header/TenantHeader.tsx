@@ -2,7 +2,6 @@
 
 import { handleSignOut } from '@/actions/handleSignOut'
 import { useExecuteRPCWithSWR } from '@/hooks/useExecuteRPCWithSWR'
-import { getTenants } from '@/utils/auth/getTenants'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
 import {
   DropdownMenu,
@@ -25,10 +24,10 @@ export default function TenantHeader() {
   const tenantId = useParams().tenantId as string
   const [currentTenant, setCurrentTenant] = useState<string | null>(tenantId)
 
-  const { data: principal } = useExecuteRPCWithSWR('whoami', {})
-  if (!principal) return null
+  const { data } = useExecuteRPCWithSWR('searchTenant', { limit: 12_01_24 })
+  const tenants = data?.results
 
-  const tenants = getTenants(principal)
+  if (!tenants) return null
 
   const userName = session?.user?.name || 'User'
   const userEmail = session?.user?.email || ''
@@ -56,16 +55,16 @@ export default function TenantHeader() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">Tenants</DropdownMenuLabel>
             {tenants.map(tenant => (
               <DropdownMenuItem
-                key={tenant}
+                key={tenant.id}
                 className="cursor-pointer"
                 onClick={() => {
-                  setCurrentTenant(tenant)
-                  router.push(`/${tenant}`)
+                  setCurrentTenant(tenant.id)
+                  router.push(`/${tenant.id}`)
                 }}
               >
                 <span className="flex w-full items-center justify-between">
-                  {tenant}
-                  {currentTenant === tenant && <Check className="ml-2 h-4 w-4" />}
+                  {tenant.id}
+                  {currentTenant === tenant.id && <Check className="ml-2 h-4 w-4" />}
                 </span>
               </DropdownMenuItem>
             ))}

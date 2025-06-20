@@ -10,7 +10,7 @@ const CONFIG = {
   caCert: process.env.LHC_CA_CERT,
 }
 
-export async function lhClient(tenantId: string) {
+export async function lhClient(tenantId?: string) {
   const session = await auth()
   const accessToken = session?.accessToken
 
