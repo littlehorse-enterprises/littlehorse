@@ -19,8 +19,10 @@ import lombok.Setter;
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private boolean masked;
+
     @Getter
     private DefinedTypeCase definedType;
+
     private VariableType primitiveType;
     private InlineStructDefModel inlineStructDef;
     private StructDefIdModel structRef;

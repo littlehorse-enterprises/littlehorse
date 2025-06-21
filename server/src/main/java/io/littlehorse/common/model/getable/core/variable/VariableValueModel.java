@@ -43,7 +43,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private String strVal;
     private Long intVal;
     private byte[] bytesVal;
-    
+
     private StructModel structVal;
 
     private ExecutionContext context;

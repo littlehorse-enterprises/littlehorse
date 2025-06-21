@@ -132,7 +132,6 @@ public class InlineStructDefUtil {
         for (String newFieldName : newRequiredFields.keySet()) {
             // If new required field was added
             if (!oldRequiredFields.containsKey(newFieldName)) {
-                // If new required field does not have a default value
                 incompatibleFields.add(newFieldName);
             }
         }
@@ -164,10 +163,9 @@ public class InlineStructDefUtil {
 
     public static boolean compareStructFieldPedro(StructFieldDefModel structFieldDef, StructFieldModel structField) {
         TypeDefinitionModel typeDef = structFieldDef.getFieldType();
-        
+
         switch (typeDef.getDefinedType()) {
             case PRIMITIVE_TYPE:
-                
                 break;
             case INLINE_STRUCT_DEF:
                 break;
@@ -178,7 +176,7 @@ public class InlineStructDefUtil {
             default:
                 break;
         }
-        
+
         return true;
     }
 }

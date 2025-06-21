@@ -6,11 +6,10 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import lombok.Getter;
 
 public class InlineStructModel extends LHSerializable<InlineStruct> {
 

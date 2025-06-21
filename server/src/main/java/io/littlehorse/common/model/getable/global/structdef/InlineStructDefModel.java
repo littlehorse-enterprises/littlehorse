@@ -53,11 +53,6 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     public void validate() {
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             // TODO: Propose and agree upon Field Name validation technique!
-            // if (!LHUtil.isValidLHName(field.getKey())) {
-            //     throw new LHApiException(
-            //             Status.INVALID_ARGUMENT,
-            //             MessageFormat.format("StructField name [{0}] must be a valid hostname", field.getKey()));
-            // }
 
             field.getValue().validate();
         }
