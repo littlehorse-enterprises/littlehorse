@@ -55,8 +55,6 @@ public class ValidateStructDefEvolutionRequestModel extends LHSerializable<Valid
             Set<String> invalidFields =
                     InlineStructDefUtil.getIncompatibleFields(compatibilityType, structDef, oldStructDef);
 
-            System.out.println(invalidFields);
-
             return ValidateStructDefEvolutionResponse.newBuilder()
                     .setIsValid(invalidFields.isEmpty())
                     .build();
