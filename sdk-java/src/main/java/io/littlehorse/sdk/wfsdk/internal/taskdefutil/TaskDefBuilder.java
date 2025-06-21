@@ -77,6 +77,19 @@ public class TaskDefBuilder {
             }
             structFieldDef.setFieldType(structFieldTypeDef);
 
+            Object obj;
+
+            try {
+                obj = structClass.getConstructors()[0].newInstance();
+
+                Object defaultValue = field.get(obj);
+                if (defaultValue != null) {
+                    structFieldDef.setDefaultValue(LHLibUtil.objToVarVal(field.get(obj)));
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error processing defaultValue of field: " + field.getName());
+            }
+
             inlineStructDef.putFields(field.getName(), structFieldDef.build());
         }
 
