@@ -12,7 +12,7 @@ interface ExpandableTextProps {
 export default function ExpandableText({ text, maxLength = 50, isCode = false }: ExpandableTextProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  if (text === '') {
+  if (text === undefined || text === '') {
     return <span className="text-gray-500">N/A</span>
   }
 
@@ -22,9 +22,8 @@ export default function ExpandableText({ text, maxLength = 50, isCode = false }:
   return (
     <div className="relative">
       <div
-        className={`${
-          isCode ? 'rounded bg-gray-50 p-1 font-mono' : ''
-        } ${isExpanded ? 'break-words whitespace-pre-wrap' : 'truncate'} relative`}
+        className={`${isCode ? 'rounded bg-gray-50 p-1 font-mono' : ''
+          } ${isExpanded ? 'break-words whitespace-pre-wrap' : 'truncate'} relative`}
       >
         {displayText}
 

@@ -44,15 +44,6 @@ export function DataTable<TData, TValue>({
   const handleRowClick = useCallback(
     (rowId: string, e: React.MouseEvent, rowData: TData) => {
       // Check if the click is coming from a filter or other interactive element
-      const target = e.target as HTMLElement
-
-      // Check for any interactive elements in the click path
-      const isInteractiveElement =
-        target.closest('button') ||
-        target.closest('[role="menuitem"]') ||
-        target.closest('[data-interactive="true"]') ||
-        target.closest('[data-radix-collection-item]') ||
-        target.closest('[data-state]') // Radix UI elements often have data-state
 
       setSelectedId(rowId)
 

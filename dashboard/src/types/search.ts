@@ -1,2 +1,2 @@
-import { SEARCH_ENTITIES } from '@/utils/constants'
+import { SEARCH_ENTITIES } from '@/utils/ui/constants'
 export type SearchType = (typeof SEARCH_ENTITIES)[number]

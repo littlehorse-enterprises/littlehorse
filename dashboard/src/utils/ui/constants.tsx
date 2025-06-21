@@ -5,15 +5,11 @@ import { FilterOption } from '@/components/ui/dropdown-filter'
 export const SEARCH_LIMITS = [10, 20, 30, 60, 100] as const
 
 export const SEARCH_LIMIT_DEFAULT: (typeof SEARCH_LIMITS)[number] = 10
-export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
-
-/* ------------------------------- Workflow Runs ------------------------------- */
+export const SEARCH_ENTITIES = ['TaskRun', 'WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
 export const TIME_RANGES = [
-  { value: 'all', label: 'All time', minutes: null },
-  { value: '1h', label: 'Last hour', minutes: 60 },
-  { value: '24h', label: 'Last 24 hours', minutes: 1440 },
-  { value: '7d', label: 'Last 7 days', minutes: 10080 },
   { value: '30d', label: 'Last 30 days', minutes: 43200 },
+  { value: '7d', label: 'Last 7 days', minutes: 10080 },
+  { value: '1d', label: 'Last 1 day', minutes: 1440 },
 ] as const
 
 // Convert TIME_RANGES to FilterOption[] format
@@ -23,13 +19,10 @@ export const TIME_RANGE_OPTIONS: FilterOption[] = TIME_RANGES.map(({ value, labe
 }))
 
 // Map time range values to minutes
-export const TIME_RANGE_MINUTES: Record<string, number | null> = TIME_RANGES.reduce(
-  (acc, { value, minutes }) => {
-    acc[value] = minutes
-    return acc
-  },
-  {} as Record<string, number | null>
-)
+export const TIME_RANGE_MINUTES: Record<string, number | null> = TIME_RANGES.reduce((acc, { value, minutes }) => {
+  acc[value] = minutes
+  return acc
+}, {} as Record<string, number | null>)
 
 // Map minutes to time range values
 export const MINUTES_TO_TIME_RANGE: Record<number | string, string> = Object.entries(TIME_RANGE_MINUTES).reduce(

@@ -24,10 +24,8 @@ export const getWfRunDetails = async ({ wfRunId, tenantId }: Props): Promise<WfR
     }),
   ])
 
-
   return {
     wfRun,
-    variables
+    variables,
   }
 }
-

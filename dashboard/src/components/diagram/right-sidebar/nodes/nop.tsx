@@ -10,7 +10,6 @@ export function NopNodeComponent({ }: NopNodeComponentProps) {
     <BaseNodeComponent
       title="NOP Properties"
       type="NOP"
-      description="This is a No-Operation node that does nothing and immediately continues to the next node."
     />
   )
 } 

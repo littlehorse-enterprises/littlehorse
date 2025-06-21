@@ -45,7 +45,7 @@ export function TablePagination({
     if (totalPages <= 5) {
       return Array.from({ length: totalPages }).map((_, idx) => (
         <PaginationItem key={idx}>
-          <PaginationLink isActive={currentPage === idx + 1} onClick={() => handlePageChange(idx + 1)}>
+          <PaginationLink size="icon" isActive={currentPage === idx + 1} onClick={() => handlePageChange(idx + 1)}>
             {idx + 1}
           </PaginationLink>
         </PaginationItem>
@@ -58,7 +58,7 @@ export function TablePagination({
     // Always show first page
     items.push(
       <PaginationItem key={0}>
-        <PaginationLink isActive={currentPage === 1} onClick={() => handlePageChange(1)}>
+        <PaginationLink size="icon" isActive={currentPage === 1} onClick={() => handlePageChange(1)}>
           1
         </PaginationLink>
       </PaginationItem>
@@ -70,7 +70,7 @@ export function TablePagination({
     } else if (totalPages > 1) {
       items.push(
         <PaginationItem key={1}>
-          <PaginationLink isActive={currentPage === 2} onClick={() => handlePageChange(2)}>
+          <PaginationLink size="icon" isActive={currentPage === 2} onClick={() => handlePageChange(2)}>
             2
           </PaginationLink>
         </PaginationItem>
@@ -81,7 +81,7 @@ export function TablePagination({
     if (currentPage > 2 && currentPage < totalPages - 1) {
       items.push(
         <PaginationItem key={currentPage - 1}>
-          <PaginationLink isActive={true} onClick={() => {}}>
+          <PaginationLink size="icon" isActive={true} onClick={() => { }}>
             {currentPage}
           </PaginationLink>
         </PaginationItem>
@@ -94,7 +94,7 @@ export function TablePagination({
     } else if (totalPages > 2) {
       items.push(
         <PaginationItem key={totalPages - 2}>
-          <PaginationLink isActive={currentPage === totalPages - 1} onClick={() => handlePageChange(totalPages - 1)}>
+          <PaginationLink size="icon" isActive={currentPage === totalPages - 1} onClick={() => handlePageChange(totalPages - 1)}>
             {totalPages - 1}
           </PaginationLink>
         </PaginationItem>
@@ -105,7 +105,7 @@ export function TablePagination({
     if (totalPages > 1) {
       items.push(
         <PaginationItem key={totalPages - 1}>
-          <PaginationLink isActive={currentPage === totalPages} onClick={() => handlePageChange(totalPages)}>
+          <PaginationLink size="icon" isActive={currentPage === totalPages} onClick={() => handlePageChange(totalPages)}>
             {totalPages}
           </PaginationLink>
         </PaginationItem>
@@ -127,6 +127,7 @@ export function TablePagination({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
+              size="default"
               onClick={() => handlePageChange(currentPage - 1)}
               className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
             />
@@ -136,6 +137,7 @@ export function TablePagination({
 
           <PaginationItem>
             <PaginationNext
+              size="default"
               onClick={() => handlePageChange(currentPage + 1)}
               className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
             />

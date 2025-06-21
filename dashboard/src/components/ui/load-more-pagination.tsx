@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/utils/ui/utils'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
 
-interface LoadMorePaginationProps {
+interface PaginationProps {
   limit: number
   onLimitChange: (limit: number) => void
   onLoadMore: () => void
@@ -22,7 +22,7 @@ export function Pagination({
   limitOptions,
   className = '',
   hasNextBookmark,
-}: LoadMorePaginationProps) {
+}: PaginationProps) {
   return (
     <div className={cn('mt-4 flex items-center justify-between', className)}>
       <div className="flex items-center gap-2">

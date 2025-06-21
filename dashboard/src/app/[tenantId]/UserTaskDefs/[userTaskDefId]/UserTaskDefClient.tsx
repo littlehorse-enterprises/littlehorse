@@ -25,7 +25,7 @@ interface UserTaskDefClientProps {
 }
 
 export default function UserTaskDefClient({ userTaskDef }: UserTaskDefClientProps) {
-  const { tenantId, userTaskDefId } = useParams<{ tenantId: string; userTaskDefId: string }>()
+  const { tenantId } = useParams<{ tenantId: string }>()
   const [limit, setLimit] = useState(SEARCH_LIMIT_DEFAULT)
 
   const getKey = (pageIndex: number, previousPageData: Awaited<ReturnType<typeof searchUserTaskRun>> | null) => {
