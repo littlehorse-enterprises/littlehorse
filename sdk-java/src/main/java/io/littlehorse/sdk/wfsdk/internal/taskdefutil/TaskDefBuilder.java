@@ -1,10 +1,18 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefId;
+import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +21,7 @@ public class TaskDefBuilder {
 
     public Object executable;
     public LHTaskSignature signature;
+    public boolean shouldPutStructDefs;
 
     public TaskDefBuilder(Object executable, String taskDefName, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
@@ -22,22 +31,56 @@ public class TaskDefBuilder {
 
     public PutTaskDefRequest toPutTaskDefRequest() {
         PutTaskDefRequest.Builder out = PutTaskDefRequest.newBuilder();
-        List<String> varNames = signature.getVarNames();
-        List<VariableType> varTypes = signature.getParamTypes();
-        List<Boolean> maskedParams = signature.getMaskedParams();
 
-        for (int i = 0; i < varNames.size(); i++) {
-            out.addInputVars(VariableDef.newBuilder()
-                    .setName(varNames.get(i))
-                    .setTypeDef(
-                            TypeDefinition.newBuilder().setPrimitiveType(varTypes.get(i)).setMasked(maskedParams.get(i))));
-        }
+        out.addAllInputVars(signature.getVariableDefs());
         out.setName(this.signature.taskDefName);
         if (signature.getReturnType() != null) {
             out.setReturnType(signature.getReturnType());
         }
 
         return out.build();
+    }
+
+    public List<StructDef> getStructDefs() {
+        if (signature.getStructDefClasses().isEmpty()) return List.of();
+
+        List<StructDef> structDefs = new ArrayList<>();
+
+        for (Class<?> structDefClass : signature.getStructDefClasses()) {
+            LHStructDef lhStructDef = structDefClass.getAnnotation(LHStructDef.class);
+
+            StructDef.Builder structDef = StructDef.newBuilder();
+            structDef.setId(StructDefId.newBuilder().setName(lhStructDef.name()));
+            structDef.setDescription(lhStructDef.description());
+            structDef.setStructDef(buildInlineStructDef(structDefClass));
+
+            structDefs.add(structDef.build());
+        }
+
+        return structDefs;
+    }
+
+    public static InlineStructDef buildInlineStructDef(Class<?> structClass) {
+        InlineStructDef.Builder inlineStructDef = InlineStructDef.newBuilder();
+
+        Field[] fields = structClass.getFields();
+
+        for (Field field : fields) {
+            StructFieldDef.Builder structFieldDef = StructFieldDef.newBuilder();
+            TypeDefinition.Builder structFieldTypeDef = TypeDefinition.newBuilder();
+
+            VariableType fieldPrimitiveType = LHLibUtil.javaClassToLHVarType(field.getType());
+            structFieldTypeDef.setPrimitiveType(fieldPrimitiveType);
+            if (field.isAnnotationPresent(LHStructField.class)) {
+                LHStructField fieldType = field.getAnnotation(LHStructField.class);
+                structFieldTypeDef.setMasked(fieldType.masked());
+            }
+            structFieldDef.setFieldType(structFieldTypeDef);
+
+            inlineStructDef.putFields(field.getName(), structFieldDef.build());
+        }
+
+        return inlineStructDef.build();
     }
 
     @Override

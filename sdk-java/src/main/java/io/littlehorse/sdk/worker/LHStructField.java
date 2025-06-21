@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface LHStructField {
     /**
      * OPTIONAL: This corresponds to the name of the StructDef field.
-     * 
+     *
      * Defaults to method name, but this overrides the default.
      *
      * @return the name of the StructDef.
