@@ -80,7 +80,10 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
         // Streams default is 3
         options.setMaxWriteBufferNumber(5);
-        options.setMaxBackgroundJobs(3);
+        //  Concurrent jobs for both flushes and compaction
+        options.setMaxBackgroundJobs(serverConfig.getRocksDBCompactionThreads());
+        // Speeds up compaction by deploying sub compactions.
+        // there may be max_background_jobs * max_subcompactions background threads running compaction
         options.setMaxSubcompactions(3);
         long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
         if (rateLimit > 0) {
