@@ -90,7 +90,8 @@ jobs:
       - name: Update Dashboard Version
         working-directory: ./dashboard
         run: |
-          VERSION="${{ github.ref_name }}-${{ github.sha }}"
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          VERSION="${{ github.ref_name }}-$SHORT_SHA"
           sed -i "s|VERSION: \".*\"|VERSION: \"$VERSION\"|g" next.config.ts
 
       - name: Build Dashboard
@@ -123,7 +124,8 @@ jobs:
       - name: Update Dashboard Version
         working-directory: ./dashboard
         run: |
-          VERSION="${{ github.ref_name }}-${{ github.sha }}"
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          VERSION="${{ github.ref_name }}-$SHORT_SHA"
           sed -i "s|VERSION: \".*\"|VERSION: \"$VERSION\"|g" next.config.ts
 
       - name: Build Dashboard
