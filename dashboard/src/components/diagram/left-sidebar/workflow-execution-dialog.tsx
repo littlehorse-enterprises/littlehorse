@@ -106,17 +106,13 @@ export default function WorkflowExecutionDialog({ isOpen, onClose, wfSpec }: Wor
     };
 
     const handleInputChange = (name: string, value: string | number | boolean | null, type: VariableType, required: boolean) => {
-        const newValues = { ...formValues, [name]: value };
+        // Handle optional field nullification before creating new values
+        const finalValue = (!required && value === '') ? null : value;
+        const newValues = { ...formValues, [name]: finalValue };
         setFormValues(newValues);
 
-        // Clear field if it's optional and user wants to set it to null
-        if (!required && value === '') {
-            newValues[name] = null;
-            setFormValues(newValues);
-        }
-
         // Validate field
-        const error = validateField(name, value, type, required);
+        const error = validateField(name, finalValue, type, required);
         setErrors(prev => ({
             ...prev,
             [name]: error || ''
