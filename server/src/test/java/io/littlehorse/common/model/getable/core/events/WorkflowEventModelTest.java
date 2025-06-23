@@ -8,7 +8,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.Command;
-import io.littlehorse.server.TestProcessorExecutionContext;
+import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.UUID;
@@ -24,8 +24,8 @@ public class WorkflowEventModelTest {
 
     private final WorkflowEventDefIdModel workflowEventDefId = new WorkflowEventDefIdModel("user-updated");
 
-    private final TestProcessorExecutionContext testProcessorContext =
-            TestProcessorExecutionContext.create(dummyCommand, metadata, mockProcessor);
+    private final TestCoreProcessorContext testProcessorContext =
+            TestCoreProcessorContext.create(dummyCommand, metadata, mockProcessor);
 
     @Test
     public void shouldStoreNewWorkflowEvent() {

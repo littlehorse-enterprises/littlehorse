@@ -444,5 +444,50 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequestOrBuilder getDeleteCorrelatedEventOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutUserTaskRunCommentRequest put_user_task_run_comment = 31;</code>
+   * @return Whether the putUserTaskRunComment field is set.
+   */
+  boolean hasPutUserTaskRunComment();
+  /**
+   * <code>.littlehorse.PutUserTaskRunCommentRequest put_user_task_run_comment = 31;</code>
+   * @return The putUserTaskRunComment.
+   */
+  io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest getPutUserTaskRunComment();
+  /**
+   * <code>.littlehorse.PutUserTaskRunCommentRequest put_user_task_run_comment = 31;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequestOrBuilder getPutUserTaskRunCommentOrBuilder();
+
+  /**
+   * <code>.littlehorse.EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;</code>
+   * @return Whether the editUserTaskRunComment field is set.
+   */
+  boolean hasEditUserTaskRunComment();
+  /**
+   * <code>.littlehorse.EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;</code>
+   * @return The editUserTaskRunComment.
+   */
+  io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest getEditUserTaskRunComment();
+  /**
+   * <code>.littlehorse.EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;</code>
+   */
+  io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequestOrBuilder getEditUserTaskRunCommentOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;</code>
+   * @return Whether the deleteUserTaskRunComment field is set.
+   */
+  boolean hasDeleteUserTaskRunComment();
+  /**
+   * <code>.littlehorse.DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;</code>
+   * @return The deleteUserTaskRunComment.
+   */
+  io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest getDeleteUserTaskRunComment();
+  /**
+   * <code>.littlehorse.DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequestOrBuilder getDeleteUserTaskRunCommentOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

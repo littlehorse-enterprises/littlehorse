@@ -6,9 +6,9 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForConditio
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeConditionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.sdk.common.proto.WaitForConditionNode;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.Set;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
     }
 
     @Override
-    public void validate(MetadataCommandExecution context) {
+    public void validate(MetadataProcessorContext context) {
         condition.validate();
     }
 
@@ -47,7 +47,7 @@ public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
     }
 
     @Override
-    public WaitForConditionNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext ctx) {
+    public WaitForConditionNodeRunModel createSubNodeRun(Date time, CoreProcessorContext ctx) {
         // There is no initialization needed. The `SubNodeRun#checkIfProcessingCompleted()` method
         // does everything we need.
         return new WaitForConditionNodeRunModel();

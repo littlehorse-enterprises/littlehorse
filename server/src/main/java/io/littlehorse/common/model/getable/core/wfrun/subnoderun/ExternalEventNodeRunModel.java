@@ -24,8 +24,8 @@ import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -38,17 +38,13 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     private ExternalEventDefIdModel externalEventDefId;
     private Date eventTime;
     private ExternalEventIdModel externalEventId;
-    private ExecutionContext executionContext;
-    private ProcessorExecutionContext processorContext;
     private boolean timedOut;
     private String correlationKey;
 
     public ExternalEventNodeRunModel() {}
 
-    public ExternalEventNodeRunModel(ExternalEventDefIdModel extEvtId, ProcessorExecutionContext processorContext) {
+    public ExternalEventNodeRunModel(ExternalEventDefIdModel extEvtId, CoreProcessorContext ignored) {
         this.externalEventDefId = extEvtId;
-        this.executionContext = processorContext;
-        this.processorContext = processorContext;
     }
 
     @Override
@@ -71,7 +67,6 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         externalEventDefId =
                 LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         timedOut = p.getTimedOut();
-        this.executionContext = context;
     }
 
     @Override
@@ -95,10 +90,14 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         if (externalEventId != null) return true;
 
         if (timedOut) {
+            if (correlationKey != null) {
+                // Don't want to leave dangling EventCorrelationMarker's as they don't have a TTL
+                sendRemoveCorrelationMarkerCommand(processorContext);
+            }
             FailureModel failure = new FailureModel("ExternalEvent did not arrive in time", LHErrorType.TIMEOUT.name());
             throw new NodeFailureException(failure);
         }
@@ -121,7 +120,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         if (externalEventId == null) {
             throw new IllegalStateException("called getOutput() before node finished!");
         }
@@ -136,12 +135,12 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
      * happen.
      */
     @Override
-    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
         return true;
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         // Two things may or may not happen on arrival:
         // 1. Schedule the timeout
         // 2. Send a CorrelationMarker
@@ -149,7 +148,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         maybeSendCorrelationMarker(processorContext);
     }
 
-    private void maybeScheduleTimeoutTimer(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    private void maybeScheduleTimeoutTimer(CoreProcessorContext processorContext) throws NodeFailureException {
         if (getNode().getExternalEventNode().getTimeoutSeconds() == null) return;
         try {
             VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
@@ -180,7 +179,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         }
     }
 
-    private void maybeSendCorrelationMarker(ProcessorExecutionContext context) throws NodeFailureException {
+    private void maybeSendCorrelationMarker(CoreProcessorContext context) throws NodeFailureException {
         VariableAssignmentModel correlationIdAssn =
                 getNode().getExternalEventNode().getCorrrelationId();
         if (correlationIdAssn == null) return;
@@ -205,12 +204,32 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             CommandModel command = new CommandModel(update);
             command.setTime(new Date());
             timer.setPayload(command.toBytes());
-            processorContext.getTaskManager().scheduleTimer(timer);
+            context.getTaskManager().scheduleTimer(timer);
 
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed determining correlationId for ext evt node: " + exn.getMessage(), LHConstants.VAR_ERROR));
         }
+    }
+
+    public void sendRemoveCorrelationMarkerCommand(CoreProcessorContext context) {
+        if (correlationKey == null) {
+            throw new IllegalStateException("Not a correlated node. Code better!");
+        }
+        LHTimer timer = new LHTimer();
+        timer.key = correlationKey;
+        timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
+
+        UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
+        update.setAction(CorrelationUpdateAction.UNCORRELATE);
+        update.setWaitingNodeRun(nodeRun.getId());
+        update.setCorrelationKey(correlationKey);
+        update.setExternalEventDefId(externalEventDefId);
+
+        CommandModel command = new CommandModel(update);
+        command.setTime(new Date());
+        timer.setPayload(command.toBytes());
+        context.getTaskManager().scheduleTimer(timer);
     }
 
     public void processExternalEventTimeout(ExternalEventTimeoutModel timeout) {

@@ -20,6 +20,10 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
     private UTEAssignedModel assigned;
     private UTECancelledModel cancelled;
     private UTESavedModel saved;
+    private UTECommentedModel commented;
+    private UTECommentDeletedModel commentDeleted;
+    private UTECommentEditedModel commentEdited;
+    private UTECompletedModel completed;
 
     public UserTaskEventModel() {}
 
@@ -47,6 +51,30 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
         this.type = EventCase.ASSIGNED;
     }
 
+    public UserTaskEventModel(UTECommentedModel comment, Date time) {
+        this.commented = comment;
+        this.time = time;
+        this.type = EventCase.COMMENT_ADDED;
+    }
+
+    public UserTaskEventModel(UTECommentDeletedModel commentDeleted, Date time) {
+        this.commentDeleted = commentDeleted;
+        this.time = time;
+        this.type = EventCase.COMMENT_DELETED;
+    }
+
+    public UserTaskEventModel(UTECommentEditedModel commentEdited, Date time) {
+        this.commentEdited = commentEdited;
+        this.time = time;
+        this.type = EventCase.COMMENT_EDITED;
+    }
+
+    public UserTaskEventModel(UTECompletedModel completed, Date time) {
+        this.completed = completed;
+        this.time = time;
+        this.type = EventCase.COMPLETED;
+    }
+
     public Class<UserTaskEvent> getProtoBaseClass() {
         return UserTaskEvent.class;
     }
@@ -66,6 +94,18 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
                 break;
             case SAVED:
                 out.setSaved(saved.toProto());
+                break;
+            case COMMENT_ADDED:
+                out.setCommentAdded(commented.toProto());
+                break;
+            case COMMENT_EDITED:
+                out.setCommentEdited(commentEdited.toProto());
+                break;
+            case COMMENT_DELETED:
+                out.setCommentDeleted(commentDeleted.toProto());
+                break;
+            case COMPLETED:
+                out.setCompleted(completed.toProto());
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -91,6 +131,18 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
                 break;
             case SAVED:
                 saved = LHSerializable.fromProto(p.getSaved(), UTESavedModel.class, context);
+                break;
+            case COMMENT_ADDED:
+                commented = LHSerializable.fromProto(p.getCommentAdded(), UTECommentedModel.class, context);
+                break;
+            case COMMENT_EDITED:
+                commentEdited = LHSerializable.fromProto(p.getCommentEdited(), UTECommentEditedModel.class, context);
+                break;
+            case COMMENT_DELETED:
+                commentDeleted = LHSerializable.fromProto(p.getCommentDeleted(), UTECommentDeletedModel.class, context);
+                break;
+            case COMPLETED:
+                completed = LHSerializable.fromProto(p.getCompleted(), UTECompletedModel.class, context);
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");

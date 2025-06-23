@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.UUID;
@@ -46,7 +46,7 @@ public class TenantScopedStoreTest {
                     .withLoggingDisabled()
                     .build());
 
-    private ProcessorExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
+    private CoreProcessorContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
@@ -61,7 +61,7 @@ public class TenantScopedStoreTest {
 
     @BeforeEach
     public void setup() {
-        Mockito.doReturn(executionContext).when(executionContext).castOnSupport(ProcessorExecutionContext.class);
+        Mockito.doReturn(executionContext).when(executionContext).castOnSupport(CoreProcessorContext.class);
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
     }
 

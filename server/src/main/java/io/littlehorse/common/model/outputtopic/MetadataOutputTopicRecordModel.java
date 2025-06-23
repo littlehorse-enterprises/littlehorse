@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -22,6 +23,7 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
     private ExternalEventDefModel externalEventDef;
     private WorkflowEventDefModel workflowEventDef;
     private UserTaskDefModel userTaskDef;
+    private StructDefModel structDef;
 
     public MetadataOutputTopicRecordModel() {}
 
@@ -54,6 +56,9 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
             case WORKFLOW_EVENT_DEF:
                 result.setWorkflowEventDef(workflowEventDef.toProto());
                 break;
+            case STRUCT_DEF:
+                result.setStructDef(structDef.toProto());
+                break;
             case METADATARECORD_NOT_SET:
         }
 
@@ -82,6 +87,9 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
                 this.workflowEventDef =
                         LHSerializable.fromProto(p.getWorkflowEventDef(), WorkflowEventDefModel.class, ignored);
                 break;
+            case STRUCT_DEF:
+                this.structDef = LHSerializable.fromProto(p.getStructDef(), StructDefModel.class, ignored);
+                break;
             case METADATARECORD_NOT_SET:
         }
     }
@@ -98,6 +106,8 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
                 return externalEventDef;
             case WORKFLOW_EVENT_DEF:
                 return workflowEventDef;
+            case STRUCT_DEF:
+                return structDef;
             case METADATARECORD_NOT_SET:
         }
         throw new IllegalStateException();
@@ -119,6 +129,9 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
         } else if (WorkflowEventDefModel.class.isAssignableFrom(thing.getClass())) {
             recordCase = MetadataRecordCase.WORKFLOW_EVENT_DEF;
             this.workflowEventDef = (WorkflowEventDefModel) thing;
+        } else if (StructDefModel.class.isAssignableFrom(thing.getClass())) {
+            recordCase = MetadataRecordCase.STRUCT_DEF;
+            this.structDef = (StructDefModel) thing;
         } else {
             throw new IllegalStateException("Unknown type: " + thing.getClass());
         }

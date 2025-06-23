@@ -12,7 +12,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class WfSpecModelTest {
 
     private final WfSpecModel wfSpec = TestUtil.wfSpec("my-wf");
     private final WfSpecModel parentWfSpec = TestUtil.wfSpec("my-parent-wf");
-    private final MetadataCommandExecution mockContext = mock(Answers.RETURNS_DEEP_STUBS);
+    private final MetadataProcessorContext mockContext = mock(Answers.RETURNS_DEEP_STUBS);
     private ThreadSpecModel childEntrypointThread;
     private VariableDefModel variableDef;
 
