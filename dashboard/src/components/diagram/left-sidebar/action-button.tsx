@@ -5,17 +5,20 @@ import { cn } from '@/utils/ui/utils'
 import { useState } from 'react'
 import ActionConfirmationDialog from './action-confirmation-dialog'
 import WorkflowExecutionDialog from './workflow-execution-dialog'
-import { WfSpec } from 'littlehorse-client/proto'
+import { WfSpec, WfRun } from 'littlehorse-client/proto'
+import { executeRpc } from '@/actions/executeRPC'
+import { useParams } from 'next/navigation'
 
 interface ActionButtonProps {
-    action: () => void | Promise<void>
     variant: 'run' | 'stop' | 'rescue' | 'resume'
     wfSpec?: WfSpec // Only required for run
+    wfRun?: WfRun // Required for stop, rescue, resume
 }
 
-export default function ActionButton({ action, variant, wfSpec }: ActionButtonProps) {
+export default function ActionButton({ variant, wfSpec, wfRun }: ActionButtonProps) {
     const [showConfirmation, setShowConfirmation] = useState(false)
     const [showRunDialog, setShowRunDialog] = useState(false)
+    const { tenantId } = useParams<{ tenantId: string }>()
 
     const variantConfig = {
         run: {
@@ -70,7 +73,35 @@ export default function ActionButton({ action, variant, wfSpec }: ActionButtonPr
     }
 
     const handleConfirm = () => {
-        action()
+        if (!tenantId) return
+
+        switch (variant) {
+            case 'stop':
+                if (wfRun?.id) {
+                    executeRpc("stopWfRun", {
+                        wfRunId: wfRun.id,
+                        threadRunNumber: 0
+                    }, tenantId)
+                }
+                break
+            case 'rescue':
+                if (wfRun?.id) {
+                    executeRpc("rescueThreadRun", {
+                        wfRunId: wfRun.id,
+                        threadRunNumber: 0,
+                        skipCurrentNode: false,
+                    }, tenantId)
+                }
+                break
+            case 'resume':
+                if (wfRun?.id) {
+                    executeRpc("resumeWfRun", {
+                        wfRunId: wfRun.id,
+                        threadRunNumber: 0,
+                    }, tenantId)
+                }
+                break
+        }
     }
 
     type ConfirmationConfig = {

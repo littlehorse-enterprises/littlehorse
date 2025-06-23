@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@littlehorse-enterprises/ui-library/button'
 import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { getVariableDefType, VARIABLE_TYPES } from '@/utils/data/variables'
 import { accessLevelLabels } from '@/utils/data/accessLevels'
@@ -52,7 +52,7 @@ export default function WorkflowExecutionDialog({ isOpen, onClose, wfSpec }: Wor
     }, [wfSpec]);
 
     // Initialize form values when dialog opens
-    useMemo(() => {
+    useEffect(() => {
         const initialValues: FormValues = { customWfRunId: '' };
         wfSpecVariables.forEach(variable => {
             if (variable.varDef?.name) {
