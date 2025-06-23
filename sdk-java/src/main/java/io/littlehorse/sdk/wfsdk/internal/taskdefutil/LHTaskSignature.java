@@ -103,8 +103,7 @@ public class LHTaskSignature {
                         StructDefId.newBuilder().setName(structDefIdName).build();
                 typeDef.setStructDefId(structDefId);
             } else {
-                VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
-                typeDef.setPrimitiveType(paramLHType);
+                typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(param.getType()));
             }
         } else {
             varDef.setName(varNameFromParameterName(param));
@@ -114,12 +113,10 @@ public class LHTaskSignature {
             Class<?> structClass = param.getType();
             structDefClasses.add(structClass);
             LHStructDef structDef = structClass.getAnnotation(LHStructDef.class);
-            StructDef.Builder struct = StructDef.newBuilder();
-            struct.setId(StructDefId.newBuilder().setName(structDef.name()));
-            struct.setDescription(structDef.description());
+            StructDefId.Builder structDefId = StructDefId.newBuilder().setName(structDef.name());
+            typeDef.setStructDefId(structDefId);
         } else {
             typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(param.getType()));
-            typeDef.setMasked(false);
         }
 
         varDef.setTypeDef(typeDef);
