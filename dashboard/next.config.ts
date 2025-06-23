@@ -3,7 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   output: "standalone",
   env: {
-    VERSION: "dev",
+    NEXT_PUBLIC_VERSION: "v0.0.0-dev",
   }
 }
 

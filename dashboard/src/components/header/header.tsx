@@ -22,7 +22,7 @@ export default function Header() {
 
       <div className="flex items-center gap-4">
         <Badge>
-          {process.env.VERSION}
+          {process.env.NEXT_PUBLIC_VERSION}
         </Badge>
         <TenantHeader />
       </div>
