@@ -166,7 +166,7 @@ public interface WorkflowThread {
      *
      * @return a WfRunVariable.
      */
-    WfRunVariable declareStruct(String string, Class<?> structDefClass);
+    WfRunVariable declareStruct(String name, Class<?> structDefClass);
 
     /**
      * Creates a Struct variable based on an existing StructDef.
@@ -175,7 +175,7 @@ public interface WorkflowThread {
      *
      * @return a WfRunVariable.
      */
-    WfRunVariable declareStruct(String string, String structDefName);
+    WfRunVariable declareStruct(String name, String structDefName);
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
