@@ -94,6 +94,7 @@ public class LHTaskSignature {
         if (param.isAnnotationPresent(LHType.class)) {
             LHType type = param.getAnnotation(LHType.class);
 
+            varDef.setName(type.name());
             typeDef.setMasked(type.masked());
 
             if (!type.structDefName().isBlank()) {
@@ -115,9 +116,9 @@ public class LHTaskSignature {
             LHStructDef structDef = structClass.getAnnotation(LHStructDef.class);
             StructDef.Builder struct = StructDef.newBuilder();
             struct.setId(StructDefId.newBuilder().setName(structDef.name()));
-            struct.setDescription(struct.getDescription());
+            struct.setDescription(structDef.description());
         } else {
-            typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(param.getClass()));
+            typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(param.getType()));
             typeDef.setMasked(false);
         }
 
