@@ -34,7 +34,7 @@ public class VariableMapping {
 
         String msg = null;
 
-        switch (input.getTypeDef().getType()) {
+        switch (input.getTypeDef().getPrimitiveType()) {
             case INT:
                 if (!LHLibUtil.isINT(type)) {
                     msg = "TaskDef provides INT, func accepts " + type.getName();
