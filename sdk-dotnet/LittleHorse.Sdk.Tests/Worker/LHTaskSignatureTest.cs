@@ -42,7 +42,7 @@ public class LHTaskSignatureTest
         };
         var expectedOutput = new ReturnType{
             ReturnType_ = new TypeDefinition{
-                Type = VariableType.Str,
+                PrimitiveType = VariableType.Str,
                 Masked = TRUE_IS_MASKET
             }
         };
@@ -96,7 +96,7 @@ public class LHTaskSignatureTest
         {
             ReturnType_ = new TypeDefinition
             {
-                Type = VariableType.Str,
+                PrimitiveType = VariableType.Str,
                 Masked = TRUE_IS_MASKET
             }
         };
@@ -189,7 +189,7 @@ public class LHTaskSignatureTest
         {
             ReturnType_ = new TypeDefinition
             {
-                Type = VariableType.Str,
+                PrimitiveType = VariableType.Str,
                 Masked = false
             }
         };
