@@ -8,50 +8,25 @@ public interface TypeDefinitionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.VariableType primitive_type = 1;</code>
-   * @return Whether the primitiveType field is set.
+   * <pre>
+   * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
+   * are implemented according to issue #880.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableType type = 1;</code>
+   * @return The enum numeric value on the wire for type.
    */
-  boolean hasPrimitiveType();
+  int getTypeValue();
   /**
-   * <code>.littlehorse.VariableType primitive_type = 1;</code>
-   * @return The enum numeric value on the wire for primitiveType.
+   * <pre>
+   * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
+   * are implemented according to issue #880.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableType type = 1;</code>
+   * @return The type.
    */
-  int getPrimitiveTypeValue();
-  /**
-   * <code>.littlehorse.VariableType primitive_type = 1;</code>
-   * @return The primitiveType.
-   */
-  io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
-
-  /**
-   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
-   * @return Whether the structDefId field is set.
-   */
-  boolean hasStructDefId();
-  /**
-   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
-   * @return The structDefId.
-   */
-  io.littlehorse.sdk.common.proto.StructDefId getStructDefId();
-  /**
-   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();
-
-  /**
-   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
-   * @return Whether the inlineStructDef field is set.
-   */
-  boolean hasInlineStructDef();
-  /**
-   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
-   * @return The inlineStructDef.
-   */
-  io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef();
-  /**
-   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
-   */
-  io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableType getType();
 
   /**
    * <pre>
@@ -62,6 +37,4 @@ public interface TypeDefinitionOrBuilder extends
    * @return The masked.
    */
   boolean getMasked();
-
-  io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase getDefinedTypeCase();
 }

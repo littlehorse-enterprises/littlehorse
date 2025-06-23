@@ -57,7 +57,6 @@ private static final long serialVersionUID = 0L;
     STR(6),
     INT(7),
     BYTES(8),
-    STRUCT(9),
     VALUE_NOT_SET(0);
     private final int value;
     private ValueCase(int value) {
@@ -82,7 +81,6 @@ private static final long serialVersionUID = 0L;
         case 6: return STR;
         case 7: return INT;
         case 8: return BYTES;
-        case 9: return STRUCT;
         case 0: return VALUE_NOT_SET;
         default: return null;
       }
@@ -408,37 +406,6 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.ByteString.EMPTY;
   }
 
-  public static final int STRUCT_FIELD_NUMBER = 9;
-  /**
-   * <code>.littlehorse.Struct struct = 9;</code>
-   * @return Whether the struct field is set.
-   */
-  @java.lang.Override
-  public boolean hasStruct() {
-    return valueCase_ == 9;
-  }
-  /**
-   * <code>.littlehorse.Struct struct = 9;</code>
-   * @return The struct.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.Struct getStruct() {
-    if (valueCase_ == 9) {
-       return (io.littlehorse.sdk.common.proto.Struct) value_;
-    }
-    return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.Struct struct = 9;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder() {
-    if (valueCase_ == 9) {
-       return (io.littlehorse.sdk.common.proto.Struct) value_;
-    }
-    return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -478,9 +445,6 @@ private static final long serialVersionUID = 0L;
       output.writeBytes(
           8, (com.google.protobuf.ByteString) value_);
     }
-    if (valueCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.sdk.common.proto.Struct) value_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -518,10 +482,6 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(
             8, (com.google.protobuf.ByteString) value_);
-    }
-    if (valueCase_ == 9) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.Struct) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -569,10 +529,6 @@ private static final long serialVersionUID = 0L;
         if (!getBytes()
             .equals(other.getBytes())) return false;
         break;
-      case 9:
-        if (!getStruct()
-            .equals(other.getStruct())) return false;
-        break;
       case 0:
       default:
     }
@@ -618,10 +574,6 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + BYTES_FIELD_NUMBER;
         hash = (53 * hash) + getBytes().hashCode();
-        break;
-      case 9:
-        hash = (37 * hash) + STRUCT_FIELD_NUMBER;
-        hash = (53 * hash) + getStruct().hashCode();
         break;
       case 0:
       default:
@@ -763,9 +715,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      if (structBuilder_ != null) {
-        structBuilder_.clear();
-      }
       valueCase_ = 0;
       value_ = null;
       return this;
@@ -807,10 +756,6 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableValue result) {
       result.valueCase_ = valueCase_;
       result.value_ = this.value_;
-      if (valueCase_ == 9 &&
-          structBuilder_ != null) {
-        result.value_ = structBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -892,10 +837,6 @@ private static final long serialVersionUID = 0L;
           setBytes(other.getBytes());
           break;
         }
-        case STRUCT: {
-          mergeStruct(other.getStruct());
-          break;
-        }
         case VALUE_NOT_SET: {
           break;
         }
@@ -964,13 +905,6 @@ private static final long serialVersionUID = 0L;
               valueCase_ = 8;
               break;
             } // case 66
-            case 74: {
-              input.readMessage(
-                  getStructFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              valueCase_ = 9;
-              break;
-            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1588,148 +1522,6 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       return this;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.Struct, io.littlehorse.sdk.common.proto.Struct.Builder, io.littlehorse.sdk.common.proto.StructOrBuilder> structBuilder_;
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     * @return Whether the struct field is set.
-     */
-    @java.lang.Override
-    public boolean hasStruct() {
-      return valueCase_ == 9;
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     * @return The struct.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Struct getStruct() {
-      if (structBuilder_ == null) {
-        if (valueCase_ == 9) {
-          return (io.littlehorse.sdk.common.proto.Struct) value_;
-        }
-        return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
-      } else {
-        if (valueCase_ == 9) {
-          return structBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     */
-    public Builder setStruct(io.littlehorse.sdk.common.proto.Struct value) {
-      if (structBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        value_ = value;
-        onChanged();
-      } else {
-        structBuilder_.setMessage(value);
-      }
-      valueCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     */
-    public Builder setStruct(
-        io.littlehorse.sdk.common.proto.Struct.Builder builderForValue) {
-      if (structBuilder_ == null) {
-        value_ = builderForValue.build();
-        onChanged();
-      } else {
-        structBuilder_.setMessage(builderForValue.build());
-      }
-      valueCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     */
-    public Builder mergeStruct(io.littlehorse.sdk.common.proto.Struct value) {
-      if (structBuilder_ == null) {
-        if (valueCase_ == 9 &&
-            value_ != io.littlehorse.sdk.common.proto.Struct.getDefaultInstance()) {
-          value_ = io.littlehorse.sdk.common.proto.Struct.newBuilder((io.littlehorse.sdk.common.proto.Struct) value_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          value_ = value;
-        }
-        onChanged();
-      } else {
-        if (valueCase_ == 9) {
-          structBuilder_.mergeFrom(value);
-        } else {
-          structBuilder_.setMessage(value);
-        }
-      }
-      valueCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     */
-    public Builder clearStruct() {
-      if (structBuilder_ == null) {
-        if (valueCase_ == 9) {
-          valueCase_ = 0;
-          value_ = null;
-          onChanged();
-        }
-      } else {
-        if (valueCase_ == 9) {
-          valueCase_ = 0;
-          value_ = null;
-        }
-        structBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.Struct.Builder getStructBuilder() {
-      return getStructFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder() {
-      if ((valueCase_ == 9) && (structBuilder_ != null)) {
-        return structBuilder_.getMessageOrBuilder();
-      } else {
-        if (valueCase_ == 9) {
-          return (io.littlehorse.sdk.common.proto.Struct) value_;
-        }
-        return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.Struct struct = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.Struct, io.littlehorse.sdk.common.proto.Struct.Builder, io.littlehorse.sdk.common.proto.StructOrBuilder> 
-        getStructFieldBuilder() {
-      if (structBuilder_ == null) {
-        if (!(valueCase_ == 9)) {
-          value_ = io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
-        }
-        structBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.Struct, io.littlehorse.sdk.common.proto.Struct.Builder, io.littlehorse.sdk.common.proto.StructOrBuilder>(
-                (io.littlehorse.sdk.common.proto.Struct) value_,
-                getParentForChildren(),
-                isClean());
-        value_ = null;
-      }
-      valueCase_ = 9;
-      onChanged();
-      return structBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
