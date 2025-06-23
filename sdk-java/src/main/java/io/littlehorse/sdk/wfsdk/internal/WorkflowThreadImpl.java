@@ -17,7 +17,6 @@ import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
@@ -27,6 +26,7 @@ import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
@@ -368,7 +368,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
             if (WfRunVariableImpl.class.isAssignableFrom(arg.getClass())) {
                 WfRunVariableImpl wfVar = ((WfRunVariableImpl) arg);
 
-                if (wfVar.getDefinedType() == DefinedTypeCase.PRIMITIVE_TYPE && (wfVar.typeDef.getPrimitiveType() == VariableType.JSON_ARR || wfVar.typeDef.getPrimitiveType() == VariableType.JSON_OBJ)
+                if (wfVar.getDefinedType() == DefinedTypeCase.PRIMITIVE_TYPE
+                        && (wfVar.typeDef.getPrimitiveType() == VariableType.JSON_ARR
+                                || wfVar.typeDef.getPrimitiveType() == VariableType.JSON_OBJ)
                         && wfVar.jsonPath != null) {
                     log.info("There is a jsonpath, so not checking value because Json schema isn't"
                             + " yet implemented");

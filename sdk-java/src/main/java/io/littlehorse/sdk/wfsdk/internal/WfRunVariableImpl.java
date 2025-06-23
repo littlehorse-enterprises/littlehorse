@@ -261,7 +261,8 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     public ThreadVarDef getSpec() {
-        VariableDef.Builder varDef = VariableDef.newBuilder().setTypeDef(typeDef).setName(this.getName());
+        VariableDef.Builder varDef =
+                VariableDef.newBuilder().setTypeDef(typeDef).setName(this.getName());
 
         if (this.defaultValue != null) {
             varDef.setDefaultValue(defaultValue);
