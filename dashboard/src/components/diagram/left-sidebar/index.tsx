@@ -3,11 +3,14 @@ import ScheduledWfRunsTab from '@/components/diagram/left-sidebar/tab-content/sc
 import { Badge } from '@/components/ui/badge'
 import SidebarExpandButton from '@/components/ui/sidebar-expand-button'
 import { LeftSidebarTabId } from '@/types/leftSidebarTabs'
-import { WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { useEffect, useState } from 'react'
 import WfRunTab from './tab-content/wf-run-tab'
 import WfSpecTab from './tab-content/wf-spec-tab'
 import LeftSidebarTabs from './tabs'
+import ActionButton from './action-button'
+import { executeRpc } from '@/actions/executeRPC'
+import { useParams } from 'next/navigation'
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
   WfSpec: 'Workflow Specification',
@@ -25,6 +28,7 @@ interface LeftSidebarProps {
 export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
   const [activeTab, setActiveTab] = useState<LeftSidebarTabId>('WfSpec')
   const [sidebarState, setSidebarState] = useState<SidebarState>('normal')
+  const { tenantId } = useParams<{ tenantId: string }>()
 
   // Auto-expand sidebar when tab is WfRuns or ScheduledWfRuns
   useEffect(() => {
@@ -118,13 +122,57 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
           </div>
         </div>
 
-        {/* Run Workflow Button */}
-        {/* <div className="mt-auto border-t border-gray-200 p-4">
-          <Button className="w-full bg-[#3b81f5] hover:bg-[#3b81f5]/90">
-            <Play className="mr-2 h-4 w-4" />
-            Run Workflow
-          </Button>
-        </div> */}
+        {/* Action Button */}
+        {!wfRun && (
+          <ActionButton
+            variant="run"
+            wfSpec={wfSpec}
+            action={() => {
+              if (!wfSpec?.id?.name) return;
+              executeRpc("runWf", {
+                wfSpecName: wfSpec.id.name,
+                // todo: need variables
+                variables: {}
+              }, tenantId)
+            }}
+          />
+        )}
+        {wfRun && (wfRun.status === LHStatus.RUNNING) && (
+          <>
+            <ActionButton
+              variant="stop"
+              action={() => {
+                executeRpc("stopWfRun", {
+                  wfRunId: wfRun.id,
+                  threadRunNumber: 0
+                }, tenantId)
+              }}
+            />
+          </>
+        )}
+        {wfRun && (wfRun.status === LHStatus.ERROR) && (
+          <ActionButton
+            variant="rescue"
+            action={() => {
+              executeRpc("rescueThreadRun", {
+                wfRunId: wfRun.id,
+                threadRunNumber: 0,
+                skipCurrentNode: false,
+              }, tenantId)
+            }}
+          />
+        )}
+        {wfRun?.status === LHStatus.HALTED && (
+          <ActionButton
+            variant="resume"
+            action={() => {
+              executeRpc("resumeWfRun", {
+                wfRunId: wfRun.id,
+                threadRunNumber: 0,
+              }, tenantId)
+            }}
+          />
+        )}
       </div>
     </div>
   )
