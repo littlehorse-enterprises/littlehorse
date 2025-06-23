@@ -40,7 +40,9 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 	if tw.taskSig.HasOutput {
 		ptd.ReturnType = &lhproto.ReturnType{
 			ReturnType: &lhproto.TypeDefinition{
-				Type:   ReflectTypeToVarType(*tw.taskSig.OutputType),
+				DefinedType: &lhproto.TypeDefinition_PrimitiveType{
+					PrimitiveType: ReflectTypeToVarType(*tw.taskSig.OutputType),
+				},
 				Masked: tw.maskedOutput,
 			},
 		}

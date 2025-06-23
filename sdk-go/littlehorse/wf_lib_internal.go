@@ -623,8 +623,8 @@ func (w *WfRunVariable) withDefaultImpl(defaultValue interface{}) *WfRunVariable
 		if err != nil {
 			log.Fatal(err)
 		}
-		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.TypeDef.Type {
-			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.TypeDef.Type.String())
+		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.TypeDef.GetPrimitiveType() {
+			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.TypeDef.GetPrimitiveType().String())
 		}
 		w.threadVarDef.VarDef.DefaultValue = defaultVarVal
 	}
@@ -828,8 +828,12 @@ func (t *WorkflowThread) addVariable(
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &lhproto.VariableDef{
-		TypeDef: &lhproto.TypeDefinition{Type: varType},
-		Name:    name,
+		TypeDef: &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{
+				PrimitiveType: varType,
+			},
+		},
+		Name: name,
 	}
 
 	threadVarDef := &lhproto.ThreadVarDef{
