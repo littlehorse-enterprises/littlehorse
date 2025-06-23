@@ -1,9 +1,10 @@
 'use client'
 
-import TenantHeader from './TenantHeader'
-import Logo from '../ui/logo'
+import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import Logo from '../ui/logo'
+import TenantHeader from './TenantHeader'
 
 export default function Header() {
   const tenantId = useParams().tenantId as string
@@ -19,7 +20,12 @@ export default function Header() {
         </nav>
       </div>
 
-      <TenantHeader />
+      <div className="flex items-center gap-4">
+        <Badge>
+          {process.env.VERSION}
+        </Badge>
+        <TenantHeader />
+      </div>
     </header>
   )
 }
