@@ -11,7 +11,7 @@ public class LHTaskWorkerTest {
 
     @Test
     public void getUnhealthyIfManagerIsNull() {
-        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "", Map.of(), new LHConfig(), null);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "greet", Map.of(), new LHConfig(), null);
         IllegalStateException exception = assertThrows(IllegalStateException.class, task::healthStatus);
         assertThat(exception.getMessage()).isEqualTo("Worker not started");
     }
