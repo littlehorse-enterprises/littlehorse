@@ -55,6 +55,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             // to .close() it to avoid leaks so that we can provide a global one.
             Cache oldCache = tableConfig.blockCache();
             tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
+            tableConfig.setCacheIndexAndFilterBlocks(true);
             oldCache.close();
         }
 
@@ -79,6 +80,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
         // Streams default is 3
         options.setMaxWriteBufferNumber(5);
+        options.setMaxBackgroundJobs(3);
+        options.setMaxSubcompactions(3);
         long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
         if (rateLimit > 0) {
             options.setRateLimiter(new RateLimiter(
