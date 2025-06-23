@@ -621,7 +621,7 @@ class WfRunVariable:
         """
         return ThreadVarDef(
             var_def=VariableDef(
-                type_def=TypeDefinition(type=self.type, masked=self._masked),
+                type_def=TypeDefinition(primitive_type=self.type, masked=self._masked),
                 name=self.name,
                 default_value=self.default_value,
             ),
@@ -2347,7 +2347,7 @@ def create_workflow_event_def(
     stub = config.stub()
     request = PutWorkflowEventDefRequest(
         name=name,
-        content_type=ReturnType(TypeDefinition(type=type)),
+        content_type=ReturnType(TypeDefinition(primitive_type=type)),
     )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")
