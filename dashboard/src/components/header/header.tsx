@@ -1,25 +1,26 @@
 'use client'
 
-import TenantHeader from './TenantHeader'
+import { Badge } from '@littlehorse-enterprises/ui-library/badge'
+import LinkWithTenant from '../link-with-tenant'
 import Logo from '../ui/logo'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import TenantHeader from './TenantHeader'
 
 export default function Header() {
-  const tenantId = useParams().tenantId as string
   return (
     <header className="flex h-16 items-center justify-between border-b border-gray-200 px-4 bg-black">
       <div className="flex items-center space-x-8">
-        <Link href={`/${tenantId}`} className="text-white hover:text-[#3b81f5]">
+        <LinkWithTenant href="/" className="mr-2">
           <Logo />
-        </Link>
+        </LinkWithTenant>
 
-        <nav className="flex space-x-8">
-
-        </nav>
+        <Badge variant="secondary" className="text-xs opacity-60">
+          {process.env.NEXT_PUBLIC_VERSION}
+        </Badge>
       </div>
 
-      <TenantHeader />
+      <div className="flex items-center gap-4">
+        <TenantHeader />
+      </div>
     </header>
   )
 }
