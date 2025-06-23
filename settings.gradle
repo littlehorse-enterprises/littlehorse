@@ -26,6 +26,7 @@ include(
         'interrupt-handler',
         'json',
         'saga',
+        'struct-def',
         'parallel-approval',
         'mutation',
         'user-tasks',
