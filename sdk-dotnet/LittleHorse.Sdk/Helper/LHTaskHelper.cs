@@ -7,18 +7,15 @@ namespace LittleHorse.Sdk.Helper
     {
         internal static WfRunId? GetWfRunId(TaskRunSource taskRunSource)
         {
-            switch (taskRunSource.TaskRunSourceCase)
+            return taskRunSource.TaskRunSourceCase switch
             {
-                case TaskRunSource.TaskRunSourceOneofCase.TaskNode:
-                    return taskRunSource.TaskNode.NodeRunId.WfRunId;
-                case TaskRunSource.TaskRunSourceOneofCase.UserTaskTrigger:
-                    return taskRunSource.UserTaskTrigger.NodeRunId.WfRunId;
-                default:
-                    return null;
-            }
+                TaskRunSource.TaskRunSourceOneofCase.TaskNode => taskRunSource.TaskNode.NodeRunId.WfRunId,
+                TaskRunSource.TaskRunSourceOneofCase.UserTaskTrigger => taskRunSource.UserTaskTrigger.NodeRunId.WfRunId,
+                _ => null
+            };
         }
 
-        private static string ParseWfRunIdToString(WfRunId wfRunId) 
+        private static string ParseWfRunIdToString(WfRunId wfRunId)
         {
             var output = new StringBuilder();
             if (wfRunId.ParentWfRunId != null) {
@@ -26,11 +23,11 @@ namespace LittleHorse.Sdk.Helper
                 output.Append("_");
             }
             output.Append(wfRunId.Id);
-            
+
             return output.ToString();
         }
-        
-        internal static string ParseTaskRunIdToString(TaskRunId taskRunId) 
+
+        internal static string ParseTaskRunIdToString(TaskRunId taskRunId)
         {
             return ParseWfRunIdToString(taskRunId.WfRunId) + "/" + taskRunId.TaskGuid;
         }

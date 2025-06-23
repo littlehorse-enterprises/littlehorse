@@ -10,8 +10,8 @@ namespace LittleHorse.Sdk.Worker
     /// </summary>
     public class LHWorkerContext
     {
-        private DateTime? _scheduleDateTime;
-        private ScheduledTask _scheduleTask;
+        private readonly DateTime? _scheduleDateTime;
+        private readonly ScheduledTask _scheduleTask;
 
         /// <summary>
         /// The current logOutput.
@@ -35,10 +35,19 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// the Id of the WfRun for the NodeRun that's being executed.
         /// </returns>
+        [Obsolete("GetWfRunId is deprecated, please use WfRunId property instead.")]
         public WfRunId GetWfRunId() 
         {
-            return LHTaskHelper.GetWfRunId(_scheduleTask.Source)!;
+            return WfRunId;
         }
+        
+        /// <summary>
+        /// Returns the Id of the WfRun for the NodeRun that's being executed.
+        /// </summary>
+        /// <returns>
+        /// the Id of the WfRun for the NodeRun that's being executed.
+        /// </returns>
+        public WfRunId WfRunId => LHTaskHelper.GetWfRunId(_scheduleTask.Source)!;
         
         /// <summary>
         /// Returns the NodeRun ID for the Task that was just scheduled.
@@ -46,16 +55,30 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// A <c>NodeRunIdPb</c> protobuf class with the ID from the executed NodeRun.
         /// </returns>
-        public NodeRunId? GetNodeRunId() 
+        [Obsolete("GetNodeRunId is deprecated, please use NodeRunId property instead.")]
+        public NodeRunId? GetNodeRunId()
         {
-            TaskRunSource source = _scheduleTask.Source;
-            switch (source.TaskRunSourceCase) {
-                case TaskRunSource.TaskRunSourceOneofCase.TaskNode:
-                    return source.TaskNode.NodeRunId;
-                case TaskRunSource.TaskRunSourceOneofCase.UserTaskTrigger:
-                    return source.UserTaskTrigger.NodeRunId;
+            return NodeRunId;
+        }
+
+        /// <summary>
+        /// Returns the NodeRun ID for the Task that was just scheduled.
+        /// </summary>
+        /// <returns>
+        /// A <c>NodeRunIdPb</c> protobuf class with the ID from the executed NodeRun.
+        /// </returns>
+        public NodeRunId? NodeRunId
+        {
+            get
+            {
+                var source = _scheduleTask.Source;
+                return source.TaskRunSourceCase switch
+                {
+                    TaskRunSource.TaskRunSourceOneofCase.TaskNode => source.TaskNode.NodeRunId,
+                    TaskRunSource.TaskRunSourceOneofCase.UserTaskTrigger => source.UserTaskTrigger.NodeRunId,
+                    _ => null
+                };
             }
-            return null;
         }
         
         /// <summary>
@@ -65,11 +88,21 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// The attempt number of the NodeRun that's being executed.
         /// </returns>
+        [Obsolete("GetAttemptNumber is deprecated, please use AttemptNumber property instead.")]
         public int GetAttemptNumber() 
         {
-            return _scheduleTask.AttemptNumber;
+            return AttemptNumber;
         }
         
+        /// <summary>
+        /// Returns the attemptNumber of the NodeRun that's being executed. If this is the first attempt,
+        /// returns zero. If this is the first retry, returns 1, and so on.
+        /// </summary>
+        /// <returns>
+        /// The attempt number of the NodeRun that's being executed.
+        /// </returns>
+        public int AttemptNumber => _scheduleTask.AttemptNumber;
+
         /// <summary>
         /// Returns the time at which the task was scheduled by the processor. May be useful in certain
         /// customer edge cases, eg. to determine whether it's too late to actually perform an action,
@@ -78,10 +111,21 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// The time at which the current NodeRun was scheduled.
         /// </returns>
+        [Obsolete("GetScheduledTime is deprecated, please use ScheduledTime property instead.")]
         public DateTime? GetScheduledTime() 
         {
-            return _scheduleDateTime;
+            return ScheduledTime;
         }
+
+        /// <summary>
+        /// Returns the time at which the task was scheduled by the processor. May be useful in certain
+        /// customer edge cases, eg. to determine whether it's too late to actually perform an action,
+        /// when (now() - ScheduledTime) is above some threshold, etc.
+        /// </summary>
+        /// <returns>
+        /// The time at which the current NodeRun was scheduled.
+        /// </returns>
+        public DateTime? ScheduledTime => _scheduleDateTime;
 
         /// <summary>
         /// Provides a way to push data into the log output. Any object may be passed in; its string
@@ -106,10 +150,19 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// The associated TaskRunId.
         /// </returns>
-        public TaskRunId GetTaskRunId() 
+        [Obsolete("GetTaskRunId is deprecated, please use TaskRunId property instead.")]
+        public TaskRunId GetTaskRunId()
         {
-            return _scheduleTask.TaskRunId;
+            return TaskRunId;
         }
+
+        /// <summary>
+        /// Returns the TaskRunId of this TaskRun.
+        /// </summary>
+        /// <returns>
+        /// The associated TaskRunId.
+        /// </returns>
+        public TaskRunId TaskRunId => _scheduleTask.TaskRunId;
 
         private UserTaskTriggerReference? GetUserTaskTrigger() 
         {
@@ -127,12 +180,31 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         ///The id of the user that the associated UserTask is assigned to.
         /// </returns>
+        [Obsolete("GetUserId is deprecated, please use UserId property instead.")]
         public string? GetUserId()
         {
-            UserTaskTriggerReference? uttr = GetUserTaskTrigger();
-            if (uttr == null) return null;
+            return UserId;
+        }
 
-            return uttr.HasUserId ? uttr.UserId : null;
+        /// <summary>
+        /// If this TaskRun is a User Task Reminder TaskRun, then this method returns the
+        /// UserId of the user who the associated UserTask is assigned to. Returns
+        /// null if:
+        /// - this TaskRun is not a Reminder Task
+        /// - this TaskRun is a Reminder Task, but the UserTaskRun does not have an assigned
+        ///   user id.
+        /// </summary>
+        /// <returns>
+        /// The id of the user that the associated UserTask is assigned to.
+        /// </returns>
+        public string? UserId
+        {
+            get
+            {
+                var userTaskTrigger = GetUserTaskTrigger();
+                if (userTaskTrigger == null) return null;
+                return userTaskTrigger.HasUserId ? userTaskTrigger.UserId : null;
+            }
         }
         
         /// <summary>
@@ -145,11 +217,29 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         ///The id of the User Group that the associated UserTask is assigned to.
         /// </returns>
+        [Obsolete("GetUserGroup is deprecated, please use UserGroup property instead.")]
         public string? GetUserGroup() {
-            UserTaskTriggerReference? uttr = GetUserTaskTrigger();
-            if (uttr == null) return null;
+            return UserGroup;
+        }
 
-            return uttr.HasUserGroup ? uttr.UserGroup : null;
+        /// <summary>
+        /// If this TaskRun is a User Task Reminder TaskRun, then this method returns the
+        /// UserGroup that the associated UserTask is assigned to. Returns null if:
+        /// - this TaskRun is not a Reminder Task
+        /// - this TaskRun is a Reminder Task, but the UserTaskRun does not have an
+        ///   associated User Group
+        /// </summary>
+        /// <returns>
+        ///The id of the User Group that the associated UserTask is assigned to.
+        /// </returns>
+        public string? UserGroup
+        {
+            get
+            {
+                var userTaskTrigger = GetUserTaskTrigger();
+                if (userTaskTrigger == null) return null;
+                return userTaskTrigger.HasUserGroup ? userTaskTrigger.UserGroup : null;
+            }
         }
         
         /// <summary>
@@ -159,9 +249,16 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// An idempotency key.
         /// </returns>
+        [Obsolete("GetIdempotencyKey is deprecated, please use IdempotencyKey property instead.")]
         public string GetIdempotencyKey() 
         {
-            return LHTaskHelper.ParseTaskRunIdToString(GetTaskRunId());
+            return IdempotencyKey;
         }
+
+        /// <summary>
+        /// Returns an idempotency key that can be used to make calls to upstream api's idempotent across
+        /// TaskRun Retries
+        /// </summary>
+        public string IdempotencyKey => LHTaskHelper.ParseTaskRunIdToString(TaskRunId);
     }
 }

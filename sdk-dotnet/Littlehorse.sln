@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwaitWorkflowEventExample",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserTasksExample", "Examples\UserTasksExample\UserTasksExample.csproj", "{992F5740-338D-4D9D-A13D-AA1EB1D54394}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LittleHorse.Canary.Worker", "LittleHorse.Canary.Worker\LittleHorse.Canary.Worker.csproj", "{6685D7B8-413A-4C6B-91A6-9699B4EE80C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{992F5740-338D-4D9D-A13D-AA1EB1D54394}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{992F5740-338D-4D9D-A13D-AA1EB1D54394}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{992F5740-338D-4D9D-A13D-AA1EB1D54394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6685D7B8-413A-4C6B-91A6-9699B4EE80C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6685D7B8-413A-4C6B-91A6-9699B4EE80C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6685D7B8-413A-4C6B-91A6-9699B4EE80C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6685D7B8-413A-4C6B-91A6-9699B4EE80C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88CB23B3-1174-45F5-9F72-46AB57BAB661} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
