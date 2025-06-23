@@ -689,7 +689,7 @@ def _return_to_lh_schema(return_type: type) -> Optional[ReturnType]:
     )
     if lh_type is not None:
         var = TypeDefinition(
-            type=to_variable_type(return_type),
+            primitive_type=to_variable_type(return_type),
             masked=lh_type.masked,
         )
     return ReturnType(return_type=var)
