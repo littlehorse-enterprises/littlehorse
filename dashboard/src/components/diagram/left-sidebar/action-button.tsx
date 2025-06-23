@@ -8,6 +8,7 @@ import WorkflowExecutionDialog from './workflow-execution-dialog'
 import { WfSpec, WfRun } from 'littlehorse-client/proto'
 import { executeRpc } from '@/actions/executeRPC'
 import { useParams } from 'next/navigation'
+import { toast } from 'sonner'
 
 interface ActionButtonProps {
     variant: 'run' | 'stop' | 'rescue' | 'resume'
@@ -72,35 +73,49 @@ export default function ActionButton({ variant, wfSpec, wfRun }: ActionButtonPro
         }
     }
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         if (!tenantId) return
 
-        switch (variant) {
-            case 'stop':
-                if (wfRun?.id) {
-                    executeRpc("stopWfRun", {
-                        wfRunId: wfRun.id,
-                        threadRunNumber: 0
-                    }, tenantId)
-                }
-                break
-            case 'rescue':
-                if (wfRun?.id) {
-                    executeRpc("rescueThreadRun", {
-                        wfRunId: wfRun.id,
-                        threadRunNumber: 0,
-                        skipCurrentNode: false,
-                    }, tenantId)
-                }
-                break
-            case 'resume':
-                if (wfRun?.id) {
-                    executeRpc("resumeWfRun", {
-                        wfRunId: wfRun.id,
-                        threadRunNumber: 0,
-                    }, tenantId)
-                }
-                break
+        try {
+            switch (variant) {
+                case 'stop':
+                    if (wfRun?.id) {
+                        await executeRpc("stopWfRun", {
+                            wfRunId: wfRun.id,
+                            threadRunNumber: 0
+                        }, tenantId)
+                        toast.success('Workflow stopped successfully')
+                    }
+                    break
+                case 'rescue':
+                    if (wfRun?.id) {
+                        await executeRpc("rescueThreadRun", {
+                            wfRunId: wfRun.id,
+                            threadRunNumber: 0,
+                            skipCurrentNode: false,
+                        }, tenantId)
+                        toast.success('Workflow rescued successfully')
+                    }
+                    break
+                case 'resume':
+                    if (wfRun?.id) {
+                        await executeRpc("resumeWfRun", {
+                            wfRunId: wfRun.id,
+                            threadRunNumber: 0,
+                        }, tenantId)
+                        toast.success('Workflow resumed successfully')
+                    }
+                    break
+            }
+        } catch (error: unknown) {
+            console.error(`Failed to ${variant} workflow:`, error)
+            if (error instanceof Error) {
+                toast.error(error.message)
+            } else {
+                toast.error(`Failed to ${variant} workflow. Please try again.`)
+            }
+        } finally {
+            setShowConfirmation(false)
         }
     }
 

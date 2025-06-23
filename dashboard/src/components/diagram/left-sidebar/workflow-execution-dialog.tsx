@@ -43,9 +43,13 @@ export default function WorkflowExecutionDialog({ isOpen, onClose, wfSpec }: Wor
 
     const wfSpecVariables = useMemo(() => {
         return wfSpec.threadSpecs?.entrypoint?.variableDefs?.map(variable => {
+            // Create a deep copy to avoid mutating the original wfSpec
             const newVariable = { ...variable };
-            if (newVariable.varDef?.name) {
-                newVariable.varDef.name = newVariable.varDef.name.replace(/\./g, DOT_REPLACEMENT_PATTERN);
+            if (variable.varDef) {
+                newVariable.varDef = { ...variable.varDef };
+                if (newVariable.varDef.name) {
+                    newVariable.varDef.name = newVariable.varDef.name.replace(/\./g, DOT_REPLACEMENT_PATTERN);
+                }
             }
             return newVariable;
         }) ?? [];
