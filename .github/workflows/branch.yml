@@ -91,7 +91,7 @@ jobs:
         working-directory: ./dashboard
         run: |
           VERSION="${{ github.ref_name }}-${{ github.sha }}"
-          sed -i "s/VERSION: \".*\"/VERSION: \"$VERSION\"/g" next.config.ts
+          sed -i "s|VERSION: \".*\"|VERSION: \"$VERSION\"|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -124,7 +124,7 @@ jobs:
         working-directory: ./dashboard
         run: |
           VERSION="${{ github.ref_name }}-${{ github.sha }}"
-          sed -i "s/VERSION: \".*\"/VERSION: \"$VERSION\"/g" next.config.ts
+          sed -i "s|VERSION: \".*\"|VERSION: \"$VERSION\"|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard
