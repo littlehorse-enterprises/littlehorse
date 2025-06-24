@@ -105,6 +105,25 @@ export default function WfRunTab() {
     }
   }
 
+  // Helper function to format time range display
+  const formatTimeRangeDisplay = (minutes: number): string => {
+    if (minutes < 60) {
+      return `${minutes} minute${minutes === 1 ? '' : 's'}`
+    } else if (minutes < 1440) {
+      const hours = minutes / 60
+      return `${hours} hour${hours === 1 ? '' : 's'}`
+    } else if (minutes < 10080) {
+      const days = minutes / 1440
+      return `${days} day${days === 1 ? '' : 's'}`
+    } else if (minutes < 20160) {
+      const weeks = minutes / 10080
+      return `${weeks} week${weeks === 1 ? '' : 's'}`
+    } else {
+      const days = minutes / 1440
+      return `${days} day${days === 1 ? '' : 's'}`
+    }
+  }
+
   // Define columns for the workflow runs table
   const columns: ColumnDef<WfRun>[] = [
     {
@@ -205,15 +224,7 @@ export default function WfRunTab() {
               {timeRangeFilter !== null && (
                 <span>
                   {statusFilter.length > 0 ? ',' : ''} time: last{' '}
-                  {timeRangeFilter === 1440
-                    ? '24 hours'
-                    : timeRangeFilter === 10080
-                      ? '7 days'
-                      : timeRangeFilter === 43200
-                        ? '30 days'
-                        : timeRangeFilter >= 60
-                          ? `${timeRangeFilter / 60} hour${timeRangeFilter === 60 ? '' : 's'}`
-                          : `${timeRangeFilter} minutes`}
+                  {formatTimeRangeDisplay(timeRangeFilter)}
                 </span>
               )}
               )
