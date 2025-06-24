@@ -24,11 +24,22 @@ public interface ExternalEventNodeOutput extends NodeOutput {
 
     /**
      * Allows users to set a correlationId on the `ExternalEventNode`. This allows the NodeRun
-     * to be completed by CorrelatedEvents not just ExternalEvents.
+     * to be completed by CorrelatedEvents not just ExternalEvents. By default, the correlation
+     * key is not treated as sensitive and thus is not masked.
      * @param correlationId is the correlationId.
      * @return the ExternalEventNodeOutput.
      */
     public ExternalEventNodeOutput withCorrelationId(Serializable correlationId);
+
+    /**
+     * Allows users to set a correlationId on the `ExternalEventNode`. This allows the NodeRun
+     * to be completed by CorrelatedEvents not just ExternalEvents. Allows user to specify whether
+     * the correlation key should be treated as sensitive data.
+     * @param correlationId is the correlationId.
+     * @param maskCorrelationKey determines whether the correlation Key should be masked.
+     * @return the ExternalEventNodeOutput.
+     */
+    public ExternalEventNodeOutput withCorrelationId(Serializable correlationId, boolean maskCorrelationKey);
 
     /**
      * Allows setting a CorrelatedEventConfig on the ExternalEventDef registration.

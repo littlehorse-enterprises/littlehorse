@@ -291,7 +291,14 @@ export interface ExternalEventNodeRun {
    * If set, then this `ExternalEventNodeRun` can be completed by a
    * `CorrelatedEvent` with the matching correlation id.
    */
-  correlationKey?: string | undefined;
+  correlationKey?:
+    | string
+    | undefined;
+  /**
+   * Specifies whether the correlation key should be masked. Ignored if
+   * correlation_key is not set.
+   */
+  maskCorrelationKey: boolean;
 }
 
 /** The sub-node structure for a SLEEP NodeRun. */
@@ -1177,6 +1184,7 @@ function createBaseExternalEventNodeRun(): ExternalEventNodeRun {
     externalEventId: undefined,
     timedOut: false,
     correlationKey: undefined,
+    maskCorrelationKey: false,
   };
 }
 
@@ -1196,6 +1204,9 @@ export const ExternalEventNodeRun = {
     }
     if (message.correlationKey !== undefined) {
       writer.uint32(42).string(message.correlationKey);
+    }
+    if (message.maskCorrelationKey !== false) {
+      writer.uint32(48).bool(message.maskCorrelationKey);
     }
     return writer;
   },
@@ -1242,6 +1253,13 @@ export const ExternalEventNodeRun = {
 
           message.correlationKey = reader.string();
           continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.maskCorrelationKey = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1265,6 +1283,7 @@ export const ExternalEventNodeRun = {
       : undefined;
     message.timedOut = object.timedOut ?? false;
     message.correlationKey = object.correlationKey ?? undefined;
+    message.maskCorrelationKey = object.maskCorrelationKey ?? false;
     return message;
   },
 };
