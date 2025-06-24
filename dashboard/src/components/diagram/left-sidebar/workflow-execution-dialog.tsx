@@ -1,25 +1,25 @@
 'use client'
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { executeRpc } from '@/actions/executeRPC'
+import { accessLevelLabels } from '@/utils/data/accessLevels'
+import { getVariableDefType, VARIABLE_TYPES } from '@/utils/data/variables'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@littlehorse-enterprises/ui-library/dialog'
+import { Input } from '@littlehorse-enterprises/ui-library/input'
+import { Label } from '@littlehorse-enterprises/ui-library/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@littlehorse-enterprises/ui-library/select'
+import { Textarea } from '@littlehorse-enterprises/ui-library/textarea'
 import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
-import { useMemo, useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { getVariableDefType, VARIABLE_TYPES } from '@/utils/data/variables'
-import { accessLevelLabels } from '@/utils/data/accessLevels'
-import { executeRpc } from '@/actions/executeRPC'
 
 export const DOT_REPLACEMENT_PATTERN = "*-/:DOT_REPLACE:"
 
