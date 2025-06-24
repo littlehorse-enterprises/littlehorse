@@ -7,7 +7,7 @@ import { FilterResetButton } from '@/components/ui/filter-reset-button'
 import { useExecuteRPCWithSWR } from '@/hooks/useExecuteRPCWithSWR'
 import { MINUTES_TO_TIME_RANGE, STATUS_OPTIONS, TIME_RANGE_MINUTES, TIME_RANGE_OPTIONS } from '@/utils/ui/constants'
 import type { ColumnDef } from '@tanstack/react-table'
-import { WfRun } from 'littlehorse-client/proto'
+import { LHStatus, WfRun } from 'littlehorse-client/proto'
 import { CheckCircle, Clock, Loader2, XCircle } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
@@ -16,7 +16,7 @@ export default function WfRunTab() {
   const router = useRouter()
   const tenantId = useParams().tenantId as string
   const wfSpecName = useParams().wfSpecName as string
-  const [statusFilter, setStatusFilter] = useState<string[]>([])
+  const [statusFilter, setStatusFilter] = useState<LHStatus[]>([])
   const [timeRangeFilter, setTimeRangeFilter] = useState<number | null>(null)
   const [wfRuns, setWfRuns] = useState<WfRun[]>([])
 
@@ -47,7 +47,7 @@ export default function WfRunTab() {
   // Handle status filter changes
   const handleStatusFilterChange = (values: string | string[]) => {
     if (Array.isArray(values)) {
-      setStatusFilter(values)
+      setStatusFilter(values as LHStatus[])
     }
   }
 
@@ -87,18 +87,21 @@ export default function WfRunTab() {
   }, [wfRuns, statusFilter, timeRangeFilter])
 
   // Get status icon for workflow run
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: LHStatus) => {
     switch (status) {
-      case 'COMPLETED':
+      case LHStatus.COMPLETED:
         return <CheckCircle className="h-3 w-3 text-green-500" />
-      case 'FAILED':
+      case LHStatus.ERROR:
+      case LHStatus.EXCEPTION:
         return <XCircle className="h-3 w-3 text-red-500" />
-      case 'RUNNING':
+      case LHStatus.STARTING:
+      case LHStatus.RUNNING:
+      case LHStatus.HALTING:
         return <Loader2 className="h-3 w-3 animate-spin text-blue-500" />
-      case 'PENDING':
+      case LHStatus.HALTED:
         return <Clock className="h-3 w-3 text-[#656565]" />
       default:
-        return null
+        return <Clock className="h-3 w-3 text-[#656565]" />
     }
   }
 
@@ -132,7 +135,7 @@ export default function WfRunTab() {
         </div>
       ),
       cell: ({ row }) => {
-        const status = row.getValue('status') as string
+        const status = row.getValue('status') as LHStatus
         const icon = getStatusIcon(status)
 
         return (
