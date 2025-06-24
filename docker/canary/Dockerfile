@@ -7,7 +7,7 @@ WORKDIR /lh
 
 COPY ./docker/canary/docker-entrypoint.sh /lh/java
 COPY ./canary/build/libs/canary-*-all.jar /lh/java/canary.jar
-COPY ./sdk-dotnet/LittleHorse.Canary.Worker/publish /lh/dotnet
+COPY ./sdk-dotnet/LittleHorse.Canary.Worker/publish /lh/dotnet/
 
 ENTRYPOINT ["/lh/docker-entrypoint.sh"]
 CMD ["canary"]
