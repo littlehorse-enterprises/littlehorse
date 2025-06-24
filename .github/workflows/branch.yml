@@ -69,7 +69,7 @@ jobs:
         run: ./gradlew canary:build
 
       - name: Tests and Build Dotnet
-        run: dotnet publish -c Release -o ./sdk-dotnet/LittleHorse.Canary.Worker/publish sdk-dotnet/LittleHorse.Canary.Worker/LittleHorse.Canary.Worker.csproj && ls ./sdk-dotnet/LittleHorse.Canary.Worker/publish
+        run: dotnet publish -c Release sdk-dotnet/LittleHorse.Canary.Worker/LittleHorse.Canary.Worker.csproj
 
       - uses: actions/upload-artifact@v4
         with:
