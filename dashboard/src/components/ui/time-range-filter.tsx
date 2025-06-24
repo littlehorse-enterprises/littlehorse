@@ -12,7 +12,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@littlehorse-enterprises/ui-library/dropdown-menu'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
 
 export interface TimeRangeFilterProps {

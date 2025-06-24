@@ -9,7 +9,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
+} from '@littlehorse-enterprises/ui-library/pagination'
 
 interface TablePaginationProps {
   currentPage: number
