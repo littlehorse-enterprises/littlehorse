@@ -1,6 +1,6 @@
 'use client'
 import ScheduledWfRunsTab from '@/components/diagram/left-sidebar/tab-content/scheduled-wf-runs-tab'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import SidebarExpandButton from '@/components/ui/sidebar-expand-button'
 import { LeftSidebarTabId } from '@/types/leftSidebarTabs'
 import { WfRun, WfSpec } from 'littlehorse-client/proto'
