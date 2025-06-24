@@ -37,7 +37,7 @@ export function MetadataSearchClient() {
 
       <Tabs value={activeTab} onValueChange={value => setActiveTab(value as SearchType)} className="w-full">
         <TabsList className="mb-8 w-full justify-start rounded-none border-b bg-transparent p-0">
-          {SEARCH_ENTITIES.filter(id => id !== "TaskRun").map(id => (
+          {SEARCH_ENTITIES.map(id => (
             <TabsTrigger key={id} value={id}>
               {id}
             </TabsTrigger>
