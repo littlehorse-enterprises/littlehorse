@@ -246,8 +246,9 @@ private static final long serialVersionUID = 0L;
   private int userTaskDefVersion_ = 0;
   /**
    * <pre>
-   * If set, then the UserTaskRun will always have this specific version of the
-   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+   * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+   * processor to be the latest available version of the UserTaskDef. That way, the
+   * WfSpec always runs with the same version of the UserTaskDef.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>
@@ -259,8 +260,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * If set, then the UserTaskRun will always have this specific version of the
-   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+   * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+   * processor to be the latest available version of the UserTaskDef. That way, the
+   * WfSpec always runs with the same version of the UserTaskDef.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>
@@ -1700,8 +1702,9 @@ private static final long serialVersionUID = 0L;
     private int userTaskDefVersion_ ;
     /**
      * <pre>
-     * If set, then the UserTaskRun will always have this specific version of the
-     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+     * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+     * processor to be the latest available version of the UserTaskDef. That way, the
+     * WfSpec always runs with the same version of the UserTaskDef.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>
@@ -1713,8 +1716,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If set, then the UserTaskRun will always have this specific version of the
-     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+     * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+     * processor to be the latest available version of the UserTaskDef. That way, the
+     * WfSpec always runs with the same version of the UserTaskDef.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>
@@ -1726,8 +1730,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If set, then the UserTaskRun will always have this specific version of the
-     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+     * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+     * processor to be the latest available version of the UserTaskDef. That way, the
+     * WfSpec always runs with the same version of the UserTaskDef.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>
@@ -1743,8 +1748,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If set, then the UserTaskRun will always have this specific version of the
-     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+     * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+     * processor to be the latest available version of the UserTaskDef. That way, the
+     * WfSpec always runs with the same version of the UserTaskDef.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>

@@ -26,6 +26,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     private ExternalEventIdModel externalEventId;
     private boolean timedOut;
     private String correlationKey;
+    private boolean maskCorrelationKey;
 
     public ExternalEventNodeRunModel() {}
 
@@ -61,8 +63,13 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         if (p.hasExternalEventId()) {
             externalEventId = LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class, context);
         }
+        this.maskCorrelationKey = p.getMaskCorrelationKey();
         if (p.hasCorrelationKey()) {
-            correlationKey = p.getCorrelationKey();
+            if (context.support(RequestExecutionContext.class) && this.maskCorrelationKey) {
+                correlationKey = LHConstants.STRING_MASK;
+            } else {
+                correlationKey = p.getCorrelationKey();
+            }
         }
         externalEventDefId =
                 LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
@@ -73,7 +80,8 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     public ExternalEventNodeRun.Builder toProto() {
         ExternalEventNodeRun.Builder out = ExternalEventNodeRun.newBuilder()
                 .setExternalEventDefId(externalEventDefId.toProto())
-                .setTimedOut(timedOut);
+                .setTimedOut(timedOut)
+                .setMaskCorrelationKey(maskCorrelationKey);
 
         if (eventTime != null) {
             out.setEventTime(LHUtil.fromDate(eventTime));
@@ -141,6 +149,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
 
     @Override
     public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
+        this.maskCorrelationKey = getNode().getExternalEventNode().isMaskCorrelationId();
         // Two things may or may not happen on arrival:
         // 1. Schedule the timeout
         // 2. Send a CorrelationMarker
