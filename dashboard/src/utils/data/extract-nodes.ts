@@ -12,7 +12,7 @@ export function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomNode
       type: 'node',
       data: {
         node,
-        type: getNodeType(node),
+        type: getNodeType(node).type,
         label: id,
       },
       position: { x: 0, y: 0 },

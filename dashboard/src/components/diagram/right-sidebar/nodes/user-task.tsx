@@ -1,70 +1,41 @@
-import { Node, UserTaskNode } from "littlehorse-client/proto";
-import { BaseNodeComponent } from "./base-node";
+import { Section } from "../section";
+import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
+import { NodeForType } from "@/utils/data/node";
 
-interface UserTaskNodeComponentProps {
-  userTaskNode: Node & { userTask: UserTaskNode }
-}
-
-export function UserTaskNodeComponent({ userTaskNode }: UserTaskNodeComponentProps) {
-  const mainContent = (
+export function UserTaskNodeComponent({ userTask }: NodeForType<'USER_TASK'>) {
+  return (
     <>
-      {userTaskNode.userTask.userTaskDefName && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Task Def:</span>
-          <span className="font-mono text-blue-600">{userTaskNode.userTask.userTaskDefName}</span>
-        </div>
-      )}
-      {userTaskNode.userTask.userTaskDefVersion && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Version:</span>
-          <span className="font-mono">{userTaskNode.userTask.userTaskDefVersion}</span>
-        </div>
-      )}
-      {userTaskNode.userTask.userGroup && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">User Group:</span>
-          <span className="font-mono">{getVariable(userTaskNode.userTask.userGroup)}</span>
-        </div>
-      )}
-      {userTaskNode.userTask.userId && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">User ID:</span>
-          <span className="font-mono">{getVariable(userTaskNode.userTask.userId)}</span>
-        </div>
-      )}
-      {userTaskNode.userTask.notes && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Notes:</span>
-          <span className="font-mono">{getVariable(userTaskNode.userTask.notes)}</span>
-        </div>
+      <Section title="UserTaskNode">
+        {userTask.userTaskDefName && (
+          <Label label="TaskDef" valueClassName="font-mono text-blue-600">{userTask.userTaskDefName}</Label>
+        )}
+        {userTask.userTaskDefVersion && (
+          <Label label="Version">{userTask.userTaskDefVersion}</Label>
+        )}
+        {userTask.userGroup && (
+          <Label label="User Group">{getVariable(userTask.userGroup)}</Label>
+        )}
+        {userTask.userId && (
+          <Label label="User ID">{getVariable(userTask.userId)}</Label>
+        )}
+        {userTask.notes && (
+          <Label label="Notes">{getVariable(userTask.notes)}</Label>
+        )}
+      </Section>
+
+      {userTask.actions && userTask.actions.length > 0 && (
+        <Section title="Actions">
+          <div className="space-y-1 text-xs">
+            {userTask.actions.map((action, index) => (
+              <div key={index} className="font-mono">
+                <span className="text-purple-600">Action {index + 1}:</span>{' '}
+                <span className="text-blue-600">{JSON.stringify(action)}</span>
+              </div>
+            ))}
+          </div>
+        </Section>
       )}
     </>
-  );
-
-  const additionalSections = userTaskNode.userTask.actions && userTaskNode.userTask.actions.length > 0 ? [
-    {
-      title: "Actions",
-      content: (
-        <div className="space-y-1 text-xs">
-          {userTaskNode.userTask.actions.map((action, index) => (
-            <div key={index} className="font-mono">
-              <span className="text-purple-600">Action {index + 1}:</span>{' '}
-              <span className="text-blue-600">{JSON.stringify(action)}</span>
-            </div>
-          ))}
-        </div>
-      )
-    }
-  ] : undefined;
-
-  return (
-    <BaseNodeComponent
-      title="User Task Properties"
-      type="USER_TASK"
-      additionalSections={additionalSections}
-    >
-      {mainContent}
-    </BaseNodeComponent>
   )
 }

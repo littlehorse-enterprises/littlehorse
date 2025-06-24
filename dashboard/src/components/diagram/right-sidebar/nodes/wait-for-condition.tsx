@@ -1,28 +1,13 @@
-import { Node, WaitForConditionNode } from "littlehorse-client/proto";
-import { BaseNodeComponent } from "./base-node";
+import { Section } from "../section";
+import { Label } from "../label";
+import { NodeForType } from "@/utils/data/node";
 
-interface WaitForConditionNodeComponentProps {
-  waitForConditionNode: Node & { waitForCondition: WaitForConditionNode }
-}
-
-export function WaitForConditionNodeComponent({ waitForConditionNode }: WaitForConditionNodeComponentProps) {
-  const mainContent = (
-    <>
-      {waitForConditionNode.waitForCondition.condition && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Condition:</span>
-          <span className="font-mono">{JSON.stringify(waitForConditionNode.waitForCondition.condition)}</span>
-        </div>
-      )}
-    </>
-  );
-
+export function WaitForConditionNodeComponent({ waitForCondition }: NodeForType<'WAIT_FOR_CONDITION'>) {
   return (
-    <BaseNodeComponent
-      title="Wait For Condition Properties"
-      type="WAIT_FOR_CONDITION"
-    >
-      {mainContent}
-    </BaseNodeComponent>
+    <Section title="WaitForConditionNode">
+      {waitForCondition.condition && (
+        <Label label="Condition">{JSON.stringify(waitForCondition.condition)}</Label>
+      )}
+    </Section>
   )
 } 

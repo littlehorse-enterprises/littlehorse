@@ -1,35 +1,17 @@
 import { getVariable } from "@/utils/data/variables";
-import { ExternalEventNode, Node } from "littlehorse-client/proto";
-import { BaseNodeComponent } from "./base-node";
+import { Section } from "../section";
+import { Label } from "../label";
+import { NodeForType } from "@/utils/data/node";
 
-interface ExternalEventNodeComponentProps {
-  externalEventNode: Node & { externalEvent: ExternalEventNode }
-}
-
-export function ExternalEventNodeComponent({ externalEventNode }: ExternalEventNodeComponentProps) {
-  const mainContent = (
-    <>
-      {externalEventNode.externalEvent.externalEventDefId && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Event Def:</span>
-          <span className="font-mono text-blue-600">{externalEventNode.externalEvent.externalEventDefId.name}</span>
-        </div>
-      )}
-      {externalEventNode.externalEvent.timeoutSeconds && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Timeout:</span>
-          <span className="font-mono">{getVariable(externalEventNode.externalEvent.timeoutSeconds)} seconds</span>
-        </div>
-      )}
-    </>
-  );
-
+export function ExternalEventNodeComponent({ externalEvent }: NodeForType<'EXTERNAL_EVENT'>) {
   return (
-    <BaseNodeComponent
-      title="External Event Properties"
-      type="EXTERNAL_EVENT"
-    >
-      {mainContent}
-    </BaseNodeComponent>
+    <Section title="ExternalEventNode">
+      {externalEvent.externalEventDefId && (
+        <Label label="EventDef" valueClassName="font-mono text-blue-600">{externalEvent.externalEventDefId.name}</Label>
+      )}
+      {externalEvent.timeoutSeconds && (
+        <Label label="Timeout">{getVariable(externalEvent.timeoutSeconds)} seconds</Label>
+      )}
+    </Section>
   )
 }

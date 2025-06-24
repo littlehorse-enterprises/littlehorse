@@ -1,52 +1,29 @@
-import { Node, StartMultipleThreadsNode } from "littlehorse-client/proto";
-import { BaseNodeComponent } from "./base-node";
+import { Section } from "../section";
+import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
+import { NodeForType } from "@/utils/data/node";
 
-interface StartMultipleThreadsNodeComponentProps {
-  startMultipleThreadsNode: Node & { startMultipleThreads: StartMultipleThreadsNode }
-}
-
-export function StartMultipleThreadsNodeComponent({ startMultipleThreadsNode }: StartMultipleThreadsNodeComponentProps) {
-  const mainContent = (
+export function StartMultipleThreadsNodeComponent({ startMultipleThreads }: NodeForType<'START_MULTIPLE_THREADS'>) {
+  return (
     <>
-      {startMultipleThreadsNode.startMultipleThreads.threadSpecName && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Thread Spec:</span>
-          <span className="font-mono text-blue-600">{startMultipleThreadsNode.startMultipleThreads.threadSpecName}</span>
-        </div>
-      )}
-      {startMultipleThreadsNode.startMultipleThreads.iterable && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Iterable:</span>
-          <span className="font-mono">{getVariable(startMultipleThreadsNode.startMultipleThreads.iterable)}</span>
-        </div>
+      <Section title="StartMultipleThreadsNode">
+        {startMultipleThreads.threadSpecName && (
+          <Label label="Thread Spec" valueClassName="font-mono text-blue-600">{startMultipleThreads.threadSpecName}</Label>
+        )}
+        {startMultipleThreads.iterable && (
+          <Label label="Iterable">{getVariable(startMultipleThreads.iterable)}</Label>
+        )}
+      </Section>
+
+      {startMultipleThreads.variables && Object.keys(startMultipleThreads.variables).length > 0 && (
+        <Section title="Variables">
+          <div className="space-y-1">
+            {Object.entries(startMultipleThreads.variables).map(([key, variable]) => (
+              <Label key={key} label={key} valueClassName="font-mono text-xs text-blue-600">{getVariable(variable)}</Label>
+            ))}
+          </div>
+        </Section>
       )}
     </>
-  );
-
-  const additionalSections = startMultipleThreadsNode.startMultipleThreads.variables && Object.keys(startMultipleThreadsNode.startMultipleThreads.variables).length > 0 ? [
-    {
-      title: "Variables",
-      content: (
-        <div className="space-y-1">
-          {Object.entries(startMultipleThreadsNode.startMultipleThreads.variables).map(([key, variable]) => (
-            <div key={key} className="font-mono text-xs">
-              <span className="text-purple-600">{key}:</span>{' '}
-              <span className="text-blue-600">{getVariable(variable)}</span>
-            </div>
-          ))}
-        </div>
-      )
-    }
-  ] : undefined;
-
-  return (
-    <BaseNodeComponent
-      title="Start Multiple Threads Properties"
-      type="START_MULTIPLE_THREADS"
-      additionalSections={additionalSections}
-    >
-      {mainContent}
-    </BaseNodeComponent>
   )
 }

@@ -1,56 +1,30 @@
 'use client'
 
+import { Section } from '../section'
+import { Label } from '../label'
 import { getVariable } from '@/utils/data/variables'
-import { Node, TaskNode } from 'littlehorse-client/proto'
-import { BaseNodeComponent } from './base-node'
+import { NodeForType } from '@/utils/data/node'
 
-interface TaskNodeComponentProps {
-  taskNode: Node & { task: TaskNode }
-}
-
-export function TaskNodeComponent({ taskNode }: TaskNodeComponentProps) {
-  const mainContent = (
+export function TaskNodeComponent({ task }: NodeForType<'TASK'>) {
+  return (
     <>
-      <div className="flex justify-between">
-        <span className="text-[#656565]">Timeout:</span>
-        <span className="font-mono">{taskNode.task.timeoutSeconds || 'N/A'} s</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-[#656565]">Retries:</span>
-        <span className="font-mono">{taskNode.task.retries || 'N/A'}</span>
-      </div>
-      {taskNode.task.taskDefId && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Task Def:</span>
-          <span className="font-mono text-blue-600">{taskNode.task.taskDefId.name}</span>
-        </div>
+      <Section title="TaskNode">
+        <Label label="Timeout">{task.timeoutSeconds && `${task.timeoutSeconds} s`}</Label>
+        <Label label="Retries">{task.retries}</Label>
+        {task.taskDefId && (
+          <Label label="TaskDef" valueClassName="font-mono text-blue-600">{task.taskDefId.name}</Label>
+        )}
+      </Section>
+
+      {task.variables && Object.keys(task.variables).length > 0 && (
+        <Section title="Variables">
+          <div className="space-y-1">
+            {Object.entries(task.variables).map(([key, variable]) => (
+              <Label key={key} label={key} valueClassName="font-mono text-xs text-blue-600">{getVariable(variable)}</Label>
+            ))}
+          </div>
+        </Section>
       )}
     </>
-  )
-
-  const additionalSections = taskNode.task.variables && Object.keys(taskNode.task.variables).length > 0 ? [
-    {
-      title: "Variables",
-      content: (
-        <div className="space-y-1">
-          {Object.entries(taskNode.task.variables).map(([key, variable]) => (
-            <div key={key} className="font-mono text-xs">
-              <span className="text-purple-600">{key}:</span>{' '}
-              <span className="text-blue-600">{getVariable(variable)}</span>
-            </div>
-          ))}
-        </div>
-      )
-    }
-  ] : undefined
-
-  return (
-    <BaseNodeComponent
-      title="Task Properties"
-      type="TASK"
-      additionalSections={additionalSections}
-    >
-      {mainContent}
-    </BaseNodeComponent>
   )
 }

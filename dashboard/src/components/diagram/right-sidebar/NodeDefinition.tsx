@@ -1,6 +1,7 @@
 'use client'
 
-import { EntrypointNode, ExitNode, ExternalEventNode, Node, NopNode, SleepNode, StartMultipleThreadsNode, StartThreadNode, TaskNode, ThrowEventNode, UserTaskNode, WaitForConditionNode, WaitForThreadsNode } from "littlehorse-client/proto"
+import { Node } from "littlehorse-client/proto"
+import { getNodeType } from "@/utils/data/node"
 import { EntrypointNodeComponent } from "./nodes/entrypoint"
 import { ExitNodeComponent } from "./nodes/exit"
 import { ExternalEventNodeComponent } from "./nodes/external-event"
@@ -14,26 +15,51 @@ import { UserTaskNodeComponent } from "./nodes/user-task"
 import { WaitForConditionNodeComponent } from "./nodes/wait-for-condition"
 import { WaitForThreadsNodeComponent } from "./nodes/wait-for-threads"
 
-
 interface NodeDefinitionProps {
   node: Node
 }
 
 export default function NodeDefinition({ node }: NodeDefinitionProps) {
+  const nodeInfo = getNodeType(node)
+
+  if (nodeInfo.type === 'UNKNOWN_NODE_TYPE') {
+    return <div className="pt-2 w-full space-y-3">Unknown node type</div>
+  }
+
   return (
-    <div className="pt-2">
-      {node.task && <TaskNodeComponent taskNode={node as Node & { task: TaskNode }} />}
-      {node.externalEvent && <ExternalEventNodeComponent externalEventNode={node as Node & { externalEvent: ExternalEventNode }} />}
-      {node.entrypoint && <EntrypointNodeComponent entrypointNode={node as Node & { entrypoint: EntrypointNode }} />}
-      {node.exit && <ExitNodeComponent exitNode={node as Node & { exit: ExitNode }} />}
-      {node.startThread && <StartThreadNodeComponent startThreadNode={node as Node & { startThread: StartThreadNode }} />}
-      {node.waitForThreads && <WaitForThreadsNodeComponent waitForThreadsNode={node as Node & { waitForThreads: WaitForThreadsNode }} />}
-      {node.sleep && <SleepNodeComponent sleepNode={node as Node & { sleep: SleepNode }} />}
-      {node.userTask && <UserTaskNodeComponent userTaskNode={node as Node & { userTask: UserTaskNode }} />}
-      {node.startMultipleThreads && <StartMultipleThreadsNodeComponent startMultipleThreadsNode={node as Node & { startMultipleThreads: StartMultipleThreadsNode }} />}
-      {node.nop && <NopNodeComponent nopNode={node as Node & { nop: NopNode }} />}
-      {node.throwEvent && <ThrowEventNodeComponent throwEventNode={node as Node & { throwEvent: ThrowEventNode }} />}
-      {node.waitForCondition && <WaitForConditionNodeComponent waitForConditionNode={node as Node & { waitForCondition: WaitForConditionNode }} />}
+    <div className="pt-2 w-full space-y-3">
+      {
+        (() => {
+          switch (nodeInfo.type) {
+            case 'TASK':
+              return <TaskNodeComponent taskNode={nodeInfo.node} />
+            case 'EXTERNAL_EVENT':
+              return <ExternalEventNodeComponent externalEventNode={nodeInfo.node} />
+            case 'ENTRYPOINT':
+              return <EntrypointNodeComponent entrypointNode={nodeInfo.node} />
+            case 'EXIT':
+              return <ExitNodeComponent exitNode={nodeInfo.node} />
+            case 'START_THREAD':
+              return <StartThreadNodeComponent startThreadNode={nodeInfo.node} />
+            case 'WAIT_FOR_THREADS':
+              return <WaitForThreadsNodeComponent waitForThreadsNode={nodeInfo.node} />
+            case 'SLEEP':
+              return <SleepNodeComponent sleepNode={nodeInfo.node} />
+            case 'USER_TASK':
+              return <UserTaskNodeComponent userTaskNode={nodeInfo.node} />
+            case 'START_MULTIPLE_THREADS':
+              return <StartMultipleThreadsNodeComponent startMultipleThreadsNode={nodeInfo.node} />
+            case 'NOP':
+              return <NopNodeComponent nopNode={nodeInfo.node} />
+            case 'THROW_EVENT':
+              return <ThrowEventNodeComponent throwEventNode={nodeInfo.node} />
+            case 'WAIT_FOR_CONDITION':
+              return <WaitForConditionNodeComponent waitForConditionNode={nodeInfo.node} />
+            default:
+              return <div>Unknown node type</div>
+          }
+        })()
+      }
     </div>
   )
 }

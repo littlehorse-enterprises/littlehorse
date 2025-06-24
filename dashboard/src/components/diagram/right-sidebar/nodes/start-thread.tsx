@@ -1,46 +1,26 @@
-import { Node, StartThreadNode } from "littlehorse-client/proto";
-import { BaseNodeComponent } from "./base-node";
+import { Section } from "../section";
+import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
+import { NodeForType } from "@/utils/data/node";
 
-interface StartThreadNodeComponentProps {
-  startThreadNode: Node & { startThread: StartThreadNode }
-}
-
-export function StartThreadNodeComponent({ startThreadNode }: StartThreadNodeComponentProps) {
-  const mainContent = (
+export function StartThreadNodeComponent({ startThread }: NodeForType<'START_THREAD'>) {
+  return (
     <>
-      {startThreadNode.startThread.threadSpecName && (
-        <div className="flex justify-between">
-          <span className="text-[#656565]">Thread Spec:</span>
-          <span className="font-mono text-blue-600">{startThreadNode.startThread.threadSpecName}</span>
-        </div>
+      <Section title="StartThreadNode">
+        {startThread.threadSpecName && (
+          <Label label="Thread Spec" valueClassName="font-mono text-blue-600">{startThread.threadSpecName}</Label>
+        )}
+      </Section>
+
+      {startThread.variables && Object.keys(startThread.variables).length > 0 && (
+        <Section title="Variables">
+          <div className="space-y-1">
+            {Object.entries(startThread.variables).map(([key, variable]) => (
+              <Label key={key} label={key} valueClassName="font-mono text-xs text-blue-600">{getVariable(variable)}</Label>
+            ))}
+          </div>
+        </Section>
       )}
     </>
-  );
-
-  const additionalSections = startThreadNode.startThread.variables && Object.keys(startThreadNode.startThread.variables).length > 0 ? [
-    {
-      title: "Variables",
-      content: (
-        <div className="space-y-1">
-          {Object.entries(startThreadNode.startThread.variables).map(([key, variable]) => (
-            <div key={key} className="font-mono text-xs">
-              <span className="text-purple-600">{key}:</span>{' '}
-              <span className="text-blue-600">{getVariable(variable)}</span>
-            </div>
-          ))}
-        </div>
-      )
-    }
-  ] : undefined;
-
-  return (
-    <BaseNodeComponent
-      title="Start Thread Properties"
-      type="START_THREAD"
-      additionalSections={additionalSections}
-    >
-      {mainContent}
-    </BaseNodeComponent>
   )
 }

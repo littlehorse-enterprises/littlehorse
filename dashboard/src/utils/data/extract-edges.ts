@@ -14,7 +14,7 @@ function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): Cus
   const sourceMap = new Map<string, number>()
 
   Object.entries(threadSpec.nodes).forEach(function ([source, node]) {
-    if (getNodeType(node) === 'START_THREAD') {
+    if (getNodeType(node).type === 'START_THREAD') {
       const startThreadNodeName = node.startThread?.threadSpecName
       if (!startThreadNodeName) return
 
@@ -50,7 +50,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   const edges: CustomEdge[] = []
 
   Object.entries(threadSpec.nodes).forEach(function ([id, node]) {
-    const type = getNodeType(node)
+    const { type } = getNodeType(node)
     if (type === 'START_THREAD') {
       const startedThreadSpecName = node.startThread?.threadSpecName ?? ''
       const sourceId = `${id}:${threadName}`

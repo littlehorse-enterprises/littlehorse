@@ -79,7 +79,7 @@ export default function RightSidebar({ wfSpec, wfRunDetails }: RightSidebarProps
             </div>
 
             <div className="flex h-full w-full justify-center px-4 pt-2">
-              <Tabs defaultValue="definition">
+              <Tabs className="w-full" defaultValue="definition">
                 <TabsList>
                   {wfRunDetails && <TabsTrigger value="runs">Runs</TabsTrigger>}
                   <TabsTrigger value="definition">Definition</TabsTrigger>

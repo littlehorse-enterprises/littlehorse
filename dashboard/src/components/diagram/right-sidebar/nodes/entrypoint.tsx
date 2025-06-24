@@ -1,16 +1,10 @@
-import { EntrypointNode, EntrypointRun, Node, NodeRun } from "littlehorse-client/proto";
-import { BaseNodeComponent } from "./base-node";
+import { NodeRun, EntrypointRun } from "littlehorse-client/proto";
+import { Section } from "../section";
+import { NodeForType } from "@/utils/data/node";
 
-interface EntrypointNodeComponentProps {
-  entrypointNode: Node & { entrypoint: EntrypointNode }
-}
-
-export function EntrypointNodeComponent({ }: EntrypointNodeComponentProps) {
+export function EntrypointNodeComponent({ }: NodeForType<'ENTRYPOINT'>) {
   return (
-    <BaseNodeComponent
-      title="Entrypoint Properties"
-      type="ENTRYPOINT"
-    />
+    <Section title="EntrypointNode" />
   )
 }
 
