@@ -31,7 +31,16 @@ public class ExternalEventNodeOutputImpl extends NodeOutputImpl implements Exter
 
     @Override
     public ExternalEventNodeOutput withCorrelationId(Serializable correlationId) {
-        parent.addCorrelationIdToExtEvtNode(this, correlationId);
+        boolean shouldMaskAutomatically =
+                (correlationId instanceof WfRunVariableImpl) && ((WfRunVariableImpl) correlationId).isMasked();
+        parent.addCorrelationIdToExtEvtNode(this, correlationId, shouldMaskAutomatically);
+        if (correlatedEventConfig == null) correlatedEventConfig = CorrelatedEventConfig.getDefaultInstance();
+        return this;
+    }
+
+    @Override
+    public ExternalEventNodeOutput withCorrelationId(Serializable correlationId, boolean masked) {
+        parent.addCorrelationIdToExtEvtNode(this, correlationId, masked);
         if (correlatedEventConfig == null) correlatedEventConfig = CorrelatedEventConfig.getDefaultInstance();
         return this;
     }
