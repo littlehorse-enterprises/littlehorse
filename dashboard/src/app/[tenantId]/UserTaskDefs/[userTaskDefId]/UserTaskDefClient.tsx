@@ -1,6 +1,7 @@
 'use client'
 
 import { searchUserTaskRun } from '@/actions/searchUserTaskRun'
+import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
 import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
@@ -15,7 +16,6 @@ import {
 } from '@littlehorse-enterprises/ui-library/table'
 import { UserTaskDef } from 'littlehorse-client/proto'
 import { ArrowLeft, Clock, Hash, Loader2 } from 'lucide-react'
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import useSWRInfinite from 'swr/infinite'
@@ -52,10 +52,10 @@ export default function UserTaskDefClient({ userTaskDef }: UserTaskDefClientProp
     <div className="container mx-auto py-6">
       {/* Header */}
       <div className="mb-6 flex items-center gap-4">
-        <Link href={`/${tenantId}`} className="text-muted-foreground hover:text-foreground flex items-center gap-2">
+        <LinkWithTenant href="/" className="text-muted-foreground hover:text-foreground flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" />
           Go back to UserTaskDefs
-        </Link>
+        </LinkWithTenant>
       </div>
 
       <div className="mb-8">
