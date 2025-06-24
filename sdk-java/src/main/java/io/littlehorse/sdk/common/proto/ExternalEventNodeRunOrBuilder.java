@@ -129,4 +129,15 @@ public interface ExternalEventNodeRunOrBuilder extends
    */
   com.google.protobuf.ByteString
       getCorrelationKeyBytes();
+
+  /**
+   * <pre>
+   * Specifies whether the correlation key should be masked. Ignored if
+   * correlation_key is not set.
+   * </pre>
+   *
+   * <code>bool mask_correlation_key = 6;</code>
+   * @return The maskCorrelationKey.
+   */
+  boolean getMaskCorrelationKey();
 }
