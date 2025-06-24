@@ -24,6 +24,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     private ExternalEventDefIdModel externalEventDefId;
     private VariableAssignmentModel timeoutSeconds;
     private VariableAssignmentModel corrrelationId;
+    private boolean maskCorrelationId;
 
     // Not in the proto
     private ExternalEventDefModel externalEventDef;
@@ -47,11 +48,13 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
             this.corrrelationId =
                     LHSerializable.fromProto(p.getCorrelationKey(), VariableAssignmentModel.class, ignored);
         }
+        this.maskCorrelationId = p.getMaskCorrelationKey();
     }
 
     public ExternalEventNode.Builder toProto() {
-        ExternalEventNode.Builder out =
-                ExternalEventNode.newBuilder().setExternalEventDefId(externalEventDefId.toProto());
+        ExternalEventNode.Builder out = ExternalEventNode.newBuilder()
+                .setExternalEventDefId(externalEventDefId.toProto())
+                .setMaskCorrelationKey(maskCorrelationId);
 
         if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
         if (corrrelationId != null) out.setCorrelationKey(corrrelationId.toProto());

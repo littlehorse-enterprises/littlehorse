@@ -40,10 +40,10 @@ public class CorrelatedEventTest {
             ExternalEventDefId.newBuilder().setName("correlated-no-deletion").build();
 
     @LHWorkflow("correlated-event-with-deletion")
-    public Workflow correlatedWithDeletion;
+    public Workflow correlatedWithDeletionAndMask;
 
     @LHWorkflow("correlated-event-no-deletion")
-    public Workflow correlatedNoDeletion;
+    public Workflow correlatedNoDeletionAndNoMask;
 
     @LHWorkflow("multi-thread-correlation")
     public Workflow multiThreadCorrelation;
@@ -51,7 +51,7 @@ public class CorrelatedEventTest {
     @LHWorkflow("correlated-event-with-deletion")
     public Workflow getWfWithDeletion() {
         return Workflow.newWorkflow("correlated-event-with-deletion", wf -> {
-            WfRunVariable key = wf.declareStr("key").required();
+            WfRunVariable key = wf.declareStr("key").required().masked();
             WfRunVariable eventResult = wf.declareInt("event-result");
             ExternalEventNodeOutput output = wf.waitForEvent("correlated-with-deletion")
                     .registeredAs(Integer.class)
@@ -98,7 +98,8 @@ public class CorrelatedEventTest {
     void correlatedEventShouldBeDeletedIfConfigSaysSo() {
         // Hack: just start a WfRun that we don't care about to ensure that the e2e framework
         // registers the externalEventDef. TODO (#1593): make this native.
-        verifier.prepareRun(correlatedWithDeletion, Arg.of("key", "blah blah")).start();
+        verifier.prepareRun(correlatedWithDeletionAndMask, Arg.of("key", "blah blah"))
+                .start();
 
         String key = LHUtil.generateGuid();
         CorrelatedEvent event = client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
@@ -117,7 +118,7 @@ public class CorrelatedEventTest {
         Assertions.assertThat(client.getCorrelatedEvent(eventId).getContent().getInt())
                 .isEqualTo(137L);
 
-        verifier.prepareRun(correlatedWithDeletion, Arg.of("key", key))
+        verifier.prepareRun(correlatedWithDeletionAndMask, Arg.of("key", key))
                 .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
                 .thenVerifyVariable(0, "event-result", variable -> {
                     Assertions.assertThat(variable.getInt()).isEqualTo(137L);
@@ -137,7 +138,8 @@ public class CorrelatedEventTest {
     void correlatedEventShouldNotBeDeletedIfConfigSaysSo() {
         // Hack: just start a WfRun that we don't care about to ensure that the e2e framework
         // registers the externalEventDef. TODO (#1593): make this native.
-        verifier.prepareRun(correlatedNoDeletion, Arg.of("key", "blah blah")).start();
+        verifier.prepareRun(correlatedNoDeletionAndNoMask, Arg.of("key", "blah blah"))
+                .start();
 
         String key = LHUtil.generateGuid();
         CorrelatedEvent event = client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
@@ -156,7 +158,7 @@ public class CorrelatedEventTest {
         Assertions.assertThat(client.getCorrelatedEvent(eventId).getContent().getInt())
                 .isEqualTo(137L);
 
-        verifier.prepareRun(correlatedNoDeletion, Arg.of("key", key))
+        verifier.prepareRun(correlatedNoDeletionAndNoMask, Arg.of("key", key))
                 .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
                 .thenVerifyVariable(0, "event-result", variable -> {
                     Assertions.assertThat(variable.getInt()).isEqualTo(137L);
@@ -170,7 +172,7 @@ public class CorrelatedEventTest {
     @Test
     void shouldCompleteIfEventSentAfterWfRunStarts() {
         String key = LHUtil.generateGuid();
-        verifier.prepareRun(correlatedWithDeletion, Arg.of("key", key))
+        verifier.prepareRun(correlatedWithDeletionAndMask, Arg.of("key", key))
                 .waitForStatus(LHStatus.RUNNING)
                 // TODO (#1593): make this native in the e2e framework
                 .thenVerifyWfRun(wfRun -> {
@@ -193,6 +195,34 @@ public class CorrelatedEventTest {
                 .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
                 .thenVerifyVariable(0, "event-result", variable -> {
                     Assertions.assertThat(variable.getInt()).isEqualTo(42L);
+                })
+                .start();
+    }
+
+    @Test
+    void shouldNotShowMaskedKey() {
+        String key = LHUtil.generateGuid();
+        verifier.prepareRun(correlatedWithDeletionAndMask, Arg.of("key", key))
+                .waitForStatus(LHStatus.RUNNING)
+                .thenSendCorrelatedEvent(DELETION_EVT.getName(), key, 42)
+                .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getExternalEvent().getCorrelationKey())
+                            .contains("***");
+                })
+                .start();
+    }
+
+    @Test
+    void shouldShowUnmaskedKey() {
+        String key = LHUtil.generateGuid();
+        verifier.prepareRun(correlatedNoDeletionAndNoMask, Arg.of("key", key))
+                .waitForStatus(LHStatus.RUNNING)
+                .thenSendCorrelatedEvent(NO_DELETION_EVT.getName(), key, 42)
+                .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(3))
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getExternalEvent().getCorrelationKey())
+                            .isEqualTo(key);
                 })
                 .start();
     }
@@ -233,7 +263,7 @@ public class CorrelatedEventTest {
     @Test
     void shouldDeleteCorrelationMarkerWhenWfRunDeleted() throws InterruptedException {
         String randomStr = LHUtil.generateGuid();
-        WfRunId wfRunId = verifier.prepareRun(correlatedNoDeletion, Arg.of("key", randomStr))
+        WfRunId wfRunId = verifier.prepareRun(correlatedNoDeletionAndNoMask, Arg.of("key", randomStr))
                 .waitForStatus(LHStatus.RUNNING)
                 .start();
 
@@ -261,7 +291,7 @@ public class CorrelatedEventTest {
     @Test
     void shouldDeleteCorrelationMarkerWhenNodeRunTimesOut() throws InterruptedException {
         String randomStr = LHUtil.generateGuid();
-        verifier.prepareRun(correlatedNoDeletion, Arg.of("key", randomStr))
+        verifier.prepareRun(correlatedNoDeletionAndNoMask, Arg.of("key", randomStr))
                 // wait for timeout
                 .waitForStatus(LHStatus.ERROR, Duration.ofSeconds(3))
                 .start();
