@@ -1,9 +1,9 @@
 'use client'
 import ScheduledWfRunsTab from '@/components/diagram/left-sidebar/tab-content/scheduled-wf-runs-tab'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import SidebarExpandButton from '@/components/ui/sidebar-expand-button'
 import { LeftSidebarTabId } from '@/types/leftSidebarTabs'
-import { WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { useEffect, useState } from 'react'
 import WfRunTab from './tab-content/wf-run-tab'
 import WfSpecTab from './tab-content/wf-spec-tab'
@@ -91,14 +91,14 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
             <span className="text-sm text-[#656565]">{`v${wfSpec?.id?.majorVersion}.${wfSpec?.id?.revision}`}</span>
             <Badge
               variant="outline"
-              className={`ml-3 ${wfRun?.status === 'COMPLETED'
+              className={`ml-3 ${wfRun?.status === LHStatus.COMPLETED
                 ? 'bg-emerald-100 text-emerald-600'
-                : wfRun?.status === 'RUNNING'
+                : wfRun?.status === LHStatus.RUNNING
                   ? 'bg-blue-100 text-blue-600'
                   : 'bg-emerald-100 text-emerald-600'
                 } hover:bg-[#c5d0ff]/90`}
             >
-              {wfSpec?.status ?? wfRun?.status}
+              {wfRun?.status ?? wfSpec?.status}
             </Badge>
           </div>
         </div>
