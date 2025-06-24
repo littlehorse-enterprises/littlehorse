@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Canary.Worker;
 
-public class CanaryConfig
+public class CanaryConfig(IConfiguration configs)
 {
     // TODO: check naming convention for const in C#
     private const string _TopicName = "topic.name";
@@ -14,15 +14,9 @@ public class CanaryConfig
     private const string _MetronomeBeatExtraTags = "metronome.beat.extra.tags";
     private const string _MetronomeBeatExtraTagsPrefix = $"{_MetronomeBeatExtraTags}.";
 
-    private readonly Dictionary<string, string> _kafkaConfigs;
-    private readonly IConfiguration _canaryConfigs;
-    private readonly Dictionary<string, string> _lhConfigs;
-    public CanaryConfig(IConfiguration configs)
-    {
-        _kafkaConfigs = configs.GetSection("Kafka").GetChildren().Where(config => config.Value != null).ToDictionary(field => field.Key, x => x.Value!);
-        _canaryConfigs = configs.GetSection("Canary");
-        _lhConfigs = configs.GetSection("LH").GetChildren().Where(config => config.Value != null).ToDictionary(field => field.Key, x => x.Value!);
-    }
+    private readonly Dictionary<string, string> _kafkaConfigs = configs.GetSection("Kafka").ToDictionary();
+    private readonly IConfiguration _canaryConfigs = configs.GetSection("Canary");
+    private readonly Dictionary<string, string> _lhConfigs = configs.GetSection("LH").ToDictionary();
 
     public LHConfig GetLHConfig(ILoggerFactory? loggerFactory = null)
     {
