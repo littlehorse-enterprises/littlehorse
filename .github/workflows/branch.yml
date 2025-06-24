@@ -60,8 +60,16 @@ jobs:
           distribution: "corretto"
           java-version: 21
 
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8'
+
       - name: Tests and Build
         run: ./gradlew canary:build
+
+      - name: Tests and Build Dotnet
+        run: dotnet publish -c Release -o ./sdk-dotnet/LittleHorse.Canary.Worker/publish sdk-dotnet/LittleHorse.Canary.Worker/LittleHorse.Canary.Worker.csproj
 
       - uses: actions/upload-artifact@v4
         with:
