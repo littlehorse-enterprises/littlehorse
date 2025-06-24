@@ -1,5 +1,6 @@
 import { Node, UserTaskNode } from "littlehorse-client/proto";
 import { BaseNodeComponent } from "./base-node";
+import { getVariable } from "@/utils/data/variables";
 
 interface UserTaskNodeComponentProps {
   userTaskNode: Node & { userTask: UserTaskNode }
@@ -23,19 +24,19 @@ export function UserTaskNodeComponent({ userTaskNode }: UserTaskNodeComponentPro
       {userTaskNode.userTask.userGroup && (
         <div className="flex justify-between">
           <span className="text-[#656565]">User Group:</span>
-          <span className="font-mono">{JSON.stringify(userTaskNode.userTask.userGroup)}</span>
+          <span className="font-mono">{getVariable(userTaskNode.userTask.userGroup)}</span>
         </div>
       )}
       {userTaskNode.userTask.userId && (
         <div className="flex justify-between">
           <span className="text-[#656565]">User ID:</span>
-          <span className="font-mono">{JSON.stringify(userTaskNode.userTask.userId)}</span>
+          <span className="font-mono">{getVariable(userTaskNode.userTask.userId)}</span>
         </div>
       )}
       {userTaskNode.userTask.notes && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Notes:</span>
-          <span className="font-mono">{JSON.stringify(userTaskNode.userTask.notes)}</span>
+          <span className="font-mono">{getVariable(userTaskNode.userTask.notes)}</span>
         </div>
       )}
     </>
