@@ -5,7 +5,7 @@ namespace ChildThreadsForeachExample;
 public class MyWorker
 {
     [LHTaskMethod("task-executor")]
-    public string TaskExecutor(string taskInput) 
+    public async Task<string> TaskExecutor(string taskInput)
     {
         Console.WriteLine($"ok, executing task with {taskInput}");
 

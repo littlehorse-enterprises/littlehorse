@@ -56,7 +56,7 @@ public abstract class Program
         return new Workflow("example-external-event", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -64,32 +64,24 @@ public abstract class Program
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
             var client = config.GetGrpcClientInstance();
-            var taskWorkers = GetTaskWorkers(config);
-            foreach (var worker in taskWorkers)
-            {
-                worker.RegisterTaskDef();
-            }
+            var workers = GetTaskWorkers(config);
+
+            await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
             
             var workflow = GetWorkflow();
             
             // Register external event if it does not exist
-            HashSet<string> externalEventNames = workflow.GetRequiredExternalEventDefNames();
-
-            foreach (var externalEventName in externalEventNames)
+            foreach (var externalEventName in workflow.GetRequiredExternalEventDefNames())
             {
                 Console.WriteLine($"Registering external event {externalEventName}");
-            
                 client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName });
             }
             
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
+            await workflow.RegisterWfSpec(config.GetGrpcClientInstance());
             
-            Thread.Sleep(300);
-            
-            foreach (var worker in taskWorkers)
-            {
-                worker.Start();
-            }
+            await Task.Delay(300);
+
+            await Task.WhenAll(workers.Select(worker => worker.Start()));
         }
     }
 }
