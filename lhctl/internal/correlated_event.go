@@ -132,8 +132,56 @@ var deleteCorrelatedEventCmd = &cobra.Command{
 	},
 }
 
+var searchCorrelatedEventCmd = &cobra.Command{
+	Use:   "correlatedEvent <externalEventDefName>",
+	Short: "Search for CorrelatedEvent's by ExternalEventDef Name",
+	Long: `
+Search for CorrelatedEvent's by their ExternalEventDef Name.
+
+* Note: '--hasEvents' is a Boolean flag with 3 states:
+	- return ALL          Flag is not present
+	- return only TRUE    Flag is present or reads '--hasEvents=true'
+	- return only FALSE   Flag reads '--hasEvents=false'
+
+* Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
+	options with this group to put a time bound on CorrelatedEvents which are
+	returned. The time bound applies to the time that the CorrelatedEvents
+	were created.
+`,
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		externalEventDefName := args[0]
+
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+		hasEvents, _ := cmd.Flags().GetBool("hasEvents")
+		earliest, latest := loadEarliestAndLatestStart(cmd)
+
+		search := &lhproto.SearchCorrelatedEventRequest{
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+			ExternalEventDefId: &lhproto.ExternalEventDefId{
+				Name: externalEventDefName,
+			},
+		}
+
+		if cmd.Flags().Lookup("hasEvents").Changed {
+			search.HasExternalEvents = &hasEvents
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchCorrelatedEvent(requestContext(cmd), search))
+	},
+}
+
 func init() {
 	getCmd.AddCommand(getCorrelatedEventCmd)
 	putCmd.AddCommand(putCorrelatedEventCmd)
 	deleteCmd.AddCommand(deleteCorrelatedEventCmd)
+	searchCmd.AddCommand(searchCorrelatedEventCmd)
+
+	searchCorrelatedEventCmd.Flags().Bool("hasEvents", false, "List only CorrelatedEvents that have associated `ExternalEvent`s")
+	searchCorrelatedEventCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
+	searchCorrelatedEventCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
 }

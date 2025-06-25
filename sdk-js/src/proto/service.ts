@@ -615,6 +615,48 @@ export interface WfRunIdList {
   bookmark?: Buffer | undefined;
 }
 
+/** Allows searching for CorrelatedEvents */
+export interface SearchCorrelatedEventRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** Specifies to return only WfRun's that started after this time */
+  earliestStart?:
+    | string
+    | undefined;
+  /** Specifies to return only WfRun's that started before this time */
+  latestStart?:
+    | string
+    | undefined;
+  /** ExternalEventDefId of the CorrelatedEvent */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * If set and true, only return CorrelatedEvents that have been correlated to a
+   * WfRun and created an ExternalEvent. If False, return only those that are pending
+   * and have not been correlated to a WfRun.
+   */
+  hasExternalEvents?: boolean | undefined;
+}
+
+/** List of CorrelatedEventId's */
+export interface CorrelatedEventIdList {
+  /** The resulting object id's. */
+  results: CorrelatedEventId[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
+}
+
 /** Searches for TaskRuns by various criteria. */
 export interface SearchTaskRunRequest {
   /** Bookmark for cursor-based pagination; pass if applicable. */
@@ -3702,6 +3744,171 @@ export const WfRunIdList = {
   fromPartial(object: DeepPartial<WfRunIdList>): WfRunIdList {
     const message = createBaseWfRunIdList();
     message.results = object.results?.map((e) => WfRunId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
+function createBaseSearchCorrelatedEventRequest(): SearchCorrelatedEventRequest {
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    earliestStart: undefined,
+    latestStart: undefined,
+    externalEventDefId: undefined,
+    hasExternalEvents: undefined,
+  };
+}
+
+export const SearchCorrelatedEventRequest = {
+  encode(message: SearchCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
+    }
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.hasExternalEvents !== undefined) {
+      writer.uint32(48).bool(message.hasExternalEvents);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.hasExternalEvents = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchCorrelatedEventRequest>): SearchCorrelatedEventRequest {
+    return SearchCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchCorrelatedEventRequest>): SearchCorrelatedEventRequest {
+    const message = createBaseSearchCorrelatedEventRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.earliestStart = object.earliestStart ?? undefined;
+    message.latestStart = object.latestStart ?? undefined;
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.hasExternalEvents = object.hasExternalEvents ?? undefined;
+    return message;
+  },
+};
+
+function createBaseCorrelatedEventIdList(): CorrelatedEventIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const CorrelatedEventIdList = {
+  encode(message: CorrelatedEventIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      CorrelatedEventId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CorrelatedEventIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCorrelatedEventIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(CorrelatedEventId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<CorrelatedEventIdList>): CorrelatedEventIdList {
+    return CorrelatedEventIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CorrelatedEventIdList>): CorrelatedEventIdList {
+    const message = createBaseCorrelatedEventIdList();
+    message.results = object.results?.map((e) => CorrelatedEventId.fromPartial(e)) || [];
     message.bookmark = object.bookmark ?? undefined;
     return message;
   },
@@ -8720,6 +8927,18 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /**
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     */
+    searchCorrelatedEvent: {
+      name: "SearchCorrelatedEvent",
+      requestType: SearchCorrelatedEventRequest,
+      requestStream: false,
+      responseType: CorrelatedEventIdList,
+      responseStream: false,
+      options: {},
+    },
+    /**
      * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
      * your workflows or Task Workers.
      */
@@ -9346,6 +9565,14 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    */
   searchWfRun(request: SearchWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRunIdList>>;
   /**
+   * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+   * events that may be orphaned.
+   */
+  searchCorrelatedEvent(
+    request: SearchCorrelatedEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEventIdList>>;
+  /**
    * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
    * your workflows or Task Workers.
    */
@@ -9766,6 +9993,14 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
    */
   searchWfRun(request: DeepPartial<SearchWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRunIdList>;
+  /**
+   * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+   * events that may be orphaned.
+   */
+  searchCorrelatedEvent(
+    request: DeepPartial<SearchCorrelatedEventRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEventIdList>;
   /**
    * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
    * your workflows or Task Workers.

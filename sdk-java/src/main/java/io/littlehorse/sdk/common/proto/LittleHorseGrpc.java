@@ -1441,6 +1441,37 @@ public final class LittleHorseGrpc {
     return getSearchWfRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.CorrelatedEventIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod;
+    if ((getSearchCorrelatedEventMethod = LittleHorseGrpc.getSearchCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchCorrelatedEventMethod = LittleHorseGrpc.getSearchCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getSearchCorrelatedEventMethod = getSearchCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEventIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEventIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getSearchCorrelatedEventMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchNodeRunRequest,
       io.littlehorse.sdk.common.proto.NodeRunIdList> getSearchNodeRunMethod;
 
@@ -3194,6 +3225,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    default void searchCorrelatedEvent(io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEventIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchCorrelatedEventMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
      * your workflows or Task Workers.
      * </pre>
@@ -4163,6 +4205,18 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    public void searchCorrelatedEvent(io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEventIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
      * your workflows or Task Workers.
      * </pre>
@@ -5114,6 +5168,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventIdList searchCorrelatedEvent(io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchCorrelatedEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
      * your workflows or Task Workers.
      * </pre>
@@ -6061,6 +6126,18 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CorrelatedEventIdList> searchCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchCorrelatedEventMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
      * your workflows or Task Workers.
      * </pre>
@@ -6534,45 +6611,46 @@ public final class LittleHorseGrpc {
   private static final int METHODID_LIST_EXTERNAL_EVENTS = 43;
   private static final int METHODID_LIST_WORKFLOW_EVENTS = 44;
   private static final int METHODID_SEARCH_WF_RUN = 45;
-  private static final int METHODID_SEARCH_NODE_RUN = 46;
-  private static final int METHODID_SEARCH_TASK_RUN = 47;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 48;
-  private static final int METHODID_SEARCH_VARIABLE = 49;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 50;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 51;
-  private static final int METHODID_SEARCH_TASK_DEF = 52;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 53;
-  private static final int METHODID_SEARCH_WF_SPEC = 54;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 55;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 56;
-  private static final int METHODID_SEARCH_TENANT = 57;
-  private static final int METHODID_SEARCH_PRINCIPAL = 58;
-  private static final int METHODID_REGISTER_TASK_WORKER = 59;
-  private static final int METHODID_REPORT_TASK = 60;
-  private static final int METHODID_STOP_WF_RUN = 61;
-  private static final int METHODID_RESUME_WF_RUN = 62;
-  private static final int METHODID_RESCUE_THREAD_RUN = 63;
-  private static final int METHODID_DELETE_WF_RUN = 64;
-  private static final int METHODID_DELETE_TASK_DEF = 65;
-  private static final int METHODID_DELETE_STRUCT_DEF = 66;
-  private static final int METHODID_DELETE_WF_SPEC = 67;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 68;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 69;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 70;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 71;
-  private static final int METHODID_DELETE_PRINCIPAL = 72;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 73;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 74;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 75;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 76;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 77;
-  private static final int METHODID_PUT_TENANT = 78;
-  private static final int METHODID_GET_TENANT = 79;
-  private static final int METHODID_PUT_PRINCIPAL = 80;
-  private static final int METHODID_GET_PRINCIPAL = 81;
-  private static final int METHODID_WHOAMI = 82;
-  private static final int METHODID_GET_SERVER_VERSION = 83;
-  private static final int METHODID_POLL_TASK = 84;
+  private static final int METHODID_SEARCH_CORRELATED_EVENT = 46;
+  private static final int METHODID_SEARCH_NODE_RUN = 47;
+  private static final int METHODID_SEARCH_TASK_RUN = 48;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 49;
+  private static final int METHODID_SEARCH_VARIABLE = 50;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 51;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 52;
+  private static final int METHODID_SEARCH_TASK_DEF = 53;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 54;
+  private static final int METHODID_SEARCH_WF_SPEC = 55;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 56;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 57;
+  private static final int METHODID_SEARCH_TENANT = 58;
+  private static final int METHODID_SEARCH_PRINCIPAL = 59;
+  private static final int METHODID_REGISTER_TASK_WORKER = 60;
+  private static final int METHODID_REPORT_TASK = 61;
+  private static final int METHODID_STOP_WF_RUN = 62;
+  private static final int METHODID_RESUME_WF_RUN = 63;
+  private static final int METHODID_RESCUE_THREAD_RUN = 64;
+  private static final int METHODID_DELETE_WF_RUN = 65;
+  private static final int METHODID_DELETE_TASK_DEF = 66;
+  private static final int METHODID_DELETE_STRUCT_DEF = 67;
+  private static final int METHODID_DELETE_WF_SPEC = 68;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 69;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 70;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 71;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 72;
+  private static final int METHODID_DELETE_PRINCIPAL = 73;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 74;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 75;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 76;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 77;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 78;
+  private static final int METHODID_PUT_TENANT = 79;
+  private static final int METHODID_GET_TENANT = 80;
+  private static final int METHODID_PUT_PRINCIPAL = 81;
+  private static final int METHODID_GET_PRINCIPAL = 82;
+  private static final int METHODID_WHOAMI = 83;
+  private static final int METHODID_GET_SERVER_VERSION = 84;
+  private static final int METHODID_POLL_TASK = 85;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6774,6 +6852,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_WF_RUN:
           serviceImpl.searchWfRun((io.littlehorse.sdk.common.proto.SearchWfRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunIdList>) responseObserver);
+          break;
+        case METHODID_SEARCH_CORRELATED_EVENT:
+          serviceImpl.searchCorrelatedEvent((io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEventIdList>) responseObserver);
           break;
         case METHODID_SEARCH_NODE_RUN:
           serviceImpl.searchNodeRun((io.littlehorse.sdk.common.proto.SearchNodeRunRequest) request,
@@ -7271,6 +7353,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfRunIdList>(
                 service, METHODID_SEARCH_WF_RUN)))
         .addMethod(
+          getSearchCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
+              io.littlehorse.sdk.common.proto.CorrelatedEventIdList>(
+                service, METHODID_SEARCH_CORRELATED_EVENT)))
+        .addMethod(
           getSearchNodeRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -7637,6 +7726,7 @@ public final class LittleHorseGrpc {
               .addMethod(getListExternalEventsMethod())
               .addMethod(getListWorkflowEventsMethod())
               .addMethod(getSearchWfRunMethod())
+              .addMethod(getSearchCorrelatedEventMethod())
               .addMethod(getSearchNodeRunMethod())
               .addMethod(getSearchTaskRunMethod())
               .addMethod(getSearchUserTaskRunMethod())
