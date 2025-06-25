@@ -17,7 +17,7 @@ import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-// this exists because the path can't be obtained from the server component layout
+// This exists because the path can't be obtained from the server component layout
 export default function TenantHeader() {
   const router = useRouter()
   const { data: session } = useSession()
