@@ -7,7 +7,7 @@ from littlehorse.config import LHConfig
 from littlehorse.model import VariableType, VariableMutationType
 from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import WorkflowThread, Workflow
-from littlehorse.model import PutExternalEventDefRequest, CorrelatedEventConfig
+from littlehorse.model import CorrelatedEventConfig
 
 logging.basicConfig(level=logging.INFO)
 
