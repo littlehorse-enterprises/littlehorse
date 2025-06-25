@@ -181,46 +181,59 @@ public class LHServer {
     }
 
     public void close() {
-        CountDownLatch latch = new CountDownLatch(4 + listeners.size());
 
-        new Thread(() -> {
-                    log.info("Closing timer Kafka Streams");
-                    timerStreams.close();
-                    latch.countDown();
-                    log.info("Done closing timer Kafka Streams");
-                })
-                .start();
+        CountDownLatch listenerLatch = new CountDownLatch(listeners.size());
 
-        new Thread(() -> {
-                    log.info("Closing core Kafka Streams");
-                    coreStreams.close();
-                    latch.countDown();
-                    log.info("Done closing core Kafka Streams");
-                })
-                .start();
-
-        new Thread(() -> {
-                    log.info("Closing internalComms");
-                    internalComms.close();
-                    latch.countDown();
-                })
-                .start();
-
-        new Thread(() -> {
-                    log.info("Closing health service");
-                    healthService.close();
-                    latch.countDown();
-                })
-                .start();
+        ExecutorService listenerExecutor = Executors.newFixedThreadPool(listeners.size());
+        
+        log.info("Closing {} listeners", listeners.size());
 
         for (LHServerListener listener : listeners) {
-            new Thread(() -> {
-                        log.info("Closing listener {}", listener);
-                        listener.close();
-                        latch.countDown();
-                    })
-                    .start();
+            listenerExecutor.submit(() -> {
+                log.info("Closing listener {}", listener);
+                listener.close();
+                listenerLatch.countDown();
+            });
         }
+        listenerExecutor.shutdown();
+        try {
+            listenerLatch.await();
+            log.info("All listeners closed successfully");
+        } catch (InterruptedException e) {
+            log.error("Listener close interrupted", e);
+        }
+
+        CountDownLatch latch = new CountDownLatch(4 );
+
+        ExecutorService shutdownExecutor = Executors.newFixedThreadPool(4);
+
+        shutdownExecutor.submit(() -> {
+            log.info("Closing timer Kafka Streams");
+            timerStreams.close();
+            latch.countDown();
+            log.info("Done closing timer Kafka Streams");
+        });
+
+        shutdownExecutor.submit(() -> {
+            log.info("Closing core Kafka Streams");
+            coreStreams.close();
+            latch.countDown();
+            log.info("Done closing core Kafka Streams");
+        });
+
+        shutdownExecutor.submit(() -> {
+            log.info("Closing internalComms");
+            internalComms.close();
+            latch.countDown();
+        });
+
+        shutdownExecutor.submit(() -> {
+            log.info("Closing health service");
+            healthService.close();
+            latch.countDown();
+        });
+
+        shutdownExecutor.shutdown();
 
         try {
             latch.await();
