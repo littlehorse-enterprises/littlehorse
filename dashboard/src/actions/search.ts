@@ -42,9 +42,6 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
     case 'WorkflowEventDef':
       results = await genericSearch(request, client.searchWorkflowEventDef)
       break
-    case 'TaskRun':
-      results = await genericSearch(request, client.searchTaskRun)
-      break
     default:
       results = await genericSearch(request, client.searchWfSpec)
       break

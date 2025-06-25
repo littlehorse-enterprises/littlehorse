@@ -1,3 +1,4 @@
+import { getVariable } from "@/utils/data/variables";
 import { ExternalEventNode, Node } from "littlehorse-client/proto";
 import { BaseNodeComponent } from "./base-node";
 
@@ -11,13 +12,13 @@ export function ExternalEventNodeComponent({ externalEventNode }: ExternalEventN
       {externalEventNode.externalEvent.externalEventDefId && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Event Def:</span>
-          <span className="font-mono text-blue-600">{JSON.stringify(externalEventNode.externalEvent.externalEventDefId)}</span>
+          <span className="font-mono text-blue-600">{externalEventNode.externalEvent.externalEventDefId.name}</span>
         </div>
       )}
       {externalEventNode.externalEvent.timeoutSeconds && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Timeout:</span>
-          <span className="font-mono">{JSON.stringify(externalEventNode.externalEvent.timeoutSeconds)} seconds</span>
+          <span className="font-mono">{getVariable(externalEventNode.externalEvent.timeoutSeconds)} seconds</span>
         </div>
       )}
     </>
