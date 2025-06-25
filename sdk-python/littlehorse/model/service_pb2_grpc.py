@@ -183,6 +183,21 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ListUserTaskRunRequest.SerializeToString,
                 response_deserializer=service__pb2.UserTaskRunList.FromString,
                 _registered_method=True)
+        self.PutUserTaskRunComment = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutUserTaskRunComment',
+                request_serializer=user__tasks__pb2.PutUserTaskRunCommentRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskRun.FromString,
+                _registered_method=True)
+        self.EditUserTaskRunComment = channel.unary_unary(
+                '/littlehorse.LittleHorse/EditUserTaskRunComment',
+                request_serializer=user__tasks__pb2.EditUserTaskRunCommentRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskRun.FromString,
+                _registered_method=True)
+        self.DeleteUserTaskRunComment = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteUserTaskRunComment',
+                request_serializer=user__tasks__pb2.DeleteUserTaskRunCommentRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskRun.FromString,
+                _registered_method=True)
         self.GetNodeRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetNodeRun',
                 request_serializer=object__id__pb2.NodeRunId.SerializeToString,
@@ -386,6 +401,11 @@ class LittleHorseStub(object):
         self.DeleteExternalEventDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteExternalEventDef',
                 request_serializer=service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.DeleteCorrelatedEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteCorrelatedEvent',
+                request_serializer=service__pb2.DeleteCorrelatedEventRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
         self.DeleteWorkflowEventDef = channel.unary_unary(
@@ -677,6 +697,27 @@ class LittleHorseServicer(object):
     def ListUserTaskRuns(self, request, context):
         """Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
         to model an entity.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutUserTaskRunComment(self, request, context):
+        """Adds userComment to a UserTaskRun
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EditUserTaskRunComment(self, request, context):
+        """Edits userComment with the correlated userCommentId 
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteUserTaskRunComment(self, request, context):
+        """Deletes a comment logically, this does not affect the userTaskEvent Log
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -996,6 +1037,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteCorrelatedEvent(self, request, context):
+        """Deletes a CorrelatedEvent
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def DeleteWorkflowEventDef(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -1225,6 +1273,21 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.ListUserTaskRunRequest.FromString,
                     response_serializer=service__pb2.UserTaskRunList.SerializeToString,
             ),
+            'PutUserTaskRunComment': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutUserTaskRunComment,
+                    request_deserializer=user__tasks__pb2.PutUserTaskRunCommentRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskRun.SerializeToString,
+            ),
+            'EditUserTaskRunComment': grpc.unary_unary_rpc_method_handler(
+                    servicer.EditUserTaskRunComment,
+                    request_deserializer=user__tasks__pb2.EditUserTaskRunCommentRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskRun.SerializeToString,
+            ),
+            'DeleteUserTaskRunComment': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteUserTaskRunComment,
+                    request_deserializer=user__tasks__pb2.DeleteUserTaskRunCommentRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskRun.SerializeToString,
+            ),
             'GetNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetNodeRun,
                     request_deserializer=object__id__pb2.NodeRunId.FromString,
@@ -1428,6 +1491,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteExternalEventDef,
                     request_deserializer=service__pb2.DeleteExternalEventDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteCorrelatedEvent,
+                    request_deserializer=service__pb2.DeleteCorrelatedEventRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWorkflowEventDef': grpc.unary_unary_rpc_method_handler(
@@ -2225,6 +2293,87 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ListUserTaskRuns',
             service__pb2.ListUserTaskRunRequest.SerializeToString,
             service__pb2.UserTaskRunList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutUserTaskRunComment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutUserTaskRunComment',
+            user__tasks__pb2.PutUserTaskRunCommentRequest.SerializeToString,
+            user__tasks__pb2.UserTaskRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def EditUserTaskRunComment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/EditUserTaskRunComment',
+            user__tasks__pb2.EditUserTaskRunCommentRequest.SerializeToString,
+            user__tasks__pb2.UserTaskRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteUserTaskRunComment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteUserTaskRunComment',
+            user__tasks__pb2.DeleteUserTaskRunCommentRequest.SerializeToString,
+            user__tasks__pb2.UserTaskRun.FromString,
             options,
             channel_credentials,
             insecure,
@@ -3331,6 +3480,33 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/DeleteExternalEventDef',
             service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteCorrelatedEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteCorrelatedEvent',
+            service__pb2.DeleteCorrelatedEventRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,

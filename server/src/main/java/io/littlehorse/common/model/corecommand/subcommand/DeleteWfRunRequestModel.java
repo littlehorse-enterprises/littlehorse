@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
@@ -16,8 +17,8 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Optional;
 
 public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> {
@@ -43,7 +44,7 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager manager = executionContext.getableManager();
         WfRunModel wfRun = manager.get(wfRunId);
         if (wfRun == null) return Empty.getDefaultInstance();
@@ -60,6 +61,15 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
                         nodeRun.getSubNodeRun().getCreatedSubGetableId();
                 if (createdGetable.isPresent()) {
                     manager.delete((CoreObjectId<?, ?, ?>) createdGetable.get());
+                }
+
+                // ExternalEventNodeRun's can create correlation markers. Deleting those are tricky.
+                if (nodeRun.getExternalEventRun() != null) {
+                    ExternalEventNodeRunModel extEvtNr = nodeRun.getExternalEventRun();
+                    if (extEvtNr.getCorrelationKey() != null) {
+                        // If we delete the WfRun, we should remove the WfRun from the correlation marker.
+                        extEvtNr.sendRemoveCorrelationMarkerCommand(executionContext);
+                    }
                 }
 
                 // Delete the NodeRun
@@ -83,10 +93,6 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
         // Now we delete the WfRun itself
         executionContext.getableManager().delete(wfRunId);
         return Empty.getDefaultInstance();
-    }
-
-    public boolean hasResponse() {
-        return true;
     }
 
     public static DeleteWfRunRequestModel fromProto(DeleteWfRunRequest p, ExecutionContext context) {

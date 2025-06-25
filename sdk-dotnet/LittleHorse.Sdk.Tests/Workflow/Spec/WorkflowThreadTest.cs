@@ -319,8 +319,8 @@ public class WorkflowThreadTest
         Assert.Equal(expectedSpec, compiledWfThread);
     }
 
-        [Fact]
-    public void WfThread_WithCorrelaatedExternalEvent_ShouldCompile()
+    [Fact]
+    public void WfThread_WithCorrelatedExternalEvent_ShouldCompile()
     {
         var numberOfExitNodes = 1;
         var numberOfEntrypointNodes = 1;
@@ -1546,5 +1546,26 @@ public class WorkflowThreadTest
         };
         
         Assert.Equal(expectedNode, actualNode);
+    }
+
+    [Fact]
+    public void WorkFlowThread_WithCodeAfterComplete_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareStr("input");
+            wf.Execute("any-task-def-name", input);
+            wf.Complete();
+            wf.Execute("another-task-def-name", input);
+        }
+        
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, EntryPointAction));
+
+        Assert.Equal("You cannot add a Node in a given thread after the thread has completed.",
+            exception.Message);
     }
 }

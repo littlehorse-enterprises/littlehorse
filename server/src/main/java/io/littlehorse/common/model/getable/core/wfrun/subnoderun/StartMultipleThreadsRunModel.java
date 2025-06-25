@@ -19,8 +19,8 @@ import io.littlehorse.sdk.common.proto.StartMultipleThreadsRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,12 +62,12 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) {
         return true;
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         StartMultipleThreadsNodeModel node = getNode().getStartMultipleThreadsNode();
         try {
             VariableValueModel iterable =
@@ -108,7 +108,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         VariableValue val = LHLibUtil.objToVarVal(childThreadIds);
         VariableValueModel valModel = VariableValueModel.fromProto(val, context);
         return Optional.of(valModel);

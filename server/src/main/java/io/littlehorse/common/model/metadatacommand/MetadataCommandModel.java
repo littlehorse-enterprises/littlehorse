@@ -23,7 +23,7 @@ import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
 
-    private String commandId;
     private Date time;
 
     private MetadataCommandCase type;
@@ -192,7 +191,6 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         }
     }
 
-    @Override
     public MetadataSubCommand<?> getSubCommand() {
         switch (type) {
             case PUT_WF_SPEC:
@@ -278,10 +276,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     }
 
     public boolean hasResponse() {
-        return getSubCommand().hasResponse();
+        return getCommandId().isPresent();
     }
 
-    public Message process(MetadataCommandExecution context) {
+    public Message process(MetadataProcessorContext context) {
         return getSubCommand().process(context);
     }
 

@@ -8,9 +8,9 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,12 +51,12 @@ public class StartMultipleThreadsNodeModel extends SubNode<StartMultipleThreadsN
     }
 
     @Override
-    public SubNodeRun<?> createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public SubNodeRun<?> createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         StartMultipleThreadsRunModel out = new StartMultipleThreadsRunModel();
         out.setThreadSpecName(threadSpecName);
         return out;
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) {}
+    public void validate(MetadataProcessorContext ctx) {}
 }

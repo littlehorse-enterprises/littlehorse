@@ -15,6 +15,7 @@ import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.internal.ExternalEventNodeOutputImpl;
+import io.littlehorse.sdk.wfsdk.internal.ThrowEventNodeOutputImpl;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +45,7 @@ public abstract class Workflow {
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
     protected int defaultSimpleRetries;
     protected Set<ExternalEventNodeOutputImpl> externalEventsToRegister;
+    protected Set<ThrowEventNodeOutputImpl> workflowEventsToRegister;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -57,6 +59,7 @@ public abstract class Workflow {
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
         this.externalEventsToRegister = new HashSet<>();
+        this.workflowEventsToRegister = new HashSet<>();
     }
 
     /**
