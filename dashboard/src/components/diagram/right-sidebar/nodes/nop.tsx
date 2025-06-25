@@ -1,6 +1,6 @@
 import { Section } from "../section";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { NopNode } from "littlehorse-client/proto";
 
-export function NopNodeComponent({ }: NodeTypedOneOf<'NOP'>) {
+export function NopNodeComponent(_nop: NopNode) {
   return <Section title="NopNode" />
 }

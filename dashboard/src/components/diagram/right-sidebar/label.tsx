@@ -1,18 +1,19 @@
+import { cn } from '@/utils/ui/utils'
 import { ReactNode } from 'react'
 
 interface LabelProps {
     label: string
     children: ReactNode
-    valueClassName?: string
+    variant?: 'default' | 'highlight'
 }
 
-export function Label({ label, children, valueClassName = "font-mono" }: LabelProps) {
+export function Label({ label, children, variant = 'default' }: LabelProps) {
     const displayValue = children === undefined || children === null ? 'N/A' : children
 
     return (
-        <div className="flex justify-between">
-            <span className="text-[#656565]">{label}:</span>
-            <span className={valueClassName}>{displayValue}</span>
+        <div className="w-full flex gap-2">
+            <span className="flex-1 text-[#656565]">{label}:</span>
+            <span className={cn('flex-2', variant === 'highlight' && 'font-mono text-blue-600')}>{displayValue}</span>
         </div>
     )
 } 

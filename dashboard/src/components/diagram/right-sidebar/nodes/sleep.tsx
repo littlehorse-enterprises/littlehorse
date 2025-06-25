@@ -1,9 +1,9 @@
 import { Section } from "../section";
 import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { SleepNode } from "littlehorse-client/proto";
 
-export function SleepNodeComponent({ sleep }: NodeTypedOneOf<'SLEEP'>) {
+export function SleepNodeComponent(sleep: SleepNode) {
   return (
     <Section title="SleepNode">
       {sleep.rawSeconds && (

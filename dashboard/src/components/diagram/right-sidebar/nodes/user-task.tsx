@@ -1,41 +1,33 @@
 import { Section } from "../section";
 import { Label } from "../label";
+import { UserTaskNode } from "littlehorse-client/proto";
 import { getVariable } from "@/utils/data/variables";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { TaskNodeComponent } from "./task";
+import { TaskNode } from "littlehorse-client/proto";
 
-export function UserTaskNodeComponent({ userTask }: NodeTypedOneOf<'USER_TASK'>) {
+export function UserTaskNodeComponent(userTask: UserTaskNode) {
   return (
-    <>
-      <Section title="UserTaskNode">
-        {userTask.userTaskDefName && (
-          <Label label="TaskDef" valueClassName="font-mono text-blue-600">{userTask.userTaskDefName}</Label>
-        )}
-        {userTask.userTaskDefVersion && (
-          <Label label="Version">{userTask.userTaskDefVersion}</Label>
-        )}
-        {userTask.userGroup && (
-          <Label label="User Group">{getVariable(userTask.userGroup)}</Label>
-        )}
-        {userTask.userId && (
-          <Label label="User ID">{getVariable(userTask.userId)}</Label>
-        )}
-        {userTask.notes && (
-          <Label label="Notes">{getVariable(userTask.notes)}</Label>
-        )}
+    <Section title="UserTaskNode">
+      <Label label="UserTaskDefName">{userTask.userTaskDefName}</Label>
+      {userTask.userGroup && <Label label="UserGroup">{getVariable(userTask.userGroup)}</Label>}
+      {userTask.userId && <Label label="UserId">{getVariable(userTask.userId)}</Label>}
+      {userTask.userTaskDefVersion && <Label label="UserTaskDefVersion">{userTask.userTaskDefVersion}</Label>}
+      {userTask.notes && <Label label="Notes">{getVariable(userTask.notes)}</Label>}
+      {userTask.onCancellationExceptionName && <Label label="OnCancellationExceptionName">{getVariable(userTask.onCancellationExceptionName)}</Label>}
+      <Section title="Actions">
+        {userTask.actions.map((action, index) => (
+          <Section key={JSON.stringify(action) + index} title={`UTActionTrigger ${index + 1}`}>
+            {action.task && <Section title="UTATask">
+              <TaskNodeComponent {...(action.task.task as TaskNode)} />
+              {/* // todo : util component for VariableMutations to render into a section */}
+              <Section title="Mutations">
+              </Section>
+            </Section>}
+          </Section>
+        ))}
       </Section>
+    </Section>
 
-      {userTask.actions && userTask.actions.length > 0 && (
-        <Section title="Actions">
-          <div className="space-y-1 text-xs">
-            {userTask.actions.map((action, index) => (
-              <div key={index} className="font-mono">
-                <span className="text-purple-600">Action {index + 1}:</span>{' '}
-                <span className="text-blue-600">{JSON.stringify(action)}</span>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
-    </>
+
   )
 }

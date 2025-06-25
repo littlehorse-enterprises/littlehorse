@@ -1,8 +1,8 @@
 import { Section } from "../section";
 import { Label } from "../label";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { WaitForConditionNode } from "littlehorse-client/proto";
 
-export function WaitForConditionNodeComponent({ waitForCondition }: NodeTypedOneOf<'WAIT_FOR_CONDITION'>) {
+export function WaitForConditionNodeComponent(waitForCondition: WaitForConditionNode) {
   return (
     <Section title="WaitForConditionNode">
       {waitForCondition.condition && (

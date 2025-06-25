@@ -198,6 +198,7 @@ const eslintConfig = [
     rules: {
       'custom/enforce-props-interface-naming': 'error',
       'custom/no-client-pages': 'error',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
 ]

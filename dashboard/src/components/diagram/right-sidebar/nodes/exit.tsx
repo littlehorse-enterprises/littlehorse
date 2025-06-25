@@ -1,18 +1,16 @@
 import { getVariable } from "@/utils/data/variables";
 import { Section } from "../section";
 import { Label } from "../label";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { ExitNode } from "littlehorse-client/proto";
 
-export function ExitNodeComponent({ exit }: NodeTypedOneOf<'EXIT'>) {
+export function ExitNodeComponent(exit: ExitNode) {
   return (
-    <>
-      <Section title="ExitNode">
-        <Label label="Failure Name" valueClassName="font-mono text-red-600">{exit.failureDef?.failureName}</Label>
-        <Label label="Message">{exit.failureDef?.message}</Label>
-        {exit.failureDef?.content && (
-          <Label label="Content">{getVariable(exit.failureDef.content)}</Label>
-        )}
-      </Section>
-    </>
+    <Section title="ExitNode">
+      <Label label="Failure Name" variant="highlight">{exit.failureDef?.failureName}</Label>
+      <Label label="Message">{exit.failureDef?.message}</Label>
+      {exit.failureDef?.content && (
+        <Label label="Content">{getVariable(exit.failureDef.content)}</Label>
+      )}
+    </Section>
   )
 }

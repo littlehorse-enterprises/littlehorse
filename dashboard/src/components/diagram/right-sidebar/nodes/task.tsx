@@ -3,28 +3,26 @@
 import { Section } from '../section'
 import { Label } from '../label'
 import { getVariable } from '@/utils/data/variables'
-import { NodeTypedOneOf } from '@/utils/data/node'
+import { TaskNode } from 'littlehorse-client/proto'
 
-export function TaskNodeComponent({ task }: NodeTypedOneOf<'TASK'>) {
+export function TaskNodeComponent(task: TaskNode) {
   return (
-    <>
-      <Section title="TaskNode">
-        <Label label="Timeout">{task.timeoutSeconds && `${task.timeoutSeconds} s`}</Label>
-        <Label label="Retries">{task.retries}</Label>
-        {task.taskDefId && (
-          <Label label="TaskDef" valueClassName="font-mono text-blue-600">{task.taskDefId.name}</Label>
-        )}
-      </Section>
-
+    <Section title="TaskNode">
+      <Label label="TaskToExecute" variant="highlight">{task.taskDefId ? task.taskDefId.name : getVariable(task.dynamicTask)}</Label>
+      <Label label="Timeout">{`${task.timeoutSeconds} s`}</Label>
+      <Label label="Retries">{task.retries}</Label>
+      {<Section title="ExponentialBackoffRetryPolicy">
+        <Label label="MaxDelayMs">{task.exponentialBackoff?.maxDelayMs}</Label>
+        <Label label="BaseIntervalMs">{task.exponentialBackoff?.baseIntervalMs}</Label>
+        <Label label="Multiplier">{task.exponentialBackoff?.multiplier}</Label>
+      </Section>}
       {task.variables && Object.keys(task.variables).length > 0 && (
         <Section title="Variables">
-          <div className="space-y-1">
-            {Object.entries(task.variables).map(([key, variable]) => (
-              <Label key={key} label={key} valueClassName="font-mono text-xs text-blue-600">{getVariable(variable)}</Label>
-            ))}
-          </div>
+          {Object.entries(task.variables).map(([key, variable]) => (
+            <Label key={key} label={key}>{getVariable(variable)}</Label>
+          ))}
         </Section>
       )}
-    </>
+    </Section>
   )
 }

@@ -1,14 +1,14 @@
 import { Section } from "../section";
 import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { StartMultipleThreadsNode } from "littlehorse-client/proto";
 
-export function StartMultipleThreadsNodeComponent({ startMultipleThreads }: NodeTypedOneOf<'START_MULTIPLE_THREADS'>) {
+export function StartMultipleThreadsNodeComponent(startMultipleThreads: StartMultipleThreadsNode) {
   return (
     <>
       <Section title="StartMultipleThreadsNode">
         {startMultipleThreads.threadSpecName && (
-          <Label label="Thread Spec" valueClassName="font-mono text-blue-600">{startMultipleThreads.threadSpecName}</Label>
+          <Label label="ThreadSpec Name" variant="highlight">{startMultipleThreads.threadSpecName}</Label>
         )}
         {startMultipleThreads.iterable && (
           <Label label="Iterable">{getVariable(startMultipleThreads.iterable)}</Label>
@@ -19,7 +19,7 @@ export function StartMultipleThreadsNodeComponent({ startMultipleThreads }: Node
         <Section title="Variables">
           <div className="space-y-1">
             {Object.entries(startMultipleThreads.variables).map(([key, variable]) => (
-              <Label key={key} label={key} valueClassName="font-mono text-xs text-blue-600">{getVariable(variable)}</Label>
+              <Label key={key} label={key}>{getVariable(variable)}</Label>
             ))}
           </div>
         </Section>

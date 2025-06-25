@@ -1,14 +1,12 @@
 import { Section } from "../section";
 import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { ThrowEventNode } from "littlehorse-client/proto";
 
-export function ThrowEventNodeComponent({ throwEvent }: NodeTypedOneOf<'THROW_EVENT'>) {
+export function ThrowEventNodeComponent(throwEvent: ThrowEventNode) {
   return (
     <Section title="ThrowEventNode">
-      {throwEvent.eventDefId && (
-        <Label label="EventDef" valueClassName="font-mono text-blue-600">{throwEvent.eventDefId.name}</Label>
-      )}
+      <Label label="WorkflowEventDefIdName">{throwEvent.eventDefId?.name}</Label>
       {throwEvent.content && (
         <Label label="Content">{getVariable(throwEvent.content)}</Label>
       )}

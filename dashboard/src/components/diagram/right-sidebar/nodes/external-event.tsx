@@ -1,20 +1,17 @@
 import { getVariable } from "@/utils/data/variables";
 import { Section } from "../section";
 import { Label } from "../label";
-import { NodeTypedOneOf } from "@/utils/data/node";
+import { ExternalEventNode } from "littlehorse-client/proto";
 
-interface ExternalEventNodeComponentProps {
-  node: NodeTypedOneOf<'EXTERNAL_EVENT'>
-}
-
-export function ExternalEventNodeComponent({ node }: ExternalEventNodeComponentProps) {
+export function ExternalEventNodeComponent(externalEvent: ExternalEventNode) {
   return (
     <Section title="ExternalEventNode">
-      {node.externalEvent.externalEventDefId && (
-        <Label label="EventDef" valueClassName="font-mono text-blue-600">{node.externalEvent.externalEventDefId.name}</Label>
+      <Label label="ExternalEventDefIdName">{externalEvent.externalEventDefId?.name}</Label>
+      {externalEvent.correlationKey && (
+        <Label label="Correlation Key" variant="highlight">{getVariable(externalEvent.correlationKey)}</Label>
       )}
-      {node.externalEvent.timeoutSeconds && (
-        <Label label="Timeout">{getVariable(node.externalEvent.timeoutSeconds)} seconds</Label>
+      {externalEvent.timeoutSeconds && (
+        <Label label="Timeout">{getVariable(externalEvent.timeoutSeconds)} seconds</Label>
       )}
     </Section>
   )
