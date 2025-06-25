@@ -1,9 +1,9 @@
 import { Section } from "../section";
 import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
-import { NodeForType } from "@/utils/data/node";
+import { NodeTypedOneOf } from "@/utils/data/node";
 
-export function SleepNodeComponent({ sleep }: NodeForType<'SLEEP'>) {
+export function SleepNodeComponent({ sleep }: NodeTypedOneOf<'SLEEP'>) {
   return (
     <Section title="SleepNode">
       {sleep.rawSeconds && (

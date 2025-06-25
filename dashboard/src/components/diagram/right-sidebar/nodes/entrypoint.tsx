@@ -1,8 +1,8 @@
 import { NodeRun, EntrypointRun } from "littlehorse-client/proto";
 import { Section } from "../section";
-import { NodeForType } from "@/utils/data/node";
+import { NodeTypedOneOf } from "@/utils/data/node";
 
-export function EntrypointNodeComponent({ }: NodeForType<'ENTRYPOINT'>) {
+export function EntrypointNodeComponent({ }: NodeTypedOneOf<'ENTRYPOINT'>) {
   return (
     <Section title="EntrypointNode" />
   )

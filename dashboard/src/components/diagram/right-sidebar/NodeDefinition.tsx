@@ -20,12 +20,6 @@ interface NodeDefinitionProps {
 }
 
 export default function NodeDefinition({ node }: NodeDefinitionProps) {
-  const nodeInfo = getNodeType(node)
-
-  if (nodeInfo.type === 'UNKNOWN_NODE_TYPE') {
-    return <div className="pt-2 w-full space-y-3">Unknown node type</div>
-  }
-
   return (
     <div className="pt-2 w-full space-y-3">
       {
@@ -34,7 +28,7 @@ export default function NodeDefinition({ node }: NodeDefinitionProps) {
             case 'TASK':
               return <TaskNodeComponent taskNode={nodeInfo.node} />
             case 'EXTERNAL_EVENT':
-              return <ExternalEventNodeComponent externalEventNode={nodeInfo.node} />
+              return <ExternalEventNodeComponent node={nodeInfo.node} />
             case 'ENTRYPOINT':
               return <EntrypointNodeComponent entrypointNode={nodeInfo.node} />
             case 'EXIT':

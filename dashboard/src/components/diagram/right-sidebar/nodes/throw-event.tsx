@@ -1,9 +1,9 @@
 import { Section } from "../section";
 import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
-import { NodeForType } from "@/utils/data/node";
+import { NodeTypedOneOf } from "@/utils/data/node";
 
-export function ThrowEventNodeComponent({ throwEvent }: NodeForType<'THROW_EVENT'>) {
+export function ThrowEventNodeComponent({ throwEvent }: NodeTypedOneOf<'THROW_EVENT'>) {
   return (
     <Section title="ThrowEventNode">
       {throwEvent.eventDefId && (

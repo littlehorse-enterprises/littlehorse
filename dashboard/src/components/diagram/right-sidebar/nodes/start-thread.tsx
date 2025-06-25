@@ -1,9 +1,9 @@
 import { Section } from "../section";
 import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
-import { NodeForType } from "@/utils/data/node";
+import { NodeTypedOneOf } from "@/utils/data/node";
 
-export function StartThreadNodeComponent({ startThread }: NodeForType<'START_THREAD'>) {
+export function StartThreadNodeComponent({ startThread }: NodeTypedOneOf<'START_THREAD'>) {
   return (
     <>
       <Section title="StartThreadNode">

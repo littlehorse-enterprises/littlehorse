@@ -29,40 +29,71 @@ export type NodeType =
   | 'UNKNOWN_NODE_TYPE'
   | 'WAIT_FOR_CONDITION'
 
-export function getNodeType(node: Node):
-  | { type: Extract<NodeType, 'TASK'>; node: Node & { task: TaskNode } }
-  | { type: Extract<NodeType, 'EXTERNAL_EVENT'>; node: Node & { externalEvent: ExternalEventNode } }
-  | { type: Extract<NodeType, 'ENTRYPOINT'>; node: Node & { entrypoint: EntrypointNode } }
-  | { type: Extract<NodeType, 'EXIT'>; node: Node & { exit: ExitNode } }
-  | { type: Extract<NodeType, 'START_THREAD'>; node: Node & { startThread: StartThreadNode } }
-  | { type: Extract<NodeType, 'WAIT_FOR_THREADS'>; node: Node & { waitForThreads: WaitForThreadsNode } }
-  | { type: Extract<NodeType, 'SLEEP'>; node: Node & { sleep: SleepNode } }
-  | { type: Extract<NodeType, 'USER_TASK'>; node: Node & { userTask: UserTaskNode } }
-  | {
-      type: Extract<NodeType, 'START_MULTIPLE_THREADS'>
-      node: Node & { startMultipleThreads: StartMultipleThreadsNode }
-    }
-  | { type: Extract<NodeType, 'NOP'>; node: Node & { nop: NopNode } }
-  | { type: Extract<NodeType, 'THROW_EVENT'>; node: Node & { throwEvent: ThrowEventNode } }
-  | { type: Extract<NodeType, 'WAIT_FOR_CONDITION'>; node: Node & { waitForCondition: WaitForConditionNode } }
-  | { type: Extract<NodeType, 'UNKNOWN_NODE_TYPE'>; node: Node } {
-  if (node.task) return { type: 'TASK', node: node as Node & { task: TaskNode } }
-  if (node.externalEvent) return { type: 'EXTERNAL_EVENT', node: node as Node & { externalEvent: ExternalEventNode } }
-  if (node.entrypoint) return { type: 'ENTRYPOINT', node: node as Node & { entrypoint: EntrypointNode } }
-  if (node.exit) return { type: 'EXIT', node: node as Node & { exit: ExitNode } }
-  if (node.startThread) return { type: 'START_THREAD', node: node as Node & { startThread: StartThreadNode } }
-  if (node.waitForThreads)
-    return { type: 'WAIT_FOR_THREADS', node: node as Node & { waitForThreads: WaitForThreadsNode } }
-  if (node.sleep) return { type: 'SLEEP', node: node as Node & { sleep: SleepNode } }
-  if (node.userTask) return { type: 'USER_TASK', node: node as Node & { userTask: UserTaskNode } }
-  if (node.startMultipleThreads)
-    return { type: 'START_MULTIPLE_THREADS', node: node as Node & { startMultipleThreads: StartMultipleThreadsNode } }
-  if (node.nop) return { type: 'NOP', node: node as Node & { nop: NopNode } }
-  if (node.throwEvent) return { type: 'THROW_EVENT', node: node as Node & { throwEvent: ThrowEventNode } }
-  if (node.waitForCondition)
-    return { type: 'WAIT_FOR_CONDITION', node: node as Node & { waitForCondition: WaitForConditionNode } }
-  return { type: 'UNKNOWN_NODE_TYPE', node }
+// Node type to specific node mapping
+type NodeTypeMap = {
+  ENTRYPOINT: EntrypointNode
+  EXIT: ExitNode
+  TASK: TaskNode
+  EXTERNAL_EVENT: ExternalEventNode
+  START_THREAD: StartThreadNode
+  WAIT_FOR_THREADS: WaitForThreadsNode
+  NOP: NopNode
+  SLEEP: SleepNode
+  USER_TASK: UserTaskNode
+  START_MULTIPLE_THREADS: StartMultipleThreadsNode
+  THROW_EVENT: ThrowEventNode
+  WAIT_FOR_CONDITION: WaitForConditionNode
 }
 
-type GetNodeTypeReturn = ReturnType<typeof getNodeType>
-export type NodeForType<T extends NodeType> = Extract<GetNodeTypeReturn, { type: T }>['node']
+// Node property name mapping
+type NodePropertyMap = {
+  ENTRYPOINT: 'entrypoint'
+  EXIT: 'exit'
+  TASK: 'task'
+  EXTERNAL_EVENT: 'externalEvent'
+  START_THREAD: 'startThread'
+  WAIT_FOR_THREADS: 'waitForThreads'
+  NOP: 'nop'
+  SLEEP: 'sleep'
+  USER_TASK: 'userTask'
+  START_MULTIPLE_THREADS: 'startMultipleThreads'
+  THROW_EVENT: 'throwEvent'
+  WAIT_FOR_CONDITION: 'waitForCondition'
+}
+
+// Create typed node type
+export type NodeTypedOneOf<T extends NodeType> = T extends keyof NodeTypeMap
+  ? Node & { [K in NodePropertyMap[T]]: NodeTypeMap[T] }
+  : Node
+
+// Node type detection mapping
+const NODE_TYPE_DETECTORS: Record<keyof NodePropertyMap, (node: Node) => boolean> = {
+  ENTRYPOINT: node => !!node.entrypoint,
+  EXIT: node => !!node.exit,
+  TASK: node => !!node.task,
+  EXTERNAL_EVENT: node => !!node.externalEvent,
+  START_THREAD: node => !!node.startThread,
+  WAIT_FOR_THREADS: node => !!node.waitForThreads,
+  NOP: node => !!node.nop,
+  SLEEP: node => !!node.sleep,
+  USER_TASK: node => !!node.userTask,
+  START_MULTIPLE_THREADS: node => !!node.startMultipleThreads,
+  THROW_EVENT: node => !!node.throwEvent,
+  WAIT_FOR_CONDITION: node => !!node.waitForCondition,
+}
+
+export function getNodeType(
+  node: Node
+): { type: keyof NodeTypeMap; node: NodeTypedOneOf<keyof NodeTypeMap> } | { type: 'UNKNOWN_NODE_TYPE'; node: Node } {
+  // Check each known node type
+  for (const [type, detector] of Object.entries(NODE_TYPE_DETECTORS)) {
+    if (detector(node)) {
+      return {
+        type: type as keyof NodeTypeMap,
+        node: node as NodeTypedOneOf<keyof NodeTypeMap>,
+      }
+    }
+  }
+
+  return { type: 'UNKNOWN_NODE_TYPE', node }
+}

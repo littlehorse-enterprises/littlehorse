@@ -1,9 +1,9 @@
 import { getVariable } from "@/utils/data/variables";
 import { Section } from "../section";
 import { Label } from "../label";
-import { NodeForType } from "@/utils/data/node";
+import { NodeTypedOneOf } from "@/utils/data/node";
 
-export function ExitNodeComponent({ exit }: NodeForType<'EXIT'>) {
+export function ExitNodeComponent({ exit }: NodeTypedOneOf<'EXIT'>) {
   return (
     <>
       <Section title="ExitNode">

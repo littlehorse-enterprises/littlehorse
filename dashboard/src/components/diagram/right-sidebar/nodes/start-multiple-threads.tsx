@@ -1,9 +1,9 @@
 import { Section } from "../section";
 import { Label } from "../label";
 import { getVariable } from "@/utils/data/variables";
-import { NodeForType } from "@/utils/data/node";
+import { NodeTypedOneOf } from "@/utils/data/node";
 
-export function StartMultipleThreadsNodeComponent({ startMultipleThreads }: NodeForType<'START_MULTIPLE_THREADS'>) {
+export function StartMultipleThreadsNodeComponent({ startMultipleThreads }: NodeTypedOneOf<'START_MULTIPLE_THREADS'>) {
   return (
     <>
       <Section title="StartMultipleThreadsNode">

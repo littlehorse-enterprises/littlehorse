@@ -3,9 +3,9 @@
 import { Section } from '../section'
 import { Label } from '../label'
 import { getVariable } from '@/utils/data/variables'
-import { NodeForType } from '@/utils/data/node'
+import { NodeTypedOneOf } from '@/utils/data/node'
 
-export function TaskNodeComponent({ task }: NodeForType<'TASK'>) {
+export function TaskNodeComponent({ task }: NodeTypedOneOf<'TASK'>) {
   return (
     <>
       <Section title="TaskNode">
