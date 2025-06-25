@@ -2,23 +2,27 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHStore;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.CorrelatedEventId;
 import io.littlehorse.sdk.common.proto.CorrelatedEventIdList;
 import io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streams.lhinternalscan.SearchCorrelatedEventReply;
+import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Optional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,8 +92,29 @@ public class SearchCorrelatedEventRequestModel
     }
 
     @Override
+    public TagStorageType indexTypeForSearch() throws LHApiException {
+        return TagStorageType.LOCAL;
+    }
+
+    @Override
+    public LHStore getStoreType() {
+        return LHStore.CORE;
+    }
+
+    @Override
     public List<Attribute> getSearchAttributes() {
         List<Attribute> out = new ArrayList<>();
+        out.add(new Attribute("extEvtDefName", this.getExternalEventDefId().getName()));
 
+        if (this.hasExternalEvents != null) {
+            out.add(new Attribute("hasExtEvts", String.valueOf(hasExternalEvents)));
+        }
+        return out;
+    }
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
+        return new TagScanBoundaryStrategy(
+                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 }
