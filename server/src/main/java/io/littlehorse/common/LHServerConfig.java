@@ -721,7 +721,7 @@ public class LHServerConfig extends ConfigBase {
 
     public LHProducer getTaskClaimProducer() {
         if (taskClaimProducer == null) {
-            taskClaimProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
+            taskClaimProducer = new LHProducer(this.getTaskClaimProducerConfig(this.getLHInstanceName()));
         }
         return taskClaimProducer;
     }
@@ -766,6 +766,28 @@ public class LHServerConfig extends ConfigBase {
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
+        conf.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 1000);
+        conf.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 125829120); // 120Mb
+        addKafkaSecuritySettings(conf);
+        return conf;
+    }
+
+    public Properties getTaskClaimProducerConfig(String component) {
+        Properties conf = new Properties();
+        conf.put("client.id", this.getClientId(component));
+        conf.put(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG, "rebootstrap");
+        conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
+        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        conf.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                Serdes.Bytes().serializer().getClass());
+        conf.put(ProducerConfig.CLIENT_ID_CONFIG, getKafkaGroupId(component));
+        conf.put(
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                org.apache.kafka.common.serialization.StringSerializer.class);
+        conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        conf.put(ProducerConfig.LINGER_MS_CONFIG, 0);
+        conf.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 125829120); // 120Mb
         addKafkaSecuritySettings(conf);
         return conf;
     }
