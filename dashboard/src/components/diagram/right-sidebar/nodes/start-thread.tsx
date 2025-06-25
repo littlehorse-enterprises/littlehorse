@@ -1,5 +1,6 @@
 import { Node, StartThreadNode } from "littlehorse-client/proto";
 import { BaseNodeComponent } from "./base-node";
+import { getVariable } from "@/utils/data/variables";
 
 interface StartThreadNodeComponentProps {
   startThreadNode: Node & { startThread: StartThreadNode }
@@ -25,7 +26,7 @@ export function StartThreadNodeComponent({ startThreadNode }: StartThreadNodeCom
           {Object.entries(startThreadNode.startThread.variables).map(([key, variable]) => (
             <div key={key} className="font-mono text-xs">
               <span className="text-purple-600">{key}:</span>{' '}
-              <span className="text-blue-600">{JSON.stringify(variable)}</span>
+              <span className="text-blue-600">{getVariable(variable)}</span>
             </div>
           ))}
         </div>

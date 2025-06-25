@@ -1,6 +1,6 @@
 'use client'
 
-import { TreeNode } from '@/types/buildNodeTree'
+import { TreeNode } from '@/utils/data/node-tree'
 import { getNodeIcon, NodeType } from '@/utils/ui/node-utils'
 import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'

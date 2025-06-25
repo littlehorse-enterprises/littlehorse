@@ -14,9 +14,20 @@ export const SEARCH_ENTITIES = [
   'WorkflowEventDef',
 ] as const
 export const TIME_RANGES = [
-  { value: '30d', label: 'Last 30 days', minutes: 43200 },
-  { value: '7d', label: 'Last 7 days', minutes: 10080 },
+  { value: '5m', label: 'Last 5 minutes', minutes: 5 },
+  { value: '15m', label: 'Last 15 minutes', minutes: 15 },
+  { value: '30m', label: 'Last 30 minutes', minutes: 30 },
+  { value: '1h', label: 'Last 1 hour', minutes: 60 },
+  { value: '2h', label: 'Last 2 hours', minutes: 120 },
+  { value: '4h', label: 'Last 4 hours', minutes: 240 },
+  { value: '6h', label: 'Last 6 hours', minutes: 360 },
+  { value: '12h', label: 'Last 12 hours', minutes: 720 },
   { value: '1d', label: 'Last 1 day', minutes: 1440 },
+  { value: '2d', label: 'Last 2 days', minutes: 2880 },
+  { value: '3d', label: 'Last 3 days', minutes: 4320 },
+  { value: '7d', label: 'Last 7 days', minutes: 10080 },
+  { value: '14d', label: 'Last 14 days', minutes: 20160 },
+  { value: '30d', label: 'Last 30 days', minutes: 43200 },
 ] as const
 
 // Convert TIME_RANGES to FilterOption[] format
