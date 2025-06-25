@@ -6,7 +6,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.header.Headers;
@@ -16,7 +16,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.mockito.Mockito;
 
-public class TestCommandExecutionContext extends MetadataCommandExecution {
+public class TestCommandExecutionContext extends MetadataProcessorContext {
     public TestCommandExecutionContext(
             Headers recordMetadata,
             ProcessorContext<String, CommandProcessorOutput> processorContext,

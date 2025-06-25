@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import lombok.Getter;
 
 @Getter
@@ -61,12 +61,7 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public ExternalEventDef process(MetadataCommandExecution context) {
+    public ExternalEventDef process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
 
         if (!LHUtil.isValidLHName(name)) {

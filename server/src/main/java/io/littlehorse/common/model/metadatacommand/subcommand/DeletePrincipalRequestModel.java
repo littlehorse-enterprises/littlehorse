@@ -13,7 +13,7 @@ import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,12 +40,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public Empty process(MetadataCommandExecution context) {
+    public Empty process(MetadataProcessorContext context) {
         if (id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
@@ -69,7 +64,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
         return Empty.getDefaultInstance();
     }
 
-    private void ensureThatThereIsStillAnAdminPrincipal(MetadataCommandExecution ctx, PrincipalModel caller) {
+    private void ensureThatThereIsStillAnAdminPrincipal(MetadataProcessorContext ctx, PrincipalModel caller) {
         if (caller.isAdmin()) {
             // Since the caller is admin, and we do not delete the Caller, we are fine.
             return;
@@ -92,7 +87,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
     }
 
     private void ensureThatCallerCanEditPrincipalsInRelevantTenants(
-            MetadataCommandExecution ctx, PrincipalModel caller) {
+            MetadataProcessorContext ctx, PrincipalModel caller) {
         if (!caller.hasPermissionToEditPrincipals()) {
             throw new LHApiException(Status.PERMISSION_DENIED, "You do not have permission to delete Principals.");
         }

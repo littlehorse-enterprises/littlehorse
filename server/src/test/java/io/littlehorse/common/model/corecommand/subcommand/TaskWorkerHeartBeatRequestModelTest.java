@@ -9,7 +9,7 @@ import io.littlehorse.common.model.corecommand.subcommand.internals.TaskWorkerAs
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -19,7 +19,7 @@ import org.mockito.ArgumentCaptor;
 
 public class TaskWorkerHeartBeatRequestModelTest {
 
-    private final ProcessorExecutionContext executionContext = mock(Answers.RETURNS_DEEP_STUBS);
+    private final CoreProcessorContext executionContext = mock(Answers.RETURNS_DEEP_STUBS);
     private final TaskWorkerAssignor assignor = spy(new RoundRobinAssignor());
     private final LHServerConfig lhConfig = mock(LHServerConfig.class);
     private final TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(assignor);

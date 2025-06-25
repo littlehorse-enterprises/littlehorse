@@ -59,6 +59,9 @@ import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
   CompleteUserTaskRunRequest,
+  DeleteUserTaskRunCommentRequest,
+  EditUserTaskRunCommentRequest,
+  PutUserTaskRunCommentRequest,
   SaveUserTaskRunProgressRequest,
   UserTaskDef,
   UserTaskField,
@@ -398,6 +401,12 @@ export interface DeleteScheduledWfRunRequest {
 export interface DeleteWfRunRequest {
   /** The ID of the WfRun to delete. */
   id: WfRunId | undefined;
+}
+
+/** Deletes a CorrelatedEvent */
+export interface DeleteCorrelatedEventRequest {
+  /** The ID of the CorrelatedEvent to delete. */
+  id: CorrelatedEventId | undefined;
 }
 
 /** Deletes a TaskDef. */
@@ -2681,6 +2690,51 @@ export const DeleteWfRunRequest = {
   fromPartial(object: DeepPartial<DeleteWfRunRequest>): DeleteWfRunRequest {
     const message = createBaseDeleteWfRunRequest();
     message.id = (object.id !== undefined && object.id !== null) ? WfRunId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteCorrelatedEventRequest(): DeleteCorrelatedEventRequest {
+  return { id: undefined };
+}
+
+export const DeleteCorrelatedEventRequest = {
+  encode(message: DeleteCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      CorrelatedEventId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = CorrelatedEventId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    return DeleteCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    const message = createBaseDeleteCorrelatedEventRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? CorrelatedEventId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -8481,6 +8535,33 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Adds userComment to a UserTaskRun */
+    putUserTaskRunComment: {
+      name: "PutUserTaskRunComment",
+      requestType: PutUserTaskRunCommentRequest,
+      requestStream: false,
+      responseType: UserTaskRun,
+      responseStream: false,
+      options: {},
+    },
+    /** Edits userComment with the correlated userCommentId */
+    editUserTaskRunComment: {
+      name: "EditUserTaskRunComment",
+      requestType: EditUserTaskRunCommentRequest,
+      requestStream: false,
+      responseType: UserTaskRun,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes a comment logically, this does not affect the userTaskEvent Log */
+    deleteUserTaskRunComment: {
+      name: "DeleteUserTaskRunComment",
+      requestType: DeleteUserTaskRunCommentRequest,
+      requestStream: false,
+      responseType: UserTaskRun,
+      responseStream: false,
+      options: {},
+    },
     /** Gets a specific NodeRun. */
     getNodeRun: {
       name: "GetNodeRun",
@@ -8897,6 +8978,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a CorrelatedEvent */
+    deleteCorrelatedEvent: {
+      name: "DeleteCorrelatedEvent",
+      requestType: DeleteCorrelatedEventRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     deleteWorkflowEventDef: {
       name: "DeleteWorkflowEventDef",
       requestType: DeleteWorkflowEventDefRequest,
@@ -9165,6 +9255,21 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListUserTaskRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskRunList>>;
+  /** Adds userComment to a UserTaskRun */
+  putUserTaskRunComment(
+    request: PutUserTaskRunCommentRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskRun>>;
+  /** Edits userComment with the correlated userCommentId */
+  editUserTaskRunComment(
+    request: EditUserTaskRunCommentRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskRun>>;
+  /** Deletes a comment logically, this does not affect the userTaskEvent Log */
+  deleteUserTaskRunComment(
+    request: DeleteUserTaskRunCommentRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskRun>>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: NodeRunId, context: CallContext & CallContextExt): Promise<DeepPartial<NodeRun>>;
   /** Lists all NodeRun's for a specific WfRun. */
@@ -9369,6 +9474,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: DeleteExternalEventDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeleteCorrelatedEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
   deleteWorkflowEventDef(
     request: DeleteWorkflowEventDefRequest,
     context: CallContext & CallContextExt,
@@ -9566,6 +9676,21 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskRunList>;
+  /** Adds userComment to a UserTaskRun */
+  putUserTaskRunComment(
+    request: DeepPartial<PutUserTaskRunCommentRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskRun>;
+  /** Edits userComment with the correlated userCommentId */
+  editUserTaskRunComment(
+    request: DeepPartial<EditUserTaskRunCommentRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskRun>;
+  /** Deletes a comment logically, this does not affect the userTaskEvent Log */
+  deleteUserTaskRunComment(
+    request: DeepPartial<DeleteUserTaskRunCommentRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskRun>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: DeepPartial<NodeRunId>, options?: CallOptions & CallOptionsExt): Promise<NodeRun>;
   /** Lists all NodeRun's for a specific WfRun. */
@@ -9774,6 +9899,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeepPartial<DeleteExternalEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeepPartial<DeleteCorrelatedEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
   deleteWorkflowEventDef(
