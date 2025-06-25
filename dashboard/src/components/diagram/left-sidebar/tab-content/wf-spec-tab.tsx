@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { WfSpec, WfRun } from 'littlehorse-client/proto'
-import { buildNodeTree } from '@/utils/data/buildNodeTree'
-import { sortNodeTree } from '@/utils/data/sortNodeTree'
+import { buildNodeTree, sortNodeTree } from '@/utils/data/node-tree'
 import { TreeNodeComponent } from '../../tree-node-component'
 import { NodeSearchBar } from '../../node-search-bar'
 

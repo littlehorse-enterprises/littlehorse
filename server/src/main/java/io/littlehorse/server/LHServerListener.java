@@ -106,6 +106,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWorkflowEventsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchCorrelatedEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
@@ -129,6 +130,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUser
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWorkflowEventsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
@@ -760,6 +762,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchWfRun(SearchWfRunRequest req, StreamObserver<WfRunIdList> ctx) {
         handleScan(SearchWfRunRequestModel.fromProto(req, requestContext()), ctx, SearchWfRunReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
+    public void searchCorrelatedEvent(SearchCorrelatedEventRequest req, StreamObserver<CorrelatedEventIdList> ctx) {
+        SearchCorrelatedEventRequestModel reqModel =
+                LHSerializable.fromProto(req, SearchCorrelatedEventRequestModel.class, requestContext());
+        handleScan(reqModel, ctx, SearchCorrelatedEventReply.class);
     }
 
     @Override
