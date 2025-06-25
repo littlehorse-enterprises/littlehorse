@@ -263,6 +263,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchWfRunRequest.SerializeToString,
                 response_deserializer=service__pb2.WfRunIdList.FromString,
                 _registered_method=True)
+        self.SearchCorrelatedEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchCorrelatedEvent',
+                request_serializer=service__pb2.SearchCorrelatedEventRequest.SerializeToString,
+                response_deserializer=service__pb2.CorrelatedEventIdList.FromString,
+                _registered_method=True)
         self.SearchNodeRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchNodeRun',
                 request_serializer=service__pb2.SearchNodeRunRequest.SerializeToString,
@@ -806,6 +811,14 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchCorrelatedEvent(self, request, context):
+        """Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+        events that may be orphaned.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SearchNodeRun(self, request, context):
         """Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
         your workflows or Task Workers.
@@ -1316,6 +1329,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.SearchWfRun,
                     request_deserializer=service__pb2.SearchWfRunRequest.FromString,
                     response_serializer=service__pb2.WfRunIdList.SerializeToString,
+            ),
+            'SearchCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchCorrelatedEvent,
+                    request_deserializer=service__pb2.SearchCorrelatedEventRequest.FromString,
+                    response_serializer=service__pb2.CorrelatedEventIdList.SerializeToString,
             ),
             'SearchNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchNodeRun,
@@ -2674,6 +2692,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/SearchWfRun',
             service__pb2.SearchWfRunRequest.SerializeToString,
             service__pb2.WfRunIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchCorrelatedEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchCorrelatedEvent',
+            service__pb2.SearchCorrelatedEventRequest.SerializeToString,
+            service__pb2.CorrelatedEventIdList.FromString,
             options,
             channel_credentials,
             insecure,
