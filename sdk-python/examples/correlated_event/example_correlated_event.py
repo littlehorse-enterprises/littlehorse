@@ -4,7 +4,7 @@ from pathlib import Path
 
 import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.model import VariableType, VariableMutationType
+from littlehorse.model import VariableType
 from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import WorkflowThread, Workflow
 from littlehorse.model import CorrelatedEventConfig
@@ -34,7 +34,7 @@ def get_workflow() -> Workflow:
         )
 
         name = wf.add_variable("name", VariableType.STR)
-        wf.mutate(name, VariableMutationType.ASSIGN, ext_event_output)
+        name.assign(ext_event_output)
         wf.execute(GREET, name)
 
     return Workflow("example-correlated-event", my_entrypoint)
