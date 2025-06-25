@@ -429,7 +429,14 @@ export interface ExternalEventNode {
    * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
    * using the correlation key provided here.
    */
-  correlationKey?: VariableAssignment | undefined;
+  correlationKey?:
+    | VariableAssignment
+    | undefined;
+  /**
+   * Specifies whether the correlation key is sensitive data which should be masked.
+   * Ignored if correlation_key is not set.
+   */
+  maskCorrelationKey: boolean;
 }
 
 /**
@@ -569,8 +576,9 @@ export interface UserTaskNode {
    */
   actions: UTActionTrigger[];
   /**
-   * If set, then the UserTaskRun will always have this specific version of the
-   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+   * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+   * processor to be the latest available version of the UserTaskDef. That way, the
+   * WfSpec always runs with the same version of the UserTaskDef.
    */
   userTaskDefVersion?:
     | number
@@ -1904,7 +1912,12 @@ export const WaitForThreadsNode_ThreadsToWaitFor = {
 };
 
 function createBaseExternalEventNode(): ExternalEventNode {
-  return { externalEventDefId: undefined, timeoutSeconds: undefined, correlationKey: undefined };
+  return {
+    externalEventDefId: undefined,
+    timeoutSeconds: undefined,
+    correlationKey: undefined,
+    maskCorrelationKey: false,
+  };
 }
 
 export const ExternalEventNode = {
@@ -1917,6 +1930,9 @@ export const ExternalEventNode = {
     }
     if (message.correlationKey !== undefined) {
       VariableAssignment.encode(message.correlationKey, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.maskCorrelationKey !== false) {
+      writer.uint32(32).bool(message.maskCorrelationKey);
     }
     return writer;
   },
@@ -1949,6 +1965,13 @@ export const ExternalEventNode = {
 
           message.correlationKey = VariableAssignment.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.maskCorrelationKey = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1972,6 +1995,7 @@ export const ExternalEventNode = {
     message.correlationKey = (object.correlationKey !== undefined && object.correlationKey !== null)
       ? VariableAssignment.fromPartial(object.correlationKey)
       : undefined;
+    message.maskCorrelationKey = object.maskCorrelationKey ?? false;
     return message;
   },
 };

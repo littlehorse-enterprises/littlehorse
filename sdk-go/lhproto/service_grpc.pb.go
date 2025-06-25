@@ -66,6 +66,7 @@ const (
 	LittleHorse_ListExternalEvents_FullMethodName         = "/littlehorse.LittleHorse/ListExternalEvents"
 	LittleHorse_ListWorkflowEvents_FullMethodName         = "/littlehorse.LittleHorse/ListWorkflowEvents"
 	LittleHorse_SearchWfRun_FullMethodName                = "/littlehorse.LittleHorse/SearchWfRun"
+	LittleHorse_SearchCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
 	LittleHorse_SearchNodeRun_FullMethodName              = "/littlehorse.LittleHorse/SearchNodeRun"
 	LittleHorse_SearchTaskRun_FullMethodName              = "/littlehorse.LittleHorse/SearchTaskRun"
 	LittleHorse_SearchUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/SearchUserTaskRun"
@@ -245,6 +246,9 @@ type LittleHorseClient interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
+	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+	// events that may be orphaned.
+	SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error)
 	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
 	// your workflows or Task Workers.
 	SearchNodeRun(ctx context.Context, in *SearchNodeRunRequest, opts ...grpc.CallOption) (*NodeRunIdList, error)
@@ -767,6 +771,15 @@ func (c *littleHorseClient) SearchWfRun(ctx context.Context, in *SearchWfRunRequ
 	return out, nil
 }
 
+func (c *littleHorseClient) SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error) {
+	out := new(CorrelatedEventIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchCorrelatedEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) SearchNodeRun(ctx context.Context, in *SearchNodeRunRequest, opts ...grpc.CallOption) (*NodeRunIdList, error) {
 	out := new(NodeRunIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchNodeRun_FullMethodName, in, out, opts...)
@@ -1278,6 +1291,9 @@ type LittleHorseServer interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
+	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+	// events that may be orphaned.
+	SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error)
 	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
 	// your workflows or Task Workers.
 	SearchNodeRun(context.Context, *SearchNodeRunRequest) (*NodeRunIdList, error)
@@ -1520,6 +1536,9 @@ func (UnimplementedLittleHorseServer) ListWorkflowEvents(context.Context, *ListW
 }
 func (UnimplementedLittleHorseServer) SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchCorrelatedEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchNodeRun(context.Context, *SearchNodeRunRequest) (*NodeRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchNodeRun not implemented")
@@ -2479,6 +2498,24 @@ func _LittleHorse_SearchWfRun_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_SearchCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchCorrelatedEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchCorrelatedEvent(ctx, req.(*SearchCorrelatedEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_SearchNodeRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchNodeRunRequest)
 	if err := dec(in); err != nil {
@@ -3379,6 +3416,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchWfRun",
 			Handler:    _LittleHorse_SearchWfRun_Handler,
+		},
+		{
+			MethodName: "SearchCorrelatedEvent",
+			Handler:    _LittleHorse_SearchCorrelatedEvent_Handler,
 		},
 		{
 			MethodName: "SearchNodeRun",

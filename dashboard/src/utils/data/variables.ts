@@ -1,6 +1,13 @@
 import { VariableAssignment, VariableValue } from 'littlehorse-client/proto'
 
-export function getVariableValue(variable?: VariableValue) {
+export function getVariable(variable?: VariableAssignment) {
+  if (!variable) return
+  if (variable.formatString) return getValueFromFormatString(variable)
+  if (variable.variableName) return getValueFromVariableName(variable)
+  if (variable.literalValue) return getVariableValue(variable.literalValue)
+}
+
+function getVariableValue(variable?: VariableValue) {
   if (!variable) return
 
   const key = Object.keys(variable)[0] as keyof VariableValue
@@ -12,25 +19,16 @@ export function getVariableValue(variable?: VariableValue) {
   }
 }
 
-export const getVariable = (variable?: VariableAssignment) => {
-  if (!variable) return
-  if (variable.formatString) return getValueFromFormatString(variable)
-  if (variable.variableName) {
-    return getValueFromVariableName(variable)
-  }
-  if (variable.literalValue) return getVariableValue(variable.literalValue)
-}
-
-const getValueFromVariableName = ({
+function getValueFromVariableName({
   variableName,
   jsonPath,
-}: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) => {
+}: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) {
   if (!variableName) return
   if (jsonPath) return `{${jsonPath.replace('$', variableName)}}`
   return `{${variableName}}`
 }
 
-const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined => {
+function getValueFromFormatString({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined {
   if (!formatString) return
   const template = getVariable(formatString.format)
   const args = formatString.args.map(getVariable)
@@ -38,7 +36,7 @@ const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'fo
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
 
-export const formatJsonOrReturnOriginalValue = (value: string) => {
+export function formatJsonOrReturnOriginalValue(value: string) {
   try {
     const json = JSON.parse(value)
     return JSON.stringify(json, null, 2)
@@ -47,7 +45,7 @@ export const formatJsonOrReturnOriginalValue = (value: string) => {
   }
 }
 
-export const getTypedContent = (contentType: string, contentValue: string) => {
+export function getTypedContent(contentType: string, contentValue: string) {
   switch (contentType) {
     case 'STR':
       return { str: contentValue }
@@ -67,19 +65,3 @@ export const getTypedContent = (contentType: string, contentValue: string) => {
       return { str: contentValue }
   }
 }
-
-/**
- * After 0.13.2, the `VariableDef.type` and `VariableDef.maskedValue` fields are deprecated.
- * These fields are replaced with `VariableDef.typeDef`.
- *
- * Old server versions may keep around both old and new Variables, so this function
- * determines which typing strategy a Variable uses.
- */
-// export const getVariableDefType = (varDef: VariableDef): VariableType => {
-//   if (varDef.typeDef) {
-//     return varDef.typeDef.type
-//   } else if (varDef.type) {
-//     return varDef.type
-//   }
-//   throw new Error('Variable must have type or typeDef.')
-// }

@@ -1,5 +1,6 @@
 'use client'
 
+import { getVariable } from '@/utils/data/variables'
 import { Node, TaskNode } from 'littlehorse-client/proto'
 import { BaseNodeComponent } from './base-node'
 
@@ -35,7 +36,7 @@ export function TaskNodeComponent({ taskNode }: TaskNodeComponentProps) {
           {Object.entries(taskNode.task.variables).map(([key, variable]) => (
             <div key={key} className="font-mono text-xs">
               <span className="text-purple-600">{key}:</span>{' '}
-              <span className="text-blue-600">{JSON.stringify(variable)}</span>
+              <span className="text-blue-600">{getVariable(variable)}</span>
             </div>
           ))}
         </div>

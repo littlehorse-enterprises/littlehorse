@@ -1,6 +1,6 @@
 import React from 'react'
 import { Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { LHStatus, TaskStatus } from 'littlehorse-client/proto'
 
 // Timestamp can be either a protobuf timestamp with seconds/nanos or a Date-like object

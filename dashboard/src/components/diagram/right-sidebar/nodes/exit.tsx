@@ -1,3 +1,4 @@
+import { getVariable } from "@/utils/data/variables";
 import { ExitNode, Node } from "littlehorse-client/proto";
 import { BaseNodeComponent } from "./base-node";
 
@@ -22,7 +23,7 @@ export function ExitNodeComponent({ exitNode }: ExitNodeComponentProps) {
           {exitNode.exit.failureDef.content && (
             <div className="flex justify-between">
               <span className="text-[#656565]">Content:</span>
-              <span className="font-mono">{JSON.stringify(exitNode.exit.failureDef.content)}</span>
+              <span className="font-mono">{getVariable(exitNode.exit.failureDef.content)}</span>
             </div>
           )}
         </>
