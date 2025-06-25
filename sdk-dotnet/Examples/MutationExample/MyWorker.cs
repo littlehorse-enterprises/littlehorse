@@ -5,7 +5,7 @@ namespace MutationExample;
 public class MyWorker
 {
     [LHTaskMethod("spider-bite")]
-    public string SpiderBite(string name) 
+    public async Task<string> SpiderBite(string name)
     {
         Console.WriteLine("Executing spider-bite");
         var names = new List<string> { "Miles", "Peter" };
