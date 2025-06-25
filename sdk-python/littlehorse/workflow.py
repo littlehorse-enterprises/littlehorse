@@ -1721,6 +1721,8 @@ class WorkflowThread:
             correlation_var_assn = to_variable_assignment(correlation_id)
             if isinstance(correlation_id, WfRunVariable) and mask_correlation_id is None:
                 mask_correlation_id = correlation_id._masked
+        if mask_correlation_id is None:
+            mask_correlation_id = False
 
         wait_node = ExternalEventNode(
             external_event_def_id=ExternalEventDefId(name=event_name),
