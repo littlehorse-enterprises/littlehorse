@@ -1,7 +1,7 @@
 'use client'
 
-import { Section } from '../section'
-import { Label } from '../label'
+import { Section } from '../../section'
+import { Label } from '../../label'
 import { getVariable } from '@/utils/data/variables'
 import { TaskNode } from 'littlehorse-client/proto'
 

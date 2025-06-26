@@ -1,9 +1,10 @@
-import { Section } from "../section";
-import { Label } from "../label";
+import { Section } from "../../section";
+import { Label } from "../../label";
 import { UserTaskNode } from "littlehorse-client/proto";
 import { getVariable } from "@/utils/data/variables";
 import { TaskNodeComponent } from "./task";
 import { TaskNode } from "littlehorse-client/proto";
+import VariableMutationComponent from "../variable-mutation";
 
 export function UserTaskNodeComponent(userTask: UserTaskNode) {
   return (
@@ -19,8 +20,10 @@ export function UserTaskNodeComponent(userTask: UserTaskNode) {
           <Section key={JSON.stringify(action) + index} title={`UTActionTrigger ${index + 1}`}>
             {action.task && <Section title="UTATask">
               <TaskNodeComponent {...(action.task.task as TaskNode)} />
-              {/* // todo : util component for VariableMutations to render into a section */}
               <Section title="Mutations">
+                {action.task.mutations.map((mutation, index) => (
+                  <VariableMutationComponent key={JSON.stringify(mutation) + index} {...mutation} />
+                ))}
               </Section>
             </Section>}
           </Section>

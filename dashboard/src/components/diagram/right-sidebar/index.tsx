@@ -6,8 +6,8 @@ import SidebarExpandButton from '@/components/ui/sidebar-expand-button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library/tabs'
 import { WfSpec } from 'littlehorse-client/proto'
 import { useState } from 'react'
-import NodeDefinition from './NodeDefinition'
-import NodeRuns from './NodeRuns'
+import NodeDefinition from './node-definition'
+import NodeRuns from './node-runs'
 
 type SidebarState = 'hidden' | 'normal' | 'expanded'
 

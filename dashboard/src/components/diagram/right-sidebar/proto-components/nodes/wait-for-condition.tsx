@@ -1,5 +1,5 @@
-import { Section } from "../section";
-import { Label } from "../label";
+import { Section } from "../../section";
+import { Label } from "../../label";
 import { WaitForConditionNode } from "littlehorse-client/proto";
 
 export function WaitForConditionNodeComponent(waitForCondition: WaitForConditionNode) {

@@ -1,5 +1,5 @@
-import { Section } from "../section";
-import { Label } from "../label";
+import { Section } from "../../section";
+import { Label } from "../../label";
 import { getVariable } from "@/utils/data/variables";
 import { StartThreadNode } from "littlehorse-client/proto";
 

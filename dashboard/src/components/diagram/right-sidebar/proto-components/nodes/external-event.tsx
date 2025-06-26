@@ -1,6 +1,6 @@
 import { getVariable } from "@/utils/data/variables";
-import { Section } from "../section";
-import { Label } from "../label";
+import { Section } from "../../section";
+import { Label } from "../../label";
 import { ExternalEventNode } from "littlehorse-client/proto";
 
 export function ExternalEventNodeComponent(externalEvent: ExternalEventNode) {

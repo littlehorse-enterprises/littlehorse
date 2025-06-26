@@ -1,4 +1,4 @@
-import { Section } from "../section";
+import { Section } from "../../section";
 import { EntrypointNode } from "littlehorse-client/proto";
 
 export function EntrypointNodeComponent(_entrypoint: EntrypointNode) {
