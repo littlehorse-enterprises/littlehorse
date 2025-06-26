@@ -44,7 +44,7 @@ public abstract class Program
         return new Workflow("await-wf-event", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -52,26 +52,25 @@ public abstract class Program
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
             var client = config.GetGrpcClientInstance();
-            
-            var workflow = GetWorkflow();
-            client.PutWorkflowEventDef(
+
+            await client.PutWorkflowEventDefAsync(
                 new PutWorkflowEventDefRequest
                 {
                     Name = "sleep-done"
                 });
             
-            workflow.RegisterWfSpec(client);
+            await GetWorkflow().RegisterWfSpec(client);
             
             int delayMs = int.Parse(args[0]);
             string timeoutMs = args[1];
             int sleepSeconds = int.Parse(args[2]);
             
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
             
             var id = Guid.NewGuid().ToString();
             
             Console.WriteLine($"Running workflow with id {id}");
-            client.RunWf(new RunWfRequest
+            await client.RunWfAsync(new RunWfRequest
             {
                 Id = id,
                 WfSpecName = "await-wf-event",
@@ -83,12 +82,12 @@ public abstract class Program
                 }
             });
             Console.WriteLine($"Sleeping for {delayMs} milliseconds");
-            Thread.Sleep(delayMs);
+            await Task.Delay(delayMs);
             
             Console.WriteLine($"Now awaiting workflow event with timeout of {timeoutMs} milliseconds");
             
             var date = DateTime.UtcNow.AddMilliseconds(double.Parse(timeoutMs));
-            var eventResult = client.AwaitWorkflowEvent(new AwaitWorkflowEventRequest
+            var eventResult = await client.AwaitWorkflowEventAsync(new AwaitWorkflowEventRequest
                 {
                     WfRunId = new WfRunId { Id = id }
                 },

@@ -20,7 +20,7 @@ internal class LHTask<T>
     internal T Executable => _executable;
     public string TaskDefName => _taskDefName;
     internal TaskDef? TaskDef => _taskDef;
-    
+
     internal LHTask(T executable, string taskDefName, LittleHorseClient lhClient)
     {
         _taskDefName = taskDefName;
@@ -29,18 +29,18 @@ internal class LHTask<T>
         _taskMethodMappings = new List<VariableMapping>();
     }
 
-    internal void PrepareLHTaskMethod()
+    internal async Task PrepareLHTaskMethod()
     {
         _taskSignature = new LHTaskSignature<T>(_taskDefName, _executable);
         _taskMethod = _taskSignature.TaskMethod;
 
-        ValidateTaskMethodParameters(_taskMethod, _taskSignature);
-        _taskMethodMappings = CreateVariableMappings(_taskMethod, _taskSignature);
+        await ValidateTaskMethodParameters(_taskMethod, _taskSignature);
+        _taskMethodMappings = await CreateVariableMappings(_taskMethod, _taskSignature);
     }
-    
-    private void ValidateTaskMethodParameters(MethodInfo taskMethod, LHTaskSignature<T> taskSignature)
+
+    private async Task ValidateTaskMethodParameters(MethodInfo taskMethod, LHTaskSignature<T> taskSignature)
     {
-        _taskDef = GetTaskDef();
+        _taskDef = await GetTaskDef();
         if (taskSignature.HasWorkerContextAtEnd)
         {
             if (taskSignature.TaskMethod.GetParameters().Length - 1 != _taskDef.InputVars.Count)
@@ -57,12 +57,12 @@ internal class LHTask<T>
         }
     }
 
-    private List<VariableMapping> CreateVariableMappings(MethodInfo taskMethod, LHTaskSignature<T> taskSignature)
+    private async Task<List<VariableMapping>> CreateVariableMappings(MethodInfo taskMethod, LHTaskSignature<T> taskSignature)
     {
         var mappings = new List<VariableMapping>();
 
         var taskParams = taskMethod.GetParameters();
-        _taskDef = GetTaskDef();
+        _taskDef = await GetTaskDef();
 
         for (int index = 0; index < _taskDef?.InputVars.Count; index++)
         {
@@ -88,8 +88,8 @@ internal class LHTask<T>
     {
         return new VariableMapping(taskDef!, index, type, paramName);
     }
-    
-    internal TaskDef GetTaskDef()
+
+    internal async Task<TaskDef> GetTaskDef()
     {
         if (_taskDef is null)
         {
@@ -97,7 +97,7 @@ internal class LHTask<T>
             {
                 Name = _taskDefName
             };
-           _taskDef = _lhClient.GetTaskDef(taskDefId);
+           _taskDef = await _lhClient.GetTaskDefAsync(taskDefId);
         }
 
         return _taskDef;
