@@ -58,6 +58,7 @@ public class LHServer {
     private final CommandSender commandSender;
     private final LHInternalClient lhInternalClient;
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
+    public static final int CORE_PROCESSES_COUNT = 4; // core , timer, internal and health
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -131,9 +132,9 @@ public class LHServer {
     }
 
     /*
-     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
-     * grpc call that asynchronously waits for the command to be processed. It
-     * infers the request context from the GRPC Context.
+     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal grpc call
+     * that asynchronously waits for the command to be processed. It infers the request context from
+     * the GRPC Context.
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         commandSender.doSend(scheduledTask, client);
@@ -185,7 +186,7 @@ public class LHServer {
         CountDownLatch listenerLatch = new CountDownLatch(listeners.size());
 
         ExecutorService listenerExecutor = Executors.newFixedThreadPool(listeners.size());
-        
+
         log.info("Closing {} listeners", listeners.size());
 
         for (LHServerListener listener : listeners) {
@@ -203,9 +204,9 @@ public class LHServer {
             log.error("Listener close interrupted", e);
         }
 
-        CountDownLatch latch = new CountDownLatch(4 );
+        CountDownLatch latch = new CountDownLatch(CORE_PROCESSES_COUNT);
 
-        ExecutorService shutdownExecutor = Executors.newFixedThreadPool(4);
+        ExecutorService shutdownExecutor = Executors.newFixedThreadPool(CORE_PROCESSES_COUNT);
 
         shutdownExecutor.submit(() -> {
             log.info("Closing timer Kafka Streams");
