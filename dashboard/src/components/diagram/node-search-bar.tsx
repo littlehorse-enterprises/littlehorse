@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import { Input } from '@littlehorse-enterprises/ui-library/input'
 
 interface NodeSearchBarProps {
   searchTerm: string

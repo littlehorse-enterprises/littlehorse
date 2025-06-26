@@ -1,6 +1,6 @@
 'use client'
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@littlehorse-enterprises/ui-library/select'
 import { cn } from '@/utils/ui/utils'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
 

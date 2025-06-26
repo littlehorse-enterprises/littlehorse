@@ -1,7 +1,7 @@
 'use client'
 
-import { Tabs, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library/tabs'
 import { LeftSidebarTabId } from '@/types/leftSidebarTabs'
+import { Tabs, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library/tabs'
 import { Dispatch, SetStateAction } from 'react'
 
 const tabs: { id: LeftSidebarTabId; label: string }[] = [
