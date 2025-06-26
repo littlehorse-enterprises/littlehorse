@@ -102,17 +102,22 @@ namespace LittleHorse.Sdk.Worker
                     Name = paramName,
                     IsMasked = maskedParam
                 };
-                
+
                 _lhMethodParams.Add(lhMethodParam);
             }
         }
         
         private ReturnType BuildReturnType()
         {
-            if (TaskMethod.ReturnType == typeof(void)) {
+            if (TaskMethod.ReturnType != typeof(Task) && 
+                (!TaskMethod.ReturnType.IsGenericType || TaskMethod.ReturnType.GetGenericTypeDefinition() != typeof(Task<>)))
+            {
+                throw new LHTaskSchemaMismatchException("Task methods must return Task<type> or Task");
+            }
+            if (TaskMethod.ReturnType == typeof(Task)) {
                 return new ReturnType{};
             } else {
-                var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType);
+                var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType.GetGenericArguments().First());
                 var maskedValue = false;
 
                 if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {

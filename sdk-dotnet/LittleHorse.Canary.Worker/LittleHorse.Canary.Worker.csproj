@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Confluent.Kafka" Version="2.10.1" />
+      <PackageReference Include="Google.Protobuf" Version="3.31.1" />
+      <PackageReference Include="Grpc.Tools" Version="2.72.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.6" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.6" />
+      <ProjectReference Include="..\LittleHorse.Sdk\LittleHorse.Sdk.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="..\..\canary\src\main\proto\*.proto" GrpcServices="Client" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="appsettings.json" />
+      <Content Include="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+</Project>

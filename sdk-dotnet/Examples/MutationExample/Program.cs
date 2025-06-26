@@ -47,25 +47,23 @@ public abstract class Program
         return new Workflow("example-mutation", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
-            
             var executable = new MyWorker();
             var worker = new LHTaskWorker<MyWorker>(executable, TaskDefName, config);
             
-            worker.RegisterTaskDef();
-            
-            var workflow = GetWorkflow();
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-            
-            Thread.Sleep(300);
-            
-            worker.Start();
+            await worker.RegisterTaskDef();
+
+            await GetWorkflow().RegisterWfSpec(config.GetGrpcClientInstance());
+
+            await Task.Delay(300);
+
+            await worker.Start();
         }
     }
 }

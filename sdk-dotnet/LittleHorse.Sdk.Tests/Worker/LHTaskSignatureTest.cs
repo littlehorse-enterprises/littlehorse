@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Exceptions;
@@ -213,59 +214,59 @@ public class LHTaskSignatureTest
     {
         [LHTaskMethod(TASK_DEF_NAME_ADD)]
         [LHType(masked: TRUE_IS_MASKET)]
-        public string Add([LHType(masked: TRUE_IS_MASKET)] string name)
+        public async Task<string> Add([LHType(masked: TRUE_IS_MASKET)] string name)
         {
             return $"Output value: {name}";
         }
         
         [LHTaskMethod(TASK_DEF_NAME_INFORM)]
-        public void Inform([LHType(masked: TRUE_IS_MASKET)] string name)
+        public async Task Inform([LHType(masked: TRUE_IS_MASKET)] string name)
         {
             var test_variable = "test_variable" + name;
         }
         
         [LHTaskMethod(TASK_DEF_NAME_UPDATE)]
         [LHType(masked: TRUE_IS_MASKET, name: "result")]
-        public string Update(int value)
+        public async Task<string> Update(int value)
         {
             return $"Output value: {value}";
         }
         
         [LHTaskMethod(TASK_DEF_NAME_DELETE)]
-        public string Delete(float value, LHWorkerContext workerContext)
+        public async Task<string> Delete(float value, LHWorkerContext workerContext)
         {
             workerContext.Log($"Output value: {value}");
             return $"Output value: {value}";
         }
         
         [LHTaskMethod(TASK_DEF_NAME_GET)]
-        public string Get(float value, string description, LHWorkerContext workerContext, string phone)
+        public async Task<string> Get(float value, string description, LHWorkerContext workerContext, string phone)
         {
             workerContext.Log($"Output value: {value}");
             return $"Output value: {value}, Description: {description} and Phone: {phone}";
         }
         
         [LHTaskMethod(TASK_DEF_NAME_VALIDATE)]
-        public string Validate(LHWorkerContext workerContext, float value, string description, string phone)
+        public async Task<string> Validate(LHWorkerContext workerContext, float value, string description, string phone)
         {
             workerContext.Log($"Output value: {value}");
             return $"Output value: {value}, Description: {description} and Phone: {phone}";
         }
         
         [LHTaskMethod(TASK_DEF_NAME_SHOW)]
-        public string Show([LHType(masked: true, name: VALUE_ATTR_NAME)] int value, [LHType(masked: false, name: DETAIL_ATTR_NAME)] string description, [LHType(masked: true, name:TELEPHONE_ATTR_NAME)] string phone)
+        public async Task<string> Show([LHType(masked: true, name: VALUE_ATTR_NAME)] int value, [LHType(masked: false, name: DETAIL_ATTR_NAME)] string description, [LHType(masked: true, name:TELEPHONE_ATTR_NAME)] string phone)
         {
             return $"Output value: {value}, Description: {description} and Phone: {phone}";
         }
         
         [LHTaskMethod(TASK_DEF_NAME_PROCESS)]
-        public string ProcessPayment(float cost)
+        public async Task<string> ProcessPayment(float cost)
         {
             return $"Output value: {cost}";
         }
         
         [LHTaskMethod(TASK_DEF_NAME_PROCESS)]
-        public string ProcessOrder(string account_number)
+        public async Task<string> ProcessOrder(string account_number)
         {
             return $"Output value: {account_number}";
         }
