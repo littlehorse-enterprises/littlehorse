@@ -67,7 +67,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
 
         options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
-        options.setCompactionStyle(CompactionStyle.UNIVERSAL);
+        options.setCompactionStyle(CompactionStyle.LEVEL);
 
         options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
 

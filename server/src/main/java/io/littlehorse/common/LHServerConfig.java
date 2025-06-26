@@ -786,7 +786,7 @@ public class LHServerConfig extends ConfigBase {
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
-        conf.put(ProducerConfig.LINGER_MS_CONFIG, 200);
+        conf.put(ProducerConfig.LINGER_MS_CONFIG, 100);
         conf.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 125829120); // 120Mb
         addKafkaSecuritySettings(conf);
         return conf;
