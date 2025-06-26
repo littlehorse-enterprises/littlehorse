@@ -12,7 +12,7 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
-import io.littlehorse.server.interceptors.ShutdownInterceptor;
+import io.littlehorse.server.interceptors.RequestBlocker;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -35,7 +35,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
@@ -60,8 +59,7 @@ public class LHServer {
     private final CommandSender commandSender;
     private final LHInternalClient lhInternalClient;
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
-    public static final int CORE_PROCESSES_COUNT = 4; // core , timer, internal and health
-    private static final int GRACE_PERIOD_SECONDS = 5;
+    private final RequestBlocker requestBlocker = new RequestBlocker();
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -124,7 +122,7 @@ public class LHServer {
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
                         listenerConfig.getRequestAuthenticator(),
-                        new ShutdownInterceptor()),
+                        requestBlocker),
                 contextKey,
                 commandSender,
                 internalComms.getAsyncWaiters(),
@@ -186,72 +184,57 @@ public class LHServer {
     }
 
     public void close() {
-        log.info("Waiting {} seconds for active requests to complete...", GRACE_PERIOD_SECONDS);
+
+        CountDownLatch streamLatch = new CountDownLatch(2);
+        new Thread(() -> {
+                    log.info("Closing timer Kafka Streams");
+                    timerStreams.close();
+                    streamLatch.countDown();
+                    log.info("Done closing timer Kafka Streams");
+                })
+                .start();
+
+        new Thread(() -> {
+                    log.info("Closing core Kafka Streams");
+                    coreStreams.close();
+                    streamLatch.countDown();
+                    log.info("Done closing core Kafka Streams");
+                })
+                .start();
         try {
-            TimeUnit.SECONDS.sleep(GRACE_PERIOD_SECONDS);
-        } catch (InterruptedException e) {
-            log.warn("Grace period wait was interrupted", e);
-        }
-
-        CountDownLatch listenerLatch = new CountDownLatch(listeners.size());
-
-        ExecutorService listenerExecutor = Executors.newFixedThreadPool(listeners.size());
-
-        log.info("Closing {} listeners", listeners.size());
-
-        for (LHServerListener listener : listeners) {
-            listenerExecutor.submit(() -> {
-                log.info("Closing listener {}", listener);
-                listener.close();
-                listenerLatch.countDown();
-            });
-        }
-        listenerExecutor.shutdown();
-        try {
-            listenerLatch.await();
-            log.info("All listeners closed successfully");
-        } catch (InterruptedException e) {
-            log.error("Listener close interrupted", e);
-        }
-
-        CountDownLatch latch = new CountDownLatch(CORE_PROCESSES_COUNT);
-
-        ExecutorService shutdownExecutor = Executors.newFixedThreadPool(CORE_PROCESSES_COUNT);
-
-        shutdownExecutor.submit(() -> {
-            log.info("Closing timer Kafka Streams");
-            timerStreams.close();
-            latch.countDown();
-            log.info("Done closing timer Kafka Streams");
-        });
-
-        shutdownExecutor.submit(() -> {
-            log.info("Closing core Kafka Streams");
-            coreStreams.close();
-            latch.countDown();
-            log.info("Done closing core Kafka Streams");
-        });
-
-        shutdownExecutor.submit(() -> {
-            log.info("Closing internalComms");
-            internalComms.close();
-            latch.countDown();
-        });
-
-        shutdownExecutor.submit(() -> {
-            log.info("Closing health service");
-            healthService.close();
-            latch.countDown();
-        });
-
-        shutdownExecutor.shutdown();
-
-        try {
-            latch.await();
+            streamLatch.await();
             log.info("Done shutting down all LHServer threads");
         } catch (Exception exn) {
             throw new RuntimeException(exn);
         }
+
+        CountDownLatch latch = new CountDownLatch(2);
+
+        new Thread(() -> {
+                    log.info("Closing internalComms");
+                    internalComms.close();
+                    latch.countDown();
+                })
+                .start();
+
+        new Thread(() -> {
+                    log.info("Closing health service");
+                    healthService.close();
+                    latch.countDown();
+                })
+                .start();
+        try {
+            latch.await();
+            log.info("Done closing internalComms and health service");
+        } catch (Exception exn) {
+            throw new RuntimeException(exn);
+        }
+
+        for (LHServerListener listener : listeners) {
+            log.info("Closing listener {}", listener);
+            listener.close();
+        }
+        log.info("Done closing all listeners");
     }
 
     public Set<HostModel> getAllInternalHosts() {
