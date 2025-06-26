@@ -64,6 +64,12 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
         return GetableClassEnum.STRUCT_DEF;
     }
 
+    public static StructDefIdModel fromProto(StructDefId proto, ExecutionContext context) {
+        StructDefIdModel out = new StructDefIdModel();
+        out.initFrom(proto, context);
+        return out;
+    }
+
     @Override
     public Class<StructDefId> getProtoBaseClass() {
         return StructDefId.class;

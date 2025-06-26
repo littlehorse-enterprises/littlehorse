@@ -2,6 +2,9 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.StructFieldModel;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import java.util.ArrayList;
@@ -129,11 +132,51 @@ public class InlineStructDefUtil {
         for (String newFieldName : newRequiredFields.keySet()) {
             // If new required field was added
             if (!oldRequiredFields.containsKey(newFieldName)) {
-                // If new required field does not have a default value
                 incompatibleFields.add(newFieldName);
             }
         }
 
         return incompatibleFields;
+    }
+
+    public static boolean compareStructPedro(InlineStructDefModel inlineStructDef, InlineStructModel inlineStruct) {
+        Map<String, StructFieldDefModel> fields = inlineStructDef.getFields();
+        Map<String, StructFieldModel> fieldValues = inlineStruct.getFields();
+
+        for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
+            String fieldName = field.getKey();
+
+            if (!fieldValues.containsKey(fieldName)) {
+                return false;
+            }
+
+            StructFieldDefModel fieldDef = field.getValue();
+            StructFieldModel fieldValue = fieldValues.get(fieldName);
+
+            if (!compareStructFieldPedro(fieldDef, fieldValue)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean compareStructFieldPedro(StructFieldDefModel structFieldDef, StructFieldModel structField) {
+        TypeDefinitionModel typeDef = structFieldDef.getFieldType();
+
+        switch (typeDef.getDefinedType()) {
+            case PRIMITIVE_TYPE:
+                break;
+            case INLINE_STRUCT_DEF:
+                break;
+            case STRUCT_DEF_ID:
+                break;
+            case DEFINEDTYPE_NOT_SET:
+                break;
+            default:
+                break;
+        }
+
+        return true;
     }
 }

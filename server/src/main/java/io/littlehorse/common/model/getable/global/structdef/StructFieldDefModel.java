@@ -62,7 +62,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
                     Status.INVALID_ARGUMENT,
                     MessageFormat.format(
                             "StructFieldDef field type [{0}] is not compatible with the provided default value.",
-                            this.fieldType.getType().name()));
+                            this.fieldType.getPrimitiveType().name()));
         }
     }
 }

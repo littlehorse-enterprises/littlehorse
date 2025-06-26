@@ -39,6 +39,12 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         }
     }
 
+    public static InlineStructDefModel fromProto(InlineStructDef proto, ExecutionContext context) {
+        InlineStructDefModel out = new InlineStructDefModel();
+        out.initFrom(proto, context);
+        return out;
+    }
+
     @Override
     public Class<InlineStructDef> getProtoBaseClass() {
         return InlineStructDef.class;
@@ -47,11 +53,6 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     public void validate() {
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             // TODO: Propose and agree upon Field Name validation technique!
-            // if (!LHUtil.isValidLHName(field.getKey())) {
-            //     throw new LHApiException(
-            //             Status.INVALID_ARGUMENT,
-            //             MessageFormat.format("StructField name [{0}] must be a valid hostname", field.getKey()));
-            // }
 
             field.getValue().validate();
         }

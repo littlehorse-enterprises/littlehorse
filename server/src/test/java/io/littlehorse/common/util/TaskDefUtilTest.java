@@ -17,7 +17,7 @@ public class TaskDefUtilTest {
         TaskDefId.Builder taskId = TaskDefId.newBuilder().setName("task-name");
         VariableDef.Builder variable = VariableDef.newBuilder()
                 .setName("variable")
-                .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.STR));
+                .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR));
         TaskDef.Builder originalDef =
                 TaskDef.newBuilder().setId(taskId).addInputVars(variable).setCreatedAt(LHUtil.fromDate(new Date()));
         TaskDef.Builder copyDef = TaskDef.newBuilder().setId(taskId).addInputVars(variable);
@@ -33,12 +33,12 @@ public class TaskDefUtilTest {
         TaskDefId.Builder taskId = TaskDefId.newBuilder().setName("task-name");
         VariableDef.Builder variable = VariableDef.newBuilder()
                 .setName("variable")
-                .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.STR));
+                .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR));
         TaskDef.Builder originalDef =
                 TaskDef.newBuilder().setId(taskId).addInputVars(variable).setCreatedAt(LHUtil.fromDate(new Date()));
         VariableDef.Builder newVariable = VariableDef.newBuilder()
                 .setName("new-variable")
-                .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.BOOL));
+                .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL));
         TaskDef.Builder copyDef =
                 TaskDef.newBuilder().setId(taskId).addInputVars(variable).addInputVars(newVariable);
 

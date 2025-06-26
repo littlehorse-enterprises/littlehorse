@@ -21,7 +21,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TypeDefinition() {
-    type_ = 0;
   }
 
   @java.lang.Override
@@ -44,32 +43,141 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TypeDefinition.class, io.littlehorse.sdk.common.proto.TypeDefinition.Builder.class);
   }
 
-  public static final int TYPE_FIELD_NUMBER = 1;
-  private int type_ = 0;
+  private int definedTypeCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object definedType_;
+  public enum DefinedTypeCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    PRIMITIVE_TYPE(1),
+    STRUCT_DEF_ID(5),
+    INLINE_STRUCT_DEF(6),
+    DEFINEDTYPE_NOT_SET(0);
+    private final int value;
+    private DefinedTypeCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static DefinedTypeCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static DefinedTypeCase forNumber(int value) {
+      switch (value) {
+        case 1: return PRIMITIVE_TYPE;
+        case 5: return STRUCT_DEF_ID;
+        case 6: return INLINE_STRUCT_DEF;
+        case 0: return DEFINEDTYPE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public DefinedTypeCase
+  getDefinedTypeCase() {
+    return DefinedTypeCase.forNumber(
+        definedTypeCase_);
+  }
+
+  public static final int PRIMITIVE_TYPE_FIELD_NUMBER = 1;
   /**
-   * <pre>
-   * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-   * are implemented according to issue #880.
-   * </pre>
-   *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
+   * @return Whether the primitiveType field is set.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
+  public boolean hasPrimitiveType() {
+    return definedTypeCase_ == 1;
   }
   /**
-   * <pre>
-   * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-   * are implemented according to issue #880.
-   * </pre>
-   *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The type.
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
+   * @return The enum numeric value on the wire for primitiveType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+  public int getPrimitiveTypeValue() {
+    if (definedTypeCase_ == 1) {
+      return (java.lang.Integer) definedType_;
+    }
+    return 0;
+  }
+  /**
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
+   * @return The primitiveType.
+   */
+  public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
+    if (definedTypeCase_ == 1) {
+      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(
+          (java.lang.Integer) definedType_);
+      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+    }
+    return io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ;
+  }
+
+  public static final int STRUCT_DEF_ID_FIELD_NUMBER = 5;
+  /**
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+   * @return Whether the structDefId field is set.
+   */
+  @java.lang.Override
+  public boolean hasStructDefId() {
+    return definedTypeCase_ == 5;
+  }
+  /**
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+   * @return The structDefId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDefId getStructDefId() {
+    if (definedTypeCase_ == 5) {
+       return (io.littlehorse.sdk.common.proto.StructDefId) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder() {
+    if (definedTypeCase_ == 5) {
+       return (io.littlehorse.sdk.common.proto.StructDefId) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
+  }
+
+  public static final int INLINE_STRUCT_DEF_FIELD_NUMBER = 6;
+  /**
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+   * @return Whether the inlineStructDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasInlineStructDef() {
+    return definedTypeCase_ == 6;
+  }
+  /**
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+   * @return The inlineStructDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef() {
+    if (definedTypeCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder() {
+    if (definedTypeCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
   }
 
   public static final int MASKED_FIELD_NUMBER = 4;
@@ -101,11 +209,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
-      output.writeEnum(1, type_);
+    if (definedTypeCase_ == 1) {
+      output.writeEnum(1, ((java.lang.Integer) definedType_));
     }
     if (masked_ != false) {
       output.writeBool(4, masked_);
+    }
+    if (definedTypeCase_ == 5) {
+      output.writeMessage(5, (io.littlehorse.sdk.common.proto.StructDefId) definedType_);
+    }
+    if (definedTypeCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -116,13 +230,21 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (definedTypeCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, type_);
+        .computeEnumSize(1, ((java.lang.Integer) definedType_));
     }
     if (masked_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(4, masked_);
+    }
+    if (definedTypeCase_ == 5) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.StructDefId) definedType_);
+    }
+    if (definedTypeCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -139,9 +261,25 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.TypeDefinition other = (io.littlehorse.sdk.common.proto.TypeDefinition) obj;
 
-    if (type_ != other.type_) return false;
     if (getMasked()
         != other.getMasked()) return false;
+    if (!getDefinedTypeCase().equals(other.getDefinedTypeCase())) return false;
+    switch (definedTypeCase_) {
+      case 1:
+        if (getPrimitiveTypeValue()
+            != other.getPrimitiveTypeValue()) return false;
+        break;
+      case 5:
+        if (!getStructDefId()
+            .equals(other.getStructDefId())) return false;
+        break;
+      case 6:
+        if (!getInlineStructDef()
+            .equals(other.getInlineStructDef())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -153,11 +291,25 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
     hash = (37 * hash) + MASKED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getMasked());
+    switch (definedTypeCase_) {
+      case 1:
+        hash = (37 * hash) + PRIMITIVE_TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + getPrimitiveTypeValue();
+        break;
+      case 5:
+        hash = (37 * hash) + STRUCT_DEF_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getStructDefId().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + INLINE_STRUCT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getInlineStructDef().hashCode();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -294,8 +446,15 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      type_ = 0;
+      if (structDefIdBuilder_ != null) {
+        structDefIdBuilder_.clear();
+      }
+      if (inlineStructDefBuilder_ != null) {
+        inlineStructDefBuilder_.clear();
+      }
       masked_ = false;
+      definedTypeCase_ = 0;
+      definedType_ = null;
       return this;
     }
 
@@ -323,17 +482,28 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.TypeDefinition buildPartial() {
       io.littlehorse.sdk.common.proto.TypeDefinition result = new io.littlehorse.sdk.common.proto.TypeDefinition(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.TypeDefinition result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.type_ = type_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.masked_ = masked_;
+      }
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.TypeDefinition result) {
+      result.definedTypeCase_ = definedTypeCase_;
+      result.definedType_ = this.definedType_;
+      if (definedTypeCase_ == 5 &&
+          structDefIdBuilder_ != null) {
+        result.definedType_ = structDefIdBuilder_.build();
+      }
+      if (definedTypeCase_ == 6 &&
+          inlineStructDefBuilder_ != null) {
+        result.definedType_ = inlineStructDefBuilder_.build();
       }
     }
 
@@ -381,11 +551,25 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.TypeDefinition other) {
       if (other == io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) return this;
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
-      }
       if (other.getMasked() != false) {
         setMasked(other.getMasked());
+      }
+      switch (other.getDefinedTypeCase()) {
+        case PRIMITIVE_TYPE: {
+          setPrimitiveTypeValue(other.getPrimitiveTypeValue());
+          break;
+        }
+        case STRUCT_DEF_ID: {
+          mergeStructDefId(other.getStructDefId());
+          break;
+        }
+        case INLINE_STRUCT_DEF: {
+          mergeInlineStructDef(other.getInlineStructDef());
+          break;
+        }
+        case DEFINEDTYPE_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -414,15 +598,30 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              type_ = input.readEnum();
-              bitField0_ |= 0x00000001;
+              int rawValue = input.readEnum();
+              definedTypeCase_ = 1;
+              definedType_ = rawValue;
               break;
             } // case 8
             case 32: {
               masked_ = input.readBool();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 42: {
+              input.readMessage(
+                  getStructDefIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              definedTypeCase_ = 5;
+              break;
+            } // case 42
+            case 50: {
+              input.readMessage(
+                  getInlineStructDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              definedTypeCase_ = 6;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -438,84 +637,375 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int definedTypeCase_ = 0;
+    private java.lang.Object definedType_;
+    public DefinedTypeCase
+        getDefinedTypeCase() {
+      return DefinedTypeCase.forNumber(
+          definedTypeCase_);
+    }
+
+    public Builder clearDefinedType() {
+      definedTypeCase_ = 0;
+      definedType_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private int type_ = 0;
     /**
-     * <pre>
-     * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-     * are implemented according to issue #880.
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
+     * @return Whether the primitiveType field is set.
      */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
+    @java.lang.Override
+    public boolean hasPrimitiveType() {
+      return definedTypeCase_ == 1;
     }
     /**
-     * <pre>
-     * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-     * are implemented according to issue #880.
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
+     * @return The enum numeric value on the wire for primitiveType.
+     */
+    @java.lang.Override
+    public int getPrimitiveTypeValue() {
+      if (definedTypeCase_ == 1) {
+        return ((java.lang.Integer) definedType_).intValue();
+      }
+      return 0;
+    }
+    /**
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
+     * @param value The enum numeric value on the wire for primitiveType to set.
      * @return This builder for chaining.
      */
-    public Builder setTypeValue(int value) {
-      type_ = value;
-      bitField0_ |= 0x00000001;
+    public Builder setPrimitiveTypeValue(int value) {
+      definedTypeCase_ = 1;
+      definedType_ = value;
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-     * are implemented according to issue #880.
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The type.
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
+     * @return The primitiveType.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
+      if (definedTypeCase_ == 1) {
+        io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(
+            (java.lang.Integer) definedType_);
+        return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+      }
+      return io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ;
     }
     /**
-     * <pre>
-     * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-     * are implemented according to issue #880.
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The type to set.
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
+     * @param value The primitiveType to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
+    public Builder setPrimitiveType(io.littlehorse.sdk.common.proto.VariableType value) {
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000001;
-      type_ = value.getNumber();
+      definedTypeCase_ = 1;
+      definedType_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-     * are implemented according to issue #880.
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType type = 1;</code>
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      type_ = 0;
-      onChanged();
+    public Builder clearPrimitiveType() {
+      if (definedTypeCase_ == 1) {
+        definedTypeCase_ = 0;
+        definedType_ = null;
+        onChanged();
+      }
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> structDefIdBuilder_;
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     * @return Whether the structDefId field is set.
+     */
+    @java.lang.Override
+    public boolean hasStructDefId() {
+      return definedTypeCase_ == 5;
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     * @return The structDefId.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructDefId getStructDefId() {
+      if (structDefIdBuilder_ == null) {
+        if (definedTypeCase_ == 5) {
+          return (io.littlehorse.sdk.common.proto.StructDefId) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
+      } else {
+        if (definedTypeCase_ == 5) {
+          return structDefIdBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     */
+    public Builder setStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
+      if (structDefIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        definedType_ = value;
+        onChanged();
+      } else {
+        structDefIdBuilder_.setMessage(value);
+      }
+      definedTypeCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     */
+    public Builder setStructDefId(
+        io.littlehorse.sdk.common.proto.StructDefId.Builder builderForValue) {
+      if (structDefIdBuilder_ == null) {
+        definedType_ = builderForValue.build();
+        onChanged();
+      } else {
+        structDefIdBuilder_.setMessage(builderForValue.build());
+      }
+      definedTypeCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     */
+    public Builder mergeStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
+      if (structDefIdBuilder_ == null) {
+        if (definedTypeCase_ == 5 &&
+            definedType_ != io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance()) {
+          definedType_ = io.littlehorse.sdk.common.proto.StructDefId.newBuilder((io.littlehorse.sdk.common.proto.StructDefId) definedType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          definedType_ = value;
+        }
+        onChanged();
+      } else {
+        if (definedTypeCase_ == 5) {
+          structDefIdBuilder_.mergeFrom(value);
+        } else {
+          structDefIdBuilder_.setMessage(value);
+        }
+      }
+      definedTypeCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     */
+    public Builder clearStructDefId() {
+      if (structDefIdBuilder_ == null) {
+        if (definedTypeCase_ == 5) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+          onChanged();
+        }
+      } else {
+        if (definedTypeCase_ == 5) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+        }
+        structDefIdBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructDefId.Builder getStructDefIdBuilder() {
+      return getStructDefIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder() {
+      if ((definedTypeCase_ == 5) && (structDefIdBuilder_ != null)) {
+        return structDefIdBuilder_.getMessageOrBuilder();
+      } else {
+        if (definedTypeCase_ == 5) {
+          return (io.littlehorse.sdk.common.proto.StructDefId) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> 
+        getStructDefIdFieldBuilder() {
+      if (structDefIdBuilder_ == null) {
+        if (!(definedTypeCase_ == 5)) {
+          definedType_ = io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
+        }
+        structDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StructDefId) definedType_,
+                getParentForChildren(),
+                isClean());
+        definedType_ = null;
+      }
+      definedTypeCase_ = 5;
+      onChanged();
+      return structDefIdBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> inlineStructDefBuilder_;
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     * @return Whether the inlineStructDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasInlineStructDef() {
+      return definedTypeCase_ == 6;
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     * @return The inlineStructDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef() {
+      if (inlineStructDefBuilder_ == null) {
+        if (definedTypeCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+      } else {
+        if (definedTypeCase_ == 6) {
+          return inlineStructDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     */
+    public Builder setInlineStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
+      if (inlineStructDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        definedType_ = value;
+        onChanged();
+      } else {
+        inlineStructDefBuilder_.setMessage(value);
+      }
+      definedTypeCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     */
+    public Builder setInlineStructDef(
+        io.littlehorse.sdk.common.proto.InlineStructDef.Builder builderForValue) {
+      if (inlineStructDefBuilder_ == null) {
+        definedType_ = builderForValue.build();
+        onChanged();
+      } else {
+        inlineStructDefBuilder_.setMessage(builderForValue.build());
+      }
+      definedTypeCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     */
+    public Builder mergeInlineStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
+      if (inlineStructDefBuilder_ == null) {
+        if (definedTypeCase_ == 6 &&
+            definedType_ != io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance()) {
+          definedType_ = io.littlehorse.sdk.common.proto.InlineStructDef.newBuilder((io.littlehorse.sdk.common.proto.InlineStructDef) definedType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          definedType_ = value;
+        }
+        onChanged();
+      } else {
+        if (definedTypeCase_ == 6) {
+          inlineStructDefBuilder_.mergeFrom(value);
+        } else {
+          inlineStructDefBuilder_.setMessage(value);
+        }
+      }
+      definedTypeCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     */
+    public Builder clearInlineStructDef() {
+      if (inlineStructDefBuilder_ == null) {
+        if (definedTypeCase_ == 6) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+          onChanged();
+        }
+      } else {
+        if (definedTypeCase_ == 6) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+        }
+        inlineStructDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.InlineStructDef.Builder getInlineStructDefBuilder() {
+      return getInlineStructDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder() {
+      if ((definedTypeCase_ == 6) && (inlineStructDefBuilder_ != null)) {
+        return inlineStructDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (definedTypeCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> 
+        getInlineStructDefFieldBuilder() {
+      if (inlineStructDefBuilder_ == null) {
+        if (!(definedTypeCase_ == 6)) {
+          definedType_ = io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+        }
+        inlineStructDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder>(
+                (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_,
+                getParentForChildren(),
+                isClean());
+        definedType_ = null;
+      }
+      definedTypeCase_ = 6;
+      onChanged();
+      return inlineStructDefBuilder_;
     }
 
     private boolean masked_ ;
@@ -543,7 +1033,7 @@ private static final long serialVersionUID = 0L;
     public Builder setMasked(boolean value) {
 
       masked_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -556,7 +1046,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearMasked() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000008);
       masked_ = false;
       onChanged();
       return this;
