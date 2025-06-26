@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
+import io.littlehorse.server.interceptors.ShutdownInterceptor;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -34,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
@@ -59,6 +61,7 @@ public class LHServer {
     private final LHInternalClient lhInternalClient;
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
     public static final int CORE_PROCESSES_COUNT = 4; // core , timer, internal and health
+    private static final int GRACE_PERIOD_SECONDS = 5;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -120,7 +123,8 @@ public class LHServer {
                 List.of(
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
-                        listenerConfig.getRequestAuthenticator()),
+                        listenerConfig.getRequestAuthenticator(),
+                        new ShutdownInterceptor()),
                 contextKey,
                 commandSender,
                 internalComms.getAsyncWaiters(),
@@ -182,6 +186,14 @@ public class LHServer {
     }
 
     public void close() {
+        ShutdownInterceptor.setShuttingDown();
+
+        log.info("Waiting {} seconds for active requests to complete...", GRACE_PERIOD_SECONDS);
+        try {
+            TimeUnit.SECONDS.sleep(GRACE_PERIOD_SECONDS);
+        } catch (InterruptedException e) {
+            log.warn("Grace period wait was interrupted", e);
+        }
 
         CountDownLatch listenerLatch = new CountDownLatch(listeners.size());
 
