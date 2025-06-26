@@ -79,8 +79,7 @@ class MetricStoreExporterTest {
         Thread.sleep(500);
 
         assertThat(prometheusRegistry.scrape())
-                .contains(
-                        "my_metric_count{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0");
+                .contains("my_metric_count{custom_tag=\"custom_value\",server=\"localhost:2023\"} 1.0");
     }
 
     @Test
@@ -111,12 +110,11 @@ class MetricStoreExporterTest {
         Thread.sleep(500);
 
         assertThat(prometheusRegistry.scrape())
-                .isEqualTo(
-                        "# HELP my_metric_avg  \n" + "# TYPE my_metric_avg gauge\n"
-                                + "my_metric_avg{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0\n"
-                                + "# HELP my_metric_max  \n"
-                                + "# TYPE my_metric_max gauge\n"
-                                + "my_metric_max{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 2.0\n");
+                .isEqualTo("# HELP my_metric_avg  \n" + "# TYPE my_metric_avg gauge\n"
+                        + "my_metric_avg{custom_tag=\"custom_value\",server=\"localhost:2023\"} 1.0\n"
+                        + "# HELP my_metric_max  \n"
+                        + "# TYPE my_metric_max gauge\n"
+                        + "my_metric_max{custom_tag=\"custom_value\",server=\"localhost:2023\"} 2.0\n");
     }
 
     private static MetricKey createMetricsKey(List<Tag> tags) {
@@ -127,7 +125,6 @@ class MetricStoreExporterTest {
         return MetricKey.newBuilder()
                 .setServerHost(host)
                 .setServerPort(2023)
-                .setServerVersion("test")
                 .setName("my_metric")
                 .addAllTags(tags)
                 .build();
@@ -159,9 +156,8 @@ class MetricStoreExporterTest {
         Thread.sleep(500);
 
         assertThat(prometheusRegistry.scrape())
-                .isEqualTo(
-                        "# HELP my_metric_count  \n" + "# TYPE my_metric_count gauge\n"
-                                + "my_metric_count{custom_tag=\"custom_value\",server=\"localhost2:2023\",server_version=\"test\"} 1.0\n"
-                                + "my_metric_count{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0\n");
+                .isEqualTo("# HELP my_metric_count  \n" + "# TYPE my_metric_count gauge\n"
+                        + "my_metric_count{custom_tag=\"custom_value\",server=\"localhost2:2023\"} 1.0\n"
+                        + "my_metric_count{custom_tag=\"custom_value\",server=\"localhost:2023\"} 1.0\n");
     }
 }
