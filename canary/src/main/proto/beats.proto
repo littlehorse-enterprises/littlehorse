@@ -16,10 +16,9 @@ enum BeatType {
 message BeatKey {
   string server_host = 1;
   int32 server_port = 2;
-  string server_version = 3;
-  BeatType type = 4;
-  optional string id = 5;
-  repeated Tag tags = 6;
+  BeatType type = 3;
+  optional string id = 4;
+  repeated Tag tags = 5;
 }
 
 message BeatValue {
