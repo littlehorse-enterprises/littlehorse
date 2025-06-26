@@ -4,8 +4,10 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,6 +43,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
         this.type = p.getType();
+    }
+
+    public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
+            VariableMutationType operation, TypeDefinitionModel rhs) {
+        // TODO
+        return Optional.empty();
     }
 
     public boolean isPrimitive() {
