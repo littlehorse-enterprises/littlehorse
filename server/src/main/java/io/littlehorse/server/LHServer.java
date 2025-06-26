@@ -186,8 +186,6 @@ public class LHServer {
     }
 
     public void close() {
-        ShutdownInterceptor.setShuttingDown();
-
         log.info("Waiting {} seconds for active requests to complete...", GRACE_PERIOD_SECONDS);
         try {
             TimeUnit.SECONDS.sleep(GRACE_PERIOD_SECONDS);
