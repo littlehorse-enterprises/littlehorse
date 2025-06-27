@@ -10,8 +10,8 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 public class ExternalEventNodeOutput : NodeOutput
 {
 
-    // internal CorrelatedEventConfig _correlatedEventConfig;
-    
+    private CorrelatedEventConfig _correlatedEventConfig;
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExternalEventNodeOutput"/> class.
@@ -49,7 +49,7 @@ public class ExternalEventNodeOutput : NodeOutput
         //should mask automatically
         bool shouldMaskAutomatically = (correlationId is WfRunVariable) && ((WfRunVariable)correlationId).IsMasked;
         Parent.SetCorrelationIdOnExternalEventNode(this, correlationId, shouldMaskAutomatically);
-        //        if (correlatedEventConfig == null) correlatedEventConfig = CorrelatedEventConfig.getDefaultInstance();
+        if (_correlatedEventConfig == null) _correlatedEventConfig = new CorrelatedEventConfig();
 
         return this;
     }
@@ -67,14 +67,19 @@ public class ExternalEventNodeOutput : NodeOutput
     public ExternalEventNodeOutput WithCorrelationId(object correlationId, bool masked)
     {
         Parent.SetCorrelationIdOnExternalEventNode(this, correlationId, masked);
-        // if (correlatedEventConfig == null) correlatedEventConfig = CorrelatedEventConfig.getDefaultInstance();
-        // CorrelatedEventConfig.
+        if (_correlatedEventConfig == null) _correlatedEventConfig = new CorrelatedEventConfig();
         return this;
     }
 
-    //allow setting a CorrelatedEventConfig at registration?
-    // public CorrelatedEventConfig GetCorrelatedEventConfig()
-    // {
-    //     return _correlatedEventConfig;
-    // }
+
+    public ExternalEventNodeOutput WithCorrelatedEventConfig(CorrelatedEventConfig config)
+    {
+        _correlatedEventConfig = config;
+        return this;
+    }
+    public CorrelatedEventConfig GetCorrelatedEventConfig()
+    {
+        return _correlatedEventConfig;
+    }
+    
 }
