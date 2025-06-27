@@ -12,7 +12,14 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@littlehorse-enterprises/ui-library/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@littlehorse-enterprises/ui-library/table'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
