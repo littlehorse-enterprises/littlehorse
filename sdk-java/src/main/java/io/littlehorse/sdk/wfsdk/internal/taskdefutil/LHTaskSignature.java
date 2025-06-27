@@ -7,16 +7,17 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.StructDefUtil;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +28,7 @@ public class LHTaskSignature {
     List<VariableDef> variableDefs;
 
     @Getter
-    Set<Class<?>> structDefClasses;
+    List<Class<?>> structDefClasses;
 
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
@@ -43,7 +44,7 @@ public class LHTaskSignature {
         this.taskDefName = taskDefName;
         this.executable = executable;
         this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
-        this.structDefClasses = new HashSet<>();
+        this.structDefClasses = new ArrayList<>();
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
@@ -110,7 +111,9 @@ public class LHTaskSignature {
 
         if (param.getType().isAnnotationPresent(LHStructDef.class)) {
             Class<?> structClass = param.getType();
-            structDefClasses.add(structClass);
+
+            structDefClasses.addAll(StructDefUtil.getStructDefDependencies(structClass));
+            
             LHStructDef structDef = structClass.getAnnotation(LHStructDef.class);
             StructDefId.Builder structDefId = StructDefId.newBuilder().setName(structDef.name());
             typeDef.setStructDefId(structDefId);
@@ -130,7 +133,7 @@ public class LHTaskSignature {
             TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
 
             if (classReturnType.isAnnotationPresent(LHStructDef.class)) {
-                structDefClasses.add(classReturnType);
+                structDefClasses.addAll(StructDefUtil.getStructDefDependencies(classReturnType));
                 LHStructDef lhStructDef = classReturnType.getAnnotation(LHStructDef.class);
                 typeDef.setStructDefId(StructDefId.newBuilder().setName(lhStructDef.name()));
             } else {

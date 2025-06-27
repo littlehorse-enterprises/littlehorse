@@ -41,7 +41,7 @@ public class TaskDefBuilder {
         return out.build();
     }
 
-    public List<StructDef> getStructDefs() {
+    public List<StructDef> buildStructDefsFromTaskSignature() {
         if (signature.getStructDefClasses().isEmpty()) return List.of();
 
         List<StructDef> structDefs = new ArrayList<>();

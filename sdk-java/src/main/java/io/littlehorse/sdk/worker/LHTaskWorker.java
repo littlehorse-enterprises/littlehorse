@@ -176,11 +176,11 @@ public class LHTaskWorker implements Closeable {
      *                          the existing StructDef schema based on this compatibility type.
      */
     public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
-        if (tdb.getStructDefs().isEmpty()) return;
+        if (tdb.buildStructDefsFromTaskSignature().isEmpty()) return;
 
         List<String> invalidStructDefs = new ArrayList<>();
 
-        for (StructDef structDef : tdb.getStructDefs()) {
+        for (StructDef structDef : tdb.buildStructDefsFromTaskSignature()) {
             ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
                     ValidateStructDefEvolutionRequest.newBuilder();
             validateStructDefRequest.setStructDefId(structDef.getId());
@@ -201,9 +201,11 @@ public class LHTaskWorker implements Closeable {
     }
 
     public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
-        if (tdb.getStructDefs().isEmpty()) return;
+        List<StructDef> structDefs = tdb.buildStructDefsFromTaskSignature();
 
-        for (StructDef structDef : tdb.getStructDefs()) {
+        if (structDefs.isEmpty()) return;
+
+        for (StructDef structDef : structDefs) {
             PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
             putStructDefRequest.setName(structDef.getId().getName());
             putStructDefRequest.setDescription(structDef.getDescription());

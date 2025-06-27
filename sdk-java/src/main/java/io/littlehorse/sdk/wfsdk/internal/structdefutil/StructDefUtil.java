@@ -1,66 +1,121 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import java.lang.reflect.Field;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import io.littlehorse.sdk.worker.LHStructDef;
 
 public class StructDefUtil {
-   public static void dfsFindCycle(Class<?> structClass) {
-        Deque<Class<?>> classStack = new ArrayDeque<>();
-        classStack.push(structClass);
-        detectCycle(classStack, structClass);
+    /**
+     * Finds the dependencies of a given StructDef class based on its field types and
+     * returns them sorted topologically.
+     * 
+     * @param structClass A given class you want the dependencies of
+     * @return A list of classes depended on by `structClass`, sorted topologically
+     */
+    public static List<Class<?>> getStructDefDependencies(Class<?> structClass) {
+        if (!structClass.isAnnotationPresent(LHStructDef.class)) {
+            throw new IllegalArgumentException("Missing `@LHStructDef` annotation on class: " + structClass.getCanonicalName());
+        }
+
+        Set<Class<?>> visited = new HashSet<>();
+        List<Class<?>> sortedList = new ArrayList<>();
+        Set<Class<?>> tempMarked = new HashSet<>();
+
+        detectCycle(structClass, visited, sortedList, tempMarked, new ArrayList<>());
+
+        return sortedList;
     }
 
-    public static void detectCycle(Deque<Class<?>> visitedAncestors, Class<?> structClass) {
-        if (structClass.getFields().length == 0) return;
+    private static void detectCycle(Class<?> clazz, Set<Class<?>> visited,
+            List<Class<?>> sortedList, Set<Class<?>> tempMarked, List<Class<?>> currentPath) {
 
-        // Field types within the current class that have already been visited;
-        Set<Class<?>> visitedSiblings = new HashSet<>();
+        // If we've already visited this locally in a sibling field
+        if (visited.contains(clazz)) {
+            return; // Already visited
+        }
 
-        for (Field field : structClass.getFields()) {
-            Class<?> fieldType;
-            if (field.getType().isArray()) {
-                fieldType = field.getType().componentType();
-            } else {
-                fieldType = field.getType();
-            } 
+        currentPath.add(clazz);
 
-            if (fieldType.isPrimitive()) continue;
-            if (visitedSiblings.contains(fieldType)) continue;
+        // If we've already visited this class in an ancestor...
+        if (tempMarked.contains(clazz)) {
+            throw new CircularDependencyException(buildCircularDependencyExceptionMessage(currentPath));
+        }
 
-            visitedSiblings.add(fieldType);
+        tempMarked.add(clazz);
 
-            // If we've already visited this fieldType in an ancestor
-            if (visitedAncestors.contains(fieldType)) {
-                visitedAncestors.push(fieldType);
-                throw new CircularDependencyException(buildCircularDependencyExceptionMessage(visitedAncestors));
-            } else {
-                visitedAncestors.push(fieldType);
-                detectCycle(visitedAncestors, fieldType);
-                visitedAncestors.pop();
+        // Get fields of the class
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            Class<?> fieldType = getFieldType(field);
+
+            // Check if the field type is a non-primitive class
+            if (!isLHPrimitive(fieldType)) {
+                if (!fieldType.isAnnotationPresent(LHStructDef.class)) {
+                    throw new IllegalArgumentException(
+                            "Missing LHStructDef annotation on non-primitive class used in an LHStructDef: " + fieldType.getCanonicalName());
+                }
+                detectCycle(fieldType, visited, sortedList, tempMarked, currentPath);
             }
         }
+
+        // Add the class to the result in topologically sorted order
+        currentPath.remove(currentPath.size() - 1); // Remove from current path
+        tempMarked.remove(clazz);
+        visited.add(clazz);
+        sortedList.add(clazz);
     }
 
-    public static String buildCircularDependencyExceptionMessage(Deque<Class<?>> visited) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Circular dependency found involving class: " + visited.peek().getCanonicalName() + "\n");
+    private static Class<?> getFieldType(Field field) {
+        if (field.getType().isArray()) {
+            return field.getType().componentType();
+        }
+        return field.getType();
+    }
 
-        List<Class<?>> classList = visited.stream().collect(Collectors.toList()).reversed();
+    private static boolean isLHPrimitive(Class<?> clazz) {
+        if (clazz.isPrimitive())
+            return true;
+        if (clazz.equals(Byte.class))
+            return true;
+        if (clazz.equals(Short.class))
+            return true;
+        if (clazz.equals(Integer.class))
+            return true;
+        if (clazz.equals(Boolean.class))
+            return true;
+        if (clazz.equals(Long.class))
+            return true;
+        if (clazz.equals(Float.class))
+            return true;
+        if (clazz.equals(Double.class))
+            return true;
+        if (clazz.equals(String.class))
+            return true;
+
+        return false;
+    }
+
+    private static String buildCircularDependencyExceptionMessage(List<Class<?>> classList) {
+        if (classList.isEmpty()) {
+            throw new IllegalStateException("Tried to throw Circular Dependency exception but no classes found in class tree.");
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append("Circular dependency found involving class: " + classList.getLast().getCanonicalName() + "\n");
 
         stringBuilder.append("\nDependency tree:\n");
-        
+
         for (int i = 0; i < classList.size(); i++) {
             Class<?> visitedClass = classList.get(i);
-            for (int j = 0; j < i; j++) {
-                stringBuilder.append("  ");
-            }
-            stringBuilder.append("- ");
-            stringBuilder.append(visitedClass.getCanonicalName() + "\n");
+            stringBuilder.append("  ".repeat(i))
+                    .append("- ")
+                    .append(visitedClass.getCanonicalName())
+                    .append("\n");
         }
         return stringBuilder.toString();
     }
