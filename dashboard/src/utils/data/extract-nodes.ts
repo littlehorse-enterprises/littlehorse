@@ -1,6 +1,6 @@
 import { ThreadSpec, WfSpec } from 'littlehorse-client/proto'
 import { CustomNode } from '@/types/node'
-import { getNodeType } from './node'
+import { getNodeAndType } from './node'
 
 export function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomNode[] {
   const customNodes: CustomNode[] = []
@@ -12,7 +12,7 @@ export function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomNode
       type: 'node',
       data: {
         node,
-        type: getNodeType(node).type,
+        type: getNodeAndType(node).type,
         label: id,
       },
       position: { x: 0, y: 0 },

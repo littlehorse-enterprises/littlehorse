@@ -82,7 +82,7 @@ const NODE_TYPE_DETECTORS: Record<keyof NodePropertyMap, (node: Node) => boolean
   WAIT_FOR_CONDITION: node => !!node.waitForCondition,
 }
 
-export function getNodeType(
+export function getNodeAndType(
   node: Node
 ): { type: keyof NodeTypeMap; node: NodeTypedOneOf<keyof NodeTypeMap> } | { type: 'UNKNOWN_NODE_TYPE'; node: Node } {
   // Check each known node type

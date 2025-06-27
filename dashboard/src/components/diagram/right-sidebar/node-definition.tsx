@@ -15,7 +15,7 @@ import {
   ThrowEventNode,
   WaitForConditionNode
 } from "littlehorse-client/proto"
-import { getNodeType } from "@/utils/data/node"
+import { getNodeAndType } from "@/utils/data/node"
 import { EntrypointNodeComponent } from "./proto-components/nodes/entrypoint"
 import { ExitNodeComponent } from "./proto-components/nodes/exit"
 import { ExternalEventNodeComponent } from "./proto-components/nodes/external-event"
@@ -34,7 +34,7 @@ interface NodeDefinitionProps {
 }
 
 export default function NodeDefinition({ node }: NodeDefinitionProps) {
-  const { node: nodeOneOf, type } = getNodeType(node)
+  const { node: nodeOneOf, type } = getNodeAndType(node)
 
   return (
     <div className="pt-2 w-full space-y-3">
