@@ -40,6 +40,8 @@ message VariableValue {
 
     // An arbitrary String of bytes.
     bytes bytes = 8;
+
+    WfRunId wf_run_id = 9;
   }
 }
 

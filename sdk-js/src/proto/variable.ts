@@ -8,7 +8,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { VariableId, WfSpecId } from "./object_id";
+import { VariableId, WfRunId, WfSpecId } from "./object_id";
 
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -45,6 +45,7 @@ export interface VariableValue {
     | undefined;
   /** An arbitrary String of bytes. */
   bytes?: Buffer | undefined;
+  wfRunId?: WfRunId | undefined;
 }
 
 /** A Variable is an instance of a variable assigned to a WfRun. */
@@ -81,6 +82,7 @@ function createBaseVariableValue(): VariableValue {
     str: undefined,
     int: undefined,
     bytes: undefined,
+    wfRunId: undefined,
   };
 }
 
@@ -106,6 +108,9 @@ export const VariableValue = {
     }
     if (message.bytes !== undefined) {
       writer.uint32(66).bytes(message.bytes);
+    }
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -166,6 +171,13 @@ export const VariableValue = {
 
           message.bytes = reader.bytes() as Buffer;
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -187,6 +199,9 @@ export const VariableValue = {
     message.str = object.str ?? undefined;
     message.int = object.int ?? undefined;
     message.bytes = object.bytes ?? undefined;
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
     return message;
   },
 };

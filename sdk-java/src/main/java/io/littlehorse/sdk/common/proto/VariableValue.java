@@ -57,6 +57,7 @@ private static final long serialVersionUID = 0L;
     STR(6),
     INT(7),
     BYTES(8),
+    WF_RUN_ID(9),
     VALUE_NOT_SET(0);
     private final int value;
     private ValueCase(int value) {
@@ -81,6 +82,7 @@ private static final long serialVersionUID = 0L;
         case 6: return STR;
         case 7: return INT;
         case 8: return BYTES;
+        case 9: return WF_RUN_ID;
         case 0: return VALUE_NOT_SET;
         default: return null;
       }
@@ -406,6 +408,37 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.ByteString.EMPTY;
   }
 
+  public static final int WF_RUN_ID_FIELD_NUMBER = 9;
+  /**
+   * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+   * @return Whether the wfRunId field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfRunId() {
+    return valueCase_ == 9;
+  }
+  /**
+   * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+   * @return The wfRunId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
+    if (valueCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.WfRunId) value_;
+    }
+    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
+    if (valueCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.WfRunId) value_;
+    }
+    return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -445,6 +478,9 @@ private static final long serialVersionUID = 0L;
       output.writeBytes(
           8, (com.google.protobuf.ByteString) value_);
     }
+    if (valueCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.WfRunId) value_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -482,6 +518,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(
             8, (com.google.protobuf.ByteString) value_);
+    }
+    if (valueCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.WfRunId) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -529,6 +569,10 @@ private static final long serialVersionUID = 0L;
         if (!getBytes()
             .equals(other.getBytes())) return false;
         break;
+      case 9:
+        if (!getWfRunId()
+            .equals(other.getWfRunId())) return false;
+        break;
       case 0:
       default:
     }
@@ -574,6 +618,10 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + BYTES_FIELD_NUMBER;
         hash = (53 * hash) + getBytes().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getWfRunId().hashCode();
         break;
       case 0:
       default:
@@ -715,6 +763,9 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
+      if (wfRunIdBuilder_ != null) {
+        wfRunIdBuilder_.clear();
+      }
       valueCase_ = 0;
       value_ = null;
       return this;
@@ -756,6 +807,10 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableValue result) {
       result.valueCase_ = valueCase_;
       result.value_ = this.value_;
+      if (valueCase_ == 9 &&
+          wfRunIdBuilder_ != null) {
+        result.value_ = wfRunIdBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -837,6 +892,10 @@ private static final long serialVersionUID = 0L;
           setBytes(other.getBytes());
           break;
         }
+        case WF_RUN_ID: {
+          mergeWfRunId(other.getWfRunId());
+          break;
+        }
         case VALUE_NOT_SET: {
           break;
         }
@@ -905,6 +964,13 @@ private static final long serialVersionUID = 0L;
               valueCase_ = 8;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  getWfRunIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              valueCase_ = 9;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1522,6 +1588,148 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     * @return Whether the wfRunId field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfRunId() {
+      return valueCase_ == 9;
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     * @return The wfRunId.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
+      if (wfRunIdBuilder_ == null) {
+        if (valueCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.WfRunId) value_;
+        }
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+      } else {
+        if (valueCase_ == 9) {
+          return wfRunIdBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     */
+    public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (wfRunIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        value_ = value;
+        onChanged();
+      } else {
+        wfRunIdBuilder_.setMessage(value);
+      }
+      valueCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     */
+    public Builder setWfRunId(
+        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
+      if (wfRunIdBuilder_ == null) {
+        value_ = builderForValue.build();
+        onChanged();
+      } else {
+        wfRunIdBuilder_.setMessage(builderForValue.build());
+      }
+      valueCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     */
+    public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
+      if (wfRunIdBuilder_ == null) {
+        if (valueCase_ == 9 &&
+            value_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
+          value_ = io.littlehorse.sdk.common.proto.WfRunId.newBuilder((io.littlehorse.sdk.common.proto.WfRunId) value_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          value_ = value;
+        }
+        onChanged();
+      } else {
+        if (valueCase_ == 9) {
+          wfRunIdBuilder_.mergeFrom(value);
+        } else {
+          wfRunIdBuilder_.setMessage(value);
+        }
+      }
+      valueCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     */
+    public Builder clearWfRunId() {
+      if (wfRunIdBuilder_ == null) {
+        if (valueCase_ == 9) {
+          valueCase_ = 0;
+          value_ = null;
+          onChanged();
+        }
+      } else {
+        if (valueCase_ == 9) {
+          valueCase_ = 0;
+          value_ = null;
+        }
+        wfRunIdBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
+      return getWfRunIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
+      if ((valueCase_ == 9) && (wfRunIdBuilder_ != null)) {
+        return wfRunIdBuilder_.getMessageOrBuilder();
+      } else {
+        if (valueCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.WfRunId) value_;
+        }
+        return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
+        getWfRunIdFieldBuilder() {
+      if (wfRunIdBuilder_ == null) {
+        if (!(valueCase_ == 9)) {
+          value_ = io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
+        }
+        wfRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WfRunId) value_,
+                getParentForChildren(),
+                isClean());
+        value_ = null;
+      }
+      valueCase_ = 9;
+      onChanged();
+      return wfRunIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
