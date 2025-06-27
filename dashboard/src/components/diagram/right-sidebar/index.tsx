@@ -78,18 +78,18 @@ export default function RightSidebar({ wfSpec, wfRunDetails }: RightSidebarProps
               </div>
             </div>
 
-            <div className="flex h-full w-full justify-center px-4 pt-2">
-              <Tabs className="w-full" defaultValue="specification">
+            <div className="flex h-full w-full justify-center px-4 pt-2 max-h-[calc(100vh-100px)] overflow-y-auto">
+              <Tabs className="w-full" defaultValue="spec">
                 <TabsList>
-                  {wfRunDetails && <TabsTrigger value="runs">Runs</TabsTrigger>}
-                  <TabsTrigger value="specification">Specification</TabsTrigger>
+                  {wfRunDetails && <TabsTrigger value="run">Run</TabsTrigger>}
+                  <TabsTrigger value="spec">Spec</TabsTrigger>
                 </TabsList>
                 {wfRunDetails && (
-                  <TabsContent value="runs">
+                  <TabsContent value="run">
                     <NodeRuns selectedId={selectedId} wfRun={wfRunDetails.wfRun} />
                   </TabsContent>
                 )}
-                <TabsContent value="specification">
+                <TabsContent value="spec">
                   <NodeDefinition node={node} />
                 </TabsContent>
               </Tabs>

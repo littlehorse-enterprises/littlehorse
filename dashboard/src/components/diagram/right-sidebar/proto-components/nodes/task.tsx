@@ -4,6 +4,7 @@ import { Section } from '../../section'
 import { Label } from '../../label'
 import { getVariable } from '@/utils/data/variables'
 import { TaskNode } from 'littlehorse-client/proto'
+import { VariableAssignmentComponent } from '../variable-assignment'
 
 export function TaskNodeComponent(task: TaskNode) {
   return (
@@ -19,7 +20,7 @@ export function TaskNodeComponent(task: TaskNode) {
       {task.variables && Object.keys(task.variables).length > 0 && (
         <Section title="Variables">
           {Object.entries(task.variables).map(([key, variable]) => (
-            <Label key={key} label={key}>{getVariable(variable)}</Label>
+            <VariableAssignmentComponent key={key} {...variable} />
           ))}
         </Section>
       )}

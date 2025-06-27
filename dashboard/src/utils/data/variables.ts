@@ -19,6 +19,11 @@ export function getVariableValue(variable?: VariableValue) {
   }
 }
 
+export function getVariableTypeFromLiteralValue(literalValue: VariableValue) {
+  const key = Object.keys(literalValue)[0] as keyof VariableValue
+  return key
+}
+
 function getValueFromVariableName({ variableName, jsonPath }: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) {
   if (!variableName) return
   if (jsonPath) return `{${jsonPath.replace('$', variableName)}}`
