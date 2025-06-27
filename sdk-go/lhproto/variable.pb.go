@@ -180,6 +180,7 @@ type VariableValue_Bytes struct {
 }
 
 type VariableValue_WfRunId struct {
+	// Reference to a WfRunId
 	WfRunId *WfRunId `protobuf:"bytes,9,opt,name=wf_run_id,json=wfRunId,proto3,oneof"`
 }
 

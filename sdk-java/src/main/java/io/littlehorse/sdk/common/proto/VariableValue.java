@@ -410,6 +410,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int WF_RUN_ID_FIELD_NUMBER = 9;
   /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -418,6 +422,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 9;
   }
   /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
    * @return The wfRunId.
    */
@@ -429,6 +437,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
    */
   @java.lang.Override
@@ -1593,6 +1605,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      * @return Whether the wfRunId field is set.
      */
@@ -1601,6 +1617,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 9;
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      * @return The wfRunId.
      */
@@ -1619,6 +1639,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      */
     public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1635,6 +1659,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      */
     public Builder setWfRunId(
@@ -1649,6 +1677,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      */
     public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1672,6 +1704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      */
     public Builder clearWfRunId() {
@@ -1691,12 +1727,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
       return getWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      */
     @java.lang.Override
@@ -1711,6 +1755,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Reference to a WfRunId
+     * </pre>
+     *
      * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

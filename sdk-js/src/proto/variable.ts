@@ -44,7 +44,10 @@ export interface VariableValue {
     | number
     | undefined;
   /** An arbitrary String of bytes. */
-  bytes?: Buffer | undefined;
+  bytes?:
+    | Buffer
+    | undefined;
+  /** Reference to a WfRunId */
   wfRunId?: WfRunId | undefined;
 }
 

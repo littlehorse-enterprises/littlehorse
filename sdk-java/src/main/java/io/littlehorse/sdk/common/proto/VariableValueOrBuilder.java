@@ -173,16 +173,28 @@ public interface VariableValueOrBuilder extends
   com.google.protobuf.ByteString getBytes();
 
   /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
    * @return The wfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
