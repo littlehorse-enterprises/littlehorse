@@ -167,6 +167,8 @@ public class LHLibUtil {
             out.setBool((Boolean) o);
         } else if (o instanceof byte[]) {
             out.setBytes(ByteString.copyFrom((byte[]) o));
+        } else if (o instanceof WfRunId) {
+            out.setWfRunId((WfRunId) o);
         } else {
             // At this point, all we can do is try to make it a JSON type.
             JsonResult jsonResult = LHLibUtil.serializeToJson(o);
@@ -215,6 +217,8 @@ public class LHLibUtil {
                 return VariableType.JSON_OBJ;
             case BOOL:
                 return VariableType.BOOL;
+            case WF_RUN_ID:
+                return VariableType.WF_RUN_ID;
             case VALUE_NOT_SET:
             default:
                 return null;
@@ -251,6 +255,10 @@ public class LHLibUtil {
         return List.class.isAssignableFrom(cls) || cls.isArray();
     }
 
+    public static boolean isWfRunId(Class<?> cls) {
+        return WfRunId.class.isAssignableFrom(cls);
+    }
+
     public static VariableType javaClassToLHVarType(Class<?> cls) {
         if (isINT(cls)) return VariableType.INT;
 
@@ -263,6 +271,8 @@ public class LHLibUtil {
         if (isBYTES(cls)) return VariableType.BYTES;
 
         if (isJSON_ARR(cls)) return VariableType.JSON_ARR;
+
+        if (isWfRunId(cls)) return VariableType.WF_RUN_ID;
 
         return VariableType.JSON_OBJ;
     }
@@ -285,6 +295,8 @@ public class LHLibUtil {
                 return a.getJsonObj().equals(b.getJsonObj());
             case BYTES:
                 return a.getBytes().equals(b.getBytes());
+            case WF_RUN_ID:
+                return a.getWfRunId().equals(b.getWfRunId());
             case VALUE_NOT_SET:
                 return true;
         }

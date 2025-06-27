@@ -78,6 +78,16 @@ public enum VariableType
    * <code>BYTES = 6;</code>
    */
   BYTES(6),
+  /**
+   * <pre>
+   * The `WF_RUN_ID` variable type is used to store the ID of a WfRun. This allows for
+   * referencing specific workflow executions in various use cases, such as inter-workflow
+   * communication or tracking dependencies between workflows.
+   * </pre>
+   *
+   * <code>WF_RUN_ID = 7;</code>
+   */
+  WF_RUN_ID(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -147,6 +157,16 @@ public enum VariableType
    * <code>BYTES = 6;</code>
    */
   public static final int BYTES_VALUE = 6;
+  /**
+   * <pre>
+   * The `WF_RUN_ID` variable type is used to store the ID of a WfRun. This allows for
+   * referencing specific workflow executions in various use cases, such as inter-workflow
+   * communication or tracking dependencies between workflows.
+   * </pre>
+   *
+   * <code>WF_RUN_ID = 7;</code>
+   */
+  public static final int WF_RUN_ID_VALUE = 7;
 
 
   public final int getNumber() {
@@ -180,6 +200,7 @@ public enum VariableType
       case 4: return STR;
       case 5: return INT;
       case 6: return BYTES;
+      case 7: return WF_RUN_ID;
       default: return null;
     }
   }

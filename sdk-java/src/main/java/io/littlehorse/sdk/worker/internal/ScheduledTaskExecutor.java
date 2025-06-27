@@ -111,7 +111,7 @@ public class ScheduledTaskExecutor {
         for (VariableMapping mapping : mappings) {
             inputs.add(mapping.assign(scheduledTask, context));
         }
-
+        log.info("args" + inputs);
         return taskMethod.invoke(executable, inputs.toArray());
     }
 

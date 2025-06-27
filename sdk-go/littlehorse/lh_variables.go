@@ -65,6 +65,10 @@ func StrToVarVal(input string, varType lhproto.VariableType) (*lhproto.VariableV
 		out.Value = &lhproto.VariableValue_Str{
 			Str: input,
 		}
+	case lhproto.VariableType_WF_RUN_ID:
+		out.Value = &lhproto.VariableValue_WfRunId{
+			WfRunId: StrToWfRunId(input),
+		}
 	}
 
 	if err != nil {

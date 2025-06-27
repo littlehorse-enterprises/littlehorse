@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
@@ -61,6 +62,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
             boolean masked) {
 
         this.id = new VariableIdModel(wfRunId, threadRunNumber, name);
+        Objects.requireNonNull(value, "Empty or value expected for variable: " + name);
         this.value = value;
         this.wfSpec = wfSpec;
         this.wfSpecId = wfSpec.getObjectId();
@@ -107,6 +109,9 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
     }
 
     public Variable.Builder toProto() {
+        if (value == null) {
+            log.info("Variable id got null value: {}", id.toString());
+        }
         Variable.Builder out = Variable.newBuilder()
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
