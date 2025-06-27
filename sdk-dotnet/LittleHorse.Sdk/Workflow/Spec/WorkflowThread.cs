@@ -790,15 +790,15 @@ public class WorkflowThread
         newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
     }
 
-    internal void SetCorrelationIdOnExternalEventNode(ExternalEventNodeOutput node, Object correlationId) 
+    internal void SetCorrelationIdOnExternalEventNode(ExternalEventNodeOutput node, Object correlationId, bool maskCorrelationKey)
     {
         CheckIfWorkflowThreadIsActive();
         Node evtNode = FindNode(node.NodeName);
-
         evtNode.ExternalEvent.CorrelationKey = AssignVariableHelper(correlationId);
+        evtNode.ExternalEvent.MaskCorrelationKey = maskCorrelationKey; //maybe this?
     }
-    
-    internal void AddTimeoutToTaskNode(TaskNodeOutput node, int timeoutSeconds) 
+
+    internal void AddTimeoutToTaskNode(TaskNodeOutput node, int timeoutSeconds)
     {
         CheckIfWorkflowThreadIsActive();
         Node newNode = FindNode(node.NodeName);
