@@ -12,8 +12,8 @@ export function Label({ label, children, variant = 'default' }: LabelProps) {
 
     return (
         <div className="w-full flex gap-2">
-            <span className="flex-1 text-[#656565]">{label}:</span>
-            <span className={cn('flex-2', variant === 'highlight' && 'font-mono text-blue-600')}>{displayValue}</span>
+            <span className="flex-1 text-[#656565] text-ellipsis overflow-hidden">{label}:</span>
+            <span className={cn('flex-1 text-ellipsis overflow-hidden', variant === 'highlight' && 'font-mono text-blue-600')}>{displayValue}</span>
         </div>
     )
 } 

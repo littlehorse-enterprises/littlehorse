@@ -4,7 +4,7 @@ import { Section } from "./section";
 function Labels() {
     return <>
         <Label label="ThisIsALongLabelWithALongNameAndLongValue">ThisIsALongLabelWithALongNameAndLongValue</Label>
-        <Label label="ThisIsALongLabelWithALongNameAndLongValue2">ThisIsALongLabelWithALongNameAndLongValue2</Label>
+        <Label label="ThisIsALongLabelWithALongNameAndLongValue2">ThisIsALongLabelWithALongNameAnd</Label>
         <Label label="ShortLabel">ShortLabel</Label>
         <Label label="ShortLabel2">ShortLabel2</Label>
         <Label label="ShrtLbl">ShrtLbl</Label>

@@ -13,7 +13,7 @@ export function Section({ title, children }: SectionProps) {
     return (
         <SectionProvider isNested={true}>
             {isNested && <Separator className="mb-2 mt-2" />}
-            <div className="rounded-md border border-gray-200 bg-gray-50 p-3 w-full">
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-2 w-full">
                 <h4 className="mb-2 text-xs font-medium">{title}</h4>
                 <div className="space-y-1 text-xs">
                     {Children.count(children) === 0 && (
