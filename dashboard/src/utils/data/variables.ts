@@ -20,8 +20,13 @@ export function getVariableValue(variable?: VariableValue) {
 }
 
 export function getVariableTypeFromLiteralValue(literalValue: VariableValue) {
-  const key = Object.keys(literalValue)[0] as keyof VariableValue
-  return key
+  if (literalValue.int) return 'int'
+  if (literalValue.double) return 'double'
+  if (literalValue.bool) return 'bool'
+  if (literalValue.str) return 'str'
+  if (literalValue.jsonObj) return 'jsonObj'
+  if (literalValue.jsonArr) return 'jsonArr'
+  if (literalValue.bytes) return 'bytes'
 }
 
 function getValueFromVariableName({ variableName, jsonPath }: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) {
