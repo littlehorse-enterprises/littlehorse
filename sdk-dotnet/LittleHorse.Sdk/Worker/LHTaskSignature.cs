@@ -122,7 +122,7 @@ namespace LittleHorse.Sdk.Worker
                 return new ReturnType
                 {
                     ReturnType_ = new TypeDefinition{
-                        Type = returnType,
+                        PrimitiveType = returnType,
                         Masked = maskedValue
                     }
                 };
