@@ -1,11 +1,25 @@
 import { LHStatus } from 'littlehorse-client/proto'
-import { AlertCircle, Bell, Box, CheckCircle, CircleSlashIcon, Clock, GitBranch, Loader2, MailIcon, Minus, PlayIcon, Timer, User } from 'lucide-react'
+import {
+  AlertCircle,
+  Bell,
+  Box,
+  CheckCircle,
+  CircleSlashIcon,
+  Clock,
+  GitBranch,
+  Loader2,
+  MailIcon,
+  Minus,
+  PlayIcon,
+  Timer,
+  User,
+} from 'lucide-react'
 
-export type NodeType = 
-  | 'ENTRYPOINT' 
-  | 'EXIT' 
-  | 'NOP' 
-  | 'TASK' 
+export type NodeType =
+  | 'ENTRYPOINT'
+  | 'EXIT'
+  | 'NOP'
+  | 'TASK'
   | 'EXTERNAL_EVENT'
   | 'SLEEP'
   | 'START_THREAD'

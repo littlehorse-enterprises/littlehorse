@@ -38,7 +38,7 @@ export default function TenantHeader() {
       <span className="mr-4 text-white">{currentTenant}</span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="relative h-10 w-10 rounded-full bg-[#3b81f5] p-0 text-white border-2 white">
+          <Button className="white relative h-10 w-10 rounded-full border-2 bg-[#3b81f5] p-0 text-white">
             <span className="sr-only">Open user menu</span>
             {initials}
           </Button>

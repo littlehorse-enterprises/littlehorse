@@ -6,8 +6,8 @@ import SidebarExpandButton from '@/components/ui/sidebar-expand-button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library/tabs'
 import { WfSpec } from 'littlehorse-client/proto'
 import { useState } from 'react'
-import NodeDefinition from './NodeDefinition'
-import NodeRuns from './NodeRuns'
+import NodeDefinition from './node-definition'
+import NodeRuns from './node-runs'
 
 type SidebarState = 'hidden' | 'normal' | 'expanded'
 
@@ -78,18 +78,18 @@ export default function RightSidebar({ wfSpec, wfRunDetails }: RightSidebarProps
               </div>
             </div>
 
-            <div className="flex h-full w-full justify-center px-4 pt-2">
-              <Tabs defaultValue="definition">
+            <div className="flex h-full max-h-[calc(100vh-100px)] w-full justify-center overflow-y-auto px-4 pt-2">
+              <Tabs className="w-full" defaultValue="spec">
                 <TabsList>
-                  {wfRunDetails && <TabsTrigger value="runs">Runs</TabsTrigger>}
-                  <TabsTrigger value="definition">Definition</TabsTrigger>
+                  {wfRunDetails && <TabsTrigger value="run">Run</TabsTrigger>}
+                  <TabsTrigger value="spec">Spec</TabsTrigger>
                 </TabsList>
                 {wfRunDetails && (
-                  <TabsContent value="runs">
+                  <TabsContent value="run">
                     <NodeRuns selectedId={selectedId} wfRun={wfRunDetails.wfRun} />
                   </TabsContent>
                 )}
-                <TabsContent value="definition">
+                <TabsContent value="spec">
                   <NodeDefinition node={node} />
                 </TabsContent>
               </Tabs>

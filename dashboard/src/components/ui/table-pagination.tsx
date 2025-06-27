@@ -81,7 +81,7 @@ export function TablePagination({
     if (currentPage > 2 && currentPage < totalPages - 1) {
       items.push(
         <PaginationItem key={currentPage - 1}>
-          <PaginationLink size="icon" isActive={true} onClick={() => { }}>
+          <PaginationLink size="icon" isActive={true} onClick={() => {}}>
             {currentPage}
           </PaginationLink>
         </PaginationItem>
@@ -94,7 +94,11 @@ export function TablePagination({
     } else if (totalPages > 2) {
       items.push(
         <PaginationItem key={totalPages - 2}>
-          <PaginationLink size="icon" isActive={currentPage === totalPages - 1} onClick={() => handlePageChange(totalPages - 1)}>
+          <PaginationLink
+            size="icon"
+            isActive={currentPage === totalPages - 1}
+            onClick={() => handlePageChange(totalPages - 1)}
+          >
             {totalPages - 1}
           </PaginationLink>
         </PaginationItem>
@@ -105,7 +109,11 @@ export function TablePagination({
     if (totalPages > 1) {
       items.push(
         <PaginationItem key={totalPages - 1}>
-          <PaginationLink size="icon" isActive={currentPage === totalPages} onClick={() => handlePageChange(totalPages)}>
+          <PaginationLink
+            size="icon"
+            isActive={currentPage === totalPages}
+            onClick={() => handlePageChange(totalPages)}
+          >
             {totalPages}
           </PaginationLink>
         </PaginationItem>

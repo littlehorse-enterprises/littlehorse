@@ -1,5 +1,3 @@
-// todo : is there a way to force logout, since this current URL shows a logout button?
-
 import { auth } from '@/auth'
 
 export async function getKeycloakLogoutUrl() {

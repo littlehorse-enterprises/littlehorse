@@ -91,12 +91,13 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
             <span className="text-sm text-[#656565]">{`v${wfSpec?.id?.majorVersion}.${wfSpec?.id?.revision}`}</span>
             <Badge
               variant="outline"
-              className={`ml-3 ${wfRun?.status === LHStatus.COMPLETED
-                ? 'bg-emerald-100 text-emerald-600'
-                : wfRun?.status === LHStatus.RUNNING
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'bg-emerald-100 text-emerald-600'
-                } hover:bg-[#c5d0ff]/90`}
+              className={`ml-3 ${
+                wfRun?.status === LHStatus.COMPLETED
+                  ? 'bg-emerald-100 text-emerald-600'
+                  : wfRun?.status === LHStatus.RUNNING
+                    ? 'bg-blue-100 text-blue-600'
+                    : 'bg-emerald-100 text-emerald-600'
+              } hover:bg-[#c5d0ff]/90`}
             >
               {wfRun?.status ?? wfSpec?.status}
             </Badge>

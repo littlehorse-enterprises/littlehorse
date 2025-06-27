@@ -1,4 +1,18 @@
-import { Node } from 'littlehorse-client/proto'
+import {
+  Node,
+  EntrypointNode,
+  ExitNode,
+  ExternalEventNode,
+  NopNode,
+  SleepNode,
+  StartMultipleThreadsNode,
+  StartThreadNode,
+  TaskNode,
+  ThrowEventNode,
+  UserTaskNode,
+  WaitForConditionNode,
+  WaitForThreadsNode,
+} from 'littlehorse-client/proto'
 
 export type NodeType =
   | 'ENTRYPOINT'
@@ -15,18 +29,71 @@ export type NodeType =
   | 'UNKNOWN_NODE_TYPE'
   | 'WAIT_FOR_CONDITION'
 
-export const getNodeType = (node: Node): NodeType => {
-  if (node['exit'] !== undefined) return 'EXIT'
-  if (node['task'] !== undefined) return 'TASK'
-  if (node['externalEvent'] !== undefined) return 'EXTERNAL_EVENT'
-  if (node['startThread'] !== undefined) return 'START_THREAD'
-  if (node['waitForThreads'] !== undefined) return 'WAIT_FOR_THREADS'
-  if (node['waitForCondition'] !== undefined) return 'WAIT_FOR_CONDITION'
-  if (node['nop'] !== undefined) return 'NOP'
-  if (node['sleep'] !== undefined) return 'SLEEP'
-  if (node['userTask'] !== undefined) return 'USER_TASK'
-  if (node['entrypoint'] !== undefined) return 'ENTRYPOINT'
-  if (node['startMultipleThreads'] !== undefined) return 'START_MULTIPLE_THREADS'
-  if (node['throwEvent'] !== undefined) return 'THROW_EVENT'
-  return 'UNKNOWN_NODE_TYPE'
+// Node type to specific node mapping
+type NodeTypeMap = {
+  ENTRYPOINT: EntrypointNode
+  EXIT: ExitNode
+  TASK: TaskNode
+  EXTERNAL_EVENT: ExternalEventNode
+  START_THREAD: StartThreadNode
+  WAIT_FOR_THREADS: WaitForThreadsNode
+  NOP: NopNode
+  SLEEP: SleepNode
+  USER_TASK: UserTaskNode
+  START_MULTIPLE_THREADS: StartMultipleThreadsNode
+  THROW_EVENT: ThrowEventNode
+  WAIT_FOR_CONDITION: WaitForConditionNode
+}
+
+// Node property name mapping
+type NodePropertyMap = {
+  ENTRYPOINT: 'entrypoint'
+  EXIT: 'exit'
+  TASK: 'task'
+  EXTERNAL_EVENT: 'externalEvent'
+  START_THREAD: 'startThread'
+  WAIT_FOR_THREADS: 'waitForThreads'
+  NOP: 'nop'
+  SLEEP: 'sleep'
+  USER_TASK: 'userTask'
+  START_MULTIPLE_THREADS: 'startMultipleThreads'
+  THROW_EVENT: 'throwEvent'
+  WAIT_FOR_CONDITION: 'waitForCondition'
+}
+
+// Create typed node type
+export type NodeTypedOneOf<T extends NodeType> = T extends keyof NodeTypeMap
+  ? Node & { [K in NodePropertyMap[T]]: NodeTypeMap[T] }
+  : Node
+
+// Node type detection mapping
+const NODE_TYPE_DETECTORS: Record<keyof NodePropertyMap, (node: Node) => boolean> = {
+  ENTRYPOINT: node => !!node.entrypoint,
+  EXIT: node => !!node.exit,
+  TASK: node => !!node.task,
+  EXTERNAL_EVENT: node => !!node.externalEvent,
+  START_THREAD: node => !!node.startThread,
+  WAIT_FOR_THREADS: node => !!node.waitForThreads,
+  NOP: node => !!node.nop,
+  SLEEP: node => !!node.sleep,
+  USER_TASK: node => !!node.userTask,
+  START_MULTIPLE_THREADS: node => !!node.startMultipleThreads,
+  THROW_EVENT: node => !!node.throwEvent,
+  WAIT_FOR_CONDITION: node => !!node.waitForCondition,
+}
+
+export function getNodeAndType(
+  node: Node
+): { type: keyof NodeTypeMap; node: NodeTypedOneOf<keyof NodeTypeMap> } | { type: 'UNKNOWN_NODE_TYPE'; node: Node } {
+  // Check each known node type
+  for (const [type, detector] of Object.entries(NODE_TYPE_DETECTORS)) {
+    if (detector(node)) {
+      return {
+        type: type as keyof NodeTypeMap,
+        node: node as NodeTypedOneOf<keyof NodeTypeMap>,
+      }
+    }
+  }
+
+  return { type: 'UNKNOWN_NODE_TYPE', node }
 }

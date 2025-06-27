@@ -223,8 +223,7 @@ export default function WfRunTab() {
               )}
               {timeRangeFilter !== null && (
                 <span>
-                  {statusFilter.length > 0 ? ',' : ''} time: last{' '}
-                  {formatTimeRangeDisplay(timeRangeFilter)}
+                  {statusFilter.length > 0 ? ',' : ''} time: last {formatTimeRangeDisplay(timeRangeFilter)}
                 </span>
               )}
               )
