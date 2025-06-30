@@ -12,12 +12,11 @@ import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,8 +26,7 @@ public class LHTaskSignature {
     @Getter
     List<VariableDef> variableDefs;
 
-    @Getter
-    List<Class<?>> structDefClasses;
+    LinkedHashSet<Class<?>> structDefClasses;
 
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
@@ -44,7 +42,7 @@ public class LHTaskSignature {
         this.taskDefName = taskDefName;
         this.executable = executable;
         this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
-        this.structDefClasses = new ArrayList<>();
+        this.structDefClasses = new LinkedHashSet<>();
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
@@ -89,6 +87,7 @@ public class LHTaskSignature {
     private VariableDef buildVariableDef(Parameter param) {
         VariableDef.Builder varDef = VariableDef.newBuilder();
         TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
+        Class<?> paramType = param.getType();
 
         // If param has `LHType` annotation...
         if (param.isAnnotationPresent(LHType.class)) {
@@ -98,27 +97,26 @@ public class LHTaskSignature {
             typeDef.setMasked(type.masked());
 
             if (!type.structDefName().isBlank()) {
-                String structDefIdName = type.structDefName();
+                String structDefName = type.structDefName();
                 StructDefId structDefId =
-                        StructDefId.newBuilder().setName(structDefIdName).build();
+                        StructDefId.newBuilder().setName(structDefName).build();
                 typeDef.setStructDefId(structDefId);
             } else {
-                typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(param.getType()));
+                typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(paramType));
             }
         } else {
             varDef.setName(varNameFromParameterName(param));
         }
 
         if (param.getType().isAnnotationPresent(LHStructDef.class)) {
-            Class<?> structClass = param.getType();
+            LHStructDef structDef = paramType.getAnnotation(LHStructDef.class);
 
-            structDefClasses.addAll(StructDefUtil.getStructDefDependencies(structClass));
-            
-            LHStructDef structDef = structClass.getAnnotation(LHStructDef.class);
+            structDefClasses.addAll(StructDefUtil.getStructDefDependencies(paramType));
+
             StructDefId.Builder structDefId = StructDefId.newBuilder().setName(structDef.name());
             typeDef.setStructDefId(structDefId);
         } else {
-            typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(param.getType()));
+            typeDef.setPrimitiveType(LHLibUtil.javaClassToLHVarType(paramType));
         }
 
         varDef.setTypeDef(typeDef);
@@ -180,18 +178,22 @@ public class LHTaskSignature {
         return outputSchema;
     }
 
-    // @Override
-    // public boolean equals(Object other) {
-    //     if (!(other instanceof LHTaskSignature)) return false;
-    //     LHTaskSignature o = (LHTaskSignature) other;
+    public List<Class<?>> getStructDefDependencies() {
+        return new ArrayList<>(structDefClasses);
+    }
 
-    //     List<VariableType> otherTypes = o.getParamTypes();
-    //     if (otherTypes.size() != paramTypes.size()) return false;
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof LHTaskSignature)) return false;
+        LHTaskSignature o = (LHTaskSignature) other;
 
-    //     for (int i = 0; i < otherTypes.size(); i++) {
-    //         if (!otherTypes.get(i).equals(paramTypes.get(i))) return false;
-    //     }
+        // List<VariableType> otherTypes = o.getParamTypes();
+        // if (otherTypes.size() != paramTypes.size()) return false;
 
-    //     return true;
-    // }
+        // for (int i = 0; i < otherTypes.size(); i++) {
+        //     if (!otherTypes.get(i).equals(paramTypes.get(i))) return false;
+        // }
+
+        return true;
+    }
 }

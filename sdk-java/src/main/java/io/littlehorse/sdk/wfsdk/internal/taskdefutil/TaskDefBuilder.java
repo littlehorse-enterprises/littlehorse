@@ -42,11 +42,11 @@ public class TaskDefBuilder {
     }
 
     public List<StructDef> buildStructDefsFromTaskSignature() {
-        if (signature.getStructDefClasses().isEmpty()) return List.of();
+        if (signature.getStructDefDependencies().isEmpty()) return List.of();
 
         List<StructDef> structDefs = new ArrayList<>();
 
-        for (Class<?> structDefClass : signature.getStructDefClasses()) {
+        for (Class<?> structDefClass : signature.getStructDefDependencies()) {
             LHStructDef lhStructDef = structDefClass.getAnnotation(LHStructDef.class);
 
             StructDef.Builder structDef = StructDef.newBuilder();
@@ -80,11 +80,11 @@ public class TaskDefBuilder {
             Object obj;
 
             try {
-                obj = structClass.getConstructors()[0].newInstance();
+                obj = structClass.getDeclaredConstructor().newInstance();
 
                 Object defaultValue = field.get(obj);
                 if (defaultValue != null) {
-                    structFieldDef.setDefaultValue(LHLibUtil.objToVarVal(field.get(obj)));
+                    structFieldDef.setDefaultValue(LHLibUtil.objToVarVal(defaultValue));
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error processing defaultValue of field: " + field.getName());
