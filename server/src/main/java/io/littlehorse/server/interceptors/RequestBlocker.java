@@ -8,8 +8,8 @@ import io.grpc.Status;
 
 /**
  * gRPC interceptor that blocks new requests during server shutdown.
- * 
- * Initially allows all requests, then switches to blocking mode when the 
+ *
+ * Initially allows all requests, then switches to blocking mode when the
  * JVM shutdown hook is triggered, returning UNAVAILABLE status for new calls.
  */
 public class RequestBlocker implements ServerInterceptor {
