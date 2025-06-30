@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -53,7 +54,7 @@ public class LHTaskSignatureTest {
     }
 
     @Test
-    void inferReturnType() {
+    void shouldInferPrimitiveTaskDefReturnType() {
         LHTaskSignature taskSignature = new LHTaskSignature("greet", new MyWorker(), "greet");
 
         ReturnType actualReturnType = taskSignature.getReturnType();
@@ -65,7 +66,29 @@ public class LHTaskSignatureTest {
     }
 
     @Test
-    void inferParamType() {
+    void shouldInferVoidReturnType() {
+        LHTaskSignature taskSignature = new LHTaskSignature("complete-order", new MyWorker(), "complete-order");
+        ReturnType actualReturnType = taskSignature.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder().build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+
+    @Test
+    void shouldInferStructReturnType() {
+        LHTaskSignature taskSignature = new LHTaskSignature("get-car-owner", new MyWorker(), "get-car-owner");
+        ReturnType actualReturnType = taskSignature.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder()
+                .setReturnType(TypeDefinition.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder().setName("garage")))
+                .build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+    @Test
+    void shouldInferPrimitiveParameterType() {
         LHTaskSignature taskSignature = new LHTaskSignature("greet", new MyWorker(), "greet");
 
         List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
@@ -78,7 +101,20 @@ public class LHTaskSignatureTest {
     }
 
     @Test
-    void inferParamTypeWithWorkerContext() {
+    void shouldInferStructDefParameterType() {
+        LHTaskSignature taskSignature = new LHTaskSignature("get-car-owner", new MyWorker(), "get-car-owner");
+
+        List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
+        VariableDef firstParamVariableDef = actualVariableDefs.getFirst();
+        TypeDefinition actualTypeDefinition = firstParamVariableDef.getTypeDef();
+        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder().setName("car")).build();
+
+        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
+    }
+
+    @Test
+    void shouldIgnoreWorkerContextInTaskDefParameter() {
         LHTaskSignature taskSignature = new LHTaskSignature("complete-order", new MyWorker(), "complete-order");
         List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
 
@@ -86,16 +122,7 @@ public class LHTaskSignatureTest {
     }
 
     @Test
-    void inferVoidReturnType() {
-        LHTaskSignature taskSignature = new LHTaskSignature("complete-order", new MyWorker(), "complete-order");
-        ReturnType actualReturnType = taskSignature.getReturnType();
-        ReturnType expectedReturnType = ReturnType.newBuilder().build();
-
-        assertThat(actualReturnType).isEqualTo(expectedReturnType);
-    }
-
-    @Test
-    void shouldReturnTopologicallySortedListOfParamAndReturnTypeDependencies() {
+    void shouldReturnSortedListOfParamAndReturnTypeStructDefDependencies() {
         LHTaskSignature taskSignature = new LHTaskSignature("get-car-owner", new MyWorker(), "get-car-owner");
         List<Class<?>> actualClassList = new ArrayList<>(taskSignature.getStructDefDependencies());
         List<Class<?>> expectedClassList = List.of(Person.class, Garage.class, Car.class);
