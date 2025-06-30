@@ -45,28 +45,84 @@ type WfRunVariable struct {
 	threadVarDef *lhproto.ThreadVarDef
 }
 
-type NodeOutput struct {
+type NodeOutput interface {
+	getNodeName() string
+	getJsonPath() *string
+	getThread() *WorkflowThread
+
+	JsonPath(string) NodeOutput
+}
+
+type WaitForThreadsNodeOutput struct {
 	nodeName string
 	jsonPath *string
 	thread   *WorkflowThread
 }
 
+func (w *WaitForThreadsNodeOutput) JsonPath(jsonPath string) NodeOutput {
+	return &WaitForThreadsNodeOutput{
+		nodeName: w.nodeName,
+		jsonPath: &jsonPath,
+		thread:   w.thread,
+	}
+}
+
 type TaskNodeOutput struct {
-	Output NodeOutput
-	node   *lhproto.Node
-	parent *WorkflowThread
+	nodeName string
+	jsonPath *string
+	thread   *WorkflowThread
+}
+
+func (n *TaskNodeOutput) JsonPath(jsonPath string) NodeOutput {
+	return &TaskNodeOutput{
+		nodeName: n.nodeName,
+		jsonPath: &jsonPath,
+		thread:   n.thread,
+	}
 }
 
 type ExternalEventNodeOutput struct {
-	Output NodeOutput
-	node   *lhproto.Node
-	parent *WorkflowThread
+	nodeName string
+	jsonPath *string
+	thread   *WorkflowThread
 }
 
-type UserTaskOutput struct {
-	Output NodeOutput
-	thread *WorkflowThread
-	node   *lhproto.Node
+func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
+	return &ExternalEventNodeOutput{
+		nodeName: n.nodeName,
+		jsonPath: &jsonPath,
+		thread:   n.thread,
+	}
+}
+
+func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
+	n.thread.addTimeoutToExtEvtNode(n, timeout)
+	return n
+}
+
+func (n *ExternalEventNodeOutput) SetCorrelationId(id interface{}) *ExternalEventNodeOutput {
+	n.thread.setCorrelationId(n, id)
+	return n
+}
+
+func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
+	n.thread.addTimeoutToTaskNode(n, timeout)
+	return n
+}
+
+type UserTaskNodeOutput struct {
+	nodeName string
+	jsonPath *string
+	thread   *WorkflowThread
+	node     *lhproto.Node
+}
+
+func (n *UserTaskNodeOutput) JsonPath(jsonPath string) *UserTaskNodeOutput {
+	return &UserTaskNodeOutput{
+		nodeName: n.nodeName,
+		jsonPath: &jsonPath,
+		thread:   n.thread,
+	}
 }
 
 type WorkflowCondition struct {
@@ -116,106 +172,87 @@ const (
 	InternalError     LHErrorType = "INTERNAL_ERROR"
 )
 
-func (n *NodeOutput) JsonPath(path string) NodeOutput {
-	return n.jsonPathImpl(path)
-}
+// func (n *PlainNodeOutput) Add(other interface{}) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       other,
+// 		operation: lhproto.VariableMutationType_ADD,
+// 	}
+// }
 
-func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
-	n.parent.addTimeoutToExtEvtNode(n, timeout)
-	return n
-}
+// func (n *PlainNodeOutput) Subtract(other interface{}) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       other,
+// 		operation: lhproto.VariableMutationType_SUBTRACT,
+// 	}
+// }
 
-func (n *ExternalEventNodeOutput) SetCorrelationId(id interface{}) *ExternalEventNodeOutput {
-	n.parent.setCorrelationId(n, id)
-	return n
-}
+// func (n *PlainNodeOutput) Multiply(other interface{}) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       other,
+// 		operation: lhproto.VariableMutationType_MULTIPLY,
+// 	}
+// }
 
-func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
-	n.parent.addTimeoutToTaskNode(n, timeout)
-	return n
-}
+// func (n *PlainNodeOutput) Divide(other interface{}) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       other,
+// 		operation: lhproto.VariableMutationType_DIVIDE,
+// 	}
+// }
 
-func (n *NodeOutput) Add(other interface{}) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       other,
-		operation: lhproto.VariableMutationType_ADD,
-	}
-}
+// func (n *PlainNodeOutput) Extend(other interface{}) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       other,
+// 		operation: lhproto.VariableMutationType_EXTEND,
+// 	}
+// }
 
-func (n *NodeOutput) Subtract(other interface{}) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       other,
-		operation: lhproto.VariableMutationType_SUBTRACT,
-	}
-}
+// func (n *PlainNodeOutput) RemoveIfPresent(other interface{}) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       other,
+// 		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
+// 	}
+// }
 
-func (n *NodeOutput) Multiply(other interface{}) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       other,
-		operation: lhproto.VariableMutationType_MULTIPLY,
-	}
-}
+// func (n *PlainNodeOutput) RemoveIndex_ByInt(index int) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       index,
+// 		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+// 	}
+// }
 
-func (n *NodeOutput) Divide(other interface{}) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       other,
-		operation: lhproto.VariableMutationType_DIVIDE,
-	}
-}
+// func (n *PlainNodeOutput) RemoveIndex_ByExpression(index LHExpression) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       index,
+// 		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+// 	}
+// }
 
-func (n *NodeOutput) Extend(other interface{}) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       other,
-		operation: lhproto.VariableMutationType_EXTEND,
-	}
-}
+// func (n *PlainNodeOutput) RemoveKey(key interface{}) LHExpression {
+// 	return LHExpression{
+// 		lhs:       n,
+// 		rhs:       key,
+// 		operation: lhproto.VariableMutationType_REMOVE_KEY,
+// 	}
+// }
 
-func (n *NodeOutput) RemoveIfPresent(other interface{}) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       other,
-		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
-	}
-}
-
-func (n *NodeOutput) RemoveIndex_ByInt(index int) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       index,
-		operation: lhproto.VariableMutationType_REMOVE_INDEX,
-	}
-}
-
-func (n *NodeOutput) RemoveIndex_ByExpression(index LHExpression) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       index,
-		operation: lhproto.VariableMutationType_REMOVE_INDEX,
-	}
-}
-
-func (n *NodeOutput) RemoveKey(key interface{}) LHExpression {
-	return LHExpression{
-		lhs:       n,
-		rhs:       key,
-		operation: lhproto.VariableMutationType_REMOVE_KEY,
-	}
-}
-
-func (n *NodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
+func (n *WaitForThreadsNodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
 	n.handleExceptionOnChild(handler, exceptionName)
 }
 
-func (n *NodeOutput) HandleErrorOnChild(handler ThreadFunc, errorName *string) {
+func (n *WaitForThreadsNodeOutput) HandleErrorOnChild(handler ThreadFunc, errorName *string) {
 	n.handleErrorOnChild(handler, errorName)
 }
 
-func (n *NodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
+func (n *WaitForThreadsNodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
 	n.handleAnyFailureOnChild(handler)
 }
 
@@ -558,7 +595,7 @@ func (t *WorkflowThread) SpawnThread(
 	return t.spawnThread(tFunc, threadName, args)
 }
 
-func (t *WorkflowThread) WaitForThreads(s ...*SpawnedThread) NodeOutput {
+func (t *WorkflowThread) WaitForThreads(s ...*SpawnedThread) WaitForThreadsNodeOutput {
 	return *t.waitForThreads(s...)
 }
 
@@ -568,13 +605,13 @@ func (t *WorkflowThread) SpawnThreadForEach(
 	return t.spawnThreadForEach(arrVar, threadName, threadFunc, args)
 }
 
-func (t *WorkflowThread) WaitForThreadsList(s *SpawnedThreads) NodeOutput {
+func (t *WorkflowThread) WaitForThreadsList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
 	return t.waitForThreadsList(s)
 }
 
 func (t *WorkflowThread) AssignUserTask(
 	userTaskDefName string, userId, userGroup interface{},
-) *UserTaskOutput {
+) *UserTaskNodeOutput {
 	return t.assignUserTask(userTaskDefName, userId, userGroup)
 }
 
@@ -582,36 +619,36 @@ func (t *WorkflowThread) Format(format string, args ...*WfRunVariable) *LHFormat
 	return t.format(format, args)
 }
 
-func (t *WorkflowThread) CancelUserTaskAfter(userTask *UserTaskOutput, delaySeconds interface{}) {
+func (t *WorkflowThread) CancelUserTaskAfter(userTask *UserTaskNodeOutput, delaySeconds interface{}) {
 	t.cancelUserTaskAfter(userTask, delaySeconds)
 }
 
-func (t *WorkflowThread) CancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+func (t *WorkflowThread) CancelUserTaskAfterAssignment(userTask *UserTaskNodeOutput, delaySeconds interface{}) {
 	t.cancelUserTaskAfterAssignment(userTask, delaySeconds)
 }
 
 func (t *WorkflowThread) ScheduleReminderTask(
-	userTask *UserTaskOutput, delaySeconds interface{},
+	userTask *UserTaskNodeOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
 ) {
 	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
 }
 
 func (t *WorkflowThread) ScheduleReminderTaskOnAssignment(
-	userTask *UserTaskOutput, delaySeconds interface{},
+	userTask *UserTaskNodeOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
 ) {
 	t.scheduleReminderTaskOnAssignment(userTask, delaySeconds, taskDefName, args)
 }
 
 func (t *WorkflowThread) ReleaseToGroupOnDeadline(
-	userTask *UserTaskOutput, deadlineSeconds interface{},
+	userTask *UserTaskNodeOutput, deadlineSeconds interface{},
 ) {
 	t.releaseToGroupOnDeadline(userTask, deadlineSeconds)
 }
 
 func (t *WorkflowThread) ReassignUserTaskOnDeadline(
-	userTask *UserTaskOutput, userId, userGroup, deadlineSeconds interface{},
+	userTask *UserTaskNodeOutput, userId, userGroup, deadlineSeconds interface{},
 ) {
 	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
@@ -633,29 +670,29 @@ func (t *WorkflowThread) HandleInterrupt(interruptName string, handler ThreadFun
 }
 
 func (t *WorkflowThread) HandleError(
-	nodeOutput *NodeOutput,
+	nodeOutput NodeOutput,
 	specificError *LHErrorType,
 	handler ThreadFunc,
 ) {
-	t.handleError(nodeOutput, specificError, handler)
+	t.handleError(&nodeOutput, specificError, handler)
 }
 
 func (t *WorkflowThread) HandleException(
-	nodeOutput *NodeOutput,
+	nodeOutput NodeOutput,
 	exceptionName *string,
 	handler ThreadFunc,
 ) {
-	t.handleException(nodeOutput, exceptionName, handler)
+	t.handleException(&nodeOutput, exceptionName, handler)
 }
 
 func (t *WorkflowThread) HandleAnyFailure(
-	nodeOutput *NodeOutput,
+	nodeOutput NodeOutput,
 	handler ThreadFunc,
 ) {
-	t.handleAnyFailure(nodeOutput, handler)
+	t.handleAnyFailure(&nodeOutput, handler)
 }
 
-func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
+func (u *UserTaskNodeOutput) WithNotes(notes interface{}) *UserTaskNodeOutput {
 	userTaskNode := u.node.GetUserTask()
 	notesVar, err := u.thread.assignVariable(notes)
 
@@ -666,7 +703,7 @@ func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
 	return u
 }
 
-func (u *UserTaskOutput) WithOnCancellationException(exceptionName interface{}) *UserTaskOutput {
+func (u *UserTaskNodeOutput) WithOnCancellationException(exceptionName interface{}) *UserTaskNodeOutput {
 	userTaskNode := u.node.GetUserTask()
 	onCancellationExceptionName, err := u.thread.assignVariable(exceptionName)
 

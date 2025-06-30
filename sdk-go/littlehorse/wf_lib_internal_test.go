@@ -395,7 +395,7 @@ func TestNodeOutputMutationsShouldUseVariableAssignment(t *testing.T) {
 func TestNodeOutputMutationsShouldCarryJsonPath(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		myVar := t.DeclareStr("my-var")
-		myVar.Assign(t.Execute("use-the-force").Output.JsonPath("$.hello.there"))
+		myVar.Assign(t.Execute("use-the-force").JsonPath("$.hello.there"))
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -539,7 +539,7 @@ func TestCatchSpecificException(t *testing.T) {
 	exnName := "my-exn"
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		taskNodeOutput := t.Execute("some-task")
-		t.HandleException(&taskNodeOutput.Output, &exnName, someHandler)
+		t.HandleException(taskNodeOutput, &exnName, someHandler)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -562,7 +562,7 @@ func TestCatchSpecificError(t *testing.T) {
 	errorName := littlehorse.ChildFailure
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		taskNodeOutput := t.Execute("some-task")
-		t.HandleError(&taskNodeOutput.Output, &errorName, someHandler)
+		t.HandleError(taskNodeOutput, &errorName, someHandler)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -584,7 +584,7 @@ func TestCatchSpecificError(t *testing.T) {
 func TestCatchAnyError(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		taskNodeOutput := t.Execute("some-task")
-		t.HandleError(&taskNodeOutput.Output, nil, someHandler)
+		t.HandleError(taskNodeOutput, nil, someHandler)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -610,7 +610,7 @@ func TestCatchAnyError(t *testing.T) {
 func TestCatchAnyException(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		taskNodeOutput := t.Execute("some-task")
-		t.HandleException(&taskNodeOutput.Output, nil, someHandler)
+		t.HandleException(taskNodeOutput, nil, someHandler)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -636,7 +636,7 @@ func TestCatchAnyException(t *testing.T) {
 func TestCatchAnyFailure(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		taskNodeOutput := t.Execute("some-task")
-		t.HandleAnyFailure(&taskNodeOutput.Output, someHandler)
+		t.HandleAnyFailure(taskNodeOutput, someHandler)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -699,7 +699,7 @@ func TestVarValToVarType(t *testing.T) {
 func TestUpdateType(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		taskNodeOutput := t.Execute("some-task")
-		t.HandleAnyFailure(&taskNodeOutput.Output, someHandler)
+		t.HandleAnyFailure(taskNodeOutput, someHandler)
 	}, "my-workflow").WithUpdateType(lhproto.AllowedUpdateType_NO_UPDATES)
 
 	putWf, _ := wf.Compile()

@@ -12,6 +12,83 @@ import (
 	"github.com/ztrue/tracerr"
 )
 
+// Node Output Implementations (via Duck Typing)
+type plainNodeOutput struct {
+	nodeName string
+	jsonPath *string
+	thread   *WorkflowThread
+}
+
+func (p *plainNodeOutput) getNodeName() string {
+	return p.nodeName
+}
+
+func (p *plainNodeOutput) getJsonPath() *string {
+	return p.jsonPath
+}
+
+func (p *plainNodeOutput) getThread() *WorkflowThread {
+	return p.thread
+}
+
+func (p *plainNodeOutput) JsonPath(jsonpath string) *plainNodeOutput {
+	return &plainNodeOutput{
+		nodeName: p.nodeName,
+		jsonPath: &jsonpath,
+		thread:   p.thread,
+	}
+}
+
+func (n *ExternalEventNodeOutput) getNodeName() string {
+	return n.nodeName
+}
+
+func (n *ExternalEventNodeOutput) getJsonPath() *string {
+	return n.jsonPath
+}
+
+func (n *ExternalEventNodeOutput) getThread() *WorkflowThread {
+	return n.thread
+}
+
+func (n *UserTaskNodeOutput) getNodeName() string {
+	return n.nodeName
+}
+
+func (n *UserTaskNodeOutput) getJsonPath() *string {
+	return n.jsonPath
+}
+
+func (n *UserTaskNodeOutput) getThread() *WorkflowThread {
+	return n.thread
+}
+
+func (n *TaskNodeOutput) getNodeName() string {
+	return n.nodeName
+}
+
+func (n *TaskNodeOutput) getJsonPath() *string {
+	return n.jsonPath
+}
+
+func (n *TaskNodeOutput) getThread() *WorkflowThread {
+	return n.thread
+}
+
+func (n *WaitForThreadsNodeOutput) getNodeName() string {
+	return n.nodeName
+}
+
+func (n *WaitForThreadsNodeOutput) getJsonPath() *string {
+	return n.jsonPath
+}
+
+func (n *WaitForThreadsNodeOutput) getThread() *WorkflowThread {
+	return n.thread
+}
+
+// Implementation of the SDK
+
 func camelCaseToHostNameCase(s string) string {
 	var result strings.Builder
 	s = strings.ReplaceAll(s, ".", "-")
@@ -148,24 +225,20 @@ func (t *WorkflowThread) executeTask(taskDefName interface{}, args []interface{}
 	}
 
 	taskNodeOutput := TaskNodeOutput{
-		Output: NodeOutput{
-			nodeName: nodeName,
-			thread:   t,
-		},
-		node:   node,
-		parent: t,
+		nodeName: nodeName,
+		thread:   t,
 	}
 
 	return &taskNodeOutput
 }
 
 func (t *WorkflowThread) releaseToGroupOnDeadline(
-	userTask *UserTaskOutput, deadlineSeconds interface{},
+	userTask *UserTaskNodeOutput, deadlineSeconds interface{},
 ) {
 	t.checkIfIsActive()
 
 	curNode := t.spec.Nodes[*t.lastNodeName]
-	if userTask.Output.nodeName != *t.lastNodeName {
+	if userTask.nodeName != *t.lastNodeName {
 		log.Fatal("Trying to edit stale UserTaskOutput!")
 	}
 
@@ -201,12 +274,12 @@ func (t *WorkflowThread) releaseToGroupOnDeadline(
 }
 
 func (t *WorkflowThread) reassignUserTaskOnDeadline(
-	userTask *UserTaskOutput, userId, userGroup, deadlineSeconds interface{},
+	userTask *UserTaskNodeOutput, userId, userGroup, deadlineSeconds interface{},
 ) {
 	t.checkIfIsActive()
 
 	curNode := t.spec.Nodes[*t.lastNodeName]
-	if userTask.Output.nodeName != *t.lastNodeName {
+	if userTask.getNodeName() != *t.lastNodeName {
 		log.Fatal("Trying to edit stale UserTaskOutput!")
 	}
 
@@ -252,7 +325,7 @@ func (t *WorkflowThread) reassignUserTaskOnDeadline(
 }
 
 func (t *WorkflowThread) scheduleReminderTask(
-	userTask *UserTaskOutput, delaySeconds interface{},
+	userTask *UserTaskNodeOutput, delaySeconds interface{},
 	taskDefName string, args []interface{},
 ) {
 	t.checkIfIsActive()
@@ -268,7 +341,7 @@ func (t *WorkflowThread) scheduleReminderTask(
 		},
 	}
 
-	if userTask.Output.nodeName != *(t.lastNodeName) {
+	if userTask.getNodeName() != *(t.lastNodeName) {
 		log.Fatal("Tried to edit a stale UserTask node!")
 	}
 
@@ -282,7 +355,7 @@ func (t *WorkflowThread) scheduleReminderTask(
 	)
 }
 
-func (t *WorkflowThread) cancelUserTaskAfter(userTask *UserTaskOutput, delaySeconds interface{}) {
+func (t *WorkflowThread) cancelUserTaskAfter(userTask *UserTaskNodeOutput, delaySeconds interface{}) {
 	t.checkIfIsActive()
 
 	delayAssn, err := t.assignVariable(delaySeconds)
@@ -294,7 +367,7 @@ func (t *WorkflowThread) cancelUserTaskAfter(userTask *UserTaskOutput, delaySeco
 		Cancel: &lhproto.UTActionTrigger_UTACancel{},
 	}
 
-	if userTask.Output.nodeName != *(t.lastNodeName) {
+	if userTask.getNodeName() != *(t.lastNodeName) {
 		log.Fatal("Tried to edit a stale UserTask node!")
 	}
 	curNode := t.spec.Nodes[*t.lastNodeName]
@@ -306,7 +379,7 @@ func (t *WorkflowThread) cancelUserTaskAfter(userTask *UserTaskOutput, delaySeco
 		},
 	)
 }
-func (t *WorkflowThread) cancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+func (t *WorkflowThread) cancelUserTaskAfterAssignment(userTask *UserTaskNodeOutput, delaySeconds interface{}) {
 	t.checkIfIsActive()
 
 	delayAssn, err := t.assignVariable(delaySeconds)
@@ -318,7 +391,7 @@ func (t *WorkflowThread) cancelUserTaskAfterAssignment(userTask *UserTaskOutput,
 		Cancel: &lhproto.UTActionTrigger_UTACancel{},
 	}
 
-	if userTask.Output.nodeName != *(t.lastNodeName) {
+	if userTask.getNodeName() != *(t.lastNodeName) {
 		log.Fatal("Tried to edit a stale UserTask node!")
 	}
 	curNode := t.spec.Nodes[*t.lastNodeName]
@@ -332,7 +405,7 @@ func (t *WorkflowThread) cancelUserTaskAfterAssignment(userTask *UserTaskOutput,
 }
 
 func (t *WorkflowThread) scheduleReminderTaskOnAssignment(
-	userTask *UserTaskOutput, delaySeconds interface{},
+	userTask *UserTaskNodeOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
 ) {
 	t.checkIfIsActive()
@@ -348,7 +421,7 @@ func (t *WorkflowThread) scheduleReminderTaskOnAssignment(
 		},
 	}
 
-	if userTask.Output.nodeName != *(t.lastNodeName) {
+	if userTask.getNodeName() != *(t.lastNodeName) {
 		log.Fatal("Tried to edit a stale UserTask node!")
 	}
 
@@ -364,7 +437,7 @@ func (t *WorkflowThread) scheduleReminderTaskOnAssignment(
 
 func (t *WorkflowThread) assignUserTask(
 	userTaskDefName string, userId, userGroup interface{},
-) *UserTaskOutput {
+) *UserTaskNodeOutput {
 	t.checkIfIsActive()
 
 	utNode := &lhproto.UserTaskNode{
@@ -409,14 +482,11 @@ func (t *WorkflowThread) assignUserTask(
 		UserTask: utNode,
 	}
 
-	return &UserTaskOutput{
-		thread: t,
-		node:   node,
-		Output: NodeOutput{
-			nodeName: nodeName,
-			jsonPath: nil,
-			thread:   t,
-		},
+	return &UserTaskNodeOutput{
+		thread:   t,
+		nodeName: nodeName,
+		jsonPath: nil,
+		node:     node,
 	}
 }
 
@@ -460,55 +530,19 @@ func (t *WorkflowThread) assignVariable(
 		}
 	case *NodeOutput:
 		out = &lhproto.VariableAssignment{
-			JsonPath: v.jsonPath,
+			JsonPath: (*v).getJsonPath(),
 			Source: &lhproto.VariableAssignment_NodeOutput{
 				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
-					NodeName: v.nodeName,
+					NodeName: (*v).getNodeName(),
 				},
 			},
 		}
 	case NodeOutput:
 		out = &lhproto.VariableAssignment{
-			JsonPath: v.jsonPath,
+			JsonPath: v.getJsonPath(),
 			Source: &lhproto.VariableAssignment_NodeOutput{
 				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
-					NodeName: v.nodeName,
-				},
-			},
-		}
-	case *TaskNodeOutput:
-		out = &lhproto.VariableAssignment{
-			JsonPath: v.Output.jsonPath,
-			Source: &lhproto.VariableAssignment_NodeOutput{
-				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
-					NodeName: v.Output.nodeName,
-				},
-			},
-		}
-	case TaskNodeOutput:
-		out = &lhproto.VariableAssignment{
-			JsonPath: v.Output.jsonPath,
-			Source: &lhproto.VariableAssignment_NodeOutput{
-				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
-					NodeName: v.Output.nodeName,
-				},
-			},
-		}
-	case *ExternalEventNodeOutput:
-		out = &lhproto.VariableAssignment{
-			JsonPath: v.Output.jsonPath,
-			Source: &lhproto.VariableAssignment_NodeOutput{
-				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
-					NodeName: v.Output.nodeName,
-				},
-			},
-		}
-	case ExternalEventNodeOutput:
-		out = &lhproto.VariableAssignment{
-			JsonPath: v.Output.jsonPath,
-			Source: &lhproto.VariableAssignment_NodeOutput{
-				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
-					NodeName: v.Output.nodeName,
+					NodeName: v.getNodeName(),
 				},
 			},
 		}
@@ -680,20 +714,7 @@ func (w *WfRunVariable) jsonPathImpl(path string) *WfRunVariable {
 	}
 }
 
-func (n *NodeOutput) jsonPathImpl(path string) NodeOutput {
-	if n.jsonPath != nil {
-		n.thread.throwError(
-			errors.New("node output jsonpathed twice"),
-		)
-	}
-	return NodeOutput{
-		nodeName: n.nodeName,
-		thread:   n.thread,
-		jsonPath: &path,
-	}
-}
-
-func (n *NodeOutput) handleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
+func (n *WaitForThreadsNodeOutput) handleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
 	n.thread.checkIfIsActive()
 	node := n.thread.spec.Nodes[n.nodeName]
 	if node.GetWaitForThreads() == nil {
@@ -729,12 +750,9 @@ func (n *NodeOutput) handleExceptionOnChild(handler ThreadFunc, exceptionName *s
 	PrintProto(node)
 }
 
-func (n *NodeOutput) handleErrorOnChild(handler ThreadFunc, errorName *string) {
-	n.thread.checkIfIsActive()
+func (n *WaitForThreadsNodeOutput) handleErrorOnChild(handler ThreadFunc, errorName *string) {
+	n.getThread().checkIfIsActive()
 	node := n.thread.spec.Nodes[n.nodeName]
-	if node.GetWaitForThreads() == nil {
-		n.thread.throwError(errors.New("can only call handleErrorOnChild on WaitForThreads Node"))
-	}
 
 	var threadName string
 	if errorName != nil {
@@ -764,12 +782,9 @@ func (n *NodeOutput) handleErrorOnChild(handler ThreadFunc, errorName *string) {
 		node.GetWaitForThreads().PerThreadFailureHandlers, failureHandler)
 }
 
-func (n *NodeOutput) handleAnyFailureOnChild(handler ThreadFunc) {
+func (n *WaitForThreadsNodeOutput) handleAnyFailureOnChild(handler ThreadFunc) {
 	n.thread.checkIfIsActive()
 	node := n.thread.spec.Nodes[n.nodeName]
-	if node.GetWaitForThreads() == nil {
-		n.thread.throwError(errors.New("can only call handleErrorOnChild on WaitForThreads Node"))
-	}
 
 	threadName := "failure-handler-" + n.nodeName + "-ANY_FAILURE"
 	threadName = n.thread.wf.addSubThread(threadName, handler)
@@ -814,12 +829,12 @@ func (t *WorkflowThread) mutate(
 	t.variableMutations = append(t.variableMutations, mutation)
 }
 func (tn *TaskNodeOutput) withExponentialBackoffImpl(policy *lhproto.ExponentialBackoffRetryPolicy) *TaskNodeOutput {
-	tn.parent.overrideTaskExponentialBackoffPolicy(tn, policy)
+	tn.getThread().overrideTaskExponentialBackoffPolicy(tn, policy)
 	return tn
 }
 
 func (tn *TaskNodeOutput) withRetriesImpl(retries int32) *TaskNodeOutput {
-	tn.parent.overrideTaskRetries(tn, retries)
+	tn.getThread().overrideTaskRetries(tn, retries)
 	return tn
 }
 
@@ -1125,7 +1140,7 @@ func (c *WorkflowCondition) getReverse() *lhproto.EdgeCondition {
 func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, retries int32) {
 	t.checkIfIsActive()
 
-	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
+	node := t.spec.Nodes[taskNodeOutput.nodeName]
 	if node.GetTask() == nil {
 		t.throwError(errors.New("impossible to not have task node here"))
 	}
@@ -1136,7 +1151,7 @@ func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, ret
 func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *TaskNodeOutput, policy *lhproto.ExponentialBackoffRetryPolicy) {
 	t.checkIfIsActive()
 
-	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
+	node := t.spec.Nodes[taskNodeOutput.nodeName]
 	if node.GetTask() == nil {
 		t.throwError(errors.New("impossible to not have task node here"))
 	}
@@ -1146,7 +1161,7 @@ func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *Ta
 
 func (t *WorkflowThread) setCorrelationId(n *ExternalEventNodeOutput, id interface{}) *ExternalEventNodeOutput {
 	t.checkIfIsActive()
-	node := t.spec.Nodes[n.Output.nodeName]
+	node := t.spec.Nodes[n.nodeName]
 	varAssn, err := t.assignVariable(id)
 	if err != nil {
 		t.throwError(err)
@@ -1158,7 +1173,7 @@ func (t *WorkflowThread) setCorrelationId(n *ExternalEventNodeOutput, id interfa
 func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
-	node := t.spec.Nodes[extEvNodeOutput.Output.nodeName]
+	node := t.spec.Nodes[extEvNodeOutput.nodeName]
 	node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
 		JsonPath: nil,
 		Source: &lhproto.VariableAssignment_LiteralValue{
@@ -1174,7 +1189,7 @@ func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNo
 func (t *WorkflowThread) addTimeoutToTaskNode(taskNodeOutput *TaskNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
-	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
+	node := t.spec.Nodes[taskNodeOutput.nodeName]
 
 	node.GetTask().TimeoutSeconds = int32(timeoutSeconds)
 }
@@ -1206,7 +1221,7 @@ func (t *WorkflowThread) spawnThread(
 	t.mutate(
 		cachedThreadVar,
 		lhproto.VariableMutationType_ASSIGN,
-		NodeOutput{
+		plainNodeOutput{
 			nodeName, nil, t,
 		},
 	)
@@ -1217,7 +1232,7 @@ func (t *WorkflowThread) spawnThread(
 	}
 }
 
-func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *NodeOutput {
+func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *WaitForThreadsNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")
 	node.Node = &lhproto.Node_WaitForThreads{
@@ -1240,7 +1255,7 @@ func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 		)
 	}
 
-	return &NodeOutput{
+	return &WaitForThreadsNodeOutput{
 		nodeName: nodeName,
 		jsonPath: nil,
 		thread:   t,
@@ -1290,7 +1305,7 @@ func (t *WorkflowThread) spawnThreadForEach(
 	t.mutate(
 		internalThreadNumbersVar,
 		lhproto.VariableMutationType_ASSIGN,
-		NodeOutput{nodeName: nodeName, thread: t},
+		plainNodeOutput{nodeName: nodeName, thread: t},
 	)
 
 	return &SpawnedThreads{
@@ -1299,7 +1314,7 @@ func (t *WorkflowThread) spawnThreadForEach(
 	}
 }
 
-func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) NodeOutput {
+func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
 	t.checkIfIsActive()
 	threadListAssn, err := t.assignVariable(s.threadsVar)
 	if err != nil {
@@ -1316,7 +1331,7 @@ func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) NodeOutput {
 	node.Node = &lhproto.Node_WaitForThreads{
 		WaitForThreads: subNode,
 	}
-	return NodeOutput{
+	return &WaitForThreadsNodeOutput{
 		thread:   t,
 		nodeName: nodeName,
 	}
@@ -1333,13 +1348,8 @@ func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput
 	}
 
 	return &ExternalEventNodeOutput{
-		Output: NodeOutput{
-			nodeName: nodeName,
-			jsonPath: nil,
-			thread:   t,
-		},
-		node:   node,
-		parent: t,
+		nodeName: nodeName,
+		thread:   t,
 	}
 }
 
@@ -1433,13 +1443,13 @@ func (t *WorkflowThread) handleError(
 	handler ThreadFunc,
 ) {
 	t.checkIfIsActive()
-	node := t.spec.Nodes[nodeOutput.nodeName]
+	node := t.spec.Nodes[(*nodeOutput).getNodeName()]
 
 	var fhd *lhproto.FailureHandlerDef
 
 	if specificError != nil {
 		failureName := string(*specificError)
-		handlerName := "error-handler-" + failureName + "-" + nodeOutput.nodeName
+		handlerName := "error-handler-" + failureName + "-" + (*nodeOutput).getNodeName()
 		threadName := t.wf.addSubThread(handlerName, handler)
 
 		fhd = &lhproto.FailureHandlerDef{
@@ -1449,7 +1459,7 @@ func (t *WorkflowThread) handleError(
 			HandlerSpecName: threadName,
 		}
 	} else {
-		handlerName := "error-handler-" + nodeOutput.nodeName
+		handlerName := "error-handler-" + (*nodeOutput).getNodeName()
 		threadName := t.wf.addSubThread(handlerName, handler)
 
 		fhd = &lhproto.FailureHandlerDef{
@@ -1467,8 +1477,8 @@ func (t *WorkflowThread) handleAnyFailure(
 	nodeOutput *NodeOutput, handler ThreadFunc,
 ) {
 	t.checkIfIsActive()
-	node := t.spec.Nodes[nodeOutput.nodeName]
-	handlerName := "exception-handler-all-" + nodeOutput.nodeName
+	node := t.spec.Nodes[(*nodeOutput).getNodeName()]
+	handlerName := "exception-handler-all-" + (*nodeOutput).getNodeName()
 	threadName := t.wf.addSubThread(handlerName, handler)
 
 	node.FailureHandlers = append(node.FailureHandlers, &lhproto.FailureHandlerDef{
@@ -1483,12 +1493,12 @@ func (t *WorkflowThread) handleException(
 	handler ThreadFunc,
 ) {
 	t.checkIfIsActive()
-	node := t.spec.Nodes[nodeOutput.nodeName]
+	node := t.spec.Nodes[(*nodeOutput).getNodeName()]
 
 	var fhd *lhproto.FailureHandlerDef
 
 	if exceptionName != nil {
-		handlerName := "exn-handler-" + *exceptionName + "-" + nodeOutput.nodeName
+		handlerName := "exn-handler-" + *exceptionName + "-" + (*nodeOutput).getNodeName()
 		threadName := t.wf.addSubThread(handlerName, handler)
 
 		fhd = &lhproto.FailureHandlerDef{
@@ -1498,7 +1508,7 @@ func (t *WorkflowThread) handleException(
 			HandlerSpecName: threadName,
 		}
 	} else {
-		handlerName := "exn-handler-" + nodeOutput.nodeName
+		handlerName := "exn-handler-" + (*nodeOutput).getNodeName()
 		threadName := t.wf.addSubThread(handlerName, handler)
 
 		fhd = &lhproto.FailureHandlerDef{
