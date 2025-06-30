@@ -91,7 +91,7 @@ public class LHTaskSignatureTest {
         LHTaskSignature taskSignature = new LHTaskSignature("greet", new MyWorker(), "greet");
 
         List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
-        VariableDef firstParamVariableDef = actualVariableDefs.getFirst();
+        VariableDef firstParamVariableDef = actualVariableDefs.get(0);
         TypeDefinition actualTypeDefinition = firstParamVariableDef.getTypeDef();
         TypeDefinition expectedTypeDefinition =
                 TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT).build();
@@ -104,7 +104,7 @@ public class LHTaskSignatureTest {
         LHTaskSignature taskSignature = new LHTaskSignature("get-car-owner", new MyWorker(), "get-car-owner");
 
         List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
-        VariableDef firstParamVariableDef = actualVariableDefs.getFirst();
+        VariableDef firstParamVariableDef = actualVariableDefs.get(0);
         TypeDefinition actualTypeDefinition = firstParamVariableDef.getTypeDef();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
                 .setStructDefId(StructDefId.newBuilder().setName("car"))
