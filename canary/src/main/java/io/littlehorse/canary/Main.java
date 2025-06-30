@@ -62,7 +62,6 @@ public class Main {
         final BeatProducer producer = new BeatProducer(
                 lhConfig.getApiBootstrapHost(),
                 lhConfig.getApiBootstrapPort(),
-                lhClient.getServerVersion(),
                 config.getTopicName(),
                 config.toKafkaConfig().toMap(),
                 config.getMetronomeBeatExtraTags());

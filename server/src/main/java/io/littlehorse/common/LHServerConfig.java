@@ -1125,7 +1125,7 @@ public class LHServerConfig extends ConfigBase {
         long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
-                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache);
+                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
         }
     }
 
