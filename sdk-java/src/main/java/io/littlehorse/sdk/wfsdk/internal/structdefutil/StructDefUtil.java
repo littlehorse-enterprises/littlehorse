@@ -79,7 +79,7 @@ public class StructDefUtil {
 
     private static Class<?> getFieldType(Field field) {
         if (field.getType().isArray()) {
-            return field.getType().componentType();
+            return field.getType().getComponentType();
         }
         return field.getType();
     }
