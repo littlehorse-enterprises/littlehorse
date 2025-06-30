@@ -300,6 +300,12 @@ export enum VariableType {
   INT = "INT",
   /** BYTES - The `BYTES` variable type allows you to store an arbitrary byte string. */
   BYTES = "BYTES",
+  /**
+   * WF_RUN_ID - The `WF_RUN_ID` variable type is used to store the ID of a WfRun. This allows for
+   * referencing specific workflow executions in various use cases, such as inter-workflow
+   * communication or tracking dependencies between workflows.
+   */
+  WF_RUN_ID = "WF_RUN_ID",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -326,6 +332,9 @@ export function variableTypeFromJSON(object: any): VariableType {
     case 6:
     case "BYTES":
       return VariableType.BYTES;
+    case 7:
+    case "WF_RUN_ID":
+      return VariableType.WF_RUN_ID;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -349,6 +358,8 @@ export function variableTypeToNumber(object: VariableType): number {
       return 5;
     case VariableType.BYTES:
       return 6;
+    case VariableType.WF_RUN_ID:
+      return 7;
     case VariableType.UNRECOGNIZED:
     default:
       return -1;

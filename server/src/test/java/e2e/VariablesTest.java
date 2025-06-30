@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -19,6 +20,7 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +32,9 @@ public class VariablesTest {
 
     @LHWorkflow("mutation-wf")
     private Workflow mutationWf;
+
+    @LHWorkflow("wf-run-id")
+    private Workflow wfRunIdWf;
 
     private WorkflowVerifier workflowVerifier;
 
@@ -77,6 +82,59 @@ public class VariablesTest {
                 .start();
     }
 
+    @Test
+    public void shouldHandleDefaultValueForWfRunIdVariable() {
+        workflowVerifier
+                .prepareRun(wfRunIdWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRun(0, 1, taskRun -> {
+                    VariableValue expectedVariableValue = VariableValue.newBuilder()
+                            .setWfRunId(WfRunId.newBuilder().setId("default-id").build())
+                            .build();
+                    List<VarNameAndVal> inputVars = taskRun.getInputVariablesList();
+                    Assertions.assertThat(inputVars).hasSize(1);
+                    VarNameAndVal varNameAndVal = inputVars.get(0);
+                    Assertions.assertThat(varNameAndVal.getValue()).isEqualTo(expectedVariableValue);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldHandleInputWfRunVariable() {
+        workflowVerifier
+                .prepareRun(
+                        wfRunIdWf,
+                        Arg.of("wfrun-a", WfRunId.newBuilder().setId("input-id").build()))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRun(0, 1, taskRun -> {
+                    VariableValue expectedVariableValue = VariableValue.newBuilder()
+                            .setWfRunId(WfRunId.newBuilder().setId("input-id").build())
+                            .build();
+                    List<VarNameAndVal> inputVars = taskRun.getInputVariablesList();
+                    Assertions.assertThat(inputVars).hasSize(1);
+                    VarNameAndVal varNameAndVal = inputVars.get(0);
+                    Assertions.assertThat(varNameAndVal.getValue()).isEqualTo(expectedVariableValue);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldHandleTaskOutputWfRunVariable() {
+        workflowVerifier
+                .prepareRun(
+                        wfRunIdWf,
+                        Arg.of("wfrun-a", WfRunId.newBuilder().setId("input-id").build()))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRun(0, 2, taskRun -> {
+                    List<VarNameAndVal> inputVars = taskRun.getInputVariablesList();
+                    Assertions.assertThat(inputVars).hasSize(1);
+                    VarNameAndVal varNameAndVal = inputVars.get(0);
+                    Assertions.assertThat(varNameAndVal.getValue().getWfRunId().getId())
+                            .isNotNull();
+                })
+                .start();
+    }
+
     @LHWorkflow("masked-variables-wf")
     public Workflow buildChildWf() {
         return new WorkflowImpl("masked-variables-wf", thread -> {
@@ -103,6 +161,16 @@ public class VariablesTest {
         });
     }
 
+    @LHWorkflow("wf-run-id")
+    public Workflow buildWfRunIdWf() {
+        return new WorkflowImpl("wf-run-id", thread -> {
+            WfRunVariable valueAVariable = thread.addVariable("wfrun-a", VariableType.WF_RUN_ID)
+                    .withDefault(WfRunId.newBuilder().setId("default-id").build());
+            TaskNodeOutput output = thread.execute("print-wf-run-id", valueAVariable);
+            thread.execute("print-wf-run-id", output);
+        });
+    }
+
     @LHTaskMethod("get-text-length")
     @LHType(masked = false, name = "input-text-length")
     public Integer verifyOutput(@LHType(masked = true, name = "input-text") String variableValue) {
@@ -113,5 +181,11 @@ public class VariablesTest {
     @LHTaskMethod("print-number")
     public void printLength(Integer length) {
         System.out.println("Text length is " + length);
+    }
+
+    @LHTaskMethod("print-wf-run-id")
+    public WfRunId printWfRunId(WfRunId wfRunId) {
+        System.out.println(wfRunId);
+        return WfRunId.newBuilder().setId(UUID.randomUUID().toString()).build();
     }
 }
