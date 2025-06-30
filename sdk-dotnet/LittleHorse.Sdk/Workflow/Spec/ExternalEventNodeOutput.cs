@@ -10,7 +10,7 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 public class ExternalEventNodeOutput : NodeOutput
 {
 
-    private CorrelatedEventConfig _correlatedEventConfig;
+    private CorrelatedEventConfig? _correlatedEventConfig;
 
 
     /// <summary>
@@ -71,15 +71,24 @@ public class ExternalEventNodeOutput : NodeOutput
         return this;
     }
 
-
+    /// <summary>
+    /// Adds CorrelatedEventConfig to an ExternalEventNode.
+    /// </summary>
+    /// <returns>The ExternalEventNodeOutput.</returns>    
     public ExternalEventNodeOutput WithCorrelatedEventConfig(CorrelatedEventConfig config)
     {
         _correlatedEventConfig = config;
         return this;
     }
+
+    /// <summary>
+    /// Get the CorrelatedEventConfig
+    /// </summary>
+    /// <returns>The ExternalEventNodeOutput.</returns>
     public CorrelatedEventConfig GetCorrelatedEventConfig()
     {
         return _correlatedEventConfig;
+        // return _correlatedEventConfig ?? new CorrelatedEventConfig();
     }
     
 }
