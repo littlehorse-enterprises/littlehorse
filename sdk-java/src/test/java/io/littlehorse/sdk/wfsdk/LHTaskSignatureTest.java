@@ -74,7 +74,6 @@ public class LHTaskSignatureTest {
         assertThat(actualReturnType).isEqualTo(expectedReturnType);
     }
 
-
     @Test
     void shouldInferStructReturnType() {
         LHTaskSignature taskSignature = new LHTaskSignature("get-car-owner", new MyWorker(), "get-car-owner");
@@ -108,7 +107,8 @@ public class LHTaskSignatureTest {
         VariableDef firstParamVariableDef = actualVariableDefs.getFirst();
         TypeDefinition actualTypeDefinition = firstParamVariableDef.getTypeDef();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                        .setStructDefId(StructDefId.newBuilder().setName("car")).build();
+                .setStructDefId(StructDefId.newBuilder().setName("car"))
+                .build();
 
         assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
     }
