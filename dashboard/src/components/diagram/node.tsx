@@ -1,11 +1,12 @@
-import { memo } from 'react'
-import { Handle, Position } from '@xyflow/react'
 import { NodeType, getBorderColor, getNodeIcon, getStatusBgColor, getStatusIcon } from '@/utils/ui/node-utils'
+import { Handle, Position } from '@xyflow/react'
+import { LHStatus } from 'littlehorse-client/proto'
+import { memo } from 'react'
 
 export type NodeData = {
   label: string
   type: NodeType
-  status?: 'COMPLETED' | 'ERROR' | 'RUNNING'
+  status?: LHStatus
   nodeName?: string
 }
 

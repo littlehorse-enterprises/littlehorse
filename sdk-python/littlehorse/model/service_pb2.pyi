@@ -318,6 +318,30 @@ class WfRunIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WfRunId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchCorrelatedEventRequest(_message.Message):
+    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "external_event_def_id", "has_external_events"]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    HAS_EXTERNAL_EVENTS_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
+    external_event_def_id: _object_id_pb2.ExternalEventDefId
+    has_external_events: bool
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., has_external_events: bool = ...) -> None: ...
+
+class CorrelatedEventIdList(_message.Message):
+    __slots__ = ["results", "bookmark"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.CorrelatedEventId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.CorrelatedEventId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchTaskRunRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "task_def_name", "status", "earliest_start", "latest_start"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]

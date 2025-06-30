@@ -365,6 +365,58 @@ public class WorkflowThreadImplTest {
     }
 
     @Test
+    void shouldAutomaticallyMaskCorrelationIdFromMaskedVar() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable ssn = wf.declareStr("ssn").masked();
+            wf.waitForEvent("identity-verified").withCorrelationId(ssn);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isTrue();
+    }
+
+    @Test
+    void shouldNotMaskNormalVariableAsCorrelationId() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable email = wf.declareStr("email");
+            wf.waitForEvent("identity-verified").withCorrelationId(email);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isFalse();
+    }
+
+    @Test
+    void shouldMaskCorrelationIdIfITellItTo() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable email = wf.declareStr("email");
+            wf.waitForEvent("identity-verified").withCorrelationId(email, true);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isTrue();
+    }
+
+    @Test
+    void shouldNotMaskCorrelationIdIfITellItNotTo() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable ssn = wf.declareStr("ssn").masked();
+            wf.waitForEvent("identity-verified").withCorrelationId(ssn, false);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isFalse();
+    }
+
+    @Test
     void testWaitForThreadsHandleAnyFailureOnChild() {
         Workflow workflow = new WorkflowImpl("some-wf", wf -> {
             SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());

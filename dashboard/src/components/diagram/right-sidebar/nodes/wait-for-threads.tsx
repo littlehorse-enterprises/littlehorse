@@ -1,5 +1,6 @@
 import { Node, WaitForThreadsNode } from "littlehorse-client/proto";
 import { BaseNodeComponent } from "./base-node";
+import { getVariable } from "@/utils/data/variables";
 
 interface WaitForThreadsNodeComponentProps {
   waitForThreadsNode: Node & { waitForThreads: WaitForThreadsNode }
@@ -17,7 +18,7 @@ export function WaitForThreadsNodeComponent({ waitForThreadsNode }: WaitForThrea
       {waitForThreadsNode.waitForThreads.threadList && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Thread List:</span>
-          <span className="font-mono">{JSON.stringify(waitForThreadsNode.waitForThreads.threadList)}</span>
+          <span className="font-mono">{getVariable(waitForThreadsNode.waitForThreads.threadList)}</span>
         </div>
       )}
     </>

@@ -1,5 +1,6 @@
 import { Node, StartMultipleThreadsNode } from "littlehorse-client/proto";
 import { BaseNodeComponent } from "./base-node";
+import { getVariable } from "@/utils/data/variables";
 
 interface StartMultipleThreadsNodeComponentProps {
   startMultipleThreadsNode: Node & { startMultipleThreads: StartMultipleThreadsNode }
@@ -17,7 +18,7 @@ export function StartMultipleThreadsNodeComponent({ startMultipleThreadsNode }: 
       {startMultipleThreadsNode.startMultipleThreads.iterable && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Iterable:</span>
-          <span className="font-mono">{JSON.stringify(startMultipleThreadsNode.startMultipleThreads.iterable)}</span>
+          <span className="font-mono">{getVariable(startMultipleThreadsNode.startMultipleThreads.iterable)}</span>
         </div>
       )}
     </>
@@ -31,7 +32,7 @@ export function StartMultipleThreadsNodeComponent({ startMultipleThreadsNode }: 
           {Object.entries(startMultipleThreadsNode.startMultipleThreads.variables).map(([key, variable]) => (
             <div key={key} className="font-mono text-xs">
               <span className="text-purple-600">{key}:</span>{' '}
-              <span className="text-blue-600">{JSON.stringify(variable)}</span>
+              <span className="text-blue-600">{getVariable(variable)}</span>
             </div>
           ))}
         </div>

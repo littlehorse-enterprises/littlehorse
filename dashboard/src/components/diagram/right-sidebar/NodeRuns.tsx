@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@littlehorse-enterprises/ui-library/card"
 import { useExecuteRPCWithSWR } from "@/hooks/useExecuteRPCWithSWR"
 import { WfRun } from "littlehorse-client/proto"
 import { Loader2 } from "lucide-react"

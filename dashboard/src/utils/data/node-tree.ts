@@ -1,4 +1,30 @@
-import { TreeNode } from '@/types/buildNodeTree'
+import { WfSpec } from 'littlehorse-client/proto'
+
+export interface TreeNode {
+  id: string
+  label: string
+  type?: string
+  status?: string
+  children: TreeNode[]
+  level: number
+}
+
+export function buildNodeTree(wfSpec: WfSpec, threadSpecName: string): TreeNode[] {
+  const result: TreeNode[] = []
+
+  Object.entries(wfSpec.threadSpecs[threadSpecName].nodes).forEach(([nodeId]) => {
+    result.push({
+      id: `${nodeId}:${threadSpecName}`,
+      label: nodeId,
+      type: undefined,
+      status: undefined,
+      children: [],
+      level: 0,
+    })
+  })
+
+  return result
+}
 
 /**
  * Sort nodes in ascending order based on the first character (number)

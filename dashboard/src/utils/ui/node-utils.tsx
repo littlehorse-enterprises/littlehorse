@@ -1,3 +1,4 @@
+import { LHStatus } from 'littlehorse-client/proto'
 import { AlertCircle, Bell, Box, CheckCircle, CircleSlashIcon, Clock, GitBranch, Loader2, MailIcon, Minus, PlayIcon, Timer, User } from 'lucide-react'
 
 export type NodeType = 
@@ -178,28 +179,38 @@ export function getNodeIcon(nodeType: NodeType) {
   }
 }
 
-export function getStatusBgColor(status?: string): string {
+export function getStatusBgColor(status?: LHStatus): string {
   switch (status) {
-    case 'COMPLETED':
+    case LHStatus.COMPLETED:
       return 'bg-green-100'
-    case 'ERROR':
+    case LHStatus.ERROR:
+    case LHStatus.EXCEPTION:
       return 'bg-red-100'
-    case 'RUNNING':
+    case LHStatus.RUNNING:
+    case LHStatus.STARTING:
+    case LHStatus.HALTING:
       return 'bg-blue-100'
+    case LHStatus.HALTED:
+      return 'bg-gray-100'
     default:
       return 'bg-gray-100'
   }
 }
 
-export function getStatusIcon(status?: string) {
+export function getStatusIcon(status?: LHStatus) {
   switch (status) {
-    case 'COMPLETED':
+    case LHStatus.COMPLETED:
       return <CheckCircle className="h-4 w-4 text-green-500" />
-    case 'ERROR':
+    case LHStatus.ERROR:
+    case LHStatus.EXCEPTION:
       return <AlertCircle className="h-4 w-4 text-red-500" />
-    case 'RUNNING':
+    case LHStatus.RUNNING:
+    case LHStatus.STARTING:
+    case LHStatus.HALTING:
       return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+    case LHStatus.HALTED:
+      return <Clock className="h-4 w-4 text-gray-500" />
     default:
-      return null
+      return <Clock className="h-4 w-4 text-gray-500" />
   }
 }

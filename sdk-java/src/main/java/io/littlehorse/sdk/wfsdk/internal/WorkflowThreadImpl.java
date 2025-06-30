@@ -748,13 +748,15 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, nb.build());
     }
 
-    public void addCorrelationIdToExtEvtNode(ExternalEventNodeOutputImpl node, Serializable correlationId) {
+    public void addCorrelationIdToExtEvtNode(
+            ExternalEventNodeOutputImpl node, Serializable correlationId, boolean maskCorrelationKey) {
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
 
         VariableAssignment correlationValue = assignVariable(correlationId);
 
         ExternalEventNode.Builder evt = n.getExternalEventBuilder();
         evt.setCorrelationKey(correlationValue);
+        evt.setMaskCorrelationKey(maskCorrelationKey);
         n.setExternalEvent(evt);
 
         spec.putNodes(node.nodeName, n.build());
