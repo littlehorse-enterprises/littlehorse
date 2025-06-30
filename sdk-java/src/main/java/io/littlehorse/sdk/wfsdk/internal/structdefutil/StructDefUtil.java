@@ -106,7 +106,7 @@ public class StructDefUtil {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Circular dependency found involving class: "
-                + classList.getLast().getCanonicalName() + "\n");
+                + classList.get(classList.size()-1).getCanonicalName() + "\n");
 
         stringBuilder.append("\nDependency tree:\n");
 
