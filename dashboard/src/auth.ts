@@ -22,6 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/api/signin',
   },
+  secret: process.env.AUTH_SECRET || (OAUTH_ENABLED ? undefined : 'fallback-secret-for-disabled-auth'),
   providers: OAUTH_ENABLED
     ? [
         Keycloak({
