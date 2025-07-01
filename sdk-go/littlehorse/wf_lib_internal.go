@@ -546,7 +546,7 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
-	case *LHExpression:
+	case *lhExpression:
 		lhs, lhsErr := t.assignVariable(v.lhs)
 
 		if lhsErr != nil {
@@ -569,7 +569,7 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
-	case LHExpression:
+	case lhExpression:
 		lhs, lhsErr := t.assignVariable(v.lhs)
 
 		if lhsErr != nil {

@@ -801,6 +801,143 @@ func TestExternalEventCorrelaation(t *testing.T) {
 	)
 }
 
+func TestExceptionHandlerOnTaskOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		taskNodeOutput := wf.Execute("some-task")
+		exnName := "my-exception"
+		wf.HandleException(taskNodeOutput, &exnName, func(wf *littlehorse.WorkflowThread) {
+			wf.Execute("some-other-task")
+		})
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-task-TASK"]
+
+	assert.Equal(t, 1, len(node.FailureHandlers))
+	handler := node.FailureHandlers[0]
+
+	assert.Equal(t, "my-exception", handler.GetSpecificFailure())
+	assert.Equal(t, "exn-handler-my-exception-1-some-task-TASK", handler.HandlerSpecName)
+}
+
+func TestExceptionHandlerOnExternalEvent(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		eventNodeOutput := wf.WaitForEvent("some-event")
+		exnName := "my-exception"
+		wf.HandleException(eventNodeOutput, &exnName, func(wf *littlehorse.WorkflowThread) {
+			wf.Execute("some-other-task")
+		})
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-event-EXTERNAL_EVENT"]
+
+	assert.Equal(t, 1, len(node.FailureHandlers))
+	handler := node.FailureHandlers[0]
+
+	assert.Equal(t, "my-exception", handler.GetSpecificFailure())
+	assert.Equal(t, "exn-handler-my-exception-1-some-event-EXTERNAL_EVENT", handler.HandlerSpecName)
+}
+
+func TestAddOnEventNodeOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		myVar := wf.DeclareInt("my-var")
+		eventNodeOutput := wf.WaitForEvent("some-event")
+		myVar.Assign(eventNodeOutput.Add(3))
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-event-EXTERNAL_EVENT"]
+
+	assert.Equal(t, 1, len(node.OutgoingEdges[0].VariableMutations))
+	mutation := node.OutgoingEdges[0].VariableMutations[0]
+	assert.Equal(t, mutation.LhsName, "my-var")
+	assert.NotNil(t, mutation.GetRhsAssignment())
+
+	expr := mutation.GetRhsAssignment().GetExpression()
+	assert.NotNil(t, expr)
+	assert.Equal(t, expr.GetLhs().GetNodeOutput().NodeName, "1-some-event-EXTERNAL_EVENT")
+	assert.Equal(t, expr.GetRhs().GetLiteralValue().GetInt(), int64(3))
+}
+
+func TestAddOnTaskOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		myVar := wf.DeclareInt("my-var")
+		taskNodeOutput := wf.Execute("some-task")
+		myVar.Assign(taskNodeOutput.Add(3))
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-task-TASK"]
+
+	assert.Equal(t, 1, len(node.OutgoingEdges[0].VariableMutations))
+	mutation := node.OutgoingEdges[0].VariableMutations[0]
+	assert.Equal(t, mutation.LhsName, "my-var")
+	assert.NotNil(t, mutation.GetRhsAssignment())
+
+	expr := mutation.GetRhsAssignment().GetExpression()
+	assert.NotNil(t, expr)
+	assert.Equal(t, expr.GetLhs().GetNodeOutput().NodeName, "1-some-task-TASK")
+	assert.Equal(t, expr.GetRhs().GetLiteralValue().GetInt(), int64(3))
+}
+
+func TestNestedExpressions(t *testing.T) {
+	// price.times(quantity).multiply(discount)
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		price := wf.DeclareInt("price")
+		quantity := wf.DeclareInt("quantity")
+		discount := wf.DeclareDouble("discount")
+
+		total := price.Multiply(quantity).Divide(discount)
+		wf.Execute("some-task", total)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+
+	littlehorse.PrintProto(putWf)
+
+	if err != nil {
+		t.Error(err)
+	}
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-task-TASK"]
+	assert.Equal(t, 1, len(node.GetTask().Variables))
+	varDef := node.GetTask().Variables[0]
+
+	outerExpression := varDef.GetExpression()
+
+	lhsExpression := outerExpression.GetLhs().GetExpression()
+	assert.NotNil(t, lhsExpression)
+	assert.Equal(t, lhsExpression.GetLhs().GetVariableName(), "price")
+	assert.Equal(t, lhsExpression.GetRhs().GetVariableName(), "quantity")
+	assert.Equal(t, lhsExpression.GetOperation(), lhproto.VariableMutationType_MULTIPLY)
+
+	outerRhs := outerExpression.GetRhs()
+	assert.NotNil(t, outerRhs)
+	assert.Equal(t, outerRhs.GetVariableName(), "discount")
+	assert.Equal(t, outerExpression.GetOperation(), lhproto.VariableMutationType_DIVIDE)
+}
+
 func TestDynamicTask(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
 		myVar := wf.AddVariable("my-var", lhproto.VariableType_STR)

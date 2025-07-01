@@ -35,8 +35,6 @@ type WorkflowThread struct {
 }
 
 type WfRunVariable struct {
-	LHExpression
-
 	Name    string
 	VarType *lhproto.VariableType
 
@@ -145,12 +143,6 @@ type LHFormatString struct {
 	thread     *WorkflowThread
 }
 
-type LHExpression struct {
-	lhs       interface{}
-	rhs       interface{}
-	operation lhproto.VariableMutationType
-}
-
 type LHErrorType string
 
 type WorkflowIfStatement struct {
@@ -171,6 +163,18 @@ const (
 	TaskError         LHErrorType = "TASK_ERROR"
 	InternalError     LHErrorType = "INTERNAL_ERROR"
 )
+
+type LHExpression interface {
+	Add(other interface{}) LHExpression
+	Subtract(other interface{}) LHExpression
+	Multiply(other interface{}) LHExpression
+	Divide(other interface{}) LHExpression
+	Extend(other interface{}) LHExpression
+	RemoveIfPresent(other interface{}) LHExpression
+	RemoveIndex_ByInt(index int) LHExpression
+	RemoveIndex_ByExpression(index LHExpression) LHExpression
+	RemoveKey(key interface{}) LHExpression
+}
 
 // func (n *PlainNodeOutput) Add(other interface{}) LHExpression {
 // 	return LHExpression{
@@ -352,15 +356,23 @@ func (w *WfRunVariable) Assign(rhs interface{}) {
 }
 
 func (w *WfRunVariable) Add(other interface{}) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       other,
 		operation: lhproto.VariableMutationType_ADD,
 	}
 }
 
+func (w *WfRunVariable) Subtract(other interface{}) LHExpression {
+	return &lhExpression{
+		lhs:       w,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_SUBTRACT,
+	}
+}
+
 func (w *WfRunVariable) Multiply(other interface{}) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       other,
 		operation: lhproto.VariableMutationType_MULTIPLY,
@@ -368,7 +380,7 @@ func (w *WfRunVariable) Multiply(other interface{}) LHExpression {
 }
 
 func (w *WfRunVariable) Divide(other interface{}) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       other,
 		operation: lhproto.VariableMutationType_DIVIDE,
@@ -376,7 +388,7 @@ func (w *WfRunVariable) Divide(other interface{}) LHExpression {
 }
 
 func (w *WfRunVariable) Extend(other interface{}) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       other,
 		operation: lhproto.VariableMutationType_EXTEND,
@@ -384,7 +396,7 @@ func (w *WfRunVariable) Extend(other interface{}) LHExpression {
 }
 
 func (w *WfRunVariable) RemoveIfPresent(other interface{}) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       other,
 		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
@@ -392,7 +404,7 @@ func (w *WfRunVariable) RemoveIfPresent(other interface{}) LHExpression {
 }
 
 func (w *WfRunVariable) RemoveIndex_ByInt(index int) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       index,
 		operation: lhproto.VariableMutationType_REMOVE_INDEX,
@@ -400,7 +412,7 @@ func (w *WfRunVariable) RemoveIndex_ByInt(index int) LHExpression {
 }
 
 func (w *WfRunVariable) RemoveIndex_ByExpression(index LHExpression) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       index,
 		operation: lhproto.VariableMutationType_REMOVE_INDEX,
@@ -408,7 +420,7 @@ func (w *WfRunVariable) RemoveIndex_ByExpression(index LHExpression) LHExpressio
 }
 
 func (w *WfRunVariable) RemoveKey(key interface{}) LHExpression {
-	return LHExpression{
+	return &lhExpression{
 		lhs:       w,
 		rhs:       key,
 		operation: lhproto.VariableMutationType_REMOVE_KEY,
@@ -463,64 +475,64 @@ func (t *WorkflowThread) AddVariable(
 	return t.addVariable(name, varType)
 }
 
-func (t *WorkflowThread) Add(lhs interface{}, rhs interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) Add(lhs interface{}, rhs interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_ADD,
 	}
 }
 
-func (t *WorkflowThread) Subtract(lhs interface{}, rhs interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) Subtract(lhs interface{}, rhs interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_SUBTRACT,
 	}
 }
 
-func (t *WorkflowThread) Multiply(lhs interface{}, rhs interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) Multiply(lhs interface{}, rhs interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_MULTIPLY,
 	}
 }
 
-func (t *WorkflowThread) Divide(lhs interface{}, rhs interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) Divide(lhs interface{}, rhs interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_DIVIDE,
 	}
 }
 
-func (t *WorkflowThread) Extend(lhs interface{}, rhs interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) Extend(lhs interface{}, rhs interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_EXTEND,
 	}
 }
 
-func (t *WorkflowThread) RemoveIfPresent(lhs interface{}, rhs interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) RemoveIfPresent(lhs interface{}, rhs interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
 	}
 }
 
-func (t *WorkflowThread) RemoveIndex(lhs interface{}, rhs interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) RemoveIndex(lhs interface{}, rhs interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_REMOVE_INDEX,
 	}
 }
 
-func (t *WorkflowThread) RemoveKey(lhs interface{}, key interface{}) LHExpression {
-	return LHExpression{
+func (t *WorkflowThread) RemoveKey(lhs interface{}, key interface{}) lhExpression {
+	return lhExpression{
 		lhs:       lhs,
 		rhs:       key,
 		operation: lhproto.VariableMutationType_REMOVE_KEY,
