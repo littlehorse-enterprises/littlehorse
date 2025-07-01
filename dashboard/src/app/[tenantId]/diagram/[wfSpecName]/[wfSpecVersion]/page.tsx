@@ -44,10 +44,7 @@ export default async function DiagramPage({ params, searchParams }: DiagramPageP
         <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
         <div className="flex flex-1">
           <WorkflowDiagram nodes={nodes} edges={edges} />
-          <RightSidebar
-            wfSpec={wfSpec}
-            wfRunDetails={wfRunDetails}
-          />
+          <RightSidebar wfSpec={wfSpec} wfRunDetails={wfRunDetails} />
         </div>
       </div>
     </NodeSelectionProvider>

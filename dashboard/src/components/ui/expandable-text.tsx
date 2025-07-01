@@ -22,8 +22,9 @@ export default function ExpandableText({ text, maxLength = 50, isCode = false }:
   return (
     <div className="relative">
       <div
-        className={`${isCode ? 'rounded bg-gray-50 p-1 font-mono' : ''
-          } ${isExpanded ? 'break-words whitespace-pre-wrap' : 'truncate'} relative`}
+        className={`${
+          isCode ? 'rounded bg-gray-50 p-1 font-mono' : ''
+        } ${isExpanded ? 'break-words whitespace-pre-wrap' : 'truncate'} relative`}
       >
         {displayText}
 

@@ -16,7 +16,8 @@ declare module 'next-auth/jwt' {
   }
 }
 
-const OAUTH_ENABLED = process.env.KEYCLOAK_ISSUER_URI && process.env.KEYCLOAK_CLIENT_ID && process.env.KEYCLOAK_CLIENT_SECRET
+const OAUTH_ENABLED =
+  process.env.KEYCLOAK_ISSUER_URI && process.env.KEYCLOAK_CLIENT_ID && process.env.KEYCLOAK_CLIENT_SECRET
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {

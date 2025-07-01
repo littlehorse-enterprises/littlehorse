@@ -3,7 +3,14 @@ import { SearchResponse } from '@/actions/search'
 import { SearchType } from '@/types/search'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@littlehorse-enterprises/ui-library/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@littlehorse-enterprises/ui-library/table'
 import { UserTaskDefId, WfSpecId } from 'littlehorse-client/proto'
 import { Eye } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
@@ -24,7 +31,7 @@ export function MetadataTable({ data, activeTab, isLoading }: MetadataTableProps
     else if (activeTab === 'ExternalEventDef') router.push(`/${tenantId}/ExternalEventDefs/${name}`)
     else if (activeTab === 'WorkflowEventDef') router.push(`/${tenantId}/WorkflowEventDefs/${name}`)
   }
-  
+
   return (
     <Table>
       <TableHeader>
