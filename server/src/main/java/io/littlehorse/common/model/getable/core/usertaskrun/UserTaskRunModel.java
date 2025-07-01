@@ -16,6 +16,10 @@ import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEAssignedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECancelledModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentDeletedModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentEditedModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECommentedModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECompletedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -34,13 +38,14 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
+import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -81,12 +86,14 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     // Below are non-proto fields
     private UserTaskNodeModel userTaskNode;
     private ExecutionContext executionContext;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
     private FailureModel failureToThrowKenobi;
+    private transient Map<Integer, UserTaskEventModel> lastEventForComment = new HashMap<>();
+    private int commentIdCounter;
 
     public UserTaskRunModel() {}
 
-    public UserTaskRunModel(ProcessorExecutionContext processorContext) {
+    public UserTaskRunModel(CoreProcessorContext processorContext) {
         this.processorContext = processorContext;
     }
 
@@ -94,7 +101,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             UserTaskDefModel utd,
             UserTaskNodeModel userTaskNode,
             NodeRunModel nodeRunModel,
-            ProcessorExecutionContext processorContext) {
+            CoreProcessorContext processorContext) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRunModel.getObjectId();
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
@@ -160,9 +167,24 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         for (Map.Entry<String, VariableValue> result : p.getResultsMap().entrySet()) {
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
+
+        lastEventForComment = new HashMap<>();
+        commentIdCounter = 0;
+        for (UserTaskEventModel event : events) {
+            if (event.getType().equals(EventCase.COMMENT_ADDED)) {
+                lastEventForComment.put(event.getCommented().getUserCommentId(), event);
+                commentIdCounter++;
+            }
+            if (event.getType().equals(EventCase.COMMENT_EDITED)) {
+                lastEventForComment.put(event.getCommentEdited().getUserCommentId(), event);
+            }
+            if (event.getType().equals(EventCase.COMMENT_DELETED)) {
+                lastEventForComment.put(event.getCommentDeleted().getUserCommentId(), event);
+            }
+        }
         this.epoch = p.getEpoch();
         this.executionContext = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     public boolean isTerminated() {
@@ -314,7 +336,33 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
     }
 
-    public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx)
+    public UserTaskEventModel comment(String userId, String comment) {
+        UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
+                new UTECommentedModel(userId, comment, ++commentIdCounter),
+                processorContext.currentCommand().getTime());
+        this.events.add(userTaskEventModel);
+        this.lastEventForComment.put(commentIdCounter, userTaskEventModel);
+        return userTaskEventModel;
+    }
+
+    public UserTaskEventModel editComment(String userId, String comment, Integer userCommentId) {
+        UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
+                new UTECommentEditedModel(userCommentId, userId, comment),
+                processorContext.currentCommand().getTime());
+        this.events.addLast(userTaskEventModel);
+        this.lastEventForComment.put(userCommentId, userTaskEventModel);
+        return userTaskEventModel;
+    }
+
+    public void deleteComment(Integer userCommentId, String userId) {
+        UserTaskEventModel userTaskEventModel = new UserTaskEventModel(
+                new UTECommentDeletedModel(userCommentId, userId),
+                processorContext.currentCommand().getTime());
+        this.events.addLast(userTaskEventModel);
+        this.lastEventForComment.put(userCommentId, userTaskEventModel);
+    }
+
+    public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, CoreProcessorContext ctx)
             throws LHApiException {
         if (isTerminated()) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is in status " + status);
@@ -367,6 +415,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         validateMandatoryFieldsFromCompletedEvent(
                 userTaskFieldsGroupedByName.values(), event.getResults().keySet());
         this.status = UserTaskRunStatus.DONE;
+        this.events.add(new UserTaskEventModel(
+                new UTECompletedModel(), processorContext.currentCommand().getTime()));
     }
 
     private void validateMandatoryFieldsFromCompletedEvent(

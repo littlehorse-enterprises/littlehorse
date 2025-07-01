@@ -20,12 +20,14 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Date;
 import java.util.Optional;
+import lombok.Setter;
 
+@Setter
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
 
     private WfRunIdModel wfRunId;
@@ -60,12 +62,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public ExternalEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public ExternalEvent process(CoreProcessorContext executionContext, LHServerConfig config) {
         WfService service = executionContext.service();
         ExternalEventDefModel eed = service.getExternalEventDef(externalEventDefId.getName());
         Date eventTime = executionContext.currentCommand().getTime();

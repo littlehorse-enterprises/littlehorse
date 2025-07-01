@@ -33,17 +33,6 @@ task sourcesJar(type: Jar) {
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "ossrh"
-            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username = findProperty('ossrhUsername')
-                password = findProperty('ossrhPassword')
-            }
-        }
-    }
-
     publications {
         mavenJava(MavenPublication) {
             groupId = group
@@ -98,7 +87,11 @@ repositories {
 
 dependencies {
     // Use JUnit Jupiter for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+
+    // Test tools
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
     testImplementation 'org.mockito:mockito-core:5.11.0'
@@ -107,7 +100,7 @@ dependencies {
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
 
     // Logging
-    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0'
 
     // Stuff for Kafka
@@ -116,19 +109,19 @@ dependencies {
     testImplementation "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
 
     // Auth
-    implementation 'com.nimbusds:oauth2-oidc-sdk:11.20.1'
+    implementation "com.nimbusds:oauth2-oidc-sdk:${nimbusVersion}"
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'commons-io:commons-io:2.13.0'
-    implementation 'com.google.guava:guava:32.0.1-jre'
+    implementation "commons-io:commons-io:${commonsioVersion}"
+    implementation "com.google.guava:guava:${guavaVersion}"
 
     // gRPC and Protobuf now included in lh-sdk
     implementation project(':sdk-java')
 
     // Prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.6'
-    implementation 'io.javalin:javalin:6.3.0'
+    implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
+    implementation "io.javalin:javalin:${javalinVersion}"
 
     // Lombok stuff
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -145,8 +138,7 @@ dependencies {
     // To run scheduled wfs
     implementation 'com.cronutils:cron-utils:9.2.1'
 
-    testImplementation 'org.awaitility:awaitility:4.2.0'
-    testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
+    testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
 }
 
 

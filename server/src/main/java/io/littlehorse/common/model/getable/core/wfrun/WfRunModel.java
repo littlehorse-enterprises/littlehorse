@@ -44,11 +44,12 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,7 +89,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     public WfRunModel() {}
 
-    public WfRunModel(ProcessorExecutionContext processorContext) {
+    public WfRunModel(CoreProcessorContext processorContext) {
         this.executionContext = processorContext;
     }
 
@@ -198,7 +199,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     @Override
     public boolean shouldProduceToOutputTopic(
-            WfRun previousValue, ReadOnlyMetadataManager metadataManager, OutputTopicConfigModel config) {
+            WfRun previousValue,
+            ReadOnlyMetadataManager metadataManager,
+            ReadOnlyGetableManager getableManager,
+            OutputTopicConfigModel config) {
         if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
             return false;
         }
@@ -265,7 +269,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             Integer parentThreadId,
             Map<String, VariableValueModel> variables,
             ThreadType type) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         ThreadSpecModel tspec = getWfSpec().getThreadSpecs().get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
@@ -314,7 +318,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private boolean startInterrupts(Date time) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         boolean somethingChanged = false;
 
         // Current server behavior is that only one ThreadRun may be interrupted at a single time. This will be
@@ -410,7 +414,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                                 "Failed launching exception handler thread with id: " + fh.number,
                                 LHConstants.CHILD_FAILURE),
                         time,
-                        executionContext.castOnSupport(ProcessorExecutionContext.class));
+                        executionContext.castOnSupport(CoreProcessorContext.class));
             } else {
                 failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
             }
@@ -420,7 +424,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private void putFailureOnThreadRun(
-            ThreadRunModel threadToFail, FailureModel failure, Date time, ProcessorExecutionContext processorContext) {
+            ThreadRunModel threadToFail, FailureModel failure, Date time, CoreProcessorContext processorContext) {
         NodeRunModel nodeRun = threadToFail.getCurrentNodeRun();
         nodeRun.getFailures().add(failure);
         threadToFail.setStatus(failure.getStatus());
@@ -474,7 +478,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         ThreadRunModel handler = getThreadRun(timeout.getNodeRunId().getThreadRunNumber());
         handler.processExtEvtTimeout(timeout);
         advance(processorContext.currentCommand().getTime());
@@ -517,14 +521,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
-    public void rescueThreadRun(int threadRunNumber, boolean skipCurrentNode, ProcessorExecutionContext ctx)
+    public void rescueThreadRun(int threadRunNumber, boolean skipCurrentNode, CoreProcessorContext ctx)
             throws MissingThreadRunException, UnRescuableThreadRunException, ThreadRunRescueFailedException {
         validateCanRescueThreadRun(threadRunNumber, ctx);
         ThreadRunModel toRescue = getThreadRun(threadRunNumber);
         toRescue.rescue(skipCurrentNode, ctx);
     }
 
-    private void validateCanRescueThreadRun(int threadRunNumber, ProcessorExecutionContext ctx)
+    private void validateCanRescueThreadRun(int threadRunNumber, CoreProcessorContext ctx)
             throws MissingThreadRunException, UnRescuableThreadRunException {
         // Some validations
         if (threadRunNumber > getGreatestThreadRunNumber() || threadRunNumber < 0) {
@@ -592,7 +596,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     public void transitionTo(LHStatus status) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         GetableUpdates.GetableStatusUpdate statusChanged;
         if (Objects.equals(status, LHStatus.COMPLETED)) {
             statusChanged = GetableUpdates.create(

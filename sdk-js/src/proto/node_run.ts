@@ -287,6 +287,18 @@ export interface ExternalEventNodeRun {
     | undefined;
   /** Whether we had a timeout while waiting for the ExternalEvent to come. */
   timedOut: boolean;
+  /**
+   * If set, then this `ExternalEventNodeRun` can be completed by a
+   * `CorrelatedEvent` with the matching correlation id.
+   */
+  correlationKey?:
+    | string
+    | undefined;
+  /**
+   * Specifies whether the correlation key should be masked. Ignored if
+   * correlation_key is not set.
+   */
+  maskCorrelationKey: boolean;
 }
 
 /** The sub-node structure for a SLEEP NodeRun. */
@@ -1166,7 +1178,14 @@ export const WaitForThreadsRun_WaitForThread = {
 };
 
 function createBaseExternalEventNodeRun(): ExternalEventNodeRun {
-  return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined, timedOut: false };
+  return {
+    externalEventDefId: undefined,
+    eventTime: undefined,
+    externalEventId: undefined,
+    timedOut: false,
+    correlationKey: undefined,
+    maskCorrelationKey: false,
+  };
 }
 
 export const ExternalEventNodeRun = {
@@ -1182,6 +1201,12 @@ export const ExternalEventNodeRun = {
     }
     if (message.timedOut !== false) {
       writer.uint32(32).bool(message.timedOut);
+    }
+    if (message.correlationKey !== undefined) {
+      writer.uint32(42).string(message.correlationKey);
+    }
+    if (message.maskCorrelationKey !== false) {
+      writer.uint32(48).bool(message.maskCorrelationKey);
     }
     return writer;
   },
@@ -1221,6 +1246,20 @@ export const ExternalEventNodeRun = {
 
           message.timedOut = reader.bool();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.correlationKey = reader.string();
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.maskCorrelationKey = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1243,6 +1282,8 @@ export const ExternalEventNodeRun = {
       ? ExternalEventId.fromPartial(object.externalEventId)
       : undefined;
     message.timedOut = object.timedOut ?? false;
+    message.correlationKey = object.correlationKey ?? undefined;
+    message.maskCorrelationKey = object.maskCorrelationKey ?? false;
     return message;
   },
 };

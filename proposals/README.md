@@ -29,4 +29,7 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 001 | [The Output Topic](./001-output-topic.md) | Colt McNealy | [#1304](https://github.com/littlehorse-enterprises/littlehorse/issues/1304) |
 | 002 | [Moving Towards Strong Typing](./002-move-to-strong-typing.md) | Colt McNealy | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543) |
 | 003 | [Native `RunWf` Nodes](./003-run-wf-node.md) | Colt McNealy | [#589](https://github.com/littlehorse-enterprises/littlehorse/issues/589) |
+| 003 | [Comments on `UserTaskRun`s](./003-add-user-task-comments.md) | Jake Rose and Karla Carvajal | [#1376](https://github.com/littlehorse-enterprises/littlehorse/issues/1376) |
+| 004 | [Correlated `ExternalEvent`s](./004-correlated-events.md) | Colt McNealy | [#1579](https://github.com/littlehorse-enterprises/littlehorse/issues/1579) |
+| 005 | [`UserTaskEvent` Completed](./005-add-user-task-event-completed.md) | Jake Rose | [#904](https://github.com/littlehorse-enterprises/littlehorse/issues/904) |
 

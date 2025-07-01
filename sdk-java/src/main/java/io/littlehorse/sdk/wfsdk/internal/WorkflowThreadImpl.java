@@ -18,8 +18,6 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
@@ -28,7 +26,6 @@ import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
@@ -270,28 +267,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
         // us mutate variables
     }
 
-    public void registerExternalEventDef(ExternalEventNodeOutputImpl nodeOutputImpl, Class<?> payloadClass) {
-        TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
+    public void registerExternalEventDef(ExternalEventNodeOutputImpl nodeOutputImpl) {
+        parent.addExternalEventDefToRegister(nodeOutputImpl);
+    }
 
-        if (payloadClass == null) {
-            // We don't set the typeDef: the event has no payload
-        } else if (String.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.STR);
-        } else if (Double.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.DOUBLE);
-        } else if (Integer.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.INT);
-        } else if (Boolean.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.BOOL);
-        } else {
-            throw new IllegalArgumentException(
-                    "ExternalEventDef payload class must be one of String, Double, Integer or Boolean");
-        }
-
-        parent.addExternalEventDefToRegister(PutExternalEventDefRequest.newBuilder()
-                .setContentType(ReturnType.newBuilder().setReturnType(typeDef))
-                .setName(nodeOutputImpl.getExternalEventDefName())
-                .build());
+    public void registerWorkflowEventDef(ThrowEventNodeOutputImpl nodeOutputImpl) {
+        parent.addWorkflowEventDefToRegister(nodeOutputImpl);
     }
 
     @Override
@@ -739,6 +720,20 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, nb.build());
     }
 
+    public void addCorrelationIdToExtEvtNode(
+            ExternalEventNodeOutputImpl node, Serializable correlationId, boolean maskCorrelationKey) {
+        Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
+
+        VariableAssignment correlationValue = assignVariable(correlationId);
+
+        ExternalEventNode.Builder evt = n.getExternalEventBuilder();
+        evt.setCorrelationKey(correlationValue);
+        evt.setMaskCorrelationKey(maskCorrelationKey);
+        n.setExternalEvent(evt);
+
+        spec.putNodes(node.nodeName, n.build());
+    }
+
     public void addTimeoutToExtEvtNode(ExternalEventNodeOutputImpl node, int timeoutSeconds) {
         checkIfIsActive();
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
@@ -805,7 +800,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void throwEvent(String workflowEventDefName, Serializable content) {
+    public ThrowEventNodeOutputImpl throwEvent(String workflowEventDefName, Serializable content) {
         checkIfIsActive();
         parent.addWorkflowEventDefName(workflowEventDefName);
         ThrowEventNode node = ThrowEventNode.newBuilder()
@@ -815,6 +810,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 .setContent(assignVariable(content))
                 .build();
         addNode("throw-" + workflowEventDefName, NodeCase.THROW_EVENT, node);
+        return new ThrowEventNodeOutputImpl(workflowEventDefName, this);
     }
 
     @Override

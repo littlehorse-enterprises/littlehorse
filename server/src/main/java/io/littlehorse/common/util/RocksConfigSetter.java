@@ -55,12 +55,16 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             // to .close() it to avoid leaks so that we can provide a global one.
             Cache oldCache = tableConfig.blockCache();
             tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
+            tableConfig.setCacheIndexAndFilterBlocks(true);
             oldCache.close();
         }
 
         tableConfig.setOptimizeFiltersForMemory(OPTIMIZE_FILTERS_FOR_MEMORY);
         tableConfig.setBlockSize(BLOCK_SIZE);
         options.setTableFormatConfig(tableConfig);
+
+        options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
+        options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
 
         options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
         options.setCompactionStyle(CompactionStyle.UNIVERSAL);
@@ -76,6 +80,11 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
         // Streams default is 3
         options.setMaxWriteBufferNumber(5);
+        //  Concurrent jobs for both flushes and compaction
+        options.setMaxBackgroundJobs(serverConfig.getRocksDBCompactionThreads());
+        // Speeds up compaction by deploying sub compactions.
+        // there may be max_background_jobs * max_subcompactions background threads running compaction
+        options.setMaxSubcompactions(3);
         long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
         if (rateLimit > 0) {
             options.setRateLimiter(new RateLimiter(

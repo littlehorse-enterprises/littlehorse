@@ -184,7 +184,6 @@ public class MetricsTopology {
 
     private static MetricKey buildMetricKey(final BeatKey key, final String name) {
         return MetricKey.newBuilder()
-                .setServerVersion(key.getServerVersion())
                 .setServerPort(key.getServerPort())
                 .setServerHost(key.getServerHost())
                 .setName("canary_%s".formatted(name))
@@ -207,7 +206,6 @@ public class MetricsTopology {
     private static BeatKey removeWfId(final BeatKey key, final BeatValue value) {
         return BeatKey.newBuilder()
                 .setType(key.getType())
-                .setServerVersion(key.getServerVersion())
                 .setServerHost(key.getServerHost())
                 .setServerPort(key.getServerPort())
                 .addAllTags(key.getTagsList())

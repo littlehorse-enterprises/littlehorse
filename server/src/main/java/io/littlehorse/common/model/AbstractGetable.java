@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -16,14 +17,17 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -75,6 +79,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.TASK_DEF;
         } else if (cls.equals(VariableModel.class)) {
             return GetableClassEnum.VARIABLE;
+        } else if (cls.equals(StructDefModel.class)) {
+            return GetableClassEnum.STRUCT_DEF;
         } else if (cls.equals(ExternalEventDefModel.class)) {
             return GetableClassEnum.EXTERNAL_EVENT_DEF;
         } else if (cls.equals(ExternalEventModel.class)) {
@@ -101,6 +107,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.WORKFLOW_EVENT;
         } else if (cls.equals(ScheduledWfRunModel.class)) {
             return GetableClassEnum.SCHEDULED_WF_RUN;
+        } else if (cls.equals(CorrelatedEventModel.class)) {
+            return GetableClassEnum.CORRELATED_EVENT;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -118,6 +126,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return TaskDefModel.class;
             case VARIABLE:
                 return VariableModel.class;
+            case STRUCT_DEF:
+                return StructDefModel.class;
             case EXTERNAL_EVENT_DEF:
                 return ExternalEventDefModel.class;
             case EXTERNAL_EVENT:
@@ -144,6 +154,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunModel.class;
+            case CORRELATED_EVENT:
+                return CorrelatedEventModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -162,6 +174,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return TaskDefIdModel.class;
             case VARIABLE:
                 return VariableIdModel.class;
+            case STRUCT_DEF:
+                return StructDefIdModel.class;
             case EXTERNAL_EVENT_DEF:
                 return ExternalEventDefIdModel.class;
             case EXTERNAL_EVENT:
@@ -188,6 +202,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventIdModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunIdModel.class;
+            case CORRELATED_EVENT:
+                return CorrelatedEventIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

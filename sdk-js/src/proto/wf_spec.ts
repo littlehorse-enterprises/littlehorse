@@ -422,7 +422,21 @@ export interface ExternalEventNode {
    * Determines the maximum amount of time that the NodeRun will wait for the
    * ExternalEvent to arrive.
    */
-  timeoutSeconds: VariableAssignment | undefined;
+  timeoutSeconds:
+    | VariableAssignment
+    | undefined;
+  /**
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   */
+  correlationKey?:
+    | VariableAssignment
+    | undefined;
+  /**
+   * Specifies whether the correlation key is sensitive data which should be masked.
+   * Ignored if correlation_key is not set.
+   */
+  maskCorrelationKey: boolean;
 }
 
 /**
@@ -562,8 +576,9 @@ export interface UserTaskNode {
    */
   actions: UTActionTrigger[];
   /**
-   * If set, then the UserTaskRun will always have this specific version of the
-   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+   * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+   * processor to be the latest available version of the UserTaskDef. That way, the
+   * WfSpec always runs with the same version of the UserTaskDef.
    */
   userTaskDefVersion?:
     | number
@@ -1897,7 +1912,12 @@ export const WaitForThreadsNode_ThreadsToWaitFor = {
 };
 
 function createBaseExternalEventNode(): ExternalEventNode {
-  return { externalEventDefId: undefined, timeoutSeconds: undefined };
+  return {
+    externalEventDefId: undefined,
+    timeoutSeconds: undefined,
+    correlationKey: undefined,
+    maskCorrelationKey: false,
+  };
 }
 
 export const ExternalEventNode = {
@@ -1907,6 +1927,12 @@ export const ExternalEventNode = {
     }
     if (message.timeoutSeconds !== undefined) {
       VariableAssignment.encode(message.timeoutSeconds, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.correlationKey !== undefined) {
+      VariableAssignment.encode(message.correlationKey, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.maskCorrelationKey !== false) {
+      writer.uint32(32).bool(message.maskCorrelationKey);
     }
     return writer;
   },
@@ -1932,6 +1958,20 @@ export const ExternalEventNode = {
 
           message.timeoutSeconds = VariableAssignment.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.correlationKey = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.maskCorrelationKey = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1952,6 +1992,10 @@ export const ExternalEventNode = {
     message.timeoutSeconds = (object.timeoutSeconds !== undefined && object.timeoutSeconds !== null)
       ? VariableAssignment.fromPartial(object.timeoutSeconds)
       : undefined;
+    message.correlationKey = (object.correlationKey !== undefined && object.correlationKey !== null)
+      ? VariableAssignment.fromPartial(object.correlationKey)
+      : undefined;
+    message.maskCorrelationKey = object.maskCorrelationKey ?? false;
     return message;
   },
 };

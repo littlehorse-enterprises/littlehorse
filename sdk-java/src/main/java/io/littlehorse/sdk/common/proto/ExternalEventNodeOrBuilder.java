@@ -63,4 +63,45 @@ public interface ExternalEventNodeOrBuilder extends
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder();
+
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   * @return Whether the correlationKey field is set.
+   */
+  boolean hasCorrelationKey();
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   * @return The correlationKey.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getCorrelationKey();
+  /**
+   * <pre>
+   * If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+   * using the correlation key provided here.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment correlation_key = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getCorrelationKeyOrBuilder();
+
+  /**
+   * <pre>
+   * Specifies whether the correlation key is sensitive data which should be masked.
+   * Ignored if correlation_key is not set.
+   * </pre>
+   *
+   * <code>bool mask_correlation_key = 4;</code>
+   * @return The maskCorrelationKey.
+   */
+  boolean getMaskCorrelationKey();
 }

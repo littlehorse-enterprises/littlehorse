@@ -6,7 +6,9 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -18,6 +20,7 @@ import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLev
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -26,6 +29,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
@@ -58,6 +62,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
             boolean masked) {
 
         this.id = new VariableIdModel(wfRunId, threadRunNumber, name);
+        Objects.requireNonNull(value, "Empty or value expected for variable: " + name);
         this.value = value;
         this.wfSpec = wfSpec;
         this.wfSpecId = wfSpec.getObjectId();
@@ -104,6 +109,9 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
     }
 
     public Variable.Builder toProto() {
+        if (value == null) {
+            log.info("Variable id got null value: {}", id.toString());
+        }
         Variable.Builder out = Variable.newBuilder()
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
@@ -163,14 +171,21 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
 
     @Override
     public boolean shouldProduceToOutputTopic(
-            Variable previousValue, ReadOnlyMetadataManager metadataManager, OutputTopicConfigModel config) {
+            Variable previousValue,
+            ReadOnlyMetadataManager metadataManager,
+            ReadOnlyGetableManager getableManager,
+            OutputTopicConfigModel config) {
         if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
             return false;
         }
 
         // Only PUBLIC_VAR variables should be pushed out.
-        ThreadVarDefModel variableDef =
-                getWfSpec(metadataManager).getAllVariables().get(id.getName());
+        WfRunModel wfRun = getableManager.get(id.getWfRunId());
+        String threadSpecName = wfRun.getThreadRun(id.getThreadRunNumber()).getThreadSpecName();
+        ThreadSpecModel threadSpec =
+                metadataManager.get(wfRun.getWfSpecId()).getThreadSpecs().get(threadSpecName);
+        ThreadVarDefModel variableDef = threadSpec.getVarDef(id.getName());
+
         WfRunVariableAccessLevel accessLevel = variableDef.getAccessLevel();
         return accessLevel == WfRunVariableAccessLevel.PUBLIC_VAR
                 || accessLevel == WfRunVariableAccessLevel.INHERITED_VAR;

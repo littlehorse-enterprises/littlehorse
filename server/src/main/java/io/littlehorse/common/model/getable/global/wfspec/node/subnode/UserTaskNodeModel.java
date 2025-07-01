@@ -18,9 +18,9 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +40,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private Integer userTaskDefVersion;
     private VariableAssignmentModel notes;
     private ReadOnlyMetadataManager metadataManager;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
     private VariableAssignmentModel onCancellationException;
 
     public UserTaskNodeModel() {
@@ -103,7 +103,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
                     p.getOnCancellationExceptionName(), VariableAssignmentModel.class, context);
         }
         this.metadataManager = context.metadataManager();
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     public List<UTActionTriggerModel> getActions(UTHook requestedHook) {
@@ -117,12 +117,12 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     }
 
     @Override
-    public UserTaskNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public UserTaskNodeRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new UserTaskNodeRunModel(processorContext);
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws LHApiException {
         UserTaskDefModel utd;
         if (userTaskDefVersion == null) {
             utd = metadataManager.getLastFromPrefix(

@@ -97,4 +97,47 @@ public interface ExternalEventNodeRunOrBuilder extends
    * @return The timedOut.
    */
   boolean getTimedOut();
+
+  /**
+   * <pre>
+   * If set, then this `ExternalEventNodeRun` can be completed by a
+   * `CorrelatedEvent` with the matching correlation id.
+   * </pre>
+   *
+   * <code>optional string correlation_key = 5;</code>
+   * @return Whether the correlationKey field is set.
+   */
+  boolean hasCorrelationKey();
+  /**
+   * <pre>
+   * If set, then this `ExternalEventNodeRun` can be completed by a
+   * `CorrelatedEvent` with the matching correlation id.
+   * </pre>
+   *
+   * <code>optional string correlation_key = 5;</code>
+   * @return The correlationKey.
+   */
+  java.lang.String getCorrelationKey();
+  /**
+   * <pre>
+   * If set, then this `ExternalEventNodeRun` can be completed by a
+   * `CorrelatedEvent` with the matching correlation id.
+   * </pre>
+   *
+   * <code>optional string correlation_key = 5;</code>
+   * @return The bytes for correlationKey.
+   */
+  com.google.protobuf.ByteString
+      getCorrelationKeyBytes();
+
+  /**
+   * <pre>
+   * Specifies whether the correlation key should be masked. Ignored if
+   * correlation_key is not set.
+   * </pre>
+   *
+   * <code>bool mask_correlation_key = 6;</code>
+   * @return The maskCorrelationKey.
+   */
+  boolean getMaskCorrelationKey();
 }

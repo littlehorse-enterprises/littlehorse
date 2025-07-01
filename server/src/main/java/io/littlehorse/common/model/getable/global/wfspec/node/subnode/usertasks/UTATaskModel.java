@@ -14,9 +14,9 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutati
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.LHTaskManager;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +58,7 @@ public class UTATaskModel extends LHSerializable<UTATask> {
     // infrastructure. See if possible to combine it.
     // Like hey both use the same TaskNode
     public void schedule(
-            UserTaskRunModel utr, UTActionTriggerModel trigger, ProcessorExecutionContext processorExecutionContext)
+            UserTaskRunModel utr, UTActionTriggerModel trigger, CoreProcessorContext processorExecutionContext)
             throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 

@@ -3547,6 +3547,1980 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
   }
 
+  public interface UTECommentedOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEvent.UTECommented)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * The id of the user comment
+     * </pre>
+     *
+     * <code>int32 user_comment_id = 1;</code>
+     * @return The userCommentId.
+     */
+    int getUserCommentId();
+
+    /**
+     * <pre>
+     * This is the id of the user 
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    java.lang.String getUserId();
+    /**
+     * <pre>
+     * This is the id of the user 
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    com.google.protobuf.ByteString
+        getUserIdBytes();
+
+    /**
+     * <pre>
+     * This is the specific note/comment that a user wants to make 
+     * on a `UserTask`
+     * </pre>
+     *
+     * <code>string comment = 3;</code>
+     * @return The comment.
+     */
+    java.lang.String getComment();
+    /**
+     * <pre>
+     * This is the specific note/comment that a user wants to make 
+     * on a `UserTask`
+     * </pre>
+     *
+     * <code>string comment = 3;</code>
+     * @return The bytes for comment.
+     */
+    com.google.protobuf.ByteString
+        getCommentBytes();
+  }
+  /**
+   * <pre>
+   * Message to denote that a comment has been added or edited on a userTaskRun
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.UserTaskEvent.UTECommented}
+   */
+  public static final class UTECommented extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent.UTECommented)
+      UTECommentedOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UTECommented.newBuilder() to construct.
+    private UTECommented(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UTECommented() {
+      userId_ = "";
+      comment_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UTECommented();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommented_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommented_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder.class);
+    }
+
+    public static final int USER_COMMENT_ID_FIELD_NUMBER = 1;
+    private int userCommentId_ = 0;
+    /**
+     * <pre>
+     * The id of the user comment
+     * </pre>
+     *
+     * <code>int32 user_comment_id = 1;</code>
+     * @return The userCommentId.
+     */
+    @java.lang.Override
+    public int getUserCommentId() {
+      return userCommentId_;
+    }
+
+    public static final int USER_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object userId_ = "";
+    /**
+     * <pre>
+     * This is the id of the user 
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    @java.lang.Override
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * This is the id of the user 
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int COMMENT_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object comment_ = "";
+    /**
+     * <pre>
+     * This is the specific note/comment that a user wants to make 
+     * on a `UserTask`
+     * </pre>
+     *
+     * <code>string comment = 3;</code>
+     * @return The comment.
+     */
+    @java.lang.Override
+    public java.lang.String getComment() {
+      java.lang.Object ref = comment_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        comment_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * This is the specific note/comment that a user wants to make 
+     * on a `UserTask`
+     * </pre>
+     *
+     * <code>string comment = 3;</code>
+     * @return The bytes for comment.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCommentBytes() {
+      java.lang.Object ref = comment_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        comment_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (userCommentId_ != 0) {
+        output.writeInt32(1, userCommentId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(comment_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, comment_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (userCommentId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, userCommentId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(comment_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, comment_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented other = (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) obj;
+
+      if (getUserCommentId()
+          != other.getUserCommentId()) return false;
+      if (!getUserId()
+          .equals(other.getUserId())) return false;
+      if (!getComment()
+          .equals(other.getComment())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + USER_COMMENT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserCommentId();
+      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId().hashCode();
+      hash = (37 * hash) + COMMENT_FIELD_NUMBER;
+      hash = (53 * hash) + getComment().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Message to denote that a comment has been added or edited on a userTaskRun
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.UserTaskEvent.UTECommented}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent.UTECommented)
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommented_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommented_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        userCommentId_ = 0;
+        userId_ = "";
+        comment_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommented_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented build() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented result = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.userCommentId_ = userCommentId_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.userId_ = userId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.comment_ = comment_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance()) return this;
+        if (other.getUserCommentId() != 0) {
+          setUserCommentId(other.getUserCommentId());
+        }
+        if (!other.getUserId().isEmpty()) {
+          userId_ = other.userId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getComment().isEmpty()) {
+          comment_ = other.comment_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                userCommentId_ = input.readInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                userId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                comment_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int userCommentId_ ;
+      /**
+       * <pre>
+       * The id of the user comment
+       * </pre>
+       *
+       * <code>int32 user_comment_id = 1;</code>
+       * @return The userCommentId.
+       */
+      @java.lang.Override
+      public int getUserCommentId() {
+        return userCommentId_;
+      }
+      /**
+       * <pre>
+       * The id of the user comment
+       * </pre>
+       *
+       * <code>int32 user_comment_id = 1;</code>
+       * @param value The userCommentId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserCommentId(int value) {
+
+        userCommentId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The id of the user comment
+       * </pre>
+       *
+       * <code>int32 user_comment_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUserCommentId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        userCommentId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object userId_ = "";
+      /**
+       * <pre>
+       * This is the id of the user 
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @return The userId.
+       */
+      public java.lang.String getUserId() {
+        java.lang.Object ref = userId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          userId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * This is the id of the user 
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @return The bytes for userId.
+       */
+      public com.google.protobuf.ByteString
+          getUserIdBytes() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          userId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * This is the id of the user 
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @param value The userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * This is the id of the user 
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUserId() {
+        userId_ = getDefaultInstance().getUserId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * This is the id of the user 
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @param value The bytes for userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object comment_ = "";
+      /**
+       * <pre>
+       * This is the specific note/comment that a user wants to make 
+       * on a `UserTask`
+       * </pre>
+       *
+       * <code>string comment = 3;</code>
+       * @return The comment.
+       */
+      public java.lang.String getComment() {
+        java.lang.Object ref = comment_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          comment_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * This is the specific note/comment that a user wants to make 
+       * on a `UserTask`
+       * </pre>
+       *
+       * <code>string comment = 3;</code>
+       * @return The bytes for comment.
+       */
+      public com.google.protobuf.ByteString
+          getCommentBytes() {
+        java.lang.Object ref = comment_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          comment_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * This is the specific note/comment that a user wants to make 
+       * on a `UserTask`
+       * </pre>
+       *
+       * <code>string comment = 3;</code>
+       * @param value The comment to set.
+       * @return This builder for chaining.
+       */
+      public Builder setComment(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        comment_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * This is the specific note/comment that a user wants to make 
+       * on a `UserTask`
+       * </pre>
+       *
+       * <code>string comment = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearComment() {
+        comment_ = getDefaultInstance().getComment();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * This is the specific note/comment that a user wants to make 
+       * on a `UserTask`
+       * </pre>
+       *
+       * <code>string comment = 3;</code>
+       * @param value The bytes for comment to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCommentBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        comment_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTECommented)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent.UTECommented)
+    private static final io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented();
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UTECommented>
+        PARSER = new com.google.protobuf.AbstractParser<UTECommented>() {
+      @java.lang.Override
+      public UTECommented parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UTECommented> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UTECommented> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UTECommentDeletedOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEvent.UTECommentDeleted)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * The id of the comment that will be deleted
+     * </pre>
+     *
+     * <code>int32 user_comment_id = 1;</code>
+     * @return The userCommentId.
+     */
+    int getUserCommentId();
+
+    /**
+     * <pre>
+     * The id of the user who deleted the comment
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    java.lang.String getUserId();
+    /**
+     * <pre>
+     * The id of the user who deleted the comment
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    com.google.protobuf.ByteString
+        getUserIdBytes();
+  }
+  /**
+   * <pre>
+   * Message to denote that a userTaskRun has been deleted
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.UserTaskEvent.UTECommentDeleted}
+   */
+  public static final class UTECommentDeleted extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent.UTECommentDeleted)
+      UTECommentDeletedOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UTECommentDeleted.newBuilder() to construct.
+    private UTECommentDeleted(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UTECommentDeleted() {
+      userId_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UTECommentDeleted();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.Builder.class);
+    }
+
+    public static final int USER_COMMENT_ID_FIELD_NUMBER = 1;
+    private int userCommentId_ = 0;
+    /**
+     * <pre>
+     * The id of the comment that will be deleted
+     * </pre>
+     *
+     * <code>int32 user_comment_id = 1;</code>
+     * @return The userCommentId.
+     */
+    @java.lang.Override
+    public int getUserCommentId() {
+      return userCommentId_;
+    }
+
+    public static final int USER_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object userId_ = "";
+    /**
+     * <pre>
+     * The id of the user who deleted the comment
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    @java.lang.Override
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * The id of the user who deleted the comment
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (userCommentId_ != 0) {
+        output.writeInt32(1, userCommentId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (userCommentId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, userCommentId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userId_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted other = (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) obj;
+
+      if (getUserCommentId()
+          != other.getUserCommentId()) return false;
+      if (!getUserId()
+          .equals(other.getUserId())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + USER_COMMENT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserCommentId();
+      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Message to denote that a userTaskRun has been deleted
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.UserTaskEvent.UTECommentDeleted}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent.UTECommentDeleted)
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        userCommentId_ = 0;
+        userId_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECommentDeleted_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted build() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted result = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.userCommentId_ = userCommentId_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.userId_ = userId_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance()) return this;
+        if (other.getUserCommentId() != 0) {
+          setUserCommentId(other.getUserCommentId());
+        }
+        if (!other.getUserId().isEmpty()) {
+          userId_ = other.userId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                userCommentId_ = input.readInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                userId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int userCommentId_ ;
+      /**
+       * <pre>
+       * The id of the comment that will be deleted
+       * </pre>
+       *
+       * <code>int32 user_comment_id = 1;</code>
+       * @return The userCommentId.
+       */
+      @java.lang.Override
+      public int getUserCommentId() {
+        return userCommentId_;
+      }
+      /**
+       * <pre>
+       * The id of the comment that will be deleted
+       * </pre>
+       *
+       * <code>int32 user_comment_id = 1;</code>
+       * @param value The userCommentId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserCommentId(int value) {
+
+        userCommentId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The id of the comment that will be deleted
+       * </pre>
+       *
+       * <code>int32 user_comment_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUserCommentId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        userCommentId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object userId_ = "";
+      /**
+       * <pre>
+       * The id of the user who deleted the comment
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @return The userId.
+       */
+      public java.lang.String getUserId() {
+        java.lang.Object ref = userId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          userId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * The id of the user who deleted the comment
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @return The bytes for userId.
+       */
+      public com.google.protobuf.ByteString
+          getUserIdBytes() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          userId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * The id of the user who deleted the comment
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @param value The userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The id of the user who deleted the comment
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUserId() {
+        userId_ = getDefaultInstance().getUserId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The id of the user who deleted the comment
+       * </pre>
+       *
+       * <code>string user_id = 2;</code>
+       * @param value The bytes for userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTECommentDeleted)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent.UTECommentDeleted)
+    private static final io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted();
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UTECommentDeleted>
+        PARSER = new com.google.protobuf.AbstractParser<UTECommentDeleted>() {
+      @java.lang.Override
+      public UTECommentDeleted parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UTECommentDeleted> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UTECommentDeleted> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UTECompletedOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEvent.UTECompleted)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * Empty message denoting a `userTaskRunCompleted`
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.UserTaskEvent.UTECompleted}
+   */
+  public static final class UTECompleted extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent.UTECompleted)
+      UTECompletedOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UTECompleted.newBuilder() to construct.
+    private UTECompleted(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UTECompleted() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UTECompleted();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted other = (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Empty message denoting a `userTaskRunCompleted`
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.UserTaskEvent.UTECompleted}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent.UTECompleted)
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskEvent_UTECompleted_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted build() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted result = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTECompleted)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent.UTECompleted)
+    private static final io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted();
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UTECompleted>
+        PARSER = new com.google.protobuf.AbstractParser<UTECompleted>() {
+      @java.lang.Override
+      public UTECompleted parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UTECompleted> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UTECompleted> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int eventCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object event_;
@@ -3557,6 +5531,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     ASSIGNED(3),
     CANCELLED(4),
     SAVED(5),
+    COMMENT_ADDED(6),
+    COMMENT_EDITED(7),
+    COMMENT_DELETED(8),
+    COMPLETED(9),
     EVENT_NOT_SET(0);
     private final int value;
     private EventCase(int value) {
@@ -3578,6 +5556,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         case 3: return ASSIGNED;
         case 4: return CANCELLED;
         case 5: return SAVED;
+        case 6: return COMMENT_ADDED;
+        case 7: return COMMENT_EDITED;
+        case 8: return COMMENT_DELETED;
+        case 9: return COMPLETED;
         case 0: return EVENT_NOT_SET;
         default: return null;
       }
@@ -3803,6 +5785,178 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved.getDefaultInstance();
   }
 
+  public static final int COMMENT_ADDED_FIELD_NUMBER = 6;
+  /**
+   * <pre>
+   * Denotes that there was a comment on a `userTaskRun`
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+   * @return Whether the commentAdded field is set.
+   */
+  @java.lang.Override
+  public boolean hasCommentAdded() {
+    return eventCase_ == 6;
+  }
+  /**
+   * <pre>
+   * Denotes that there was a comment on a `userTaskRun`
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+   * @return The commentAdded.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getCommentAdded() {
+    if (eventCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Denotes that there was a comment on a `userTaskRun`
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder getCommentAddedOrBuilder() {
+    if (eventCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+  }
+
+  public static final int COMMENT_EDITED_FIELD_NUMBER = 7;
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` has been edited
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+   * @return Whether the commentEdited field is set.
+   */
+  @java.lang.Override
+  public boolean hasCommentEdited() {
+    return eventCase_ == 7;
+  }
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` has been edited
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+   * @return The commentEdited.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getCommentEdited() {
+    if (eventCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` has been edited
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder getCommentEditedOrBuilder() {
+    if (eventCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+  }
+
+  public static final int COMMENT_DELETED_FIELD_NUMBER = 8;
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` was deleted
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+   * @return Whether the commentDeleted field is set.
+   */
+  @java.lang.Override
+  public boolean hasCommentDeleted() {
+    return eventCase_ == 8;
+  }
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` was deleted
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+   * @return The commentDeleted.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted getCommentDeleted() {
+    if (eventCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Denotes that a comment on a `userTaskRun` was deleted
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder getCommentDeletedOrBuilder() {
+    if (eventCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
+  }
+
+  public static final int COMPLETED_FIELD_NUMBER = 9;
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   * @return Whether the completed field is set.
+   */
+  @java.lang.Override
+  public boolean hasCompleted() {
+    return eventCase_ == 9;
+  }
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   * @return The completed.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getCompleted() {
+    if (eventCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Denotes that a `userTaskRun` has been completed
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder getCompletedOrBuilder() {
+    if (eventCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -3832,6 +5986,18 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (eventCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved) event_);
     }
+    if (eventCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_);
+    }
+    if (eventCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_);
+    }
+    if (eventCase_ == 8) {
+      output.writeMessage(8, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_);
+    }
+    if (eventCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -3860,6 +6026,22 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (eventCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved) event_);
+    }
+    if (eventCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_);
+    }
+    if (eventCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_);
+    }
+    if (eventCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_);
+    }
+    if (eventCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3899,6 +6081,22 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         if (!getSaved()
             .equals(other.getSaved())) return false;
         break;
+      case 6:
+        if (!getCommentAdded()
+            .equals(other.getCommentAdded())) return false;
+        break;
+      case 7:
+        if (!getCommentEdited()
+            .equals(other.getCommentEdited())) return false;
+        break;
+      case 8:
+        if (!getCommentDeleted()
+            .equals(other.getCommentDeleted())) return false;
+        break;
+      case 9:
+        if (!getCompleted()
+            .equals(other.getCompleted())) return false;
+        break;
       case 0:
       default:
     }
@@ -3933,6 +6131,22 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       case 5:
         hash = (37 * hash) + SAVED_FIELD_NUMBER;
         hash = (53 * hash) + getSaved().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + COMMENT_ADDED_FIELD_NUMBER;
+        hash = (53 * hash) + getCommentAdded().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + COMMENT_EDITED_FIELD_NUMBER;
+        hash = (53 * hash) + getCommentEdited().hashCode();
+        break;
+      case 8:
+        hash = (37 * hash) + COMMENT_DELETED_FIELD_NUMBER;
+        hash = (53 * hash) + getCommentDeleted().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + COMPLETED_FIELD_NUMBER;
+        hash = (53 * hash) + getCompleted().hashCode();
         break;
       case 0:
       default:
@@ -4090,6 +6304,18 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (savedBuilder_ != null) {
         savedBuilder_.clear();
       }
+      if (commentAddedBuilder_ != null) {
+        commentAddedBuilder_.clear();
+      }
+      if (commentEditedBuilder_ != null) {
+        commentEditedBuilder_.clear();
+      }
+      if (commentDeletedBuilder_ != null) {
+        commentDeletedBuilder_.clear();
+      }
+      if (completedBuilder_ != null) {
+        completedBuilder_.clear();
+      }
       eventCase_ = 0;
       event_ = null;
       return this;
@@ -4151,6 +6377,22 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (eventCase_ == 5 &&
           savedBuilder_ != null) {
         result.event_ = savedBuilder_.build();
+      }
+      if (eventCase_ == 6 &&
+          commentAddedBuilder_ != null) {
+        result.event_ = commentAddedBuilder_.build();
+      }
+      if (eventCase_ == 7 &&
+          commentEditedBuilder_ != null) {
+        result.event_ = commentEditedBuilder_.build();
+      }
+      if (eventCase_ == 8 &&
+          commentDeletedBuilder_ != null) {
+        result.event_ = commentDeletedBuilder_.build();
+      }
+      if (eventCase_ == 9 &&
+          completedBuilder_ != null) {
+        result.event_ = completedBuilder_.build();
       }
     }
 
@@ -4218,6 +6460,22 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           mergeSaved(other.getSaved());
           break;
         }
+        case COMMENT_ADDED: {
+          mergeCommentAdded(other.getCommentAdded());
+          break;
+        }
+        case COMMENT_EDITED: {
+          mergeCommentEdited(other.getCommentEdited());
+          break;
+        }
+        case COMMENT_DELETED: {
+          mergeCommentDeleted(other.getCommentDeleted());
+          break;
+        }
+        case COMPLETED: {
+          mergeCompleted(other.getCompleted());
+          break;
+        }
         case EVENT_NOT_SET: {
           break;
         }
@@ -4283,6 +6541,34 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               eventCase_ = 5;
               break;
             } // case 42
+            case 50: {
+              input.readMessage(
+                  getCommentAddedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              eventCase_ = 6;
+              break;
+            } // case 50
+            case 58: {
+              input.readMessage(
+                  getCommentEditedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              eventCase_ = 7;
+              break;
+            } // case 58
+            case 66: {
+              input.readMessage(
+                  getCommentDeletedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              eventCase_ = 8;
+              break;
+            } // case 66
+            case 74: {
+              input.readMessage(
+                  getCompletedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              eventCase_ = 9;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5180,6 +7466,718 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       eventCase_ = 5;
       onChanged();
       return savedBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder> commentAddedBuilder_;
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     * @return Whether the commentAdded field is set.
+     */
+    @java.lang.Override
+    public boolean hasCommentAdded() {
+      return eventCase_ == 6;
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     * @return The commentAdded.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getCommentAdded() {
+      if (commentAddedBuilder_ == null) {
+        if (eventCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+      } else {
+        if (eventCase_ == 6) {
+          return commentAddedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     */
+    public Builder setCommentAdded(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented value) {
+      if (commentAddedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        event_ = value;
+        onChanged();
+      } else {
+        commentAddedBuilder_.setMessage(value);
+      }
+      eventCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     */
+    public Builder setCommentAdded(
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder builderForValue) {
+      if (commentAddedBuilder_ == null) {
+        event_ = builderForValue.build();
+        onChanged();
+      } else {
+        commentAddedBuilder_.setMessage(builderForValue.build());
+      }
+      eventCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     */
+    public Builder mergeCommentAdded(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented value) {
+      if (commentAddedBuilder_ == null) {
+        if (eventCase_ == 6 &&
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          event_ = value;
+        }
+        onChanged();
+      } else {
+        if (eventCase_ == 6) {
+          commentAddedBuilder_.mergeFrom(value);
+        } else {
+          commentAddedBuilder_.setMessage(value);
+        }
+      }
+      eventCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     */
+    public Builder clearCommentAdded() {
+      if (commentAddedBuilder_ == null) {
+        if (eventCase_ == 6) {
+          eventCase_ = 0;
+          event_ = null;
+          onChanged();
+        }
+      } else {
+        if (eventCase_ == 6) {
+          eventCase_ = 0;
+          event_ = null;
+        }
+        commentAddedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder getCommentAddedBuilder() {
+      return getCommentAddedFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder getCommentAddedOrBuilder() {
+      if ((eventCase_ == 6) && (commentAddedBuilder_ != null)) {
+        return commentAddedBuilder_.getMessageOrBuilder();
+      } else {
+        if (eventCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that there was a comment on a `userTaskRun`
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_added = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder> 
+        getCommentAddedFieldBuilder() {
+      if (commentAddedBuilder_ == null) {
+        if (!(eventCase_ == 6)) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+        }
+        commentAddedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_,
+                getParentForChildren(),
+                isClean());
+        event_ = null;
+      }
+      eventCase_ = 6;
+      onChanged();
+      return commentAddedBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder> commentEditedBuilder_;
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     * @return Whether the commentEdited field is set.
+     */
+    @java.lang.Override
+    public boolean hasCommentEdited() {
+      return eventCase_ == 7;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     * @return The commentEdited.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented getCommentEdited() {
+      if (commentEditedBuilder_ == null) {
+        if (eventCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+      } else {
+        if (eventCase_ == 7) {
+          return commentEditedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     */
+    public Builder setCommentEdited(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented value) {
+      if (commentEditedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        event_ = value;
+        onChanged();
+      } else {
+        commentEditedBuilder_.setMessage(value);
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     */
+    public Builder setCommentEdited(
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder builderForValue) {
+      if (commentEditedBuilder_ == null) {
+        event_ = builderForValue.build();
+        onChanged();
+      } else {
+        commentEditedBuilder_.setMessage(builderForValue.build());
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     */
+    public Builder mergeCommentEdited(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented value) {
+      if (commentEditedBuilder_ == null) {
+        if (eventCase_ == 7 &&
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          event_ = value;
+        }
+        onChanged();
+      } else {
+        if (eventCase_ == 7) {
+          commentEditedBuilder_.mergeFrom(value);
+        } else {
+          commentEditedBuilder_.setMessage(value);
+        }
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     */
+    public Builder clearCommentEdited() {
+      if (commentEditedBuilder_ == null) {
+        if (eventCase_ == 7) {
+          eventCase_ = 0;
+          event_ = null;
+          onChanged();
+        }
+      } else {
+        if (eventCase_ == 7) {
+          eventCase_ = 0;
+          event_ = null;
+        }
+        commentEditedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder getCommentEditedBuilder() {
+      return getCommentEditedFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder getCommentEditedOrBuilder() {
+      if ((eventCase_ == 7) && (commentEditedBuilder_ != null)) {
+        return commentEditedBuilder_.getMessageOrBuilder();
+      } else {
+        if (eventCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` has been edited
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommented comment_edited = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder> 
+        getCommentEditedFieldBuilder() {
+      if (commentEditedBuilder_ == null) {
+        if (!(eventCase_ == 7)) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.getDefaultInstance();
+        }
+        commentEditedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentedOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented) event_,
+                getParentForChildren(),
+                isClean());
+        event_ = null;
+      }
+      eventCase_ = 7;
+      onChanged();
+      return commentEditedBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder> commentDeletedBuilder_;
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     * @return Whether the commentDeleted field is set.
+     */
+    @java.lang.Override
+    public boolean hasCommentDeleted() {
+      return eventCase_ == 8;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     * @return The commentDeleted.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted getCommentDeleted() {
+      if (commentDeletedBuilder_ == null) {
+        if (eventCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
+      } else {
+        if (eventCase_ == 8) {
+          return commentDeletedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     */
+    public Builder setCommentDeleted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted value) {
+      if (commentDeletedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        event_ = value;
+        onChanged();
+      } else {
+        commentDeletedBuilder_.setMessage(value);
+      }
+      eventCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     */
+    public Builder setCommentDeleted(
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.Builder builderForValue) {
+      if (commentDeletedBuilder_ == null) {
+        event_ = builderForValue.build();
+        onChanged();
+      } else {
+        commentDeletedBuilder_.setMessage(builderForValue.build());
+      }
+      eventCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     */
+    public Builder mergeCommentDeleted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted value) {
+      if (commentDeletedBuilder_ == null) {
+        if (eventCase_ == 8 &&
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          event_ = value;
+        }
+        onChanged();
+      } else {
+        if (eventCase_ == 8) {
+          commentDeletedBuilder_.mergeFrom(value);
+        } else {
+          commentDeletedBuilder_.setMessage(value);
+        }
+      }
+      eventCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     */
+    public Builder clearCommentDeleted() {
+      if (commentDeletedBuilder_ == null) {
+        if (eventCase_ == 8) {
+          eventCase_ = 0;
+          event_ = null;
+          onChanged();
+        }
+      } else {
+        if (eventCase_ == 8) {
+          eventCase_ = 0;
+          event_ = null;
+        }
+        commentDeletedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.Builder getCommentDeletedBuilder() {
+      return getCommentDeletedFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder getCommentDeletedOrBuilder() {
+      if ((eventCase_ == 8) && (commentDeletedBuilder_ != null)) {
+        return commentDeletedBuilder_.getMessageOrBuilder();
+      } else {
+        if (eventCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a comment on a `userTaskRun` was deleted
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECommentDeleted comment_deleted = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder> 
+        getCommentDeletedFieldBuilder() {
+      if (commentDeletedBuilder_ == null) {
+        if (!(eventCase_ == 8)) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.getDefaultInstance();
+        }
+        commentDeletedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeletedOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted) event_,
+                getParentForChildren(),
+                isClean());
+        event_ = null;
+      }
+      eventCase_ = 8;
+      onChanged();
+      return commentDeletedBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder> completedBuilder_;
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     * @return Whether the completed field is set.
+     */
+    @java.lang.Override
+    public boolean hasCompleted() {
+      return eventCase_ == 9;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     * @return The completed.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted getCompleted() {
+      if (completedBuilder_ == null) {
+        if (eventCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      } else {
+        if (eventCase_ == 9) {
+          return completedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder setCompleted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted value) {
+      if (completedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        event_ = value;
+        onChanged();
+      } else {
+        completedBuilder_.setMessage(value);
+      }
+      eventCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder setCompleted(
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder builderForValue) {
+      if (completedBuilder_ == null) {
+        event_ = builderForValue.build();
+        onChanged();
+      } else {
+        completedBuilder_.setMessage(builderForValue.build());
+      }
+      eventCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder mergeCompleted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted value) {
+      if (completedBuilder_ == null) {
+        if (eventCase_ == 9 &&
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          event_ = value;
+        }
+        onChanged();
+      } else {
+        if (eventCase_ == 9) {
+          completedBuilder_.mergeFrom(value);
+        } else {
+          completedBuilder_.setMessage(value);
+        }
+      }
+      eventCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public Builder clearCompleted() {
+      if (completedBuilder_ == null) {
+        if (eventCase_ == 9) {
+          eventCase_ = 0;
+          event_ = null;
+          onChanged();
+        }
+      } else {
+        if (eventCase_ == 9) {
+          eventCase_ = 0;
+          event_ = null;
+        }
+        completedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder getCompletedBuilder() {
+      return getCompletedFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder getCompletedOrBuilder() {
+      if ((eventCase_ == 9) && (completedBuilder_ != null)) {
+        return completedBuilder_.getMessageOrBuilder();
+      } else {
+        if (eventCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Denotes that a `userTaskRun` has been completed
+     * </pre>
+     *
+     * <code>.littlehorse.UserTaskEvent.UTECompleted completed = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder> 
+        getCompletedFieldBuilder() {
+      if (completedBuilder_ == null) {
+        if (!(eventCase_ == 9)) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.getDefaultInstance();
+        }
+        completedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompletedOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted) event_,
+                getParentForChildren(),
+                isClean());
+        event_ = null;
+      }
+      eventCase_ = 9;
+      onChanged();
+      return completedBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

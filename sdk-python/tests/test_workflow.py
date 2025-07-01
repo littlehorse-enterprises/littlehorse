@@ -174,10 +174,7 @@ class TestWfRunVariable(unittest.TestCase):
             ThreadVarDef(
                 var_def=VariableDef(
                     name="my-var",
-                    type_def=TypeDefinition(
-                        type=VariableType.STR,
-                        masked=False
-                    )
+                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
                 ),
                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
             ),
@@ -188,10 +185,7 @@ class TestWfRunVariable(unittest.TestCase):
         expected_output = ThreadVarDef(
             var_def=VariableDef(
                 name="my-var",
-                type_def=TypeDefinition(
-                    type=VariableType.JSON_OBJ,
-                    masked=False
-                )
+                type_def=TypeDefinition(type=VariableType.JSON_OBJ, masked=False),
             ),
             access_level="PRIVATE_VAR",
         )
@@ -207,10 +201,7 @@ class TestWfRunVariable(unittest.TestCase):
         expected_output = ThreadVarDef(
             var_def=VariableDef(
                 name="my-var",
-                type_def=TypeDefinition(
-                    type=VariableType.STR,
-                    masked=False
-                )
+                type_def=TypeDefinition(type=VariableType.STR, masked=False),
             ),
             access_level="PRIVATE_VAR",
         )
@@ -222,10 +213,7 @@ class TestWfRunVariable(unittest.TestCase):
         expected_output = ThreadVarDef(
             var_def=VariableDef(
                 name="my-var",
-                type_def=TypeDefinition(
-                    type=VariableType.STR,
-                    masked=False
-                )
+                type_def=TypeDefinition(type=VariableType.STR, masked=False),
             ),
             access_level="INHERITED_VAR",
         )
@@ -246,9 +234,8 @@ class TestThreadBuilder(unittest.TestCase):
                         var_def=VariableDef(
                             name="input-name",
                             type_def=TypeDefinition(
-                                type=VariableType.STR,
-                                masked=False
-                            )
+                                type=VariableType.STR, masked=False
+                            ),
                         ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
@@ -1242,9 +1229,7 @@ class TestThreadBuilder(unittest.TestCase):
                 if_body=if_body_a,
                 else_body=else_body_c,
             )
-            if_statement.do_else(
-                body=if_body_b
-            )
+            if_statement.do_else(body=if_body_b)
 
         workflow = Workflow("test-wf", my_entrypoint)
 
@@ -1493,6 +1478,141 @@ class TestThreadBuilder(unittest.TestCase):
             compiled_last_nope_node.outgoing_edges[0].sink_node_name,
         )
 
+    def test_wf_raises_error_when_adding_node_after_completing_thread(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+                body.execute("greet")
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(TypeError):
+            workflow.compile()
+
+    def test_wf_raises_error_when_mutating_variable_after_completing_thread(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("name")
+
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+                my_var.assign("hello")
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(TypeError):
+            workflow.compile()
+
+    def test_wf_raises_error_when_adding_variable_after_completing_thread(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+                body.declare_str("test-var")
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+
+        with self.assertRaises(TypeError):
+            workflow.compile()
+
+    def test_compile_wf_with_do_if_and_multiple_exit_nodes(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a)
+
+        workflow = Workflow("test-wf", my_entrypoint)
+        compiled_wf = workflow.compile()
+        entrypoint_thread = compiled_wf.thread_specs.get("entrypoint")
+
+        compiled_first_nop_node = entrypoint_thread.nodes.get("1-nop-NOP")
+        self.assertEqual(
+            compiled_first_nop_node,
+            Node(
+                nop=NopNode(),
+                outgoing_edges=[
+                    Edge(
+                        sink_node_name="2-complete-EXIT",
+                        condition=EdgeCondition(
+                            left=VariableAssignment(literal_value=VariableValue(int=5)),
+                            comparator=Comparator.GREATER_THAN,
+                            right=VariableAssignment(
+                                literal_value=VariableValue(int=4)
+                            ),
+                        ),
+                    ),
+                    Edge(sink_node_name="3-nop-NOP"),
+                ],
+            ),
+        )
+
+        compiled_complete_exit_node = entrypoint_thread.nodes.get("2-complete-EXIT")
+        self.assertEqual(compiled_complete_exit_node, Node(exit=ExitNode()))
+
+        compiled_last_exit_node = entrypoint_thread.nodes.get("4-exit-EXIT")
+        self.assertEqual(compiled_last_exit_node, Node(exit=ExitNode()))
+
+    def test_compile_wf_with_do_else_if_and_multiple_exit_nodes(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            def if_body_a(body: WorkflowThread) -> None:
+                body.complete()
+
+            def if_body_b(body: WorkflowThread) -> None:
+                wf.execute("task-b")
+                body.complete()
+
+            wf.do_if(wf.condition(5, Comparator.GREATER_THAN, 4), if_body_a).do_else_if(
+                wf.condition(10, Comparator.EQUALS, 11), if_body_b
+            )
+
+        workflow = Workflow("test-wf", my_entrypoint)
+        compiled_wf = workflow.compile()
+        entrypoint_thread = compiled_wf.thread_specs.get("entrypoint")
+
+        compiled_first_nop_node = entrypoint_thread.nodes.get("1-nop-NOP")
+        self.assertEqual(
+            compiled_first_nop_node,
+            Node(
+                nop=NopNode(),
+                outgoing_edges=[
+                    Edge(
+                        sink_node_name="2-complete-EXIT",
+                        condition=EdgeCondition(
+                            left=VariableAssignment(literal_value=VariableValue(int=5)),
+                            comparator=Comparator.GREATER_THAN,
+                            right=VariableAssignment(
+                                literal_value=VariableValue(int=4)
+                            ),
+                        ),
+                    ),
+                    Edge(
+                        sink_node_name="4-task-b-TASK",
+                        condition=EdgeCondition(
+                            left=VariableAssignment(
+                                literal_value=VariableValue(int=10)
+                            ),
+                            comparator=Comparator.EQUALS,
+                            right=VariableAssignment(
+                                literal_value=VariableValue(int=11)
+                            ),
+                        ),
+                    ),
+                    Edge(sink_node_name="3-nop-NOP"),
+                ],
+            ),
+        )
+
+        compiled_if_body_a_exit_node = entrypoint_thread.nodes.get("2-complete-EXIT")
+        self.assertEqual(compiled_if_body_a_exit_node, Node(exit=ExitNode()))
+
+        compiled_if_body_b_exit_node = entrypoint_thread.nodes.get("5-complete-EXIT")
+        self.assertEqual(compiled_if_body_b_exit_node, Node(exit=ExitNode()))
+
     def test_do_while(self):
         class MyClass:
             def my_condition(self, thread: WorkflowThread) -> None:
@@ -1652,9 +1772,8 @@ class TestThreadBuilder(unittest.TestCase):
                         var_def=VariableDef(
                             name="input-name",
                             type_def=TypeDefinition(
-                                type=VariableType.STR,
-                                masked=False
-                            )
+                                type=VariableType.STR, masked=False
+                            ),
                         ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     )
@@ -1821,9 +1940,8 @@ class TestThreadBuilder(unittest.TestCase):
                         var_def=VariableDef(
                             name="value",
                             type_def=TypeDefinition(
-                                type=VariableType.INT,
-                                masked=False
-                            )
+                                type=VariableType.INT, masked=False
+                            ),
                         ),
                         access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
@@ -1959,41 +2077,59 @@ class TestThreadBuilder(unittest.TestCase):
     def test_should_compile_a_wf_with_does_contain_condition_comparing_variables(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.declare_str("my-var")
-            thread.do_if(my_var.does_contain("this-value"), lambda wf: wf.execute("task"))
-
+            thread.do_if(
+                my_var.does_contain("this-value"), lambda wf: wf.execute("task")
+            )
 
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.IN,
-                                                         left=VariableAssignment(
-                                                             literal_value=VariableValue(str="this-value")),
-                                                         right=VariableAssignment(variable_name="my-var"))),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.IN,
+                        left=VariableAssignment(
+                            literal_value=VariableValue(str="this-value")
+                        ),
+                        right=VariableAssignment(variable_name="my-var"),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
 
-    def test_should_compile_a_wf_with_does_not_contain_condition_comparing_variables(self):
+    def test_should_compile_a_wf_with_does_not_contain_condition_comparing_variables(
+        self,
+    ):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.declare_str("my-var")
-            thread.do_if(my_var.does_not_contain("this-value"), lambda wf: wf.execute("task"))
-
+            thread.do_if(
+                my_var.does_not_contain("this-value"), lambda wf: wf.execute("task")
+            )
 
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.NOT_IN,
-                                                         left=VariableAssignment(
-                                                             literal_value=VariableValue(str="this-value")),
-                                                         right=VariableAssignment(variable_name="my-var"))),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.NOT_IN,
+                        left=VariableAssignment(
+                            literal_value=VariableValue(str="this-value")
+                        ),
+                        right=VariableAssignment(variable_name="my-var"),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
@@ -2003,18 +2139,24 @@ class TestThreadBuilder(unittest.TestCase):
             my_var = thread.declare_str("my-var")
             thread.do_if(my_var.is_in(["A", "B", "C"]), lambda wf: wf.execute("task"))
 
-
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.IN,
-                                                         left=VariableAssignment(variable_name="my-var"),
-                                                         right=VariableAssignment(
-                                                             literal_value=VariableValue(json_arr="[\"A\", \"B\", \"C\"]"))),),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.IN,
+                        left=VariableAssignment(variable_name="my-var"),
+                        right=VariableAssignment(
+                            literal_value=VariableValue(json_arr='["A", "B", "C"]')
+                        ),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
@@ -2022,20 +2164,28 @@ class TestThreadBuilder(unittest.TestCase):
     def test_should_compile_a_wf_with_not_in_condition_comparing_variables(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.declare_str("my-var")
-            thread.do_if(my_var.is_not_in(["A", "B", "C"]), lambda wf: wf.execute("task"))
+            thread.do_if(
+                my_var.is_not_in(["A", "B", "C"]), lambda wf: wf.execute("task")
+            )
 
         wf_spec = Workflow("test", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         actual_node = entrypoint.nodes["1-nop-NOP"]
         expected_node = Node(
             nop=NopNode(),
-            outgoing_edges=[Edge(sink_node_name="2-task-TASK",
-                                 condition=EdgeCondition(comparator=Comparator.NOT_IN,
-                                                         left=VariableAssignment(variable_name="my-var"),
-                                                         right=VariableAssignment(
-                                                             literal_value=VariableValue(
-                                                                 json_arr="[\"A\", \"B\", \"C\"]"))), ),
-                            Edge(sink_node_name="3-nop-NOP")],
+            outgoing_edges=[
+                Edge(
+                    sink_node_name="2-task-TASK",
+                    condition=EdgeCondition(
+                        comparator=Comparator.NOT_IN,
+                        left=VariableAssignment(variable_name="my-var"),
+                        right=VariableAssignment(
+                            literal_value=VariableValue(json_arr='["A", "B", "C"]')
+                        ),
+                    ),
+                ),
+                Edge(sink_node_name="3-nop-NOP"),
+            ],
         )
 
         self.assertEqual(expected_node, actual_node)
@@ -2504,9 +2654,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="input-name",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level="INHERITED_VAR",
                             ),
@@ -2542,9 +2691,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="input-name",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2580,9 +2728,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="input-name",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2744,9 +2891,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="grand-parent-var",
                                     type_def=TypeDefinition(
-                                        type=VariableType.STR,
-                                        masked=False
-                                    )
+                                        type=VariableType.STR, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2754,9 +2900,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="1-son-thread-START_THREAD",
                                     type_def=TypeDefinition(
-                                        type=VariableType.INT,
-                                        masked=False
-                                    )
+                                        type=VariableType.INT, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
@@ -2809,9 +2954,8 @@ class TestWorkflow(unittest.TestCase):
                                 var_def=VariableDef(
                                     name="1-grandchild-thread-START_THREAD",
                                     type_def=TypeDefinition(
-                                        type=VariableType.INT,
-                                        masked=False
-                                    )
+                                        type=VariableType.INT, masked=False
+                                    ),
                                 ),
                                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             )
@@ -3580,6 +3724,95 @@ class DynamicTaskTest(unittest.TestCase):
 
         var_node = entrypoint.nodes["3-my-var-TASK"]
         self.assertEqual(var_node.task.dynamic_task.variable_name, "my-var")
+
+
+class CorrelationIdTest(unittest.TestCase):
+    def test_correlation_id(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            wf.wait_for_event("some-event", correlation_id="asdf")
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertEqual(
+            static_node.external_event.correlation_key.literal_value.str,
+            "asdf",
+        )
+
+    def test_correlation_id_with_var(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event("some-event", correlation_id=my_var)
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertEqual(
+            static_node.external_event.correlation_key.variable_name,
+            "my-var",
+        )
+
+    def test_automatically_mask_correlation_id_from_masked_var(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var").masked()
+            wf.wait_for_event("some-event", correlation_id=my_var)
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertTrue(
+            static_node.external_event.mask_correlation_key,
+        )
+    
+    def test_should_not_mask_normal_var_as_correlation_id(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event("some-event", correlation_id=my_var)
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertFalse(
+            static_node.external_event.mask_correlation_key,
+        )
+
+    def test_should_mask_correlation_id_if_told_to(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event(
+                "some-event",
+                correlation_id=my_var,
+                mask_correlation_id=True,
+            )
+        
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+        
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertTrue(
+            static_node.external_event.mask_correlation_key,
+        )
+
+    def test_should_not_mask_correlation_id_if_told_not_to(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event(
+                "some-event",
+                correlation_id=my_var,
+                mask_correlation_id=False,
+            )
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertFalse(
+            static_node.external_event.mask_correlation_key,
+        )
 
 
 if __name__ == "__main__":

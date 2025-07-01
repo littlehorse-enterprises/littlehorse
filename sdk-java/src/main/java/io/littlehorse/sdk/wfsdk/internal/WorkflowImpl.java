@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -47,16 +46,28 @@ public class WorkflowImpl extends Workflow {
         PutWfSpecRequest wfRequest = compileWorkflow();
 
         // Create externalEventDef's that the user wanted us to create
-        for (PutExternalEventDefRequest eed : externalEventsToRegister) {
-            log.info("Creating externalEventDef:\n {}", LHLibUtil.protoToJson(client.putExternalEventDef(eed)));
+        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+            log.info(
+                    "Creating ExternalEventDef:\n {}",
+                    LHLibUtil.protoToJson(client.putExternalEventDef(node.toPutExtDefRequest())));
+        }
+
+        for (ThrowEventNodeOutputImpl node : workflowEventsToRegister) {
+            log.info(
+                    "Creating WorkflowEventDef:\n {}",
+                    LHLibUtil.protoToJson(client.putWorkflowEventDef(node.toPutWorkflowEventDefRequest())));
         }
 
         // Now we do the dancin'
         log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(wfRequest)));
     }
 
-    public void addExternalEventDefToRegister(PutExternalEventDefRequest req) {
-        externalEventsToRegister.add(req);
+    public void addWorkflowEventDefToRegister(ThrowEventNodeOutputImpl node) {
+        workflowEventsToRegister.add(node);
+    }
+
+    public void addExternalEventDefToRegister(ExternalEventNodeOutputImpl node) {
+        externalEventsToRegister.add(node);
     }
 
     public Set<PutTaskDefRequest> compileTaskDefs() {

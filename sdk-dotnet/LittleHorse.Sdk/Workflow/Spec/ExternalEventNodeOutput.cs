@@ -29,4 +29,17 @@ public class ExternalEventNodeOutput: NodeOutput
         
         return this;
     }
+
+    /// <summary>
+    /// Adds a correlation id to an ExternalEventNode.
+    /// </summary>
+    /// <param name="correlationId">
+    /// An object (variable or string literal) that is used as the correlation ID.
+    /// </param>
+    /// <returns>The ExternalEventNodeOutput.</returns>
+    public ExternalEventNodeOutput WithCorrelationId(object correlationId)
+    {
+        Parent.SetCorrelationIdOnExternalEventNode(this, correlationId);
+        return this;
+    }
 }

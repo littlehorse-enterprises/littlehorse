@@ -17,7 +17,7 @@ import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.common_wfspec_pb2 as common__wfspec__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14\x65xternal_event.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0evariable.proto\x1a\x0fobject_id.proto\x1a\x13\x63ommon_wfspec.proto\"\x93\x02\n\rExternalEvent\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.ExternalEventId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63ontent\x18\x03 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12\x1e\n\x11thread_run_number\x18\x04 \x01(\x05H\x00\x88\x01\x01\x12\x1e\n\x11node_run_position\x18\x05 \x01(\x05H\x01\x88\x01\x01\x12\x0f\n\x07\x63laimed\x18\x06 \x01(\x08\x42\x14\n\x12_thread_run_numberB\x14\n\x12_node_run_position\"\x81\x02\n\x10\x45xternalEventDef\x12+\n\x02id\x18\x01 \x01(\x0b\x32\x1f.littlehorse.ExternalEventDefId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x43\n\x10retention_policy\x18\x03 \x01(\x0b\x32).littlehorse.ExternalEventRetentionPolicy\x12\x36\n\x10type_information\x18\x04 \x01(\x0b\x32\x17.littlehorse.ReturnTypeH\x00\x88\x01\x01\x42\x13\n\x11_type_information\"P\n\x1c\x45xternalEventRetentionPolicy\x12\x1b\n\x11seconds_after_put\x18\x01 \x01(\x03H\x00\x42\x13\n\x11\x65xt_evt_gc_policyBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14\x65xternal_event.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0evariable.proto\x1a\x0fobject_id.proto\x1a\x13\x63ommon_wfspec.proto\"\x93\x02\n\rExternalEvent\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.ExternalEventId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63ontent\x18\x03 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12\x1e\n\x11thread_run_number\x18\x04 \x01(\x05H\x00\x88\x01\x01\x12\x1e\n\x11node_run_position\x18\x05 \x01(\x05H\x01\x88\x01\x01\x12\x0f\n\x07\x63laimed\x18\x06 \x01(\x08\x42\x14\n\x12_thread_run_numberB\x14\n\x12_node_run_position\"\xe7\x02\n\x10\x45xternalEventDef\x12+\n\x02id\x18\x01 \x01(\x0b\x32\x1f.littlehorse.ExternalEventDefId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x43\n\x10retention_policy\x18\x03 \x01(\x0b\x32).littlehorse.ExternalEventRetentionPolicy\x12\x36\n\x10type_information\x18\x04 \x01(\x0b\x32\x17.littlehorse.ReturnTypeH\x00\x88\x01\x01\x12H\n\x17\x63orrelated_event_config\x18\x05 \x01(\x0b\x32\".littlehorse.CorrelatedEventConfigH\x01\x88\x01\x01\x42\x13\n\x11_type_informationB\x1a\n\x18_correlated_event_config\"i\n\x15\x43orrelatedEventConfig\x12\x18\n\x0bttl_seconds\x18\x01 \x01(\x03H\x00\x88\x01\x01\x12&\n\x1e\x64\x65lete_after_first_correlation\x18\x02 \x01(\x08\x42\x0e\n\x0c_ttl_seconds\"\xd1\x01\n\x0f\x43orrelatedEvent\x12*\n\x02id\x18\x01 \x01(\x0b\x32\x1e.littlehorse.CorrelatedEventId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63ontent\x18\x03 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12\x35\n\x0f\x65xternal_events\x18\x04 \x03(\x0b\x32\x1c.littlehorse.ExternalEventId\"P\n\x1c\x45xternalEventRetentionPolicy\x12\x1b\n\x11seconds_after_put\x18\x01 \x01(\x03H\x00\x42\x13\n\x11\x65xt_evt_gc_policyBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -29,7 +29,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_EXTERNALEVENT']._serialized_start=125
   _globals['_EXTERNALEVENT']._serialized_end=400
   _globals['_EXTERNALEVENTDEF']._serialized_start=403
-  _globals['_EXTERNALEVENTDEF']._serialized_end=660
-  _globals['_EXTERNALEVENTRETENTIONPOLICY']._serialized_start=662
-  _globals['_EXTERNALEVENTRETENTIONPOLICY']._serialized_end=742
+  _globals['_EXTERNALEVENTDEF']._serialized_end=762
+  _globals['_CORRELATEDEVENTCONFIG']._serialized_start=764
+  _globals['_CORRELATEDEVENTCONFIG']._serialized_end=869
+  _globals['_CORRELATEDEVENT']._serialized_start=872
+  _globals['_CORRELATEDEVENT']._serialized_end=1081
+  _globals['_EXTERNALEVENTRETENTIONPOLICY']._serialized_start=1083
+  _globals['_EXTERNALEVENTRETENTIONPOLICY']._serialized_end=1163
 # @@protoc_insertion_point(module_scope)

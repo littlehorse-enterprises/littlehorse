@@ -7,7 +7,7 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,12 +18,12 @@ import org.apache.kafka.streams.processor.TaskId;
  * This class is designed to manage and store Getable objects in an internal, thread-safe memory buffer,
  * rather than relying on Kafka Streams KeyValue stores. It is particularly useful for testing or scenarios
  * where persistence is not required.
- * In the constructor, you can use either an actual `ProcessorExecutionContext` or a mock with a valid return value for
+ * In the constructor, you can use either an actual `CoreProcessorContext` or a mock with a valid return value for
  * `ExecutionContext#authorization`
  * Example Usage:
  * <pre>{@code
  * // Create an execution context, either real or mocked
- * ProcessorExecutionContext executionContext = new ProcessorExecutionContext(...);
+ * CoreProcessorContext executionContext = new CoreProcessorContext(...);
  *
  * // Instantiate the InMemoryGetableManager
  * InMemoryGetableManager getableManager = new InMemoryGetableManager(executionContext);
@@ -35,14 +35,14 @@ import org.apache.kafka.streams.processor.TaskId;
  * WfRunIdModel result = getableManager.get(myGetableInstance.getObjectId());
  * }</pre>
  *
- * `TestProcessorExecutionContext` is an alternative option for this class where a InMemory Kafka Streams store is configured.
+ * `TestCoreProcessorContext` is an alternative option for this class where a InMemory Kafka Streams store is configured.
  */
 public class InMemoryGetableManager extends GetableManager {
 
     private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new ConcurrentHashMap<>();
     private final Map<String, ScheduledTaskModel> scheduledTasks = new ConcurrentHashMap<>();
 
-    public InMemoryGetableManager(ProcessorExecutionContext executionContext) {
+    public InMemoryGetableManager(CoreProcessorContext executionContext) {
         super(null, null, null, null, executionContext, null);
     }
 

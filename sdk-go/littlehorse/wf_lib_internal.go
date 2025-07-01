@@ -1144,6 +1144,17 @@ func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *Ta
 	node.GetTask().ExponentialBackoff = policy
 }
 
+func (t *WorkflowThread) setCorrelationId(n *ExternalEventNodeOutput, id interface{}) *ExternalEventNodeOutput {
+	t.checkIfIsActive()
+	node := t.spec.Nodes[n.Output.nodeName]
+	varAssn, err := t.assignVariable(id)
+	if err != nil {
+		t.throwError(err)
+	}
+	node.GetExternalEvent().CorrelationKey = varAssn
+	return n
+}
+
 func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
