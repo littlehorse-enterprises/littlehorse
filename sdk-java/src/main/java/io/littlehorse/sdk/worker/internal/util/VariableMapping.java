@@ -110,6 +110,8 @@ public class VariableMapping {
             case JSON_OBJ:
                 jsonStr = val.getJsonObj();
                 break;
+            case WF_RUN_ID:
+                return val.getWfRunId();
             case VALUE_NOT_SET:
                 return null;
         }
