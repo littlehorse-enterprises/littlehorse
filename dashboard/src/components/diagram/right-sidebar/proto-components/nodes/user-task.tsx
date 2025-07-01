@@ -3,7 +3,6 @@ import { Label } from '../../label'
 import { UserTaskNode } from 'littlehorse-client/proto'
 import { getVariable } from '@/utils/data/variables'
 import { TaskNodeComponent } from './task'
-import { TaskNode } from 'littlehorse-client/proto'
 import VariableMutationComponent from '../variable-mutation'
 
 export function UserTaskNodeComponent(userTask: UserTaskNode) {
@@ -18,13 +17,13 @@ export function UserTaskNodeComponent(userTask: UserTaskNode) {
         <Label label="OnCancellationExceptionName">{getVariable(userTask.onCancellationExceptionName)}</Label>
       )}
       <Section title="Actions">
-        {userTask.actions.map((action, index) => (
-          <Section key={JSON.stringify(action) + index} title={`UTActionTrigger ${index + 1}`}>
-            {action.task && (
+        {userTask.actions.map((actionTrigger, index) => (
+          <Section key={JSON.stringify(actionTrigger) + index} title={`UTActionTrigger ${index + 1}`}>
+            {actionTrigger.action?.$case === 'task' && (
               <Section title="UTATask">
-                <TaskNodeComponent {...(action.task.task as TaskNode)} />
+                {actionTrigger.action.task.task && <TaskNodeComponent {...actionTrigger.action.task.task} />}
                 <Section title="Mutations">
-                  {action.task.mutations.map((mutation, index) => (
+                  {actionTrigger.action.task.mutations.map((mutation, index) => (
                     <VariableMutationComponent key={JSON.stringify(mutation) + index} {...mutation} />
                   ))}
                 </Section>

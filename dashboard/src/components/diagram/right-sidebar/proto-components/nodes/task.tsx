@@ -10,7 +10,9 @@ export function TaskNodeComponent(task: TaskNode) {
   return (
     <Section title="TaskNode">
       <Label label="TaskToExecute" variant="highlight">
-        {task.taskDefId ? task.taskDefId.name : getVariable(task.dynamicTask)}
+        {task.taskToExecute?.$case === 'taskDefId'
+          ? task.taskToExecute.taskDefId.name
+          : getVariable(task.taskToExecute?.dynamicTask)}
       </Label>
       <Label label="Timeout">{`${task.timeoutSeconds} s`}</Label>
       <Label label="Retries">{task.retries}</Label>

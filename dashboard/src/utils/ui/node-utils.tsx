@@ -1,5 +1,19 @@
 import { Node as LHNode, LHStatus } from 'littlehorse-client/proto'
-import { AlertCircle, Bell, Box, CheckCircle, CircleSlashIcon, Clock, GitBranch, Loader2, MailIcon, Minus, PlayIcon, Timer, User } from 'lucide-react'
+import {
+  AlertCircle,
+  Bell,
+  Box,
+  CheckCircle,
+  CircleSlashIcon,
+  Clock,
+  GitBranch,
+  Loader2,
+  MailIcon,
+  Minus,
+  PlayIcon,
+  Timer,
+  User,
+} from 'lucide-react'
 import { OneOfCases } from '../data/oneof-utils'
 
 export type NodeType = OneOfCases<LHNode['node']>

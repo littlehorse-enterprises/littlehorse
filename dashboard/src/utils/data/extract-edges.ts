@@ -49,10 +49,10 @@ function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): Cus
 function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string, wfSpec: WfSpec): CustomEdge[] {
   const edges: CustomEdge[] = []
 
-  Object.entries(threadSpec.nodes).forEach(function ([id, node]) {
-    const nodeCase = node.node?.$case
+  Object.entries(threadSpec.nodes).forEach(function ([id, lhNode]) {
+    const nodeCase = lhNode.node?.$case
     if (nodeCase === 'startThread') {
-      const startedThreadSpecName = node.node.startThread?.threadSpecName
+      const startedThreadSpecName = lhNode.node.startThread?.threadSpecName
       if (!startedThreadSpecName) return
 
       const sourceId = `${id}:${threadName}`
@@ -66,8 +66,8 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
     }
 
     if (nodeCase === 'waitForThreads') {
-      if (node.node.waitForThreads.threadsToWaitFor?.$case === 'threads') {
-        node.node.waitForThreads.threadsToWaitFor.threads.threads.forEach(function (thread) {
+      if (lhNode.node.waitForThreads.threadsToWaitFor?.$case === 'threads') {
+        lhNode.node.waitForThreads.threadsToWaitFor.threads.threads.forEach(function (thread) {
           const startThreadNodeName =
             thread.threadRunNumber?.source?.$case === 'variableName' ? thread.threadRunNumber.source.variableName : ''
 

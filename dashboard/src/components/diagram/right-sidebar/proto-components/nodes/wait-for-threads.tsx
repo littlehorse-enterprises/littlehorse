@@ -4,10 +4,15 @@ import { getVariable } from '@/utils/data/variables'
 import { WaitForThreadsNode } from 'littlehorse-client/proto'
 
 export function WaitForThreadsNodeComponent(waitForThreads: WaitForThreadsNode) {
+  const threadsToWaitForCase = waitForThreads.threadsToWaitFor?.$case
   return (
     <Section title="WaitForThreadsNode">
-      {waitForThreads.threads && <Label label="Threads">{JSON.stringify(waitForThreads.threads)}</Label>}
-      {waitForThreads.threadList && <Label label="Thread List">{getVariable(waitForThreads.threadList)}</Label>}
+      {threadsToWaitForCase === 'threads' && (
+        <Label label="Threads">{JSON.stringify(waitForThreads.threadsToWaitFor?.threads)}</Label>
+      )}
+      {threadsToWaitForCase === 'threadList' && (
+        <Label label="Thread List">{getVariable(waitForThreads.threadsToWaitFor?.threadList)}</Label>
+      )}
 
       {
         // todo: How do we want to handle repeated sections? They could be quite bloated.
