@@ -41,7 +41,10 @@ message VariableValue {
     // An arbitrary String of bytes.
     bytes bytes = 8;
 
-    Struct struct = 9;
+    // Reference to a WfRunId
+    WfRunId wf_run_id = 9;
+
+    Struct struct = 10;
   }
 }
 

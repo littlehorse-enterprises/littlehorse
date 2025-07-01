@@ -173,17 +173,44 @@ public interface VariableValueOrBuilder extends
   com.google.protobuf.ByteString getBytes();
 
   /**
-   * <code>.littlehorse.Struct struct = 9;</code>
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
+   * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+   * @return Whether the wfRunId field is set.
+   */
+  boolean hasWfRunId();
+  /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
+   * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+   * @return The wfRunId.
+   */
+  io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
+  /**
+   * <pre>
+   * Reference to a WfRunId
+   * </pre>
+   *
+   * <code>.littlehorse.WfRunId wf_run_id = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
+
+  /**
+   * <code>.littlehorse.Struct struct = 10;</code>
    * @return Whether the struct field is set.
    */
   boolean hasStruct();
   /**
-   * <code>.littlehorse.Struct struct = 9;</code>
+   * <code>.littlehorse.Struct struct = 10;</code>
    * @return The struct.
    */
   io.littlehorse.sdk.common.proto.Struct getStruct();
   /**
-   * <code>.littlehorse.Struct struct = 9;</code>
+   * <code>.littlehorse.Struct struct = 10;</code>
    */
   io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder();
 

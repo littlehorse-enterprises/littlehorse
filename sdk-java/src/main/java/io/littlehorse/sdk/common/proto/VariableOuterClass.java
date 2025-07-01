@@ -60,30 +60,32 @@ public final class VariableOuterClass {
     java.lang.String[] descriptorData = {
       "\n\016variable.proto\022\013littlehorse\032\037google/pr" +
       "otobuf/timestamp.proto\032\017object_id.proto\"" +
-      "\276\001\n\rVariableValue\022\022\n\010json_obj\030\002 \001(\tH\000\022\022\n" +
+      "\351\001\n\rVariableValue\022\022\n\010json_obj\030\002 \001(\tH\000\022\022\n" +
       "\010json_arr\030\003 \001(\tH\000\022\020\n\006double\030\004 \001(\001H\000\022\016\n\004b" +
       "ool\030\005 \001(\010H\000\022\r\n\003str\030\006 \001(\tH\000\022\r\n\003int\030\007 \001(\003H" +
-      "\000\022\017\n\005bytes\030\010 \001(\014H\000\022%\n\006struct\030\t \001(\0132\023.lit" +
-      "tlehorse.StructH\000B\007\n\005valueJ\004\010\001\020\002\"\305\001\n\010Var" +
-      "iable\022#\n\002id\030\001 \001(\0132\027.littlehorse.Variable" +
-      "Id\022)\n\005value\030\002 \001(\0132\032.littlehorse.Variable" +
-      "Value\022.\n\ncreated_at\030\003 \001(\0132\032.google.proto" +
-      "buf.Timestamp\022)\n\nwf_spec_id\030\004 \001(\0132\025.litt" +
-      "lehorse.WfSpecId\022\016\n\006masked\030\005 \001(\010\"d\n\006Stru" +
-      "ct\022/\n\rstruct_def_id\030\001 \001(\0132\030.littlehorse." +
-      "StructDefId\022)\n\006struct\030\002 \001(\0132\031.littlehors" +
-      "e.InlineStruct\"\216\001\n\014InlineStruct\0225\n\006field" +
-      "s\030\001 \003(\0132%.littlehorse.InlineStruct.Field" +
-      "sEntry\032G\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\022\'\n\005va" +
-      "lue\030\002 \001(\0132\030.littlehorse.StructField:\0028\001\"" +
-      "\346\001\n\013StructField\022/\n\tprimitive\030\001 \001(\0132\032.lit" +
-      "tlehorse.VariableValueH\000\022+\n\006struct\030\002 \001(\013" +
-      "2\031.littlehorse.InlineStructH\000\0222\n\004list\030\003 " +
-      "\001(\0132\".littlehorse.StructField.FieldListH" +
-      "\000\0325\n\tFieldList\022(\n\006fields\030\001 \003(\0132\030.littleh" +
-      "orse.StructFieldB\016\n\014struct_valueBM\n\037io.l" +
-      "ittlehorse.sdk.common.protoP\001Z\t.;lhproto" +
-      "\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "\000\022\017\n\005bytes\030\010 \001(\014H\000\022)\n\twf_run_id\030\t \001(\0132\024." +
+      "littlehorse.WfRunIdH\000\022%\n\006struct\030\n \001(\0132\023." +
+      "littlehorse.StructH\000B\007\n\005valueJ\004\010\001\020\002\"\305\001\n\010" +
+      "Variable\022#\n\002id\030\001 \001(\0132\027.littlehorse.Varia" +
+      "bleId\022)\n\005value\030\002 \001(\0132\032.littlehorse.Varia" +
+      "bleValue\022.\n\ncreated_at\030\003 \001(\0132\032.google.pr" +
+      "otobuf.Timestamp\022)\n\nwf_spec_id\030\004 \001(\0132\025.l" +
+      "ittlehorse.WfSpecId\022\016\n\006masked\030\005 \001(\010\"d\n\006S" +
+      "truct\022/\n\rstruct_def_id\030\001 \001(\0132\030.littlehor" +
+      "se.StructDefId\022)\n\006struct\030\002 \001(\0132\031.littleh" +
+      "orse.InlineStruct\"\216\001\n\014InlineStruct\0225\n\006fi" +
+      "elds\030\001 \003(\0132%.littlehorse.InlineStruct.Fi" +
+      "eldsEntry\032G\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\022\'\n" +
+      "\005value\030\002 \001(\0132\030.littlehorse.StructField:\002" +
+      "8\001\"\346\001\n\013StructField\022/\n\tprimitive\030\001 \001(\0132\032." +
+      "littlehorse.VariableValueH\000\022+\n\006struct\030\002 " +
+      "\001(\0132\031.littlehorse.InlineStructH\000\0222\n\004list" +
+      "\030\003 \001(\0132\".littlehorse.StructField.FieldLi" +
+      "stH\000\0325\n\tFieldList\022(\n\006fields\030\001 \003(\0132\030.litt" +
+      "lehorse.StructFieldB\016\n\014struct_valueBM\n\037i" +
+      "o.littlehorse.sdk.common.protoP\001Z\t.;lhpr" +
+      "oto\252\002\034LittleHorse.Sdk.Common.Protob\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -96,7 +98,7 @@ public final class VariableOuterClass {
     internal_static_littlehorse_VariableValue_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_VariableValue_descriptor,
-        new java.lang.String[] { "JsonObj", "JsonArr", "Double", "Bool", "Str", "Int", "Bytes", "Struct", "Value", });
+        new java.lang.String[] { "JsonObj", "JsonArr", "Double", "Bool", "Str", "Int", "Bytes", "WfRunId", "Struct", "Value", });
     internal_static_littlehorse_Variable_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_Variable_fieldAccessorTable = new

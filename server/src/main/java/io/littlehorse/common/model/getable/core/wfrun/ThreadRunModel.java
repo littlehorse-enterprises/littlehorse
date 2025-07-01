@@ -251,7 +251,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
             VariableDefModel varDef = threadVarDef.getVarDef();
             String varName = varDef.getName();
-            VariableValueModel val;
+            VariableValueModel val = null;
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 // We do NOT create a variable since we want to use the one from the parent.
@@ -260,10 +260,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);
+                if (val.isNull()) {
+                    val = varDef.getDefaultValue();
+                }
             } else if (varDef.getDefaultValue() != null) {
                 val = varDef.getDefaultValue();
-            } else {
-                // TODO: Will need to update this when we add the required variable feature.
+            }
+
+            if (val == null) {
                 val = new VariableValueModel();
             }
             VariableModel variable = new VariableModel(
