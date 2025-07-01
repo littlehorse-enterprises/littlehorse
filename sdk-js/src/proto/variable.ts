@@ -8,7 +8,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { VariableId, WfSpecId } from "./object_id";
+import { VariableId, WfRunId, WfSpecId } from "./object_id";
 
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -24,6 +24,7 @@ export interface VariableValue {
     | { $case: "str"; str: string }
     | { $case: "int"; int: number }
     | { $case: "bytes"; bytes: Buffer }
+    | { $case: "wfRunId"; wfRunId: WfRunId }
     | undefined;
 }
 
@@ -79,6 +80,9 @@ export const VariableValue = {
         break;
       case "bytes":
         writer.uint32(66).bytes(message.value.bytes);
+        break;
+      case "wfRunId":
+        WfRunId.encode(message.value.wfRunId, writer.uint32(74).fork()).ldelim();
         break;
     }
     return writer;
@@ -140,6 +144,13 @@ export const VariableValue = {
 
           message.value = { $case: "bytes", bytes: reader.bytes() as Buffer };
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.value = { $case: "wfRunId", wfRunId: WfRunId.decode(reader, reader.uint32()) };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -174,6 +185,9 @@ export const VariableValue = {
     }
     if (object.value?.$case === "bytes" && object.value?.bytes !== undefined && object.value?.bytes !== null) {
       message.value = { $case: "bytes", bytes: object.value.bytes };
+    }
+    if (object.value?.$case === "wfRunId" && object.value?.wfRunId !== undefined && object.value?.wfRunId !== null) {
+      message.value = { $case: "wfRunId", wfRunId: WfRunId.fromPartial(object.value.wfRunId) };
     }
     return message;
   },
