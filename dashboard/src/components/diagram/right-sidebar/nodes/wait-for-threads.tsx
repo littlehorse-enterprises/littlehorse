@@ -9,16 +9,16 @@ interface WaitForThreadsNodeComponentProps {
 export function WaitForThreadsNodeComponent({ waitForThreadsNode }: WaitForThreadsNodeComponentProps) {
   const mainContent = (
     <>
-      {waitForThreadsNode.waitForThreads.threads && (
+      {waitForThreadsNode.waitForThreads.threadsToWaitFor?.$case === 'threads' && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Threads:</span>
-          <span className="font-mono">{JSON.stringify(waitForThreadsNode.waitForThreads.threads)}</span>
+          <span className="font-mono">{JSON.stringify(waitForThreadsNode.waitForThreads.threadsToWaitFor.threads.threads)}</span>
         </div>
       )}
-      {waitForThreadsNode.waitForThreads.threadList && (
+      {waitForThreadsNode.waitForThreads.threadsToWaitFor?.$case === 'threadList' && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Thread List:</span>
-          <span className="font-mono">{getVariable(waitForThreadsNode.waitForThreads.threadList)}</span>
+          <span className="font-mono">{getVariable(waitForThreadsNode.waitForThreads.threadsToWaitFor.threadList)}</span>
         </div>
       )}
     </>

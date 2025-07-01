@@ -2,7 +2,6 @@ import { getVariable } from '@/utils/data/variables'
 import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
 import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
 import { CustomEdge } from '@/types/node'
-import { getNodeType } from './node'
 
 function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomEdge[] {
   const threadSpecName = Object.keys(wfSpec.threadSpecs).find(function (key) {
@@ -14,8 +13,9 @@ function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): Cus
   const sourceMap = new Map<string, number>()
 
   Object.entries(threadSpec.nodes).forEach(function ([source, node]) {
-    if (getNodeType(node) === 'START_THREAD') {
-      const startThreadNodeName = node.startThread?.threadSpecName
+    const nodeCase = node.node?.$case
+    if (nodeCase === 'startThread') {
+      const startThreadNodeName = node.node.startThread?.threadSpecName
       if (!startThreadNodeName) return
 
       const moreEdges = extractEdgesFromThreadSpec(wfSpec, wfSpec.threadSpecs[startThreadNodeName])
@@ -50,9 +50,11 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   const edges: CustomEdge[] = []
 
   Object.entries(threadSpec.nodes).forEach(function ([id, node]) {
-    const type = getNodeType(node)
-    if (type === 'START_THREAD') {
-      const startedThreadSpecName = node.startThread?.threadSpecName ?? ''
+    const nodeCase = node.node?.$case
+    if (nodeCase === 'startThread') {
+      const startedThreadSpecName = node.node.startThread?.threadSpecName
+      if (!startedThreadSpecName) return
+
       const sourceId = `${id}:${threadName}`
       const targetId = `0-entrypoint-ENTRYPOINT:${startedThreadSpecName}`
 
@@ -63,27 +65,34 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       })
     }
 
-    if (type === 'WAIT_FOR_THREADS') {
-      node.waitForThreads?.threads?.threads.forEach(function (thread) {
-        const startThreadNodeName = thread.threadRunNumber?.variableName ?? ''
-        const waitingThreadSpecName =
-          Object.entries(threadSpec.nodes).find(function ([id]) {
-            return id == startThreadNodeName
-          })?.[1].startThread?.threadSpecName ?? ''
-        const waitingThreadSpec = wfSpec.threadSpecs[waitingThreadSpecName]
-        const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(function ([id], [id2]) {
-          return id.localeCompare(id2)
-        })
-        const exitNodeId = sortedNodes[sortedNodes.length - 1][0]
+    if (nodeCase === 'waitForThreads') {
+      if (node.node.waitForThreads.threadsToWaitFor?.$case === 'threads') {
+        node.node.waitForThreads.threadsToWaitFor.threads.threads.forEach(function (thread) {
+          const startThreadNodeName =
+            thread.threadRunNumber?.source?.$case === 'variableName' ? thread.threadRunNumber.source.variableName : ''
 
-        const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
-        const targetId = `${id}:${threadName}`
-        edges.push({
-          id: `${sourceId}>${targetId}`,
-          source: sourceId,
-          target: targetId,
+          const startThreadNode = Object.entries(threadSpec.nodes).find(function ([id]) {
+            return id == startThreadNodeName && threadSpec.nodes[id].node?.$case === 'startThread'
+          })?.[1]
+
+          const waitingThreadSpecName =
+            startThreadNode?.node?.$case === 'startThread' ? startThreadNode.node.startThread.threadSpecName : ''
+
+          const waitingThreadSpec = wfSpec.threadSpecs[waitingThreadSpecName]
+          const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(function ([id], [id2]) {
+            return id.localeCompare(id2)
+          })
+          const exitNodeId = sortedNodes[sortedNodes.length - 1][0]
+
+          const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
+          const targetId = `${id}:${threadName}`
+          edges.push({
+            id: `${sourceId}>${targetId}`,
+            source: sourceId,
+            target: targetId,
+          })
         })
-      })
+      }
     }
   })
   return edges
@@ -99,7 +108,8 @@ export function extractEdges(wfSpec: WfSpec): CustomEdge[] {
 }
 
 function formatVariableValue(value?: VariableAssignment) {
-  if (value?.literalValue?.str === undefined) return getVariable(value)
+  if (value?.source?.$case === 'literalValue' && value.source.literalValue.value === undefined)
+    return getVariable(value)
   return `"${getVariable(value)}"`
 }
 

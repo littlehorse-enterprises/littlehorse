@@ -19,10 +19,10 @@ export function TaskNodeComponent({ taskNode }: TaskNodeComponentProps) {
         <span className="text-[#656565]">Retries:</span>
         <span className="font-mono">{taskNode.task.retries || 'N/A'}</span>
       </div>
-      {taskNode.task.taskDefId && (
+      {taskNode.task.taskToExecute?.$case === 'taskDefId' && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Task Def:</span>
-          <span className="font-mono text-blue-600">{taskNode.task.taskDefId.name}</span>
+          <span className="font-mono text-blue-600">{taskNode.task.taskToExecute.taskDefId.name}</span>
         </div>
       )}
     </>

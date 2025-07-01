@@ -201,27 +201,14 @@ export interface VariableAssignment {
    * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
    * resolve to the specified field.
    */
-  jsonPath?:
-    | string
+  jsonPath?: string | undefined;
+  source?:
+    | { $case: "variableName"; variableName: string }
+    | { $case: "literalValue"; literalValue: VariableValue }
+    | { $case: "formatString"; formatString: VariableAssignment_FormatString }
+    | { $case: "nodeOutput"; nodeOutput: VariableAssignment_NodeOutputReference }
+    | { $case: "expression"; expression: VariableAssignment_Expression }
     | undefined;
-  /** Assign the value from a variable. */
-  variableName?:
-    | string
-    | undefined;
-  /** Assign a literal value */
-  literalValue?:
-    | VariableValue
-    | undefined;
-  /** Assign a format string */
-  formatString?:
-    | VariableAssignment_FormatString
-    | undefined;
-  /** Assign the value of a NodeOutput. */
-  nodeOutput?:
-    | VariableAssignment_NodeOutputReference
-    | undefined;
-  /** Assign the value of an Expression. */
-  expression?: VariableAssignment_Expression | undefined;
 }
 
 /** A FormatString formats a template String with values from the WfRun. */
@@ -280,22 +267,11 @@ export interface VariableMutation {
     | undefined;
   /** Defines the operation that we are executing. */
   operation: VariableMutationType;
-  /** Assigns the value to be used as the RHS of the mutation. */
-  rhsAssignment?:
-    | VariableAssignment
+  rhsValue?:
+    | { $case: "rhsAssignment"; rhsAssignment: VariableAssignment }
+    | { $case: "literalValue"; literalValue: VariableValue }
+    | { $case: "nodeOutput"; nodeOutput: VariableMutation_NodeOutputSource }
     | undefined;
-  /**
-   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
-   * instead.
-   */
-  literalValue?:
-    | VariableValue
-    | undefined;
-  /**
-   * Use the output of the current node as the RHS. DEPRECATED: use
-   * rhs_assignment.node_output instead.
-   */
-  nodeOutput?: VariableMutation_NodeOutputSource | undefined;
 }
 
 /** Specifies to use the output of a NodeRun as the RHS. */
@@ -383,13 +359,10 @@ export interface ReturnType {
  * - Upon rescheduling the UserTaskRun
  */
 export interface UTActionTrigger {
-  task?: UTActionTrigger_UTATask | undefined;
-  cancel?:
-    | UTActionTrigger_UTACancel
-    | undefined;
-  /** later on, might enable scheduling entire ThreadRuns */
-  reassign?:
-    | UTActionTrigger_UTAReassign
+  action?:
+    | { $case: "task"; task: UTActionTrigger_UTATask }
+    | { $case: "cancel"; cancel: UTActionTrigger_UTACancel }
+    | { $case: "reassign"; reassign: UTActionTrigger_UTAReassign }
     | undefined;
   /**
    * The Action is triggered some time after the Hook matures. The delay is controlled
@@ -503,9 +476,9 @@ export interface ExponentialBackoffRetryPolicy {
 
 /** Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions. */
 export interface TaskNode {
-  taskDefId?: TaskDefId | undefined;
-  dynamicTask?:
-    | VariableAssignment
+  taskToExecute?:
+    | { $case: "taskDefId"; taskDefId: TaskDefId }
+    | { $case: "dynamicTask"; dynamicTask: VariableAssignment }
     | undefined;
   /**
    * How long until LittleHorse determines that the Task Worker had a technical ERROR if
@@ -535,14 +508,7 @@ export interface TaskNode {
 }
 
 function createBaseVariableAssignment(): VariableAssignment {
-  return {
-    jsonPath: undefined,
-    variableName: undefined,
-    literalValue: undefined,
-    formatString: undefined,
-    nodeOutput: undefined,
-    expression: undefined,
-  };
+  return { jsonPath: undefined, source: undefined };
 }
 
 export const VariableAssignment = {
@@ -550,20 +516,22 @@ export const VariableAssignment = {
     if (message.jsonPath !== undefined) {
       writer.uint32(10).string(message.jsonPath);
     }
-    if (message.variableName !== undefined) {
-      writer.uint32(18).string(message.variableName);
-    }
-    if (message.literalValue !== undefined) {
-      VariableValue.encode(message.literalValue, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.formatString !== undefined) {
-      VariableAssignment_FormatString.encode(message.formatString, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.nodeOutput !== undefined) {
-      VariableAssignment_NodeOutputReference.encode(message.nodeOutput, writer.uint32(42).fork()).ldelim();
-    }
-    if (message.expression !== undefined) {
-      VariableAssignment_Expression.encode(message.expression, writer.uint32(50).fork()).ldelim();
+    switch (message.source?.$case) {
+      case "variableName":
+        writer.uint32(18).string(message.source.variableName);
+        break;
+      case "literalValue":
+        VariableValue.encode(message.source.literalValue, writer.uint32(26).fork()).ldelim();
+        break;
+      case "formatString":
+        VariableAssignment_FormatString.encode(message.source.formatString, writer.uint32(34).fork()).ldelim();
+        break;
+      case "nodeOutput":
+        VariableAssignment_NodeOutputReference.encode(message.source.nodeOutput, writer.uint32(42).fork()).ldelim();
+        break;
+      case "expression":
+        VariableAssignment_Expression.encode(message.source.expression, writer.uint32(50).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -587,35 +555,44 @@ export const VariableAssignment = {
             break;
           }
 
-          message.variableName = reader.string();
+          message.source = { $case: "variableName", variableName: reader.string() };
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.literalValue = VariableValue.decode(reader, reader.uint32());
+          message.source = { $case: "literalValue", literalValue: VariableValue.decode(reader, reader.uint32()) };
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.formatString = VariableAssignment_FormatString.decode(reader, reader.uint32());
+          message.source = {
+            $case: "formatString",
+            formatString: VariableAssignment_FormatString.decode(reader, reader.uint32()),
+          };
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.nodeOutput = VariableAssignment_NodeOutputReference.decode(reader, reader.uint32());
+          message.source = {
+            $case: "nodeOutput",
+            nodeOutput: VariableAssignment_NodeOutputReference.decode(reader, reader.uint32()),
+          };
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.expression = VariableAssignment_Expression.decode(reader, reader.uint32());
+          message.source = {
+            $case: "expression",
+            expression: VariableAssignment_Expression.decode(reader, reader.uint32()),
+          };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -632,19 +609,50 @@ export const VariableAssignment = {
   fromPartial(object: DeepPartial<VariableAssignment>): VariableAssignment {
     const message = createBaseVariableAssignment();
     message.jsonPath = object.jsonPath ?? undefined;
-    message.variableName = object.variableName ?? undefined;
-    message.literalValue = (object.literalValue !== undefined && object.literalValue !== null)
-      ? VariableValue.fromPartial(object.literalValue)
-      : undefined;
-    message.formatString = (object.formatString !== undefined && object.formatString !== null)
-      ? VariableAssignment_FormatString.fromPartial(object.formatString)
-      : undefined;
-    message.nodeOutput = (object.nodeOutput !== undefined && object.nodeOutput !== null)
-      ? VariableAssignment_NodeOutputReference.fromPartial(object.nodeOutput)
-      : undefined;
-    message.expression = (object.expression !== undefined && object.expression !== null)
-      ? VariableAssignment_Expression.fromPartial(object.expression)
-      : undefined;
+    if (
+      object.source?.$case === "variableName" &&
+      object.source?.variableName !== undefined &&
+      object.source?.variableName !== null
+    ) {
+      message.source = { $case: "variableName", variableName: object.source.variableName };
+    }
+    if (
+      object.source?.$case === "literalValue" &&
+      object.source?.literalValue !== undefined &&
+      object.source?.literalValue !== null
+    ) {
+      message.source = { $case: "literalValue", literalValue: VariableValue.fromPartial(object.source.literalValue) };
+    }
+    if (
+      object.source?.$case === "formatString" &&
+      object.source?.formatString !== undefined &&
+      object.source?.formatString !== null
+    ) {
+      message.source = {
+        $case: "formatString",
+        formatString: VariableAssignment_FormatString.fromPartial(object.source.formatString),
+      };
+    }
+    if (
+      object.source?.$case === "nodeOutput" &&
+      object.source?.nodeOutput !== undefined &&
+      object.source?.nodeOutput !== null
+    ) {
+      message.source = {
+        $case: "nodeOutput",
+        nodeOutput: VariableAssignment_NodeOutputReference.fromPartial(object.source.nodeOutput),
+      };
+    }
+    if (
+      object.source?.$case === "expression" &&
+      object.source?.expression !== undefined &&
+      object.source?.expression !== null
+    ) {
+      message.source = {
+        $case: "expression",
+        expression: VariableAssignment_Expression.fromPartial(object.source.expression),
+      };
+    }
     return message;
   },
 };
@@ -824,14 +832,7 @@ export const VariableAssignment_Expression = {
 };
 
 function createBaseVariableMutation(): VariableMutation {
-  return {
-    lhsName: "",
-    lhsJsonPath: undefined,
-    operation: VariableMutationType.ASSIGN,
-    rhsAssignment: undefined,
-    literalValue: undefined,
-    nodeOutput: undefined,
-  };
+  return { lhsName: "", lhsJsonPath: undefined, operation: VariableMutationType.ASSIGN, rhsValue: undefined };
 }
 
 export const VariableMutation = {
@@ -845,14 +846,16 @@ export const VariableMutation = {
     if (message.operation !== VariableMutationType.ASSIGN) {
       writer.uint32(24).int32(variableMutationTypeToNumber(message.operation));
     }
-    if (message.rhsAssignment !== undefined) {
-      VariableAssignment.encode(message.rhsAssignment, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.literalValue !== undefined) {
-      VariableValue.encode(message.literalValue, writer.uint32(42).fork()).ldelim();
-    }
-    if (message.nodeOutput !== undefined) {
-      VariableMutation_NodeOutputSource.encode(message.nodeOutput, writer.uint32(50).fork()).ldelim();
+    switch (message.rhsValue?.$case) {
+      case "rhsAssignment":
+        VariableAssignment.encode(message.rhsValue.rhsAssignment, writer.uint32(34).fork()).ldelim();
+        break;
+      case "literalValue":
+        VariableValue.encode(message.rhsValue.literalValue, writer.uint32(42).fork()).ldelim();
+        break;
+      case "nodeOutput":
+        VariableMutation_NodeOutputSource.encode(message.rhsValue.nodeOutput, writer.uint32(50).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -890,21 +893,27 @@ export const VariableMutation = {
             break;
           }
 
-          message.rhsAssignment = VariableAssignment.decode(reader, reader.uint32());
+          message.rhsValue = {
+            $case: "rhsAssignment",
+            rhsAssignment: VariableAssignment.decode(reader, reader.uint32()),
+          };
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.literalValue = VariableValue.decode(reader, reader.uint32());
+          message.rhsValue = { $case: "literalValue", literalValue: VariableValue.decode(reader, reader.uint32()) };
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.nodeOutput = VariableMutation_NodeOutputSource.decode(reader, reader.uint32());
+          message.rhsValue = {
+            $case: "nodeOutput",
+            nodeOutput: VariableMutation_NodeOutputSource.decode(reader, reader.uint32()),
+          };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -923,15 +932,36 @@ export const VariableMutation = {
     message.lhsName = object.lhsName ?? "";
     message.lhsJsonPath = object.lhsJsonPath ?? undefined;
     message.operation = object.operation ?? VariableMutationType.ASSIGN;
-    message.rhsAssignment = (object.rhsAssignment !== undefined && object.rhsAssignment !== null)
-      ? VariableAssignment.fromPartial(object.rhsAssignment)
-      : undefined;
-    message.literalValue = (object.literalValue !== undefined && object.literalValue !== null)
-      ? VariableValue.fromPartial(object.literalValue)
-      : undefined;
-    message.nodeOutput = (object.nodeOutput !== undefined && object.nodeOutput !== null)
-      ? VariableMutation_NodeOutputSource.fromPartial(object.nodeOutput)
-      : undefined;
+    if (
+      object.rhsValue?.$case === "rhsAssignment" &&
+      object.rhsValue?.rhsAssignment !== undefined &&
+      object.rhsValue?.rhsAssignment !== null
+    ) {
+      message.rhsValue = {
+        $case: "rhsAssignment",
+        rhsAssignment: VariableAssignment.fromPartial(object.rhsValue.rhsAssignment),
+      };
+    }
+    if (
+      object.rhsValue?.$case === "literalValue" &&
+      object.rhsValue?.literalValue !== undefined &&
+      object.rhsValue?.literalValue !== null
+    ) {
+      message.rhsValue = {
+        $case: "literalValue",
+        literalValue: VariableValue.fromPartial(object.rhsValue.literalValue),
+      };
+    }
+    if (
+      object.rhsValue?.$case === "nodeOutput" &&
+      object.rhsValue?.nodeOutput !== undefined &&
+      object.rhsValue?.nodeOutput !== null
+    ) {
+      message.rhsValue = {
+        $case: "nodeOutput",
+        nodeOutput: VariableMutation_NodeOutputSource.fromPartial(object.rhsValue.nodeOutput),
+      };
+    }
     return message;
   },
 };
@@ -1178,25 +1208,21 @@ export const ReturnType = {
 };
 
 function createBaseUTActionTrigger(): UTActionTrigger {
-  return {
-    task: undefined,
-    cancel: undefined,
-    reassign: undefined,
-    delaySeconds: undefined,
-    hook: UTActionTrigger_UTHook.ON_ARRIVAL,
-  };
+  return { action: undefined, delaySeconds: undefined, hook: UTActionTrigger_UTHook.ON_ARRIVAL };
 }
 
 export const UTActionTrigger = {
   encode(message: UTActionTrigger, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.task !== undefined) {
-      UTActionTrigger_UTATask.encode(message.task, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.cancel !== undefined) {
-      UTActionTrigger_UTACancel.encode(message.cancel, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.reassign !== undefined) {
-      UTActionTrigger_UTAReassign.encode(message.reassign, writer.uint32(26).fork()).ldelim();
+    switch (message.action?.$case) {
+      case "task":
+        UTActionTrigger_UTATask.encode(message.action.task, writer.uint32(10).fork()).ldelim();
+        break;
+      case "cancel":
+        UTActionTrigger_UTACancel.encode(message.action.cancel, writer.uint32(18).fork()).ldelim();
+        break;
+      case "reassign":
+        UTActionTrigger_UTAReassign.encode(message.action.reassign, writer.uint32(26).fork()).ldelim();
+        break;
     }
     if (message.delaySeconds !== undefined) {
       VariableAssignment.encode(message.delaySeconds, writer.uint32(42).fork()).ldelim();
@@ -1219,21 +1245,21 @@ export const UTActionTrigger = {
             break;
           }
 
-          message.task = UTActionTrigger_UTATask.decode(reader, reader.uint32());
+          message.action = { $case: "task", task: UTActionTrigger_UTATask.decode(reader, reader.uint32()) };
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.cancel = UTActionTrigger_UTACancel.decode(reader, reader.uint32());
+          message.action = { $case: "cancel", cancel: UTActionTrigger_UTACancel.decode(reader, reader.uint32()) };
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.reassign = UTActionTrigger_UTAReassign.decode(reader, reader.uint32());
+          message.action = { $case: "reassign", reassign: UTActionTrigger_UTAReassign.decode(reader, reader.uint32()) };
           continue;
         case 5:
           if (tag !== 42) {
@@ -1263,15 +1289,17 @@ export const UTActionTrigger = {
   },
   fromPartial(object: DeepPartial<UTActionTrigger>): UTActionTrigger {
     const message = createBaseUTActionTrigger();
-    message.task = (object.task !== undefined && object.task !== null)
-      ? UTActionTrigger_UTATask.fromPartial(object.task)
-      : undefined;
-    message.cancel = (object.cancel !== undefined && object.cancel !== null)
-      ? UTActionTrigger_UTACancel.fromPartial(object.cancel)
-      : undefined;
-    message.reassign = (object.reassign !== undefined && object.reassign !== null)
-      ? UTActionTrigger_UTAReassign.fromPartial(object.reassign)
-      : undefined;
+    if (object.action?.$case === "task" && object.action?.task !== undefined && object.action?.task !== null) {
+      message.action = { $case: "task", task: UTActionTrigger_UTATask.fromPartial(object.action.task) };
+    }
+    if (object.action?.$case === "cancel" && object.action?.cancel !== undefined && object.action?.cancel !== null) {
+      message.action = { $case: "cancel", cancel: UTActionTrigger_UTACancel.fromPartial(object.action.cancel) };
+    }
+    if (
+      object.action?.$case === "reassign" && object.action?.reassign !== undefined && object.action?.reassign !== null
+    ) {
+      message.action = { $case: "reassign", reassign: UTActionTrigger_UTAReassign.fromPartial(object.action.reassign) };
+    }
     message.delaySeconds = (object.delaySeconds !== undefined && object.delaySeconds !== null)
       ? VariableAssignment.fromPartial(object.delaySeconds)
       : undefined;
@@ -1498,23 +1526,18 @@ export const ExponentialBackoffRetryPolicy = {
 };
 
 function createBaseTaskNode(): TaskNode {
-  return {
-    taskDefId: undefined,
-    dynamicTask: undefined,
-    timeoutSeconds: 0,
-    retries: 0,
-    exponentialBackoff: undefined,
-    variables: [],
-  };
+  return { taskToExecute: undefined, timeoutSeconds: 0, retries: 0, exponentialBackoff: undefined, variables: [] };
 }
 
 export const TaskNode = {
   encode(message: TaskNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefId !== undefined) {
-      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.dynamicTask !== undefined) {
-      VariableAssignment.encode(message.dynamicTask, writer.uint32(50).fork()).ldelim();
+    switch (message.taskToExecute?.$case) {
+      case "taskDefId":
+        TaskDefId.encode(message.taskToExecute.taskDefId, writer.uint32(10).fork()).ldelim();
+        break;
+      case "dynamicTask":
+        VariableAssignment.encode(message.taskToExecute.dynamicTask, writer.uint32(50).fork()).ldelim();
+        break;
     }
     if (message.timeoutSeconds !== 0) {
       writer.uint32(16).int32(message.timeoutSeconds);
@@ -1543,14 +1566,17 @@ export const TaskNode = {
             break;
           }
 
-          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
+          message.taskToExecute = { $case: "taskDefId", taskDefId: TaskDefId.decode(reader, reader.uint32()) };
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.dynamicTask = VariableAssignment.decode(reader, reader.uint32());
+          message.taskToExecute = {
+            $case: "dynamicTask",
+            dynamicTask: VariableAssignment.decode(reader, reader.uint32()),
+          };
           continue;
         case 2:
           if (tag !== 16) {
@@ -1594,12 +1620,23 @@ export const TaskNode = {
   },
   fromPartial(object: DeepPartial<TaskNode>): TaskNode {
     const message = createBaseTaskNode();
-    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
-      ? TaskDefId.fromPartial(object.taskDefId)
-      : undefined;
-    message.dynamicTask = (object.dynamicTask !== undefined && object.dynamicTask !== null)
-      ? VariableAssignment.fromPartial(object.dynamicTask)
-      : undefined;
+    if (
+      object.taskToExecute?.$case === "taskDefId" &&
+      object.taskToExecute?.taskDefId !== undefined &&
+      object.taskToExecute?.taskDefId !== null
+    ) {
+      message.taskToExecute = { $case: "taskDefId", taskDefId: TaskDefId.fromPartial(object.taskToExecute.taskDefId) };
+    }
+    if (
+      object.taskToExecute?.$case === "dynamicTask" &&
+      object.taskToExecute?.dynamicTask !== undefined &&
+      object.taskToExecute?.dynamicTask !== null
+    ) {
+      message.taskToExecute = {
+        $case: "dynamicTask",
+        dynamicTask: VariableAssignment.fromPartial(object.taskToExecute.dynamicTask),
+      };
+    }
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
     message.retries = object.retries ?? 0;
     message.exponentialBackoff = (object.exponentialBackoff !== undefined && object.exponentialBackoff !== null)
@@ -1615,6 +1652,7 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

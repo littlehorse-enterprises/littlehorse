@@ -9,22 +9,22 @@ interface SleepNodeComponentProps {
 export function SleepNodeComponent({ sleepNode }: SleepNodeComponentProps) {
   const mainContent = (
     <>
-      {sleepNode.sleep.rawSeconds && (
+      {sleepNode.sleep.sleepLength?.$case === 'rawSeconds' && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Duration:</span>
-          <span className="font-mono">{getVariable(sleepNode.sleep.rawSeconds)} seconds</span>
+          <span className="font-mono">{getVariable(sleepNode.sleep.sleepLength.rawSeconds)} seconds</span>
         </div>
       )}
-      {sleepNode.sleep.timestamp && (
+      {sleepNode.sleep.sleepLength?.$case === 'timestamp' && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Until Timestamp:</span>
-          <span className="font-mono">{getVariable(sleepNode.sleep.timestamp)}</span>
+          <span className="font-mono">{getVariable(sleepNode.sleep.sleepLength.timestamp)}</span>
         </div>
       )}
-      {sleepNode.sleep.isoDate && (
+      {sleepNode.sleep.sleepLength?.$case === 'isoDate' && (
         <div className="flex justify-between">
           <span className="text-[#656565]">Until Date:</span>
-          <span className="font-mono">{getVariable(sleepNode.sleep.isoDate)}</span>
+          <span className="font-mono">{getVariable(sleepNode.sleep.sleepLength.isoDate)}</span>
         </div>
       )}
     </>

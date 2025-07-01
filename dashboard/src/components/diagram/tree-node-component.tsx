@@ -37,10 +37,10 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
   }, [searchTerm, node, isExpanded])
 
   const getNodeTypeFromLabel = (label: string): NodeType | null => {
-    if (label.includes('ENTRYPOINT') || label.includes('entrypoint')) return 'ENTRYPOINT'
-    if (label.includes('EXIT') || label.includes('exit')) return 'EXIT'
-    if (label.includes('TASK') || label.includes('task')) return 'TASK'
-    if (label.includes('EXTERNAL_EVENT') || label.includes('external')) return 'EXTERNAL_EVENT'
+    if (label.includes('ENTRYPOINT') || label.includes('entrypoint')) return 'entrypoint'
+    if (label.includes('EXIT') || label.includes('exit')) return 'exit'
+    if (label.includes('TASK') || label.includes('task')) return 'task'
+    if (label.includes('EXTERNAL_EVENT') || label.includes('external')) return 'externalEvent'
     return null
   }
 
@@ -75,7 +75,7 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
     if (node.status === 'running') return <Loader2 className="mr-1.5 h-3 w-3 animate-spin text-blue-500" />
 
     // Default to task icon if no specific type detected
-    const taskIcon = getNodeIcon('TASK')
+    const taskIcon = getNodeIcon('task')
     if (taskIcon) {
       return (
         <div className="mr-1.5 flex items-center justify-center">

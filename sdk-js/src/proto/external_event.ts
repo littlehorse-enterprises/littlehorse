@@ -143,11 +143,7 @@ export interface CorrelatedEvent {
  * will trigger a cleanup of old `ExternalEvent`s.
  */
 export interface ExternalEventRetentionPolicy {
-  /**
-   * Delete such an ExternalEvent X seconds after it has been registered if it
-   * has not yet been claimed by a WfRun.
-   */
-  secondsAfterPut?: number | undefined;
+  extEvtGcPolicy?: { $case: "secondsAfterPut"; secondsAfterPut: number } | undefined;
 }
 
 function createBaseExternalEvent(): ExternalEvent {
@@ -500,13 +496,15 @@ export const CorrelatedEvent = {
 };
 
 function createBaseExternalEventRetentionPolicy(): ExternalEventRetentionPolicy {
-  return { secondsAfterPut: undefined };
+  return { extEvtGcPolicy: undefined };
 }
 
 export const ExternalEventRetentionPolicy = {
   encode(message: ExternalEventRetentionPolicy, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.secondsAfterPut !== undefined) {
-      writer.uint32(8).int64(message.secondsAfterPut);
+    switch (message.extEvtGcPolicy?.$case) {
+      case "secondsAfterPut":
+        writer.uint32(8).int64(message.extEvtGcPolicy.secondsAfterPut);
+        break;
     }
     return writer;
   },
@@ -523,7 +521,7 @@ export const ExternalEventRetentionPolicy = {
             break;
           }
 
-          message.secondsAfterPut = longToNumber(reader.int64() as Long);
+          message.extEvtGcPolicy = { $case: "secondsAfterPut", secondsAfterPut: longToNumber(reader.int64() as Long) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -539,7 +537,13 @@ export const ExternalEventRetentionPolicy = {
   },
   fromPartial(object: DeepPartial<ExternalEventRetentionPolicy>): ExternalEventRetentionPolicy {
     const message = createBaseExternalEventRetentionPolicy();
-    message.secondsAfterPut = object.secondsAfterPut ?? undefined;
+    if (
+      object.extEvtGcPolicy?.$case === "secondsAfterPut" &&
+      object.extEvtGcPolicy?.secondsAfterPut !== undefined &&
+      object.extEvtGcPolicy?.secondsAfterPut !== null
+    ) {
+      message.extEvtGcPolicy = { $case: "secondsAfterPut", secondsAfterPut: object.extEvtGcPolicy.secondsAfterPut };
+    }
     return message;
   },
 };
@@ -549,6 +553,7 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

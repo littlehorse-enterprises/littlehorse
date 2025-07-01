@@ -20,20 +20,22 @@ interface NodeDefinitionProps {
 }
 
 export default function NodeDefinition({ node }: NodeDefinitionProps) {
+  const nodeCase = node.node?.$case
+
   return (
     <div className="pt-2">
-      {node.task && <TaskNodeComponent taskNode={node as Node & { task: TaskNode }} />}
-      {node.externalEvent && <ExternalEventNodeComponent externalEventNode={node as Node & { externalEvent: ExternalEventNode }} />}
-      {node.entrypoint && <EntrypointNodeComponent entrypointNode={node as Node & { entrypoint: EntrypointNode }} />}
-      {node.exit && <ExitNodeComponent exitNode={node as Node & { exit: ExitNode }} />}
-      {node.startThread && <StartThreadNodeComponent startThreadNode={node as Node & { startThread: StartThreadNode }} />}
-      {node.waitForThreads && <WaitForThreadsNodeComponent waitForThreadsNode={node as Node & { waitForThreads: WaitForThreadsNode }} />}
-      {node.sleep && <SleepNodeComponent sleepNode={node as Node & { sleep: SleepNode }} />}
-      {node.userTask && <UserTaskNodeComponent userTaskNode={node as Node & { userTask: UserTaskNode }} />}
-      {node.startMultipleThreads && <StartMultipleThreadsNodeComponent startMultipleThreadsNode={node as Node & { startMultipleThreads: StartMultipleThreadsNode }} />}
-      {node.nop && <NopNodeComponent nopNode={node as Node & { nop: NopNode }} />}
-      {node.throwEvent && <ThrowEventNodeComponent throwEventNode={node as Node & { throwEvent: ThrowEventNode }} />}
-      {node.waitForCondition && <WaitForConditionNodeComponent waitForConditionNode={node as Node & { waitForCondition: WaitForConditionNode }} />}
+      {nodeCase === 'task' && <TaskNodeComponent taskNode={node as Node & { task: TaskNode }} />}
+      {nodeCase === 'externalEvent' && <ExternalEventNodeComponent externalEventNode={node as Node & { externalEvent: ExternalEventNode }} />}
+      {nodeCase === 'entrypoint' && <EntrypointNodeComponent entrypointNode={node as Node & { entrypoint: EntrypointNode }} />}
+      {nodeCase === 'exit' && <ExitNodeComponent exitNode={node as Node & { exit: ExitNode }} />}
+      {nodeCase === 'startThread' && <StartThreadNodeComponent startThreadNode={node as Node & { startThread: StartThreadNode }} />}
+      {nodeCase === 'waitForThreads' && <WaitForThreadsNodeComponent waitForThreadsNode={node as Node & { waitForThreads: WaitForThreadsNode }} />}
+      {nodeCase === 'sleep' && <SleepNodeComponent sleepNode={node as Node & { sleep: SleepNode }} />}
+      {nodeCase === 'userTask' && <UserTaskNodeComponent userTaskNode={node as Node & { userTask: UserTaskNode }} />}
+      {nodeCase === 'startMultipleThreads' && <StartMultipleThreadsNodeComponent startMultipleThreadsNode={node as Node & { startMultipleThreads: StartMultipleThreadsNode }} />}
+      {nodeCase === 'nop' && <NopNodeComponent nopNode={node as Node & { nop: NopNode }} />}
+      {nodeCase === 'throwEvent' && <ThrowEventNodeComponent throwEventNode={node as Node & { throwEvent: ThrowEventNode }} />}
+      {nodeCase === 'waitForCondition' && <WaitForConditionNodeComponent waitForConditionNode={node as Node & { waitForCondition: WaitForConditionNode }} />}
     </div>
   )
 }
