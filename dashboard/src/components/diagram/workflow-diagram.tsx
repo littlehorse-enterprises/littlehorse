@@ -34,11 +34,7 @@ interface WorkflowDiagramProps {
   edges: CustomEdge[]
 }
 
-export default function WorkflowDiagram({
-  className = '',
-  nodes,
-  edges,
-}: WorkflowDiagramProps) {
+export default function WorkflowDiagram({ className = '', nodes, edges }: WorkflowDiagramProps) {
   const [nodesState, setNodesState, onNodesStateChange] = useNodesState<CustomNode>([])
   const [edgesState, setEdgesState, onEdgesStateChange] = useEdgesState<CustomEdge>([])
   const { selectedId, setSelectedId } = useNodeSelection()

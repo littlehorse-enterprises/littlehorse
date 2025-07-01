@@ -12,7 +12,7 @@ export function getVariable(variable?: VariableAssignment) {
   if (variable.source?.$case === 'literalValue') return getVariableValue(variable.source.literalValue)
 }
 
-function getVariableValue(variable?: VariableValue) {
+export function getVariableValue(variable?: VariableValue) {
   if (!variable) return
 
   if (variable.value?.$case === 'bytes') {
@@ -43,8 +43,18 @@ function getValueFromFormatString(
 ): string | undefined {
   const template = getVariable(source.formatString.format)
   const args = source.formatString.args.map(getVariable)
-
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
+}
+
+export function getVariableTypeFromLiteralValue(literalValue: VariableValue) {
+  const variableValueCase = literalValue.value?.$case
+  if (variableValueCase === 'int') return 'int'
+  if (variableValueCase === 'double') return 'double'
+  if (variableValueCase === 'bool') return 'bool'
+  if (variableValueCase === 'str') return 'str'
+  if (variableValueCase === 'jsonObj') return 'jsonObj'
+  if (variableValueCase === 'jsonArr') return 'jsonArr'
+  if (variableValueCase === 'bytes') return 'bytes'
 }
 
 export function formatJsonOrReturnOriginalValue(value: string) {
