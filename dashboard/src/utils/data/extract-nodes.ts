@@ -22,7 +22,7 @@ export function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomNode
     customNodes.push(customNode)
 
     // #region Recursion
-    if (node.node?.$case === 'startThread') {
+    if (nodeCase === 'startThread') {
       const startThreadEntrypointThread = node.node.startThread?.threadSpecName
       if (startThreadEntrypointThread === undefined) return
 
