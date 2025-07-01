@@ -5,14 +5,8 @@ import { AlertCircle, CheckCircle, Clock, Loader2, XCircle } from 'lucide-react'
 /* --------------------------------- Search --------------------------------- */
 export const SEARCH_LIMITS = [10, 20, 30, 60, 100] as const
 
-export const SEARCH_LIMIT_DEFAULT: (typeof SEARCH_LIMITS)[number] = 10
-export const SEARCH_ENTITIES = [
-  'WfSpec',
-  'TaskDef',
-  'UserTaskDef',
-  'ExternalEventDef',
-  'WorkflowEventDef',
-] as const
+export const SEARCH_LIMIT_DEFAULT: (typeof SEARCH_LIMITS)[number] = 20
+export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
 export const TIME_RANGES = [
   { value: '5m', label: 'Last 5 minutes', minutes: 5 },
   { value: '15m', label: 'Last 15 minutes', minutes: 15 },
