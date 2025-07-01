@@ -92,7 +92,7 @@ public class WfRunVariable
         {
             TypeDef = new TypeDefinition
             {
-                Type = Type,
+                PrimitiveType = Type,
                 Masked = _masked
             },
             Name = Name
