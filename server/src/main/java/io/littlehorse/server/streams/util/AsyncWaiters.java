@@ -9,11 +9,9 @@ import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +23,7 @@ public class AsyncWaiters {
 
     private final ConcurrentHashMap<String, FutureResponseAndWaitingClient> responses = new ConcurrentHashMap<>();
     private final Map<WorkflowEventDefIdAndTenant, CompletableFuture<WorkflowEvent>> workflowEvents =
-            Collections.synchronizedMap(new WeakHashMap<>());
+            new ConcurrentHashMap<>();
     private final long removeCompletedAfter;
     private final TimeUnit timeUnit;
 

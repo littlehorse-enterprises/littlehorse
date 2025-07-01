@@ -27,6 +27,7 @@ from littlehorse.model import (
     TaskDefId,
     WorkflowEventDefId,
     PutExternalEventDefRequest,
+    CorrelatedEventConfig,
     PutWorkflowEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
@@ -1698,6 +1699,7 @@ class WorkflowThread:
         event_name: str,
         timeout: int = -1,
         correlation_id: Optional[Union[str, LHFormatString, WfRunVariable]] = None,
+        mask_correlation_id: Optional[bool] = None,
     ) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
@@ -1717,11 +1719,16 @@ class WorkflowThread:
         correlation_var_assn: Optional[VariableAssignment] = None
         if correlation_id is not None:
             correlation_var_assn = to_variable_assignment(correlation_id)
+            if isinstance(correlation_id, WfRunVariable) and mask_correlation_id is None:
+                mask_correlation_id = correlation_id._masked
+        if mask_correlation_id is None:
+            mask_correlation_id = False
 
         wait_node = ExternalEventNode(
             external_event_def_id=ExternalEventDefId(name=event_name),
             timeout_seconds=None if timeout <= 0 else to_variable_assignment(timeout),
             correlation_key=correlation_var_assn,
+            mask_correlation_key=mask_correlation_id,
         )
         node_name = self.add_node(event_name, wait_node)
         return NodeOutput(node_name)
@@ -2319,7 +2326,7 @@ def create_task_def(
 
 
 def create_external_event_def(
-    name: str, config: LHConfig, timeout: Optional[int] = None
+    name: str, config: LHConfig, timeout: Optional[int] = None, correlated_event_config: Optional[CorrelatedEventConfig] = None
 ) -> None:
     """Creates a new ExternalEventDef at the LH Server.
 
@@ -2329,7 +2336,7 @@ def create_external_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutExternalEventDefRequest(name=name)
+    request = PutExternalEventDefRequest(name=name, correlated_event_config=correlated_event_config)
     stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
 

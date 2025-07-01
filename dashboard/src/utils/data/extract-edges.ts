@@ -2,7 +2,7 @@ import { getVariable } from '@/utils/data/variables'
 import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
 import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
 import { CustomEdge } from '@/types/node'
-import { getNodeType } from './node'
+import { getNodeAndType } from './node'
 
 function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomEdge[] {
   const threadSpecName = Object.keys(wfSpec.threadSpecs).find(function (key) {
@@ -14,7 +14,7 @@ function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): Cus
   const sourceMap = new Map<string, number>()
 
   Object.entries(threadSpec.nodes).forEach(function ([source, node]) {
-    if (getNodeType(node) === 'START_THREAD') {
+    if (getNodeAndType(node).type === 'START_THREAD') {
       const startThreadNodeName = node.startThread?.threadSpecName
       if (!startThreadNodeName) return
 
@@ -50,7 +50,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   const edges: CustomEdge[] = []
 
   Object.entries(threadSpec.nodes).forEach(function ([id, node]) {
-    const type = getNodeType(node)
+    const { type } = getNodeAndType(node)
     if (type === 'START_THREAD') {
       const startedThreadSpecName = node.startThread?.threadSpecName ?? ''
       const sourceId = `${id}:${threadName}`

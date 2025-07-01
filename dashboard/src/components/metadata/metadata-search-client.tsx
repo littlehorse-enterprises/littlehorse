@@ -1,9 +1,11 @@
 'use client'
+import { executeRpc } from '@/actions/executeRPC'
 import { search, SearchResponse } from '@/actions/search'
 import { Pagination } from '@/components/ui/load-more-pagination'
 import { SearchType } from '@/types/search'
 import { SEARCH_ENTITIES, SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
 import { Tabs, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library/tabs'
+import { WfSpecId } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import useSWRInfinite from 'swr/infinite'
@@ -28,7 +30,27 @@ export function MetadataSearchClient() {
     isLoading: isDataLoading,
   } = useSWRInfinite<SearchResponse>(getKey, async key => {
     const [, type, tenantId, limit, prefix, bookmark] = key
-    return search({ type, limit, prefix, bookmark, tenantId })
+    const response = await search({ type, limit, prefix, bookmark, tenantId })
+    if (response.type === 'WfSpec') {
+      const uniqueWfSpecs: WfSpecId[] = []
+      response.results.forEach((result: WfSpecId) => {
+        if (!uniqueWfSpecs.some(wfSpec => wfSpec.name === result.name)) uniqueWfSpecs.push(result)
+      })
+
+      response.results = await Promise.all(
+        uniqueWfSpecs.map(async wfSpec => {
+          const wfSpecResponse = await executeRpc(
+            'getLatestWfSpec',
+            {
+              name: wfSpec.name,
+            },
+            tenantId
+          )
+          return wfSpecResponse.id
+        })
+      )
+    }
+    return response
   })
 
   return (

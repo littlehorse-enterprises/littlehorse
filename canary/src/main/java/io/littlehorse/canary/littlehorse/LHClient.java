@@ -4,7 +4,6 @@ import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.protobuf.Empty;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseFutureStub;
@@ -26,16 +25,6 @@ public class LHClient {
         this.workflowName = workflowName;
         this.workflowRevision = workflowRevision;
         this.workflowVersion = workflowVersion;
-    }
-
-    public String getServerVersion() {
-        final LittleHorseVersion response = blockingStub.getServerVersion(Empty.getDefaultInstance());
-        return "%s.%s.%s%s"
-                .formatted(
-                        response.getMajorVersion(),
-                        response.getMinorVersion(),
-                        response.getPatchVersion(),
-                        response.hasPreReleaseIdentifier() ? "-" + response.getPreReleaseIdentifier() : "");
     }
 
     public void registerWorkflow(final Workflow workflow) {

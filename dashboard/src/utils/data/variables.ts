@@ -1,5 +1,12 @@
 import { VariableAssignment, VariableDef, VariableType, VariableValue } from 'littlehorse-client/proto'
 
+export function getVariable(variable?: VariableAssignment) {
+  if (!variable) return
+  if (variable.formatString) return getValueFromFormatString(variable)
+  if (variable.variableName) return getValueFromVariableName(variable)
+  if (variable.literalValue) return getVariableValue(variable.literalValue)
+}
+
 export function getVariableValue(variable?: VariableValue) {
   if (!variable) return
 
@@ -12,25 +19,23 @@ export function getVariableValue(variable?: VariableValue) {
   }
 }
 
-export const getVariable = (variable?: VariableAssignment) => {
-  if (!variable) return
-  if (variable.formatString) return getValueFromFormatString(variable)
-  if (variable.variableName) {
-    return getValueFromVariableName(variable)
-  }
-  if (variable.literalValue) return getVariableValue(variable.literalValue)
+export function getVariableTypeFromLiteralValue(literalValue: VariableValue) {
+  if (literalValue.int) return 'int'
+  if (literalValue.double) return 'double'
+  if (literalValue.bool) return 'bool'
+  if (literalValue.str) return 'str'
+  if (literalValue.jsonObj) return 'jsonObj'
+  if (literalValue.jsonArr) return 'jsonArr'
+  if (literalValue.bytes) return 'bytes'
 }
 
-const getValueFromVariableName = ({
-  variableName,
-  jsonPath,
-}: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) => {
+function getValueFromVariableName({ variableName, jsonPath }: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) {
   if (!variableName) return
   if (jsonPath) return `{${jsonPath.replace('$', variableName)}}`
   return `{${variableName}}`
 }
 
-const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined => {
+function getValueFromFormatString({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined {
   if (!formatString) return
   const template = getVariable(formatString.format)
   const args = formatString.args.map(getVariable)
@@ -38,7 +43,7 @@ const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'fo
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
 
-export const formatJsonOrReturnOriginalValue = (value: string) => {
+export function formatJsonOrReturnOriginalValue(value: string) {
   try {
     const json = JSON.parse(value)
     return JSON.stringify(json, null, 2)
@@ -47,7 +52,7 @@ export const formatJsonOrReturnOriginalValue = (value: string) => {
   }
 }
 
-export const getTypedContent = (contentType: string, contentValue: string) => {
+export function getTypedContent(contentType: string, contentValue: string) {
   switch (contentType) {
     case 'STR':
       return { str: contentValue }

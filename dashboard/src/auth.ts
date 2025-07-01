@@ -1,4 +1,3 @@
-import { isTokenExpired, validateAccessToken } from '@/utils/auth/authUtil'
 import NextAuth from 'next-auth'
 import 'next-auth/jwt'
 import Keycloak from 'next-auth/providers/keycloak'
@@ -24,6 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/api/signin',
   },
+  secret: process.env.AUTH_SECRET || (OAUTH_ENABLED ? undefined : 'fallback-secret-for-disabled-auth'),
   providers: OAUTH_ENABLED
     ? [
         Keycloak({
@@ -51,7 +51,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       const token = auth?.accessToken
 
-      return !!(token && (await validateAccessToken(token)) && !isTokenExpired(auth?.expiresAt))
+      return !!(token && !isTokenExpired(auth?.expiresAt) && (await validateAccessToken(token)))
     },
   },
 })
+
+export async function validateAccessToken(token: string | undefined): Promise<boolean> {
+  if (!token) {
+    return false
+  }
+
+  try {
+    const { ok } = await fetch(`${process.env.KEYCLOAK_ISSUER_URI}/protocol/openid-connect/userinfo`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return ok
+  } catch {
+    return false
+  }
+}
+
+export function isTokenExpired(expiresAt: number | undefined): boolean {
+  if (!expiresAt) {
+    return false
+  }
+
+  return expiresAt < Date.now() / 1000
+}

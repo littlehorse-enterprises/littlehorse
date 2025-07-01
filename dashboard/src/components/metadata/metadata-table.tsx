@@ -1,9 +1,16 @@
 'use client'
 import { SearchResponse } from '@/actions/search'
-import { Badge } from '@littlehorse-enterprises/ui-library/badge'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@littlehorse-enterprises/ui-library/table'
 import { SearchType } from '@/types/search'
+import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@littlehorse-enterprises/ui-library/table'
 import { UserTaskDefId, WfSpecId } from 'littlehorse-client/proto'
 import { Eye } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
@@ -51,7 +58,7 @@ export function MetadataTable({ data, activeTab, isLoading }: MetadataTableProps
           data?.map(item =>
             item.results.map((result: SearchResponse['results'][number]) => (
               <TableRow
-                key={result}
+                key={JSON.stringify(result)}
                 className="hover:bg-muted/50 cursor-pointer"
                 onClick={() =>
                   isOfType<WfSpecId>(activeTab === 'WfSpec', result)
