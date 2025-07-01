@@ -25,22 +25,9 @@ public class CorrelatedEventTest
         }
         PutWfSpecRequest workflow = new Sdk.Workflow.Spec.Workflow("example-correlated-event", Entrypoint).Compile();
 
-        if (workflow.ThreadSpecs.TryGetValue(workflow.EntrypointThreadName, out var entrypoint))
-        {
-            if (entrypoint.Nodes.TryGetValue("1-identity-verified-EXTERNAL_EVENT", out var node))
-            {
-                Assert.True(node.ExternalEvent.MaskCorrelationKey);
-            }
-            else
-            {
-                throw new Exception("External Event not found");
-            }
-        }
-        else
-        {
-            throw new Exception("Entrypoint Thread not found.");
-        }
-
+        ThreadSpec entry = workflow.ThreadSpecs[workflow.EntrypointThreadName];
+        Node node = entry.Nodes["1-identity-verified-EXTERNAL_EVENT"];
+        Assert.True(node.ExternalEvent.MaskCorrelationKey);
     }
 
     [Fact]
@@ -53,21 +40,9 @@ public class CorrelatedEventTest
         }
         PutWfSpecRequest workflow = new Sdk.Workflow.Spec.Workflow("example-correlated-event", Entrypoint).Compile();
 
-        if (workflow.ThreadSpecs.TryGetValue(workflow.EntrypointThreadName, out var entrypoint))
-        {
-            if (entrypoint.Nodes.TryGetValue("1-identity-verified-EXTERNAL_EVENT", out var node))
-            {
-                Assert.False(node.ExternalEvent.MaskCorrelationKey);
-            }
-            else
-            {
-                throw new Exception("External Event not found");
-            }
-        }
-        else
-        {
-            throw new Exception("Entrypoint Thread not found.");
-        }
+        ThreadSpec entry = workflow.ThreadSpecs[workflow.EntrypointThreadName];
+        Node node = entry.Nodes["1-identity-verified-EXTERNAL_EVENT"];
+        Assert.False(node.ExternalEvent.MaskCorrelationKey);
 
     }
 
@@ -81,21 +56,9 @@ public class CorrelatedEventTest
         }
         PutWfSpecRequest workflow = new Sdk.Workflow.Spec.Workflow("example-correlated-event", Entrypoint).Compile();
 
-        if (workflow.ThreadSpecs.TryGetValue(workflow.EntrypointThreadName, out var entrypoint))
-        {
-            if (entrypoint.Nodes.TryGetValue("1-identity-verified-EXTERNAL_EVENT", out var node))
-            {
-                Assert.True(node.ExternalEvent.MaskCorrelationKey);
-            }
-            else
-            {
-                throw new Exception("External Event not found");
-            }
-        }
-        else
-        {
-            throw new Exception("Entrypoint Thread not found.");
-        }
+        ThreadSpec entry = workflow.ThreadSpecs[workflow.EntrypointThreadName];
+        Node node = entry.Nodes["1-identity-verified-EXTERNAL_EVENT"];
+        Assert.True(node.ExternalEvent.MaskCorrelationKey);
     }
 
     [Fact]
@@ -108,21 +71,9 @@ public class CorrelatedEventTest
         }
         PutWfSpecRequest workflow = new Sdk.Workflow.Spec.Workflow("example-correlated-event", Entrypoint).Compile();
 
-        if (workflow.ThreadSpecs.TryGetValue(workflow.EntrypointThreadName, out var entrypoint))
-        {
-            if (entrypoint.Nodes.TryGetValue("1-identity-verified-EXTERNAL_EVENT", out var node))
-            {
-                Assert.False(node.ExternalEvent.MaskCorrelationKey);
-            }
-            else
-            {
-                throw new Exception("External Event not found");
-            }
-        }
-        else
-        {
-            throw new Exception("Entrypoint Thread not found.");
-        }
+        ThreadSpec entry = workflow.ThreadSpecs[workflow.EntrypointThreadName];
+        Node node = entry.Nodes["1-identity-verified-EXTERNAL_EVENT"];
+        Assert.False(node.ExternalEvent.MaskCorrelationKey);
     }
 
 }
