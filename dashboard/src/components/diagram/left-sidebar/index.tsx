@@ -40,6 +40,8 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
   const sidebarWidth =
     sidebarState === 'expanded' ? 'w-full md:w-4/5 lg:w-1/2' : sidebarState === 'normal' ? 'w-[250px]' : 'w-0 min-w-0'
 
+
+
   return (
     <div
       className={`relative flex h-full flex-col border-r border-gray-200 bg-white transition-all duration-300 ease-in-out ${sidebarWidth}`}
@@ -92,13 +94,12 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
             <span className="text-sm text-[#656565]">{`v${wfSpec?.id?.majorVersion}.${wfSpec?.id?.revision}`}</span>
             <Badge
               variant="outline"
-              className={`ml-3 ${
-                wfRun?.status === LHStatus.COMPLETED
-                  ? 'bg-emerald-100 text-emerald-600'
-                  : wfRun?.status === LHStatus.RUNNING
-                    ? 'bg-blue-100 text-blue-600'
-                    : 'bg-emerald-100 text-emerald-600'
-              } hover:bg-[#c5d0ff]/90`}
+              className={`ml-3 ${wfRun?.status === LHStatus.COMPLETED
+                ? 'bg-emerald-100 text-emerald-600'
+                : wfRun?.status === LHStatus.RUNNING
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'bg-emerald-100 text-emerald-600'
+                } hover:bg-[#c5d0ff]/90`}
             >
               {wfRun?.status ?? wfSpec?.status}
             </Badge>
@@ -133,3 +134,4 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
     </div>
   )
 }
+
