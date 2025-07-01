@@ -1,7 +1,25 @@
-import { getVariable } from '@/utils/data/variables'
-import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
-import { Edge as EdgeProto, ThreadSpec, VariableAssignment, WfSpec } from 'littlehorse-client/proto'
 import { CustomEdge } from '@/types/node'
+import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
+import { getVariable } from '@/utils/data/variables'
+import {
+  Edge as EdgeProto,
+  Node as LHNode,
+  ThreadSpec,
+  VariableAssignment,
+  WaitForThreadsNode_ThreadToWaitFor,
+  WfSpec
+} from 'littlehorse-client/proto'
+
+
+export function extractEdges(wfSpec: WfSpec): CustomEdge[] {
+  return [
+    ...extractEdgesFromThreadSpec(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName]),
+    ...Object.entries(wfSpec.threadSpecs).flatMap(function ([threadName, threadSpec]) {
+      return extractThreadConnectionEdges(threadSpec, threadName, wfSpec)
+    }),
+  ]
+}
+
 
 function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomEdge[] {
   const threadSpecName = Object.keys(wfSpec.threadSpecs).find(function (key) {
@@ -66,45 +84,109 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
     }
 
     if (nodeCase === 'waitForThreads') {
-      if (lhNode.node.waitForThreads.threadsToWaitFor?.$case === 'threads') {
-        lhNode.node.waitForThreads.threadsToWaitFor.threads.threads.forEach(function (thread) {
-          const startThreadNodeName =
-            thread.threadRunNumber?.source?.$case === 'variableName' ? thread.threadRunNumber.source.variableName : ''
-
-          const startThreadNode = Object.entries(threadSpec.nodes).find(function ([id]) {
-            return id == startThreadNodeName && threadSpec.nodes[id].node?.$case === 'startThread'
-          })?.[1]
-
-          const waitingThreadSpecName =
-            startThreadNode?.node?.$case === 'startThread' ? startThreadNode.node.startThread.threadSpecName : ''
-
-          const waitingThreadSpec = wfSpec.threadSpecs[waitingThreadSpecName]
-          const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(function ([id], [id2]) {
-            return id.localeCompare(id2)
-          })
-          const exitNodeId = sortedNodes[sortedNodes.length - 1][0]
-
-          const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
-          const targetId = `${id}:${threadName}`
-          edges.push({
-            id: `${sourceId}>${targetId}`,
-            source: sourceId,
-            target: targetId,
-          })
-        })
-      }
+      const waitForThreadsEdges = extractWaitForThreadsEdges(lhNode, id, threadName, threadSpec, wfSpec)
+      edges.push(...waitForThreadsEdges)
     }
   })
   return edges
 }
 
-export function extractEdges(wfSpec: WfSpec): CustomEdge[] {
-  return [
-    ...extractEdgesFromThreadSpec(wfSpec, wfSpec.threadSpecs[wfSpec.entrypointThreadName]),
-    ...Object.entries(wfSpec.threadSpecs).flatMap(function ([threadName, threadSpec]) {
-      return extractThreadConnectionEdges(threadSpec, threadName, wfSpec)
-    }),
-  ]
+function extractWaitForThreadsEdges(
+  lhNode: LHNode,
+  waitForThreadsNodeId: string,
+  threadName: string,
+  threadSpec: ThreadSpec,
+  wfSpec: WfSpec
+): CustomEdge[] {
+  const edges: CustomEdge[] = []
+  
+  if (lhNode.node?.$case !== 'waitForThreads' || lhNode.node.waitForThreads.threadsToWaitFor?.$case !== 'threads') {
+    return edges
+  }
+
+  lhNode.node.waitForThreads.threadsToWaitFor.threads.threads.forEach(function (thread: WaitForThreadsNode_ThreadToWaitFor) {
+    const edge = createWaitForThreadEdge(thread, waitForThreadsNodeId, threadName, threadSpec, wfSpec)
+    if (edge) {
+      edges.push(edge)
+    }
+  })
+
+  return edges
+}
+
+function createWaitForThreadEdge(
+  thread: WaitForThreadsNode_ThreadToWaitFor,
+  waitForThreadsNodeId: string,
+  threadName: string,
+  threadSpec: ThreadSpec,
+  wfSpec: WfSpec
+): CustomEdge | null {
+  const startThreadNodeName = extractStartThreadNodeName(thread)
+  if (!startThreadNodeName) {
+    return null
+  }
+
+  const startThreadNode = findStartThreadNode(threadSpec, startThreadNodeName)
+  if (!startThreadNode) {
+    return null
+  }
+
+  const waitingThreadSpecName = extractThreadSpecName(startThreadNode)
+  if (!waitingThreadSpecName) {
+    return null
+  }
+
+  const waitingThreadSpec = wfSpec.threadSpecs[waitingThreadSpecName]
+  if (!waitingThreadSpec) {
+    return null
+  }
+
+  const exitNodeId = findExitNodeId(waitingThreadSpec)
+  if (!exitNodeId) {
+    return null
+  }
+
+  const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
+  const targetId = `${waitForThreadsNodeId}:${threadName}`
+
+  return {
+    id: `${sourceId}>${targetId}`,
+    source: sourceId,
+    target: targetId,
+  }
+}
+
+function extractStartThreadNodeName(thread: WaitForThreadsNode_ThreadToWaitFor): string | null {
+  if (thread.threadRunNumber?.source?.$case === 'variableName') {
+    return thread.threadRunNumber.source.variableName
+  }
+  return null
+}
+
+function findStartThreadNode(threadSpec: ThreadSpec, startThreadNodeName: string): LHNode | null {
+  const nodeEntry = Object.entries(threadSpec.nodes).find(function ([id, node]) {
+    return id === startThreadNodeName && node.node?.$case === 'startThread'
+  })
+  return nodeEntry?.[1] || null
+}
+
+function extractThreadSpecName(startThreadNode: LHNode): string | null {
+  if (startThreadNode?.node?.$case === 'startThread') {
+    return startThreadNode.node.startThread.threadSpecName
+  }
+  return null
+}
+
+function findExitNodeId(threadSpec: ThreadSpec): string | null {
+  const sortedNodes = Object.entries(threadSpec.nodes).sort(function ([id1], [id2]) {
+    return id1.localeCompare(id2)
+  })
+  
+  if (sortedNodes.length === 0) {
+    return null
+  }
+  
+  return sortedNodes[sortedNodes.length - 1][0]
 }
 
 function formatVariableValue(value?: VariableAssignment) {
