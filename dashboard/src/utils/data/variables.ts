@@ -2,45 +2,59 @@ import { VariableAssignment, VariableDef, VariableType, VariableValue } from 'li
 
 export function getVariable(variable?: VariableAssignment) {
   if (!variable) return
-  if (variable.formatString) return getValueFromFormatString(variable)
-  if (variable.variableName) return getValueFromVariableName(variable)
-  if (variable.literalValue) return getVariableValue(variable.literalValue)
+  if (variable.source?.$case === 'formatString') return getValueFromFormatString(variable.source)
+  if (variable.source?.$case === 'variableName') {
+    if (variable.jsonPath) {
+      return `{${variable.jsonPath.replace('$', variable.source.variableName)}}`
+    }
+    return `{${variable.source.variableName}}`
+  }
+  if (variable.source?.$case === 'literalValue') return getVariableValue(variable.source.literalValue)
 }
 
 export function getVariableValue(variable?: VariableValue) {
   if (!variable) return
 
-  const key = Object.keys(variable)[0] as keyof VariableValue
-
-  if (variable.bytes) {
+  if (variable.value?.$case === 'bytes') {
     return '[bytes]'
-  } else {
-    return variable[key]
+  } else if (variable.value) {
+    const value = variable.value
+    switch (value.$case) {
+      case 'jsonObj':
+        return value.jsonObj
+      case 'jsonArr':
+        return value.jsonArr
+      case 'double':
+        return value.double
+      case 'bool':
+        return value.bool
+      case 'str':
+        return value.str
+      case 'int':
+        return value.int
+      default:
+        return undefined
+    }
   }
 }
 
-export function getVariableTypeFromLiteralValue(literalValue: VariableValue) {
-  if (literalValue.int) return 'int'
-  if (literalValue.double) return 'double'
-  if (literalValue.bool) return 'bool'
-  if (literalValue.str) return 'str'
-  if (literalValue.jsonObj) return 'jsonObj'
-  if (literalValue.jsonArr) return 'jsonArr'
-  if (literalValue.bytes) return 'bytes'
-}
-
-function getValueFromVariableName({ variableName, jsonPath }: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) {
-  if (!variableName) return
-  if (jsonPath) return `{${jsonPath.replace('$', variableName)}}`
-  return `{${variableName}}`
-}
-
-function getValueFromFormatString({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined {
-  if (!formatString) return
-  const template = getVariable(formatString.format)
-  const args = formatString.args.map(getVariable)
-
+function getValueFromFormatString(
+  source: VariableAssignment['source'] & { $case: 'formatString' }
+): string | undefined {
+  const template = getVariable(source.formatString.format)
+  const args = source.formatString.args.map(getVariable)
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
+}
+
+export function getVariableTypeFromLiteralValue(literalValue: VariableValue) {
+  const variableValueCase = literalValue.value?.$case
+  if (variableValueCase === 'int') return 'int'
+  if (variableValueCase === 'double') return 'double'
+  if (variableValueCase === 'bool') return 'bool'
+  if (variableValueCase === 'str') return 'str'
+  if (variableValueCase === 'jsonObj') return 'jsonObj'
+  if (variableValueCase === 'jsonArr') return 'jsonArr'
+  if (variableValueCase === 'bytes') return 'bytes'
 }
 
 export function formatJsonOrReturnOriginalValue(value: string) {
@@ -97,5 +111,6 @@ export const VARIABLE_TYPES: { [key in VariableType]: string } = {
   STR: 'String',
   INT: 'Integer',
   BYTES: 'Bytes',
+  WF_RUN_ID: 'Workflow Run ID',
   UNRECOGNIZED: 'Unrecognized',
 }

@@ -1,10 +1,11 @@
-import { WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, WfSpec } from 'littlehorse-client/proto'
+import { NodeType } from '../ui/node-utils'
 
 export interface TreeNode {
   id: string
   label: string
-  type?: string
-  status?: string
+  type?: NodeType
+  status?: LHStatus
   children: TreeNode[]
   level: number
 }

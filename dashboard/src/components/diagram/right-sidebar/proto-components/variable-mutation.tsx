@@ -4,21 +4,22 @@ import { VariableMutation } from 'littlehorse-client/proto'
 import { getVariable, getVariableValue } from '@/utils/data/variables'
 
 export default function VariableMutationComponent(variableMutation: VariableMutation) {
+  const rhsValueCase = variableMutation.rhsValue?.$case
   return (
     <Section title="VariableMutation">
       <Label label="LhsName">{variableMutation.lhsName}</Label>
       {variableMutation.lhsJsonPath && <Label label="LhsJsonPath">{variableMutation.lhsJsonPath}</Label>}
       <Label label="Operation">{variableMutation.operation}</Label>
 
-      {variableMutation.rhsAssignment && (
-        <Label label="RhsAssignment">{getVariable(variableMutation.rhsAssignment)}</Label>
+      {rhsValueCase === 'rhsAssignment' && (
+        <Label label="RhsAssignment">{getVariable(variableMutation.rhsValue?.rhsAssignment)}</Label>
       )}
-      {variableMutation.literalValue && (
-        <Label label="LiteralValue">{getVariableValue(variableMutation.literalValue)}</Label>
+      {rhsValueCase === 'literalValue' && (
+        <Label label="LiteralValue">{getVariableValue(variableMutation.rhsValue?.literalValue)}</Label>
       )}
-      {variableMutation.nodeOutput && (
+      {rhsValueCase === 'nodeOutput' && (
         <Section title="NodeOutput">
-          <Label label="jsonPath">{variableMutation.nodeOutput.jsonpath}</Label>
+          <Label label="jsonPath">{variableMutation.rhsValue?.nodeOutput?.jsonpath}</Label>
         </Section>
       )}
     </Section>

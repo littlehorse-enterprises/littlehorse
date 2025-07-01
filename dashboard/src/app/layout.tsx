@@ -25,9 +25,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} h-screen`}>
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

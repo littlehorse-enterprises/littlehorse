@@ -1,4 +1,5 @@
-import { LHStatus } from 'littlehorse-client/proto'
+import { OneOfCases } from '@/types/oneof'
+import { Node as LHNode, LHStatus } from 'littlehorse-client/proto'
 import {
   AlertCircle,
   Bell,
@@ -15,58 +16,31 @@ import {
   User,
 } from 'lucide-react'
 
-export type NodeType =
-  | 'ENTRYPOINT'
-  | 'EXIT'
-  | 'NOP'
-  | 'TASK'
-  | 'EXTERNAL_EVENT'
-  | 'SLEEP'
-  | 'START_THREAD'
-  | 'START_MULTIPLE_THREADS'
-  | 'THROW_EVENT'
-  | 'USER_TASK'
-  | 'WAIT_FOR_CONDITION'
-  | 'WAIT_FOR_THREADS'
-
-export function getNodeType(nodeName: string): NodeType | undefined {
-  if (nodeName.includes('ENTRYPOINT')) return 'ENTRYPOINT'
-  if (nodeName.includes('EXIT')) return 'EXIT'
-  if (nodeName.includes('EXTERNAL_EVENT')) return 'EXTERNAL_EVENT'
-  if (nodeName.includes('NOP')) return 'NOP'
-  if (nodeName.includes('TASK')) return 'TASK'
-  if (nodeName.includes('SLEEP')) return 'SLEEP'
-  if (nodeName.includes('START_THREAD')) return 'START_THREAD'
-  if (nodeName.includes('START_MULTIPLE_THREADS')) return 'START_MULTIPLE_THREADS'
-  if (nodeName.includes('THROW_EVENT')) return 'THROW_EVENT'
-  if (nodeName.includes('USER_TASK')) return 'USER_TASK'
-  if (nodeName.includes('WAIT_FOR_CONDITION')) return 'WAIT_FOR_CONDITION'
-  if (nodeName.includes('WAIT_FOR_THREADS')) return 'WAIT_FOR_THREADS'
-}
+export type NodeType = OneOfCases<LHNode['node']>
 
 export function getIconColor(nodeType: NodeType): string {
   switch (nodeType) {
-    case 'ENTRYPOINT':
+    case 'entrypoint':
       return 'text-green-600'
-    case 'EXIT':
+    case 'exit':
       return 'text-red-600'
-    case 'EXTERNAL_EVENT':
+    case 'externalEvent':
       return 'text-purple-600'
-    case 'NOP':
+    case 'nop':
       return 'text-orange-600'
-    case 'SLEEP':
+    case 'sleep':
       return 'text-indigo-600'
-    case 'START_THREAD':
+    case 'startThread':
       return 'text-cyan-600'
-    case 'START_MULTIPLE_THREADS':
+    case 'startMultipleThreads':
       return 'text-cyan-600'
-    case 'THROW_EVENT':
+    case 'throwEvent':
       return 'text-pink-600'
-    case 'USER_TASK':
+    case 'userTask':
       return 'text-emerald-600'
-    case 'WAIT_FOR_CONDITION':
+    case 'waitForCondition':
       return 'text-amber-600'
-    case 'WAIT_FOR_THREADS':
+    case 'waitForThreads':
       return 'text-violet-600'
     default:
       return 'text-blue-600'
@@ -75,27 +49,27 @@ export function getIconColor(nodeType: NodeType): string {
 
 export function getBorderColor(nodeType: NodeType): string {
   switch (nodeType) {
-    case 'ENTRYPOINT':
+    case 'entrypoint':
       return 'border-green-200'
-    case 'EXIT':
+    case 'exit':
       return 'border-red-200'
-    case 'EXTERNAL_EVENT':
+    case 'externalEvent':
       return 'border-purple-200'
-    case 'NOP':
+    case 'nop':
       return 'border-orange-200'
-    case 'SLEEP':
+    case 'sleep':
       return 'border-indigo-200'
-    case 'START_THREAD':
+    case 'startThread':
       return 'border-cyan-200'
-    case 'START_MULTIPLE_THREADS':
+    case 'startMultipleThreads':
       return 'border-cyan-200'
-    case 'THROW_EVENT':
+    case 'throwEvent':
       return 'border-pink-200'
-    case 'USER_TASK':
+    case 'userTask':
       return 'border-emerald-200'
-    case 'WAIT_FOR_CONDITION':
+    case 'waitForCondition':
       return 'border-amber-200'
-    case 'WAIT_FOR_THREADS':
+    case 'waitForThreads':
       return 'border-violet-200'
     default:
       return 'border-blue-200'
@@ -104,27 +78,27 @@ export function getBorderColor(nodeType: NodeType): string {
 
 export function getBackgroundColor(nodeType: NodeType): string {
   switch (nodeType) {
-    case 'ENTRYPOINT':
+    case 'entrypoint':
       return 'bg-green-100'
-    case 'EXIT':
+    case 'exit':
       return 'bg-red-100'
-    case 'EXTERNAL_EVENT':
+    case 'externalEvent':
       return 'bg-purple-100'
-    case 'NOP':
+    case 'nop':
       return 'bg-orange-100'
-    case 'SLEEP':
+    case 'sleep':
       return 'bg-indigo-100'
-    case 'START_THREAD':
+    case 'startThread':
       return 'bg-cyan-100'
-    case 'START_MULTIPLE_THREADS':
+    case 'startMultipleThreads':
       return 'bg-cyan-100'
-    case 'THROW_EVENT':
+    case 'throwEvent':
       return 'bg-pink-100'
-    case 'USER_TASK':
+    case 'userTask':
       return 'bg-emerald-100'
-    case 'WAIT_FOR_CONDITION':
+    case 'waitForCondition':
       return 'bg-amber-100'
-    case 'WAIT_FOR_THREADS':
+    case 'waitForThreads':
       return 'bg-violet-100'
     default:
       return 'bg-blue-100'
@@ -133,27 +107,27 @@ export function getBackgroundColor(nodeType: NodeType): string {
 
 export function getTextColor(nodeType: NodeType): string {
   switch (nodeType) {
-    case 'ENTRYPOINT':
+    case 'entrypoint':
       return 'text-green-700'
-    case 'EXIT':
+    case 'exit':
       return 'text-red-700'
-    case 'EXTERNAL_EVENT':
+    case 'externalEvent':
       return 'text-purple-700'
-    case 'NOP':
+    case 'nop':
       return 'text-orange-700'
-    case 'SLEEP':
+    case 'sleep':
       return 'text-indigo-700'
-    case 'START_THREAD':
+    case 'startThread':
       return 'text-cyan-700'
-    case 'START_MULTIPLE_THREADS':
+    case 'startMultipleThreads':
       return 'text-cyan-700'
-    case 'THROW_EVENT':
+    case 'throwEvent':
       return 'text-pink-700'
-    case 'USER_TASK':
+    case 'userTask':
       return 'text-emerald-700'
-    case 'WAIT_FOR_CONDITION':
+    case 'waitForCondition':
       return 'text-amber-700'
-    case 'WAIT_FOR_THREADS':
+    case 'waitForThreads':
       return 'text-violet-700'
     default:
       return 'text-blue-700'
@@ -164,29 +138,29 @@ export function getNodeIcon(nodeType: NodeType) {
   const iconClass = `${getIconColor(nodeType)}`
 
   switch (nodeType) {
-    case 'EXTERNAL_EVENT':
+    case 'externalEvent':
       return <MailIcon className={iconClass} />
-    case 'ENTRYPOINT':
+    case 'entrypoint':
       return <PlayIcon className={iconClass} />
-    case 'EXIT':
+    case 'exit':
       return <CircleSlashIcon className={iconClass} />
-    case 'TASK':
+    case 'task':
       return <Box className={iconClass} />
-    case 'NOP':
+    case 'nop':
       return <Minus className={iconClass} />
-    case 'SLEEP':
+    case 'sleep':
       return <Timer className={iconClass} />
-    case 'START_THREAD':
+    case 'startThread':
       return <GitBranch className={iconClass} />
-    case 'START_MULTIPLE_THREADS':
+    case 'startMultipleThreads':
       return <GitBranch className={iconClass} />
-    case 'THROW_EVENT':
+    case 'throwEvent':
       return <Bell className={iconClass} />
-    case 'USER_TASK':
+    case 'userTask':
       return <User className={iconClass} />
-    case 'WAIT_FOR_CONDITION':
+    case 'waitForCondition':
       return <Clock className={iconClass} />
-    case 'WAIT_FOR_THREADS':
+    case 'waitForThreads':
       return <GitBranch className={iconClass} />
     default:
       return null

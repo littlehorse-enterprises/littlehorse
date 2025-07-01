@@ -121,32 +121,14 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
         </div>
 
         {/* Action Button */}
-        {!wfRun && (
-          <ActionButton
-            variant="run"
-            wfSpec={wfSpec}
-          />
-        )}
-        {wfRun && (wfRun.status === LHStatus.RUNNING) && (
+        {!wfRun && <ActionButton variant="run" wfSpec={wfSpec} />}
+        {wfRun && wfRun.status === LHStatus.RUNNING && (
           <>
-            <ActionButton
-              variant="stop"
-              wfRun={wfRun}
-            />
+            <ActionButton variant="stop" wfRun={wfRun} />
           </>
         )}
-        {wfRun && (wfRun.status === LHStatus.ERROR) && (
-          <ActionButton
-            variant="rescue"
-            wfRun={wfRun}
-          />
-        )}
-        {wfRun?.status === LHStatus.HALTED && (
-          <ActionButton
-            variant="resume"
-            wfRun={wfRun}
-          />
-        )}
+        {wfRun && wfRun.status === LHStatus.ERROR && <ActionButton variant="rescue" wfRun={wfRun} />}
+        {wfRun?.status === LHStatus.HALTED && <ActionButton variant="resume" wfRun={wfRun} />}
       </div>
     </div>
   )

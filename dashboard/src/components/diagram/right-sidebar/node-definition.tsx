@@ -1,21 +1,6 @@
 'use client'
 
-import {
-  Node,
-  TaskNode,
-  ExternalEventNode,
-  EntrypointNode,
-  ExitNode,
-  StartThreadNode,
-  WaitForThreadsNode,
-  SleepNode,
-  UserTaskNode,
-  StartMultipleThreadsNode,
-  NopNode,
-  ThrowEventNode,
-  WaitForConditionNode,
-} from 'littlehorse-client/proto'
-import { getNodeAndType } from '@/utils/data/node'
+import { Node } from 'littlehorse-client/proto'
 import { EntrypointNodeComponent } from './proto-components/nodes/entrypoint'
 import { ExitNodeComponent } from './proto-components/nodes/exit'
 import { ExternalEventNodeComponent } from './proto-components/nodes/external-event'
@@ -34,42 +19,22 @@ interface NodeDefinitionProps {
 }
 
 export default function NodeDefinition({ node }: NodeDefinitionProps) {
-  const { node: nodeOneOf, type } = getNodeAndType(node)
+  const nodeCase = node.node?.$case
 
   return (
-    <div className="w-full space-y-3 pt-2">
-      {(() => {
-        switch (type) {
-          case 'TASK':
-            return <TaskNodeComponent {...(nodeOneOf.task as TaskNode)} />
-          case 'EXTERNAL_EVENT':
-            return <ExternalEventNodeComponent {...(nodeOneOf.externalEvent as ExternalEventNode)} />
-          case 'ENTRYPOINT':
-            return <EntrypointNodeComponent {...(nodeOneOf.entrypoint as EntrypointNode)} />
-          case 'EXIT':
-            return <ExitNodeComponent {...(nodeOneOf.exit as ExitNode)} />
-          case 'START_THREAD':
-            return <StartThreadNodeComponent {...(nodeOneOf.startThread as StartThreadNode)} />
-          case 'WAIT_FOR_THREADS':
-            return <WaitForThreadsNodeComponent {...(nodeOneOf.waitForThreads as WaitForThreadsNode)} />
-          case 'SLEEP':
-            return <SleepNodeComponent {...(nodeOneOf.sleep as SleepNode)} />
-          case 'USER_TASK':
-            return <UserTaskNodeComponent {...(nodeOneOf.userTask as UserTaskNode)} />
-          case 'START_MULTIPLE_THREADS':
-            return (
-              <StartMultipleThreadsNodeComponent {...(nodeOneOf.startMultipleThreads as StartMultipleThreadsNode)} />
-            )
-          case 'NOP':
-            return <NopNodeComponent {...(nodeOneOf.nop as NopNode)} />
-          case 'THROW_EVENT':
-            return <ThrowEventNodeComponent {...(nodeOneOf.throwEvent as ThrowEventNode)} />
-          case 'WAIT_FOR_CONDITION':
-            return <WaitForConditionNodeComponent {...(nodeOneOf.waitForCondition as WaitForConditionNode)} />
-          default:
-            return <div>Unknown node type</div>
-        }
-      })()}
+    <div className="pt-2">
+      {nodeCase === 'task' && <TaskNodeComponent {...node.node.task} />}
+      {nodeCase === 'externalEvent' && <ExternalEventNodeComponent {...node.node.externalEvent} />}
+      {nodeCase === 'entrypoint' && <EntrypointNodeComponent {...node.node.entrypoint} />}
+      {nodeCase === 'exit' && <ExitNodeComponent {...node.node.exit} />}
+      {nodeCase === 'startThread' && <StartThreadNodeComponent {...node.node.startThread} />}
+      {nodeCase === 'waitForThreads' && <WaitForThreadsNodeComponent {...node.node.waitForThreads} />}
+      {nodeCase === 'sleep' && <SleepNodeComponent {...node.node.sleep} />}
+      {nodeCase === 'userTask' && <UserTaskNodeComponent {...node.node.userTask} />}
+      {nodeCase === 'startMultipleThreads' && <StartMultipleThreadsNodeComponent {...node.node.startMultipleThreads} />}
+      {nodeCase === 'nop' && <NopNodeComponent {...node.node.nop} />}
+      {nodeCase === 'throwEvent' && <ThrowEventNodeComponent {...node.node.throwEvent} />}
+      {nodeCase === 'waitForCondition' && <WaitForConditionNodeComponent {...node.node.waitForCondition} />}
     </div>
   )
 }

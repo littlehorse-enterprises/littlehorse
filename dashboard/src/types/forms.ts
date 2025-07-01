@@ -1,5 +1,5 @@
-import { ThreadVarDef } from "littlehorse-client/proto"
-import { FieldValues, FormState, UseFormRegister } from "react-hook-form"
+import { ThreadVarDef } from 'littlehorse-client/proto'
+import { FieldValues, FormState, UseFormRegister } from 'react-hook-form'
 
 export type FormFieldProp = {
   variables?: ThreadVarDef

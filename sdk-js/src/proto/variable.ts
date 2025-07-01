@@ -16,39 +16,16 @@ import { VariableId, WfRunId, WfSpecId } from "./object_id";
  * from a TaskRun, as the value of a WfRun's Variable, etc.
  */
 export interface VariableValue {
-  /** A String representing a serialized json object. */
-  jsonObj?:
-    | string
+  value?:
+    | { $case: "jsonObj"; jsonObj: string }
+    | { $case: "jsonArr"; jsonArr: string }
+    | { $case: "double"; double: number }
+    | { $case: "bool"; bool: boolean }
+    | { $case: "str"; str: string }
+    | { $case: "int"; int: number }
+    | { $case: "bytes"; bytes: Buffer }
+    | { $case: "wfRunId"; wfRunId: WfRunId }
     | undefined;
-  /** A String representing a serialized json list. */
-  jsonArr?:
-    | string
-    | undefined;
-  /** A 64-bit floating point number. */
-  double?:
-    | number
-    | undefined;
-  /** A boolean. */
-  bool?:
-    | boolean
-    | undefined;
-  /** A string. */
-  str?:
-    | string
-    | undefined;
-  /**
-   * The `INT` variable type is stored as a 64-bit integer. The
-   * `INT` can be cast to a `DOUBLE`.
-   */
-  int?:
-    | number
-    | undefined;
-  /** An arbitrary String of bytes. */
-  bytes?:
-    | Buffer
-    | undefined;
-  /** Reference to a WfRunId */
-  wfRunId?: WfRunId | undefined;
 }
 
 /** A Variable is an instance of a variable assigned to a WfRun. */
@@ -77,43 +54,36 @@ export interface Variable {
 }
 
 function createBaseVariableValue(): VariableValue {
-  return {
-    jsonObj: undefined,
-    jsonArr: undefined,
-    double: undefined,
-    bool: undefined,
-    str: undefined,
-    int: undefined,
-    bytes: undefined,
-    wfRunId: undefined,
-  };
+  return { value: undefined };
 }
 
 export const VariableValue = {
   encode(message: VariableValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.jsonObj !== undefined) {
-      writer.uint32(18).string(message.jsonObj);
-    }
-    if (message.jsonArr !== undefined) {
-      writer.uint32(26).string(message.jsonArr);
-    }
-    if (message.double !== undefined) {
-      writer.uint32(33).double(message.double);
-    }
-    if (message.bool !== undefined) {
-      writer.uint32(40).bool(message.bool);
-    }
-    if (message.str !== undefined) {
-      writer.uint32(50).string(message.str);
-    }
-    if (message.int !== undefined) {
-      writer.uint32(56).int64(message.int);
-    }
-    if (message.bytes !== undefined) {
-      writer.uint32(66).bytes(message.bytes);
-    }
-    if (message.wfRunId !== undefined) {
-      WfRunId.encode(message.wfRunId, writer.uint32(74).fork()).ldelim();
+    switch (message.value?.$case) {
+      case "jsonObj":
+        writer.uint32(18).string(message.value.jsonObj);
+        break;
+      case "jsonArr":
+        writer.uint32(26).string(message.value.jsonArr);
+        break;
+      case "double":
+        writer.uint32(33).double(message.value.double);
+        break;
+      case "bool":
+        writer.uint32(40).bool(message.value.bool);
+        break;
+      case "str":
+        writer.uint32(50).string(message.value.str);
+        break;
+      case "int":
+        writer.uint32(56).int64(message.value.int);
+        break;
+      case "bytes":
+        writer.uint32(66).bytes(message.value.bytes);
+        break;
+      case "wfRunId":
+        WfRunId.encode(message.value.wfRunId, writer.uint32(74).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -130,56 +100,56 @@ export const VariableValue = {
             break;
           }
 
-          message.jsonObj = reader.string();
+          message.value = { $case: "jsonObj", jsonObj: reader.string() };
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.jsonArr = reader.string();
+          message.value = { $case: "jsonArr", jsonArr: reader.string() };
           continue;
         case 4:
           if (tag !== 33) {
             break;
           }
 
-          message.double = reader.double();
+          message.value = { $case: "double", double: reader.double() };
           continue;
         case 5:
           if (tag !== 40) {
             break;
           }
 
-          message.bool = reader.bool();
+          message.value = { $case: "bool", bool: reader.bool() };
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.str = reader.string();
+          message.value = { $case: "str", str: reader.string() };
           continue;
         case 7:
           if (tag !== 56) {
             break;
           }
 
-          message.int = longToNumber(reader.int64() as Long);
+          message.value = { $case: "int", int: longToNumber(reader.int64() as Long) };
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.bytes = reader.bytes() as Buffer;
+          message.value = { $case: "bytes", bytes: reader.bytes() as Buffer };
           continue;
         case 9:
           if (tag !== 74) {
             break;
           }
 
-          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          message.value = { $case: "wfRunId", wfRunId: WfRunId.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -195,16 +165,30 @@ export const VariableValue = {
   },
   fromPartial(object: DeepPartial<VariableValue>): VariableValue {
     const message = createBaseVariableValue();
-    message.jsonObj = object.jsonObj ?? undefined;
-    message.jsonArr = object.jsonArr ?? undefined;
-    message.double = object.double ?? undefined;
-    message.bool = object.bool ?? undefined;
-    message.str = object.str ?? undefined;
-    message.int = object.int ?? undefined;
-    message.bytes = object.bytes ?? undefined;
-    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
-      ? WfRunId.fromPartial(object.wfRunId)
-      : undefined;
+    if (object.value?.$case === "jsonObj" && object.value?.jsonObj !== undefined && object.value?.jsonObj !== null) {
+      message.value = { $case: "jsonObj", jsonObj: object.value.jsonObj };
+    }
+    if (object.value?.$case === "jsonArr" && object.value?.jsonArr !== undefined && object.value?.jsonArr !== null) {
+      message.value = { $case: "jsonArr", jsonArr: object.value.jsonArr };
+    }
+    if (object.value?.$case === "double" && object.value?.double !== undefined && object.value?.double !== null) {
+      message.value = { $case: "double", double: object.value.double };
+    }
+    if (object.value?.$case === "bool" && object.value?.bool !== undefined && object.value?.bool !== null) {
+      message.value = { $case: "bool", bool: object.value.bool };
+    }
+    if (object.value?.$case === "str" && object.value?.str !== undefined && object.value?.str !== null) {
+      message.value = { $case: "str", str: object.value.str };
+    }
+    if (object.value?.$case === "int" && object.value?.int !== undefined && object.value?.int !== null) {
+      message.value = { $case: "int", int: object.value.int };
+    }
+    if (object.value?.$case === "bytes" && object.value?.bytes !== undefined && object.value?.bytes !== null) {
+      message.value = { $case: "bytes", bytes: object.value.bytes };
+    }
+    if (object.value?.$case === "wfRunId" && object.value?.wfRunId !== undefined && object.value?.wfRunId !== null) {
+      message.value = { $case: "wfRunId", wfRunId: WfRunId.fromPartial(object.value.wfRunId) };
+    }
     return message;
   },
 };
@@ -307,6 +291,7 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
