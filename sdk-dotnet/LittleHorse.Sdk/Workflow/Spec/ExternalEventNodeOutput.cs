@@ -87,8 +87,7 @@ public class ExternalEventNodeOutput : NodeOutput
     /// <returns>The ExternalEventNodeOutput.</returns>
     public CorrelatedEventConfig GetCorrelatedEventConfig()
     {
-        return _correlatedEventConfig;
-        // return _correlatedEventConfig ?? new CorrelatedEventConfig();
+        return _correlatedEventConfig ?? new CorrelatedEventConfig();
     }
     
 }

@@ -795,7 +795,7 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         Node evtNode = FindNode(node.NodeName);
         evtNode.ExternalEvent.CorrelationKey = AssignVariableHelper(correlationId);
-        evtNode.ExternalEvent.MaskCorrelationKey = maskCorrelationKey; //maybe this?
+        evtNode.ExternalEvent.MaskCorrelationKey = maskCorrelationKey;
     }
 
     internal void AddTimeoutToTaskNode(TaskNodeOutput node, int timeoutSeconds)

@@ -1,4 +1,4 @@
-﻿using ExternalEventExample;
+﻿using CorrelatedEventExample;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
@@ -6,6 +6,7 @@ using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+namespace CorrelatedEventExample;
 public abstract class Program
 {
     private static ServiceProvider? _serviceProvider;
@@ -23,37 +24,23 @@ public abstract class Program
     private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
-        
+
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
         return config;
     }
-    
-    private static List<LHTaskWorker<WaitForExternalEventWorker>> GetTaskWorkers(LHConfig config)
-    {
-        var executable = new WaitForExternalEventWorker();
-        var workers = new List<LHTaskWorker<WaitForExternalEventWorker>>
-        {
-            new(executable, "ask-for-name", config),
-            new(executable, "greet", config)
-        };
-        
-        return workers;
-    }
-    
+
     private static Workflow GetWorkflow()
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            WfRunVariable name = wf.DeclareStr("name").Searchable();
-            wf.Execute("ask-for-name");
-            name.Assign(wf.WaitForEvent("name-event").WithCorrelationId("some-document", masked:true));
-            wf.Execute("greet", name);
+            WfRunVariable documentId = wf.DeclareStr("document-id");
+            wf.WaitForEvent("document-signed").WithCorrelationId(documentId);
         }
-        
-        return new Workflow("example-external-event", MyEntryPoint);
+
+        return new Workflow("example-correlated-event", MyEntryPoint);
     }
 
     static void Main(string[] args)
@@ -64,32 +51,23 @@ public abstract class Program
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
             var client = config.GetGrpcClientInstance();
-            var taskWorkers = GetTaskWorkers(config);
-            foreach (var worker in taskWorkers)
-            {
-                worker.RegisterTaskDef();
-            }
-            
+
             var workflow = GetWorkflow();
-            
+
             // Register external event if it does not exist
             HashSet<string> externalEventNames = workflow.GetRequiredExternalEventDefNames();
 
             foreach (var externalEventName in externalEventNames)
             {
                 Console.WriteLine($"Registering external event {externalEventName}");
-            
-                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName });
+
+                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName, CorrelatedEventConfig = new CorrelatedEventConfig() });
             }
-            
+
             workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-            
+
             Thread.Sleep(300);
-            
-            foreach (var worker in taskWorkers)
-            {
-                worker.Start();
-            }
+
         }
     }
 }
