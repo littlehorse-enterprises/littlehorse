@@ -37,12 +37,18 @@ export function MetadataSearchClient() {
         if (!uniqueWfSpecs.some(wfSpec => wfSpec.name === result.name)) uniqueWfSpecs.push(result)
       })
 
-      response.results = await Promise.all(uniqueWfSpecs.map(async (wfSpec) => {
-        const wfSpecResponse = await executeRpc("getLatestWfSpec", {
-          name: wfSpec.name,
-        }, tenantId)
-        return wfSpecResponse.id
-      }))
+      response.results = await Promise.all(
+        uniqueWfSpecs.map(async wfSpec => {
+          const wfSpecResponse = await executeRpc(
+            'getLatestWfSpec',
+            {
+              name: wfSpec.name,
+            },
+            tenantId
+          )
+          return wfSpecResponse.id
+        })
+      )
     }
     return response
   })
