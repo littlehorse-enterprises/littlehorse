@@ -1,4 +1,4 @@
-import { VariableAssignment, VariableValue } from 'littlehorse-client/proto'
+import { VariableAssignment, VariableDef, VariableType, VariableValue } from 'littlehorse-client/proto'
 
 export function getVariable(variable?: VariableAssignment) {
   if (!variable) return
@@ -85,4 +85,31 @@ export function getTypedContent(contentType: string, contentValue: string) {
     default:
       return { str: contentValue }
   }
+}
+
+/**
+ * After 0.13.2, the `VariableDef.type` and `VariableDef.maskedValue` fields are deprecated.
+ * These fields are replaced with `VariableDef.typeDef`.
+ *
+ * Old server versions may keep around both old and new Variables, so this function
+ * determines which typing strategy a Variable uses.
+ */
+export const getVariableDefType = (varDef: VariableDef): VariableType => {
+  if (varDef.typeDef) {
+    return varDef.typeDef.type
+  } else if (varDef.type) {
+    return varDef.type
+  }
+  throw new Error('Variable must have type or typeDef.')
+}
+
+export const VARIABLE_TYPES: { [key in VariableType]: string } = {
+  JSON_OBJ: 'JSON Object',
+  JSON_ARR: 'JSON Array',
+  DOUBLE: 'Double',
+  BOOL: 'Boolean',
+  STR: 'String',
+  INT: 'Integer',
+  BYTES: 'Bytes',
+  UNRECOGNIZED: 'Unrecognized',
 }

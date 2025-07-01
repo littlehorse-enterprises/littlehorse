@@ -7,9 +7,8 @@ import {
   ThreadSpec,
   VariableAssignment,
   WaitForThreadsNode_ThreadToWaitFor,
-  WfSpec
+  WfSpec,
 } from 'littlehorse-client/proto'
-
 
 export function extractEdges(wfSpec: WfSpec): CustomEdge[] {
   return [
@@ -19,7 +18,6 @@ export function extractEdges(wfSpec: WfSpec): CustomEdge[] {
     }),
   ]
 }
-
 
 function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): CustomEdge[] {
   const threadSpecName = Object.keys(wfSpec.threadSpecs).find(function (key) {
@@ -99,12 +97,14 @@ function extractWaitForThreadsEdges(
   wfSpec: WfSpec
 ): CustomEdge[] {
   const edges: CustomEdge[] = []
-  
+
   if (lhNode.node?.$case !== 'waitForThreads' || lhNode.node.waitForThreads.threadsToWaitFor?.$case !== 'threads') {
     return edges
   }
 
-  lhNode.node.waitForThreads.threadsToWaitFor.threads.threads.forEach(function (thread: WaitForThreadsNode_ThreadToWaitFor) {
+  lhNode.node.waitForThreads.threadsToWaitFor.threads.threads.forEach(function (
+    thread: WaitForThreadsNode_ThreadToWaitFor
+  ) {
     const edge = createWaitForThreadEdge(thread, waitForThreadsNodeId, threadName, threadSpec, wfSpec)
     if (edge) {
       edges.push(edge)
@@ -181,11 +181,11 @@ function findExitNodeId(threadSpec: ThreadSpec): string | null {
   const sortedNodes = Object.entries(threadSpec.nodes).sort(function ([id1], [id2]) {
     return id1.localeCompare(id2)
   })
-  
+
   if (sortedNodes.length === 0) {
     return null
   }
-  
+
   return sortedNodes[sortedNodes.length - 1][0]
 }
 
