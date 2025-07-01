@@ -1167,6 +1167,18 @@ func (t *WorkflowThread) setCorrelationId(n *ExternalEventNodeOutput, id interfa
 		t.throwError(err)
 	}
 	node.GetExternalEvent().CorrelationKey = varAssn
+	// Check if id is a masked WfRunVariable and set MaskedValue=true if so
+	if v, ok := id.(*WfRunVariable); ok && v.threadVarDef.VarDef.TypeDef.Masked {
+		node.GetExternalEvent().MaskCorrelationKey = true
+	}
+
+	return n
+}
+
+func (t *WorkflowThread) maskCorrelationId(n *ExternalEventNodeOutput, masked bool) *ExternalEventNodeOutput {
+	t.checkIfIsActive()
+	node := t.spec.Nodes[n.nodeName]
+	node.GetExternalEvent().MaskCorrelationKey = masked
 	return n
 }
 

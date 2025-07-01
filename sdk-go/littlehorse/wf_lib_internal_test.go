@@ -1676,3 +1676,55 @@ func TestShouldCompileWorkflowUsingTasktWithTimeOutAndMutatingItsTaskNodeOutput(
 	assert.Nil(t, err)
 	assert.True(t, proto.Equal(&expectedTaskNode, taskNode))
 }
+
+func TestShouldAutomaticallyMaskCorrelationIdFromMaskedVar(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		ssn := wf.AddVariable("ssn", lhproto.VariableType_STR).MaskedValue()
+		wf.WaitForEvent("identity-verified").SetCorrelationId(ssn)
+	}, "some-wf")
+
+	putWf, err := wf.Compile()
+	assert.Nil(t, err)
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-identity-verified-EXTERNAL_EVENT"]
+	assert.True(t, node.GetExternalEvent().GetMaskCorrelationKey())
+}
+
+func TestShouldNotMaskNormalVariableAsCorrelationId(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		email := wf.AddVariable("email", lhproto.VariableType_STR)
+		wf.WaitForEvent("identity-verified").SetCorrelationId(email)
+	}, "some-wf")
+
+	putWf, err := wf.Compile()
+	assert.Nil(t, err)
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-identity-verified-EXTERNAL_EVENT"]
+	assert.False(t, node.GetExternalEvent().GetMaskCorrelationKey())
+}
+
+func TestShouldMaskCorrelationIdIfITellItTo(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		email := wf.AddVariable("email", lhproto.VariableType_STR)
+		wf.WaitForEvent("identity-verified").SetCorrelationId(email).MaskCorrelationId(true)
+	}, "some-wf")
+
+	putWf, err := wf.Compile()
+	assert.Nil(t, err)
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-identity-verified-EXTERNAL_EVENT"]
+	assert.True(t, node.GetExternalEvent().GetMaskCorrelationKey())
+}
+
+func TestShouldNotMaskCorrelationIdIfITellItNotTo(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
+		ssn := wf.AddVariable("ssn", lhproto.VariableType_STR).MaskedValue()
+		wf.WaitForEvent("identity-verified").SetCorrelationId(ssn).MaskCorrelationId(false)
+	}, "some-wf")
+
+	putWf, err := wf.Compile()
+	assert.Nil(t, err)
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-identity-verified-EXTERNAL_EVENT"]
+	assert.False(t, node.GetExternalEvent().GetMaskCorrelationKey())
+}

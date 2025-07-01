@@ -100,6 +100,12 @@ func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutpu
 
 func (n *ExternalEventNodeOutput) SetCorrelationId(id interface{}) *ExternalEventNodeOutput {
 	n.thread.setCorrelationId(n, id)
+
+	return n
+}
+
+func (n *ExternalEventNodeOutput) MaskCorrelationId(maskId bool) *ExternalEventNodeOutput {
+	n.thread.maskCorrelationId(n, maskId)
 	return n
 }
 
@@ -175,78 +181,6 @@ type LHExpression interface {
 	RemoveIndex_ByExpression(index LHExpression) LHExpression
 	RemoveKey(key interface{}) LHExpression
 }
-
-// func (n *PlainNodeOutput) Add(other interface{}) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       other,
-// 		operation: lhproto.VariableMutationType_ADD,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) Subtract(other interface{}) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       other,
-// 		operation: lhproto.VariableMutationType_SUBTRACT,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) Multiply(other interface{}) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       other,
-// 		operation: lhproto.VariableMutationType_MULTIPLY,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) Divide(other interface{}) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       other,
-// 		operation: lhproto.VariableMutationType_DIVIDE,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) Extend(other interface{}) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       other,
-// 		operation: lhproto.VariableMutationType_EXTEND,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) RemoveIfPresent(other interface{}) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       other,
-// 		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) RemoveIndex_ByInt(index int) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       index,
-// 		operation: lhproto.VariableMutationType_REMOVE_INDEX,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) RemoveIndex_ByExpression(index LHExpression) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       index,
-// 		operation: lhproto.VariableMutationType_REMOVE_INDEX,
-// 	}
-// }
-
-// func (n *PlainNodeOutput) RemoveKey(key interface{}) LHExpression {
-// 	return LHExpression{
-// 		lhs:       n,
-// 		rhs:       key,
-// 		operation: lhproto.VariableMutationType_REMOVE_KEY,
-// 	}
-// }
 
 func (n *WaitForThreadsNodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
 	n.handleExceptionOnChild(handler, exceptionName)
