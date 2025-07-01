@@ -1,7 +1,6 @@
-import { Node as LHNode, NodeRun, Edge as LHEdge } from 'littlehorse-client/proto'
-import { Node as RFNode } from '@xyflow/react'
-import { Edge as RFEdge } from '@xyflow/react'
-import { OneOfCases } from '@/utils/data/oneof-utils'
+import { OneOfCases } from '@/types/oneof'
+import { Edge as RFEdge, Node as RFNode } from '@xyflow/react'
+import { Edge as LHEdge, Node as LHNode, NodeRun } from 'littlehorse-client/proto'
 
 export type NodeData = {
   node: LHNode

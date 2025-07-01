@@ -111,5 +111,6 @@ export const VARIABLE_TYPES: { [key in VariableType]: string } = {
   STR: 'String',
   INT: 'Integer',
   BYTES: 'Bytes',
+  WF_RUN_ID: 'Workflow Run ID',
   UNRECOGNIZED: 'Unrecognized',
 }

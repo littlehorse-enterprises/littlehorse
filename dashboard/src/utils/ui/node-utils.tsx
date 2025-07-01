@@ -1,3 +1,4 @@
+import { OneOfCases } from '@/types/oneof'
 import { Node as LHNode, LHStatus } from 'littlehorse-client/proto'
 import {
   AlertCircle,
@@ -14,24 +15,8 @@ import {
   Timer,
   User,
 } from 'lucide-react'
-import { OneOfCases } from '../data/oneof-utils'
 
 export type NodeType = OneOfCases<LHNode['node']>
-
-export function getNodeType(nodeName: string): NodeType | undefined {
-  if (nodeName.includes('ENTRYPOINT')) return 'entrypoint'
-  if (nodeName.includes('EXIT')) return 'exit'
-  if (nodeName.includes('EXTERNAL_EVENT')) return 'externalEvent'
-  if (nodeName.includes('NOP')) return 'nop'
-  if (nodeName.includes('TASK')) return 'task'
-  if (nodeName.includes('SLEEP')) return 'sleep'
-  if (nodeName.includes('START_THREAD')) return 'startThread'
-  if (nodeName.includes('START_MULTIPLE_THREADS')) return 'startMultipleThreads'
-  if (nodeName.includes('THROW_EVENT')) return 'throwEvent'
-  if (nodeName.includes('USER_TASK')) return 'userTask'
-  if (nodeName.includes('WAIT_FOR_CONDITION')) return 'waitForCondition'
-  if (nodeName.includes('WAIT_FOR_THREADS')) return 'waitForThreads'
-}
 
 export function getIconColor(nodeType: NodeType): string {
   switch (nodeType) {

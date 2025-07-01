@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@littlehorse-enterprises/ui-library/select'
 import { Textarea } from '@littlehorse-enterprises/ui-library/textarea'
-import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, VariableValue, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -137,25 +137,10 @@ export default function WorkflowExecutionDialog({ isOpen, onClose, wfSpec }: Wor
     }))
   }
 
-  const formatVariablesPayload = (values: FormValues) => {
-    return Object.keys(values).reduce(
-      (
-        acc: Record<
-          string,
-          {
-            str?: string
-            int?: number
-            double?: number
-            bool?: boolean
-            jsonObj?: string
-            jsonArr?: string
-            bytes?: Buffer
-          }
-        >,
-        key
-      ) => {
+  const formatVariablesPayload = (values: FormValues): { [key: string]: VariableValue } => {
+    return Object.entries(values).reduce(
+      (acc: { [key: string]: VariableValue }, [key, rawValue]) => {
         if (key === 'customWfRunId') return acc
-        const rawValue = values[key]
         if (rawValue === '' || rawValue === undefined || rawValue === null) return acc
 
         const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
@@ -163,30 +148,32 @@ export default function WorkflowExecutionDialog({ isOpen, onClose, wfSpec }: Wor
         if (!variable?.varDef) return acc
         const type = getVariableDefType(variable.varDef)
 
+        let value: VariableValue
         switch (type) {
           case VariableType.INT:
-            acc[transformedKey] = { int: Number(rawValue) }
+            value = { value: { $case: 'int', int: Number(rawValue) } }
             break
           case VariableType.DOUBLE:
-            acc[transformedKey] = { double: Number(rawValue) }
+            value = { value: { $case: 'double', double: Number(rawValue) } }
             break
           case VariableType.BOOL:
-            acc[transformedKey] = { bool: rawValue === 'true' || rawValue === true }
+            value = { value: { $case: 'bool', bool: rawValue === 'true' || rawValue === true } }
             break
           case VariableType.JSON_OBJ:
-            acc[transformedKey] = { jsonObj: JSON.stringify(JSON.parse(rawValue as string)) }
+            value = { value: { $case: 'jsonObj', jsonObj: JSON.stringify(JSON.parse(rawValue as string)) } }
             break
           case VariableType.JSON_ARR:
-            acc[transformedKey] = { jsonArr: JSON.stringify(JSON.parse(rawValue as string)) }
+            value = { value: { $case: 'jsonArr', jsonArr: JSON.stringify(JSON.parse(rawValue as string)) } }
             break
           case VariableType.BYTES:
-            acc[transformedKey] = { bytes: Buffer.from(rawValue as string, 'utf8') }
+            value = { value: { $case: 'bytes', bytes: Buffer.from(rawValue as string, 'utf8') } }
             break
           case VariableType.STR:
           default:
-            acc[transformedKey] = { str: String(rawValue) }
+            value = { value: { $case: 'str', str: String(rawValue) } }
             break
         }
+        acc[transformedKey] = value
         return acc
       },
       {}
