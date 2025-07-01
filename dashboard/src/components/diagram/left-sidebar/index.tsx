@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import WfRunTab from './tab-content/wf-run-tab'
 import WfSpecTab from './tab-content/wf-spec-tab'
 import LeftSidebarTabs from './tabs'
+import ActionButton from './action-button'
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
   WfSpec: 'Workflow Specification',
@@ -91,12 +92,13 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
             <span className="text-sm text-[#656565]">{`v${wfSpec?.id?.majorVersion}.${wfSpec?.id?.revision}`}</span>
             <Badge
               variant="outline"
-              className={`ml-3 ${wfRun?.status === LHStatus.COMPLETED
-                ? 'bg-emerald-100 text-emerald-600'
-                : wfRun?.status === LHStatus.RUNNING
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'bg-emerald-100 text-emerald-600'
-                } hover:bg-[#c5d0ff]/90`}
+              className={`ml-3 ${
+                wfRun?.status === LHStatus.COMPLETED
+                  ? 'bg-emerald-100 text-emerald-600'
+                  : wfRun?.status === LHStatus.RUNNING
+                    ? 'bg-blue-100 text-blue-600'
+                    : 'bg-emerald-100 text-emerald-600'
+              } hover:bg-[#c5d0ff]/90`}
             >
               {wfRun?.status ?? wfSpec?.status}
             </Badge>
@@ -118,13 +120,15 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
           </div>
         </div>
 
-        {/* Run Workflow Button */}
-        {/* <div className="mt-auto border-t border-gray-200 p-4">
-          <Button className="w-full bg-[#3b81f5] hover:bg-[#3b81f5]/90">
-            <Play className="mr-2 h-4 w-4" />
-            Run Workflow
-          </Button>
-        </div> */}
+        {/* Action Button */}
+        {!wfRun && <ActionButton variant="run" wfSpec={wfSpec} />}
+        {wfRun && wfRun.status === LHStatus.RUNNING && (
+          <>
+            <ActionButton variant="stop" wfRun={wfRun} />
+          </>
+        )}
+        {wfRun && wfRun.status === LHStatus.ERROR && <ActionButton variant="rescue" wfRun={wfRun} />}
+        {wfRun?.status === LHStatus.HALTED && <ActionButton variant="resume" wfRun={wfRun} />}
       </div>
     </div>
   )
