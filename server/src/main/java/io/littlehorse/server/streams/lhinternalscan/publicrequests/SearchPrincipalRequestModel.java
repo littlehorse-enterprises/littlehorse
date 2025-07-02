@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.SearchPrincipalRequest;
 import io.littlehorse.sdk.common.proto.SearchPrincipalRequest.PrincipalCriteriaCase;
+import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
@@ -53,6 +54,9 @@ public class SearchPrincipalRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
+        if (isAdmin == null && tenantId == null) {
+            return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
+        }
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable((latestStart)));
     }
