@@ -88,6 +88,14 @@ compileJava {
     options.compilerArgs << '-parameters'
 }
 
+sourceSets {
+    main {
+        proto {
+            srcDir '../proto'
+        }
+    }
+}
+
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
@@ -95,7 +103,7 @@ protobuf {
 }
 
 checkstyle {
-    configFile = file("${rootDir}/canary/checkstyle.xml")
+    configFile = file("${rootDir}/canary/canary/checkstyle.xml")
     checkstyleTest.enabled = false
 }
 

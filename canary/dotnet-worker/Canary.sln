@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LittleHorse.Canary.Worker", "LittleHorse.Canary.Worker\LittleHorse.Canary.Worker.csproj", "{A42C308C-F1DE-4F5A-A6DE-823518E844EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LittleHorse.Sdk", "..\..\sdk-dotnet\LittleHorse.Sdk\LittleHorse.Sdk.csproj", "{00E3B9F1-C242-482B-8A3E-996E8F354469}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A42C308C-F1DE-4F5A-A6DE-823518E844EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A42C308C-F1DE-4F5A-A6DE-823518E844EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A42C308C-F1DE-4F5A-A6DE-823518E844EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A42C308C-F1DE-4F5A-A6DE-823518E844EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00E3B9F1-C242-482B-8A3E-996E8F354469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00E3B9F1-C242-482B-8A3E-996E8F354469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00E3B9F1-C242-482B-8A3E-996E8F354469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00E3B9F1-C242-482B-8A3E-996E8F354469}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

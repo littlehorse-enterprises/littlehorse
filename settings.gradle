@@ -5,9 +5,11 @@ include(
         'sdk-java',
         'e2e-tests',
         'test-utils',
-        'test-utils-container',
-        'canary'
+        'test-utils-container'
 )
+
+include "canary"
+project(":canary").projectDir = new File(rootProject.projectDir, "canary/core")
 
 [
         'basic',
