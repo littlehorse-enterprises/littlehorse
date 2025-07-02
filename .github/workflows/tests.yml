@@ -98,8 +98,18 @@ jobs:
           distribution: "corretto"
           java-version: 21
 
-      - name: Tests
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8'
+
+      - name: Tests Core
         run: ./gradlew canary:spotlessCheck canary:test canary:build
+
+      - name: Tests Dotnet Worker
+        run: |
+          dotnet format canary/dotnet-worker/LittleHorse.Canary.Worker/LittleHorse.Canary.Worker.csproj --verify-no-changes
+          dotnet build canary/dotnet-worker/LittleHorse.Canary.Worker/LittleHorse.Canary.Worker.csproj
 
   tests-server:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}

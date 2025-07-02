@@ -9,7 +9,7 @@ include(
 )
 
 include "canary"
-project(":canary").projectDir = new File(rootProject.projectDir, "canary/canary")
+project(":canary").projectDir = new File(rootProject.projectDir, "canary/core")
 
 [
         'basic',

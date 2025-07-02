@@ -6,7 +6,7 @@ RUN apk add aspnetcore8-runtime librdkafka \
 WORKDIR /lh
 
 COPY ./docker/canary/docker-entrypoint.sh /lh
-COPY ./canary/canary/build/libs/canary-*-all.jar /lh/core/canary.jar
+COPY ./canary/core/build/libs/canary-*-all.jar /lh/core/canary.jar
 COPY ./canary/dotnet-worker/LittleHorse.Canary.Worker/bin/Release/net8.0 /lh/dotnet
 
 ENTRYPOINT ["sh"]

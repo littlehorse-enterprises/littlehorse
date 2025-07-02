@@ -35,7 +35,7 @@ public class MetronomeWorker
     [LHTaskMethod(TaskName)]
     public async Task ExecuteTask(long startTime, bool sampleIteration, LHWorkerContext context)
     {
-        _logger.LogInformation("Executing task {} {}/{}", TaskName, context.IdempotencyKey, context.AttemptNumber);
+        _logger.LogDebug("Executing task {} {}/{}", TaskName, context.IdempotencyKey, context.AttemptNumber);
         if (sampleIteration)
         {
             var id = $"{context.IdempotencyKey}/{context.AttemptNumber}";

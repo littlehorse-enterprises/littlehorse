@@ -8,4 +8,4 @@ WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 cd "$WORK_DIR"
 
 ./gradlew canary:installDist
-./canary/canary/build/install/canary/bin/canary canary/canary/canary.properties
+./canary/core/build/install/canary/bin/canary canary/core/canary.properties

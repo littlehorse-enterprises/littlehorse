@@ -71,7 +71,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: canary-jar
-          path: canary/canary/build/libs/canary-*-all.jar
+          path: canary/core/build/libs/canary-*-all.jar
 
       - name: Tests and Build Dotnet Worker
         run: |
