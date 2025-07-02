@@ -9,7 +9,7 @@ fi
 
 if [ "$1" = 'dotnet-worker' ]; then
     shift
-    exec dotnet /lh/dotnet/LittleHorse.Canary.Worker.dll
+    exec dotnet /lh/dotnet/LittleHorse.Canary.Worker.dll "$@"
 fi
 
 exec "$@"
