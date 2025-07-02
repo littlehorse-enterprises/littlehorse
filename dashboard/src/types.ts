@@ -4,7 +4,6 @@ import { Edge as RFEdge, Node as RFNode } from '@xyflow/react'
 import { Edge as LHEdge, Node as LHNode, NodeRun, ThreadVarDef } from 'littlehorse-client/proto'
 import { FieldValues, FormState, UseFormRegister } from 'react-hook-form'
 import { SEARCH_ENTITIES } from '@/constants'
-import { NodeType } from './utils/ui/node-utils'
 
 // PageParams types
 export type PageParams = {
@@ -92,6 +91,8 @@ export type WithTenant = {
 export type WithBookmark = {
   bookmark?: string
 }
+
+export type NodeType = OneOfCases<LHNode['node']>
 
 export interface TreeNode {
   id: string
