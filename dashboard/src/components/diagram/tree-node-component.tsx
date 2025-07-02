@@ -1,6 +1,6 @@
 'use client'
 
-import { TreeNode } from '@/utils/data/node-tree'
+import { TreeNode } from '@/types'
 import { getNodeIcon, NodeType } from '@/utils/ui/node-utils'
 import { LHStatus } from 'littlehorse-client/proto'
 import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide-react'
@@ -72,7 +72,8 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
 
     // For task nodes, show status with proper task icon
     if (node.status === LHStatus.COMPLETED) return <CheckCircle className="mr-1.5 h-3 w-3 text-green-500" />
-    if (node.status === LHStatus.ERROR || node.status === LHStatus.EXCEPTION) return <XCircle className="mr-1.5 h-3 w-3 text-red-500" />
+    if (node.status === LHStatus.ERROR || node.status === LHStatus.EXCEPTION)
+      return <XCircle className="mr-1.5 h-3 w-3 text-red-500" />
     if (node.status === LHStatus.RUNNING) return <Loader2 className="mr-1.5 h-3 w-3 animate-spin text-blue-500" />
 
     // Default to task icon if no specific type detected

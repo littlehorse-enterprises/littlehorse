@@ -3,7 +3,7 @@
 import { searchWorkflowEvent } from '@/actions/searchWorkflowEvent'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
-import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/constants'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import {
   Table,

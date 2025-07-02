@@ -1,5 +1,5 @@
-import { CustomEdge } from '@/types/node'
-import { getComparatorSymbol } from '@/utils/data/getComparatorSymbol'
+import { CustomEdge } from '@/types'
+import { Conditions } from '@/constants'
 import { getVariable } from '@/utils/data/variables'
 import {
   Edge as LHEdge,
@@ -199,5 +199,5 @@ function extractEdgeLabel({ condition }: LHEdge) {
   if (!condition) return
 
   const { left, right, comparator } = condition
-  return `${formatVariableValue(left)} ${getComparatorSymbol(comparator)} ${formatVariableValue(right)}`
+  return `${formatVariableValue(left)} ${Conditions[comparator]} ${formatVariableValue(right)}`
 }

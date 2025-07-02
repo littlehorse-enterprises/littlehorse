@@ -46,26 +46,6 @@ function getValueFromFormatString(
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
 
-export function getVariableTypeFromLiteralValue(literalValue: VariableValue) {
-  const variableValueCase = literalValue.value?.$case
-  if (variableValueCase === 'int') return 'int'
-  if (variableValueCase === 'double') return 'double'
-  if (variableValueCase === 'bool') return 'bool'
-  if (variableValueCase === 'str') return 'str'
-  if (variableValueCase === 'jsonObj') return 'jsonObj'
-  if (variableValueCase === 'jsonArr') return 'jsonArr'
-  if (variableValueCase === 'bytes') return 'bytes'
-}
-
-export function formatJsonOrReturnOriginalValue(value: string) {
-  try {
-    const json = JSON.parse(value)
-    return JSON.stringify(json, null, 2)
-  } catch {
-    return value
-  }
-}
-
 export function getTypedContent(contentType: string, contentValue: string) {
   switch (contentType) {
     case 'STR':
@@ -95,11 +75,8 @@ export function getTypedContent(contentType: string, contentValue: string) {
  * determines which typing strategy a Variable uses.
  */
 export const getVariableDefType = (varDef: VariableDef): VariableType => {
-  if (varDef.typeDef) {
-    return varDef.typeDef.type
-  } else if (varDef.type) {
-    return varDef.type
-  }
+  if (varDef.typeDef) return varDef.typeDef.type
+  if (varDef.type) return varDef.type
   throw new Error('Variable must have type or typeDef.')
 }
 

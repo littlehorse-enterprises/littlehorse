@@ -1,4 +1,4 @@
-import { OneOfCases } from '@/types/oneof'
+import { OneOfCases } from '@/types'
 import { Node as LHNode, LHStatus } from 'littlehorse-client/proto'
 import {
   AlertCircle,

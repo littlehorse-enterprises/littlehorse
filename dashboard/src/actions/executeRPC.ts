@@ -1,7 +1,7 @@
 'use server'
 
-import { lhClient } from '@/utils/client/lhClient'
-import { LHMethodParamType, LHMethodReturnType, LittleHorseMethodRPCName } from '@/types/executeRPCTypes'
+import { lhClient } from '@/lhClient'
+import { LHMethodParamType, LHMethodReturnType, LittleHorseMethodRPCName } from '@/types'
 
 export async function executeRpc<M extends LittleHorseMethodRPCName>(
   methodName: M,

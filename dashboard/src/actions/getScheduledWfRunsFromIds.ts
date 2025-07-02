@@ -1,7 +1,7 @@
 'use server'
 
 import { ScheduledWfRun, ScheduledWfRunId } from 'littlehorse-client/proto'
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 
 export async function getScheduledWfRunsFromIds(
   scheduledWfRunIds: ScheduledWfRunId[],

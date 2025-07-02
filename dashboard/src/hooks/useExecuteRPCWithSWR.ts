@@ -1,7 +1,7 @@
 'use client'
 
 import { executeRpc } from '@/actions/executeRPC'
-import { LHMethodParamType, LHMethodReturnType, LittleHorseMethodRPCName } from '@/types/executeRPCTypes'
+import { LHMethodParamType, LHMethodReturnType, LittleHorseMethodRPCName } from '@/types'
 import { useParams } from 'next/navigation'
 import useSWR from 'swr'
 
