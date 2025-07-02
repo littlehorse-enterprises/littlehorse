@@ -67,63 +67,6 @@ export default function TaskDefClient({ taskDef }: TaskDefClientProps) {
       </div>
 
       <div className="grid gap-6">
-        {/* Related Task Runs */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Related Task Runs
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>WfRun Id</TableHead>
-                    <TableHead>GUID</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {!pages || isDataLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={2} className="text-muted-foreground py-8 text-center">
-                        <Loader2 className="inline animate-spin" />
-                      </TableCell>
-                    </TableRow>
-                  ) : pages.every(page => page.results.length === 0) ? (
-                    <TableRow>
-                      <TableCell colSpan={2} className="text-muted-foreground py-8 text-center">
-                        No TaskRuns found for this TaskDef
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    pages
-                      .flatMap(page => page.results)
-                      .map((taskRunId, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{taskRunId.wfRunId && taskRunId.wfRunId.id}</TableCell>
-                          <TableCell>{taskRunId.taskGuid}</TableCell>
-                        </TableRow>
-                      ))
-                  )}
-                </TableBody>
-              </Table>
-
-              {pages && (
-                <Pagination
-                  limit={limit}
-                  onLimitChange={newLimit => setLimit(newLimit as (typeof SEARCH_LIMITS)[number])}
-                  onLoadMore={() => setSize(size + 1)}
-                  isLoading={isDataLoading}
-                  limitOptions={SEARCH_LIMITS}
-                  hasNextBookmark={!!pages[pages.length - 1]?.bookmark}
-                />
-              )}
-            </>
-          </CardContent>
-        </Card>
-
         {/* Basic Information */}
         <Card>
           <CardHeader>
@@ -185,6 +128,63 @@ export default function TaskDefClient({ taskDef }: TaskDefClientProps) {
             ) : (
               <div className="text-muted-foreground py-8 text-center">No input variables defined for this task</div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Related Task Runs */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Related Task Runs
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>WfRun Id</TableHead>
+                    <TableHead>GUID</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {!pages || isDataLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-muted-foreground py-8 text-center">
+                        <Loader2 className="inline animate-spin" />
+                      </TableCell>
+                    </TableRow>
+                  ) : pages.every(page => page.results.length === 0) ? (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-muted-foreground py-8 text-center">
+                        No TaskRuns found for this TaskDef
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    pages
+                      .flatMap(page => page.results)
+                      .map((taskRunId, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{taskRunId.wfRunId && taskRunId.wfRunId.id}</TableCell>
+                          <TableCell>{taskRunId.taskGuid}</TableCell>
+                        </TableRow>
+                      ))
+                  )}
+                </TableBody>
+              </Table>
+
+              {pages && (
+                <Pagination
+                  limit={limit}
+                  onLimitChange={newLimit => setLimit(newLimit as (typeof SEARCH_LIMITS)[number])}
+                  onLoadMore={() => setSize(size + 1)}
+                  isLoading={isDataLoading}
+                  limitOptions={SEARCH_LIMITS}
+                  hasNextBookmark={!!pages[pages.length - 1]?.bookmark}
+                />
+              )}
+            </>
           </CardContent>
         </Card>
       </div>
