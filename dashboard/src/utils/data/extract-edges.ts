@@ -2,7 +2,7 @@ import { CustomEdge } from '@/types'
 import { Conditions } from '@/constants'
 import { getVariable } from '@/utils/data/variables'
 import {
-  Edge as EdgeProto,
+  Edge as LHEdge,
   Node as LHNode,
   ThreadSpec,
   VariableAssignment,
@@ -44,7 +44,7 @@ function extractEdgesFromThreadSpec(wfSpec: WfSpec, threadSpec: ThreadSpec): Cus
       const sourceTarget = sourceMap.get(edge.sinkNodeName) ?? 0
 
       if (sourceTarget > 0 && targetIndex !== 0) targetIndex++
-      const edgeId = `${source}-${edge.sinkNodeName}`
+      const edgeId = `${source}-${edge.sinkNodeName}:${threadSpecName}`
       const id = sourceIndex === 0 && targetIndex === 0 ? edgeId : `${edgeId}-${sourceIndex}-${targetIndex}`
       targetMap.set(edge.sinkNodeName, targetIndex + 1)
       sourceMap.set(source, sourceIndex + 1)
@@ -195,7 +195,7 @@ function formatVariableValue(value?: VariableAssignment) {
   return `"${getVariable(value)}"`
 }
 
-function extractEdgeLabel({ condition }: EdgeProto) {
+function extractEdgeLabel({ condition }: LHEdge) {
   if (!condition) return
 
   const { left, right, comparator } = condition
