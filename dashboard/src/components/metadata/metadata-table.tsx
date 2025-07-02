@@ -1,6 +1,6 @@
 'use client'
 import { SearchResponse } from '@/actions/search'
-import { SearchType } from '@/types/search'
+import { SearchType } from '@/types'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
 import {

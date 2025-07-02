@@ -1,4 +1,4 @@
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 import UserTaskDefClient from './UserTaskDefClient'
 
 interface UserTaskDefPageProps {
