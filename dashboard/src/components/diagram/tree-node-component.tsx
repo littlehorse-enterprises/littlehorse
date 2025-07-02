@@ -1,11 +1,12 @@
 'use client'
 
 import { TreeNode } from '@/types'
-import { getNodeIcon, NodeType } from '@/utils/ui/node-utils'
+import { NodeType } from '@/utils/ui/node-utils'
 import { LHStatus } from 'littlehorse-client/proto'
 import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNodeSelection } from '../context/selection-context'
+import { NODE_STYLES } from '@/constants'
 
 interface TreeNodeComponentProps {
   node: TreeNode
@@ -50,15 +51,13 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
     const nodeType = getNodeTypeFromLabel(node.label)
 
     if (nodeType) {
-      const iconElement = getNodeIcon(nodeType)
-      if (iconElement) {
-        // Clone the icon with smaller size for tree view
+      const nodeStyle = NODE_STYLES[nodeType]
+      if (nodeStyle) {
+        const IconComponent = nodeStyle.icon
         return (
           <div className="mr-1.5 flex items-center justify-center">
             <div className="flex h-3 w-3 items-center justify-center">
-              {React.cloneElement(iconElement, {
-                className: iconElement.props.className.replace('h-6 w-6', 'h-3 w-3'),
-              })}
+              <IconComponent className="h-3 w-3" />
             </div>
           </div>
         )
@@ -77,20 +76,15 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
     if (node.status === LHStatus.RUNNING) return <Loader2 className="mr-1.5 h-3 w-3 animate-spin text-blue-500" />
 
     // Default to task icon if no specific type detected
-    const taskIcon = getNodeIcon('task')
-    if (taskIcon) {
-      return (
-        <div className="mr-1.5 flex items-center justify-center">
-          <div className="flex h-3 w-3 items-center justify-center">
-            {React.cloneElement(taskIcon, {
-              className: taskIcon.props.className.replace('h-6 w-6', 'h-3 w-3'),
-            })}
-          </div>
+    const taskStyle = NODE_STYLES.task
+    const TaskIcon = taskStyle.icon
+    return (
+      <div className="mr-1.5 flex items-center justify-center">
+        <div className="flex h-3 w-3 items-center justify-center">
+          <TaskIcon className="h-3 w-3" />
         </div>
-      )
-    }
-
-    return <div className="mr-1.5 h-3 w-3 rounded-sm bg-gray-400" />
+      </div>
+    )
   }
 
   const handleToggle = (e: React.MouseEvent) => {
