@@ -4,6 +4,7 @@ import { searchTaskRun } from '@/actions/searchTaskRun'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
 import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import {
@@ -83,7 +84,7 @@ export default function TaskDefClient({ taskDef }: TaskDefClientProps) {
               </div>
               <div>
                 <p className="text-muted-foreground text-sm font-medium">Created At</p>
-                <p className="text-lg">{taskDef.createdAt ? new Date(taskDef.createdAt).toLocaleString() : 'N/A'}</p>
+                <p className="text-lg">{taskDef.createdAt ? formatDateTimeWithMs(taskDef.createdAt) : 'N/A'}</p>
               </div>
             </div>
           </CardContent>

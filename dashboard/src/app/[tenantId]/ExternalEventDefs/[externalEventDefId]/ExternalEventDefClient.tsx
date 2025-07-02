@@ -4,6 +4,7 @@ import { searchExternalEvent } from '@/actions/searchExternalEvent'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
 import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import {
   Table,
@@ -83,7 +84,7 @@ export default function ExternalEventDefClient({ externalEventDef }: ExternalEve
               <div>
                 <p className="text-muted-foreground text-sm font-medium">Created At</p>
                 <p className="text-lg">
-                  {externalEventDef.createdAt ? new Date(externalEventDef.createdAt).toLocaleString() : 'N/A'}
+                  {externalEventDef.createdAt ? formatDateTimeWithMs(externalEventDef.createdAt) : 'N/A'}
                 </p>
               </div>
               <div>

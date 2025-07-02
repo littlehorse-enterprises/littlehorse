@@ -4,15 +4,16 @@ import { searchUserTaskRun } from '@/actions/searchUserTaskRun'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
 import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from '@littlehorse-enterprises/ui-library/table'
 import { UserTaskDef } from 'littlehorse-client/proto'
 import { ArrowLeft, Clock, Hash, Loader2 } from 'lucide-react'
@@ -138,7 +139,7 @@ export default function UserTaskDefClient({ userTaskDef }: UserTaskDefClientProp
               <div>
                 <p className="text-muted-foreground text-sm font-medium">Created At</p>
                 <p className="text-lg">
-                  {userTaskDef.createdAt ? new Date(userTaskDef.createdAt).toLocaleString() : 'N/A'}
+                  {userTaskDef.createdAt ? formatDateTimeWithMs(userTaskDef.createdAt) : 'N/A'}
                 </p>
               </div>
             </div>

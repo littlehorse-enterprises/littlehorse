@@ -4,14 +4,15 @@ import { searchWorkflowEvent } from '@/actions/searchWorkflowEvent'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
 import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from '@littlehorse-enterprises/ui-library/table'
 import { WorkflowEventDef } from 'littlehorse-client/proto'
 import { Activity, ArrowLeft, Clock, Hash, Loader2 } from 'lucide-react'
@@ -83,7 +84,7 @@ export default function WorkflowEventDefClient({ workflowEventDef }: WorkflowEve
               <div>
                 <p className="text-muted-foreground text-sm font-medium">Created At</p>
                 <p className="text-lg">
-                  {workflowEventDef.createdAt ? new Date(workflowEventDef.createdAt).toLocaleString() : 'N/A'}
+                  {workflowEventDef.createdAt ? formatDateTimeWithMs(workflowEventDef.createdAt) : 'N/A'}
                 </p>
               </div>
             </div>

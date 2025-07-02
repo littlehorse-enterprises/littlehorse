@@ -1,7 +1,7 @@
-import React from 'react'
-import { Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { LHStatus, TaskStatus } from 'littlehorse-client/proto'
+import { CheckCircle, Clock, Loader2, XCircle } from 'lucide-react'
+import React from 'react'
 
 // Timestamp can be either a protobuf timestamp with seconds/nanos or a Date-like object
 interface ProtobufTimestamp {
@@ -149,5 +149,24 @@ export function getTaskStatusBadge(status: TaskStatus): React.ReactElement {
         SCHEDULED
       </Badge>
     )
+  }
+}
+
+/**
+ * Format date with seconds and milliseconds for full precision.
+ */
+export function formatDateTimeWithMs(timestamp: TimestampInput): string {
+  if (!timestamp) return 'In progress';
+  try {
+    const date = (timestamp as ProtobufTimestamp)?.seconds
+      ? new Date(
+          (timestamp as ProtobufTimestamp).seconds! * 1000 + ((timestamp as ProtobufTimestamp).nanos || 0) / 1000000
+        )
+      : new Date(timestamp as Date | string);
+    const pad = (n: number, width = 2) => n.toString().padStart(width, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+      `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.${pad(date.getMilliseconds(), 3)}`;
+  } catch {
+    return 'Invalid date';
   }
 }
