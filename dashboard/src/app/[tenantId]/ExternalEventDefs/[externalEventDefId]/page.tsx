@@ -1,4 +1,4 @@
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 import ExternalEventDefClient from './ExternalEventDefClient'
 
 interface ExternalEventDefPageProps {

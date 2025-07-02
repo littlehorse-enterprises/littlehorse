@@ -1,4 +1,4 @@
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 import { redirect } from 'next/navigation'
 
 export default async function HomePage() {

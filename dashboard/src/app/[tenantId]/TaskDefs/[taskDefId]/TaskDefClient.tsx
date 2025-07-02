@@ -3,7 +3,8 @@
 import { searchTaskRun } from '@/actions/searchTaskRun'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
-import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/constants'
+import { getVariableDefType, VARIABLE_TYPES } from '@/utils/data/variables'
 import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
@@ -115,7 +116,7 @@ export default function TaskDefClient({ taskDef }: TaskDefClientProps) {
                       <TableCell className="font-mono font-medium">{variable.name}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className="font-mono">
-                          {variable.type || 'UNKNOWN'}
+                          {VARIABLE_TYPES[getVariableDefType(variable)]}
                         </Badge>
                       </TableCell>
                       <TableCell className="font-mono text-sm">
