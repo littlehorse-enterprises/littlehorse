@@ -488,15 +488,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteCorrelatedEvent(DeleteCorrelatedEventRequest req, StreamObserver<Empty> observer) {
         DeleteCorrelatedEventRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteCorrelatedEventRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), observer, Empty.class);
-    }
-
-    @Override
-    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.RUN)
-    public void deleteCorrelatedEvent(DeleteCorrelatedEventRequest req, StreamObserver<Empty> observer) {
-        DeleteCorrelatedEventRequestModel reqModel =
-                LHSerializable.fromProto(req, DeleteCorrelatedEventRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), observer, Empty.class);
+        processCommand(new CommandModel(reqModel), observer, Empty.class, true);
     }
 
     @Override
