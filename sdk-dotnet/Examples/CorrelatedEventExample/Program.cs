@@ -1,4 +1,4 @@
-﻿using ConditionalsWhileExample;
+﻿using CorrelatedEventExample;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
@@ -6,6 +6,7 @@ using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+namespace CorrelatedEventExample;
 public abstract class Program
 {
     private static ServiceProvider? _serviceProvider;
@@ -23,57 +24,50 @@ public abstract class Program
     private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
-        
+
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
         return config;
     }
-    
-    private static List<LHTaskWorker<MyWorker>> GetTaskWorkers(LHConfig config)
-    {
-        MyWorker executable = new MyWorker();
-        var workers = new List<LHTaskWorker<MyWorker>>
-        {
-            new(executable, "eating-donut", config)
-        };
-        
-        return workers;
-    }
-    
+
     private static Workflow GetWorkflow()
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            var numDonuts = wf.DeclareInt("number-of-donuts").Required();
-            wf.DoWhile(wf.Condition(numDonuts, Comparator.GreaterThan, 0),
-                whileThread =>
-                {
-                    whileThread.Execute("eating-donut", numDonuts);
-                    numDonuts.Assign(numDonuts.Subtract(1));
-                });
+            WfRunVariable documentId = wf.DeclareStr("document-id");
+            wf.WaitForEvent("document-signed").WithCorrelationId(documentId);
         }
-        
-        return new Workflow("example-conditionals-while", MyEntryPoint);
+
+        return new Workflow("example-correlated-event", MyEntryPoint);
     }
 
-    static async Task Main(string[] args)
+    static void Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
-            var workers = GetTaskWorkers(config);
+            var client = config.GetGrpcClientInstance();
 
-            await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
+            var workflow = GetWorkflow();
 
-            await GetWorkflow().RegisterWfSpec(config.GetGrpcClientInstance());
+            // Register external event if it does not exist
+            HashSet<string> externalEventNames = workflow.GetRequiredExternalEventDefNames();
 
-            await Task.Delay(300);
+            foreach (var externalEventName in externalEventNames)
+            {
+                Console.WriteLine($"Registering external event {externalEventName}");
 
-            await Task.WhenAll(workers.Select(worker => worker.Start()));
+                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName, CorrelatedEventConfig = new CorrelatedEventConfig() });
+            }
+
+            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
+
+            Thread.Sleep(300);
+
         }
     }
 }
