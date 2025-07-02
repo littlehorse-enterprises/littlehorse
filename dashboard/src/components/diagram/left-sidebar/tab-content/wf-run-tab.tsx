@@ -6,6 +6,7 @@ import { DropdownFilter } from '@/components/ui/dropdown-filter'
 import { FilterResetButton } from '@/components/ui/filter-reset-button'
 import { useExecuteRPCWithSWR } from '@/hooks/useExecuteRPCWithSWR'
 import { MINUTES_TO_TIME_RANGE, STATUS_OPTIONS, TIME_RANGE_MINUTES, TIME_RANGE_OPTIONS } from '@/utils/ui/constants'
+import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
 import type { ColumnDef } from '@tanstack/react-table'
 import { LHStatus, WfRun } from 'littlehorse-client/proto'
 import { CheckCircle, Clock, Loader2, XCircle } from 'lucide-react'
@@ -185,15 +186,7 @@ export default function WfRunTab() {
       cell: ({ row }) => {
         const startTime = row.getValue('startTime')
         if (!startTime) return '-'
-        const date = new Date(startTime as string)
-        return date.toLocaleString(undefined, {
-          month: 'numeric',
-          day: 'numeric',
-          year: '2-digit',
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true,
-        })
+        return formatDateTimeWithMs(startTime)
       },
     },
   ]

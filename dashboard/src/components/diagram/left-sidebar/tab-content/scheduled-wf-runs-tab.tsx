@@ -1,13 +1,14 @@
 'use client'
 
-import { Clock } from 'lucide-react'
-import { DataTable } from '@/components/ui/data-table'
-import type { ColumnDef } from '@tanstack/react-table'
-import { useState, useEffect } from 'react'
-import { ScheduledWfRun } from 'littlehorse-client/proto'
-import { useExecuteRPCWithSWR } from '@/hooks/useExecuteRPCWithSWR'
 import { getScheduledWfRunsFromIds } from '@/actions/getScheduledWfRunsFromIds'
+import { DataTable } from '@/components/ui/data-table'
+import { useExecuteRPCWithSWR } from '@/hooks/useExecuteRPCWithSWR'
+import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
+import type { ColumnDef } from '@tanstack/react-table'
+import { ScheduledWfRun } from 'littlehorse-client/proto'
+import { Clock } from 'lucide-react'
 import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function ScheduledWfRunsTab() {
   const tenantId = useParams().tenantId as string
@@ -56,19 +57,10 @@ export default function ScheduledWfRunsTab() {
       cell: ({ row }) => {
         const createdAt = row.getValue('createdAt')
         if (!createdAt) return '-'
-        const date = new Date(createdAt as string)
         return (
           <div className="flex items-center">
             <Clock className="mr-1 h-3 w-3 text-[#656565]" />
-            <span>
-              {date.toLocaleString(undefined, {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true,
-              })}
-            </span>
+            <span>{formatDateTimeWithMs(createdAt)}</span>
           </div>
         )
       },

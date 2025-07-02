@@ -1,7 +1,8 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import { useExecuteRPCWithSWR } from '@/hooks/useExecuteRPCWithSWR'
+import { formatDateTimeWithMs } from '@/utils/ui/status-utils'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import { WfRun } from 'littlehorse-client/proto'
 import { Loader2 } from 'lucide-react'
 
@@ -32,8 +33,8 @@ export default function NodeRuns({ selectedId, wfRun }: NodeRunsProps) {
             </CardHeader>
             <CardContent>
               <p>{nodeRun.status}</p>
-              <p>{nodeRun.arrivalTime}</p>
-              <p>{nodeRun.endTime}</p>
+              <p>{formatDateTimeWithMs(nodeRun.arrivalTime)}</p>
+              <p>{formatDateTimeWithMs(nodeRun.endTime)}</p>
             </CardContent>
           </Card>
         ))}
