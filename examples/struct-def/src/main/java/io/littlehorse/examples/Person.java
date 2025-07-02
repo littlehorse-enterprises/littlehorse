@@ -8,5 +8,5 @@ public class Person {
   public String lastName;
   public Integer accountId;
   public String phoneNumber;
-  // public Car car;
+  public Car car;
 }

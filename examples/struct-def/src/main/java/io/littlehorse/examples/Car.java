@@ -11,7 +11,10 @@ public class Car {
     public String model;
     public Integer price;
     public Integer year;
-    public Boolean isElectric;
+
+    // Support getter & setters
+    // @LHStructField(ignore = true)
+    public Boolean isElectric = true;
 
     @LHStructField(masked = true)
     public String[] features;
