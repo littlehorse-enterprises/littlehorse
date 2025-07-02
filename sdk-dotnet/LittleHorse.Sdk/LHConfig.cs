@@ -20,7 +20,7 @@ namespace LittleHorse.Sdk {
 
         private LHInputVariables _inputVariables;
 
-        private Dictionary<string, LittleHorseClient> _createdChannels;
+        private Dictionary<string, GrpcChannel?> _createdChannels;
         
         private OAuthConfig? _oAuthConfig;
         private OAuthClient? _oAuthClient;
@@ -38,7 +38,7 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _inputVariables = new LHInputVariables();
-            _createdChannels = new Dictionary<string, LittleHorseClient>();
+            _createdChannels = new Dictionary<string, GrpcChannel?>();
         }
         
         /// <summary>
@@ -53,7 +53,7 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _inputVariables = new LHInputVariables(configOptionsFilePath);
-            _createdChannels = new Dictionary<string, LittleHorseClient>();
+            _createdChannels = new Dictionary<string, GrpcChannel?>();
         }
         
         /// <summary>
@@ -67,80 +67,44 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _inputVariables = new LHInputVariables(configArgs);
-            _createdChannels = new Dictionary<string, LittleHorseClient>();
+            _createdChannels = new Dictionary<string, GrpcChannel?>();
         }
 
         /// <summary>
         /// Retrieves the task worker ID from the configuration properties,
         /// </summary>
-        public string? WorkerId
-        {
-            get
-            {
-                return _inputVariables.LHC_CLIENT_ID;
-            }
-        }
+        public string WorkerId => _inputVariables.LHC_CLIENT_ID;
 
         /// <summary>
         /// Retrieves the task worker version from the configuration properties.
         /// </summary>
-        public string? TaskWorkerVersion
-        {
-            get { return _inputVariables.LHW_TASK_WORKER_VERSION; }
-        }
+        public string TaskWorkerVersion => _inputVariables.LHW_TASK_WORKER_VERSION;
 
         /// <summary>
         /// Retrieves the number of worker threads from the configuration properties.
         /// </summary>
-        public int WorkerThreads
-        {
-            get { return _inputVariables.LHW_NUM_WORKER_THREADS; }
-        }
-        
+        public int WorkerThreads => _inputVariables.LHW_NUM_WORKER_THREADS;
+
         /// <summary>
         /// Retrieves the bootstrap host from the configuration properties.
         /// </summary>
-        public string BootstrapHost
-        {
-            get
-            {
-                return _inputVariables.LHC_API_HOST;
-            }
-        }
-        
+        public string BootstrapHost => _inputVariables.LHC_API_HOST;
+
         /// <summary>
         /// Retrieves the bootstrap server port from the configuration properties.
         /// </summary>
-        public int BootstrapPort
-        {
-            get
-            {
-                return _inputVariables.LHC_API_PORT;
-            }
-        }
+        public int BootstrapPort => _inputVariables.LHC_API_PORT;
 
         /// <summary>
         /// Retrieves the API protocol from the configuration properties.
         /// </summary>
-        public string ApiProtocol
-        {
-            get
-            {
-                return _inputVariables.LHC_API_PROTOCOL;
-            }
-        }
-        
+        public string ApiProtocol => _inputVariables.LHC_API_PROTOCOL;
+
         /// <summary>
         /// Retrieves the TenantId from the configuration properties.
         /// </summary>
-        public string? TenantId
-        {
-            get
-            {
-                return _inputVariables.LHC_TENANT_ID;
-            }
-        }
-        
+        public string? TenantId => _inputVariables.LHC_TENANT_ID;
+
         /// <summary>
         /// Retrieves the Bootstrap protocol from the configuration properties.
         /// </summary>
@@ -163,13 +127,7 @@ namespace LittleHorse.Sdk {
         /// Retrieves the Bootstrap server url.
         /// <example>https://localhost:2023</example>
         /// </summary>
-        public string BootstrapServer
-        {
-            get
-            {
-                return $"{BootstrapProtocol}://{BootstrapHost}:{BootstrapPort}";
-            }
-        }
+        public string BootstrapServer => $"{BootstrapProtocol}://{BootstrapHost}:{BootstrapPort}";
 
         private bool IsOAuth
         {
@@ -211,20 +169,14 @@ namespace LittleHorse.Sdk {
         {
             string channelKey = $"{BootstrapProtocol}://{host}:{port}";
 
-            if (_createdChannels.ContainsKey(channelKey))
+            if (!_createdChannels.TryGetValue(channelKey, out var channel))
             {
-                return _createdChannels[channelKey];
+                _logger?.LogInformation("Establishing connection to: " + channelKey);
+                channel = CreateChannel(host, port);
+                _createdChannels.Add(channelKey, channel);
             }
 
-            _logger?.LogInformation("Establishing connection to: " + channelKey);
-
-            GrpcChannel channel = CreateChannel(host, port);
-            
-            var lhClient = new LittleHorseClient(channel);
-
-            _createdChannels.Add(channelKey, lhClient);
-
-            return lhClient;
+            return new LittleHorseClient(channel);
         }
 
         private GrpcChannel CreateChannel(string host, int port)
