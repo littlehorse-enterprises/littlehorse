@@ -1,4 +1,4 @@
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 import TaskDefClient from './TaskDefClient'
 
 type PageProps = {

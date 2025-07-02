@@ -1,6 +1,6 @@
 'use client'
 
-import { LeftSidebarTabId } from '@/types/leftSidebarTabs'
+import { LeftSidebarTabId } from '@/types'
 import { Tabs, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library/tabs'
 import { Dispatch, SetStateAction } from 'react'
 

@@ -3,7 +3,7 @@ import { NodeSelectionProvider } from '@/components/context/selection-context'
 import LeftSidebar from '@/components/diagram/left-sidebar'
 import RightSidebar from '@/components/diagram/right-sidebar'
 import WorkflowDiagram from '@/components/diagram/workflow-diagram'
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 import { extractEdges } from '@/utils/data/extract-edges'
 import { extractNodes } from '@/utils/data/extract-nodes'
 

@@ -1,4 +1,4 @@
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 import WorkflowEventDefClient from './WorkflowEventDefClient'
 
 interface WorkflowEventDefPageProps {

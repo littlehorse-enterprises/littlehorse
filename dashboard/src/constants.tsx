@@ -1,5 +1,5 @@
 import { FilterOption } from '@/components/ui/dropdown-filter'
-import { LHStatus } from 'littlehorse-client/proto'
+import { Comparator, LHStatus, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { AlertCircle, CheckCircle, Clock, Loader2, XCircle } from 'lucide-react'
 
 /* --------------------------------- Search --------------------------------- */
@@ -89,3 +89,21 @@ export const STATUS_OPTIONS: FilterOption[] = [
     icon: <Loader2 className="h-3 w-3 text-blue-500" />,
   },
 ]
+export const accessLevelLabels: { [key in WfRunVariableAccessLevel]: string } = {
+  PUBLIC_VAR: 'Public',
+  INHERITED_VAR: 'Inherited',
+  PRIVATE_VAR: 'Private',
+  UNRECOGNIZED: '',
+}
+
+export const Conditions: Record<Comparator, string> = {
+  [Comparator.LESS_THAN]: '<',
+  [Comparator.GREATER_THAN]: '>',
+  [Comparator.LESS_THAN_EQ]: '<=',
+  [Comparator.GREATER_THAN_EQ]: '>=',
+  [Comparator.EQUALS]: '==',
+  [Comparator.NOT_EQUALS]: '!=',
+  [Comparator.IN]: 'IN',
+  [Comparator.NOT_IN]: 'NOT IN',
+  [Comparator.UNRECOGNIZED]: '',
+}

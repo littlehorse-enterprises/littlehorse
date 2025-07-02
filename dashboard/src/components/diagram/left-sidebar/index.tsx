@@ -2,7 +2,7 @@
 import ScheduledWfRunsTab from '@/components/diagram/left-sidebar/tab-content/scheduled-wf-runs-tab'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import SidebarExpandButton from '@/components/ui/sidebar-expand-button'
-import { LeftSidebarTabId } from '@/types/leftSidebarTabs'
+import { LeftSidebarTabId } from '@/types'
 import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { useEffect, useState } from 'react'
 import WfRunTab from './tab-content/wf-run-tab'

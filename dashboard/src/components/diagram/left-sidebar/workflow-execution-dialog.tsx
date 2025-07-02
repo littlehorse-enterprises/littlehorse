@@ -1,6 +1,6 @@
 'use client'
 import { executeRpc } from '@/actions/executeRPC'
-import { accessLevelLabels } from '@/utils/data/accessLevels'
+import { accessLevelLabels } from '@/constants'
 import { getVariableDefType, VARIABLE_TYPES } from '@/utils/data/variables'
 import { Button } from '@littlehorse-enterprises/ui-library/button'
 import {
@@ -138,46 +138,43 @@ export default function WorkflowExecutionDialog({ isOpen, onClose, wfSpec }: Wor
   }
 
   const formatVariablesPayload = (values: FormValues): { [key: string]: VariableValue } => {
-    return Object.entries(values).reduce(
-      (acc: { [key: string]: VariableValue }, [key, rawValue]) => {
-        if (key === 'customWfRunId') return acc
-        if (rawValue === '' || rawValue === undefined || rawValue === null) return acc
+    return Object.entries(values).reduce((acc: { [key: string]: VariableValue }, [key, rawValue]) => {
+      if (key === 'customWfRunId') return acc
+      if (rawValue === '' || rawValue === undefined || rawValue === null) return acc
 
-        const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
-        const variable = wfSpecVariables.find(v => v.varDef?.name === key)
-        if (!variable?.varDef) return acc
-        const type = getVariableDefType(variable.varDef)
+      const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
+      const variable = wfSpecVariables.find(v => v.varDef?.name === key)
+      if (!variable?.varDef) return acc
+      const type = getVariableDefType(variable.varDef)
 
-        let value: VariableValue
-        switch (type) {
-          case VariableType.INT:
-            value = { value: { $case: 'int', int: Number(rawValue) } }
-            break
-          case VariableType.DOUBLE:
-            value = { value: { $case: 'double', double: Number(rawValue) } }
-            break
-          case VariableType.BOOL:
-            value = { value: { $case: 'bool', bool: rawValue === 'true' || rawValue === true } }
-            break
-          case VariableType.JSON_OBJ:
-            value = { value: { $case: 'jsonObj', jsonObj: JSON.stringify(JSON.parse(rawValue as string)) } }
-            break
-          case VariableType.JSON_ARR:
-            value = { value: { $case: 'jsonArr', jsonArr: JSON.stringify(JSON.parse(rawValue as string)) } }
-            break
-          case VariableType.BYTES:
-            value = { value: { $case: 'bytes', bytes: Buffer.from(rawValue as string, 'utf8') } }
-            break
-          case VariableType.STR:
-          default:
-            value = { value: { $case: 'str', str: String(rawValue) } }
-            break
-        }
-        acc[transformedKey] = value
-        return acc
-      },
-      {}
-    )
+      let value: VariableValue
+      switch (type) {
+        case VariableType.INT:
+          value = { value: { $case: 'int', int: Number(rawValue) } }
+          break
+        case VariableType.DOUBLE:
+          value = { value: { $case: 'double', double: Number(rawValue) } }
+          break
+        case VariableType.BOOL:
+          value = { value: { $case: 'bool', bool: rawValue === 'true' || rawValue === true } }
+          break
+        case VariableType.JSON_OBJ:
+          value = { value: { $case: 'jsonObj', jsonObj: JSON.stringify(JSON.parse(rawValue as string)) } }
+          break
+        case VariableType.JSON_ARR:
+          value = { value: { $case: 'jsonArr', jsonArr: JSON.stringify(JSON.parse(rawValue as string)) } }
+          break
+        case VariableType.BYTES:
+          value = { value: { $case: 'bytes', bytes: Buffer.from(rawValue as string, 'utf8') } }
+          break
+        case VariableType.STR:
+        default:
+          value = { value: { $case: 'str', str: String(rawValue) } }
+          break
+      }
+      acc[transformedKey] = value
+      return acc
+    }, {})
   }
 
   const handleSubmit = async () => {
