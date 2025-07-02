@@ -47,7 +47,6 @@ dist/
 # dotnet
 global.json
 *DotSettings.user
-!sdk-dotnet/Littlehorse.sln
-*.sln
+*.sln.DotSettings.user
 # java profiling
 .profileconfig.json
