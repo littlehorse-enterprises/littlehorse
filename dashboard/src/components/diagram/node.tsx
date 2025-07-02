@@ -1,4 +1,4 @@
-import { NodeType } from '@/utils/ui/node-utils'
+import { NodeType } from '@/types'
 import { Handle, Position } from '@xyflow/react'
 import { LHStatus } from 'littlehorse-client/proto'
 import { AlertCircle, CheckCircle, Clock, Loader2 } from 'lucide-react'
@@ -16,8 +16,6 @@ interface NodeProps {
   data: NodeData
   selected?: boolean
 }
-
-
 
 // Status style configuration
 const STATUS_STYLES: Record<LHStatus, {

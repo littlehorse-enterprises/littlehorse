@@ -1,12 +1,12 @@
 'use client'
 
 import { TreeNode } from '@/types'
-import { NodeType } from '@/utils/ui/node-utils'
 import { LHStatus } from 'littlehorse-client/proto'
 import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNodeSelection } from '../context/selection-context'
 import { NODE_STYLES } from '@/constants'
+import { NodeType } from '@/types'
 
 interface TreeNodeComponentProps {
   node: TreeNode
