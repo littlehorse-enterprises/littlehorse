@@ -92,7 +92,7 @@ jobs:
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           VERSION="${{ github.ref_name }}-$SHORT_SHA"
-          sed -i "s|NEXT_PUBLIC_VERSION: \".*\"|NEXT_PUBLIC_VERSION: \"$VERSION\"|g" next.config.ts
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -126,7 +126,7 @@ jobs:
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           VERSION="${{ github.ref_name }}-$SHORT_SHA"
-          sed -i "s|NEXT_PUBLIC_VERSION: \".*\"|NEXT_PUBLIC_VERSION: \"$VERSION\"|g" next.config.ts
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard
