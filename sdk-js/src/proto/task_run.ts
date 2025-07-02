@@ -115,17 +115,10 @@ export interface TaskAttempt {
     | undefined;
   /** The status of this TaskAttempt. */
   status: TaskStatus;
-  /** Denotes the Task Function executed properly and returned an output. */
-  output?:
-    | VariableValue
-    | undefined;
-  /** An unexpected technical error was encountered. May or may not be retriable. */
-  error?:
-    | LHTaskError
-    | undefined;
-  /** The Task Function encountered a business problem and threw a technical exception. */
-  exception?:
-    | LHTaskException
+  result?:
+    | { $case: "output"; output: VariableValue }
+    | { $case: "error"; error: LHTaskError }
+    | { $case: "exception"; exception: LHTaskException }
     | undefined;
   /** Indicates whether the result of the attempt field has been masked */
   maskedValue: boolean;
@@ -133,13 +126,9 @@ export interface TaskAttempt {
 
 /** The source of a TaskRun; i.e. why it was scheduled. */
 export interface TaskRunSource {
-  /** Reference to a NodeRun of type TASK which scheduled this TaskRun. */
-  taskNode?:
-    | TaskNodeReference
-    | undefined;
-  /** Reference to the specific UserTaskRun trigger action which scheduled this TaskRun */
-  userTaskTrigger?:
-    | UserTaskTriggerReference
+  taskRunSource?:
+    | { $case: "taskNode"; taskNode: TaskNodeReference }
+    | { $case: "userTaskTrigger"; userTaskTrigger: UserTaskTriggerReference }
     | undefined;
   /**
    * The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
@@ -413,9 +402,7 @@ function createBaseTaskAttempt(): TaskAttempt {
     taskWorkerId: "",
     taskWorkerVersion: undefined,
     status: TaskStatus.TASK_SCHEDULED,
-    output: undefined,
-    error: undefined,
-    exception: undefined,
+    result: undefined,
     maskedValue: false,
   };
 }
@@ -443,14 +430,16 @@ export const TaskAttempt = {
     if (message.status !== TaskStatus.TASK_SCHEDULED) {
       writer.uint32(72).int32(taskStatusToNumber(message.status));
     }
-    if (message.output !== undefined) {
-      VariableValue.encode(message.output, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.error !== undefined) {
-      LHTaskError.encode(message.error, writer.uint32(82).fork()).ldelim();
-    }
-    if (message.exception !== undefined) {
-      LHTaskException.encode(message.exception, writer.uint32(90).fork()).ldelim();
+    switch (message.result?.$case) {
+      case "output":
+        VariableValue.encode(message.result.output, writer.uint32(10).fork()).ldelim();
+        break;
+      case "error":
+        LHTaskError.encode(message.result.error, writer.uint32(82).fork()).ldelim();
+        break;
+      case "exception":
+        LHTaskException.encode(message.result.exception, writer.uint32(90).fork()).ldelim();
+        break;
     }
     if (message.maskedValue !== false) {
       writer.uint32(96).bool(message.maskedValue);
@@ -519,21 +508,21 @@ export const TaskAttempt = {
             break;
           }
 
-          message.output = VariableValue.decode(reader, reader.uint32());
+          message.result = { $case: "output", output: VariableValue.decode(reader, reader.uint32()) };
           continue;
         case 10:
           if (tag !== 82) {
             break;
           }
 
-          message.error = LHTaskError.decode(reader, reader.uint32());
+          message.result = { $case: "error", error: LHTaskError.decode(reader, reader.uint32()) };
           continue;
         case 11:
           if (tag !== 90) {
             break;
           }
 
-          message.exception = LHTaskException.decode(reader, reader.uint32());
+          message.result = { $case: "exception", exception: LHTaskException.decode(reader, reader.uint32()) };
           continue;
         case 12:
           if (tag !== 96) {
@@ -565,31 +554,37 @@ export const TaskAttempt = {
     message.taskWorkerId = object.taskWorkerId ?? "";
     message.taskWorkerVersion = object.taskWorkerVersion ?? undefined;
     message.status = object.status ?? TaskStatus.TASK_SCHEDULED;
-    message.output = (object.output !== undefined && object.output !== null)
-      ? VariableValue.fromPartial(object.output)
-      : undefined;
-    message.error = (object.error !== undefined && object.error !== null)
-      ? LHTaskError.fromPartial(object.error)
-      : undefined;
-    message.exception = (object.exception !== undefined && object.exception !== null)
-      ? LHTaskException.fromPartial(object.exception)
-      : undefined;
+    if (object.result?.$case === "output" && object.result?.output !== undefined && object.result?.output !== null) {
+      message.result = { $case: "output", output: VariableValue.fromPartial(object.result.output) };
+    }
+    if (object.result?.$case === "error" && object.result?.error !== undefined && object.result?.error !== null) {
+      message.result = { $case: "error", error: LHTaskError.fromPartial(object.result.error) };
+    }
+    if (
+      object.result?.$case === "exception" &&
+      object.result?.exception !== undefined &&
+      object.result?.exception !== null
+    ) {
+      message.result = { $case: "exception", exception: LHTaskException.fromPartial(object.result.exception) };
+    }
     message.maskedValue = object.maskedValue ?? false;
     return message;
   },
 };
 
 function createBaseTaskRunSource(): TaskRunSource {
-  return { taskNode: undefined, userTaskTrigger: undefined, wfSpecId: undefined };
+  return { taskRunSource: undefined, wfSpecId: undefined };
 }
 
 export const TaskRunSource = {
   encode(message: TaskRunSource, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskNode !== undefined) {
-      TaskNodeReference.encode(message.taskNode, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.userTaskTrigger !== undefined) {
-      UserTaskTriggerReference.encode(message.userTaskTrigger, writer.uint32(18).fork()).ldelim();
+    switch (message.taskRunSource?.$case) {
+      case "taskNode":
+        TaskNodeReference.encode(message.taskRunSource.taskNode, writer.uint32(10).fork()).ldelim();
+        break;
+      case "userTaskTrigger":
+        UserTaskTriggerReference.encode(message.taskRunSource.userTaskTrigger, writer.uint32(18).fork()).ldelim();
+        break;
     }
     if (message.wfSpecId !== undefined) {
       WfSpecId.encode(message.wfSpecId, writer.uint32(26).fork()).ldelim();
@@ -609,14 +604,17 @@ export const TaskRunSource = {
             break;
           }
 
-          message.taskNode = TaskNodeReference.decode(reader, reader.uint32());
+          message.taskRunSource = { $case: "taskNode", taskNode: TaskNodeReference.decode(reader, reader.uint32()) };
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.userTaskTrigger = UserTaskTriggerReference.decode(reader, reader.uint32());
+          message.taskRunSource = {
+            $case: "userTaskTrigger",
+            userTaskTrigger: UserTaskTriggerReference.decode(reader, reader.uint32()),
+          };
           continue;
         case 3:
           if (tag !== 26) {
@@ -639,12 +637,26 @@ export const TaskRunSource = {
   },
   fromPartial(object: DeepPartial<TaskRunSource>): TaskRunSource {
     const message = createBaseTaskRunSource();
-    message.taskNode = (object.taskNode !== undefined && object.taskNode !== null)
-      ? TaskNodeReference.fromPartial(object.taskNode)
-      : undefined;
-    message.userTaskTrigger = (object.userTaskTrigger !== undefined && object.userTaskTrigger !== null)
-      ? UserTaskTriggerReference.fromPartial(object.userTaskTrigger)
-      : undefined;
+    if (
+      object.taskRunSource?.$case === "taskNode" &&
+      object.taskRunSource?.taskNode !== undefined &&
+      object.taskRunSource?.taskNode !== null
+    ) {
+      message.taskRunSource = {
+        $case: "taskNode",
+        taskNode: TaskNodeReference.fromPartial(object.taskRunSource.taskNode),
+      };
+    }
+    if (
+      object.taskRunSource?.$case === "userTaskTrigger" &&
+      object.taskRunSource?.userTaskTrigger !== undefined &&
+      object.taskRunSource?.userTaskTrigger !== null
+    ) {
+      message.taskRunSource = {
+        $case: "userTaskTrigger",
+        userTaskTrigger: UserTaskTriggerReference.fromPartial(object.taskRunSource.userTaskTrigger),
+      };
+    }
     message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
       ? WfSpecId.fromPartial(object.wfSpecId)
       : undefined;
@@ -829,6 +841,7 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
