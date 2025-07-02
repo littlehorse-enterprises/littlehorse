@@ -4,7 +4,7 @@ import { searchTaskRun } from '@/actions/searchTaskRun'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
 import { getVariableDefType, VARIABLE_TYPES } from '@/utils/data/variables'
-import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/constants'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import {

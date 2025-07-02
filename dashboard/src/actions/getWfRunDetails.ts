@@ -1,6 +1,6 @@
 'use server'
 
-import { lhClient } from '@/utils/client/lhClient'
+import { lhClient } from '@/lhClient'
 import { Variable, WfRun, WfRunId } from 'littlehorse-client/proto'
 
 type Props = {

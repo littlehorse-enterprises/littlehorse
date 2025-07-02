@@ -1,8 +1,8 @@
 'use server'
-import { SearchType } from '@/types/search'
-import { WithBookmark, WithTenant } from '@/types/withs'
-import { lhClient } from '@/utils/client/lhClient'
-import { SEARCH_LIMIT_DEFAULT } from '@/utils/ui/constants'
+import { SearchType } from '@/types'
+import { WithBookmark, WithTenant } from '@/types'
+import { lhClient } from '@/lhClient'
+import { SEARCH_LIMIT_DEFAULT } from '@/constants'
 import {
   ExternalEventDefId,
   TaskDefId,
