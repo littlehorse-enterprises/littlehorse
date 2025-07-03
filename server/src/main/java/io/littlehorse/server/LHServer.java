@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
+import io.littlehorse.server.interceptors.RequestBlocker;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -58,6 +59,7 @@ public class LHServer {
     private final CommandSender commandSender;
     private final LHInternalClient lhInternalClient;
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
+    private final RequestBlocker requestBlocker = new RequestBlocker();
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -119,7 +121,8 @@ public class LHServer {
                 List.of(
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
-                        listenerConfig.getRequestAuthenticator()),
+                        listenerConfig.getRequestAuthenticator(),
+                        requestBlocker),
                 contextKey,
                 commandSender,
                 internalComms.getAsyncWaiters(),
@@ -131,9 +134,9 @@ public class LHServer {
     }
 
     /*
-     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
-     * grpc call that asynchronously waits for the command to be processed. It
-     * infers the request context from the GRPC Context.
+     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal grpc call
+     * that asynchronously waits for the command to be processed. It infers the request context from
+     * the GRPC Context.
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         commandSender.doSend(scheduledTask, client);
@@ -181,12 +184,12 @@ public class LHServer {
     }
 
     public void close() {
-        CountDownLatch latch = new CountDownLatch(4 + listeners.size());
 
+        CountDownLatch streamLatch = new CountDownLatch(2);
         new Thread(() -> {
                     log.info("Closing timer Kafka Streams");
                     timerStreams.close();
-                    latch.countDown();
+                    streamLatch.countDown();
                     log.info("Done closing timer Kafka Streams");
                 })
                 .start();
@@ -194,10 +197,18 @@ public class LHServer {
         new Thread(() -> {
                     log.info("Closing core Kafka Streams");
                     coreStreams.close();
-                    latch.countDown();
+                    streamLatch.countDown();
                     log.info("Done closing core Kafka Streams");
                 })
                 .start();
+        try {
+            streamLatch.await();
+            log.info("Done shutting down all LHServer threads");
+        } catch (Exception exn) {
+            throw new RuntimeException(exn);
+        }
+
+        CountDownLatch latch = new CountDownLatch(2);
 
         new Thread(() -> {
                     log.info("Closing internalComms");
@@ -212,22 +223,18 @@ public class LHServer {
                     latch.countDown();
                 })
                 .start();
-
-        for (LHServerListener listener : listeners) {
-            new Thread(() -> {
-                        log.info("Closing listener {}", listener);
-                        listener.close();
-                        latch.countDown();
-                    })
-                    .start();
-        }
-
         try {
             latch.await();
-            log.info("Done shutting down all LHServer threads");
+            log.info("Done closing internalComms and health service");
         } catch (Exception exn) {
             throw new RuntimeException(exn);
         }
+
+        for (LHServerListener listener : listeners) {
+            log.info("Closing listener {}", listener);
+            listener.close();
+        }
+        log.info("Done closing all listeners");
     }
 
     public Set<HostModel> getAllInternalHosts() {
