@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library
 import { Dispatch, SetStateAction } from 'react'
 
 const tabs: { id: LeftSidebarTabId; label: string }[] = [
-  { id: 'WfSpec', label: 'WfSpec' },
+  { id: 'Workflow', label: 'Workflow' },
   { id: 'WfRuns', label: 'WfRuns' },
   { id: 'ScheduledWfRuns', label: 'Scheduled' },
 ]

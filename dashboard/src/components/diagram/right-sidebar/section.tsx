@@ -1,24 +1,25 @@
 import { ReactNode, Children, useState } from 'react'
 
 interface SectionProps {
-  title: string
+  title: ReactNode
   children?: ReactNode
+  isCollapsedDefault?: boolean
 }
 
-export function Section({ title, children }: SectionProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+export function Section({ title, children, isCollapsedDefault = false }: SectionProps) {
+  const [isCollapsed, setIsCollapsed] = useState(isCollapsedDefault)
 
   const toggleCollapsed = () => {
     setIsCollapsed(!isCollapsed)
   }
 
   return (
-    <div className="mt-2 w-full rounded-md border border-gray-200 bg-gray-50 p-2">
+    <div className="mt-2 w-full rounded-md border border-gray-200 bg-gray-50">
       <button
         onClick={toggleCollapsed}
-        className="mb-2 flex w-full items-center justify-between rounded p-1 text-xs font-medium transition-colors hover:bg-gray-100"
+        className="flex w-full items-center justify-between rounded-t-md p-2 text-xs font-medium transition-colors hover:bg-gray-100"
       >
-        <span>{title}</span>
+        <span className="text-ellipsis overflow-hidden">{title}</span>
         <svg
           width="12"
           height="12"
@@ -29,12 +30,15 @@ export function Section({ title, children }: SectionProps) {
           <path d="M9 18l6-6-6-6" stroke="#656565" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      {!isCollapsed && (
-        <div className="space-y-1 text-xs">
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'
+          }`}
+      >
+        <div className="space-y-1 text-xs p-2">
           {Children.count(children) === 0 && <div className="text-gray-500">No data</div>}
           {children}
         </div>
-      )}
+      </div>
     </div>
   )
 }

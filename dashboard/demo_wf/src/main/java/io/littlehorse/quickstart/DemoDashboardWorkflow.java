@@ -34,6 +34,9 @@ public class DemoDashboardWorkflow {
         // Assign output of ExternalEvent to a variable
         searchableOptional.assign(demoDashboardExternalEvent);
 
+        wf.spawnThread(this::childThreadWithVariables, "demo-dashboard-child-thread-with-variables",
+                Map.of());
+
         // NOP and Sleep
         wf.doIf(optional.isEqualTo(true), ifBody -> ifBody.sleepSeconds(10));
 
@@ -47,6 +50,12 @@ public class DemoDashboardWorkflow {
         SpawnedThreads spawnedThreads = wf.spawnThreadForEach(arrayForThreads, "demo-dashboard-child-thread-for-each",
                 this::childThreadLogic);
         wf.waitForThreads(spawnedThreads);
+    }
+
+    public void childThreadWithVariables(WorkflowThread wf) {
+        wf.declareInt("masked-required-child");
+        wf.declareInt("masked-optional-child").masked();
+        wf.declareStr("public-child").asPublic();
     }
 
     public void childThreadLogic(WorkflowThread wf) {

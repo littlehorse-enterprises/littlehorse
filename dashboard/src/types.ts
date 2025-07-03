@@ -44,7 +44,7 @@ export type FormFieldProp = {
 }
 
 // LeftSidebarTabs types
-export type LeftSidebarTabId = 'WfSpec' | 'WfRuns' | 'ScheduledWfRuns'
+export type LeftSidebarTabId = 'Workflow' | 'WfRuns' | 'ScheduledWfRuns'
 
 // Node types
 export type NodeData = {
