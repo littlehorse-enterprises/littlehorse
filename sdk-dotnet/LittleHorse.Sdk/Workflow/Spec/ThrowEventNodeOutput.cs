@@ -9,7 +9,7 @@ namespace LittleHorse.Sdk.Workflow.Spec
     {
         private readonly WorkflowThread _parent;
         private readonly string _eventName;
-        private Type _payloadType;
+        private Type? _payloadType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ThrowEventNodeOutput"/> class.
