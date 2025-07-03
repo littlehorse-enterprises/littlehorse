@@ -1214,7 +1214,7 @@ public class WorkflowThread
     /// <param name="content">
     /// It is the content of the WorkflowEvent that is thrown.
     /// </param>
-    public void ThrowEvent(string workflowEventDefName, object content)
+    public ThrowEventNodeOutput ThrowEvent(string workflowEventDefName, object content)
     {
         CheckIfWorkflowThreadIsActive();
         Parent.AddWorkflowEventDefName(workflowEventDefName);
@@ -1226,10 +1226,15 @@ public class WorkflowThread
             },
             Content = AssignVariable(content)
         };
-        
         AddNode("throw-" + workflowEventDefName, Node.NodeOneofCase.ThrowEvent, node);
+        return new ThrowEventNodeOutput(workflowEventDefName, this);
     }
-    
+
+ 
+       internal void RegisterWorkflowEventDef(ThrowEventNodeOutput nodeOutput)
+    {
+        Parent.AddWorkflowEventDefToRegister(nodeOutput);
+    }
     /// <summary>
     /// Adds a Reminder Task to a User Task Node.
     /// </summary>

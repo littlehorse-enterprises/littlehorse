@@ -29,6 +29,7 @@ public class Workflow
     private ThreadRetentionPolicy? _defaultThreadRetentionPolicy;
     private WorkflowRetentionPolicy? _wfRetentionPolicy;
     internal readonly Stack<WorkflowThread> Threads;
+    private readonly List<ThrowEventNodeOutput> _workflowEventsToRegister = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Workflow"/> class.
@@ -48,6 +49,9 @@ public class Workflow
         _requiredEedNames = new HashSet<string>();
         _requiredWorkflowEventDefNames = new HashSet<string>();
         Threads = new Stack<WorkflowThread>();
+        // Force workflow construction here so all event registrations are done before Compile
+        // var wfThread = new WorkflowThread(this, entryPoint);
+        // _spec.ThreadSpecs.Add("entrypoint", wfThread.Compile());
     }
     
     /// <summary>
@@ -60,7 +64,7 @@ public class Workflow
     {
         return _compiledWorkflow ??= CompileWorkflowDetails();
     }
-    
+
     /// <summary>
     /// Deploys the WfSpec object to the LH Server. Registering the WfSpec via
     /// Workflow::RegisterWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
@@ -70,7 +74,14 @@ public class Workflow
     /// </param>
     public void RegisterWfSpec(LittleHorseClient client)
     {
-        _logger!.LogInformation($"Created wfSpec:\n{LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile()))}");
+        var request = Compile();
+        foreach (var node in _workflowEventsToRegister)
+        {
+            client.PutWorkflowEventDef(node.ToPutWorkflowEventDefRequest());
+            _logger!.LogInformation($"Registered WorkflowEventDef: {node.ToPutWorkflowEventDefRequest().Name}");
+        }
+        _logger!.LogInformation($"Created wfSpec:\n{LHMappingHelper.ProtoToJson(client.PutWfSpec(request))}");
+
     }
 
     internal string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
@@ -240,6 +251,11 @@ public class Workflow
     internal void AddWorkflowEventDefName(string name) 
     {
         _requiredWorkflowEventDefNames.Add(name);
+    }
+    
+    internal void AddWorkflowEventDefToRegister(ThrowEventNodeOutput node)
+    {
+        _workflowEventsToRegister.Add(node);
     }
     
     internal ThreadRetentionPolicy? GetDefaultThreadRetentionPolicy() 
