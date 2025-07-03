@@ -30,6 +30,7 @@ public class Workflow
     private WorkflowRetentionPolicy? _wfRetentionPolicy;
     internal readonly Stack<WorkflowThread> Threads;
     private readonly List<ThrowEventNodeOutput> _workflowEventsToRegister = new();
+    private readonly List<ExternalEventNodeOutput> _externalEventsToRegister = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Workflow"/> class.
@@ -75,6 +76,11 @@ public class Workflow
     public void RegisterWfSpec(LittleHorseClient client)
     {
         var request = Compile();
+        foreach (var node in _externalEventsToRegister)
+        {
+            client.PutExternalEventDef(node.ToPutExternalEventDefRequest());
+            _logger!.LogInformation($"Registered ExternalEventDef: {node.ToPutExternalEventDefRequest().Name}");
+        }
         foreach (var node in _workflowEventsToRegister)
         {
             client.PutWorkflowEventDef(node.ToPutWorkflowEventDefRequest());
@@ -256,6 +262,11 @@ public class Workflow
     internal void AddWorkflowEventDefToRegister(ThrowEventNodeOutput node)
     {
         _workflowEventsToRegister.Add(node);
+    }
+    
+    internal void AddExternalEventDefToRegister(ExternalEventNodeOutput node)
+    {
+        _externalEventsToRegister.Add(node);
     }
     
     internal ThreadRetentionPolicy? GetDefaultThreadRetentionPolicy() 

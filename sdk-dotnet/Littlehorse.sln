@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserTasksExample", "Example
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThrowEventRegisterExample", "Examples\ThrowEventRegisterExample\ThrowEventRegisterExample.csproj", "{A0CE226C-97E7-4340-AEDC-665C425524D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalEventRegisterExample", "Examples\ExternalEventRegisterExample\ExternalEventRegisterExample.csproj", "{D64A534C-73E1-45F8-A933-D2A7698DCF50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,10 @@ Global
 		{A0CE226C-97E7-4340-AEDC-665C425524D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0CE226C-97E7-4340-AEDC-665C425524D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0CE226C-97E7-4340-AEDC-665C425524D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D64A534C-73E1-45F8-A933-D2A7698DCF50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D64A534C-73E1-45F8-A933-D2A7698DCF50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D64A534C-73E1-45F8-A933-D2A7698DCF50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D64A534C-73E1-45F8-A933-D2A7698DCF50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88CB23B3-1174-45F5-9F72-46AB57BAB661} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
@@ -126,5 +132,6 @@ Global
 		{0FA4E6DF-B4CA-47C2-B1B4-09AC8FD29D2E} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{992F5740-338D-4D9D-A13D-AA1EB1D54394} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{A0CE226C-97E7-4340-AEDC-665C425524D7} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
+		{D64A534C-73E1-45F8-A933-D2A7698DCF50} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 	EndGlobalSection
 EndGlobal

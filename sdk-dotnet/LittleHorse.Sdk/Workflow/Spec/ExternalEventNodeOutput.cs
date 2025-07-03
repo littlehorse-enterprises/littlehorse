@@ -1,3 +1,5 @@
+using LittleHorse.Sdk.Common.Proto;
+
 namespace LittleHorse.Sdk.Workflow.Spec;
 
 /// <summary>
@@ -5,15 +7,22 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 /// It allows for setting timeouts and other configurations specific to external events outputs.
 /// </summary>
 public class ExternalEventNodeOutput: NodeOutput
-{
+{   
+    private Type? _payloadType;
+    private CorrelatedEventConfig? _correlatedEventConfig;
+    private string ExternalEventDefName { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ExternalEventNodeOutput"/> class.
     /// </summary>
     /// <param name="nodeName">The specified node name.</param>
+    /// <param name="externalEventDefName">The external event definition name.</param>
     /// <param name="parent">The workflow thread where the ExternalEventNodeOutput belongs to.</param>
-    public ExternalEventNodeOutput(string nodeName, WorkflowThread parent)
+    public ExternalEventNodeOutput(string nodeName,string externalEventDefName, WorkflowThread parent)
         : base(nodeName, parent)
+        
     {
+        ExternalEventDefName = externalEventDefName;
     }
     
     /// <summary>
@@ -40,6 +49,51 @@ public class ExternalEventNodeOutput: NodeOutput
     public ExternalEventNodeOutput WithCorrelationId(object correlationId)
     {
         Parent.SetCorrelationIdOnExternalEventNode(this, correlationId);
+        
         return this;
+    }
+
+    /// <summary>
+    /// Registers the external event definition with the specified payload type.
+    /// </summary>
+    /// <param name="payloadType">The payload type.</param>
+    /// <returns>The ExternalEventNodeOutput.</returns>
+    public ExternalEventNodeOutput RegisteredAs(Type payloadType)
+    {
+        _payloadType = payloadType;
+        Parent.RegisterExternalEventDef(this);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a correlated event configuration to the external event node.
+    /// </summary>
+    /// <param name="config">The correlated event configuration.</param>
+    /// <returns>The ExternalEventNodeOutput.</returns>
+    public ExternalEventNodeOutput WithCorrelatedEventConfig(CorrelatedEventConfig config)
+    {
+        _correlatedEventConfig = config;
+        return this;
+    }
+
+    /// <summary>
+    /// Gets the correlated event configuration.
+    /// </summary>
+    /// <returns>The correlated event configuration, if set; otherwise, null.</returns>
+    public CorrelatedEventConfig? GetCorrelatedEventConfig() => _correlatedEventConfig;
+
+    /// <summary>
+    /// Returns a PutExternalEventDefRequest for registering this external event definition.
+    /// </summary>
+    public PutExternalEventDefRequest ToPutExternalEventDefRequest()
+    {
+        var req = new PutExternalEventDefRequest
+        {
+            Name = ExternalEventDefName,
+            ContentType = _payloadType != null ? TypeUtil.DotNetTypeToReturnType(_payloadType) : null
+        };
+        if (_correlatedEventConfig != null)
+            req.CorrelatedEventConfig = _correlatedEventConfig;
+        return req;
     }
 }

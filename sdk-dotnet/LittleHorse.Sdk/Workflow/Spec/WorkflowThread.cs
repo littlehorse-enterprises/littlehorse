@@ -388,7 +388,7 @@ public class WorkflowThread
         Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
-        return new ExternalEventNodeOutput(nodeName, this);
+        return new ExternalEventNodeOutput(nodeName,externalEventDefName, this);
     }
     
     /// <summary>
@@ -1235,6 +1235,12 @@ public class WorkflowThread
     {
         Parent.AddWorkflowEventDefToRegister(nodeOutput);
     }
+
+    internal void RegisterExternalEventDef(ExternalEventNodeOutput nodeOutput)
+    {
+        Parent.AddExternalEventDefToRegister(nodeOutput);
+    }
+       
     /// <summary>
     /// Adds a Reminder Task to a User Task Node.
     /// </summary>
