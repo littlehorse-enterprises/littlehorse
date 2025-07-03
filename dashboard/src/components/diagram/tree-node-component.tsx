@@ -1,10 +1,12 @@
 'use client'
 
-import { TreeNode } from '@/utils/data/node-tree'
-import { getNodeIcon, NodeType } from '@/utils/ui/node-utils'
+import { TreeNode } from '@/types'
+import { LHStatus } from 'littlehorse-client/proto'
 import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNodeSelection } from '../context/selection-context'
+import { NODE_STYLES } from '@/constants'
+import { NodeType } from '@/types'
 
 interface TreeNodeComponentProps {
   node: TreeNode
@@ -37,10 +39,10 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
   }, [searchTerm, node, isExpanded])
 
   const getNodeTypeFromLabel = (label: string): NodeType | null => {
-    if (label.includes('ENTRYPOINT') || label.includes('entrypoint')) return 'ENTRYPOINT'
-    if (label.includes('EXIT') || label.includes('exit')) return 'EXIT'
-    if (label.includes('TASK') || label.includes('task')) return 'TASK'
-    if (label.includes('EXTERNAL_EVENT') || label.includes('external')) return 'EXTERNAL_EVENT'
+    if (label.includes('ENTRYPOINT') || label.includes('entrypoint')) return 'entrypoint'
+    if (label.includes('EXIT') || label.includes('exit')) return 'exit'
+    if (label.includes('TASK') || label.includes('task')) return 'task'
+    if (label.includes('EXTERNAL_EVENT') || label.includes('external')) return 'externalEvent'
     return null
   }
 
@@ -49,15 +51,13 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
     const nodeType = getNodeTypeFromLabel(node.label)
 
     if (nodeType) {
-      const iconElement = getNodeIcon(nodeType)
-      if (iconElement) {
-        // Clone the icon with smaller size for tree view
+      const nodeStyle = NODE_STYLES[nodeType]
+      if (nodeStyle) {
+        const IconComponent = nodeStyle.icon
         return (
           <div className="mr-1.5 flex items-center justify-center">
             <div className="flex h-3 w-3 items-center justify-center">
-              {React.cloneElement(iconElement, {
-                className: iconElement.props.className.replace('h-6 w-6', 'h-3 w-3'),
-              })}
+              <IconComponent className="h-3 w-3" />
             </div>
           </div>
         )
@@ -65,30 +65,26 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
     }
 
     // Fallback for node types based on tree node type
-    if (node.type === 'start') return <div className="mr-1.5 h-3 w-3 rounded-full bg-green-500" />
-    if (node.type === 'end') return <div className="mr-1.5 h-3 w-3 rounded-full bg-red-500" />
-    if (node.type === 'decision') return <div className="mr-1.5 h-3 w-3 rotate-45 bg-yellow-500" />
+    if (node.type === 'entrypoint') return <div className="mr-1.5 h-3 w-3 rounded-full bg-green-500" />
+    if (node.type === 'exit') return <div className="mr-1.5 h-3 w-3 rounded-full bg-red-500" />
+    if (node.type === 'nop') return <div className="mr-1.5 h-3 w-3 rotate-45 bg-yellow-500" />
 
     // For task nodes, show status with proper task icon
-    if (node.status === 'completed') return <CheckCircle className="mr-1.5 h-3 w-3 text-green-500" />
-    if (node.status === 'error') return <XCircle className="mr-1.5 h-3 w-3 text-red-500" />
-    if (node.status === 'running') return <Loader2 className="mr-1.5 h-3 w-3 animate-spin text-blue-500" />
+    if (node.status === LHStatus.COMPLETED) return <CheckCircle className="mr-1.5 h-3 w-3 text-green-500" />
+    if (node.status === LHStatus.ERROR || node.status === LHStatus.EXCEPTION)
+      return <XCircle className="mr-1.5 h-3 w-3 text-red-500" />
+    if (node.status === LHStatus.RUNNING) return <Loader2 className="mr-1.5 h-3 w-3 animate-spin text-blue-500" />
 
     // Default to task icon if no specific type detected
-    const taskIcon = getNodeIcon('TASK')
-    if (taskIcon) {
-      return (
-        <div className="mr-1.5 flex items-center justify-center">
-          <div className="flex h-3 w-3 items-center justify-center">
-            {React.cloneElement(taskIcon, {
-              className: taskIcon.props.className.replace('h-6 w-6', 'h-3 w-3'),
-            })}
-          </div>
+    const taskStyle = NODE_STYLES.task
+    const TaskIcon = taskStyle.icon
+    return (
+      <div className="mr-1.5 flex items-center justify-center">
+        <div className="flex h-3 w-3 items-center justify-center">
+          <TaskIcon className="h-3 w-3" />
         </div>
-      )
-    }
-
-    return <div className="mr-1.5 h-3 w-3 rounded-sm bg-gray-400" />
+      </div>
+    )
   }
 
   const handleToggle = (e: React.MouseEvent) => {

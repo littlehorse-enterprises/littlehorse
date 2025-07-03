@@ -3,7 +3,8 @@
 import { searchTaskRun } from '@/actions/searchTaskRun'
 import LinkWithTenant from '@/components/link-with-tenant'
 import { Pagination } from '@/components/ui/load-more-pagination'
-import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { getVariableDefType, VARIABLE_TYPES } from '@/utils/data/variables'
+import { SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/constants'
 import { Badge } from '@littlehorse-enterprises/ui-library/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@littlehorse-enterprises/ui-library/card'
 import {
@@ -67,6 +68,70 @@ export default function TaskDefClient({ taskDef }: TaskDefClientProps) {
       </div>
 
       <div className="grid gap-6">
+        {/* Basic Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Basic Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <p className="text-muted-foreground text-sm font-medium">Name</p>
+                <p className="font-mono text-lg">{taskDef.id?.name}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm font-medium">Created At</p>
+                <p className="text-lg">{taskDef.createdAt ? new Date(taskDef.createdAt).toLocaleString() : 'N/A'}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Input Variables */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Type className="h-5 w-5" />
+              Input Variables
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {taskDef.inputVars && taskDef.inputVars.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Default</TableHead>
+                    <TableHead>Masked</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {taskDef.inputVars.map((variable, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-mono font-medium">{variable.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="font-mono">
+                          {VARIABLE_TYPES[getVariableDefType(variable)]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">
+                        {variable.defaultValue ? JSON.stringify(variable.defaultValue).slice(0, 50) + '...' : 'None'}
+                      </TableCell>
+                      <TableCell>{variable.maskedValue ? 'Yes' : 'No'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-muted-foreground py-8 text-center">No input variables defined for this task</div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Related Task Runs */}
         <Card>
           <CardHeader>
@@ -121,70 +186,6 @@ export default function TaskDefClient({ taskDef }: TaskDefClientProps) {
                 />
               )}
             </>
-          </CardContent>
-        </Card>
-
-        {/* Basic Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              Basic Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <p className="text-muted-foreground text-sm font-medium">Name</p>
-                <p className="font-mono text-lg">{taskDef.id?.name}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground text-sm font-medium">Created At</p>
-                <p className="text-lg">{taskDef.createdAt ? new Date(taskDef.createdAt).toLocaleString() : 'N/A'}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Input Variables */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Type className="h-5 w-5" />
-              Input Variables
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {taskDef.inputVars && taskDef.inputVars.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Default</TableHead>
-                    <TableHead>Masked</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {taskDef.inputVars.map((variable, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-mono font-medium">{variable.name}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="font-mono">
-                          {variable.type || 'UNKNOWN'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="font-mono text-sm">
-                        {variable.defaultValue ? JSON.stringify(variable.defaultValue).slice(0, 50) + '...' : 'None'}
-                      </TableCell>
-                      <TableCell>{variable.maskedValue ? 'Yes' : 'No'}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-muted-foreground py-8 text-center">No input variables defined for this task</div>
-            )}
           </CardContent>
         </Card>
       </div>
