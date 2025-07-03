@@ -31,8 +31,7 @@ export function Section({ title, children, isCollapsedDefault = false }: Section
         </svg>
       </button>
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'
-          }`}
+        className={`overflow-hidden ${isCollapsed ? 'max-h-0' : 'max-h-none'}`}
       >
         <div className="space-y-1 text-xs p-2">
           {Children.count(children) === 0 && <div className="text-gray-500">No data</div>}

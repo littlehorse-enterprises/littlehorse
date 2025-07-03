@@ -8,6 +8,7 @@ import { Separator } from '@littlehorse-enterprises/ui-library/separator'
 import { cn } from '@/utils/ui/utils'
 import { TreeNode } from '@/types'
 import { Section } from '../../right-sidebar/section'
+import { Label } from '../../right-sidebar/label'
 
 interface WorkflowTabProps {
     wfSpec: WfSpec
@@ -25,13 +26,6 @@ const varTypeColors: Record<VariableType, string> = {
     [VariableType.UNRECOGNIZED]: 'bg-gray-100 text-gray-600',
     [VariableType.WF_RUN_ID]: ''
 }
-
-// const accessLevelColors: Record<WfRunVariableAccessLevel, string> = {
-//   [WfRunVariableAccessLevel.PUBLIC_VAR]: 'bg-blue-100 text-blue-600',
-//   [WfRunVariableAccessLevel.INHERITED_VAR]: 'bg-green-100 text-green-600',
-//   [WfRunVariableAccessLevel.PRIVATE_VAR]: 'bg-pink-100 text-pink-600',
-//   [WfRunVariableAccessLevel.UNRECOGNIZED]: 'bg-gray-100 text-gray-600',
-// }
 
 function VariableDefComponent(threadVarDef: ThreadVarDef) {
     if (!threadVarDef.varDef?.typeDef) return null
@@ -75,7 +69,31 @@ export default function WorkflowTab({ wfSpec }: WorkflowTabProps) {
                     {threadSpecsWithVariableDefs.map(([threadName, threadSpec]) =>
                         <Section key={threadName} title={threadName}>
                             {threadSpec.variableDefs.map((threadVarDef) => (
-                                <Section key={threadVarDef.varDef?.name} title={<VariableDefComponent {...threadVarDef} />} isCollapsedDefault />
+                                <Section key={threadVarDef.varDef?.name} title={<VariableDefComponent {...threadVarDef} />} isCollapsedDefault={false} >
+                                    <Label label="Required" >{`${threadVarDef.required}`}</Label>
+                                    <Label label="Searchable" >{`${threadVarDef.searchable}`}</Label>
+                                    <Label label="AccessLevel" >{`${threadVarDef.accessLevel}`}</Label>
+
+                                    <Section title="VariableDef">
+                                        {threadVarDef.varDef?.type && <Label label="VariableType">{`${threadVarDef.varDef?.type}`}</Label>}
+                                        <Label label="Name" >{`${threadVarDef.varDef?.name}`}</Label>
+                                        <Label label="DefaultValue" >{`${threadVarDef.varDef?.defaultValue}`}</Label>
+                                        {threadVarDef.varDef?.maskedValue && <Label label="MaskedValue">{`${threadVarDef.varDef?.maskedValue}`}</Label>}
+                                        {threadVarDef.varDef?.typeDef && <Section title="TypeDef">
+                                            <Label label="Type" >{`${threadVarDef.varDef?.typeDef?.type}`}</Label>
+                                            <Label label="Masked" >{`${threadVarDef.varDef?.typeDef?.masked}`}</Label>
+                                        </Section>}
+                                    </Section>
+                                    {threadVarDef.jsonIndexes.length > 0 && <Section title="JsonIndexes">
+                                        {threadVarDef.jsonIndexes.map((jsonIndex, i) => (
+                                            <Section key={JSON.stringify(jsonIndex) + i} title={`JsonIndex ${i}`} >
+                                                <Label label="FieldPath" >{jsonIndex.fieldPath}</Label>
+                                                <Label label="FieldType" >{`${jsonIndex.fieldType}`}</Label>
+                                            </Section>
+                                        ))}
+                                    </Section>
+                                    }
+                                </Section>
                             ))}
                         </Section>
                     )}

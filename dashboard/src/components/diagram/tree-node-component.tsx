@@ -57,7 +57,7 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
         return (
           <div className="mr-1.5 flex items-center justify-center">
             <div className="flex h-3 w-3 items-center justify-center">
-              <IconComponent className="h-3 w-3" />
+              <IconComponent className={`h-3 w-3 ${nodeStyle.iconColor}`} />
             </div>
           </div>
         )
