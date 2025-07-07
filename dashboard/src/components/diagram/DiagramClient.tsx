@@ -27,7 +27,8 @@ export default function DiagramClient({ wfSpec, wfRunDetails, nodes, edges }: Di
     const handlePanelDoubleClick = useCallback((panelRef: React.RefObject<ImperativePanelHandle | null>) => {
         if (panelRef.current) {
             const currentSize = panelRef.current.getSize()
-            const newSize = currentSize >= EXPANDED_SIZE ? DEFAULT_SIZE : EXPANDED_SIZE
+            const midpoint = (DEFAULT_SIZE + EXPANDED_SIZE) / 2
+            const newSize = currentSize >= midpoint ? DEFAULT_SIZE : EXPANDED_SIZE
             panelRef.current.resize(newSize)
         }
     }, [])
