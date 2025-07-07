@@ -24,14 +24,6 @@ public class Program
             .BuildServiceProvider();
     }
 
-    private static Dictionary<string, string> GetDictionaryFromMainArgs(string[] args)
-    {
-        var keyValueArgs = args.Select(item => item.Split('='))
-            .ToDictionary(item => item[0], item => item[1]);
-
-        return keyValueArgs;
-    }
-
     private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
