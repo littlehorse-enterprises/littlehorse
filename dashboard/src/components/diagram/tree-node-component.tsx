@@ -6,7 +6,6 @@ import { CheckCircle, ChevronDown, ChevronRight, Loader2, XCircle } from 'lucide
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNodeSelection } from '../context/selection-context'
 import { NODE_STYLES } from '@/constants'
-import { NodeType } from '@/types'
 
 interface TreeNodeComponentProps {
   node: TreeNode
@@ -38,17 +37,8 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
     }
   }, [searchTerm, node, isExpanded])
 
-  const getNodeTypeFromLabel = (label: string): NodeType | null => {
-    if (label.includes('ENTRYPOINT') || label.includes('entrypoint')) return 'entrypoint'
-    if (label.includes('EXIT') || label.includes('exit')) return 'exit'
-    if (label.includes('TASK') || label.includes('task')) return 'task'
-    if (label.includes('EXTERNAL_EVENT') || label.includes('external')) return 'externalEvent'
-    return null
-  }
-
   const getNodeStatusIcon = () => {
-    // Check for pattern in node label/ID and get proper icon
-    const nodeType = getNodeTypeFromLabel(node.label)
+    const nodeType = node.type
 
     if (nodeType) {
       const nodeStyle = NODE_STYLES[nodeType]
@@ -63,11 +53,6 @@ export function TreeNodeComponent({ node, isRoot = false, searchTerm }: TreeNode
         )
       }
     }
-
-    // Fallback for node types based on tree node type
-    if (node.type === 'entrypoint') return <div className="mr-1.5 h-3 w-3 rounded-full bg-green-500" />
-    if (node.type === 'exit') return <div className="mr-1.5 h-3 w-3 rounded-full bg-red-500" />
-    if (node.type === 'nop') return <div className="mr-1.5 h-3 w-3 rotate-45 bg-yellow-500" />
 
     // For task nodes, show status with proper task icon
     if (node.status === LHStatus.COMPLETED) return <CheckCircle className="mr-1.5 h-3 w-3 text-green-500" />

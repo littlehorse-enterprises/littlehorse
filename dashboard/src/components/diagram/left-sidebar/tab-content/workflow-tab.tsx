@@ -107,12 +107,11 @@ export default function WorkflowTab({ wfSpec }: WorkflowTabProps) {
 function buildNodeTree(wfSpec: WfSpec, threadSpecName: string): TreeNode[] {
     const result: TreeNode[] = []
 
-    Object.entries(wfSpec.threadSpecs[threadSpecName].nodes).forEach(([nodeId]) => {
+    Object.entries(wfSpec.threadSpecs[threadSpecName].nodes).forEach(([nodeId, node]) => {
         result.push({
             id: `${nodeId}:${threadSpecName}`,
             label: nodeId,
-            type: undefined,
-            status: undefined,
+            type: node.node?.$case,
             children: [],
             level: 0,
         })
