@@ -15,10 +15,6 @@ public class ExternalEventNodeOutputTest
     [Fact]
     public void ToPutExternalEventDefRequest_ShouldSetNameAndContentType()
     {
-        void Entrypoint(WorkflowThread wf)
-        {
-            wf.WaitForEvent("external-event-def").RegisteredAs(typeof(int));
-        }
         var workflow = new Sdk.Workflow.Spec.Workflow("test-external-event", Entrypoint);
 
         var wfSpec = workflow.Compile();
@@ -26,15 +22,17 @@ public class ExternalEventNodeOutputTest
         var node = thread.Nodes["1-external-event-def-EXTERNAL_EVENT"];
 
         Assert.Equal("external-event-def", node.ExternalEvent.ExternalEventDefId.Name);
+        return;
+
+        void Entrypoint(WorkflowThread wf)
+        {
+            wf.WaitForEvent("external-event-def").RegisteredAs(typeof(int));
+        }
     }
 
     [Fact]
     public void ToPutExternalEventDefRequest_ShouldSetContentTypeCorrectly()
     {
-        void Entrypoint(WorkflowThread wf)
-        {
-            wf.WaitForEvent("external-event-def").RegisteredAs(typeof(string));
-        }
         var workflow = new Sdk.Workflow.Spec.Workflow("test-external-event-string", Entrypoint);
 
         var wfSpec = workflow.Compile();
@@ -42,16 +40,18 @@ public class ExternalEventNodeOutputTest
         var node = thread.Nodes["1-external-event-def-EXTERNAL_EVENT"];
 
         Assert.Equal("external-event-def", node.ExternalEvent.ExternalEventDefId.Name);
+        return;
+
+        void Entrypoint(WorkflowThread wf)
+        {
+            wf.WaitForEvent("external-event-def").RegisteredAs(typeof(string));
+        }
     }
 
 
     [Fact]
     public void WaitForEvent_WithDifferentEventName_ShouldCreateCorrectNode()
     {
-        void Entrypoint(WorkflowThread wf)
-        {
-            wf.WaitForEvent("my-custom-event").RegisteredAs(typeof(int));
-        }
         var workflow = new Sdk.Workflow.Spec.Workflow("test-custom-event", Entrypoint);
 
         var wfSpec = workflow.Compile();
@@ -59,5 +59,11 @@ public class ExternalEventNodeOutputTest
         var node = thread.Nodes["1-my-custom-event-EXTERNAL_EVENT"];
 
         Assert.Equal("my-custom-event", node.ExternalEvent.ExternalEventDefId.Name);
+        return;
+
+        void Entrypoint(WorkflowThread wf)
+        {
+            wf.WaitForEvent("my-custom-event").RegisteredAs(typeof(int));
+        }
     }
 }

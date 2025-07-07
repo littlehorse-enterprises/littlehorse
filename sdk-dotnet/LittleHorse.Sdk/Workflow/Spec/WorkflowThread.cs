@@ -1230,7 +1230,7 @@ public class WorkflowThread
     }
 
  
-       internal void RegisterWorkflowEventDef(ThrowEventNodeOutput nodeOutput)
+    internal void RegisterWorkflowEventDef(ThrowEventNodeOutput nodeOutput)
     {
         Parent.AddWorkflowEventDefToRegister(nodeOutput);
     }
