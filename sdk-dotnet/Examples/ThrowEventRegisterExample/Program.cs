@@ -36,6 +36,8 @@ public class Program
 
     private static Workflow GetWorkflow()
     {
+        return new Workflow(WorkflowName, MyEntryPoint);
+
         void MyEntryPoint(WorkflowThread wf)
         {
             var name = wf.DeclareStr("input-name").Searchable();
@@ -43,8 +45,6 @@ public class Program
             wf.ThrowEvent(EventName, name)
                 .RegisteredAs(typeof(string));
         }
-        
-        return new Workflow(WorkflowName, MyEntryPoint);
     }
 
     static async Task  Main(string[] args)

@@ -93,7 +93,7 @@ public class ExternalEventNodeOutput : NodeOutput
         var req = new PutExternalEventDefRequest
         {
             Name = ExternalEventDefName,
-            ContentType = _payloadType != null ? LHMappingHelper.DotNetTypeToReturnType(_payloadType) : null
+            ContentType = LHMappingHelper.DotNetTypeToReturnType(_payloadType)
         };
         if (_correlatedEventConfig != null)
             req.CorrelatedEventConfig = _correlatedEventConfig;

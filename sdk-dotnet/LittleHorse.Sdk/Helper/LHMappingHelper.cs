@@ -220,7 +220,7 @@ namespace LittleHorse.Sdk.Helper
         /// <param name="type">The .NET type to map.</param>
         /// <returns>The corresponding workflow <see cref="ReturnType"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the type is not supported.</exception>
-        public static ReturnType DotNetTypeToReturnType(Type type)
+        public static ReturnType DotNetTypeToReturnType(Type? type)
         {
             var typeDef = new TypeDefinition();
             if (type == typeof(string))

@@ -27,7 +27,7 @@ namespace LittleHorse.Sdk.Workflow.Spec
         /// Registers the event definition with the specified payload type.
         /// </summary>
         /// <param name="payloadType">The .NET type of the event payload.</param>
-        public void RegisteredAs(Type payloadType)
+        public void RegisteredAs(Type? payloadType)
         {
             _payloadType = payloadType;
             _parent.RegisterWorkflowEventDef(this);
@@ -43,7 +43,7 @@ namespace LittleHorse.Sdk.Workflow.Spec
             return new PutWorkflowEventDefRequest
             {
                 Name = _eventName,
-                ContentType = _payloadType != null ? LHMappingHelper.DotNetTypeToReturnType(_payloadType) : null
+                ContentType = LHMappingHelper.DotNetTypeToReturnType(_payloadType!) 
             };
         }
     }
