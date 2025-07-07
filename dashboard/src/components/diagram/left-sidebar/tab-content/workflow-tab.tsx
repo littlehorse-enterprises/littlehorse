@@ -77,42 +77,46 @@ export default function WorkflowTab({ wfSpec }: WorkflowTabProps) {
         <div className="space-y-2 p-2">
           {threadSpecsWithVariableDefs.map(([threadName, threadSpec]) => (
             <Section key={threadName} title={threadName}>
-              {threadSpec.variableDefs.map(threadVarDef => (
-                <Section
-                  key={threadVarDef.varDef?.name}
-                  title={<VariableDefComponent {...threadVarDef} />}
-                  isCollapsedDefault
-                >
-                  <Label label="Required">{`${threadVarDef.required}`}</Label>
-                  <Label label="Searchable">{`${threadVarDef.searchable}`}</Label>
-                  <Label label="AccessLevel">{`${threadVarDef.accessLevel}`}</Label>
+              {threadSpec.variableDefs.map(threadVarDef => {
+                if (!threadVarDef.varDef) return null
 
-                  <Section title="VariableDef">
-                    {threadVarDef.varDef?.type && <Label label="VariableType">{`${threadVarDef.varDef?.type}`}</Label>}
-                    <Label label="Name">{`${threadVarDef.varDef?.name}`}</Label>
-                    <Label label="DefaultValue">{`${getVariableValue(threadVarDef.varDef?.defaultValue)}`}</Label>
-                    {threadVarDef.varDef?.maskedValue && (
-                      <Label label="MaskedValue">{`${threadVarDef.varDef?.maskedValue}`}</Label>
-                    )}
-                    {threadVarDef.varDef?.typeDef && (
-                      <Section title="TypeDef">
-                        <Label label="Type">{`${threadVarDef.varDef?.typeDef?.type}`}</Label>
-                        <Label label="Masked">{`${threadVarDef.varDef?.typeDef?.masked}`}</Label>
+                return (
+                  <Section
+                    key={threadVarDef.varDef.name}
+                    title={<VariableDefComponent {...threadVarDef} />}
+                    isCollapsedDefault
+                  >
+                    <Label label="Required">{`${threadVarDef.required}`}</Label>
+                    <Label label="Searchable">{`${threadVarDef.searchable}`}</Label>
+                    <Label label="AccessLevel">{`${threadVarDef.accessLevel}`}</Label>
+
+                    <Section title="VariableDef">
+                      {threadVarDef.varDef.type && <Label label="VariableType">{`${threadVarDef.varDef.type}`}</Label>}
+                      <Label label="Name">{`${threadVarDef.varDef.name}`}</Label>
+                      <Label label="DefaultValue">{`${getVariableValue(threadVarDef.varDef.defaultValue)}`}</Label>
+                      {threadVarDef.varDef.maskedValue && (
+                        <Label label="MaskedValue">{`${threadVarDef.varDef.maskedValue}`}</Label>
+                      )}
+                      {threadVarDef.varDef.typeDef && (
+                        <Section title="TypeDef">
+                          <Label label="Type">{`${threadVarDef.varDef.typeDef.type}`}</Label>
+                          <Label label="Masked">{`${threadVarDef.varDef.typeDef.masked}`}</Label>
+                        </Section>
+                      )}
+                    </Section>
+                    {threadVarDef.jsonIndexes.length > 0 && (
+                      <Section title="JsonIndexes">
+                        {threadVarDef.jsonIndexes.map((jsonIndex, i) => (
+                          <Section key={JSON.stringify(jsonIndex) + i} title={`JsonIndex ${i}`}>
+                            <Label label="FieldPath">{jsonIndex.fieldPath}</Label>
+                            <Label label="FieldType">{`${jsonIndex.fieldType}`}</Label>
+                          </Section>
+                        ))}
                       </Section>
                     )}
                   </Section>
-                  {threadVarDef.jsonIndexes.length > 0 && (
-                    <Section title="JsonIndexes">
-                      {threadVarDef.jsonIndexes.map((jsonIndex, i) => (
-                        <Section key={JSON.stringify(jsonIndex) + i} title={`JsonIndex ${i}`}>
-                          <Label label="FieldPath">{jsonIndex.fieldPath}</Label>
-                          <Label label="FieldType">{`${jsonIndex.fieldType}`}</Label>
-                        </Section>
-                      ))}
-                    </Section>
-                  )}
-                </Section>
-              ))}
+                )
+              })}
             </Section>
           ))}
         </div>
