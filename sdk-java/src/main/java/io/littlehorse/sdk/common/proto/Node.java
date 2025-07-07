@@ -62,6 +62,7 @@ private static final long serialVersionUID = 0L;
     START_MULTIPLE_THREADS(15),
     THROW_EVENT(16),
     WAIT_FOR_CONDITION(17),
+    START_CHILD_WF(18),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -91,6 +92,7 @@ private static final long serialVersionUID = 0L;
         case 15: return START_MULTIPLE_THREADS;
         case 16: return THROW_EVENT;
         case 17: return WAIT_FOR_CONDITION;
+        case 18: return START_CHILD_WF;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -764,6 +766,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
   }
 
+  public static final int START_CHILD_WF_FIELD_NUMBER = 18;
+  /**
+   * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+   * @return Whether the startChildWf field is set.
+   */
+  @java.lang.Override
+  public boolean hasStartChildWf() {
+    return nodeCase_ == 18;
+  }
+  /**
+   * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+   * @return The startChildWf.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StartChildWfNode getStartChildWf() {
+    if (nodeCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.StartChildWfNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.StartChildWfNode.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StartChildWfNodeOrBuilder getStartChildWfOrBuilder() {
+    if (nodeCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.StartChildWfNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.StartChildWfNode.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -819,6 +852,9 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 17) {
       output.writeMessage(17, (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_);
+    }
+    if (nodeCase_ == 18) {
+      output.writeMessage(18, (io.littlehorse.sdk.common.proto.StartChildWfNode) node_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -884,6 +920,10 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 17) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(17, (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_);
+    }
+    if (nodeCase_ == 18) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(18, (io.littlehorse.sdk.common.proto.StartChildWfNode) node_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -953,6 +993,10 @@ private static final long serialVersionUID = 0L;
       case 17:
         if (!getWaitForCondition()
             .equals(other.getWaitForCondition())) return false;
+        break;
+      case 18:
+        if (!getStartChildWf()
+            .equals(other.getStartChildWf())) return false;
         break;
       case 0:
       default:
@@ -1024,6 +1068,10 @@ private static final long serialVersionUID = 0L;
       case 17:
         hash = (37 * hash) + WAIT_FOR_CONDITION_FIELD_NUMBER;
         hash = (53 * hash) + getWaitForCondition().hashCode();
+        break;
+      case 18:
+        hash = (37 * hash) + START_CHILD_WF_FIELD_NUMBER;
+        hash = (53 * hash) + getStartChildWf().hashCode();
         break;
       case 0:
       default:
@@ -1213,6 +1261,9 @@ private static final long serialVersionUID = 0L;
       if (waitForConditionBuilder_ != null) {
         waitForConditionBuilder_.clear();
       }
+      if (startChildWfBuilder_ != null) {
+        startChildWfBuilder_.clear();
+      }
       nodeCase_ = 0;
       node_ = null;
       return this;
@@ -1323,6 +1374,10 @@ private static final long serialVersionUID = 0L;
       if (nodeCase_ == 17 &&
           waitForConditionBuilder_ != null) {
         result.node_ = waitForConditionBuilder_.build();
+      }
+      if (nodeCase_ == 18 &&
+          startChildWfBuilder_ != null) {
+        result.node_ = startChildWfBuilder_.build();
       }
     }
 
@@ -1471,6 +1526,10 @@ private static final long serialVersionUID = 0L;
           mergeWaitForCondition(other.getWaitForCondition());
           break;
         }
+        case START_CHILD_WF: {
+          mergeStartChildWf(other.getStartChildWf());
+          break;
+        }
         case NODE_NOT_SET: {
           break;
         }
@@ -1611,6 +1670,13 @@ private static final long serialVersionUID = 0L;
               nodeCase_ = 17;
               break;
             } // case 138
+            case 146: {
+              input.readMessage(
+                  getStartChildWfFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              nodeCase_ = 18;
+              break;
+            } // case 146
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4473,6 +4539,148 @@ private static final long serialVersionUID = 0L;
       nodeCase_ = 17;
       onChanged();
       return waitForConditionBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StartChildWfNode, io.littlehorse.sdk.common.proto.StartChildWfNode.Builder, io.littlehorse.sdk.common.proto.StartChildWfNodeOrBuilder> startChildWfBuilder_;
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     * @return Whether the startChildWf field is set.
+     */
+    @java.lang.Override
+    public boolean hasStartChildWf() {
+      return nodeCase_ == 18;
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     * @return The startChildWf.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StartChildWfNode getStartChildWf() {
+      if (startChildWfBuilder_ == null) {
+        if (nodeCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.StartChildWfNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.StartChildWfNode.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 18) {
+          return startChildWfBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.StartChildWfNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     */
+    public Builder setStartChildWf(io.littlehorse.sdk.common.proto.StartChildWfNode value) {
+      if (startChildWfBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        startChildWfBuilder_.setMessage(value);
+      }
+      nodeCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     */
+    public Builder setStartChildWf(
+        io.littlehorse.sdk.common.proto.StartChildWfNode.Builder builderForValue) {
+      if (startChildWfBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        startChildWfBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     */
+    public Builder mergeStartChildWf(io.littlehorse.sdk.common.proto.StartChildWfNode value) {
+      if (startChildWfBuilder_ == null) {
+        if (nodeCase_ == 18 &&
+            node_ != io.littlehorse.sdk.common.proto.StartChildWfNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.StartChildWfNode.newBuilder((io.littlehorse.sdk.common.proto.StartChildWfNode) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 18) {
+          startChildWfBuilder_.mergeFrom(value);
+        } else {
+          startChildWfBuilder_.setMessage(value);
+        }
+      }
+      nodeCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     */
+    public Builder clearStartChildWf() {
+      if (startChildWfBuilder_ == null) {
+        if (nodeCase_ == 18) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 18) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        startChildWfBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StartChildWfNode.Builder getStartChildWfBuilder() {
+      return getStartChildWfFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StartChildWfNodeOrBuilder getStartChildWfOrBuilder() {
+      if ((nodeCase_ == 18) && (startChildWfBuilder_ != null)) {
+        return startChildWfBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.StartChildWfNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.StartChildWfNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StartChildWfNode, io.littlehorse.sdk.common.proto.StartChildWfNode.Builder, io.littlehorse.sdk.common.proto.StartChildWfNodeOrBuilder> 
+        getStartChildWfFieldBuilder() {
+      if (startChildWfBuilder_ == null) {
+        if (!(nodeCase_ == 18)) {
+          node_ = io.littlehorse.sdk.common.proto.StartChildWfNode.getDefaultInstance();
+        }
+        startChildWfBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.StartChildWfNode, io.littlehorse.sdk.common.proto.StartChildWfNode.Builder, io.littlehorse.sdk.common.proto.StartChildWfNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StartChildWfNode) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 18;
+      onChanged();
+      return startChildWfBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

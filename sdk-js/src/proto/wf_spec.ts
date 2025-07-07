@@ -469,6 +469,7 @@ export interface Node {
     | { $case: "startMultipleThreads"; startMultipleThreads: StartMultipleThreadsNode }
     | { $case: "throwEvent"; throwEvent: ThrowEventNode }
     | { $case: "waitForCondition"; waitForCondition: WaitForConditionNode }
+    | { $case: "startChildWf"; startChildWf: StartChildWfNode }
     | undefined;
 }
 
@@ -630,6 +631,31 @@ export interface ThreadSpecMigration_NodeMigrationsEntry {
 export interface NodeMigration {
   /** The name of the Node on the new WfSpec to move to. */
   newNodeName: string;
+}
+
+/**
+ * A SubNode used to start a child workflow.
+ * This node spawns a new WfRun based on the specified WfSpec, and it
+ * returns the WfRunId of the newly created child workflow.
+ */
+export interface StartChildWfNode {
+  /** The name of the WfSpec to run. */
+  wfSpecName: string;
+  /** The major version of the WfSpec to spawn for the child workflow. */
+  majorVersion?:
+    | number
+    | undefined;
+  /**
+   * The input variables to pass into the Child ThreadRun. These variables can
+   * be specified as key-value pairs and will be made available to the new
+   * WfRun.
+   */
+  variables: { [key: string]: VariableAssignment };
+}
+
+export interface StartChildWfNode_VariablesEntry {
+  key: string;
+  value: VariableAssignment | undefined;
 }
 
 function createBaseWfSpec(): WfSpec {
@@ -2200,6 +2226,9 @@ export const Node = {
       case "waitForCondition":
         WaitForConditionNode.encode(message.node.waitForCondition, writer.uint32(138).fork()).ldelim();
         break;
+      case "startChildWf":
+        StartChildWfNode.encode(message.node.startChildWf, writer.uint32(146).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -2318,6 +2347,13 @@ export const Node = {
             waitForCondition: WaitForConditionNode.decode(reader, reader.uint32()),
           };
           continue;
+        case 18:
+          if (tag !== 146) {
+            break;
+          }
+
+          message.node = { $case: "startChildWf", startChildWf: StartChildWfNode.decode(reader, reader.uint32()) };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2405,6 +2441,13 @@ export const Node = {
         $case: "waitForCondition",
         waitForCondition: WaitForConditionNode.fromPartial(object.node.waitForCondition),
       };
+    }
+    if (
+      object.node?.$case === "startChildWf" &&
+      object.node?.startChildWf !== undefined &&
+      object.node?.startChildWf !== null
+    ) {
+      message.node = { $case: "startChildWf", startChildWf: StartChildWfNode.fromPartial(object.node.startChildWf) };
     }
     return message;
   },
@@ -3221,6 +3264,142 @@ export const NodeMigration = {
   fromPartial(object: DeepPartial<NodeMigration>): NodeMigration {
     const message = createBaseNodeMigration();
     message.newNodeName = object.newNodeName ?? "";
+    return message;
+  },
+};
+
+function createBaseStartChildWfNode(): StartChildWfNode {
+  return { wfSpecName: "", majorVersion: undefined, variables: {} };
+}
+
+export const StartChildWfNode = {
+  encode(message: StartChildWfNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.majorVersion !== undefined) {
+      writer.uint32(16).int32(message.majorVersion);
+    }
+    Object.entries(message.variables).forEach(([key, value]) => {
+      StartChildWfNode_VariablesEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StartChildWfNode {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStartChildWfNode();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = StartChildWfNode_VariablesEntry.decode(reader, reader.uint32());
+          if (entry3.value !== undefined) {
+            message.variables[entry3.key] = entry3.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<StartChildWfNode>): StartChildWfNode {
+    return StartChildWfNode.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StartChildWfNode>): StartChildWfNode {
+    const message = createBaseStartChildWfNode();
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.majorVersion = object.majorVersion ?? undefined;
+    message.variables = Object.entries(object.variables ?? {}).reduce<{ [key: string]: VariableAssignment }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = VariableAssignment.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseStartChildWfNode_VariablesEntry(): StartChildWfNode_VariablesEntry {
+  return { key: "", value: undefined };
+}
+
+export const StartChildWfNode_VariablesEntry = {
+  encode(message: StartChildWfNode_VariablesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      VariableAssignment.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StartChildWfNode_VariablesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStartChildWfNode_VariablesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<StartChildWfNode_VariablesEntry>): StartChildWfNode_VariablesEntry {
+    return StartChildWfNode_VariablesEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StartChildWfNode_VariablesEntry>): StartChildWfNode_VariablesEntry {
+    const message = createBaseStartChildWfNode_VariablesEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableAssignment.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };

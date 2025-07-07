@@ -14,6 +14,7 @@ import {
   NodeRunId,
   TaskRunId,
   UserTaskRunId,
+  WfRunId,
   WfSpecId,
   WorkflowEventId,
 } from "./object_id";
@@ -312,6 +313,24 @@ export interface Failure {
    * id of the failure handler thread run.
    */
   failureHandlerThreadrunId?: number | undefined;
+}
+
+/**
+ * The StartWfNodeRun starts a Child `WfRun` and does not wait for its completion.
+ * It returns a `VariableValue` containing the resulting `WfRunId`.
+ */
+export interface StartChildWfNodeRun {
+  /** The id of the created `WfRun`. */
+  childWfRunId:
+    | WfRunId
+    | undefined;
+  /** A record of the variables which were used to start the `WfRun`. */
+  inputVariables: { [key: string]: VariableValue };
+}
+
+export interface StartChildWfNodeRun_InputVariablesEntry {
+  key: string;
+  value: VariableValue | undefined;
 }
 
 function createBaseNodeRun(): NodeRun {
@@ -1449,6 +1468,133 @@ export const Failure = {
       : undefined;
     message.wasProperlyHandled = object.wasProperlyHandled ?? false;
     message.failureHandlerThreadrunId = object.failureHandlerThreadrunId ?? undefined;
+    return message;
+  },
+};
+
+function createBaseStartChildWfNodeRun(): StartChildWfNodeRun {
+  return { childWfRunId: undefined, inputVariables: {} };
+}
+
+export const StartChildWfNodeRun = {
+  encode(message: StartChildWfNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.childWfRunId !== undefined) {
+      WfRunId.encode(message.childWfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    Object.entries(message.inputVariables).forEach(([key, value]) => {
+      StartChildWfNodeRun_InputVariablesEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StartChildWfNodeRun {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStartChildWfNodeRun();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.childWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = StartChildWfNodeRun_InputVariablesEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.inputVariables[entry2.key] = entry2.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<StartChildWfNodeRun>): StartChildWfNodeRun {
+    return StartChildWfNodeRun.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StartChildWfNodeRun>): StartChildWfNodeRun {
+    const message = createBaseStartChildWfNodeRun();
+    message.childWfRunId = (object.childWfRunId !== undefined && object.childWfRunId !== null)
+      ? WfRunId.fromPartial(object.childWfRunId)
+      : undefined;
+    message.inputVariables = Object.entries(object.inputVariables ?? {}).reduce<{ [key: string]: VariableValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = VariableValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseStartChildWfNodeRun_InputVariablesEntry(): StartChildWfNodeRun_InputVariablesEntry {
+  return { key: "", value: undefined };
+}
+
+export const StartChildWfNodeRun_InputVariablesEntry = {
+  encode(message: StartChildWfNodeRun_InputVariablesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StartChildWfNodeRun_InputVariablesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStartChildWfNodeRun_InputVariablesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<StartChildWfNodeRun_InputVariablesEntry>): StartChildWfNodeRun_InputVariablesEntry {
+    return StartChildWfNodeRun_InputVariablesEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StartChildWfNodeRun_InputVariablesEntry>): StartChildWfNodeRun_InputVariablesEntry {
+    const message = createBaseStartChildWfNodeRun_InputVariablesEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };

@@ -84,6 +84,16 @@ public final class NodeRunOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_Failure_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_StartChildWfNodeRun_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_StartChildWfNodeRun_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_StartChildWfNodeRun_InputVariablesEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_StartChildWfNodeRun_InputVariablesEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -162,10 +172,15 @@ public final class NodeRunOuterClass {
       "\003 \001(\0132\032.littlehorse.VariableValueH\000\210\001\001\022\034" +
       "\n\024was_properly_handled\030\004 \001(\010\022)\n\034failure_" +
       "handler_threadrun_id\030\005 \001(\005H\001\210\001\001B\n\n\010_cont" +
-      "entB\037\n\035_failure_handler_threadrun_idBM\n\037" +
-      "io.littlehorse.sdk.common.protoP\001Z\t.;lhp" +
-      "roto\252\002\034LittleHorse.Sdk.Common.Protob\006pro" +
-      "to3"
+      "entB\037\n\035_failure_handler_threadrun_id\"\346\001\n" +
+      "\023StartChildWfNodeRun\022-\n\017child_wf_run_id\030" +
+      "\001 \001(\0132\024.littlehorse.WfRunId\022M\n\017input_var" +
+      "iables\030\002 \003(\01324.littlehorse.StartChildWfN" +
+      "odeRun.InputVariablesEntry\032Q\n\023InputVaria" +
+      "blesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032." +
+      "littlehorse.VariableValue:\0028\001BM\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034" +
+      "LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -259,6 +274,18 @@ public final class NodeRunOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Failure_descriptor,
         new java.lang.String[] { "FailureName", "Message", "Content", "WasProperlyHandled", "FailureHandlerThreadrunId", "Content", "FailureHandlerThreadrunId", });
+    internal_static_littlehorse_StartChildWfNodeRun_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_littlehorse_StartChildWfNodeRun_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_StartChildWfNodeRun_descriptor,
+        new java.lang.String[] { "ChildWfRunId", "InputVariables", });
+    internal_static_littlehorse_StartChildWfNodeRun_InputVariablesEntry_descriptor =
+      internal_static_littlehorse_StartChildWfNodeRun_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_StartChildWfNodeRun_InputVariablesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_StartChildWfNodeRun_InputVariablesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();

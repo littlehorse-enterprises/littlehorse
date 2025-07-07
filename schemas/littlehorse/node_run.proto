@@ -252,3 +252,13 @@ message Failure {
   // id of the failure handler thread run.
   optional int32 failure_handler_threadrun_id = 5;
 }
+
+// The StartWfNodeRun starts a Child `WfRun` and does not wait for its completion.
+// It returns a `VariableValue` containing the resulting `WfRunId`.
+message StartChildWfNodeRun {
+  // The id of the created `WfRun`.
+  WfRunId child_wf_run_id = 1;
+
+  // A record of the variables which were used to start the `WfRun`.
+  map<string, VariableValue> input_variables = 2;
+}

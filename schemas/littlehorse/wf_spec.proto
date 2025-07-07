@@ -363,6 +363,8 @@ message Node {
 
     // Creates a WaitForConditionRun
     WaitForConditionNode wait_for_condition = 17;
+
+    StartChildWfNode start_child_wf = 18;
   }
 }
 
@@ -502,4 +504,20 @@ message NodeMigration {
   // Future work:
   // - allow one-time task executions during migration
   // - allow iniatialization of Variables to special values
+}
+
+// A SubNode used to start a child workflow.
+// This node spawns a new WfRun based on the specified WfSpec, and it
+// returns the WfRunId of the newly created child workflow.
+message StartChildWfNode {
+  // The name of the WfSpec to run.
+  string wf_spec_name = 1;
+
+  // The major version of the WfSpec to spawn for the child workflow.
+  optional int32 major_version = 2;
+
+  // The input variables to pass into the Child ThreadRun. These variables can 
+  // be specified as key-value pairs and will be made available to the new 
+  // WfRun.
+  map<string, VariableAssignment> variables = 3;
 }

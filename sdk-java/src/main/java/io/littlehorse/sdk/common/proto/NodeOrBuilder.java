@@ -439,5 +439,20 @@ public interface NodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder getWaitForConditionOrBuilder();
 
+  /**
+   * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+   * @return Whether the startChildWf field is set.
+   */
+  boolean hasStartChildWf();
+  /**
+   * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+   * @return The startChildWf.
+   */
+  io.littlehorse.sdk.common.proto.StartChildWfNode getStartChildWf();
+  /**
+   * <code>.littlehorse.StartChildWfNode start_child_wf = 18;</code>
+   */
+  io.littlehorse.sdk.common.proto.StartChildWfNodeOrBuilder getStartChildWfOrBuilder();
+
   io.littlehorse.sdk.common.proto.Node.NodeCase getNodeCase();
 }

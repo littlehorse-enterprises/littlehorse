@@ -168,3 +168,18 @@ class Failure(_message.Message):
     was_properly_handled: bool
     failure_handler_threadrun_id: int
     def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., was_properly_handled: bool = ..., failure_handler_threadrun_id: _Optional[int] = ...) -> None: ...
+
+class StartChildWfNodeRun(_message.Message):
+    __slots__ = ["child_wf_run_id", "input_variables"]
+    class InputVariablesEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _variable_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    CHILD_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    INPUT_VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    child_wf_run_id: _object_id_pb2.WfRunId
+    input_variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    def __init__(self, child_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., input_variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...

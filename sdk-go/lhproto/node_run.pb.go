@@ -1087,6 +1087,65 @@ func (x *Failure) GetFailureHandlerThreadrunId() int32 {
 	return 0
 }
 
+// The StartWfNodeRun starts a Child `WfRun` and does not wait for its completion.
+// It returns a `VariableValue` containing the resulting `WfRunId`.
+type StartChildWfNodeRun struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The id of the created `WfRun`.
+	ChildWfRunId *WfRunId `protobuf:"bytes,1,opt,name=child_wf_run_id,json=childWfRunId,proto3" json:"child_wf_run_id,omitempty"`
+	// A record of the variables which were used to start the `WfRun`.
+	InputVariables map[string]*VariableValue `protobuf:"bytes,2,rep,name=input_variables,json=inputVariables,proto3" json:"input_variables,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *StartChildWfNodeRun) Reset() {
+	*x = StartChildWfNodeRun{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_run_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StartChildWfNodeRun) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartChildWfNodeRun) ProtoMessage() {}
+
+func (x *StartChildWfNodeRun) ProtoReflect() protoreflect.Message {
+	mi := &file_node_run_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartChildWfNodeRun.ProtoReflect.Descriptor instead.
+func (*StartChildWfNodeRun) Descriptor() ([]byte, []int) {
+	return file_node_run_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *StartChildWfNodeRun) GetChildWfRunId() *WfRunId {
+	if x != nil {
+		return x.ChildWfRunId
+	}
+	return nil
+}
+
+func (x *StartChildWfNodeRun) GetInputVariables() map[string]*VariableValue {
+	if x != nil {
+		return x.InputVariables
+	}
+	return nil
+}
+
 // A 'WaitForThread' structure defines a thread that is being waited for.
 type WaitForThreadsRun_WaitForThread struct {
 	state         protoimpl.MessageState
@@ -1112,7 +1171,7 @@ type WaitForThreadsRun_WaitForThread struct {
 func (x *WaitForThreadsRun_WaitForThread) Reset() {
 	*x = WaitForThreadsRun_WaitForThread{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_node_run_proto_msgTypes[13]
+		mi := &file_node_run_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1125,7 +1184,7 @@ func (x *WaitForThreadsRun_WaitForThread) String() string {
 func (*WaitForThreadsRun_WaitForThread) ProtoMessage() {}
 
 func (x *WaitForThreadsRun_WaitForThread) ProtoReflect() protoreflect.Message {
-	mi := &file_node_run_proto_msgTypes[13]
+	mi := &file_node_run_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1394,12 +1453,29 @@ var file_node_run_proto_rawDesc = []byte{
 	0x6e, 0x49, 0x64, 0x88, 0x01, 0x01, 0x42, 0x0a, 0x0a, 0x08, 0x5f, 0x63, 0x6f, 0x6e, 0x74, 0x65,
 	0x6e, 0x74, 0x42, 0x1f, 0x0a, 0x1d, 0x5f, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x5f, 0x68,
 	0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x72, 0x75, 0x6e,
-	0x5f, 0x69, 0x64, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73,
-	0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x5f, 0x69, 0x64, 0x22, 0x90, 0x02, 0x0a, 0x13, 0x53, 0x74, 0x61, 0x72, 0x74, 0x43, 0x68, 0x69,
+	0x6c, 0x64, 0x57, 0x66, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x75, 0x6e, 0x12, 0x3b, 0x0a, 0x0f, 0x63,
+	0x68, 0x69, 0x6c, 0x64, 0x5f, 0x77, 0x66, 0x5f, 0x72, 0x75, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
+	0x73, 0x65, 0x2e, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x52, 0x0c, 0x63, 0x68, 0x69, 0x6c,
+	0x64, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12, 0x5d, 0x0a, 0x0f, 0x69, 0x6e, 0x70, 0x75,
+	0x74, 0x5f, 0x76, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x34, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
+	0x53, 0x74, 0x61, 0x72, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x57, 0x66, 0x4e, 0x6f, 0x64, 0x65,
+	0x52, 0x75, 0x6e, 0x2e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c,
+	0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0e, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x56, 0x61,
+	0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x1a, 0x5d, 0x0a, 0x13, 0x49, 0x6e, 0x70, 0x75, 0x74,
+	0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10,
+	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79,
+	0x12, 0x30, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61,
+	0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74,
+	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d,
+	0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c,
+	0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1415,7 +1491,7 @@ func file_node_run_proto_rawDescGZIP() []byte {
 }
 
 var file_node_run_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_node_run_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_node_run_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_node_run_proto_goTypes = []interface{}{
 	(WaitForThreadsRun_WaitingThreadStatus)(0), // 0: littlehorse.WaitForThreadsRun.WaitingThreadStatus
 	(*NodeRun)(nil),                         // 1: littlehorse.NodeRun
@@ -1431,24 +1507,27 @@ var file_node_run_proto_goTypes = []interface{}{
 	(*ExternalEventNodeRun)(nil),            // 11: littlehorse.ExternalEventNodeRun
 	(*SleepNodeRun)(nil),                    // 12: littlehorse.SleepNodeRun
 	(*Failure)(nil),                         // 13: littlehorse.Failure
-	(*WaitForThreadsRun_WaitForThread)(nil), // 14: littlehorse.WaitForThreadsRun.WaitForThread
-	(*NodeRunId)(nil),                       // 15: littlehorse.NodeRunId
-	(*WfSpecId)(nil),                        // 16: littlehorse.WfSpecId
-	(LHStatus)(0),                           // 17: littlehorse.LHStatus
-	(*timestamppb.Timestamp)(nil),           // 18: google.protobuf.Timestamp
-	(*TaskRunId)(nil),                       // 19: littlehorse.TaskRunId
-	(*WorkflowEventId)(nil),                 // 20: littlehorse.WorkflowEventId
-	(*UserTaskRunId)(nil),                   // 21: littlehorse.UserTaskRunId
-	(*ExternalEventDefId)(nil),              // 22: littlehorse.ExternalEventDefId
-	(*ExternalEventId)(nil),                 // 23: littlehorse.ExternalEventId
-	(*VariableValue)(nil),                   // 24: littlehorse.VariableValue
+	(*StartChildWfNodeRun)(nil),             // 14: littlehorse.StartChildWfNodeRun
+	(*WaitForThreadsRun_WaitForThread)(nil), // 15: littlehorse.WaitForThreadsRun.WaitForThread
+	nil,                                     // 16: littlehorse.StartChildWfNodeRun.InputVariablesEntry
+	(*NodeRunId)(nil),                       // 17: littlehorse.NodeRunId
+	(*WfSpecId)(nil),                        // 18: littlehorse.WfSpecId
+	(LHStatus)(0),                           // 19: littlehorse.LHStatus
+	(*timestamppb.Timestamp)(nil),           // 20: google.protobuf.Timestamp
+	(*TaskRunId)(nil),                       // 21: littlehorse.TaskRunId
+	(*WorkflowEventId)(nil),                 // 22: littlehorse.WorkflowEventId
+	(*UserTaskRunId)(nil),                   // 23: littlehorse.UserTaskRunId
+	(*ExternalEventDefId)(nil),              // 24: littlehorse.ExternalEventDefId
+	(*ExternalEventId)(nil),                 // 25: littlehorse.ExternalEventId
+	(*VariableValue)(nil),                   // 26: littlehorse.VariableValue
+	(*WfRunId)(nil),                         // 27: littlehorse.WfRunId
 }
 var file_node_run_proto_depIdxs = []int32{
-	15, // 0: littlehorse.NodeRun.id:type_name -> littlehorse.NodeRunId
-	16, // 1: littlehorse.NodeRun.wf_spec_id:type_name -> littlehorse.WfSpecId
-	17, // 2: littlehorse.NodeRun.status:type_name -> littlehorse.LHStatus
-	18, // 3: littlehorse.NodeRun.arrival_time:type_name -> google.protobuf.Timestamp
-	18, // 4: littlehorse.NodeRun.end_time:type_name -> google.protobuf.Timestamp
+	17, // 0: littlehorse.NodeRun.id:type_name -> littlehorse.NodeRunId
+	18, // 1: littlehorse.NodeRun.wf_spec_id:type_name -> littlehorse.WfSpecId
+	19, // 2: littlehorse.NodeRun.status:type_name -> littlehorse.LHStatus
+	20, // 3: littlehorse.NodeRun.arrival_time:type_name -> google.protobuf.Timestamp
+	20, // 4: littlehorse.NodeRun.end_time:type_name -> google.protobuf.Timestamp
 	13, // 5: littlehorse.NodeRun.failures:type_name -> littlehorse.Failure
 	2,  // 6: littlehorse.NodeRun.task:type_name -> littlehorse.TaskNodeRun
 	11, // 7: littlehorse.NodeRun.external_event:type_name -> littlehorse.ExternalEventNodeRun
@@ -1461,23 +1540,26 @@ var file_node_run_proto_depIdxs = []int32{
 	9,  // 14: littlehorse.NodeRun.start_multiple_threads:type_name -> littlehorse.StartMultipleThreadsRun
 	3,  // 15: littlehorse.NodeRun.throw_event:type_name -> littlehorse.ThrowEventNodeRun
 	4,  // 16: littlehorse.NodeRun.wait_for_condition:type_name -> littlehorse.WaitForConditionRun
-	19, // 17: littlehorse.TaskNodeRun.task_run_id:type_name -> littlehorse.TaskRunId
-	20, // 18: littlehorse.ThrowEventNodeRun.workflow_event_id:type_name -> littlehorse.WorkflowEventId
-	21, // 19: littlehorse.UserTaskNodeRun.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	14, // 20: littlehorse.WaitForThreadsRun.threads:type_name -> littlehorse.WaitForThreadsRun.WaitForThread
-	22, // 21: littlehorse.ExternalEventNodeRun.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
-	18, // 22: littlehorse.ExternalEventNodeRun.event_time:type_name -> google.protobuf.Timestamp
-	23, // 23: littlehorse.ExternalEventNodeRun.external_event_id:type_name -> littlehorse.ExternalEventId
-	18, // 24: littlehorse.SleepNodeRun.maturation_time:type_name -> google.protobuf.Timestamp
-	24, // 25: littlehorse.Failure.content:type_name -> littlehorse.VariableValue
-	18, // 26: littlehorse.WaitForThreadsRun.WaitForThread.thread_end_time:type_name -> google.protobuf.Timestamp
-	17, // 27: littlehorse.WaitForThreadsRun.WaitForThread.thread_status:type_name -> littlehorse.LHStatus
-	0,  // 28: littlehorse.WaitForThreadsRun.WaitForThread.waiting_status:type_name -> littlehorse.WaitForThreadsRun.WaitingThreadStatus
-	29, // [29:29] is the sub-list for method output_type
-	29, // [29:29] is the sub-list for method input_type
-	29, // [29:29] is the sub-list for extension type_name
-	29, // [29:29] is the sub-list for extension extendee
-	0,  // [0:29] is the sub-list for field type_name
+	21, // 17: littlehorse.TaskNodeRun.task_run_id:type_name -> littlehorse.TaskRunId
+	22, // 18: littlehorse.ThrowEventNodeRun.workflow_event_id:type_name -> littlehorse.WorkflowEventId
+	23, // 19: littlehorse.UserTaskNodeRun.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	15, // 20: littlehorse.WaitForThreadsRun.threads:type_name -> littlehorse.WaitForThreadsRun.WaitForThread
+	24, // 21: littlehorse.ExternalEventNodeRun.external_event_def_id:type_name -> littlehorse.ExternalEventDefId
+	20, // 22: littlehorse.ExternalEventNodeRun.event_time:type_name -> google.protobuf.Timestamp
+	25, // 23: littlehorse.ExternalEventNodeRun.external_event_id:type_name -> littlehorse.ExternalEventId
+	20, // 24: littlehorse.SleepNodeRun.maturation_time:type_name -> google.protobuf.Timestamp
+	26, // 25: littlehorse.Failure.content:type_name -> littlehorse.VariableValue
+	27, // 26: littlehorse.StartChildWfNodeRun.child_wf_run_id:type_name -> littlehorse.WfRunId
+	16, // 27: littlehorse.StartChildWfNodeRun.input_variables:type_name -> littlehorse.StartChildWfNodeRun.InputVariablesEntry
+	20, // 28: littlehorse.WaitForThreadsRun.WaitForThread.thread_end_time:type_name -> google.protobuf.Timestamp
+	19, // 29: littlehorse.WaitForThreadsRun.WaitForThread.thread_status:type_name -> littlehorse.LHStatus
+	0,  // 30: littlehorse.WaitForThreadsRun.WaitForThread.waiting_status:type_name -> littlehorse.WaitForThreadsRun.WaitingThreadStatus
+	26, // 31: littlehorse.StartChildWfNodeRun.InputVariablesEntry.value:type_name -> littlehorse.VariableValue
+	32, // [32:32] is the sub-list for method output_type
+	32, // [32:32] is the sub-list for method input_type
+	32, // [32:32] is the sub-list for extension type_name
+	32, // [32:32] is the sub-list for extension extendee
+	0,  // [0:32] is the sub-list for field type_name
 }
 
 func init() { file_node_run_proto_init() }
@@ -1646,6 +1728,18 @@ func file_node_run_proto_init() {
 			}
 		}
 		file_node_run_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StartChildWfNodeRun); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_run_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*WaitForThreadsRun_WaitForThread); i {
 			case 0:
 				return &v.state
@@ -1676,14 +1770,14 @@ func file_node_run_proto_init() {
 	file_node_run_proto_msgTypes[7].OneofWrappers = []interface{}{}
 	file_node_run_proto_msgTypes[10].OneofWrappers = []interface{}{}
 	file_node_run_proto_msgTypes[12].OneofWrappers = []interface{}{}
-	file_node_run_proto_msgTypes[13].OneofWrappers = []interface{}{}
+	file_node_run_proto_msgTypes[14].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_node_run_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

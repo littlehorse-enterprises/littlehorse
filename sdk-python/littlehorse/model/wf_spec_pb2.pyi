@@ -217,7 +217,7 @@ class FailureDef(_message.Message):
     def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class Node(_message.Message):
-    __slots__ = ["outgoing_edges", "failure_handlers", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads", "throw_event", "wait_for_condition"]
+    __slots__ = ["outgoing_edges", "failure_handlers", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads", "throw_event", "wait_for_condition", "start_child_wf"]
     OUTGOING_EDGES_FIELD_NUMBER: _ClassVar[int]
     FAILURE_HANDLERS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_FIELD_NUMBER: _ClassVar[int]
@@ -232,6 +232,7 @@ class Node(_message.Message):
     START_MULTIPLE_THREADS_FIELD_NUMBER: _ClassVar[int]
     THROW_EVENT_FIELD_NUMBER: _ClassVar[int]
     WAIT_FOR_CONDITION_FIELD_NUMBER: _ClassVar[int]
+    START_CHILD_WF_FIELD_NUMBER: _ClassVar[int]
     outgoing_edges: _containers.RepeatedCompositeFieldContainer[Edge]
     failure_handlers: _containers.RepeatedCompositeFieldContainer[FailureHandlerDef]
     entrypoint: EntrypointNode
@@ -246,7 +247,8 @@ class Node(_message.Message):
     start_multiple_threads: StartMultipleThreadsNode
     throw_event: ThrowEventNode
     wait_for_condition: WaitForConditionNode
-    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNode, _Mapping]] = ..., wait_for_condition: _Optional[_Union[WaitForConditionNode, _Mapping]] = ...) -> None: ...
+    start_child_wf: StartChildWfNode
+    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNode, _Mapping]] = ..., wait_for_condition: _Optional[_Union[WaitForConditionNode, _Mapping]] = ..., start_child_wf: _Optional[_Union[StartChildWfNode, _Mapping]] = ...) -> None: ...
 
 class WaitForConditionNode(_message.Message):
     __slots__ = ["condition"]
@@ -351,3 +353,20 @@ class NodeMigration(_message.Message):
     NEW_NODE_NAME_FIELD_NUMBER: _ClassVar[int]
     new_node_name: str
     def __init__(self, new_node_name: _Optional[str] = ...) -> None: ...
+
+class StartChildWfNode(_message.Message):
+    __slots__ = ["wf_spec_name", "major_version", "variables"]
+    class VariablesEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _common_wfspec_pb2.VariableAssignment
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_name: str
+    major_version: int
+    variables: _containers.MessageMap[str, _common_wfspec_pb2.VariableAssignment]
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., variables: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ...) -> None: ...
