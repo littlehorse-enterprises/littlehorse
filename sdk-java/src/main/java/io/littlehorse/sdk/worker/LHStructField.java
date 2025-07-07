@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHStructField {
     /**
-     * OPTIONAL: This corresponds to the name of the StructDef field.
+     * OPTIONAL: This allows you to give the StructDef Field a specific name.
      *
      * Defaults to method name, but this overrides the default.
      *
@@ -18,7 +18,18 @@ public @interface LHStructField {
     String name() default "";
 
     /**
+     * OPTIONAL: This allows you to set the StructDef Field as masked, ensuring
+     *           the value stays hidden from users.
+     *
      * @return whether or not the type value should be masked.
      */
-    boolean masked();
+    boolean masked() default false;
+
+    /**
+     * OPTIONAL: This allows you to designate a field as ignored, so it won't
+     *           show up in your generated StructDef.
+     *
+     * @return whether or not this field should be ignored by the Task Worker.
+     */
+    boolean ignored() default false;
 }

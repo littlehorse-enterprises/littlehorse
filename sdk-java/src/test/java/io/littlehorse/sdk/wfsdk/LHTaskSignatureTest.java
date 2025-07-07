@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -32,7 +33,7 @@ public class LHTaskSignatureTest {
         }
 
         @LHTaskMethod("masked-struct-task")
-        public @LHType(masked=true) Car maskedStructTask(@LHType(masked = true) Car car) {
+        public @LHType(masked = true) Car maskedStructTask(@LHType(masked = true) Car car) {
             return null;
         }
     }
@@ -44,6 +45,9 @@ public class LHTaskSignatureTest {
         boolean isElectric;
         Person owner;
         Garage garage;
+
+        @LHStructField(ignored = true)
+        boolean ignoredBool;
     }
 
     @LHStructDef(name = "person")
@@ -58,7 +62,6 @@ public class LHTaskSignatureTest {
         int size;
         Person owner;
     }
-
 
     @Test
     void shouldInferPrimitiveParameterType() {
@@ -85,10 +88,10 @@ public class LHTaskSignatureTest {
         assertThat(actualReturnType).isEqualTo(expectedReturnType);
     }
 
-
     @Test
     void shouldIgnoreWorkerContextInTaskDefParameter() {
-        LHTaskSignature taskSignature = new LHTaskSignature("worker-context-task", new MyWorker(), "worker-context-task");
+        LHTaskSignature taskSignature =
+                new LHTaskSignature("worker-context-task", new MyWorker(), "worker-context-task");
         List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
 
         assertThat(actualVariableDefs.size()).isEqualTo(0);
@@ -96,7 +99,8 @@ public class LHTaskSignatureTest {
 
     @Test
     void shouldInferVoidReturnType() {
-        LHTaskSignature taskSignature = new LHTaskSignature("worker-context-task", new MyWorker(), "worker-context-task");
+        LHTaskSignature taskSignature =
+                new LHTaskSignature("worker-context-task", new MyWorker(), "worker-context-task");
         ReturnType actualReturnType = taskSignature.getReturnType();
         ReturnType expectedReturnType = ReturnType.newBuilder().build();
 
@@ -138,7 +142,7 @@ public class LHTaskSignatureTest {
         boolean expectedMaskedValue = true;
 
         assertThat(actualMaskedValue).isEqualTo(expectedMaskedValue);
-    } 
+    }
 
     @Test
     void shouldInferStructDefParameterTypeWithMasked() {
