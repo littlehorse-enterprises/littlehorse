@@ -18,55 +18,58 @@ interface NodeProps {
 }
 
 // Status style configuration
-const STATUS_STYLES: Record<LHStatus, {
-  bgColor: string
-  icon: React.ComponentType<{ className?: string }>
-  iconColor: string
-  animate?: string
-}> = {
+const STATUS_STYLES: Record<
+  LHStatus,
+  {
+    bgColor: string
+    icon: React.ComponentType<{ className?: string }>
+    iconColor: string
+    animate?: string
+  }
+> = {
   [LHStatus.COMPLETED]: {
     bgColor: 'bg-green-100',
     icon: CheckCircle,
-    iconColor: 'text-green-500'
+    iconColor: 'text-green-500',
   },
   [LHStatus.ERROR]: {
     bgColor: 'bg-red-100',
     icon: AlertCircle,
-    iconColor: 'text-red-500'
+    iconColor: 'text-red-500',
   },
   [LHStatus.EXCEPTION]: {
     bgColor: 'bg-red-100',
     icon: AlertCircle,
-    iconColor: 'text-red-500'
+    iconColor: 'text-red-500',
   },
   [LHStatus.RUNNING]: {
     bgColor: 'bg-blue-100',
     icon: Loader2,
     iconColor: 'text-blue-500',
-    animate: 'animate-spin'
+    animate: 'animate-spin',
   },
   [LHStatus.STARTING]: {
     bgColor: 'bg-blue-100',
     icon: Loader2,
     iconColor: 'text-blue-500',
-    animate: 'animate-spin'
+    animate: 'animate-spin',
   },
   [LHStatus.HALTING]: {
     bgColor: 'bg-blue-100',
     icon: Loader2,
     iconColor: 'text-blue-500',
-    animate: 'animate-spin'
+    animate: 'animate-spin',
   },
   [LHStatus.HALTED]: {
     bgColor: 'bg-gray-100',
     icon: Clock,
-    iconColor: 'text-gray-500'
+    iconColor: 'text-gray-500',
   },
   [LHStatus.UNRECOGNIZED]: {
     bgColor: 'bg-gray-100',
     icon: Clock,
-    iconColor: 'text-gray-500'
-  }
+    iconColor: 'text-gray-500',
+  },
 }
 
 function Node({ data, selected }: NodeProps) {
@@ -90,8 +93,9 @@ function Node({ data, selected }: NodeProps) {
         )}
 
         <div
-          className={`flex items-center justify-center border bg-white ${borderColor} h-12 w-12 rounded-md shadow-sm ${selected ? 'shadow-md' : ''
-            }`}
+          className={`flex items-center justify-center border bg-white ${borderColor} h-12 w-12 rounded-md shadow-sm ${
+            selected ? 'shadow-md' : ''
+          }`}
         >
           {data.status && (
             <div className="absolute top-0 right-0 -mt-1 -mr-1">
@@ -120,7 +124,5 @@ function Node({ data, selected }: NodeProps) {
     </div>
   )
 }
-
-
 
 export default memo(Node)

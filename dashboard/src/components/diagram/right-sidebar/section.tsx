@@ -19,7 +19,7 @@ export function Section({ title, children, isCollapsedDefault = false }: Section
         onClick={toggleCollapsed}
         className="flex w-full items-center justify-between rounded-t-md p-2 text-xs font-medium transition-colors hover:bg-gray-100"
       >
-        <span className="text-ellipsis overflow-hidden">{title}</span>
+        <span className="overflow-hidden text-ellipsis">{title}</span>
         <svg
           width="12"
           height="12"
@@ -30,10 +30,8 @@ export function Section({ title, children, isCollapsedDefault = false }: Section
           <path d="M9 18l6-6-6-6" stroke="#656565" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <div
-        className={`overflow-hidden ${isCollapsed ? 'max-h-0' : 'max-h-none'}`}
-      >
-        <div className="space-y-1 text-xs p-2">
+      <div className={`overflow-hidden ${isCollapsed ? 'max-h-0' : 'max-h-none'}`}>
+        <div className="space-y-1 p-2 text-xs">
           {Children.count(children) === 0 && <div className="text-gray-500">No data</div>}
           {children}
         </div>
