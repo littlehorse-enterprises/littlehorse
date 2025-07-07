@@ -1,4 +1,5 @@
 using LittleHorse.Sdk.Common.Proto;
+using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
@@ -92,12 +93,13 @@ public class ExternalEventNodeOutput : NodeOutput
         var req = new PutExternalEventDefRequest
         {
             Name = ExternalEventDefName,
-            ContentType = _payloadType != null ? TypeUtil.DotNetTypeToReturnType(_payloadType) : null
+            ContentType = _payloadType != null ? LHMappingHelper.DotNetTypeToReturnType(_payloadType) : null
         };
         if (_correlatedEventConfig != null)
             req.CorrelatedEventConfig = _correlatedEventConfig;
         return req;
     }
+    /// <summary>
     /// Get the CorrelatedEventConfig
     /// </summary>
     /// <returns>The ExternalEventNodeOutput.</returns>

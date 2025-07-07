@@ -4,12 +4,14 @@ namespace ThrowEventRegisterExample
 {
     public class MyWorker
     {
-        [LHTaskMethod("print-message")]
-        public string Greeting(string name)
+        public const string PrintMessageTaskDefName = "print-message";
+
+        [LHTaskMethod(PrintMessageTaskDefName)]
+        public Task<string> Greeting(string name)
         {
             var message = $"Hello team, This is a Dotnet Worker";
             Console.WriteLine($"Executing task greet {name}: " + message);
-            return message;
+            return Task.FromResult(message);
         }
     }
 }

@@ -9,6 +9,8 @@ namespace ExternalEventRegisterExample;
 
 public class Program
 {
+    private const string WorkflowName = "correlated-external-event-registration";
+    private const string EventName = "sign-doc";
     private static ServiceProvider? _serviceProvider;
 
     private static void SetupApplication()
@@ -33,17 +35,10 @@ public class Program
     private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
-        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
 
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
-
-        if (args.Length > 0)
-        {
-            var lhConfigs = GetDictionaryFromMainArgs(args);
-            config = new LHConfig(lhConfigs, loggerFactory);
-        }
 
         return config;
     }
@@ -52,24 +47,22 @@ public class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            var key = wf.DeclareStr("key").Searchable();
-            var eventResult = wf.DeclareInt("event-result");
-            wf.WaitForEvent("correlated-with-deletion")
-                .WithCorrelationId(key)
+            var input = wf.DeclareStr("doc-input").Searchable();
+            var id = wf.Execute(MyWorker.CreateDoc, input);
+            wf.WaitForEvent(EventName)
+                .WithCorrelationId(id)
                 .WithCorrelatedEventConfig(
                     new CorrelatedEventConfig
                     {
                         DeleteAfterFirstCorrelation = true
                     })
-                .RegisteredAs(typeof(int));
-            wf.Execute("print-message-externa-event", key);
-            eventResult.Assign(eventResult);
+                .RegisteredAs(typeof(string));
         }
 
-        return new Workflow("external-event-registration", MyEntryPoint);
+        return new Workflow(WorkflowName, MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -78,15 +71,12 @@ public class Program
             var config = GetLHConfig(args, loggerFactory);
 
             var executable = new MyWorker();
-            var taskWorker = new LHTaskWorker<MyWorker>(executable, "print-message-externa-event", config);
-            taskWorker.RegisterTaskDef();
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, MyWorker.CreateDoc, config);
+            await taskWorker.RegisterTaskDef();
 
             var workflow = GetWorkflow();
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-
-            Thread.Sleep(1000);
-
-            taskWorker.Start();
+            await workflow.RegisterWfSpec(config.GetGrpcClientInstance());
+            await taskWorker.Start();
         }
     }
 }

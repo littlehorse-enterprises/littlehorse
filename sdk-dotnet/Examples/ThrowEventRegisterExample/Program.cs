@@ -8,7 +8,10 @@ namespace ThrowEventRegisterExample;
 
 public class Program
 {
+    private const string WorkflowName = "workflow-event-registration";
+    private const string EventName = "event-name";
     private static ServiceProvider? _serviceProvider;
+    
     private static void SetupApplication()
     {
         _serviceProvider = new ServiceCollection()
@@ -31,17 +34,10 @@ public class Program
     private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
-        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
         
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
-        
-        if (args.Length > 0)
-        {
-            var lhConfigs = GetDictionaryFromMainArgs(args);
-            config = new LHConfig(lhConfigs, loggerFactory);
-        }
 
         return config;
     }
@@ -51,15 +47,15 @@ public class Program
         void MyEntryPoint(WorkflowThread wf)
         {
             var name = wf.DeclareStr("input-name").Searchable();
-            wf.Execute("print-message", name);
-            wf.ThrowEvent("eventdef-registered-together-with-workflowdef", name)
+            wf.Execute(MyWorker.PrintMessageTaskDefName, name);
+            wf.ThrowEvent(EventName, name)
                 .RegisteredAs(typeof(string));
         }
         
-        return new Workflow("event-registration", MyEntryPoint);
+        return new Workflow(WorkflowName, MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task  Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -67,16 +63,13 @@ public class Program
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
 
-            MyWorker executable = new MyWorker();
-            var taskWorker = new LHTaskWorker<MyWorker>(executable, "print-message", config);
-            taskWorker.RegisterTaskDef();
+            var executable = new MyWorker();
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, MyWorker.PrintMessageTaskDefName, config);
+            await taskWorker.RegisterTaskDef();
             
             var workflow = GetWorkflow();
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-
-            Thread.Sleep(1000);
-
-            taskWorker.Start();
+            await workflow.RegisterWfSpec(config.GetGrpcClientInstance());
+            await taskWorker.Start();
         }
     }
 }

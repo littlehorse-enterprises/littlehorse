@@ -29,8 +29,8 @@ public class Workflow
     private ThreadRetentionPolicy? _defaultThreadRetentionPolicy;
     private WorkflowRetentionPolicy? _wfRetentionPolicy;
     internal readonly Stack<WorkflowThread> Threads;
-    private readonly List<ThrowEventNodeOutput> _workflowEventsToRegister = new();
-    private readonly List<ExternalEventNodeOutput> _externalEventsToRegister = new();
+    private readonly List<ThrowEventNodeOutput> _workflowEventsToRegister;
+    private readonly List<ExternalEventNodeOutput> _externalEventsToRegister;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Workflow"/> class.
@@ -49,10 +49,9 @@ public class Workflow
         _requiredTaskDefNames = new HashSet<string>();
         _requiredEedNames = new HashSet<string>();
         _requiredWorkflowEventDefNames = new HashSet<string>();
+        _workflowEventsToRegister = new List<ThrowEventNodeOutput>();
+        _externalEventsToRegister = new List<ExternalEventNodeOutput>();
         Threads = new Stack<WorkflowThread>();
-        // Force workflow construction here so all event registrations are done before Compile
-        // var wfThread = new WorkflowThread(this, entryPoint);
-        // _spec.ThreadSpecs.Add("entrypoint", wfThread.Compile());
     }
     
     /// <summary>

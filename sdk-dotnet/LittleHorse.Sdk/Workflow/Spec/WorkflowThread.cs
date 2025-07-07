@@ -42,23 +42,22 @@ public class WorkflowThread
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
-
+        _lastNodeCondition = null;
+        _retentionPolicy = null;
+        _isStartNopActive = false;
+        IsActive = true;
         var entrypointNode = new Node { Entrypoint = new EntrypointNode() };
-
         var entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
-        IsActive = true;
         Parent.Threads.Push(this);
         action.Invoke(this);
-
         var lastNode = FindNode(LastNodeName);
         if (lastNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
         IsActive = false;
-        
         _spec.RetentionPolicy = GetRetentionPolicy();
     }
 

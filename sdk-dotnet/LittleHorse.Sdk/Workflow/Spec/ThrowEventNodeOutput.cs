@@ -1,4 +1,5 @@
 using LittleHorse.Sdk.Common.Proto;
+using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Workflow.Spec
 {
@@ -46,7 +47,7 @@ namespace LittleHorse.Sdk.Workflow.Spec
             return new PutWorkflowEventDefRequest
             {
                 Name = _eventName,
-                ContentType = TypeUtil.DotNetTypeToReturnType(_payloadType)
+                ContentType = LHMappingHelper.DotNetTypeToReturnType(_payloadType)
             };
         }
     }
