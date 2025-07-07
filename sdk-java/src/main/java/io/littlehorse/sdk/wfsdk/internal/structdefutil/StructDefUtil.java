@@ -9,6 +9,8 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
+import io.littlehorse.sdk.worker.LHStructIgnore;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +30,10 @@ public class StructDefUtil {
         Field[] fields = structClass.getFields();
 
         for (Field field : fields) {
+            if (field.isAnnotationPresent(LHStructIgnore.class)) {
+                continue;
+            }
+
             StructFieldDef.Builder fieldDef = StructFieldDef.newBuilder();
 
             // Assemble Field's TypeDef
@@ -44,10 +50,6 @@ public class StructDefUtil {
 
             if (field.isAnnotationPresent(LHStructField.class)) {
                 LHStructField fieldAnnotation = field.getAnnotation(LHStructField.class);
-
-                if (fieldAnnotation.ignored()) {
-                    continue;
-                }
 
                 if (!fieldAnnotation.name().isBlank()) {
                     fieldName = fieldAnnotation.name();

@@ -24,12 +24,4 @@ public @interface LHStructField {
      * @return whether or not the type value should be masked.
      */
     boolean masked() default false;
-
-    /**
-     * OPTIONAL: This allows you to designate a field as ignored, so it won't
-     *           show up in your generated StructDef.
-     *
-     * @return whether or not this field should be ignored by the Task Worker.
-     */
-    boolean ignored() default false;
 }
