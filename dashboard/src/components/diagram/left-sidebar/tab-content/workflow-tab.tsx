@@ -9,6 +9,7 @@ import { cn } from '@/utils/ui/utils'
 import { TreeNode } from '@/types'
 import { Section } from '../../right-sidebar/section'
 import { Label } from '../../right-sidebar/label'
+import { getVariableValue } from '@/utils/data/variables'
 
 interface WorkflowTabProps {
     wfSpec: WfSpec
@@ -32,7 +33,7 @@ function VariableDefComponent(threadVarDef: ThreadVarDef) {
     const variableType = threadVarDef.varDef.typeDef.type
 
     return (
-        <div className="flex items-center gap-2 bg-gray-100 rounded-md py-1 px-2">
+        <div className="flex items-center gap-2  rounded-md py-1 px-2">
             <div className={cn("text-xs px-1 font-bold border-2 rounded-md w-fit", varTypeColors[variableType])}>{variableType}</div>
             <div className="text-nowrap text-ellipsis overflow-hidden text-sm">{threadVarDef.varDef?.name}</div>
         </div>
@@ -69,7 +70,7 @@ export default function WorkflowTab({ wfSpec }: WorkflowTabProps) {
                     {threadSpecsWithVariableDefs.map(([threadName, threadSpec]) =>
                         <Section key={threadName} title={threadName}>
                             {threadSpec.variableDefs.map((threadVarDef) => (
-                                <Section key={threadVarDef.varDef?.name} title={<VariableDefComponent {...threadVarDef} />} isCollapsedDefault={false} >
+                                <Section key={threadVarDef.varDef?.name} title={<VariableDefComponent {...threadVarDef} />} isCollapsedDefault>
                                     <Label label="Required" >{`${threadVarDef.required}`}</Label>
                                     <Label label="Searchable" >{`${threadVarDef.searchable}`}</Label>
                                     <Label label="AccessLevel" >{`${threadVarDef.accessLevel}`}</Label>
@@ -77,7 +78,7 @@ export default function WorkflowTab({ wfSpec }: WorkflowTabProps) {
                                     <Section title="VariableDef">
                                         {threadVarDef.varDef?.type && <Label label="VariableType">{`${threadVarDef.varDef?.type}`}</Label>}
                                         <Label label="Name" >{`${threadVarDef.varDef?.name}`}</Label>
-                                        <Label label="DefaultValue" >{`${threadVarDef.varDef?.defaultValue}`}</Label>
+                                        <Label label="DefaultValue" >{`${getVariableValue(threadVarDef.varDef?.defaultValue)}`}</Label>
                                         {threadVarDef.varDef?.maskedValue && <Label label="MaskedValue">{`${threadVarDef.varDef?.maskedValue}`}</Label>}
                                         {threadVarDef.varDef?.typeDef && <Section title="TypeDef">
                                             <Label label="Type" >{`${threadVarDef.varDef?.typeDef?.type}`}</Label>
