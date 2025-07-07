@@ -1,11 +1,8 @@
 import { getWfRunDetails, WfRunDetails } from '@/actions/getWfRunDetails'
-import { NodeSelectionProvider } from '@/components/context/selection-context'
-import LeftSidebar from '@/components/diagram/left-sidebar'
-import RightSidebar from '@/components/diagram/right-sidebar'
-import WorkflowDiagram from '@/components/diagram/workflow-diagram'
 import { lhClient } from '@/lhClient'
 import { extractEdges } from '@/utils/data/extract-edges'
 import { extractNodes } from '@/utils/data/extract-nodes'
+import DiagramClient from '@/components/diagram/DiagramClient'
 
 interface DiagramPageProps {
   params: Promise<{
@@ -39,14 +36,11 @@ export default async function DiagramPage({ params, searchParams }: DiagramPageP
   const edges = extractEdges(wfSpec)
 
   return (
-    <NodeSelectionProvider>
-      <div className="flex h-full">
-        <LeftSidebar wfSpec={wfSpec} wfRun={wfRunDetails?.wfRun} />
-        <div className="flex flex-1">
-          <WorkflowDiagram nodes={nodes} edges={edges} />
-          <RightSidebar wfSpec={wfSpec} wfRunDetails={wfRunDetails} />
-        </div>
-      </div>
-    </NodeSelectionProvider>
+    <DiagramClient
+      wfSpec={wfSpec}
+      wfRunDetails={wfRunDetails}
+      nodes={nodes}
+      edges={edges}
+    />
   )
 }
