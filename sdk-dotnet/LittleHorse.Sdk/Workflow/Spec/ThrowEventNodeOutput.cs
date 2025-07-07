@@ -40,14 +40,10 @@ namespace LittleHorse.Sdk.Workflow.Spec
         /// <exception cref="InvalidOperationException">Thrown if <see cref="RegisteredAs"/> was not called before use.</exception>
         public PutWorkflowEventDefRequest ToPutWorkflowEventDefRequest()
         {
-            if (_payloadType == null)
-            {
-                throw new InvalidOperationException($"Payload type for event '{_eventName}' was not set. Did you forget to call RegisteredAs?");
-            }
             return new PutWorkflowEventDefRequest
             {
                 Name = _eventName,
-                ContentType = LHMappingHelper.DotNetTypeToReturnType(_payloadType)
+                ContentType = _payloadType != null ? LHMappingHelper.DotNetTypeToReturnType(_payloadType) : null
             };
         }
     }
