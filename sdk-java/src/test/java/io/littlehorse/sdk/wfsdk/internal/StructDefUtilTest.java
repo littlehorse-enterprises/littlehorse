@@ -37,7 +37,7 @@ public class StructDefUtilTest {
         public WfRunId wfRunId;
     }
 
-    @LHStructDef(name="library")
+    @LHStructDef(name = "library")
     class Library {
         public String name;
 
