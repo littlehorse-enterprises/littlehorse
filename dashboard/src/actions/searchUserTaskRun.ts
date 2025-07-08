@@ -1,7 +1,7 @@
 'use server'
 
-import { LHMethodParamType } from '@/types/executeRPCTypes'
-import { WithBookmark, WithTenant } from '@/types/withs'
+import { LHMethodParamType } from '@/types'
+import { WithBookmark, WithTenant } from '@/types'
 import { UserTaskRunId } from 'littlehorse-client/proto'
 import { executeRpc } from './executeRPC'
 

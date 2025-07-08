@@ -1,48 +1,49 @@
-import { VariableAssignment, VariableValue } from 'littlehorse-client/proto'
+import { VariableAssignment, VariableDef, VariableType, VariableValue } from 'littlehorse-client/proto'
 
 export function getVariable(variable?: VariableAssignment) {
   if (!variable) return
-  if (variable.formatString) return getValueFromFormatString(variable)
-  if (variable.variableName) return getValueFromVariableName(variable)
-  if (variable.literalValue) return getVariableValue(variable.literalValue)
+  if (variable.source?.$case === 'formatString') return getValueFromFormatString(variable.source)
+  if (variable.source?.$case === 'variableName') {
+    if (variable.jsonPath) {
+      return `{${variable.jsonPath.replace('$', variable.source.variableName)}}`
+    }
+    return `{${variable.source.variableName}}`
+  }
+  if (variable.source?.$case === 'literalValue') return getVariableValue(variable.source.literalValue)
 }
 
-function getVariableValue(variable?: VariableValue) {
+export function getVariableValue(variable?: VariableValue) {
   if (!variable) return
 
-  const key = Object.keys(variable)[0] as keyof VariableValue
-
-  if (variable.bytes) {
+  if (variable.value?.$case === 'bytes') {
     return '[bytes]'
-  } else {
-    return variable[key]
+  } else if (variable.value) {
+    const value = variable.value
+    switch (value.$case) {
+      case 'jsonObj':
+        return value.jsonObj
+      case 'jsonArr':
+        return value.jsonArr
+      case 'double':
+        return value.double
+      case 'bool':
+        return value.bool
+      case 'str':
+        return value.str
+      case 'int':
+        return value.int
+      default:
+        return undefined
+    }
   }
 }
 
-function getValueFromVariableName({
-  variableName,
-  jsonPath,
-}: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) {
-  if (!variableName) return
-  if (jsonPath) return `{${jsonPath.replace('$', variableName)}}`
-  return `{${variableName}}`
-}
-
-function getValueFromFormatString({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined {
-  if (!formatString) return
-  const template = getVariable(formatString.format)
-  const args = formatString.args.map(getVariable)
-
+function getValueFromFormatString(
+  source: VariableAssignment['source'] & { $case: 'formatString' }
+): string | undefined {
+  const template = getVariable(source.formatString.format)
+  const args = source.formatString.args.map(getVariable)
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
-}
-
-export function formatJsonOrReturnOriginalValue(value: string) {
-  try {
-    const json = JSON.parse(value)
-    return JSON.stringify(json, null, 2)
-  } catch {
-    return value
-  }
 }
 
 export function getTypedContent(contentType: string, contentValue: string) {
@@ -64,4 +65,29 @@ export function getTypedContent(contentType: string, contentValue: string) {
     default:
       return { str: contentValue }
   }
+}
+
+/**
+ * After 0.13.2, the `VariableDef.type` and `VariableDef.maskedValue` fields are deprecated.
+ * These fields are replaced with `VariableDef.typeDef`.
+ *
+ * Old server versions may keep around both old and new Variables, so this function
+ * determines which typing strategy a Variable uses.
+ */
+export const getVariableDefType = (varDef: VariableDef): VariableType => {
+  if (varDef.typeDef) return varDef.typeDef.type
+  if (varDef.type) return varDef.type
+  throw new Error('Variable must have type or typeDef.')
+}
+
+export const VARIABLE_TYPES: { [key in VariableType]: string } = {
+  JSON_OBJ: 'JSON Object',
+  JSON_ARR: 'JSON Array',
+  DOUBLE: 'Double',
+  BOOL: 'Boolean',
+  STR: 'String',
+  INT: 'Integer',
+  BYTES: 'Bytes',
+  WF_RUN_ID: 'Workflow Run ID',
+  UNRECOGNIZED: 'Unrecognized',
 }

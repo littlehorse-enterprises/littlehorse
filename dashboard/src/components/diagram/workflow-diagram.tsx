@@ -1,7 +1,6 @@
 'use client'
 
 import NodeComponent from '@/components/diagram/node'
-import { getLayoutedElements } from '@/utils/ui/layout-utils'
 import {
   Background,
   BackgroundVariant,
@@ -16,8 +15,9 @@ import {
 import '@xyflow/react/dist/style.css'
 import React, { useCallback, useEffect } from 'react'
 import { useNodeSelection } from '../context/selection-context'
-import { CustomNode, CustomEdge } from '@/types/node'
+import { CustomNode, CustomEdge } from '@/types'
 import { CustomEdgeComponent } from './edge'
+import dagre from '@dagrejs/dagre'
 
 // Define custom node types
 const nodeTypes: NodeTypes = {
@@ -34,11 +34,9 @@ interface WorkflowDiagramProps {
   edges: CustomEdge[]
 }
 
-export default function WorkflowDiagram({
-  className = '',
-  nodes,
-  edges,
-}: WorkflowDiagramProps) {
+const dagreGraph = new dagre.graphlib.Graph()
+
+export default function WorkflowDiagram({ className = '', nodes, edges }: WorkflowDiagramProps) {
   const [nodesState, setNodesState, onNodesStateChange] = useNodesState<CustomNode>([])
   const [edgesState, setEdgesState, onEdgesStateChange] = useEdgesState<CustomEdge>([])
   const { selectedId, setSelectedId } = useNodeSelection()
@@ -94,4 +92,31 @@ export default function WorkflowDiagram({
       </ReactFlow>
     </div>
   )
+}
+
+function getLayoutedElements(nodes: CustomNode[], edges: CustomEdge[]) {
+  // #region GraphSetup
+  dagreGraph.setGraph({ rankdir: 'LR', align: 'UR' })
+
+  nodes.forEach(node => {
+    dagreGraph.setNode(node.id, { width: 100, height: 100 })
+  })
+  edges.forEach(edge => {
+    dagreGraph.setEdge(edge.source, edge.target, { width: edge.label ? 200 : 10 })
+  })
+
+  dagre.layout(dagreGraph)
+  // #endregion
+
+  const layoutedNodes = nodes.map(node => {
+    const dagreNode = dagreGraph.node(node.id)
+
+    return {
+      ...node,
+      position: { x: dagreNode.x - 100 / 2, y: dagreNode.y - 100 / 2 },
+      layouted: true,
+    }
+  })
+
+  return { nodes: layoutedNodes, edges }
 }

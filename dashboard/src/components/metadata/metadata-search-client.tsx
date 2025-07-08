@@ -2,8 +2,8 @@
 import { executeRpc } from '@/actions/executeRPC'
 import { search, SearchResponse } from '@/actions/search'
 import { Pagination } from '@/components/ui/load-more-pagination'
-import { SearchType } from '@/types/search'
-import { SEARCH_ENTITIES, SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/utils/ui/constants'
+import { SearchType } from '@/types'
+import { SEARCH_ENTITIES, SEARCH_LIMIT_DEFAULT, SEARCH_LIMITS } from '@/constants'
 import { Tabs, TabsList, TabsTrigger } from '@littlehorse-enterprises/ui-library/tabs'
 import { WfSpecId } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
@@ -37,12 +37,18 @@ export function MetadataSearchClient() {
         if (!uniqueWfSpecs.some(wfSpec => wfSpec.name === result.name)) uniqueWfSpecs.push(result)
       })
 
-      response.results = await Promise.all(uniqueWfSpecs.map(async (wfSpec) => {
-        const wfSpecResponse = await executeRpc("getLatestWfSpec", {
-          name: wfSpec.name,
-        }, tenantId)
-        return wfSpecResponse.id
-      }))
+      response.results = await Promise.all(
+        uniqueWfSpecs.map(async wfSpec => {
+          const wfSpecResponse = await executeRpc(
+            'getLatestWfSpec',
+            {
+              name: wfSpec.name,
+            },
+            tenantId
+          )
+          return wfSpecResponse.id
+        })
+      )
     }
     return response
   })

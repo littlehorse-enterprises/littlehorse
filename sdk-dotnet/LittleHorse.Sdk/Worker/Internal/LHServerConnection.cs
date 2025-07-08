@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Data;
+using System.Reflection;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using LittleHorse.Sdk.Common.Proto;
@@ -16,168 +17,145 @@ namespace LittleHorse.Sdk.Worker.Internal
     /// Represents a connection to the LH server for a specific task type.
     /// </summary>
     /// <typeparam name="T">The type of the task.</typeparam>
-    internal class LHServerConnection<T> : IDisposable
+    internal class LHServerConnection<T>
     {
         private const int ReportTaskRetriesIntervalSeconds = 2;
         private const int MaxReportRetries = 15;
-        private const int PolltaskSleepTime = 5000;
-        
-        private readonly LHServerConnectionManager<T> _connectionManager;
-        private readonly LHHostInfo _hostInfo;
-        private bool _running;
-        private readonly LittleHorseClient _client;
-        private readonly AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
-        private readonly ILogger? _logger;
-        private SemaphoreSlim _reportTaskSemaphore;
-        private readonly LHTask<T> _task;
+        private const int PollTaskSleepTime = 5000;
 
-        internal LHHostInfo HostInfo => _hostInfo;
+        private readonly LittleHorseClient _client;
+        private readonly AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _pollTask;
+        private readonly ILogger? _logger;
+        private readonly LHTask<T> _lhTask;
+        private readonly PollTaskRequest _pollTaskRequest;
+        private readonly CancellationToken _cancellationToken;
+        private readonly Task _task;
 
         /// <summary>
         /// Creates a new instance of the <see cref="LHServerConnection{T}"/> class.
         /// </summary>
-        /// <param name="connectionManager">Object to handle all available server connections.</param>
-        /// <param name="hostInfo">Information of the current host.</param>
-        /// <param name="task">Prepares a task method to be executed by the server.</param>
-        internal LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo, LHTask<T> task)
+        /// <param name="clientId"></param>
+        /// <param name="taskDefId"></param>
+        /// <param name="taskWorkerVersion">Version of the Worker</param>
+        /// <param name="client"></param>
+        /// <param name="lhTask">Task method to be executed</param>
+        /// <param name="cancellationToken"></param>
+        internal LHServerConnection(
+            string clientId,
+            TaskDefId taskDefId,
+            string taskWorkerVersion,
+            LHTask<T> lhTask,
+            LittleHorseClient client,
+            CancellationToken cancellationToken)
         {
-            _connectionManager = connectionManager;
-            _hostInfo = hostInfo;
-            _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnection<T>>();
-            _client = _connectionManager.Config.GetGrpcClientInstance(hostInfo.Host, hostInfo.Port);
-            _call = _client.PollTask();
-            _reportTaskSemaphore = new SemaphoreSlim(_connectionManager.Config.WorkerThreads);
-            _task = task;
-        }
-
-        /// <summary>
-        /// Starts a new async task which will poll the server for tasks to execute.
-        /// </summary>
-        internal void Start()
-        {
-            _running = true;
-            Task.Run(RequestMoreWorkAsync);
-        }
-
-        private async Task RequestMoreWorkAsync()
-        {
-            var request = new PollTaskRequest
+            _pollTaskRequest = new PollTaskRequest
             {
-                ClientId = _connectionManager.Config.WorkerId,
-                TaskDefId = _connectionManager.TaskDef.Id,
-                TaskWorkerVersion = _connectionManager.Config.TaskWorkerVersion
+                ClientId = clientId,
+                TaskDefId = taskDefId,
+                TaskWorkerVersion = taskWorkerVersion
+            };
+            _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnection<T>>();
+            _client = client;
+            _pollTask = client.PollTask();
+            _lhTask = lhTask;
+            _cancellationToken = cancellationToken;
+            _task = Task.Run(async () => await RunConnection());
+        }
+
+        private async Task RunConnection()
+        {
+            try
+            {
+                await RequestWorkLoop();
+            }
+            catch (Exception exception) when (exception is OperationCanceledException || exception.GetBaseException() is OperationCanceledException)
+            {
+                _logger?.LogInformation("Connection closed");
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "Connection error. Stopping connection: {}", exception.Message);
+            }
+        }
+
+        internal bool IsRunning => _task.Status switch
+            {
+                System.Threading.Tasks.TaskStatus.Running => true,
+                System.Threading.Tasks.TaskStatus.WaitingToRun => true,
+                System.Threading.Tasks.TaskStatus.WaitingForActivation => true,
+                System.Threading.Tasks.TaskStatus.WaitingForChildrenToComplete => true,
+                _ => false
             };
 
-            var readTask = Task.Run(async () =>
-             {
-                 await foreach (var taskToDo in _call.ResponseStream.ReadAllAsync())
-                 {
-                     if (taskToDo.Result != null)
-                     {
-                         var scheduledTask = taskToDo.Result;
-                         var wFRunId = LHTaskHelper.GetWfRunId(scheduledTask.Source);
-                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId?.Id}");
-
-                         await _reportTaskSemaphore.WaitAsync();
-
-                         await DoTask(scheduledTask);
-
-                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId?.Id}");
-                     }
-                     else
-                     {
-                         _logger?.LogError("Didn't successfully claim task, likely due to a server crash.");
-                         Thread.Sleep(PolltaskSleepTime);
-                     }
-                     _reportTaskSemaphore.Release();
-
-                     if (_running)
-                     {
-                         await _call.RequestStream.WriteAsync(request);
-                     }
-                     else
-                     {
-                         await _call.RequestStream.CompleteAsync();
-                     }
-                 }
-             });
-
-            await _call.RequestStream.WriteAsync(request);
-
-            await readTask;
-        }
-
-        /// <summary>
-        /// This method ensures that all resources are properly released when the connection is no longer needed.
-        /// </summary>
-        public void Dispose()
+        private async Task RequestWorkLoop()
         {
-            _running = false;
-            _call.Dispose();
-            _reportTaskSemaphore.Dispose();
-            _reportTaskSemaphore = new SemaphoreSlim(_connectionManager.Config.WorkerThreads);
-        }
+            while (!_cancellationToken.IsCancellationRequested)
+            {
+                await _pollTask.RequestStream.WriteAsync(_pollTaskRequest, _cancellationToken);
+                if (!await _pollTask.ResponseStream.MoveNext(_cancellationToken)) continue;
 
-        /// <summary>
-        /// This method checks if the current connection is the same as the specified host and port.
-        /// </summary>
-        /// <param name="host">Host to be verified.</param>
-        /// <param name="port">Port to be verified.</param>
-        /// <returns></returns>
-        internal bool IsSame(string host, int port)
-        {
-            return _hostInfo.Host.Equals(host) && _hostInfo.Port == port;
+                var response = _pollTask.ResponseStream.Current;
+                var scheduledTask = response.Result;
+
+                if (scheduledTask != null)
+                {
+                    await DoTask(scheduledTask);
+                }
+                else
+                {
+                    _logger?.LogWarning("Didn't successfully claim task, likely due to a server restart.");
+                    await Task.Delay(PollTaskSleepTime);
+                }
+            }
+
+            await _pollTask.RequestStream.CompleteAsync();
         }
       
         private async Task DoTask(ScheduledTask scheduledTask)
         {
-            ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.DateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
-            
             var wfRunId = LHTaskHelper.GetWfRunId(scheduledTask.Source);
 
-            try
-            {
-                await ReportTaskWithRetries(result, wfRunId);
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {ex.Message}. No retries left.");
-            }
+            _logger?.LogDebug("Received task schedule request for wfRun {}", wfRunId?.Id);
+
+            var result = await ExecuteTask(scheduledTask, LHMappingHelper.DateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
+
+            _logger?.LogDebug("Task {} successfully executed for wfRun {}", scheduledTask.TaskRunId.TaskGuid, wfRunId?.Id);
+
+            await ReportTaskWithRetries(result, wfRunId);
         }
 
         private async Task ReportTaskWithRetries(ReportTaskRun result, WfRunId? wfRunId)
         {
-            const int maxRetries = MaxReportRetries;
-            int retriesLeft = maxRetries;
-
-            _logger?.LogDebug($"Starting task reporting for wfRun {wfRunId?.Id} and " +
-                              $"TaskRunId {result.TaskRunId.TaskGuid}.");
-            
-            var retryPolicy = Policy
-                .Handle<Exception>()
-                .WaitAndRetry(
-                    retryCount: maxRetries,
-                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(ReportTaskRetriesIntervalSeconds),
-                    onRetry: (exception, timeSpan, retryCount, context) =>
-                    {
-                        retriesLeft--;
-                        _logger?.LogDebug($"Retry attempt {retryCount} failed for wfRun {wfRunId} and " +
-                                          $"TaskRunId {result.TaskRunId.TaskGuid}. Exception: " +
-                                          $"{exception.Message}. Retries left: {retriesLeft}");
-                        _logger?.LogDebug("Retrying reportTask rpc on taskRun " +
-                                          $"{result.TaskRunId.WfRunId}/{result.TaskRunId.TaskGuid}");
-                    });
-
-
-            await retryPolicy.Execute(() => RunReportTask(result));
+            try
+            {
+                _logger?.LogDebug("Starting task reporting for wfRun {} and TaskRunId {}.", wfRunId?.Id, result.TaskRunId.TaskGuid);
+                await RetryPolicy(result, wfRunId, MaxReportRetries);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Failed to report task for wfRun {}: {}. No retries left.",  wfRunId, ex.Message);
+            }
         }
-        
+
+        private Task RetryPolicy(ReportTaskRun result, WfRunId? wfRunId, int maxRetries) =>
+            Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(
+                    retryCount: maxRetries,
+                    sleepDurationProvider: _ => TimeSpan.FromSeconds(ReportTaskRetriesIntervalSeconds),
+                    onRetry: (exception, _, retryCount, _) =>
+                    {
+                        _logger?.LogDebug(exception, "Retry attempt {} failed for wfRun {} and TaskRunId {}. Exception: {}. Retries left: {}", retryCount, wfRunId, result.TaskRunId.TaskGuid, exception.Message, maxRetries - retryCount);
+                        _logger?.LogDebug("Retrying reportTask rpc on taskRun {}/{}", result.TaskRunId.WfRunId, result.TaskRunId.TaskGuid);
+                    })
+                .ExecuteAsync(() => RunReportTask(result));
+
         private async Task RunReportTask(ReportTaskRun reportedTask)
         {
             await _client.ReportTaskAsync(reportedTask);
         }
 
-        private ReportTaskRun ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)
+        private async Task<ReportTaskRun> ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)
         {
             var taskResult = new ReportTaskRun
             {
@@ -189,9 +167,8 @@ namespace LittleHorse.Sdk.Worker.Internal
 
             try
             {
-                var result = Invoke(scheduledTask, workerContext);
+                var result = await Invoke(scheduledTask, workerContext);
                 var serialized = LHMappingHelper.ObjectToVariableValue(result);
-
                 taskResult.Output = serialized;
                 taskResult.Status = TaskStatus.TaskSuccess;
 
@@ -268,11 +245,18 @@ namespace LittleHorse.Sdk.Worker.Internal
             return taskResult;
         }
 
-        private object? Invoke(ScheduledTask scheduledTask, LHWorkerContext workerContext)
+        private async Task<object?> Invoke(ScheduledTask scheduledTask, LHWorkerContext workerContext)
         {
-            var inputs = _task.TaskMethodMappings.Select(mapping => mapping.Assign(scheduledTask, workerContext)).ToArray();
+            var inputs = _lhTask.TaskMethodMappings.Select(mapping => mapping.Assign(scheduledTask, workerContext)).ToArray();
+            var result = _lhTask.TaskMethod!.Invoke(_lhTask.Executable, inputs);
 
-            return _task.TaskMethod!.Invoke(_task.Executable, inputs);
+            if (result is not Task task)
+                throw new InvalidConstraintException("Task method must return Task<type> or Task");
+
+            // DO NOT MOVE THIS LINE AS WE NEED THE TASK TO BE AWAITED BEFORE RETURNING THE RESULT
+            await task;
+
+            return !_lhTask.TaskMethod.ReturnType.IsGenericType ? null : ((dynamic)task).Result;
         }
     }
 }

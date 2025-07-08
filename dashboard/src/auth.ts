@@ -16,12 +16,14 @@ declare module 'next-auth/jwt' {
   }
 }
 
-const OAUTH_ENABLED = process.env.KEYCLOAK_ISSUER_URI && process.env.KEYCLOAK_CLIENT_ID && process.env.KEYCLOAK_CLIENT_SECRET
+const OAUTH_ENABLED =
+  process.env.KEYCLOAK_ISSUER_URI && process.env.KEYCLOAK_CLIENT_ID && process.env.KEYCLOAK_CLIENT_SECRET
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/api/signin',
   },
+  secret: process.env.AUTH_SECRET || (OAUTH_ENABLED ? undefined : 'fallback-secret-for-disabled-auth'),
   providers: OAUTH_ENABLED
     ? [
         Keycloak({
