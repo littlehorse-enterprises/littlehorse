@@ -84,7 +84,7 @@ export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) 
           <div className="ml-3">
             <span className="font-bold">Exception upon cancellation: </span>
             <span className="rounded bg-red-300 p-1 text-xs">
-              {getVariable(userTaskNode!?.onCancellationExceptionName)}
+              {String(getVariable(userTaskNode!?.onCancellationExceptionName))}
             </span>
           </div>
         )}
