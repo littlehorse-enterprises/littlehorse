@@ -37,6 +37,7 @@ public class StructDefUtilTest {
         public WfRunId wfRunId;
     }
 
+    @LHStructDef(name="library")
     class Library {
         public String name;
 
@@ -189,6 +190,14 @@ public class StructDefUtilTest {
             assertThat(expectedClassList).isEqualTo(classList);
         }
 
+        @Test
+        public void getStructDefDependenciesSkipsIgnoredFields() {
+            List<Class<?>> actualDependencies = StructDefUtil.getStructDefDependencies(CarID.class);
+            List<Class<?>> expectedDependencies = List.of(CarID.class);
+
+            assertThat(actualDependencies).isEqualTo(expectedDependencies);
+        }
+
         @LHStructDef(name = "car")
         class Car {
             public Garage garage;
@@ -210,6 +219,9 @@ public class StructDefUtilTest {
         @LHStructDef(name = "carId")
         class CarID {
             public String uuid;
+
+            @LHStructIgnore
+            public Garage ignoredField;
         }
     }
 

@@ -115,6 +115,8 @@ public class StructDefUtil {
         for (Field field : fields) {
             if (field.isSynthetic()) continue;
 
+            if (field.isAnnotationPresent(LHStructIgnore.class)) continue;
+
             Class<?> fieldType = getFieldType(field);
 
             // Check if the field type is a non-primitive class
