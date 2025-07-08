@@ -75,7 +75,7 @@ export function getTypedContent(contentType: string, contentValue: string) {
  * determines which typing strategy a Variable uses.
  */
 export const getVariableDefType = (varDef: VariableDef): VariableType => {
-  if (varDef.typeDef) return varDef.typeDef.type
+  if (varDef.typeDef?.definedType?.$case == "primitiveType") return varDef.typeDef.definedType.primitiveType
   if (varDef.type) return varDef.type
   throw new Error('Variable must have type or typeDef.')
 }
