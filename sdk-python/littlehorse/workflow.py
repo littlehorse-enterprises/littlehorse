@@ -786,7 +786,120 @@ class WaitForThreadsNodeOutput(NodeOutput):
             failure_handler,
         )
         return self
+    
+class ThrowEventNodeOutput:
+    """
+    Represents the output of a ThrowEvent node in a workflow, allowing event definition registration.
+    """
 
+    def __init__(self, event_name: str, parent: WorkflowThread) -> None:
+        """
+        Initializes a new instance of the ThrowEventNodeOutput class.
+
+        Args:
+            event_name (str): The name of the workflow event definition.
+            parent (WorkflowThread): The parent workflow thread.
+        """
+        self._event_name = event_name
+        self._parent = parent
+        self._payload_type: Optional[type] = None
+
+    def registered_as(self, payload_type: Optional[type]) -> None:
+        """
+        Registers the event definition with the specified payload type.
+
+        Args:
+            payload_type (Optional[type]): The Python type of the event payload.
+        """
+        self._payload_type = payload_type
+        self._parent.register_workflow_event_def(self)
+
+    def to_put_workflow_event_def_request(self) -> PutWorkflowEventDefRequest:
+        """
+        Returns a PutWorkflowEventDefRequest for registering this workflow event definition.
+
+        Returns:
+            PutWorkflowEventDefRequest: The request object for event definition registration.
+
+        Raises:
+            ValueError: If `_payload_type` is not set before generating the request.
+        """
+        if self._payload_type is None:
+            raise ValueError("Payload type must be set using `registered_as` before generating the request.")
+
+        return PutWorkflowEventDefRequest(
+            name=self._event_name,
+            content_type=python_type_to_return_type(self._payload_type)
+        )
+
+
+class ExternalEventNodeOutput(NodeOutput):
+    def __init__(self, node_name: str, external_event_def_name: str, parent: WorkflowThread) -> None:
+        """
+        Initializes a new instance of the ExternalEventNodeOutput class.
+
+        Args:
+            node_name (str): The specified node name.
+            external_event_def_name (str): The external event definition name.
+            parent (WorkflowThread): The workflow thread where the ExternalEventNodeOutput belongs to.
+        """
+        super().__init__(node_name)  # Fix the call to the superclass constructor
+        self.external_event_def_name = external_event_def_name
+        self._payload_type: Optional[type] = None
+        self._correlated_event_config: Optional[CorrelatedEventConfig] = None
+        self.parent = parent  # Ensure parent is properly initialized
+
+    def with_correlated_event_config(self, config: CorrelatedEventConfig) -> "ExternalEventNodeOutput":
+        """
+        Sets the correlated event configuration.
+
+        Args:
+            config (CorrelatedEventConfig): The correlated event configuration.
+
+        Returns:
+            ExternalEventNodeOutput: The current instance.
+        """
+        self._correlated_event_config = config
+        return self
+
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        """
+        Returns a PutExternalEventDefRequest for registering this external event definition.
+
+        Returns:
+            PutExternalEventDefRequest: The request object for external event definition registration.
+
+        Raises:
+            ValueError: If `_payload_type` is not set before generating the request.
+        """
+
+        req = PutExternalEventDefRequest(
+            name=self.external_event_def_name,
+            content_type=python_type_to_return_type(self._payload_type)
+        )
+        if self._correlated_event_config is not None:
+            req.correlated_event_config = self._correlated_event_config
+        return req
+
+    def get_correlated_event_config(self) -> CorrelatedEventConfig:
+        """
+        Gets the correlated event configuration.
+
+        Returns:
+            CorrelatedEventConfig: The correlated event configuration.
+        """
+        return self._correlated_event_config or CorrelatedEventConfig()
+
+    def registered_as(self, payload_type: type) -> ExternalEventNodeOutput:
+        """
+        Registers the event definition with the specified payload type.
+
+        Args:
+            payload_type (type): The Python type of the event payload.
+        """
+        self._payload_type = payload_type
+        self.parent.register_external_event_def(self)
+        return self    
 
 class WorkflowNode:
     def __init__(
@@ -2457,116 +2570,3 @@ def create_workflow_event_def(
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")
 
 
-class ThrowEventNodeOutput:
-    """
-    Represents the output of a ThrowEvent node in a workflow, allowing event definition registration.
-    """
-
-    def __init__(self, event_name: str, parent: WorkflowThread) -> None:
-        """
-        Initializes a new instance of the ThrowEventNodeOutput class.
-
-        Args:
-            event_name (str): The name of the workflow event definition.
-            parent (WorkflowThread): The parent workflow thread.
-        """
-        self._event_name = event_name
-        self._parent = parent
-        self._payload_type: Optional[type] = None
-
-    def registered_as(self, payload_type: Optional[type]) -> None:
-        """
-        Registers the event definition with the specified payload type.
-
-        Args:
-            payload_type (Optional[type]): The Python type of the event payload.
-        """
-        self._payload_type = payload_type
-        self._parent.register_workflow_event_def(self)
-
-    def to_put_workflow_event_def_request(self) -> PutWorkflowEventDefRequest:
-        """
-        Returns a PutWorkflowEventDefRequest for registering this workflow event definition.
-
-        Returns:
-            PutWorkflowEventDefRequest: The request object for event definition registration.
-
-        Raises:
-            ValueError: If `_payload_type` is not set before generating the request.
-        """
-        if self._payload_type is None:
-            raise ValueError("Payload type must be set using `registered_as` before generating the request.")
-
-        return PutWorkflowEventDefRequest(
-            name=self._event_name,
-            content_type=python_type_to_return_type(self._payload_type)
-        )
-
-
-class ExternalEventNodeOutput(NodeOutput):
-    def __init__(self, node_name: str, external_event_def_name: str, parent: WorkflowThread) -> None:
-        """
-        Initializes a new instance of the ExternalEventNodeOutput class.
-
-        Args:
-            node_name (str): The specified node name.
-            external_event_def_name (str): The external event definition name.
-            parent (WorkflowThread): The workflow thread where the ExternalEventNodeOutput belongs to.
-        """
-        super().__init__(node_name)  # Fix the call to the superclass constructor
-        self.external_event_def_name = external_event_def_name
-        self._payload_type: Optional[type] = None
-        self._correlated_event_config: Optional[CorrelatedEventConfig] = None
-        self.parent = parent  # Ensure parent is properly initialized
-
-    def with_correlated_event_config(self, config: CorrelatedEventConfig) -> "ExternalEventNodeOutput":
-        """
-        Sets the correlated event configuration.
-
-        Args:
-            config (CorrelatedEventConfig): The correlated event configuration.
-
-        Returns:
-            ExternalEventNodeOutput: The current instance.
-        """
-        self._correlated_event_config = config
-        return self
-
-    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
-        """
-        Returns a PutExternalEventDefRequest for registering this external event definition.
-
-        Returns:
-            PutExternalEventDefRequest: The request object for external event definition registration.
-
-        Raises:
-            ValueError: If `_payload_type` is not set before generating the request.
-        """
-
-        req = PutExternalEventDefRequest(
-            name=self.external_event_def_name,
-            content_type=python_type_to_return_type(self._payload_type)
-        )
-        if self._correlated_event_config is not None:
-            req.correlated_event_config = self._correlated_event_config
-        return req
-
-    def get_correlated_event_config(self) -> CorrelatedEventConfig:
-        """
-        Gets the correlated event configuration.
-
-        Returns:
-            CorrelatedEventConfig: The correlated event configuration.
-        """
-        return self._correlated_event_config or CorrelatedEventConfig()
-
-    def registered_as(self, payload_type: type) -> ExternalEventNodeOutput:
-        """
-        Registers the event definition with the specified payload type.
-
-        Args:
-            payload_type (type): The Python type of the event payload.
-        """
-        self._payload_type = payload_type
-        self.parent.register_external_event_def(self)
-        return self
