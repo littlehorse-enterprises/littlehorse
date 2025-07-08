@@ -10,7 +10,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
