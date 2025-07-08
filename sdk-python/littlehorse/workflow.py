@@ -1197,6 +1197,15 @@ class WorkflowThread:
         thread_name = self._workflow.add_sub_thread(f"interrupt-{name}", handler)
         self._wf_interruptions.append(WorkflowInterruption(name, thread_name))
 
+    def register_external_event_def(self, node_output: ExternalEventNodeOutput) -> None:
+        """
+        Registers an external event definition for the parent workflow.
+
+        Args:
+            node_output (ExternalEventNodeOutput): The external event node output.
+        """
+        self._workflow.add_external_event_def_to_register(node_output)
+
     def _validate_initializer(self, initializer: "ThreadInitializer") -> None:
         if initializer is None:
             raise ValueError("ThreadInitializer cannot be None")
@@ -1700,7 +1709,7 @@ class WorkflowThread:
         timeout: int = -1,
         correlation_id: Optional[Union[str, LHFormatString, WfRunVariable]] = None,
         mask_correlation_id: Optional[bool] = None,
-    ) -> NodeOutput:
+    ) -> ExternalEventNodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
 
@@ -1731,9 +1740,13 @@ class WorkflowThread:
             mask_correlation_key=mask_correlation_id,
         )
         node_name = self.add_node(event_name, wait_node)
-        return NodeOutput(node_name)
+        return ExternalEventNodeOutput(
+            node_name=node_name,
+            external_event_def_name= event_name,
+            parent= self
+        )
 
-    def throw_event(self, workflow_event_name: str, content: Any) -> None:
+    def throw_event(self, workflow_event_name: str, content: Any) -> ThrowEventNodeOutput:
         """Adds a THROW_EVENT node which throws a WorkflowEvent.
 
         Args:
@@ -1750,6 +1763,12 @@ class WorkflowThread:
             content=to_variable_assignment(content),
         )
         self.add_node("throw-" + workflow_event_name, throw_node)
+        return ThrowEventNodeOutput(
+            node_name=throw_node.name,
+            thread=self,
+            workflow_event_def_id=WorkflowEventDefId(name=workflow_event_name),
+            content=to_variable_assignment(content),
+        )
 
     def mutate(
         self, left_hand: WfRunVariable, operation: VariableMutationType, right_hand: Any
@@ -2129,6 +2148,37 @@ class WorkflowThread:
         )
 
 
+def python_type_to_return_type(py_type: type) -> ReturnType:
+    """
+    Maps a Python type to a ReturnType.
+
+    Args:
+        py_type (type): The Python type.
+
+    Returns:
+        ReturnType: The corresponding ReturnType.
+
+    Raises:
+        ValueError: If the type is unsupported.
+    """
+    type_def = TypeDefinition()
+    if py_type == str:
+        type_def.type = VariableType.STR
+    elif py_type == int:
+        type_def.type = VariableType.INT
+    elif py_type == float:
+        type_def.type = VariableType.DOUBLE
+    elif py_type == bool:
+        type_def.type = VariableType.BOOL
+    elif issubclass(py_type, dict):
+        type_def.type = VariableType.JSON_OBJ
+    elif issubclass(py_type, list):
+        type_def.type = VariableType.JSON_ARR
+    else:
+        raise ValueError("Unsupported payload type for workflow event.")
+    return ReturnType(type_def=type_def)
+
+
 ThreadInitializer = Callable[[WorkflowThread], None]
 
 
@@ -2435,14 +2485,14 @@ class ThrowEventNodeOutput:
             PutWorkflowEventDefRequest: The request object for event definition registration.
 
         Raises:
-            ValueError: If registered_as was not called before use.
+            ValueError: If `_payload_type` is not set before generating the request.
         """
         if self._payload_type is None:
-            raise ValueError("Payload type must be set using registered_as before generating the request.")
+            raise ValueError("Payload type must be set using `registered_as` before generating the request.")
 
         return PutWorkflowEventDefRequest(
             name=self._event_name,
-            content_type=ReturnType(TypeDefinition(type=self._payload_type))
+            content_type=python_type_to_return_type(self._payload_type)
         )
 
 
@@ -2456,10 +2506,11 @@ class ExternalEventNodeOutput(NodeOutput):
             external_event_def_name (str): The external event definition name.
             parent (WorkflowThread): The workflow thread where the ExternalEventNodeOutput belongs to.
         """
-        super().__init__(node_name, parent)
+        super().__init__(node_name)  # Fix the call to the superclass constructor
         self.external_event_def_name = external_event_def_name
         self._payload_type: Optional[type] = None
         self._correlated_event_config: Optional[CorrelatedEventConfig] = None
+        self.parent = parent  # Ensure parent is properly initialized
 
     def with_correlated_event_config(self, config: CorrelatedEventConfig) -> "ExternalEventNodeOutput":
         """
@@ -2480,10 +2531,14 @@ class ExternalEventNodeOutput(NodeOutput):
 
         Returns:
             PutExternalEventDefRequest: The request object for external event definition registration.
+
+        Raises:
+            ValueError: If `_payload_type` is not set before generating the request.
         """
+
         req = PutExternalEventDefRequest(
             name=self.external_event_def_name,
-            content_type=ReturnType(TypeDefinition(type=self._payload_type))
+            content_type=python_type_to_return_type(self._payload_type)
         )
         if self._correlated_event_config is not None:
             req.correlated_event_config = self._correlated_event_config
