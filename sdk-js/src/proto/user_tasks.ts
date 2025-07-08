@@ -397,17 +397,39 @@ export interface UserTaskTriggerReference {
  */
 export interface UserTaskEvent {
   /** the time the event occurred. */
-  time: string | undefined;
-  event?:
-    | { $case: "taskExecuted"; taskExecuted: UserTaskEvent_UTETaskExecuted }
-    | { $case: "assigned"; assigned: UserTaskEvent_UTEAssigned }
-    | { $case: "cancelled"; cancelled: UserTaskEvent_UTECancelled }
-    | { $case: "saved"; saved: UserTaskEvent_UTESaved }
-    | { $case: "commentAdded"; commentAdded: UserTaskEvent_UTECommented }
-    | { $case: "commentEdited"; commentEdited: UserTaskEvent_UTECommented }
-    | { $case: "commentDeleted"; commentDeleted: UserTaskEvent_UTECommentDeleted }
-    | { $case: "completed"; completed: UserTaskEvent_UTECompleted }
+  time:
+    | string
     | undefined;
+  /** Denotes that a TaskRun was scheduled via a trigger. */
+  taskExecuted?:
+    | UserTaskEvent_UTETaskExecuted
+    | undefined;
+  /** Denotes that the UserTaskRun was assigned. */
+  assigned?:
+    | UserTaskEvent_UTEAssigned
+    | undefined;
+  /** Denotes that the UserTaskRun was cancelled. */
+  cancelled?:
+    | UserTaskEvent_UTECancelled
+    | undefined;
+  /** Denotes that the `UserTaskRun` was saved. */
+  saved?:
+    | UserTaskEvent_UTESaved
+    | undefined;
+  /** Denotes that there was a comment on a `userTaskRun` */
+  commentAdded?:
+    | UserTaskEvent_UTECommented
+    | undefined;
+  /** Denotes that a comment on a `userTaskRun` has been edited */
+  commentEdited?:
+    | UserTaskEvent_UTECommented
+    | undefined;
+  /** Denotes that a comment on a `userTaskRun` was deleted */
+  commentDeleted?:
+    | UserTaskEvent_UTECommentDeleted
+    | undefined;
+  /** Denotes that a `userTaskRun` has been completed */
+  completed?: UserTaskEvent_UTECompleted | undefined;
 }
 
 /** Empty message used to denote that the `UserTaskRun` was cancelled. */
@@ -1616,7 +1638,17 @@ export const UserTaskTriggerReference = {
 };
 
 function createBaseUserTaskEvent(): UserTaskEvent {
-  return { time: undefined, event: undefined };
+  return {
+    time: undefined,
+    taskExecuted: undefined,
+    assigned: undefined,
+    cancelled: undefined,
+    saved: undefined,
+    commentAdded: undefined,
+    commentEdited: undefined,
+    commentDeleted: undefined,
+    completed: undefined,
+  };
 }
 
 export const UserTaskEvent = {
@@ -1624,31 +1656,29 @@ export const UserTaskEvent = {
     if (message.time !== undefined) {
       Timestamp.encode(toTimestamp(message.time), writer.uint32(10).fork()).ldelim();
     }
-    switch (message.event?.$case) {
-      case "taskExecuted":
-        UserTaskEvent_UTETaskExecuted.encode(message.event.taskExecuted, writer.uint32(18).fork()).ldelim();
-        break;
-      case "assigned":
-        UserTaskEvent_UTEAssigned.encode(message.event.assigned, writer.uint32(26).fork()).ldelim();
-        break;
-      case "cancelled":
-        UserTaskEvent_UTECancelled.encode(message.event.cancelled, writer.uint32(34).fork()).ldelim();
-        break;
-      case "saved":
-        UserTaskEvent_UTESaved.encode(message.event.saved, writer.uint32(42).fork()).ldelim();
-        break;
-      case "commentAdded":
-        UserTaskEvent_UTECommented.encode(message.event.commentAdded, writer.uint32(50).fork()).ldelim();
-        break;
-      case "commentEdited":
-        UserTaskEvent_UTECommented.encode(message.event.commentEdited, writer.uint32(58).fork()).ldelim();
-        break;
-      case "commentDeleted":
-        UserTaskEvent_UTECommentDeleted.encode(message.event.commentDeleted, writer.uint32(66).fork()).ldelim();
-        break;
-      case "completed":
-        UserTaskEvent_UTECompleted.encode(message.event.completed, writer.uint32(74).fork()).ldelim();
-        break;
+    if (message.taskExecuted !== undefined) {
+      UserTaskEvent_UTETaskExecuted.encode(message.taskExecuted, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.assigned !== undefined) {
+      UserTaskEvent_UTEAssigned.encode(message.assigned, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.cancelled !== undefined) {
+      UserTaskEvent_UTECancelled.encode(message.cancelled, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.saved !== undefined) {
+      UserTaskEvent_UTESaved.encode(message.saved, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.commentAdded !== undefined) {
+      UserTaskEvent_UTECommented.encode(message.commentAdded, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.commentEdited !== undefined) {
+      UserTaskEvent_UTECommented.encode(message.commentEdited, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.commentDeleted !== undefined) {
+      UserTaskEvent_UTECommentDeleted.encode(message.commentDeleted, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.completed !== undefined) {
+      UserTaskEvent_UTECompleted.encode(message.completed, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -1672,68 +1702,56 @@ export const UserTaskEvent = {
             break;
           }
 
-          message.event = {
-            $case: "taskExecuted",
-            taskExecuted: UserTaskEvent_UTETaskExecuted.decode(reader, reader.uint32()),
-          };
+          message.taskExecuted = UserTaskEvent_UTETaskExecuted.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.event = { $case: "assigned", assigned: UserTaskEvent_UTEAssigned.decode(reader, reader.uint32()) };
+          message.assigned = UserTaskEvent_UTEAssigned.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.event = { $case: "cancelled", cancelled: UserTaskEvent_UTECancelled.decode(reader, reader.uint32()) };
+          message.cancelled = UserTaskEvent_UTECancelled.decode(reader, reader.uint32());
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.event = { $case: "saved", saved: UserTaskEvent_UTESaved.decode(reader, reader.uint32()) };
+          message.saved = UserTaskEvent_UTESaved.decode(reader, reader.uint32());
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.event = {
-            $case: "commentAdded",
-            commentAdded: UserTaskEvent_UTECommented.decode(reader, reader.uint32()),
-          };
+          message.commentAdded = UserTaskEvent_UTECommented.decode(reader, reader.uint32());
           continue;
         case 7:
           if (tag !== 58) {
             break;
           }
 
-          message.event = {
-            $case: "commentEdited",
-            commentEdited: UserTaskEvent_UTECommented.decode(reader, reader.uint32()),
-          };
+          message.commentEdited = UserTaskEvent_UTECommented.decode(reader, reader.uint32());
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.event = {
-            $case: "commentDeleted",
-            commentDeleted: UserTaskEvent_UTECommentDeleted.decode(reader, reader.uint32()),
-          };
+          message.commentDeleted = UserTaskEvent_UTECommentDeleted.decode(reader, reader.uint32());
           continue;
         case 9:
           if (tag !== 74) {
             break;
           }
 
-          message.event = { $case: "completed", completed: UserTaskEvent_UTECompleted.decode(reader, reader.uint32()) };
+          message.completed = UserTaskEvent_UTECompleted.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1750,62 +1768,30 @@ export const UserTaskEvent = {
   fromPartial(object: DeepPartial<UserTaskEvent>): UserTaskEvent {
     const message = createBaseUserTaskEvent();
     message.time = object.time ?? undefined;
-    if (
-      object.event?.$case === "taskExecuted" &&
-      object.event?.taskExecuted !== undefined &&
-      object.event?.taskExecuted !== null
-    ) {
-      message.event = {
-        $case: "taskExecuted",
-        taskExecuted: UserTaskEvent_UTETaskExecuted.fromPartial(object.event.taskExecuted),
-      };
-    }
-    if (object.event?.$case === "assigned" && object.event?.assigned !== undefined && object.event?.assigned !== null) {
-      message.event = { $case: "assigned", assigned: UserTaskEvent_UTEAssigned.fromPartial(object.event.assigned) };
-    }
-    if (
-      object.event?.$case === "cancelled" && object.event?.cancelled !== undefined && object.event?.cancelled !== null
-    ) {
-      message.event = { $case: "cancelled", cancelled: UserTaskEvent_UTECancelled.fromPartial(object.event.cancelled) };
-    }
-    if (object.event?.$case === "saved" && object.event?.saved !== undefined && object.event?.saved !== null) {
-      message.event = { $case: "saved", saved: UserTaskEvent_UTESaved.fromPartial(object.event.saved) };
-    }
-    if (
-      object.event?.$case === "commentAdded" &&
-      object.event?.commentAdded !== undefined &&
-      object.event?.commentAdded !== null
-    ) {
-      message.event = {
-        $case: "commentAdded",
-        commentAdded: UserTaskEvent_UTECommented.fromPartial(object.event.commentAdded),
-      };
-    }
-    if (
-      object.event?.$case === "commentEdited" &&
-      object.event?.commentEdited !== undefined &&
-      object.event?.commentEdited !== null
-    ) {
-      message.event = {
-        $case: "commentEdited",
-        commentEdited: UserTaskEvent_UTECommented.fromPartial(object.event.commentEdited),
-      };
-    }
-    if (
-      object.event?.$case === "commentDeleted" &&
-      object.event?.commentDeleted !== undefined &&
-      object.event?.commentDeleted !== null
-    ) {
-      message.event = {
-        $case: "commentDeleted",
-        commentDeleted: UserTaskEvent_UTECommentDeleted.fromPartial(object.event.commentDeleted),
-      };
-    }
-    if (
-      object.event?.$case === "completed" && object.event?.completed !== undefined && object.event?.completed !== null
-    ) {
-      message.event = { $case: "completed", completed: UserTaskEvent_UTECompleted.fromPartial(object.event.completed) };
-    }
+    message.taskExecuted = (object.taskExecuted !== undefined && object.taskExecuted !== null)
+      ? UserTaskEvent_UTETaskExecuted.fromPartial(object.taskExecuted)
+      : undefined;
+    message.assigned = (object.assigned !== undefined && object.assigned !== null)
+      ? UserTaskEvent_UTEAssigned.fromPartial(object.assigned)
+      : undefined;
+    message.cancelled = (object.cancelled !== undefined && object.cancelled !== null)
+      ? UserTaskEvent_UTECancelled.fromPartial(object.cancelled)
+      : undefined;
+    message.saved = (object.saved !== undefined && object.saved !== null)
+      ? UserTaskEvent_UTESaved.fromPartial(object.saved)
+      : undefined;
+    message.commentAdded = (object.commentAdded !== undefined && object.commentAdded !== null)
+      ? UserTaskEvent_UTECommented.fromPartial(object.commentAdded)
+      : undefined;
+    message.commentEdited = (object.commentEdited !== undefined && object.commentEdited !== null)
+      ? UserTaskEvent_UTECommented.fromPartial(object.commentEdited)
+      : undefined;
+    message.commentDeleted = (object.commentDeleted !== undefined && object.commentDeleted !== null)
+      ? UserTaskEvent_UTECommentDeleted.fromPartial(object.commentDeleted)
+      : undefined;
+    message.completed = (object.completed !== undefined && object.completed !== null)
+      ? UserTaskEvent_UTECompleted.fromPartial(object.completed)
+      : undefined;
     return message;
   },
 };
@@ -2267,7 +2253,6 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
