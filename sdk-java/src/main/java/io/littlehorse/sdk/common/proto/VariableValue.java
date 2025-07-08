@@ -455,6 +455,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int STRUCT_FIELD_NUMBER = 10;
   /**
+   * <pre>
+   * A Struct object.
+   * </pre>
+   *
    * <code>.littlehorse.Struct struct = 10;</code>
    * @return Whether the struct field is set.
    */
@@ -463,6 +467,10 @@ private static final long serialVersionUID = 0L;
     return valueCase_ == 10;
   }
   /**
+   * <pre>
+   * A Struct object.
+   * </pre>
+   *
    * <code>.littlehorse.Struct struct = 10;</code>
    * @return The struct.
    */
@@ -474,6 +482,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
   }
   /**
+   * <pre>
+   * A Struct object.
+   * </pre>
+   *
    * <code>.littlehorse.Struct struct = 10;</code>
    */
   @java.lang.Override
@@ -1849,6 +1861,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.Struct, io.littlehorse.sdk.common.proto.Struct.Builder, io.littlehorse.sdk.common.proto.StructOrBuilder> structBuilder_;
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      * @return Whether the struct field is set.
      */
@@ -1857,6 +1873,10 @@ private static final long serialVersionUID = 0L;
       return valueCase_ == 10;
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      * @return The struct.
      */
@@ -1875,6 +1895,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      */
     public Builder setStruct(io.littlehorse.sdk.common.proto.Struct value) {
@@ -1891,6 +1915,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      */
     public Builder setStruct(
@@ -1905,6 +1933,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      */
     public Builder mergeStruct(io.littlehorse.sdk.common.proto.Struct value) {
@@ -1928,6 +1960,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      */
     public Builder clearStruct() {
@@ -1947,12 +1983,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.Struct.Builder getStructBuilder() {
       return getStructFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      */
     @java.lang.Override
@@ -1967,6 +2011,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A Struct object.
+     * </pre>
+     *
      * <code>.littlehorse.Struct struct = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

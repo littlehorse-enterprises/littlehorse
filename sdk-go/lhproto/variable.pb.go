@@ -193,6 +193,7 @@ type VariableValue_WfRunId struct {
 }
 
 type VariableValue_Struct struct {
+	// A Struct object.
 	Struct *Struct `protobuf:"bytes,10,opt,name=struct,proto3,oneof"`
 }
 

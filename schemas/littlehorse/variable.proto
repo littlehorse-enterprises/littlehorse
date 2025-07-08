@@ -44,6 +44,7 @@ message VariableValue {
     // Reference to a WfRunId
     WfRunId wf_run_id = 9;
 
+    // A Struct object.
     Struct struct = 10;
   }
 }
