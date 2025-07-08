@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.StructDefUtil;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
@@ -33,6 +34,7 @@ public class StructDefUtilTest {
         public boolean isAlive;
         public double height;
         public byte[] bytes;
+        public WfRunId wfRunId;
     }
 
     class Library {
@@ -80,6 +82,11 @@ public class StructDefUtilTest {
                         "bytes",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BYTES))
+                                .build())
+                .putFields(
+                        "wfRunId",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.WF_RUN_ID))
                                 .build())
                 .build();
 
