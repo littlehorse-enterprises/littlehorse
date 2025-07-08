@@ -6,7 +6,7 @@ on:
       tag:
         type: string
         required: false
-        default: ''
+        default: ""
 permissions:
   packages: write
   contents: read
@@ -128,7 +128,7 @@ jobs:
             SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
             VERSION="${{ github.ref_name }}-$SHORT_SHA"
           fi
-          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.mjs
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -168,7 +168,7 @@ jobs:
             SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
             VERSION="${{ github.ref_name }}-$SHORT_SHA"
           fi
-          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.mjs
 
       - name: Build Dashboard
         working-directory: ./dashboard
