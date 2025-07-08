@@ -9,6 +9,7 @@ export const FormComponent = {
   [VariableType.JSON_OBJ]: FormTextarea,
   [VariableType.JSON_ARR]: FormTextarea,
   [VariableType.BYTES]: FormInput,
+  [VariableType.WF_RUN_ID]: FormInput,
   [VariableType.UNRECOGNIZED]: FormInput,
 } as const
 
