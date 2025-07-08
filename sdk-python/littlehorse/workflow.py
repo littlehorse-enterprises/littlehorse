@@ -2161,6 +2161,8 @@ class Workflow:
             None
         )
         self._default_retries: Optional[int] = None
+        self._workflow_events_to_register: list[ThrowEventNodeOutput] = []
+        self._external_events_to_register: list[ExternalEventNodeOutput] = []
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -2294,6 +2296,33 @@ class Workflow:
         self._default_timeout_seconds = timeout_seconds
         return self
 
+    def add_workflow_event_def_to_register(self, node: ThrowEventNodeOutput) -> None:
+        """
+        Adds a workflow event definition to the list for registration.
+
+        Args:
+            node (ThrowEventNodeOutput): The workflow event node to register.
+        """
+        self._workflow_events_to_register.append(node)
+
+    def add_external_event_def_to_register(self, node: ExternalEventNodeOutput) -> None:
+        """
+        Adds an external event definition to the list for registration.
+
+        Args:
+            node (ExternalEventNodeOutput): The external event node to register.
+        """
+        self._external_events_to_register.append(node)
+
+    def get_default_thread_retention_policy(self) -> Optional[ThreadRetentionPolicy]:
+        """
+        Returns the default thread retention policy.
+
+        Returns:
+            Optional[ThreadRetentionPolicy]: The default thread retention policy.
+        """
+        return self._default_thread_retention_policy
+        
 
 def create_workflow_spec(
     workflow: Workflow, config: LHConfig, timeout: Optional[int] = None
@@ -2307,6 +2336,17 @@ def create_workflow_spec(
     """
     stub = config.stub()
     request = workflow.compile()
+
+    for node in workflow._external_events_to_register:
+        external_event_request = node.to_put_external_event_def_request()
+        logging.info(f"Registering ExternalEventDef: {external_event_request.name}")
+        stub.PutExternalEventDef(external_event_request, timeout=timeout)
+    
+    for node in workflow._workflow_events_to_register:
+        workflow_event_request = node.to_put_workflow_event_def_request()
+        stub.PutWorkflowEventDef(workflow_event_request, timeout=timeout)
+        logging.info(f"Registered WorkflowEventDef: {workflow_event_request.name}")
+
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
     stub.PutWfSpec(request, timeout=timeout)
 
@@ -2358,3 +2398,112 @@ def create_workflow_event_def(
     )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")
+
+
+class ThrowEventNodeOutput:
+    """
+    Represents the output of a ThrowEvent node in a workflow, allowing event definition registration.
+    """
+
+    def __init__(self, event_name: str, parent: WorkflowThread) -> None:
+        """
+        Initializes a new instance of the ThrowEventNodeOutput class.
+
+        Args:
+            event_name (str): The name of the workflow event definition.
+            parent (WorkflowThread): The parent workflow thread.
+        """
+        self._event_name = event_name
+        self._parent = parent
+        self._payload_type: Optional[type] = None
+
+    def registered_as(self, payload_type: Optional[type]) -> None:
+        """
+        Registers the event definition with the specified payload type.
+
+        Args:
+            payload_type (Optional[type]): The Python type of the event payload.
+        """
+        self._payload_type = payload_type
+        self._parent.register_workflow_event_def(self)
+
+    def to_put_workflow_event_def_request(self) -> PutWorkflowEventDefRequest:
+        """
+        Returns a PutWorkflowEventDefRequest for registering this workflow event definition.
+
+        Returns:
+            PutWorkflowEventDefRequest: The request object for event definition registration.
+
+        Raises:
+            ValueError: If registered_as was not called before use.
+        """
+        if self._payload_type is None:
+            raise ValueError("Payload type must be set using registered_as before generating the request.")
+
+        return PutWorkflowEventDefRequest(
+            name=self._event_name,
+            content_type=ReturnType(TypeDefinition(type=self._payload_type))
+        )
+
+
+class ExternalEventNodeOutput(NodeOutput):
+    def __init__(self, node_name: str, external_event_def_name: str, parent: WorkflowThread) -> None:
+        """
+        Initializes a new instance of the ExternalEventNodeOutput class.
+
+        Args:
+            node_name (str): The specified node name.
+            external_event_def_name (str): The external event definition name.
+            parent (WorkflowThread): The workflow thread where the ExternalEventNodeOutput belongs to.
+        """
+        super().__init__(node_name, parent)
+        self.external_event_def_name = external_event_def_name
+        self._payload_type: Optional[type] = None
+        self._correlated_event_config: Optional[CorrelatedEventConfig] = None
+
+    def with_correlated_event_config(self, config: CorrelatedEventConfig) -> "ExternalEventNodeOutput":
+        """
+        Sets the correlated event configuration.
+
+        Args:
+            config (CorrelatedEventConfig): The correlated event configuration.
+
+        Returns:
+            ExternalEventNodeOutput: The current instance.
+        """
+        self._correlated_event_config = config
+        return self
+
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        """
+        Returns a PutExternalEventDefRequest for registering this external event definition.
+
+        Returns:
+            PutExternalEventDefRequest: The request object for external event definition registration.
+        """
+        req = PutExternalEventDefRequest(
+            name=self.external_event_def_name,
+            content_type=ReturnType(TypeDefinition(type=self._payload_type))
+        )
+        if self._correlated_event_config is not None:
+            req.correlated_event_config = self._correlated_event_config
+        return req
+
+    def get_correlated_event_config(self) -> CorrelatedEventConfig:
+        """
+        Gets the correlated event configuration.
+
+        Returns:
+            CorrelatedEventConfig: The correlated event configuration.
+        """
+        return self._correlated_event_config or CorrelatedEventConfig()
+
+    def registered_as(self, payload_type: type) -> None:
+        """
+        Registers the event definition with the specified payload type.
+
+        Args:
+            payload_type (type): The Python type of the event payload.
+        """
+        self._payload_type = payload_type
+        self.parent.register_external_event_def(self)
