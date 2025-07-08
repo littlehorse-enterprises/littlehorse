@@ -45,9 +45,6 @@ public class LHTaskSignatureTest {
         boolean isElectric;
         Person owner;
         Garage garage;
-
-        @LHStructField(ignored = true)
-        boolean ignoredBool;
     }
 
     @LHStructDef(name = "person")

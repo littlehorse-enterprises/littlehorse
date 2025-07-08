@@ -60,18 +60,7 @@ public class StructDefUtil {
 
             fieldDef.setFieldType(typeDef);
 
-            // Set default value, if possible
-            try {
-                Object structObject = structClass.getDeclaredConstructor().newInstance();
-
-                Object defaultValue = field.get(structObject);
-
-                if (defaultValue != null) {
-                    fieldDef.setDefaultValue(LHLibUtil.objToVarVal(defaultValue));
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Error processing defaultValue of field: " + field.getName());
-            }
+            // TODO: Process default value, if possible
 
             inlineStructDef.putFields(fieldName, fieldDef.build());
         }
