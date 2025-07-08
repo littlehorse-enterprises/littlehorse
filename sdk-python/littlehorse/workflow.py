@@ -1206,6 +1206,15 @@ class WorkflowThread:
         """
         self._workflow.add_external_event_def_to_register(node_output)
 
+    def register_workflow_event_def(self, node_output: ThrowEventNodeOutput) -> None:
+        """
+        Registers a workflow event definition for the parent workflow.
+
+        Args:
+            node_output (ThrowEventNodeOutput): The workflow event node output.
+        """
+        self._workflow.add_workflow_event_def_to_register(node_output)
+
     def _validate_initializer(self, initializer: "ThreadInitializer") -> None:
         if initializer is None:
             raise ValueError("ThreadInitializer cannot be None")
@@ -1764,10 +1773,8 @@ class WorkflowThread:
         )
         self.add_node("throw-" + workflow_event_name, throw_node)
         return ThrowEventNodeOutput(
-            node_name=throw_node.name,
-            thread=self,
-            workflow_event_def_id=WorkflowEventDefId(name=workflow_event_name),
-            content=to_variable_assignment(content),
+            event_name=workflow_event_name,
+            parent=self
         )
 
     def mutate(
@@ -2176,7 +2183,7 @@ def python_type_to_return_type(py_type: type) -> ReturnType:
         type_def.type = VariableType.JSON_ARR
     else:
         raise ValueError("Unsupported payload type for workflow event.")
-    return ReturnType(type_def=type_def)
+    return ReturnType(return_type=type_def)
 
 
 ThreadInitializer = Callable[[WorkflowThread], None]
@@ -2553,7 +2560,7 @@ class ExternalEventNodeOutput(NodeOutput):
         """
         return self._correlated_event_config or CorrelatedEventConfig()
 
-    def registered_as(self, payload_type: type) -> None:
+    def registered_as(self, payload_type: type) -> ExternalEventNodeOutput:
         """
         Registers the event definition with the specified payload type.
 
@@ -2562,3 +2569,4 @@ class ExternalEventNodeOutput(NodeOutput):
         """
         self._payload_type = payload_type
         self.parent.register_external_event_def(self)
+        return self
