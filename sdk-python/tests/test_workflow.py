@@ -3653,7 +3653,6 @@ class ExternalEventNodeTest(unittest.TestCase):
         
     def test_external_event_with_registered_payload(self):
         def wf_func(wf: WorkflowThread) -> None:
-            name = wf.add_variable("name", VariableType.STR)
             wf.wait_for_event("str-event", 60).registered_as(payload_type=str)
             wf.wait_for_event("int-event", 60).registered_as(payload_type=int)
             wf.wait_for_event("float-event", 60).registered_as(payload_type=float)

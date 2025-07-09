@@ -2254,13 +2254,13 @@ def python_type_to_return_type(py_type: type) -> ReturnType:
         ValueError: If the type is unsupported.
     """
     type_def = TypeDefinition()
-    if py_type == str:
+    if py_type is str:
         type_def.type = VariableType.STR
-    elif py_type == int:
+    elif py_type is int:
         type_def.type = VariableType.INT
-    elif py_type == float:
+    elif py_type is float:
         type_def.type = VariableType.DOUBLE
-    elif py_type == bool:
+    elif py_type is bool:
         type_def.type = VariableType.BOOL
     elif issubclass(py_type, dict):
         type_def.type = VariableType.JSON_OBJ
