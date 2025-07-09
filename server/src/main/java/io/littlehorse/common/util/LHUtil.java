@@ -17,8 +17,6 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
-import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariableRequestModel;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
