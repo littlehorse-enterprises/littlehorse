@@ -1719,7 +1719,10 @@ class WorkflowThread:
         correlation_var_assn: Optional[VariableAssignment] = None
         if correlation_id is not None:
             correlation_var_assn = to_variable_assignment(correlation_id)
-            if isinstance(correlation_id, WfRunVariable) and mask_correlation_id is None:
+            if (
+                isinstance(correlation_id, WfRunVariable)
+                and mask_correlation_id is None
+            ):
                 mask_correlation_id = correlation_id._masked
         if mask_correlation_id is None:
             mask_correlation_id = False
@@ -2326,7 +2329,10 @@ def create_task_def(
 
 
 def create_external_event_def(
-    name: str, config: LHConfig, timeout: Optional[int] = None, correlated_event_config: Optional[CorrelatedEventConfig] = None
+    name: str,
+    config: LHConfig,
+    timeout: Optional[int] = None,
+    correlated_event_config: Optional[CorrelatedEventConfig] = None,
 ) -> None:
     """Creates a new ExternalEventDef at the LH Server.
 
@@ -2336,7 +2342,9 @@ def create_external_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutExternalEventDefRequest(name=name, correlated_event_config=correlated_event_config)
+    request = PutExternalEventDefRequest(
+        name=name, correlated_event_config=correlated_event_config
+    )
     stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
 
