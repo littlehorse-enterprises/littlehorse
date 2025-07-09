@@ -8,7 +8,7 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 
 public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUserTaskDefRequest> {
 
@@ -35,13 +35,9 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
     }
 
     @Override
-    public Empty process(MetadataCommandExecution context) {
+    public Empty process(MetadataProcessorContext context) {
         context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
-    }
-
-    public boolean hasResponse() {
-        return true;
     }
 
     public static DeleteUserTaskDefRequestModel fromProto(DeleteUserTaskDefRequest p, ExecutionContext context) {

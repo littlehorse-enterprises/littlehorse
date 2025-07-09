@@ -31,6 +31,12 @@ public class WfRunVariable
     private bool _required;
     private bool _searchable;
     private bool _masked;
+
+    internal bool IsMasked
+    {
+        get => _masked;
+    }
+
     private readonly List<JsonIndex> _jsonIndexes;
     
     /// <summary>
@@ -218,7 +224,7 @@ public class WfRunVariable
         _masked = true;
         return this;
     }
-    
+
     /// <summary>
     /// Marks the variable as "Required", meaning that the ThreadSpec cannot be
     /// started without this variable being provided as input. For Entrypoint
@@ -228,7 +234,7 @@ public class WfRunVariable
     /// <returns>
     /// A WfRunVariable.
     /// </returns>
-    public WfRunVariable Required() 
+    public WfRunVariable Required()
     {
         _required = true;
         return this;

@@ -204,6 +204,14 @@ message ExternalEventNodeRun {
 
   // Whether we had a timeout while waiting for the ExternalEvent to come.
   bool timed_out = 4;
+
+  // If set, then this `ExternalEventNodeRun` can be completed by a
+  // `CorrelatedEvent` with the matching correlation id.
+  optional string correlation_key = 5;
+
+  // Specifies whether the correlation key should be masked. Ignored if
+  // correlation_key is not set.
+  bool mask_correlation_key = 6;
 }
 
 // The sub-node structure for a SLEEP NodeRun.

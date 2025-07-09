@@ -21,11 +21,18 @@ import {
   taskStatusToNumber,
 } from "./common_enums";
 import { ReturnType, VariableDef } from "./common_wfspec";
-import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
+import {
+  CorrelatedEvent,
+  CorrelatedEventConfig,
+  ExternalEvent,
+  ExternalEventDef,
+  ExternalEventRetentionPolicy,
+} from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
+  CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
   NodeRunId,
@@ -52,6 +59,9 @@ import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
   CompleteUserTaskRunRequest,
+  DeleteUserTaskRunCommentRequest,
+  EditUserTaskRunCommentRequest,
+  PutUserTaskRunCommentRequest,
   SaveUserTaskRunProgressRequest,
   UserTaskDef,
   UserTaskField,
@@ -310,7 +320,11 @@ export interface PutExternalEventDefRequest {
     | ExternalEventRetentionPolicy
     | undefined;
   /** Typing information for the content of ExternalEvent's associated with this ExternalEventDef. */
-  contentType?: ReturnType | undefined;
+  contentType?:
+    | ReturnType
+    | undefined;
+  /** If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature. */
+  correlatedEventConfig?: CorrelatedEventConfig | undefined;
 }
 
 /** Request used to create an ExternalEvent. */
@@ -349,6 +363,28 @@ export interface PutExternalEventRequest {
   nodeRunPosition?: number | undefined;
 }
 
+/**
+ * Request used to record a `CorrelatedEvent`, which is a precursor to zero or more
+ * `ExternalEvent`s.
+ */
+export interface PutCorrelatedEventRequest {
+  /** The correlation key of the CorrelatedEvent. */
+  key: string;
+  /**
+   * The `ExternalEventDef` that is associated with this `CorrelatedEvent`. This is
+   * also the `ExternalEventDef` of any `ExternalEvent`s that are generated after
+   * this `CorrelatedEvent` is correlated to `WfRun`s.
+   */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * The content of the CorrelatedEvent and any `ExternalEvent`s created after
+   * correlating this `CorrelatedEvent`.
+   */
+  content: VariableValue | undefined;
+}
+
 /** Deletes an ExternalEvent. */
 export interface DeleteExternalEventRequest {
   /** The ID of the ExternalEvent to delete. */
@@ -365,6 +401,12 @@ export interface DeleteScheduledWfRunRequest {
 export interface DeleteWfRunRequest {
   /** The ID of the WfRun to delete. */
   id: WfRunId | undefined;
+}
+
+/** Deletes a CorrelatedEvent */
+export interface DeleteCorrelatedEventRequest {
+  /** The ID of the CorrelatedEvent to delete. */
+  id: CorrelatedEventId | undefined;
 }
 
 /** Deletes a TaskDef. */
@@ -565,6 +607,48 @@ export interface SearchWfRunRequest {
 export interface WfRunIdList {
   /** The resulting object id's. */
   results: WfRunId[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
+}
+
+/** Allows searching for CorrelatedEvents */
+export interface SearchCorrelatedEventRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** Specifies to return only WfRun's that started after this time */
+  earliestStart?:
+    | string
+    | undefined;
+  /** Specifies to return only WfRun's that started before this time */
+  latestStart?:
+    | string
+    | undefined;
+  /** ExternalEventDefId of the CorrelatedEvent */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * If set and true, only return CorrelatedEvents that have been correlated to a
+   * WfRun and created an ExternalEvent. If False, return only those that are pending
+   * and have not been correlated to a WfRun.
+   */
+  hasExternalEvents?: boolean | undefined;
+}
+
+/** List of CorrelatedEventId's */
+export interface CorrelatedEventIdList {
+  /** The resulting object id's. */
+  results: CorrelatedEventId[];
   /**
    * The bookmark can be used for cursor-based pagination. If it is null, the server
    * has returned all results. If it is set, you can pass it into your next request
@@ -864,15 +948,8 @@ export interface SearchUserTaskDefRequest {
     | Buffer
     | undefined;
   /** Maximum results to return in one request. */
-  limit?:
-    | number
-    | undefined;
-  /** Return all UserTaskDef's with a specific prefix. */
-  prefix?:
-    | string
-    | undefined;
-  /** Return all UserTaskDef's with a specific name. */
-  name?: string | undefined;
+  limit?: number | undefined;
+  userTaskDefCriteria?: { $case: "prefix"; prefix: string } | { $case: "name"; name: string } | undefined;
 }
 
 /** List of UserTaskDef Id's. */
@@ -894,19 +971,11 @@ export interface SearchWfSpecRequest {
     | Buffer
     | undefined;
   /** Maximum results to return in one request. */
-  limit?:
-    | number
-    | undefined;
-  /** Return WfSpec's with a specific name. */
-  name?:
-    | string
-    | undefined;
-  /** Return WfSpec's with a specific prefix. */
-  prefix?:
-    | string
-    | undefined;
-  /** Return all WfSpec's that make use of a given TaskDef. */
-  taskDefName?: string | undefined;
+  limit?: number | undefined;
+  wfSpecCriteria?: { $case: "name"; name: string } | { $case: "prefix"; prefix: string } | {
+    $case: "taskDefName";
+    taskDefName: string;
+  } | undefined;
 }
 
 /** List of WfSpec Id's. */
@@ -1005,15 +1074,8 @@ export interface SearchPrincipalRequest {
     | string
     | undefined;
   /** Specifies to return only Principals's created before this time */
-  latestStart?:
-    | string
-    | undefined;
-  /** List only Principals that are admins */
-  isAdmin?:
-    | boolean
-    | undefined;
-  /** List Principals associated with this Tenant ID */
-  tenantId?: string | undefined;
+  latestStart?: string | undefined;
+  principalCriteria?: { $case: "isAdmin"; isAdmin: boolean } | { $case: "tenantId"; tenantId: string } | undefined;
 }
 
 export interface PrincipalIdList {
@@ -1312,16 +1374,10 @@ export interface ReportTaskRun {
     | undefined;
   /** Attempt number of the TaskRun */
   attemptNumber: number;
-  /** Successfully completed task */
-  output?:
-    | VariableValue
-    | undefined;
-  /** Technical error */
-  error?:
-    | LHTaskError
-    | undefined;
-  /** Business exception */
-  exception?: LHTaskException | undefined;
+  result?: { $case: "output"; output: VariableValue } | { $case: "error"; error: LHTaskError } | {
+    $case: "exception";
+    exception: LHTaskException;
+  } | undefined;
 }
 
 /** Message to HALT a WfRun. */
@@ -2249,7 +2305,7 @@ export const PutUserTaskDefRequest = {
 };
 
 function createBasePutExternalEventDefRequest(): PutExternalEventDefRequest {
-  return { name: "", retentionPolicy: undefined, contentType: undefined };
+  return { name: "", retentionPolicy: undefined, contentType: undefined, correlatedEventConfig: undefined };
 }
 
 export const PutExternalEventDefRequest = {
@@ -2262,6 +2318,9 @@ export const PutExternalEventDefRequest = {
     }
     if (message.contentType !== undefined) {
       ReturnType.encode(message.contentType, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.correlatedEventConfig !== undefined) {
+      CorrelatedEventConfig.encode(message.correlatedEventConfig, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -2294,6 +2353,13 @@ export const PutExternalEventDefRequest = {
 
           message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.correlatedEventConfig = CorrelatedEventConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2315,6 +2381,10 @@ export const PutExternalEventDefRequest = {
     message.contentType = (object.contentType !== undefined && object.contentType !== null)
       ? ReturnType.fromPartial(object.contentType)
       : undefined;
+    message.correlatedEventConfig =
+      (object.correlatedEventConfig !== undefined && object.correlatedEventConfig !== null)
+        ? CorrelatedEventConfig.fromPartial(object.correlatedEventConfig)
+        : undefined;
     return message;
   },
 };
@@ -2428,6 +2498,77 @@ export const PutExternalEventRequest = {
       : undefined;
     message.threadRunNumber = object.threadRunNumber ?? undefined;
     message.nodeRunPosition = object.nodeRunPosition ?? undefined;
+    return message;
+  },
+};
+
+function createBasePutCorrelatedEventRequest(): PutCorrelatedEventRequest {
+  return { key: "", externalEventDefId: undefined, content: undefined };
+}
+
+export const PutCorrelatedEventRequest = {
+  encode(message: PutCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.content !== undefined) {
+      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutCorrelatedEventRequest>): PutCorrelatedEventRequest {
+    return PutCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutCorrelatedEventRequest>): PutCorrelatedEventRequest {
+    const message = createBasePutCorrelatedEventRequest();
+    message.key = object.key ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.content = (object.content !== undefined && object.content !== null)
+      ? VariableValue.fromPartial(object.content)
+      : undefined;
     return message;
   },
 };
@@ -2563,6 +2704,51 @@ export const DeleteWfRunRequest = {
   fromPartial(object: DeepPartial<DeleteWfRunRequest>): DeleteWfRunRequest {
     const message = createBaseDeleteWfRunRequest();
     message.id = (object.id !== undefined && object.id !== null) ? WfRunId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteCorrelatedEventRequest(): DeleteCorrelatedEventRequest {
+  return { id: undefined };
+}
+
+export const DeleteCorrelatedEventRequest = {
+  encode(message: DeleteCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      CorrelatedEventId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = CorrelatedEventId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    return DeleteCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteCorrelatedEventRequest>): DeleteCorrelatedEventRequest {
+    const message = createBaseDeleteCorrelatedEventRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? CorrelatedEventId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -3535,6 +3721,171 @@ export const WfRunIdList = {
   },
 };
 
+function createBaseSearchCorrelatedEventRequest(): SearchCorrelatedEventRequest {
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    earliestStart: undefined,
+    latestStart: undefined,
+    externalEventDefId: undefined,
+    hasExternalEvents: undefined,
+  };
+}
+
+export const SearchCorrelatedEventRequest = {
+  encode(message: SearchCorrelatedEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
+    }
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.hasExternalEvents !== undefined) {
+      writer.uint32(48).bool(message.hasExternalEvents);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchCorrelatedEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchCorrelatedEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.hasExternalEvents = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchCorrelatedEventRequest>): SearchCorrelatedEventRequest {
+    return SearchCorrelatedEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchCorrelatedEventRequest>): SearchCorrelatedEventRequest {
+    const message = createBaseSearchCorrelatedEventRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.earliestStart = object.earliestStart ?? undefined;
+    message.latestStart = object.latestStart ?? undefined;
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.hasExternalEvents = object.hasExternalEvents ?? undefined;
+    return message;
+  },
+};
+
+function createBaseCorrelatedEventIdList(): CorrelatedEventIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const CorrelatedEventIdList = {
+  encode(message: CorrelatedEventIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      CorrelatedEventId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CorrelatedEventIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCorrelatedEventIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(CorrelatedEventId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<CorrelatedEventIdList>): CorrelatedEventIdList {
+    return CorrelatedEventIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CorrelatedEventIdList>): CorrelatedEventIdList {
+    const message = createBaseCorrelatedEventIdList();
+    message.results = object.results?.map((e) => CorrelatedEventId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
 function createBaseSearchTaskRunRequest(): SearchTaskRunRequest {
   return {
     bookmark: undefined,
@@ -4349,7 +4700,7 @@ export const TaskDefIdList = {
 };
 
 function createBaseSearchUserTaskDefRequest(): SearchUserTaskDefRequest {
-  return { bookmark: undefined, limit: undefined, prefix: undefined, name: undefined };
+  return { bookmark: undefined, limit: undefined, userTaskDefCriteria: undefined };
 }
 
 export const SearchUserTaskDefRequest = {
@@ -4360,11 +4711,13 @@ export const SearchUserTaskDefRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    if (message.prefix !== undefined) {
-      writer.uint32(26).string(message.prefix);
-    }
-    if (message.name !== undefined) {
-      writer.uint32(34).string(message.name);
+    switch (message.userTaskDefCriteria?.$case) {
+      case "prefix":
+        writer.uint32(26).string(message.userTaskDefCriteria.prefix);
+        break;
+      case "name":
+        writer.uint32(34).string(message.userTaskDefCriteria.name);
+        break;
     }
     return writer;
   },
@@ -4395,14 +4748,14 @@ export const SearchUserTaskDefRequest = {
             break;
           }
 
-          message.prefix = reader.string();
+          message.userTaskDefCriteria = { $case: "prefix", prefix: reader.string() };
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.name = reader.string();
+          message.userTaskDefCriteria = { $case: "name", name: reader.string() };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4420,8 +4773,20 @@ export const SearchUserTaskDefRequest = {
     const message = createBaseSearchUserTaskDefRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.prefix = object.prefix ?? undefined;
-    message.name = object.name ?? undefined;
+    if (
+      object.userTaskDefCriteria?.$case === "prefix" &&
+      object.userTaskDefCriteria?.prefix !== undefined &&
+      object.userTaskDefCriteria?.prefix !== null
+    ) {
+      message.userTaskDefCriteria = { $case: "prefix", prefix: object.userTaskDefCriteria.prefix };
+    }
+    if (
+      object.userTaskDefCriteria?.$case === "name" &&
+      object.userTaskDefCriteria?.name !== undefined &&
+      object.userTaskDefCriteria?.name !== null
+    ) {
+      message.userTaskDefCriteria = { $case: "name", name: object.userTaskDefCriteria.name };
+    }
     return message;
   },
 };
@@ -4483,7 +4848,7 @@ export const UserTaskDefIdList = {
 };
 
 function createBaseSearchWfSpecRequest(): SearchWfSpecRequest {
-  return { bookmark: undefined, limit: undefined, name: undefined, prefix: undefined, taskDefName: undefined };
+  return { bookmark: undefined, limit: undefined, wfSpecCriteria: undefined };
 }
 
 export const SearchWfSpecRequest = {
@@ -4494,14 +4859,16 @@ export const SearchWfSpecRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    if (message.name !== undefined) {
-      writer.uint32(26).string(message.name);
-    }
-    if (message.prefix !== undefined) {
-      writer.uint32(34).string(message.prefix);
-    }
-    if (message.taskDefName !== undefined) {
-      writer.uint32(42).string(message.taskDefName);
+    switch (message.wfSpecCriteria?.$case) {
+      case "name":
+        writer.uint32(26).string(message.wfSpecCriteria.name);
+        break;
+      case "prefix":
+        writer.uint32(34).string(message.wfSpecCriteria.prefix);
+        break;
+      case "taskDefName":
+        writer.uint32(42).string(message.wfSpecCriteria.taskDefName);
+        break;
     }
     return writer;
   },
@@ -4532,21 +4899,21 @@ export const SearchWfSpecRequest = {
             break;
           }
 
-          message.name = reader.string();
+          message.wfSpecCriteria = { $case: "name", name: reader.string() };
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.prefix = reader.string();
+          message.wfSpecCriteria = { $case: "prefix", prefix: reader.string() };
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.taskDefName = reader.string();
+          message.wfSpecCriteria = { $case: "taskDefName", taskDefName: reader.string() };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4564,9 +4931,27 @@ export const SearchWfSpecRequest = {
     const message = createBaseSearchWfSpecRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    message.name = object.name ?? undefined;
-    message.prefix = object.prefix ?? undefined;
-    message.taskDefName = object.taskDefName ?? undefined;
+    if (
+      object.wfSpecCriteria?.$case === "name" &&
+      object.wfSpecCriteria?.name !== undefined &&
+      object.wfSpecCriteria?.name !== null
+    ) {
+      message.wfSpecCriteria = { $case: "name", name: object.wfSpecCriteria.name };
+    }
+    if (
+      object.wfSpecCriteria?.$case === "prefix" &&
+      object.wfSpecCriteria?.prefix !== undefined &&
+      object.wfSpecCriteria?.prefix !== null
+    ) {
+      message.wfSpecCriteria = { $case: "prefix", prefix: object.wfSpecCriteria.prefix };
+    }
+    if (
+      object.wfSpecCriteria?.$case === "taskDefName" &&
+      object.wfSpecCriteria?.taskDefName !== undefined &&
+      object.wfSpecCriteria?.taskDefName !== null
+    ) {
+      message.wfSpecCriteria = { $case: "taskDefName", taskDefName: object.wfSpecCriteria.taskDefName };
+    }
     return message;
   },
 };
@@ -4991,8 +5376,7 @@ function createBaseSearchPrincipalRequest(): SearchPrincipalRequest {
     limit: undefined,
     earliestStart: undefined,
     latestStart: undefined,
-    isAdmin: undefined,
-    tenantId: undefined,
+    principalCriteria: undefined,
   };
 }
 
@@ -5010,11 +5394,13 @@ export const SearchPrincipalRequest = {
     if (message.latestStart !== undefined) {
       Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
     }
-    if (message.isAdmin !== undefined) {
-      writer.uint32(40).bool(message.isAdmin);
-    }
-    if (message.tenantId !== undefined) {
-      writer.uint32(50).string(message.tenantId);
+    switch (message.principalCriteria?.$case) {
+      case "isAdmin":
+        writer.uint32(40).bool(message.principalCriteria.isAdmin);
+        break;
+      case "tenantId":
+        writer.uint32(50).string(message.principalCriteria.tenantId);
+        break;
     }
     return writer;
   },
@@ -5059,14 +5445,14 @@ export const SearchPrincipalRequest = {
             break;
           }
 
-          message.isAdmin = reader.bool();
+          message.principalCriteria = { $case: "isAdmin", isAdmin: reader.bool() };
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.tenantId = reader.string();
+          message.principalCriteria = { $case: "tenantId", tenantId: reader.string() };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -5086,8 +5472,20 @@ export const SearchPrincipalRequest = {
     message.limit = object.limit ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
-    message.isAdmin = object.isAdmin ?? undefined;
-    message.tenantId = object.tenantId ?? undefined;
+    if (
+      object.principalCriteria?.$case === "isAdmin" &&
+      object.principalCriteria?.isAdmin !== undefined &&
+      object.principalCriteria?.isAdmin !== null
+    ) {
+      message.principalCriteria = { $case: "isAdmin", isAdmin: object.principalCriteria.isAdmin };
+    }
+    if (
+      object.principalCriteria?.$case === "tenantId" &&
+      object.principalCriteria?.tenantId !== undefined &&
+      object.principalCriteria?.tenantId !== null
+    ) {
+      message.principalCriteria = { $case: "tenantId", tenantId: object.principalCriteria.tenantId };
+    }
     return message;
   },
 };
@@ -6353,9 +6751,7 @@ function createBaseReportTaskRun(): ReportTaskRun {
     status: TaskStatus.TASK_SCHEDULED,
     logOutput: undefined,
     attemptNumber: 0,
-    output: undefined,
-    error: undefined,
-    exception: undefined,
+    result: undefined,
   };
 }
 
@@ -6376,14 +6772,16 @@ export const ReportTaskRun = {
     if (message.attemptNumber !== 0) {
       writer.uint32(48).int32(message.attemptNumber);
     }
-    if (message.output !== undefined) {
-      VariableValue.encode(message.output, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.error !== undefined) {
-      LHTaskError.encode(message.error, writer.uint32(58).fork()).ldelim();
-    }
-    if (message.exception !== undefined) {
-      LHTaskException.encode(message.exception, writer.uint32(66).fork()).ldelim();
+    switch (message.result?.$case) {
+      case "output":
+        VariableValue.encode(message.result.output, writer.uint32(34).fork()).ldelim();
+        break;
+      case "error":
+        LHTaskError.encode(message.result.error, writer.uint32(58).fork()).ldelim();
+        break;
+      case "exception":
+        LHTaskException.encode(message.result.exception, writer.uint32(66).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -6435,21 +6833,21 @@ export const ReportTaskRun = {
             break;
           }
 
-          message.output = VariableValue.decode(reader, reader.uint32());
+          message.result = { $case: "output", output: VariableValue.decode(reader, reader.uint32()) };
           continue;
         case 7:
           if (tag !== 58) {
             break;
           }
 
-          message.error = LHTaskError.decode(reader, reader.uint32());
+          message.result = { $case: "error", error: LHTaskError.decode(reader, reader.uint32()) };
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.exception = LHTaskException.decode(reader, reader.uint32());
+          message.result = { $case: "exception", exception: LHTaskException.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -6474,15 +6872,19 @@ export const ReportTaskRun = {
       ? VariableValue.fromPartial(object.logOutput)
       : undefined;
     message.attemptNumber = object.attemptNumber ?? 0;
-    message.output = (object.output !== undefined && object.output !== null)
-      ? VariableValue.fromPartial(object.output)
-      : undefined;
-    message.error = (object.error !== undefined && object.error !== null)
-      ? LHTaskError.fromPartial(object.error)
-      : undefined;
-    message.exception = (object.exception !== undefined && object.exception !== null)
-      ? LHTaskException.fromPartial(object.exception)
-      : undefined;
+    if (object.result?.$case === "output" && object.result?.output !== undefined && object.result?.output !== null) {
+      message.result = { $case: "output", output: VariableValue.fromPartial(object.result.output) };
+    }
+    if (object.result?.$case === "error" && object.result?.error !== undefined && object.result?.error !== null) {
+      message.result = { $case: "error", error: LHTaskError.fromPartial(object.result.error) };
+    }
+    if (
+      object.result?.$case === "exception" &&
+      object.result?.exception !== undefined &&
+      object.result?.exception !== null
+    ) {
+      message.result = { $case: "exception", exception: LHTaskException.fromPartial(object.result.exception) };
+    }
     return message;
   },
 };
@@ -8166,7 +8568,7 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /**
-     * Creates a new `StructDef``.
+     * EXPERIMENTAL: Creates a new `StructDef``.
      *
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
@@ -8184,7 +8586,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Get a StructDef. */
+    /** EXPERIMENTAL: Get a StructDef. */
     getStructDef: {
       name: "GetStructDef",
       requestType: StructDefId,
@@ -8193,7 +8595,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+    /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
     validateStructDefEvolution: {
       name: "ValidateStructDefEvolution",
       requestType: ValidateStructDefEvolutionRequest,
@@ -8363,6 +8765,33 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Adds userComment to a UserTaskRun */
+    putUserTaskRunComment: {
+      name: "PutUserTaskRunComment",
+      requestType: PutUserTaskRunCommentRequest,
+      requestStream: false,
+      responseType: UserTaskRun,
+      responseStream: false,
+      options: {},
+    },
+    /** Edits userComment with the correlated userCommentId */
+    editUserTaskRunComment: {
+      name: "EditUserTaskRunComment",
+      requestType: EditUserTaskRunCommentRequest,
+      requestStream: false,
+      responseType: UserTaskRun,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes a comment logically, this does not affect the userTaskEvent Log */
+    deleteUserTaskRunComment: {
+      name: "DeleteUserTaskRunComment",
+      requestType: DeleteUserTaskRunCommentRequest,
+      requestStream: false,
+      responseType: UserTaskRun,
+      responseStream: false,
+      options: {},
+    },
     /** Gets a specific NodeRun. */
     getNodeRun: {
       name: "GetNodeRun",
@@ -8421,12 +8850,21 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Post an ExternalEvent. This RPC is highly useful for */
+    /** Post an ExternalEvent. */
     putExternalEvent: {
       name: "PutExternalEvent",
       requestType: PutExternalEventRequest,
       requestStream: false,
       responseType: ExternalEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+    putCorrelatedEvent: {
+      name: "PutCorrelatedEvent",
+      requestType: PutCorrelatedEventRequest,
+      requestStream: false,
+      responseType: CorrelatedEvent,
       responseStream: false,
       options: {},
     },
@@ -8436,6 +8874,15 @@ export const LittleHorseDefinition = {
       requestType: ExternalEventId,
       requestStream: false,
       responseType: ExternalEvent,
+      responseStream: false,
+      options: {},
+    },
+    /** Get a specific CorrelatedEvent */
+    getCorrelatedEvent: {
+      name: "GetCorrelatedEvent",
+      requestType: CorrelatedEventId,
+      requestStream: false,
+      responseType: CorrelatedEvent,
       responseStream: false,
       options: {},
     },
@@ -8499,6 +8946,18 @@ export const LittleHorseDefinition = {
       requestType: SearchWfRunRequest,
       requestStream: false,
       responseType: WfRunIdList,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     */
+    searchCorrelatedEvent: {
+      name: "SearchCorrelatedEvent",
+      requestType: SearchCorrelatedEventRequest,
+      requestStream: false,
+      responseType: CorrelatedEventIdList,
       responseStream: false,
       options: {},
     },
@@ -8725,7 +9184,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Deletes a StructDef. */
+    /** EXPERIMENTAL: Deletes a StructDef. */
     deleteStructDef: {
       name: "DeleteStructDef",
       requestType: DeleteStructDefRequest,
@@ -8756,6 +9215,15 @@ export const LittleHorseDefinition = {
     deleteExternalEventDef: {
       name: "DeleteExternalEventDef",
       requestType: DeleteExternalEventDefRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes a CorrelatedEvent */
+    deleteCorrelatedEvent: {
+      name: "DeleteCorrelatedEvent",
+      requestType: DeleteCorrelatedEventRequest,
       requestStream: false,
       responseType: Empty,
       responseStream: false,
@@ -8921,7 +9389,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /**
-   * Creates a new `StructDef``.
+   * EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
@@ -8932,9 +9400,9 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** Get a StructDef. */
+  /** EXPERIMENTAL: Get a StructDef. */
   getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
     request: ValidateStructDefEvolutionRequest,
     context: CallContext & CallContextExt,
@@ -9029,6 +9497,21 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListUserTaskRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<UserTaskRunList>>;
+  /** Adds userComment to a UserTaskRun */
+  putUserTaskRunComment(
+    request: PutUserTaskRunCommentRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskRun>>;
+  /** Edits userComment with the correlated userCommentId */
+  editUserTaskRunComment(
+    request: EditUserTaskRunCommentRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskRun>>;
+  /** Deletes a comment logically, this does not affect the userTaskEvent Log */
+  deleteUserTaskRunComment(
+    request: DeleteUserTaskRunCommentRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskRun>>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: NodeRunId, context: CallContext & CallContextExt): Promise<DeepPartial<NodeRun>>;
   /** Lists all NodeRun's for a specific WfRun. */
@@ -9048,16 +9531,26 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListVariablesRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<VariableList>>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: PutExternalEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+  putCorrelatedEvent(
+    request: PutCorrelatedEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEvent>>;
   /** Get a specific ExternalEvent. */
   getExternalEvent(
     request: ExternalEventId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEvent>>;
+  /** Get a specific CorrelatedEvent */
+  getCorrelatedEvent(
+    request: CorrelatedEventId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEvent>>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -9094,6 +9587,14 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
    */
   searchWfRun(request: SearchWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRunIdList>>;
+  /**
+   * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+   * events that may be orphaned.
+   */
+  searchCorrelatedEvent(
+    request: SearchCorrelatedEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CorrelatedEventIdList>>;
   /**
    * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
    * your workflows or Task Workers.
@@ -9209,7 +9710,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   deleteWfRun(request: DeleteWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeleteTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
-  /** Deletes a StructDef. */
+  /** EXPERIMENTAL: Deletes a StructDef. */
   deleteStructDef(request: DeleteStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeleteWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
@@ -9221,6 +9722,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeleteExternalEventDefRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeleteCorrelatedEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
   deleteWorkflowEventDef(
@@ -9312,7 +9818,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /**
-   * Creates a new `StructDef``.
+   * EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
@@ -9323,9 +9829,9 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * enum within the `PutStructDefRequest`.
    */
   putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** Get a StructDef. */
+  /** EXPERIMENTAL: Get a StructDef. */
   getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** Validate evolution of an existing `StructDef` into a new `StructDef` */
+  /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
     request: DeepPartial<ValidateStructDefEvolutionRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -9420,6 +9926,21 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<UserTaskRunList>;
+  /** Adds userComment to a UserTaskRun */
+  putUserTaskRunComment(
+    request: DeepPartial<PutUserTaskRunCommentRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskRun>;
+  /** Edits userComment with the correlated userCommentId */
+  editUserTaskRunComment(
+    request: DeepPartial<EditUserTaskRunCommentRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskRun>;
+  /** Deletes a comment logically, this does not affect the userTaskEvent Log */
+  deleteUserTaskRunComment(
+    request: DeepPartial<DeleteUserTaskRunCommentRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskRun>;
   /** Gets a specific NodeRun. */
   getNodeRun(request: DeepPartial<NodeRunId>, options?: CallOptions & CallOptionsExt): Promise<NodeRun>;
   /** Lists all NodeRun's for a specific WfRun. */
@@ -9439,16 +9960,26 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListVariablesRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<VariableList>;
-  /** Post an ExternalEvent. This RPC is highly useful for */
+  /** Post an ExternalEvent. */
   putExternalEvent(
     request: DeepPartial<PutExternalEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /** Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s. */
+  putCorrelatedEvent(
+    request: DeepPartial<PutCorrelatedEventRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEvent>;
   /** Get a specific ExternalEvent. */
   getExternalEvent(
     request: DeepPartial<ExternalEventId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEvent>;
+  /** Get a specific CorrelatedEvent */
+  getCorrelatedEvent(
+    request: DeepPartial<CorrelatedEventId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEvent>;
   /**
    * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
    * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -9485,6 +10016,14 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
    */
   searchWfRun(request: DeepPartial<SearchWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRunIdList>;
+  /**
+   * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+   * events that may be orphaned.
+   */
+  searchCorrelatedEvent(
+    request: DeepPartial<SearchCorrelatedEventRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CorrelatedEventIdList>;
   /**
    * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
    * your workflows or Task Workers.
@@ -9606,7 +10145,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   deleteWfRun(request: DeepPartial<DeleteWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a TaskDef. */
   deleteTaskDef(request: DeepPartial<DeleteTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
-  /** Deletes a StructDef. */
+  /** EXPERIMENTAL: Deletes a StructDef. */
   deleteStructDef(request: DeepPartial<DeleteStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a WfSpec. */
   deleteWfSpec(request: DeepPartial<DeleteWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
@@ -9618,6 +10157,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Deletes an ExternalEventDef. */
   deleteExternalEventDef(
     request: DeepPartial<DeleteExternalEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  /** Deletes a CorrelatedEvent */
+  deleteCorrelatedEvent(
+    request: DeepPartial<DeleteCorrelatedEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
   deleteWorkflowEventDef(
@@ -9673,6 +10217,7 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

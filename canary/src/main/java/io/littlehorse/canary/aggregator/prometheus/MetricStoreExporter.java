@@ -45,7 +45,6 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
     private static List<Tag> toMetricTags(final MetricKey key) {
         final List<Tag> tags = new ArrayList<>();
         tags.add(Tag.of("server", "%s:%s".formatted(key.getServerHost(), key.getServerPort())));
-        tags.add(Tag.of("server_version", key.getServerVersion()));
         tags.addAll(key.getTagsList().stream()
                 .map(tag -> Tag.of(tag.getKey(), tag.getValue()))
                 .toList());

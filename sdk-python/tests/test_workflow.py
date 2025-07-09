@@ -3726,5 +3726,94 @@ class DynamicTaskTest(unittest.TestCase):
         self.assertEqual(var_node.task.dynamic_task.variable_name, "my-var")
 
 
+class CorrelationIdTest(unittest.TestCase):
+    def test_correlation_id(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            wf.wait_for_event("some-event", correlation_id="asdf")
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertEqual(
+            static_node.external_event.correlation_key.literal_value.str,
+            "asdf",
+        )
+
+    def test_correlation_id_with_var(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event("some-event", correlation_id=my_var)
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertEqual(
+            static_node.external_event.correlation_key.variable_name,
+            "my-var",
+        )
+
+    def test_automatically_mask_correlation_id_from_masked_var(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var").masked()
+            wf.wait_for_event("some-event", correlation_id=my_var)
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertTrue(
+            static_node.external_event.mask_correlation_key,
+        )
+    
+    def test_should_not_mask_normal_var_as_correlation_id(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event("some-event", correlation_id=my_var)
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertFalse(
+            static_node.external_event.mask_correlation_key,
+        )
+
+    def test_should_mask_correlation_id_if_told_to(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event(
+                "some-event",
+                correlation_id=my_var,
+                mask_correlation_id=True,
+            )
+        
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+        
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertTrue(
+            static_node.external_event.mask_correlation_key,
+        )
+
+    def test_should_not_mask_correlation_id_if_told_not_to(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            my_var = wf.declare_str("my-var")
+            wf.wait_for_event(
+                "some-event",
+                correlation_id=my_var,
+                mask_correlation_id=False,
+            )
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
+        self.assertFalse(
+            static_node.external_event.mask_correlation_key,
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

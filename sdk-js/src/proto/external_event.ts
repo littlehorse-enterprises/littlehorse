@@ -9,7 +9,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ReturnType } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventDefId, ExternalEventId } from "./object_id";
+import { CorrelatedEventId, ExternalEventDefId, ExternalEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /**
@@ -83,7 +83,53 @@ export interface ExternalEventDef {
    * a specified type_information, we do not validate the WfSpec's usage of the ExternalEvent
    * nor do we validate the type of `content` in the `rpc PutExternalEvent`.
    */
-  typeInformation?: ReturnType | undefined;
+  typeInformation?:
+    | ReturnType
+    | undefined;
+  /**
+   * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+   * type.
+   */
+  correlatedEventConfig?: CorrelatedEventConfig | undefined;
+}
+
+/** Configures behavior of `CorrelatedEvent`s created for a specific `ExternalEventDef`. */
+export interface CorrelatedEventConfig {
+  /**
+   * If ttl_seconds is set, then `CorrelatedEvent`s will be automatically
+   * cleaned up based on the provided ttl.
+   */
+  ttlSeconds?:
+    | number
+    | undefined;
+  /** If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created. */
+  deleteAfterFirstCorrelation: boolean;
+}
+
+/**
+ * A CorrelatedEvent is a piece of data that has been posted into LittleHorse but is not
+ * yet associated with any specific `WfRun`. This allows users to indirectly create
+ * `ExternalEvent`s without knowing the `WfRunId` that they are posting the
+ * `ExternalEvent` to by taking advantage of the correlation id feature of a
+ * `CorrelatedEvent`.
+ *
+ * CorrelatedEvents also serve as a way to simply store data in LittleHorse.
+ */
+export interface CorrelatedEvent {
+  /** The ID of the CorrelatedEvent */
+  id:
+    | CorrelatedEventId
+    | undefined;
+  /** The time at which the `CorrelatedEvent` was created. */
+  createdAt:
+    | string
+    | undefined;
+  /** The content of the `CorrelatedEvent`. */
+  content:
+    | VariableValue
+    | undefined;
+  /** List of `ExternalEvent`s that have been created for this `CorrelatedEvent`. */
+  externalEvents: ExternalEventId[];
 }
 
 /**
@@ -97,11 +143,7 @@ export interface ExternalEventDef {
  * will trigger a cleanup of old `ExternalEvent`s.
  */
 export interface ExternalEventRetentionPolicy {
-  /**
-   * Delete such an ExternalEvent X seconds after it has been registered if it
-   * has not yet been claimed by a WfRun.
-   */
-  secondsAfterPut?: number | undefined;
+  extEvtGcPolicy?: { $case: "secondsAfterPut"; secondsAfterPut: number } | undefined;
 }
 
 function createBaseExternalEvent(): ExternalEvent {
@@ -214,7 +256,13 @@ export const ExternalEvent = {
 };
 
 function createBaseExternalEventDef(): ExternalEventDef {
-  return { id: undefined, createdAt: undefined, retentionPolicy: undefined, typeInformation: undefined };
+  return {
+    id: undefined,
+    createdAt: undefined,
+    retentionPolicy: undefined,
+    typeInformation: undefined,
+    correlatedEventConfig: undefined,
+  };
 }
 
 export const ExternalEventDef = {
@@ -230,6 +278,9 @@ export const ExternalEventDef = {
     }
     if (message.typeInformation !== undefined) {
       ReturnType.encode(message.typeInformation, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.correlatedEventConfig !== undefined) {
+      CorrelatedEventConfig.encode(message.correlatedEventConfig, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -269,6 +320,13 @@ export const ExternalEventDef = {
 
           message.typeInformation = ReturnType.decode(reader, reader.uint32());
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.correlatedEventConfig = CorrelatedEventConfig.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -293,18 +351,160 @@ export const ExternalEventDef = {
     message.typeInformation = (object.typeInformation !== undefined && object.typeInformation !== null)
       ? ReturnType.fromPartial(object.typeInformation)
       : undefined;
+    message.correlatedEventConfig =
+      (object.correlatedEventConfig !== undefined && object.correlatedEventConfig !== null)
+        ? CorrelatedEventConfig.fromPartial(object.correlatedEventConfig)
+        : undefined;
+    return message;
+  },
+};
+
+function createBaseCorrelatedEventConfig(): CorrelatedEventConfig {
+  return { ttlSeconds: undefined, deleteAfterFirstCorrelation: false };
+}
+
+export const CorrelatedEventConfig = {
+  encode(message: CorrelatedEventConfig, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.ttlSeconds !== undefined) {
+      writer.uint32(8).int64(message.ttlSeconds);
+    }
+    if (message.deleteAfterFirstCorrelation !== false) {
+      writer.uint32(16).bool(message.deleteAfterFirstCorrelation);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CorrelatedEventConfig {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCorrelatedEventConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.ttlSeconds = longToNumber(reader.int64() as Long);
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.deleteAfterFirstCorrelation = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<CorrelatedEventConfig>): CorrelatedEventConfig {
+    return CorrelatedEventConfig.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CorrelatedEventConfig>): CorrelatedEventConfig {
+    const message = createBaseCorrelatedEventConfig();
+    message.ttlSeconds = object.ttlSeconds ?? undefined;
+    message.deleteAfterFirstCorrelation = object.deleteAfterFirstCorrelation ?? false;
+    return message;
+  },
+};
+
+function createBaseCorrelatedEvent(): CorrelatedEvent {
+  return { id: undefined, createdAt: undefined, content: undefined, externalEvents: [] };
+}
+
+export const CorrelatedEvent = {
+  encode(message: CorrelatedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      CorrelatedEventId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.content !== undefined) {
+      VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
+    }
+    for (const v of message.externalEvents) {
+      ExternalEventId.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CorrelatedEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCorrelatedEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = CorrelatedEventId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = VariableValue.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.externalEvents.push(ExternalEventId.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<CorrelatedEvent>): CorrelatedEvent {
+    return CorrelatedEvent.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CorrelatedEvent>): CorrelatedEvent {
+    const message = createBaseCorrelatedEvent();
+    message.id = (object.id !== undefined && object.id !== null) ? CorrelatedEventId.fromPartial(object.id) : undefined;
+    message.createdAt = object.createdAt ?? undefined;
+    message.content = (object.content !== undefined && object.content !== null)
+      ? VariableValue.fromPartial(object.content)
+      : undefined;
+    message.externalEvents = object.externalEvents?.map((e) => ExternalEventId.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseExternalEventRetentionPolicy(): ExternalEventRetentionPolicy {
-  return { secondsAfterPut: undefined };
+  return { extEvtGcPolicy: undefined };
 }
 
 export const ExternalEventRetentionPolicy = {
   encode(message: ExternalEventRetentionPolicy, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.secondsAfterPut !== undefined) {
-      writer.uint32(8).int64(message.secondsAfterPut);
+    switch (message.extEvtGcPolicy?.$case) {
+      case "secondsAfterPut":
+        writer.uint32(8).int64(message.extEvtGcPolicy.secondsAfterPut);
+        break;
     }
     return writer;
   },
@@ -321,7 +521,7 @@ export const ExternalEventRetentionPolicy = {
             break;
           }
 
-          message.secondsAfterPut = longToNumber(reader.int64() as Long);
+          message.extEvtGcPolicy = { $case: "secondsAfterPut", secondsAfterPut: longToNumber(reader.int64() as Long) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -337,7 +537,13 @@ export const ExternalEventRetentionPolicy = {
   },
   fromPartial(object: DeepPartial<ExternalEventRetentionPolicy>): ExternalEventRetentionPolicy {
     const message = createBaseExternalEventRetentionPolicy();
-    message.secondsAfterPut = object.secondsAfterPut ?? undefined;
+    if (
+      object.extEvtGcPolicy?.$case === "secondsAfterPut" &&
+      object.extEvtGcPolicy?.secondsAfterPut !== undefined &&
+      object.extEvtGcPolicy?.secondsAfterPut !== null
+    ) {
+      message.extEvtGcPolicy = { $case: "secondsAfterPut", secondsAfterPut: object.extEvtGcPolicy.secondsAfterPut };
+    }
     return message;
   },
 };
@@ -347,6 +553,7 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

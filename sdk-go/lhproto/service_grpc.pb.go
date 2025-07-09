@@ -47,6 +47,9 @@ const (
 	LittleHorse_CancelUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/CancelUserTaskRun"
 	LittleHorse_SaveUserTaskRunProgress_FullMethodName    = "/littlehorse.LittleHorse/SaveUserTaskRunProgress"
 	LittleHorse_ListUserTaskRuns_FullMethodName           = "/littlehorse.LittleHorse/ListUserTaskRuns"
+	LittleHorse_PutUserTaskRunComment_FullMethodName      = "/littlehorse.LittleHorse/PutUserTaskRunComment"
+	LittleHorse_EditUserTaskRunComment_FullMethodName     = "/littlehorse.LittleHorse/EditUserTaskRunComment"
+	LittleHorse_DeleteUserTaskRunComment_FullMethodName   = "/littlehorse.LittleHorse/DeleteUserTaskRunComment"
 	LittleHorse_GetNodeRun_FullMethodName                 = "/littlehorse.LittleHorse/GetNodeRun"
 	LittleHorse_ListNodeRuns_FullMethodName               = "/littlehorse.LittleHorse/ListNodeRuns"
 	LittleHorse_GetTaskRun_FullMethodName                 = "/littlehorse.LittleHorse/GetTaskRun"
@@ -54,13 +57,16 @@ const (
 	LittleHorse_GetVariable_FullMethodName                = "/littlehorse.LittleHorse/GetVariable"
 	LittleHorse_ListVariables_FullMethodName              = "/littlehorse.LittleHorse/ListVariables"
 	LittleHorse_PutExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/PutExternalEvent"
+	LittleHorse_PutCorrelatedEvent_FullMethodName         = "/littlehorse.LittleHorse/PutCorrelatedEvent"
 	LittleHorse_GetExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/GetExternalEvent"
+	LittleHorse_GetCorrelatedEvent_FullMethodName         = "/littlehorse.LittleHorse/GetCorrelatedEvent"
 	LittleHorse_AwaitWorkflowEvent_FullMethodName         = "/littlehorse.LittleHorse/AwaitWorkflowEvent"
 	LittleHorse_GetWorkflowEventDef_FullMethodName        = "/littlehorse.LittleHorse/GetWorkflowEventDef"
 	LittleHorse_GetWorkflowEvent_FullMethodName           = "/littlehorse.LittleHorse/GetWorkflowEvent"
 	LittleHorse_ListExternalEvents_FullMethodName         = "/littlehorse.LittleHorse/ListExternalEvents"
 	LittleHorse_ListWorkflowEvents_FullMethodName         = "/littlehorse.LittleHorse/ListWorkflowEvents"
 	LittleHorse_SearchWfRun_FullMethodName                = "/littlehorse.LittleHorse/SearchWfRun"
+	LittleHorse_SearchCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
 	LittleHorse_SearchNodeRun_FullMethodName              = "/littlehorse.LittleHorse/SearchNodeRun"
 	LittleHorse_SearchTaskRun_FullMethodName              = "/littlehorse.LittleHorse/SearchTaskRun"
 	LittleHorse_SearchUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/SearchUserTaskRun"
@@ -86,6 +92,7 @@ const (
 	LittleHorse_DeleteWfSpec_FullMethodName               = "/littlehorse.LittleHorse/DeleteWfSpec"
 	LittleHorse_DeleteUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/DeleteUserTaskDef"
 	LittleHorse_DeleteExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteExternalEventDef"
+	LittleHorse_DeleteCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/DeleteCorrelatedEvent"
 	LittleHorse_DeleteWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteWorkflowEventDef"
 	LittleHorse_DeletePrincipal_FullMethodName            = "/littlehorse.LittleHorse/DeletePrincipal"
 	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
@@ -131,7 +138,7 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	// Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef``.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -141,9 +148,9 @@ type LittleHorseClient interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error)
-	// Get a StructDef.
+	// EXPERIMENTAL: Get a StructDef.
 	GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error)
-	// Validate evolution of an existing `StructDef` into a new `StructDef`
+	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(ctx context.Context, in *ValidateStructDefEvolutionRequest, opts ...grpc.CallOption) (*ValidateStructDefEvolutionResponse, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
@@ -194,6 +201,12 @@ type LittleHorseClient interface {
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
+	// Adds userComment to a UserTaskRun
+	PutUserTaskRunComment(ctx context.Context, in *PutUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
+	// Edits userComment with the correlated userCommentId
+	EditUserTaskRunComment(ctx context.Context, in *EditUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
+	// Deletes a comment logically, this does not affect the userTaskEvent Log
+	DeleteUserTaskRunComment(ctx context.Context, in *DeleteUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
 	// Gets a specific NodeRun.
 	GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error)
 	// Lists all NodeRun's for a specific WfRun.
@@ -208,10 +221,14 @@ type LittleHorseClient interface {
 	GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error)
 	// List all Variables from a WfRun.
 	ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error)
-	// Post an ExternalEvent. This RPC is highly useful for
+	// Post an ExternalEvent.
 	PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*ExternalEvent, error)
+	// Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+	PutCorrelatedEvent(ctx context.Context, in *PutCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error)
+	// Get a specific CorrelatedEvent
+	GetCorrelatedEvent(ctx context.Context, in *CorrelatedEventId, opts ...grpc.CallOption) (*CorrelatedEvent, error)
 	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
 	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
 	// is not thrown before the deadline specified by the client.
@@ -229,6 +246,9 @@ type LittleHorseClient interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
+	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+	// events that may be orphaned.
+	SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error)
 	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
 	// your workflows or Task Workers.
 	SearchNodeRun(ctx context.Context, in *SearchNodeRunRequest, opts ...grpc.CallOption) (*NodeRunIdList, error)
@@ -291,7 +311,7 @@ type LittleHorseClient interface {
 	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Deletes a StructDef.
+	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(ctx context.Context, in *DeleteStructDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -299,6 +319,8 @@ type LittleHorseClient interface {
 	DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a CorrelatedEvent
+	DeleteCorrelatedEvent(ctx context.Context, in *DeleteCorrelatedEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -578,6 +600,33 @@ func (c *littleHorseClient) ListUserTaskRuns(ctx context.Context, in *ListUserTa
 	return out, nil
 }
 
+func (c *littleHorseClient) PutUserTaskRunComment(ctx context.Context, in *PutUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+	out := new(UserTaskRun)
+	err := c.cc.Invoke(ctx, LittleHorse_PutUserTaskRunComment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) EditUserTaskRunComment(ctx context.Context, in *EditUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+	out := new(UserTaskRun)
+	err := c.cc.Invoke(ctx, LittleHorse_EditUserTaskRunComment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) DeleteUserTaskRunComment(ctx context.Context, in *DeleteUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+	out := new(UserTaskRun)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteUserTaskRunComment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error) {
 	out := new(NodeRun)
 	err := c.cc.Invoke(ctx, LittleHorse_GetNodeRun_FullMethodName, in, out, opts...)
@@ -641,9 +690,27 @@ func (c *littleHorseClient) PutExternalEvent(ctx context.Context, in *PutExterna
 	return out, nil
 }
 
+func (c *littleHorseClient) PutCorrelatedEvent(ctx context.Context, in *PutCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEvent, error) {
+	out := new(CorrelatedEvent)
+	err := c.cc.Invoke(ctx, LittleHorse_PutCorrelatedEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetExternalEvent(ctx context.Context, in *ExternalEventId, opts ...grpc.CallOption) (*ExternalEvent, error) {
 	out := new(ExternalEvent)
 	err := c.cc.Invoke(ctx, LittleHorse_GetExternalEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetCorrelatedEvent(ctx context.Context, in *CorrelatedEventId, opts ...grpc.CallOption) (*CorrelatedEvent, error) {
+	out := new(CorrelatedEvent)
+	err := c.cc.Invoke(ctx, LittleHorse_GetCorrelatedEvent_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -698,6 +765,15 @@ func (c *littleHorseClient) ListWorkflowEvents(ctx context.Context, in *ListWork
 func (c *littleHorseClient) SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error) {
 	out := new(WfRunIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchWfRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error) {
+	out := new(CorrelatedEventIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchCorrelatedEvent_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -951,6 +1027,15 @@ func (c *littleHorseClient) DeleteExternalEventDef(ctx context.Context, in *Dele
 	return out, nil
 }
 
+func (c *littleHorseClient) DeleteCorrelatedEvent(ctx context.Context, in *DeleteCorrelatedEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteCorrelatedEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteWorkflowEventDef_FullMethodName, in, out, opts...)
@@ -1098,7 +1183,7 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
-	// Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef``.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -1108,9 +1193,9 @@ type LittleHorseServer interface {
 	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
 	// enum within the `PutStructDefRequest`.
 	PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error)
-	// Get a StructDef.
+	// EXPERIMENTAL: Get a StructDef.
 	GetStructDef(context.Context, *StructDefId) (*StructDef, error)
-	// Validate evolution of an existing `StructDef` into a new `StructDef`
+	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(context.Context, *ValidateStructDefEvolutionRequest) (*ValidateStructDefEvolutionResponse, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
@@ -1161,6 +1246,12 @@ type LittleHorseServer interface {
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
+	// Adds userComment to a UserTaskRun
+	PutUserTaskRunComment(context.Context, *PutUserTaskRunCommentRequest) (*UserTaskRun, error)
+	// Edits userComment with the correlated userCommentId
+	EditUserTaskRunComment(context.Context, *EditUserTaskRunCommentRequest) (*UserTaskRun, error)
+	// Deletes a comment logically, this does not affect the userTaskEvent Log
+	DeleteUserTaskRunComment(context.Context, *DeleteUserTaskRunCommentRequest) (*UserTaskRun, error)
 	// Gets a specific NodeRun.
 	GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error)
 	// Lists all NodeRun's for a specific WfRun.
@@ -1175,10 +1266,14 @@ type LittleHorseServer interface {
 	GetVariable(context.Context, *VariableId) (*Variable, error)
 	// List all Variables from a WfRun.
 	ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error)
-	// Post an ExternalEvent. This RPC is highly useful for
+	// Post an ExternalEvent.
 	PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error)
+	// Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+	PutCorrelatedEvent(context.Context, *PutCorrelatedEventRequest) (*CorrelatedEvent, error)
 	// Get a specific ExternalEvent.
 	GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error)
+	// Get a specific CorrelatedEvent
+	GetCorrelatedEvent(context.Context, *CorrelatedEventId) (*CorrelatedEvent, error)
 	// Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
 	// WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
 	// is not thrown before the deadline specified by the client.
@@ -1196,6 +1291,9 @@ type LittleHorseServer interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
+	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+	// events that may be orphaned.
+	SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error)
 	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
 	// your workflows or Task Workers.
 	SearchNodeRun(context.Context, *SearchNodeRunRequest) (*NodeRunIdList, error)
@@ -1258,7 +1356,7 @@ type LittleHorseServer interface {
 	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
 	DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error)
-	// Deletes a StructDef.
+	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(context.Context, *DeleteStructDefRequest) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error)
@@ -1266,6 +1364,8 @@ type LittleHorseServer interface {
 	DeleteUserTaskDef(context.Context, *DeleteUserTaskDefRequest) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
+	// Deletes a CorrelatedEvent
+	DeleteCorrelatedEvent(context.Context, *DeleteCorrelatedEventRequest) (*emptypb.Empty, error)
 	DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -1380,6 +1480,15 @@ func (UnimplementedLittleHorseServer) SaveUserTaskRunProgress(context.Context, *
 func (UnimplementedLittleHorseServer) ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserTaskRuns not implemented")
 }
+func (UnimplementedLittleHorseServer) PutUserTaskRunComment(context.Context, *PutUserTaskRunCommentRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskRunComment not implemented")
+}
+func (UnimplementedLittleHorseServer) EditUserTaskRunComment(context.Context, *EditUserTaskRunCommentRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditUserTaskRunComment not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteUserTaskRunComment(context.Context, *DeleteUserTaskRunCommentRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserTaskRunComment not implemented")
+}
 func (UnimplementedLittleHorseServer) GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNodeRun not implemented")
 }
@@ -1401,8 +1510,14 @@ func (UnimplementedLittleHorseServer) ListVariables(context.Context, *ListVariab
 func (UnimplementedLittleHorseServer) PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutExternalEvent not implemented")
 }
+func (UnimplementedLittleHorseServer) PutCorrelatedEvent(context.Context, *PutCorrelatedEventRequest) (*CorrelatedEvent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutCorrelatedEvent not implemented")
+}
 func (UnimplementedLittleHorseServer) GetExternalEvent(context.Context, *ExternalEventId) (*ExternalEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExternalEvent not implemented")
+}
+func (UnimplementedLittleHorseServer) GetCorrelatedEvent(context.Context, *CorrelatedEventId) (*CorrelatedEvent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCorrelatedEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AwaitWorkflowEvent not implemented")
@@ -1421,6 +1536,9 @@ func (UnimplementedLittleHorseServer) ListWorkflowEvents(context.Context, *ListW
 }
 func (UnimplementedLittleHorseServer) SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchCorrelatedEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchNodeRun(context.Context, *SearchNodeRunRequest) (*NodeRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchNodeRun not implemented")
@@ -1496,6 +1614,9 @@ func (UnimplementedLittleHorseServer) DeleteUserTaskDef(context.Context, *Delete
 }
 func (UnimplementedLittleHorseServer) DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExternalEventDef not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteCorrelatedEvent(context.Context, *DeleteCorrelatedEventRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCorrelatedEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkflowEventDef not implemented")
@@ -2035,6 +2156,60 @@ func _LittleHorse_ListUserTaskRuns_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_PutUserTaskRunComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutUserTaskRunCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutUserTaskRunComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutUserTaskRunComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutUserTaskRunComment(ctx, req.(*PutUserTaskRunCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_EditUserTaskRunComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditUserTaskRunCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).EditUserTaskRunComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_EditUserTaskRunComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).EditUserTaskRunComment(ctx, req.(*EditUserTaskRunCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_DeleteUserTaskRunComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserTaskRunCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteUserTaskRunComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteUserTaskRunComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteUserTaskRunComment(ctx, req.(*DeleteUserTaskRunCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetNodeRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NodeRunId)
 	if err := dec(in); err != nil {
@@ -2161,6 +2336,24 @@ func _LittleHorse_PutExternalEvent_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_PutCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutCorrelatedEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutCorrelatedEvent(ctx, req.(*PutCorrelatedEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetExternalEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExternalEventId)
 	if err := dec(in); err != nil {
@@ -2175,6 +2368,24 @@ func _LittleHorse_GetExternalEvent_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetExternalEvent(ctx, req.(*ExternalEventId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CorrelatedEventId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetCorrelatedEvent(ctx, req.(*CorrelatedEventId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2283,6 +2494,24 @@ func _LittleHorse_SearchWfRun_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).SearchWfRun(ctx, req.(*SearchWfRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchCorrelatedEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchCorrelatedEvent(ctx, req.(*SearchCorrelatedEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2745,6 +2974,24 @@ func _LittleHorse_DeleteExternalEventDef_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_DeleteCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCorrelatedEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteCorrelatedEvent(ctx, req.(*DeleteCorrelatedEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_DeleteWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteWorkflowEventDefRequest)
 	if err := dec(in); err != nil {
@@ -3095,6 +3342,18 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_ListUserTaskRuns_Handler,
 		},
 		{
+			MethodName: "PutUserTaskRunComment",
+			Handler:    _LittleHorse_PutUserTaskRunComment_Handler,
+		},
+		{
+			MethodName: "EditUserTaskRunComment",
+			Handler:    _LittleHorse_EditUserTaskRunComment_Handler,
+		},
+		{
+			MethodName: "DeleteUserTaskRunComment",
+			Handler:    _LittleHorse_DeleteUserTaskRunComment_Handler,
+		},
+		{
 			MethodName: "GetNodeRun",
 			Handler:    _LittleHorse_GetNodeRun_Handler,
 		},
@@ -3123,8 +3382,16 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_PutExternalEvent_Handler,
 		},
 		{
+			MethodName: "PutCorrelatedEvent",
+			Handler:    _LittleHorse_PutCorrelatedEvent_Handler,
+		},
+		{
 			MethodName: "GetExternalEvent",
 			Handler:    _LittleHorse_GetExternalEvent_Handler,
+		},
+		{
+			MethodName: "GetCorrelatedEvent",
+			Handler:    _LittleHorse_GetCorrelatedEvent_Handler,
 		},
 		{
 			MethodName: "AwaitWorkflowEvent",
@@ -3149,6 +3416,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchWfRun",
 			Handler:    _LittleHorse_SearchWfRun_Handler,
+		},
+		{
+			MethodName: "SearchCorrelatedEvent",
+			Handler:    _LittleHorse_SearchCorrelatedEvent_Handler,
 		},
 		{
 			MethodName: "SearchNodeRun",
@@ -3245,6 +3516,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteExternalEventDef",
 			Handler:    _LittleHorse_DeleteExternalEventDef_Handler,
+		},
+		{
+			MethodName: "DeleteCorrelatedEvent",
+			Handler:    _LittleHorse_DeleteCorrelatedEvent_Handler,
 		},
 		{
 			MethodName: "DeleteWorkflowEventDef",

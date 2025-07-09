@@ -9,7 +9,7 @@ public interface CancelUserTaskRunRequestOrBuilder extends
 
   /**
    * <pre>
-   * The id of the UserTaskRun to cancel.
+   * The id of the `UserTaskRun` to cancel.
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -18,7 +18,7 @@ public interface CancelUserTaskRunRequestOrBuilder extends
   boolean hasUserTaskRunId();
   /**
    * <pre>
-   * The id of the UserTaskRun to cancel.
+   * The id of the `UserTaskRun` to cancel.
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
@@ -27,7 +27,7 @@ public interface CancelUserTaskRunRequestOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
    * <pre>
-   * The id of the UserTaskRun to cancel.
+   * The id of the `UserTaskRun` to cancel.
    * </pre>
    *
    * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>

@@ -199,5 +199,32 @@ public interface OutputTopicRecordOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getExternalEventOrBuilder();
 
+  /**
+   * <pre>
+   * Updates about a `CorrelatedEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+   * @return Whether the correlatedEvent field is set.
+   */
+  boolean hasCorrelatedEvent();
+  /**
+   * <pre>
+   * Updates about a `CorrelatedEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+   * @return The correlatedEvent.
+   */
+  io.littlehorse.sdk.common.proto.CorrelatedEvent getCorrelatedEvent();
+  /**
+   * <pre>
+   * Updates about a `CorrelatedEvent` changing.
+   * </pre>
+   *
+   * <code>.littlehorse.CorrelatedEvent correlated_event = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.CorrelatedEventOrBuilder getCorrelatedEventOrBuilder();
+
   io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase getPayloadCase();
 }

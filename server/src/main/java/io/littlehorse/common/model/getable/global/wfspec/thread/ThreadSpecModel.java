@@ -19,7 +19,7 @@ import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -230,7 +230,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return wfSpec.lookupVarDef(name);
     }
 
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws LHApiException {
         if (entrypointNodeName == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOITNT node!");
         }
@@ -305,13 +305,13 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // TODO: check input variables.
-    public void validateStartVariables(Map<String, VariableValueModel> vars) throws LHValidationError {
+    public void validateStartVariables(Map<String, VariableValueModel> inputVariables) throws LHValidationError {
         for (Map.Entry<String, ThreadVarDefModel> e : getInputVariableDefs().entrySet()) {
             String varName = e.getKey();
             ThreadVarDefModel threadVarDef = e.getValue();
-            VariableValueModel val = vars.get(varName);
+            VariableValueModel inputVariableValue = inputVariables.get(varName);
             VariableDefModel varDef = threadVarDef.getVarDef();
-            if (val == null) {
+            if (inputVariableValue == null) {
                 if (threadVarDef.isRequired()) {
                     throw new LHValidationError("Must provide required input variable %s of type %s"
                             .formatted(varName, varDef.getTypeDef()));
@@ -319,20 +319,21 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 log.debug("Variable {} not provided, defaulting to null", varName);
                 continue;
             }
-            varDef.validateValue(val);
+            varDef.validateValue(inputVariableValue);
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
-                if (vars.containsKey(varName)) {
+                if (inputVariables.containsKey(varName)) {
                     throw new LHValidationError(
                             "Variable %s is an inherited var but it was provided as input".formatted(varName));
                 }
             }
         }
 
-        for (Map.Entry<String, VariableValueModel> e : vars.entrySet()) {
+        for (Map.Entry<String, VariableValueModel> e : inputVariables.entrySet()) {
             String varName = e.getKey();
             if (getVd(varName) == null) {
-                throw new LHValidationError("Var " + varName + " provided but not needed for thread " + name);
+                throw new LHValidationError("Var " + varName + " provided but not needed for thread " + name
+                        + " Current variables" + variableDefs);
             }
         }
     }

@@ -12,8 +12,8 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +28,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private WaitingThreadStatus waitingStatus;
     private Integer failureHandlerThreadRunId;
 
-    private ProcessorExecutionContext context;
+    private CoreProcessorContext context;
     private NodeRunModel nodeRun;
 
     public WaitForThreadModel() {}
@@ -37,7 +37,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             NodeRunModel waitForThreadNodeRunModel,
             Integer threadRunNumberToWaitFor,
             Date currentCommandTime,
-            ProcessorExecutionContext context)
+            CoreProcessorContext context)
             throws NodeFailureException {
         this.context = context;
 
@@ -85,7 +85,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             failureHandlerThreadRunId = p.getFailureHandlerThreadRunId();
         }
 
-        this.context = context.castOnSupport(ProcessorExecutionContext.class);
+        this.context = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override

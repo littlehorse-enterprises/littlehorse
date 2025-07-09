@@ -10,20 +10,20 @@ import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
+import io.littlehorse.sdk.wfsdk.internal.ExternalEventNodeOutputImpl;
+import io.littlehorse.sdk.wfsdk.internal.ThrowEventNodeOutputImpl;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,8 @@ public abstract class Workflow {
 
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
     protected int defaultSimpleRetries;
-    protected List<PutExternalEventDefRequest> externalEventsToRegister;
+    protected Set<ExternalEventNodeOutputImpl> externalEventsToRegister;
+    protected Set<ThrowEventNodeOutputImpl> workflowEventsToRegister;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -57,7 +58,8 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
-        this.externalEventsToRegister = new ArrayList<>();
+        this.externalEventsToRegister = new HashSet<>();
+        this.workflowEventsToRegister = new HashSet<>();
     }
 
     /**

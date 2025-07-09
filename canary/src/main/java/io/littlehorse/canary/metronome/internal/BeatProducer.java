@@ -19,19 +19,16 @@ public class BeatProducer {
     private final Map<String, String> extraTags;
     private final String lhServerHost;
     private final int lhServerPort;
-    private final String lhServerVersion;
     private final String topicName;
 
     public BeatProducer(
             final String lhServerHost,
             final int lhServerPort,
-            final String lhServerVersion,
             final String topicName,
             final Map<String, Object> producerConfig,
             final Map<String, String> extraTags) {
         this.lhServerHost = lhServerHost;
         this.lhServerPort = lhServerPort;
-        this.lhServerVersion = lhServerVersion;
         this.topicName = topicName;
         this.extraTags = extraTags;
 
@@ -43,7 +40,6 @@ public class BeatProducer {
         final BeatKey beatKey = beat.toBeatKey().toBuilder()
                 .setServerHost(lhServerHost)
                 .setServerPort(lhServerPort)
-                .setServerVersion(lhServerVersion)
                 .addAllTags(getExtraTags())
                 .build();
         final BeatValue beatValue = beat.toBeatValue();

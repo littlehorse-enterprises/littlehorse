@@ -39,7 +39,7 @@ public class VariableMappingTest
         foreach (var type in testAllowedTypes)
         {
             var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type);
-            TaskDef? taskDef = getTaskDefForTest(variableType);
+            TaskDef? taskDef = GetTaskDefForTest(variableType);
         
             var result = new VariableMapping(taskDef!, position, type, paramName);
         
@@ -53,7 +53,7 @@ public class VariableMappingTest
         Type type1 = typeof(Int64);
         Type type2 = typeof(string);
         var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
-        TaskDef? taskDef = getTaskDefForTest(variableType);
+        TaskDef? taskDef = GetTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
@@ -67,7 +67,7 @@ public class VariableMappingTest
         Type type1 = typeof(double);
         Type type2 = typeof(Int64);
         var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
-        TaskDef? taskDef = getTaskDefForTest(variableType);
+        TaskDef? taskDef = GetTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
@@ -81,7 +81,7 @@ public class VariableMappingTest
         Type type1 = typeof(string);
         Type type2 = typeof(double);
         var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
-        TaskDef? taskDef = getTaskDefForTest(variableType);
+        TaskDef? taskDef = GetTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
@@ -95,7 +95,7 @@ public class VariableMappingTest
         Type type1 = typeof(bool);
         Type type2 = typeof(string);
         var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
-        TaskDef? taskDef = getTaskDefForTest(variableType);
+        TaskDef? taskDef = GetTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
@@ -109,7 +109,7 @@ public class VariableMappingTest
         Type type1 = typeof(byte[]);
         Type type2 = typeof(string);
         var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
-        TaskDef? taskDef = getTaskDefForTest(variableType);
+        TaskDef? taskDef = GetTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
@@ -132,9 +132,9 @@ public class VariableMappingTest
 
         foreach (var type in testAllowedTypes)
         {
-            var variableMapping = getVariableMappingForTest(type, paramName, position);
+            var variableMapping = GetVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Int = expectedValue};
-            ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+            ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
             var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
             var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -143,6 +143,22 @@ public class VariableMappingTest
         }
     }
     
+    [Fact]
+    public void VariableMapping_WithNoValue_ShouldReturnNull()
+    {
+        Type type = typeof(string);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue();
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+
+        Assert.Null(result);
+    }
+
     [Fact]
     public void VariableMapping_WithAssignLongValue_ShouldReturnInt64Object()
     {
@@ -154,9 +170,9 @@ public class VariableMappingTest
 
         foreach (var type in testAllowedTypes)
         {
-            var variableMapping = getVariableMappingForTest(type, paramName, position);
+            var variableMapping = GetVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Int = expectedValue};
-            ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+            ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
             var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
             var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -176,9 +192,9 @@ public class VariableMappingTest
 
         foreach (var type in testAllowedTypes)
         {
-            var variableMapping = getVariableMappingForTest(type, paramName, position);
+            var variableMapping = GetVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Double = expectedValue};
-            ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+            ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
             var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
             var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -196,9 +212,9 @@ public class VariableMappingTest
         int position = 0;
         string paramName = "param_test";
         
-        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue {Double = expectedValue};
-        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
         var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
     
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -212,9 +228,9 @@ public class VariableMappingTest
         Type type = typeof(string);
         int position = 0;
         string paramName = "param_test";
-        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { Str = "param_value_test"};
-        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
         var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -230,9 +246,9 @@ public class VariableMappingTest
         Type type = typeof(byte[]);
         int position = 0;
         string paramName = "param_test";
-        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { Bytes = byteString};
-        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
         var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -247,9 +263,9 @@ public class VariableMappingTest
         Type type = typeof(bool);
         int position = 0;
         string paramName = "param_test";
-        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { Bool = expectedValue};
-        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
         var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -264,9 +280,9 @@ public class VariableMappingTest
         Type type = typeof(List<Person>);
         int position = 0;
         string paramName = "param_test";
-        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { JsonArr = value};
-        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
         var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -287,9 +303,9 @@ public class VariableMappingTest
         Type type = typeof(Dictionary<string, string>);
         int position = 0;
         string paramName = "param_test";
-        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { JsonObj = value};
-        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
         var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -310,9 +326,9 @@ public class VariableMappingTest
         Type type = typeof(Person);
         int position = 0;
         string paramName = "param_test";
-        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { JsonObj = value};
-        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
         var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
@@ -325,7 +341,7 @@ public class VariableMappingTest
         Assert.Equal(expectedObject.Cars!.Count, actualObject.Cars!.Count);
     }
 
-    private TaskDef? getTaskDefForTest(VariableType type)
+    private TaskDef? GetTaskDefForTest(VariableType type)
     {
         var inputVar = new VariableDef();
         inputVar.Type = type;
@@ -337,17 +353,17 @@ public class VariableMappingTest
         return taskDef;
     }
 
-    private VariableMapping getVariableMappingForTest(Type type, string paramName, int position)
+    private VariableMapping GetVariableMappingForTest(Type type, string paramName, int position)
     {
         var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type);
-        TaskDef? taskDef = getTaskDefForTest(variableType);
+        TaskDef? taskDef = GetTaskDefForTest(variableType);
         
         var variableMapping = new VariableMapping(taskDef!, position, type, paramName);
         
         return variableMapping;
     }
 
-    private ScheduledTask getScheduledTaskForTest(VariableValue variableValue, string variableName)
+    private ScheduledTask GetScheduledTaskForTest(VariableValue variableValue, string variableName)
     {
         ScheduledTask scheduledTask = new ScheduledTask();
         List<VarNameAndVal> variables = new List<VarNameAndVal>();

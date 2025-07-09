@@ -119,6 +119,17 @@ jobs:
         with:
           node-version: 20
 
+      - name: Update Dashboard Version
+        working-directory: ./dashboard
+        run: |
+          if [ "${{ inputs.tag }}" != "" ]; then
+            VERSION="${{ inputs.tag }}"
+          else
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            VERSION="${{ github.ref_name }}-$SHORT_SHA"
+          fi
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
@@ -147,6 +158,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Update Dashboard Version
+        working-directory: ./dashboard
+        run: |
+          if [ "${{ inputs.tag }}" != "" ]; then
+            VERSION="${{ inputs.tag }}"
+          else
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            VERSION="${{ github.ref_name }}-$SHORT_SHA"
+          fi
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard

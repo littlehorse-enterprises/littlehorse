@@ -146,14 +146,16 @@ public final class NodeRunOuterClass {
       "d_run_id\"\214\001\n\023WaitingThreadStatus\022\026\n\022THRE" +
       "AD_IN_PROGRESS\020\000\022\033\n\027THREAD_HANDLING_FAIL" +
       "URE\020\001\022\'\n#THREAD_COMPLETED_OR_FAILURE_HAN" +
-      "DLED\020\002\022\027\n\023THREAD_UNSUCCESSFUL\020\003\"\201\002\n\024Exte" +
+      "DLED\020\002\022\027\n\023THREAD_UNSUCCESSFUL\020\003\"\321\002\n\024Exte" +
       "rnalEventNodeRun\022>\n\025external_event_def_i" +
       "d\030\001 \001(\0132\037.littlehorse.ExternalEventDefId" +
       "\0223\n\nevent_time\030\002 \001(\0132\032.google.protobuf.T" +
       "imestampH\000\210\001\001\022<\n\021external_event_id\030\003 \001(\013" +
       "2\034.littlehorse.ExternalEventIdH\001\210\001\001\022\021\n\tt" +
-      "imed_out\030\004 \001(\010B\r\n\013_event_timeB\024\n\022_extern" +
-      "al_event_id\"T\n\014SleepNodeRun\0223\n\017maturatio" +
+      "imed_out\030\004 \001(\010\022\034\n\017correlation_key\030\005 \001(\tH" +
+      "\002\210\001\001\022\034\n\024mask_correlation_key\030\006 \001(\010B\r\n\013_e" +
+      "vent_timeB\024\n\022_external_event_idB\022\n\020_corr" +
+      "elation_key\"T\n\014SleepNodeRun\0223\n\017maturatio" +
       "n_time\030\001 \001(\0132\032.google.protobuf.Timestamp" +
       "\022\017\n\007matured\030\002 \001(\010\"\330\001\n\007Failure\022\024\n\014failure" +
       "_name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\0220\n\007content\030" +
@@ -244,7 +246,7 @@ public final class NodeRunOuterClass {
     internal_static_littlehorse_ExternalEventNodeRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventNodeRun_descriptor,
-        new java.lang.String[] { "ExternalEventDefId", "EventTime", "ExternalEventId", "TimedOut", "EventTime", "ExternalEventId", });
+        new java.lang.String[] { "ExternalEventDefId", "EventTime", "ExternalEventId", "TimedOut", "CorrelationKey", "MaskCorrelationKey", "EventTime", "ExternalEventId", "CorrelationKey", });
     internal_static_littlehorse_SleepNodeRun_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_SleepNodeRun_fieldAccessorTable = new

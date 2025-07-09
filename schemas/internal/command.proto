@@ -46,6 +46,12 @@ message Command {
         ScheduleWfRequest schedule_wf_run_request = 25;
         DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;
         SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;
+        PutCorrelatedEventRequest put_correlated_event = 28;
+        UpdateCorrelationMarkerPb update_correlation_marker = 29;
+        DeleteCorrelatedEventRequest delete_correlated_event = 30;
+        PutUserTaskRunCommentRequest put_user_task_run_comment = 31;
+        EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;
+        DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
     }
 }
 
@@ -209,6 +215,18 @@ message TaskClaimEventPb {
 
 message ExternalEventNodeTimeoutPb {
     NodeRunId node_run_id = 1;
+}
+
+message UpdateCorrelationMarkerPb {
+    string correlation_key = 1;
+    ExternalEventDefId external_event_def_id = 2;
+    NodeRunId waiting_node_run = 3;
+    CorrelationUpdateAction action = 4;
+
+    enum CorrelationUpdateAction {
+        CORRELATE = 0;
+        UNCORRELATE = 1;
+    }
 }
 
 // This section contains commands that originate from the gRPC api. Perhaps they
