@@ -484,23 +484,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public WfRunVariable declareStruct(String name, Class<?> structDefClass) {
-        if (!structDefClass.isAnnotationPresent(LHStructDef.class)) {
-            throw new RuntimeException(
-                    "Cannot create StructDef variable for a class without the @LHStructDef annotation.");
-        }
-
-        LHStructDef structDefAnnotation = structDefClass.getAnnotation(LHStructDef.class);
-
-        return addStructVariable(name, structDefAnnotation.name());
-    }
-
-    @Override
-    public WfRunVariable declareStruct(String name, String structDefName) {
-        return addStructVariable(name, structDefName);
-    }
-
-    @Override
     public WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody ifBody) {
         WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
 

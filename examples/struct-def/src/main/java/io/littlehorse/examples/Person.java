@@ -8,5 +8,20 @@ public class Person {
   public String lastName;
   public Integer accountId;
   public String phoneNumber;
-  public Car car;
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public Integer getAccountId() {
+    return accountId;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
 }

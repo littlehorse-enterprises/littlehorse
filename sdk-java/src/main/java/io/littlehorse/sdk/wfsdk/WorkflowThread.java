@@ -159,25 +159,6 @@ public interface WorkflowThread {
     WfRunVariable declareBool(String name);
 
     /**
-     * Creates a Struct variable based on a defined StructDef class.
-     * @param name is the name of the variable.
-     * @param structDefClass is class that represents your StructDef,
-     *                       usually annotated with `{@link io.littlehorse.sdk.worker.LHStructDef}`
-     *
-     * @return a WfRunVariable.
-     */
-    WfRunVariable declareStruct(String name, Class<?> structDefClass);
-
-    /**
-     * Creates a Struct variable based on an existing StructDef.
-     * @param name is the name of the variable.
-     * @param structDefName is the name of the StructDef
-     *
-     * @return a WfRunVariable.
-     */
-    WfRunVariable declareStruct(String name, String structDefName);
-
-    /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
      *
      * @param name the name of the variable.

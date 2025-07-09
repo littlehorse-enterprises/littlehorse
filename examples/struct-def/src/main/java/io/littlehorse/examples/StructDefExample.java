@@ -19,13 +19,6 @@ import java.util.Properties;
  */
 public class StructDefExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-basic", wf -> {
-            WfRunVariable inputCar = wf.declareStruct("input-car", Car.class).searchable();
-            wf.execute("greet", inputCar);
-        });
-    }
-
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
         File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
@@ -50,9 +43,6 @@ public class StructDefExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        // New workflow
-        Workflow workflow = getWorkflow();
-
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
@@ -61,9 +51,6 @@ public class StructDefExample {
 
         // Register task
         worker.registerTaskDef();
-
-        // Register a workflow
-        workflow.registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();
