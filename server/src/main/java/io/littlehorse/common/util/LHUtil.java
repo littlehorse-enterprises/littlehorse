@@ -16,9 +16,9 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariableRequestModel;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -190,14 +190,6 @@ public class LHUtil {
         }
         return str;
     }
-
-    @Deprecated
-    public static boolean isPrimitive(VariableType variableType) {
-        TypeDefinitionModel temp = new TypeDefinitionModel();
-        temp.setType(variableType);
-        return temp.isPrimitive();
-    }
-
     /**
      * TODO: THis needs more thought. We want the double to be searchable both
      * positive and

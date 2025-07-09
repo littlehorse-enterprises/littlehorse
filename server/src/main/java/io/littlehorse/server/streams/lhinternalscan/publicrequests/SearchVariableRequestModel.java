@@ -18,6 +18,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -128,7 +129,7 @@ public class SearchVariableRequestModel
         // ONLY do this check if the Variable is a PRIMITIVE type.
         // TODO: Extend this when implementing Struct and StructDef.
         TypeDefinitionModel varType = varDef.getVarDef().getTypeDef();
-        if (varType.isPrimitive() && !varType.isCompatibleWith(value)) {
+        if (isTypeSearchable(varType.getType()) && !varType.isCompatibleWith(value)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "Specified Variable has type " + varDef.getVarDef().getTypeDef());
@@ -190,5 +191,23 @@ public class SearchVariableRequestModel
 
     private List<String> searchAttributesString() {
         return List.of("name", "value", "wfSpecName", "wfSpecVersion");
+    }
+
+    public static boolean isTypeSearchable(VariableType type) {
+        switch (type) {
+            case INT:
+            case BOOL:
+            case DOUBLE:
+            case STR:
+                return true;
+            case JSON_OBJ:
+            case JSON_ARR:
+            case BYTES:
+            case UNRECOGNIZED:
+            case WF_RUN_ID:
+            default:
+                break;
+        }
+        return false;
     }
 }

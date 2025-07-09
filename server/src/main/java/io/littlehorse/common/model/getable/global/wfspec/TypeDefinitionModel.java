@@ -43,22 +43,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.type = p.getType();
     }
 
-    public boolean isPrimitive() {
-        // TODO: Extend this when adding Struct and StructDef.
-        switch (type) {
-            case INT:
-            case BOOL:
-            case DOUBLE:
-            case STR:
-                return true;
-            case JSON_OBJ:
-            case JSON_ARR:
-            case BYTES:
-            case UNRECOGNIZED:
-        }
-        return false;
-    }
-
     public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {
         TypeDefinitionModel out = new TypeDefinitionModel();
         out.initFrom(proto, context);
