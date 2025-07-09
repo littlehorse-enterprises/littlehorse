@@ -51,7 +51,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.worker.LHStructDef;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
