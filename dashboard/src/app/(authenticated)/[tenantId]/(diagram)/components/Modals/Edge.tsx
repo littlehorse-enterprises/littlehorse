@@ -46,7 +46,7 @@ const RhsAssignment: FC<Pick<VariableMutation, 'rhsAssignment'>> = ({ rhsAssignm
   return (
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">RHS Assignment</span>
-      <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{getVariable(rhsAssignment)}</span>
+      <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{String(getVariable(rhsAssignment))}</span>
     </>
   )
 }
@@ -57,7 +57,7 @@ const LiteralValue: FC<Pick<VariableMutation, 'literalValue'>> = ({ literalValue
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">Literal Value</span>
       <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">
-        {getVariableValue(literalValue)}
+        {String(getVariableValue(literalValue))}
       </span>
     </>
   )

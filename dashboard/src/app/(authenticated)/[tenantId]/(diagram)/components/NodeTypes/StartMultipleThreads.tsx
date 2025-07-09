@@ -40,7 +40,7 @@ const Node: FC<NodeProps> = ({ data }) => {
             )}
           </div>
           <div className="">
-            <span className="font-bold">Iterable:</span> {getVariable(data.startMultipleThreads.iterable)}
+            <span className="font-bold">Iterable:</span> {String(getVariable(data.startMultipleThreads.iterable))}
           </div>
           {variables.length > 0 && (
             <div className="mt-2">
@@ -48,7 +48,7 @@ const Node: FC<NodeProps> = ({ data }) => {
               <ul>
                 {variables.map(([name, value]) => (
                   <li key={name}>
-                    {`{${name}}`} {getVariable(value)}
+                    {`{${name}}`} {String(getVariable(value))}
                   </li>
                 ))}
               </ul>

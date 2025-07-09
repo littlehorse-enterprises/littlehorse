@@ -12,6 +12,7 @@ export const VARIABLE_TYPES: { [key in VariableType]: string } = {
   STR: 'String',
   INT: 'Integer',
   BYTES: 'Bytes',
+  WF_RUN_ID: 'WfRunId',
   UNRECOGNIZED: 'Unrecognized',
 }
 
