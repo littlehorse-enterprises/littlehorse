@@ -2269,7 +2269,7 @@ def python_type_to_return_type(py_type: type | None) -> ReturnType:
     elif issubclass(py_type, list):
         type_def.type = VariableType.JSON_ARR
     else:
-        raise ValueError("Unsupported payload type for workflow event.")
+        raise ValueError("Unsupported payload type.")
     return ReturnType(return_type=type_def)
 
 
