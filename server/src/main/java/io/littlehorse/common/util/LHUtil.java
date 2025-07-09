@@ -194,7 +194,7 @@ public class LHUtil {
     @Deprecated
     public static boolean isPrimitive(VariableType variableType) {
         TypeDefinitionModel temp = new TypeDefinitionModel();
-        temp.setType(variableType);
+        temp.setPrimitiveType(variableType);
         return temp.isPrimitive();
     }
 
