@@ -2240,7 +2240,7 @@ class WorkflowThread:
         )
 
 
-def python_type_to_return_type(py_type: type) -> ReturnType:
+def python_type_to_return_type(py_type: type | None) -> ReturnType:
     """
     Maps a Python type to a ReturnType.
 
@@ -2253,6 +2253,8 @@ def python_type_to_return_type(py_type: type) -> ReturnType:
     Raises:
         ValueError: If the type is unsupported.
     """
+    if py_type is None:
+        raise ValueError("Payload type must be set before generating the request.")
     type_def = TypeDefinition()
     if py_type is str:
         type_def.type = VariableType.STR
@@ -2454,17 +2456,7 @@ class Workflow:
         Args:
             node (ExternalEventNodeOutput): The external event node to register.
         """
-        self._external_events_to_register.append(node)
-
-    def get_default_thread_retention_policy(self) -> Optional[ThreadRetentionPolicy]:
-        """
-        Returns the default thread retention policy.
-
-        Returns:
-            Optional[ThreadRetentionPolicy]: The default thread retention policy.
-        """
-        return self._default_thread_retention_policy
-        
+        self._external_events_to_register.append(node)        
 
 def create_workflow_spec(
     workflow: Workflow, config: LHConfig, timeout: Optional[int] = None
@@ -2479,15 +2471,15 @@ def create_workflow_spec(
     stub = config.stub()
     request = workflow.compile()
 
-    for node in workflow._external_events_to_register:
-        external_event_request = node.to_put_external_event_def_request()
+    for external_node in workflow._external_events_to_register:
+        external_event_request = external_node.to_put_external_event_def_request()
         logging.info(f"Registering ExternalEventDef: {external_event_request.name}")
         stub.PutExternalEventDef(external_event_request, timeout=timeout)
     
-    for node in workflow._workflow_events_to_register:
-        workflow_event_request = node.to_put_workflow_event_def_request()
+    for workflow_node in workflow._workflow_events_to_register:
+        workflow_event_request = workflow_node.to_put_workflow_event_def_request()
+        logging.info(f"Registering WorkflowEventDef: {workflow_event_request.name}")
         stub.PutWorkflowEventDef(workflow_event_request, timeout=timeout)
-        logging.info(f"Registered WorkflowEventDef: {workflow_event_request.name}")
 
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
     stub.PutWfSpec(request, timeout=timeout)
