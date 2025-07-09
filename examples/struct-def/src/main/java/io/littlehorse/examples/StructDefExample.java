@@ -2,9 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
-import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,11 +9,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
 
-/*
- * This is a simple example, which does two things:
- * 1. Declare an "input-name" variable of type String
- * 2. Pass that variable into the execution of the "greet" task.
- */
 public class StructDefExample {
 
     public static Properties getConfigProps() throws IOException {
