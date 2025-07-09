@@ -193,7 +193,7 @@ public class SearchVariableRequestModel
         return List.of("name", "value", "wfSpecName", "wfSpecVersion");
     }
 
-    public static boolean isTypeSearchable(VariableType type) {
+    private static boolean isTypeSearchable(VariableType type) {
         switch (type) {
             case INT:
             case BOOL:
