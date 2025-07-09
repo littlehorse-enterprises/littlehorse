@@ -71,13 +71,23 @@ jobs:
           distribution: "corretto"
           java-version: 21
 
-      - name: Tests and Build
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8'
+
+      - name: Tests and Build Core
         run: ./gradlew canary:build
 
       - uses: actions/upload-artifact@v4
         with:
           name: canary-jar
-          path: canary/build/libs/canary-*-all.jar
+          path: canary/core/build/libs/canary-*-all.jar
+
+      - name: Tests and Build Dotnet Worker
+        run: |
+          dotnet format canary/dotnet-worker/LittleHorse.Canary.Worker/LittleHorse.Canary.Worker.csproj --verify-no-changes
+          dotnet publish -c Release canary/dotnet-worker/LittleHorse.Canary.Worker/LittleHorse.Canary.Worker.csproj
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
