@@ -1592,7 +1592,10 @@ func (wf *LHWorkflow) registerWfSpec(client lhproto.LittleHorseClient) error {
 		PrintProto(res)
 	}
 
-	resp, _ := client.PutWfSpec(context.Background(), putWf)
+	resp, error := client.PutWfSpec(context.Background(), putWf)
+	if error != nil {
+		log.Fatalf("Failed to register WorkflowSpec: %v", error)
+	}
 	log.Printf("Registered WorkflowSpec: %s", putWf.Name)
 	PrintProto(resp)
 	return nil
