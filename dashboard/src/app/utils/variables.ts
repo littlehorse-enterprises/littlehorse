@@ -7,6 +7,7 @@ export const getVariable = (variable?: VariableAssignment) => {
     return getValueFromVariableName(variable)
   }
   if (variable.literalValue) return getVariableValue(variable.literalValue)
+  if (variable.nodeOutput) return variable.nodeOutput.nodeName
 }
 
 export const getVariableValue = (variable?: VariableValue) => {
