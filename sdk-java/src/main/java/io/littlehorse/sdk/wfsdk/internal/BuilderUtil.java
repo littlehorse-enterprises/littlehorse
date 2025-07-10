@@ -67,17 +67,17 @@ class BuilderUtil {
         }
         TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
         if (String.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.STR);
+            typeDef.setPrimitiveType(VariableType.STR);
         } else if (Double.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.DOUBLE);
+            typeDef.setPrimitiveType(VariableType.DOUBLE);
         } else if (Integer.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.INT);
+            typeDef.setPrimitiveType(VariableType.INT);
         } else if (Boolean.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.BOOL);
+            typeDef.setPrimitiveType(VariableType.BOOL);
         } else if (Map.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.JSON_OBJ);
+            typeDef.setPrimitiveType(VariableType.JSON_OBJ);
         } else if (List.class.isAssignableFrom(payloadClass)) {
-            typeDef.setType(VariableType.JSON_ARR);
+            typeDef.setPrimitiveType(VariableType.JSON_ARR);
         } else {
             throw new IllegalArgumentException(
                     "ExternalEventDef payload class must be one of String, Double, Integer or Boolean");

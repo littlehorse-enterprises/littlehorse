@@ -6,10 +6,9 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { TypeDefinition } from "./common_wfspec";
+import { InlineStructDef } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { StructDefId } from "./object_id";
-import { VariableValue } from "./variable";
 
 /**
  * A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
@@ -30,30 +29,6 @@ export interface StructDef {
     | undefined;
   /** The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`. */
   structDef: InlineStructDef | undefined;
-}
-
-/** An `InlineStructDef` is the actual representation of the Schema. */
-export interface InlineStructDef {
-  /** The fields in this schema. */
-  fields: { [key: string]: StructFieldDef };
-}
-
-export interface InlineStructDef_FieldsEntry {
-  key: string;
-  value: StructFieldDef | undefined;
-}
-
-/** A `SchemaFieldDef` defines a field inside a `StructDef`. */
-export interface StructFieldDef {
-  /** The type of the field. */
-  fieldType:
-    | TypeDefinition
-    | undefined;
-  /**
-   * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
-   */
-  defaultValue?: VariableValue | undefined;
 }
 
 function createBaseStructDef(): StructDef {
@@ -131,180 +106,6 @@ export const StructDef = {
     message.createdAt = object.createdAt ?? undefined;
     message.structDef = (object.structDef !== undefined && object.structDef !== null)
       ? InlineStructDef.fromPartial(object.structDef)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseInlineStructDef(): InlineStructDef {
-  return { fields: {} };
-}
-
-export const InlineStructDef = {
-  encode(message: InlineStructDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    Object.entries(message.fields).forEach(([key, value]) => {
-      InlineStructDef_FieldsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
-    });
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructDef {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseInlineStructDef();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          const entry1 = InlineStructDef_FieldsEntry.decode(reader, reader.uint32());
-          if (entry1.value !== undefined) {
-            message.fields[entry1.key] = entry1.value;
-          }
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<InlineStructDef>): InlineStructDef {
-    return InlineStructDef.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<InlineStructDef>): InlineStructDef {
-    const message = createBaseInlineStructDef();
-    message.fields = Object.entries(object.fields ?? {}).reduce<{ [key: string]: StructFieldDef }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = StructFieldDef.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
-    return message;
-  },
-};
-
-function createBaseInlineStructDef_FieldsEntry(): InlineStructDef_FieldsEntry {
-  return { key: "", value: undefined };
-}
-
-export const InlineStructDef_FieldsEntry = {
-  encode(message: InlineStructDef_FieldsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      StructFieldDef.encode(message.value, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructDef_FieldsEntry {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseInlineStructDef_FieldsEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = StructFieldDef.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<InlineStructDef_FieldsEntry>): InlineStructDef_FieldsEntry {
-    return InlineStructDef_FieldsEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<InlineStructDef_FieldsEntry>): InlineStructDef_FieldsEntry {
-    const message = createBaseInlineStructDef_FieldsEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? StructFieldDef.fromPartial(object.value)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseStructFieldDef(): StructFieldDef {
-  return { fieldType: undefined, defaultValue: undefined };
-}
-
-export const StructFieldDef = {
-  encode(message: StructFieldDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.fieldType !== undefined) {
-      TypeDefinition.encode(message.fieldType, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.defaultValue !== undefined) {
-      VariableValue.encode(message.defaultValue, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): StructFieldDef {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStructFieldDef();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.fieldType = TypeDefinition.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.defaultValue = VariableValue.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<StructFieldDef>): StructFieldDef {
-    return StructFieldDef.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<StructFieldDef>): StructFieldDef {
-    const message = createBaseStructFieldDef();
-    message.fieldType = (object.fieldType !== undefined && object.fieldType !== null)
-      ? TypeDefinition.fromPartial(object.fieldType)
-      : undefined;
-    message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
-      ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
     return message;
   },

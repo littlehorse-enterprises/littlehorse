@@ -16,12 +16,12 @@ import lombok.Setter;
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private boolean masked;
-    private VariableType type;
+    private VariableType primitiveType;
 
     public TypeDefinitionModel() {}
 
-    public TypeDefinitionModel(VariableType type) {
-        this.type = type;
+    public TypeDefinitionModel(VariableType primitiveType) {
+        this.primitiveType = primitiveType;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     @Override
     public TypeDefinition.Builder toProto() {
         TypeDefinition.Builder out =
-                TypeDefinition.newBuilder().setMasked(masked).setType(type);
+                TypeDefinition.newBuilder().setMasked(masked).setPrimitiveType(primitiveType);
         return out;
     }
 
@@ -40,7 +40,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
-        this.type = p.getType();
+        this.primitiveType = p.getPrimitiveType();
     }
 
     public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {
@@ -50,7 +50,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public boolean isJson() {
-        return type == VariableType.JSON_ARR || type == VariableType.JSON_OBJ;
+        return primitiveType == VariableType.JSON_ARR || primitiveType == VariableType.JSON_OBJ;
     }
 
     /**
@@ -58,6 +58,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      */
     public boolean isCompatibleWith(VariableValueModel value) {
         // TODO: Extend this when we add StructDef's and Structs.
-        return value.getType() == type;
+        return value.getType() == primitiveType;
     }
 }
