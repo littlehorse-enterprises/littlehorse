@@ -6,12 +6,12 @@ import { LeftSidebarTabId } from '@/types'
 import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { useEffect, useState } from 'react'
 import WfRunTab from './tab-content/wf-run-tab'
-import WfSpecTab from './tab-content/wf-spec-tab'
+import WorkflowTab from './tab-content/workflow-tab'
 import LeftSidebarTabs from './tabs'
 import ActionButton from './action-button'
 
 const tabDescriptions: Record<LeftSidebarTabId, string> = {
-  WfSpec: 'Workflow Specification',
+  Workflow: 'WfSpec & WfRun',
   WfRuns: 'Workflow Runs',
   ScheduledWfRuns: 'Scheduled Workflow Runs',
 }
@@ -24,14 +24,14 @@ interface LeftSidebarProps {
 }
 
 export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
-  const [activeTab, setActiveTab] = useState<LeftSidebarTabId>('WfSpec')
+  const [activeTab, setActiveTab] = useState<LeftSidebarTabId>('Workflow')
   const [sidebarState, setSidebarState] = useState<SidebarState>('normal')
 
   // Auto-expand sidebar when tab is WfRuns or ScheduledWfRuns
   useEffect(() => {
     if (activeTab === 'WfRuns' || activeTab === 'ScheduledWfRuns') {
       setSidebarState(prev => (prev === 'hidden' ? 'hidden' : 'expanded'))
-    } else if (activeTab === 'WfSpec') {
+    } else if (activeTab === 'Workflow') {
       setSidebarState(prev => (prev === 'hidden' ? 'hidden' : 'normal'))
     }
   }, [activeTab])
@@ -114,7 +114,7 @@ export default function LeftSidebar({ wfSpec, wfRun }: LeftSidebarProps) {
             <span className="font-medium">{tabDescriptions[activeTab]}</span>
           </div>
           <div className="flex-1 overflow-auto">
-            {activeTab === 'WfSpec' && <WfSpecTab wfSpec={wfSpec} wfRun={wfRun} />}
+            {activeTab === 'Workflow' && <WorkflowTab wfSpec={wfSpec} wfRun={wfRun} />}
             {activeTab === 'WfRuns' && <WfRunTab />}
             {activeTab === 'ScheduledWfRuns' && <ScheduledWfRunsTab />}
           </div>

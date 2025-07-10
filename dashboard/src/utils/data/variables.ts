@@ -13,28 +13,27 @@ export function getVariable(variable?: VariableAssignment) {
 }
 
 export function getVariableValue(variable?: VariableValue) {
-  if (!variable) return
+  if (!variable) return 'N/A'
 
-  if (variable.value?.$case === 'bytes') {
-    return '[bytes]'
-  } else if (variable.value) {
-    const value = variable.value
-    switch (value.$case) {
-      case 'jsonObj':
-        return value.jsonObj
-      case 'jsonArr':
-        return value.jsonArr
-      case 'double':
-        return value.double
-      case 'bool':
-        return value.bool
-      case 'str':
-        return value.str
-      case 'int':
-        return value.int
-      default:
-        return undefined
-    }
+  const value = variable.value
+  if (!value) return 'N/A'
+  switch (value.$case) {
+    case 'jsonObj':
+      return value.jsonObj
+    case 'jsonArr':
+      return value.jsonArr
+    case 'double':
+      return value.double
+    case 'bool':
+      return value.bool
+    case 'str':
+      return value.str
+    case 'int':
+      return value.int
+    case 'bytes':
+      return '[bytes]'
+    default:
+      return undefined
   }
 }
 

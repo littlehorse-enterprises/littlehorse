@@ -28,9 +28,7 @@ def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         wf.execute(ASK_FOR_NAME)
         ext_event_output = wf.wait_for_event(
-            EXT_EVENT,
-            correlation_id="some-correlation-id",
-            mask_correlation_id=True
+            EXT_EVENT, correlation_id="some-correlation-id", mask_correlation_id=True
         )
 
         name = wf.add_variable("name", VariableType.STR)
@@ -55,7 +53,9 @@ async def greet(name: str) -> str:
 async def main() -> None:
     config = get_config()
 
-    littlehorse.create_external_event_def(EXT_EVENT, config, correlated_event_config=CorrelatedEventConfig())
+    littlehorse.create_external_event_def(
+        EXT_EVENT, config, correlated_event_config=CorrelatedEventConfig()
+    )
     littlehorse.create_task_def(ask_for_name, ASK_FOR_NAME, config)
     littlehorse.create_task_def(greet, GREET, config)
     littlehorse.create_workflow_spec(get_workflow(), config)
