@@ -20,8 +20,10 @@ type LHWorkflow struct {
 	Name             string
 	threads          []*WorkflowThread
 
-	spec  lhproto.PutWfSpecRequest
-	funcs map[string]ThreadFunc
+	spec                     lhproto.PutWfSpecRequest
+	funcs                    map[string]ThreadFunc
+	workflowEventsToRegister []*ThrowEventNodeOutput
+	externalEventsToRegister []*ExternalEventNodeOutput
 }
 
 type WorkflowThread struct {
@@ -80,9 +82,11 @@ func (n *TaskNodeOutput) JsonPath(jsonPath string) NodeOutput {
 }
 
 type ExternalEventNodeOutput struct {
-	nodeName string
-	jsonPath *string
-	thread   *WorkflowThread
+	nodeName             string
+	jsonPath             *string
+	thread               *WorkflowThread
+	externalEventDefName string
+	payloadType          lhproto.VariableType
 }
 
 func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
@@ -91,6 +95,10 @@ func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 		jsonPath: &jsonPath,
 		thread:   n.thread,
 	}
+}
+
+func (n *ExternalEventNodeOutput) RegisteredAs(payloadType lhproto.VariableType) *ExternalEventNodeOutput {
+	return n.thread.registeredAs(n, payloadType).(*ExternalEventNodeOutput)
 }
 
 func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
@@ -107,6 +115,16 @@ func (n *ExternalEventNodeOutput) SetCorrelationId(id interface{}) *ExternalEven
 func (n *ExternalEventNodeOutput) MaskCorrelationId(maskId bool) *ExternalEventNodeOutput {
 	n.thread.maskCorrelationId(n, maskId)
 	return n
+}
+
+type ThrowEventNodeOutput struct {
+	eventNameDefName string
+	thread           *WorkflowThread
+	payloadType      lhproto.VariableType
+}
+
+func (n *ThrowEventNodeOutput) RegisteredAs(payloadType lhproto.VariableType) *ThrowEventNodeOutput {
+	return n.thread.registeredAs(n, payloadType).(*ThrowEventNodeOutput)
 }
 
 func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
@@ -503,8 +521,8 @@ func (t *WorkflowThread) Condition(
 	return t.condition(lhs, op, rhs)
 }
 
-func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interface{}) {
-	t.throwEvent(workflowEventDefName, content)
+func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interface{}) *ThrowEventNodeOutput {
+	return t.throwEvent(workflowEventDefName, content)
 }
 
 type IfElseBody func(t *WorkflowThread)
@@ -658,4 +676,8 @@ func (u *UserTaskNodeOutput) WithOnCancellationException(exceptionName interface
 	}
 	userTaskNode.OnCancellationExceptionName = onCancellationExceptionName
 	return u
+}
+
+func (l *LHWorkflow) RegisterWfSpec(client lhproto.LittleHorseClient) {
+	l.registerWfSpec(client)
 }
