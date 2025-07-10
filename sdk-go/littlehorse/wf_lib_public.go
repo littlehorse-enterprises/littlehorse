@@ -26,6 +26,14 @@ type LHWorkflow struct {
 	externalEventsToRegister []*ExternalEventNodeOutput
 }
 
+func (l *LHWorkflow) GetWorkflowEventsToRegister() []*ThrowEventNodeOutput {
+	return l.workflowEventsToRegister
+}
+
+func (l *LHWorkflow) GetExternalEventsToRegister() []*ExternalEventNodeOutput {
+	return l.externalEventsToRegister
+}
+
 type WorkflowThread struct {
 	Name              string
 	isActive          bool

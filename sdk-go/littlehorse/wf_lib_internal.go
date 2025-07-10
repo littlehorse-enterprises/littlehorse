@@ -1578,19 +1578,20 @@ func (wf *LHWorkflow) registerWfSpec(client lhproto.LittleHorseClient) error {
 
 	putWf, _ := wf.Compile()
 
-	for _, node := range wf.externalEventsToRegister {
+	for _, node := range wf.GetExternalEventsToRegister() {
 		req, _ := node.toPutExternalEventDefRequest()
 		res, _ := client.PutExternalEventDef(context.Background(), req)
 		log.Printf("Registered ExternalEventDef: %s", req.Name)
 		PrintProto(res)
 	}
 
-	for _, node := range wf.workflowEventsToRegister {
+	for _, node := range wf.GetWorkflowEventsToRegister() {
 		req, _ := node.toPutWorkflowEventDefRequest()
 		res, _ := client.PutWorkflowEventDef(context.Background(), req)
 		log.Printf("Registered WorkflowEventDef: %s", req.Name)
 		PrintProto(res)
 	}
+
 	resp, _ := client.PutWfSpec(context.Background(), putWf)
 	log.Printf("Registered WorkflowSpec: %s", putWf.Name)
 	PrintProto(resp)
