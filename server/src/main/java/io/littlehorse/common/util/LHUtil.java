@@ -16,9 +16,7 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
-import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -189,13 +187,6 @@ public class LHUtil {
             throw new RuntimeException("Stupid programmer error.");
         }
         return str;
-    }
-
-    @Deprecated
-    public static boolean isPrimitive(VariableType variableType) {
-        TypeDefinitionModel temp = new TypeDefinitionModel();
-        temp.setPrimitiveType(variableType);
-        return temp.isPrimitive();
     }
 
     /**
