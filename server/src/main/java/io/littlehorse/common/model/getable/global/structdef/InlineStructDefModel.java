@@ -62,4 +62,10 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                 .filter(entry -> entry.getValue().isRequired())
                 .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
     }
+
+    public static InlineStructDefModel fromProto(InlineStructDef p, ExecutionContext context) {
+        InlineStructDefModel out = new InlineStructDefModel();
+        out.initFrom(p, context);
+        return out;
+    }
 }
