@@ -7,7 +7,7 @@ namespace ExternalEventRegisterExample
         public const string CreateDoc = "create-doc";
 
         [LHTaskMethod(CreateDoc)]
-        public async Task<String> GenerateDoc(String input)
+        public async Task<string> GenerateDoc(string input)
         {
             var doc = $"Document created with content: {input}";
             Console.WriteLine(doc);
