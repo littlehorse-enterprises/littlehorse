@@ -1,6 +1,7 @@
 package littlehorse
 
 import (
+	"context"
 	"errors"
 	"log"
 	"strconv"
@@ -1182,6 +1183,20 @@ func (t *WorkflowThread) maskCorrelationId(n *ExternalEventNodeOutput, masked bo
 	return n
 }
 
+func (t *WorkflowThread) registerWorkflowEventdAs(n *ThrowEventNodeOutput, payloadType lhproto.VariableType) *ThrowEventNodeOutput {
+	t.checkIfIsActive()
+	n.payloadType = payloadType
+	t.wf.workflowEventsToRegister = append(t.wf.workflowEventsToRegister, n)
+	return n
+}
+
+func (t *WorkflowThread) registerExternalEventdAs(n *ExternalEventNodeOutput, payloadType lhproto.VariableType) *ExternalEventNodeOutput {
+	t.checkIfIsActive()
+	n.payloadType = payloadType
+	t.wf.externalEventsToRegister = append(t.wf.externalEventsToRegister, n)
+	return n
+}
+
 func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
@@ -1352,7 +1367,6 @@ func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) *WaitForThreadsNo
 func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(eventName, "EXTERNAL_EVENT")
-
 	node.Node = &lhproto.Node_ExternalEvent{
 		ExternalEvent: &lhproto.ExternalEventNode{
 			ExternalEventDefId: &lhproto.ExternalEventDefId{Name: eventName},
@@ -1360,12 +1374,13 @@ func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput
 	}
 
 	return &ExternalEventNodeOutput{
-		nodeName: nodeName,
-		thread:   t,
+		nodeName:             nodeName,
+		thread:               t,
+		externalEventDefName: eventName,
 	}
 }
 
-func (t *WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) {
+func (t *WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) *ThrowEventNodeOutput {
 	t.checkIfIsActive()
 	_, node := t.createBlankNode("throw-"+workflowEventDefName, "THROW_EVENT")
 
@@ -1380,6 +1395,10 @@ func (t *WorkflowThread) throwEvent(workflowEventDefName string, content interfa
 			},
 			Content: contentAssn,
 		},
+	}
+	return &ThrowEventNodeOutput{
+		eventDefName: workflowEventDefName,
+		thread:       t,
 	}
 }
 
@@ -1538,4 +1557,44 @@ func (t *WorkflowThread) checkIfIsActive() {
 	if !t.isActive {
 		t.throwError(tracerr.Wrap(errors.New("using a inactive thread")))
 	}
+}
+func (n *ExternalEventNodeOutput) toPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest {
+	return &lhproto.PutExternalEventDefRequest{
+		Name:        n.externalEventDefName,
+		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
+	}
+}
+func (n *ThrowEventNodeOutput) toPutWorkflowEventDefRequest() *lhproto.PutWorkflowEventDefRequest {
+	return &lhproto.PutWorkflowEventDefRequest{
+		Name:        n.eventDefName,
+		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
+	}
+}
+
+func (wf *LHWorkflow) registerWfSpec(client lhproto.LittleHorseClient) (any, error) {
+
+	putWf, _ := wf.Compile()
+
+	for _, node := range wf.GetExternalEventsToRegister() {
+		req := node.toPutExternalEventDefRequest()
+		res, _ := client.PutExternalEventDef(context.Background(), req)
+		log.Printf("Registered ExternalEventDef: %s", req.Name)
+		PrintProto(res)
+	}
+
+	for _, node := range wf.GetWorkflowEventsToRegister() {
+		req := node.toPutWorkflowEventDefRequest()
+		res, _ := client.PutWorkflowEventDef(context.Background(), req)
+		log.Printf("Registered WorkflowEventDef: %s", req.Name)
+		PrintProto(res)
+	}
+
+	resp, err := client.PutWfSpec(context.Background(), putWf)
+	if err != nil {
+		log.Printf("Failed to register WorkflowSpec: %v", err)
+		return nil, err
+	}
+	log.Printf("Registered WorkflowSpec: %s", putWf.Name)
+	PrintProto(resp)
+	return resp, nil
 }
