@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/externalevent"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/eventRegistration"
 )
 
 func main() {
@@ -14,12 +15,12 @@ func main() {
 	var askForNameWorker, greetWorker *littlehorse.LHTaskWorker
 	var err error
 
-	askForNameWorker, err = littlehorse.NewTaskWorker(config, externalevent.AskForName, externalevent.AskForNameTaskName)
+	askForNameWorker, err = littlehorse.NewTaskWorker(config, eventRegistration.AskForName, eventRegistration.AskForNameTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	greetWorker, err = littlehorse.NewTaskWorker(config, externalevent.SpecificGreeting, externalevent.SpecificGreetingTaskName)
+	greetWorker, err = littlehorse.NewTaskWorker(config, eventRegistration.SpecificGreeting, eventRegistration.SpecificGreetingTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -126,9 +126,9 @@ func (n *ExternalEventNodeOutput) MaskCorrelationId(maskId bool) *ExternalEventN
 }
 
 type ThrowEventNodeOutput struct {
-	eventNameDefName string
-	thread           *WorkflowThread
-	payloadType      lhproto.VariableType
+	eventDefName string
+	thread       *WorkflowThread
+	payloadType  lhproto.VariableType
 }
 
 func (n *ThrowEventNodeOutput) RegisteredAs(payloadType lhproto.VariableType) *ThrowEventNodeOutput {

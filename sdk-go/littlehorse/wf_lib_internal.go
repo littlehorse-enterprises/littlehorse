@@ -1400,8 +1400,8 @@ func (t *WorkflowThread) throwEvent(workflowEventDefName string, content interfa
 		},
 	}
 	return &ThrowEventNodeOutput{
-		eventNameDefName: workflowEventDefName,
-		thread:           t,
+		eventDefName: workflowEventDefName,
+		thread:       t,
 	}
 }
 
@@ -1561,42 +1561,43 @@ func (t *WorkflowThread) checkIfIsActive() {
 		t.throwError(tracerr.Wrap(errors.New("using a inactive thread")))
 	}
 }
-func (n *ExternalEventNodeOutput) toPutExternalEventDefRequest() (*lhproto.PutExternalEventDefRequest, error) {
+func (n *ExternalEventNodeOutput) toPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest {
 	return &lhproto.PutExternalEventDefRequest{
 		Name:        n.externalEventDefName,
 		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
-	}, nil
+	}
 }
-func (n *ThrowEventNodeOutput) toPutWorkflowEventDefRequest() (*lhproto.PutWorkflowEventDefRequest, error) {
+func (n *ThrowEventNodeOutput) toPutWorkflowEventDefRequest() *lhproto.PutWorkflowEventDefRequest {
 	return &lhproto.PutWorkflowEventDefRequest{
-		Name:        n.eventNameDefName,
+		Name:        n.eventDefName,
 		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
-	}, nil
+	}
 }
 
-func (wf *LHWorkflow) registerWfSpec(client lhproto.LittleHorseClient) error {
+func (wf *LHWorkflow) registerWfSpec(client lhproto.LittleHorseClient) (any, error) {
 
 	putWf, _ := wf.Compile()
 
 	for _, node := range wf.GetExternalEventsToRegister() {
-		req, _ := node.toPutExternalEventDefRequest()
+		req := node.toPutExternalEventDefRequest()
 		res, _ := client.PutExternalEventDef(context.Background(), req)
 		log.Printf("Registered ExternalEventDef: %s", req.Name)
 		PrintProto(res)
 	}
 
 	for _, node := range wf.GetWorkflowEventsToRegister() {
-		req, _ := node.toPutWorkflowEventDefRequest()
+		req := node.toPutWorkflowEventDefRequest()
 		res, _ := client.PutWorkflowEventDef(context.Background(), req)
 		log.Printf("Registered WorkflowEventDef: %s", req.Name)
 		PrintProto(res)
 	}
 
-	resp, error := client.PutWfSpec(context.Background(), putWf)
-	if error != nil {
-		log.Fatalf("Failed to register WorkflowSpec: %v", error)
+	resp, err := client.PutWfSpec(context.Background(), putWf)
+	if err != nil {
+		log.Printf("Failed to register WorkflowSpec: %v", err)
+		return nil, err
 	}
 	log.Printf("Registered WorkflowSpec: %s", putWf.Name)
 	PrintProto(resp)
-	return nil
+	return resp, nil
 }
