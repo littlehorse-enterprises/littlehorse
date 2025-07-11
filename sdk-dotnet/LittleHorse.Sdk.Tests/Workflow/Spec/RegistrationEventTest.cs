@@ -6,9 +6,9 @@ using Xunit;
 
 namespace LittleHorse.Sdk.Tests.Workflow.Spec
 {
-    public class ThrowEventNodeOutputTest
+    public class RegistrationEventTest
     {
-        public ThrowEventNodeOutputTest()
+        public RegistrationEventTest()
         {
             LHLoggerFactoryProvider.Initialize(null);
         }
@@ -117,6 +117,32 @@ namespace LittleHorse.Sdk.Tests.Workflow.Spec
             var exception = Assert.Throws<ArgumentException>(() => eventOutput.ToPutWorkflowEventDefRequest());
             Assert.Equal("Unsupported payload type for workflow event.", exception.Message);
         }
+        
+        [Fact]
+        public void ExternalEventAndWorkflowEvent_shouldWorkTogether()
+        {
+            var workflow = new Sdk.Workflow.Spec.Workflow("test-external-event", Entrypoint);
+
+            var wfSpec = workflow.Compile();
+            var thread = wfSpec.ThreadSpecs[wfSpec.EntrypointThreadName];
+            var externalEventNode = thread.Nodes["1-doc-name-EXTERNAL_EVENT"];
+            var throwEventNode = thread.Nodes["2-throw-create-doc-THROW_EVENT"];
+            
+
+            Assert.Equal("doc-name", externalEventNode.ExternalEvent.ExternalEventDefId.Name);
+            Assert.Equal("create-doc", throwEventNode.ThrowEvent.EventDefId.Name);
+            Assert.Equal("1-doc-name-EXTERNAL_EVENT",throwEventNode.ThrowEvent.Content.NodeOutput.NodeName);
+            return;
+
+            void Entrypoint(WorkflowThread wf)
+            {
+                var docName = wf.WaitForEvent("doc-name").RegisteredAs(typeof(string));
+                wf.ThrowEvent("create-doc",docName).RegisteredAs(typeof(string));
+            }
+        }
+
+
+        
         
         private class MockWorkflowThread : WorkflowThread
         {

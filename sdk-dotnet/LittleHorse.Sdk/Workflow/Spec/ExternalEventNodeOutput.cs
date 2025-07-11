@@ -112,10 +112,11 @@ public class ExternalEventNodeOutput : NodeOutput
     /// Registers the event definition with the specified payload type.
     /// </summary>
     /// <param name="payloadType">The .NET type of the event payload.</param>
-    public void RegisteredAs(Type payloadType)
+    public ExternalEventNodeOutput RegisteredAs(Type payloadType)
     {
         _payloadType = payloadType;
         Parent.RegisterExternalEventDef(this);
+        return this;
     }
 
 }

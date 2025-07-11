@@ -9,8 +9,8 @@ namespace ExternalEventRegisterExample;
 
 public class Program
 {
-    private const string WorkflowName = "correlated-external-event-registration";
-    private const string EventName = "sign-doc";
+    private const string WorkflowName = "external-event-registration";
+    private const string EventName = "doc-name";
     private static ServiceProvider? _serviceProvider;
 
     private static void SetupApplication()
@@ -39,16 +39,8 @@ public class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            var input = wf.DeclareStr("doc-input").Searchable();
-            var id = wf.Execute(MyWorker.CreateDoc, input);
-            wf.WaitForEvent(EventName)
-                .WithCorrelationId(id)
-                .WithCorrelatedEventConfig(
-                    new CorrelatedEventConfig
-                    {
-                        DeleteAfterFirstCorrelation = true
-                    })
-                .RegisteredAs(typeof(string));
+            var docName=wf.WaitForEvent(EventName).RegisteredAs(typeof(string));
+            wf.Execute(MyWorker.CreateDoc, docName);
         }
 
         return new Workflow(WorkflowName, MyEntryPoint);
