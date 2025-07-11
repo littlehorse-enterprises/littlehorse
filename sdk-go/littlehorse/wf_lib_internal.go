@@ -1183,21 +1183,18 @@ func (t *WorkflowThread) maskCorrelationId(n *ExternalEventNodeOutput, masked bo
 	return n
 }
 
-func (t *WorkflowThread) registeredAs(n any, payloadType lhproto.VariableType) interface{} {
+func (t *WorkflowThread) registerWorkflowEventdAs(n *ThrowEventNodeOutput, payloadType lhproto.VariableType) *ThrowEventNodeOutput {
 	t.checkIfIsActive()
-	switch n := n.(type) {
-	case *ExternalEventNodeOutput:
-		n.payloadType = payloadType
-		t.wf.externalEventsToRegister = append(t.wf.externalEventsToRegister, n)
-		return n
-	case *ThrowEventNodeOutput:
-		n.payloadType = payloadType
-		t.wf.workflowEventsToRegister = append(t.wf.workflowEventsToRegister, n)
-		return n
-	default:
-		t.throwError(errors.New("only ExternalEventNodeOutput and ThrowEventNodeOutput can be registered"))
-		return nil
-	}
+	n.payloadType = payloadType
+	t.wf.workflowEventsToRegister = append(t.wf.workflowEventsToRegister, n)
+	return n
+}
+
+func (t *WorkflowThread) registerExternalEventdAs(n *ExternalEventNodeOutput, payloadType lhproto.VariableType) *ExternalEventNodeOutput {
+	t.checkIfIsActive()
+	n.payloadType = payloadType
+	t.wf.externalEventsToRegister = append(t.wf.externalEventsToRegister, n)
+	return n
 }
 
 func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {

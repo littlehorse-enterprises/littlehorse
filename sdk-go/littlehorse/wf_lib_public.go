@@ -106,7 +106,7 @@ func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 }
 
 func (n *ExternalEventNodeOutput) RegisteredAs(payloadType lhproto.VariableType) *ExternalEventNodeOutput {
-	return n.thread.registeredAs(n, payloadType).(*ExternalEventNodeOutput)
+	return n.thread.registerExternalEventdAs(n, payloadType)
 }
 
 func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
@@ -132,7 +132,7 @@ type ThrowEventNodeOutput struct {
 }
 
 func (n *ThrowEventNodeOutput) RegisteredAs(payloadType lhproto.VariableType) *ThrowEventNodeOutput {
-	return n.thread.registeredAs(n, payloadType).(*ThrowEventNodeOutput)
+	return n.thread.registerWorkflowEventdAs(n, payloadType)
 }
 
 func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
