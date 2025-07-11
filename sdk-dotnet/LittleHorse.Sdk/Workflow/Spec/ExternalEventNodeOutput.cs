@@ -1,5 +1,5 @@
 using LittleHorse.Sdk.Common.Proto;
-using Microsoft.AspNetCore.Builder;
+using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
@@ -9,18 +9,21 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 /// </summary>
 public class ExternalEventNodeOutput : NodeOutput
 {
-
+    private Type? _payloadType;
     private CorrelatedEventConfig? _correlatedEventConfig;
-
+    private string ExternalEventDefName { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExternalEventNodeOutput"/> class.
     /// </summary>
     /// <param name="nodeName">The specified node name.</param>
+    /// <param name="externalEventDefName">The external event definition name.</param>
     /// <param name="parent">The workflow thread where the ExternalEventNodeOutput belongs to.</param>
-    public ExternalEventNodeOutput(string nodeName, WorkflowThread parent)
+    public ExternalEventNodeOutput(string nodeName, string externalEventDefName, WorkflowThread parent)
         : base(nodeName, parent)
+
     {
+        ExternalEventDefName = externalEventDefName;
     }
 
     /// <summary>
@@ -81,6 +84,21 @@ public class ExternalEventNodeOutput : NodeOutput
         return this;
     }
 
+
+    /// <summary>
+    /// Returns a PutExternalEventDefRequest for registering this external event definition.
+    /// </summary>
+    public PutExternalEventDefRequest ToPutExternalEventDefRequest()
+    {
+        var req = new PutExternalEventDefRequest
+        {
+            Name = ExternalEventDefName,
+            ContentType = LHMappingHelper.DotNetTypeToReturnType(_payloadType)
+        };
+        if (_correlatedEventConfig != null)
+            req.CorrelatedEventConfig = _correlatedEventConfig;
+        return req;
+    }
     /// <summary>
     /// Get the CorrelatedEventConfig
     /// </summary>
@@ -90,4 +108,15 @@ public class ExternalEventNodeOutput : NodeOutput
         return _correlatedEventConfig ?? new CorrelatedEventConfig();
     }
     
+    /// <summary>
+    /// Registers the event definition with the specified payload type.
+    /// </summary>
+    /// <param name="payloadType">The .NET type of the event payload.</param>
+    public ExternalEventNodeOutput RegisteredAs(Type payloadType)
+    {
+        _payloadType = payloadType;
+        Parent.RegisterExternalEventDef(this);
+        return this;
+    }
+
 }
