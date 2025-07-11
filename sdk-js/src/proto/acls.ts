@@ -249,7 +249,24 @@ export interface ServerACL {
   resources: ACLResource[];
   /** The actions that are permitted. */
   allowedActions: ACLAction[];
-  resourceFilter?: { $case: "name"; name: string } | { $case: "prefix"; prefix: string } | undefined;
+  /**
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   */
+  name?:
+    | string
+    | undefined;
+  /**
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   */
+  prefix?: string | undefined;
 }
 
 /**
@@ -616,7 +633,7 @@ export const ServerACLs = {
 };
 
 function createBaseServerACL(): ServerACL {
-  return { resources: [], allowedActions: [], resourceFilter: undefined };
+  return { resources: [], allowedActions: [], name: undefined, prefix: undefined };
 }
 
 export const ServerACL = {
@@ -631,13 +648,11 @@ export const ServerACL = {
       writer.int32(aCLActionToNumber(v));
     }
     writer.ldelim();
-    switch (message.resourceFilter?.$case) {
-      case "name":
-        writer.uint32(26).string(message.resourceFilter.name);
-        break;
-      case "prefix":
-        writer.uint32(34).string(message.resourceFilter.prefix);
-        break;
+    if (message.name !== undefined) {
+      writer.uint32(26).string(message.name);
+    }
+    if (message.prefix !== undefined) {
+      writer.uint32(34).string(message.prefix);
     }
     return writer;
   },
@@ -688,14 +703,14 @@ export const ServerACL = {
             break;
           }
 
-          message.resourceFilter = { $case: "name", name: reader.string() };
+          message.name = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.resourceFilter = { $case: "prefix", prefix: reader.string() };
+          message.prefix = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -713,20 +728,8 @@ export const ServerACL = {
     const message = createBaseServerACL();
     message.resources = object.resources?.map((e) => e) || [];
     message.allowedActions = object.allowedActions?.map((e) => e) || [];
-    if (
-      object.resourceFilter?.$case === "name" &&
-      object.resourceFilter?.name !== undefined &&
-      object.resourceFilter?.name !== null
-    ) {
-      message.resourceFilter = { $case: "name", name: object.resourceFilter.name };
-    }
-    if (
-      object.resourceFilter?.$case === "prefix" &&
-      object.resourceFilter?.prefix !== undefined &&
-      object.resourceFilter?.prefix !== null
-    ) {
-      message.resourceFilter = { $case: "prefix", prefix: object.resourceFilter.prefix };
-    }
+    message.name = object.name ?? undefined;
+    message.prefix = object.prefix ?? undefined;
     return message;
   },
 };
@@ -1034,7 +1037,6 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
