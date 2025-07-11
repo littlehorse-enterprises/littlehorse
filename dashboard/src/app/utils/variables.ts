@@ -15,10 +15,13 @@ export const getVariableValue = (variable?: VariableValue) => {
 
   const key = Object.keys(variable)[0] as keyof VariableValue
 
-  if (variable.bytes) {
-    return '[bytes]'
-  } else {
-    return variable[key]
+  switch (key) {
+    case 'bytes':
+      return '[bytes]'
+    case 'wfRunId':
+      return String(variable.wfRunId)
+    default:
+      return variable[key]
   }
 }
 

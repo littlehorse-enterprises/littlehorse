@@ -59,7 +59,7 @@ export const WorkflowEventDefDetail: FC<{ nodeRun: NodeRun }> = ({ nodeRun }) =>
 
       <div className={cn('mt-2 flex w-full flex-col overflow-auto rounded p-1', 'bg-zinc-500 text-white')}>
         <h3 className="font-bold">Content</h3>
-        <pre className="overflow-auto">{String(getVariableValue(data.content))}</pre>
+        <pre className="overflow-auto">{getVariableValue(data.content)}</pre>
       </div>
     </div>
   )

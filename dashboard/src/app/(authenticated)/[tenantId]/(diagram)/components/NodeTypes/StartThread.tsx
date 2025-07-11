@@ -31,7 +31,7 @@ const Node: FC<NodeProps> = ({ data }) => {
             <ul>
               {variables.map(([name, value]) => (
                 <li key={name}>
-                  {`{${name}}`} = {String(getVariable(value))}
+                  {`{${name}}`} = {getVariable(value)}
                 </li>
               ))}
             </ul>

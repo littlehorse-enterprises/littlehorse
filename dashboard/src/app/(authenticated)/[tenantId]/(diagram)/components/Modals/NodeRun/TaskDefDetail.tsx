@@ -51,7 +51,7 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
               return (
                 <div key={varName} className="mb-1 flex items-center gap-1">
                   <div className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{varName}</div>
-                  <div className="">= {String(getVariableValue(value))}</div>
+                  <div className="">= {getVariableValue(value)}</div>
                 </div>
               )
             })}

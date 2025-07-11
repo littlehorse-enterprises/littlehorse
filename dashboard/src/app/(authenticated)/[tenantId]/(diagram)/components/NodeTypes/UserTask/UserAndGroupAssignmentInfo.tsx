@@ -1,14 +1,15 @@
+import { getVariable } from '@/app/utils/variables'
 import { WfRunId } from 'littlehorse-client/proto'
 import { FC } from 'react'
 interface UserTaskRunDetailsProps {
-  userGroup: string | number | boolean | Buffer | undefined | WfRunId
-  userId: string | number | boolean | Buffer | undefined | WfRunId
+  userGroup: ReturnType<typeof getVariable>
+  userId: ReturnType<typeof getVariable>
 }
 export const UserAndGroupAssignmentInfo: FC<UserTaskRunDetailsProps> = ({ userGroup, userId }) => {
   return (
     <>
-      {userGroup && <div>Group: {String(userGroup)}</div>}
-      {userId && <div>User: {String(userId)}</div>}
+      {userGroup && <div>Group: {userGroup}</div>}
+      {userId && <div>User: {userId}</div>}
     </>
   )
 }

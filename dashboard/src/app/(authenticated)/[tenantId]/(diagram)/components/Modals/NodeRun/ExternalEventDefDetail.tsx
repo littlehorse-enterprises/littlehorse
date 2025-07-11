@@ -60,7 +60,7 @@ export const ExternalEventDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
 
       <div className={cn('flex w-full flex-col overflow-auto rounded p-1', 'bg-zinc-500 text-white')}>
         <h3 className="font-bold">Content</h3>
-        <pre className="overflow-auto">{String(getVariableValue(data.content))}</pre>
+        <pre className="overflow-auto">{getVariableValue(data.content)}</pre>
       </div>
     </>
   )

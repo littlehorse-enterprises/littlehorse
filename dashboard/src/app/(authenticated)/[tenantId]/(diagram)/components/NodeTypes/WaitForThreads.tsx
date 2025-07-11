@@ -14,14 +14,14 @@ const Node: FC<NodeProps> = ({ data }) => {
       <NodeDetails nodeRunList={nodeRunsList}>
         <DiagramDataGroup label="WaitForThreads">
           {data.waitForThreads?.threadList && (
-            <div className="whitespace-nowrap">{String(getVariable(data.waitForThreads?.threadList))}</div>
+            <div className="whitespace-nowrap">{getVariable(data.waitForThreads?.threadList)}</div>
           )}
           {data.waitForThreads?.threads?.threads.map(thread => (
             <div
               key={`${getVariable(thread.threadRunNumber)}`}
               className="flex items-center justify-center whitespace-nowrap"
             >
-              {String(getVariable(thread.threadRunNumber))}
+              {getVariable(thread.threadRunNumber)}
             </div>
           ))}
           {data.nodeRun && data.nodeRun.errorMessage && (

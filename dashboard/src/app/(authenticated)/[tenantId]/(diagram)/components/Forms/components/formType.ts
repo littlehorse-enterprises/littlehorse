@@ -9,8 +9,8 @@ export const FormComponent = {
   [VariableType.JSON_OBJ]: FormTextarea,
   [VariableType.JSON_ARR]: FormTextarea,
   [VariableType.BYTES]: FormInput,
-  [VariableType.WF_RUN_ID]: FormTextarea,
   [VariableType.UNRECOGNIZED]: FormInput,
+  [VariableType.WF_RUN_ID]: FormTextarea,
 } as const
 
 export type FormFieldType = keyof typeof FormComponent
