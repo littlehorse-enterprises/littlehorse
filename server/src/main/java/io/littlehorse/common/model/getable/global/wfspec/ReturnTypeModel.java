@@ -44,10 +44,6 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
         }
     }
 
-    public boolean isVoidOrPrimitive() {
-        return getOutputType().isEmpty() || getOutputType().get().isPrimitive();
-    }
-
     /**
      * Returns the output type of this ReturnTypeModel. Empty if this ReturnType is VOID.
      */
