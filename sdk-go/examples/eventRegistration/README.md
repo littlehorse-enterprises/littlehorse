@@ -1,12 +1,12 @@
 # Event Registration Example
 
-This example demonstrates a workflow that waits for an `EventRegistration` and processes it.
+This example demonstrates a workflow that waits for an external event and processes it. The main features include registering the workflow specification (`RegisterWfSpec`) and handling external events using `RegisteredAs`.
 
 ---
 
 ## **Start the Task Worker**
 
-The workflow uses two `TaskDef`s, each with its own Task Function. To start the workers, run:
+The workflow uses task definitions (`TaskDef`) with associated task functions. To start the workers, run:
 
 ```bash
 go run ./examples/eventRegistration/worker
@@ -16,9 +16,9 @@ go run ./examples/eventRegistration/worker
 
 ## **Register the Workflow Specification**
 
-The workflow specification (`WfSpec`) and event definitions are registered using the `deploy` script. This includes event registration definitions and workflow event definitions.
+The workflow specification (`WfSpec`) and event definitions are registered using the deploy script. This includes external event definitions and workflow event definitions.
 
-Run the following command in another terminal:
+Run the following command:
 
 ```bash
 go run ./examples/eventRegistration/deploy
@@ -27,7 +27,7 @@ go run ./examples/eventRegistration/deploy
 This will:
 1. Register the external event definitions.
 2. Register the workflow event definitions.
-3. Compile and register the workflow specification.
+3. Compile and register the workflow specification using `wf.RegisterWfSpec(*client)`.
 
 ---
 
@@ -57,7 +57,7 @@ Once the workflow is running, send the external event to the workflow instance u
 lhctl postEvent <wfRunId> my-name STR obi-wan
 ```
 
-This sends the `ExternalEvent` (`my-name`) with a payload of type `STR` and value `obi-wan`.
+This sends the `ExternalEvent` (`my-name`) with a payload of type `STR` and value `obi-wan`. The payload type is specified using `.RegisteredAs(lhproto.VariableType_STR)`.
 
 ---
 
