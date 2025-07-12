@@ -150,6 +150,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
+    public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
@@ -734,6 +735,10 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
     }
 
+    public boolean getRocksDBUseLevelCompaction() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_LEVEL_COMPACTION_KEY, "false"));
+    }
+
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -997,7 +1002,11 @@ public class LHServerConfig extends ConfigBase {
 
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("state.dir", getStateDirectory());
-        props.put("request.timeout.ms", 1000 * 60);
+
+        // Certain request failures are catchable and non-fatal, but if the producer keeps
+        // retrying until the end of the transaction timeout, we have biggger issues.
+        props.put("request.timeout.ms", (int) Math.floor(0.80 * getTransactionTimeoutMs()));
+
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
@@ -1005,7 +1014,8 @@ public class LHServerConfig extends ConfigBase {
         props.put("probing.rebalance.interval.ms", 60 * 1000);
         props.put(
                 "metrics.recording.level",
-                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
+                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, getServerMetricLevel())
+                        .toUpperCase());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getTransactionTimeoutMs());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
