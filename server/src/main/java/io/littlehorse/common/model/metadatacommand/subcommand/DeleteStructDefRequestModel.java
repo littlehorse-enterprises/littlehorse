@@ -8,19 +8,14 @@ import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.DeleteStructDefRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 
 public class DeleteStructDefRequestModel extends MetadataSubCommand<DeleteStructDefRequest> {
 
     private StructDefIdModel id;
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public Message process(MetadataCommandExecution context) {
+    public Message process(MetadataProcessorContext context) {
         context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
     }

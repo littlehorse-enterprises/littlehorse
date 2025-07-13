@@ -43,8 +43,8 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,11 +85,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public ThreadRunModel() {}
 
-    public ThreadRunModel(ProcessorExecutionContext processorContext) {
+    public ThreadRunModel(CoreProcessorContext processorContext) {
         this.executionContext = processorContext;
         this.processorContext = processorContext;
     }
@@ -133,7 +133,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             handledFailedChildren.add(handledFailedChildId);
         }
         executionContext = context;
-        processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        processorContext = context.castOnSupport(CoreProcessorContext.class);
         type = proto.getType();
     }
 
@@ -251,7 +251,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
             VariableDefModel varDef = threadVarDef.getVarDef();
             String varName = varDef.getName();
-            VariableValueModel val;
+            VariableValueModel val = null;
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 // We do NOT create a variable since we want to use the one from the parent.
@@ -260,10 +260,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);
+                if (val.isNull()) {
+                    val = varDef.getDefaultValue();
+                }
             } else if (varDef.getDefaultValue() != null) {
                 val = varDef.getDefaultValue();
-            } else {
-                // TODO: Will need to update this when we add the required variable feature.
+            }
+
+            if (val == null) {
                 val = new VariableValueModel();
             }
             VariableModel variable = new VariableModel(
@@ -367,11 +371,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * be thrown to the client explaining why the ThreadRun could not be rescued.
      * @param skipCurrentNode whether to skip past the current node. If set to `false`, then
      * we attempt to execute the same Node again; else, we move to the next outgoing edge.
-     * @param ctx is a ProcessorExecutionContext.
+     * @param ctx is a CoreProcessorContext.
      * @return Optional.empty() if we can successfully rescue the ThreadRun; else, a Status
      * explaining why not.
      */
-    public void rescue(boolean skipCurrentNode, ProcessorExecutionContext ctx) throws ThreadRunRescueFailedException {
+    public void rescue(boolean skipCurrentNode, CoreProcessorContext ctx) throws ThreadRunRescueFailedException {
         // First, Optional<Status> refers to the grpc status which can be thrown as an error
         // to the client.
 

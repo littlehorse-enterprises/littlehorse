@@ -137,8 +137,9 @@ public interface UserTaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * If set, then the UserTaskRun will always have this specific version of the
-   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+   * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+   * processor to be the latest available version of the UserTaskDef. That way, the
+   * WfSpec always runs with the same version of the UserTaskDef.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>
@@ -147,8 +148,9 @@ public interface UserTaskNodeOrBuilder extends
   boolean hasUserTaskDefVersion();
   /**
    * <pre>
-   * If set, then the UserTaskRun will always have this specific version of the
-   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+   * This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+   * processor to be the latest available version of the UserTaskDef. That way, the
+   * WfSpec always runs with the same version of the UserTaskDef.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>

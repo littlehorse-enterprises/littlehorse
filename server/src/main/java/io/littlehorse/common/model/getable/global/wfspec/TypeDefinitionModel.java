@@ -57,6 +57,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INT:
             case BOOL:
             case DOUBLE:
+            case WF_RUN_ID:
             case STR:
                 return true;
             case JSON_OBJ:

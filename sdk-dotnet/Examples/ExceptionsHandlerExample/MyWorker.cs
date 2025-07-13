@@ -7,7 +7,7 @@ namespace ExceptionsHandler
     public class MyWorker
     { 
         [LHTaskMethod("fail")]
-        public void Fail()
+        public async Task Fail()
         {
             Random random = new Random();
             int randomNumber = random.Next(6, 10);
@@ -21,7 +21,7 @@ namespace ExceptionsHandler
         }
         
         [LHTaskMethod("fail-new-process")]
-        public void FailNewProcess()
+        public async Task FailNewProcess()
         {
             Random random = new Random();
             int randomNumber = random.Next(1, 10);
@@ -39,7 +39,7 @@ namespace ExceptionsHandler
         }
         
         [LHTaskMethod("technical-failure")]
-        public void FailForTechnicalReason()
+        public async Task FailForTechnicalReason()
         {
             string message = null!;
             int result = message.Length;
@@ -47,7 +47,7 @@ namespace ExceptionsHandler
         }
         
         [LHTaskMethod("my-task")]
-        public string PassingTask()
+        public async Task<string> PassingTask()
         {
             Console.WriteLine("Executing passing task.");
             return "woohoo!";

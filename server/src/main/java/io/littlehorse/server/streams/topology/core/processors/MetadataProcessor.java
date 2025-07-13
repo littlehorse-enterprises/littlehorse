@@ -25,7 +25,7 @@ import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.topology.core.MetadataCommandException;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
@@ -152,7 +152,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     }
 
     public void processHelper(final Record<String, MetadataCommand> record) {
-        MetadataCommandExecution metadataContext = buildContext(record);
+        MetadataProcessorContext metadataContext = buildContext(record);
         MetadataCommandModel command = metadataContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {}",
@@ -162,7 +162,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
         try {
             Message response = command.process(metadataContext);
-            if (command.getCommandId().isPresent() && command.hasResponse()) {
+            if (command.hasResponse()) {
 
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                         command.getCommandId().get(), Message.class, new CompletableFuture<>());
@@ -182,8 +182,8 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         }
     }
 
-    public MetadataCommandExecution buildContext(final Record<String, MetadataCommand> record) {
+    public MetadataProcessorContext buildContext(final Record<String, MetadataCommand> record) {
         Headers recordMetadata = record.headers();
-        return new MetadataCommandExecution(recordMetadata, streamsContext, metadataCache, config, record.value());
+        return new MetadataProcessorContext(recordMetadata, streamsContext, metadataCache, config, record.value());
     }
 }

@@ -22,9 +22,12 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
+@Slf4j
 @EqualsAndHashCode(callSuper = false)
 public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
         implements CoreOutputTopicGetable<CorrelatedEvent> {
@@ -74,11 +77,29 @@ public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         // TODO (#1582): add indexes
-        return List.of();
+        return List.of(
+                new GetableIndex<>(
+                        List.of(Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("hasExtEvts", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)));
     }
 
     @Override
-    public List<IndexedField> getIndexValues(String fieldKey, Optional<TagStorageType> tagStorageType) {
-        return List.of();
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
+        switch (key) {
+            case "extEvtDefName" -> {
+                return List.of(new IndexedField(
+                        key, this.getId().getExternalEventDefId().getName(), TagStorageType.LOCAL));
+            }
+            case "hasExtEvts" -> {
+                return List.of(new IndexedField(key, String.valueOf(!externalEvents.isEmpty()), TagStorageType.LOCAL));
+            }
+        }
+        log.warn("Received unknown key for CorrelatedEvent Index: {}", key);
+        return null;
     }
 }

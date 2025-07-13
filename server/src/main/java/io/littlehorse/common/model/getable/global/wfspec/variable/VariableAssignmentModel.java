@@ -19,7 +19,9 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
@@ -192,7 +194,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
-
         return baseType == type;
     }
 }

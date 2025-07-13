@@ -20,7 +20,7 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.server.LHServer;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
@@ -44,7 +44,7 @@ public class TaskQueueManagerTest {
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();
     private final TaskId streamsTaskId = TaskId.parse("0_1");
-    private final ProcessorExecutionContext processorContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
+    private final CoreProcessorContext processorContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
     private final RequestExecutionContext requestContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
     private final UserTaskRunModel userTaskRun =
             TestUtil.userTaskRun(UUID.randomUUID().toString(), processorContext);

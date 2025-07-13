@@ -3,6 +3,9 @@
   "version": "0.0.0-development",
   "license": "AGPL-3.0-only",
   "description": "Littlehorse gPRC Client",
+  "engines": {
+    "node": ">=18.14.0"
+  },
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "exports": {

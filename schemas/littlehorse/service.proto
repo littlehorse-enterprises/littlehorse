@@ -145,6 +145,15 @@ service LittleHorse {
   // to model an entity.
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
+  // Adds userComment to a UserTaskRun
+  rpc PutUserTaskRunComment(PutUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
+  // Edits userComment with the correlated userCommentId 
+  rpc EditUserTaskRunComment(EditUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
+  // Deletes a comment logically, this does not affect the userTaskEvent Log
+  rpc DeleteUserTaskRunComment(DeleteUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
   // Gets a specific NodeRun.
   rpc GetNodeRun(NodeRunId) returns (NodeRun) {}
 
@@ -199,6 +208,10 @@ service LittleHorse {
   // Search for WfRun's. This RPC is highly useful for applications that store data
   // in LittleHorse and need to find a specific WfRun based on certain indexed fields.
   rpc SearchWfRun(SearchWfRunRequest) returns (WfRunIdList) {}
+
+  // Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+  // events that may be orphaned.
+  rpc SearchCorrelatedEvent(SearchCorrelatedEventRequest) returns (CorrelatedEventIdList) {}
 
   // Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
   // your workflows or Task Workers.
@@ -701,6 +714,40 @@ message SearchWfRunRequest {
 message WfRunIdList {
   // The resulting object id's.
   repeated WfRunId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
+// Allows searching for CorrelatedEvents
+message SearchCorrelatedEventRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Specifies to return only WfRun's that started after this time
+  optional google.protobuf.Timestamp earliest_start = 3;
+
+  // Specifies to return only WfRun's that started before this time
+  optional google.protobuf.Timestamp latest_start = 4;
+
+  // ExternalEventDefId of the CorrelatedEvent
+  ExternalEventDefId external_event_def_id = 5;
+
+  // If set and true, only return CorrelatedEvents that have been correlated to a
+  // WfRun and created an ExternalEvent. If False, return only those that are pending
+  // and have not been correlated to a WfRun.
+  optional bool has_external_events = 6;
+}
+
+// List of CorrelatedEventId's
+message CorrelatedEventIdList {
+  // The resulting object id's.
+  repeated CorrelatedEventId results = 1;
 
   // The bookmark can be used for cursor-based pagination. If it is null, the server
   // has returned all results. If it is set, you can pass it into your next request

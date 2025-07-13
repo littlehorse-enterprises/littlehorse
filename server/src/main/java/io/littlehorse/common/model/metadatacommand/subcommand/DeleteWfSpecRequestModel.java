@@ -8,7 +8,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 
 public class DeleteWfSpecRequestModel extends MetadataSubCommand<DeleteWfSpecRequest> {
 
@@ -34,13 +34,9 @@ public class DeleteWfSpecRequestModel extends MetadataSubCommand<DeleteWfSpecReq
     }
 
     @Override
-    public Empty process(MetadataCommandExecution context) {
+    public Empty process(MetadataProcessorContext context) {
         context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
-    }
-
-    public boolean hasResponse() {
-        return true;
     }
 
     public static DeleteWfSpecRequestModel fromProto(DeleteWfSpecRequest p, ExecutionContext context) {

@@ -62,7 +62,7 @@ public abstract class Program
         return new Workflow("example-conditionals", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
@@ -70,20 +70,14 @@ public abstract class Program
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
             var workers = GetTaskWorkers(config);
-            foreach (var worker in workers)
-            {
-                worker.RegisterTaskDef();
-            }
 
-            var workflow = GetWorkflow();
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-            
-            Thread.Sleep(300);
+            await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
 
-            foreach (var worker in workers)
-            {
-                worker.Start();
-            }
+            await GetWorkflow().RegisterWfSpec(config.GetGrpcClientInstance());
+
+            await Task.Delay(300);
+
+            await Task.WhenAll(workers.Select(worker => worker.Start()));
         }
     }
 }

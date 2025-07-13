@@ -314,8 +314,46 @@ export interface SaveUserTaskRunProgressRequest_ResultsEntry {
 
 /** Cancels a UserTaskRun. */
 export interface CancelUserTaskRunRequest {
-  /** The id of the UserTaskRun to cancel. */
+  /** The id of the `UserTaskRun` to cancel. */
   userTaskRunId: UserTaskRunId | undefined;
+}
+
+/** Adds a comment to a UserTaskRun. */
+export interface PutUserTaskRunCommentRequest {
+  /** The id of `UserTaskRun` to save. */
+  userTaskRunId:
+    | UserTaskRunId
+    | undefined;
+  /** The author of the comment being made on a `UserTaskRun` */
+  userId: string;
+  /** The comment being made on a `UserTaskRun` */
+  comment: string;
+}
+
+/** Edits an existing comment on a UserTaskRun */
+export interface EditUserTaskRunCommentRequest {
+  /** This is the unique identifier for a comment */
+  userCommentId: number;
+  /** The id of `UserTaskRun` */
+  userTaskRunId:
+    | UserTaskRunId
+    | undefined;
+  /** The author of the comment being made on a `UserTaskRun` */
+  userId: string;
+  /** The comment being made on a `UserTaskRun` */
+  comment: string;
+}
+
+/** Deletes a comment on a UserTaskRun */
+export interface DeleteUserTaskRunCommentRequest {
+  /** The id of `UserTaskRun` */
+  userTaskRunId:
+    | UserTaskRunId
+    | undefined;
+  /** The id of the comment you are deleting */
+  userCommentId: number;
+  /** The id of the user who deleted the comment */
+  userId: string;
 }
 
 /**
@@ -375,7 +413,23 @@ export interface UserTaskEvent {
     | UserTaskEvent_UTECancelled
     | undefined;
   /** Denotes that the `UserTaskRun` was saved. */
-  saved?: UserTaskEvent_UTESaved | undefined;
+  saved?:
+    | UserTaskEvent_UTESaved
+    | undefined;
+  /** Denotes that there was a comment on a `userTaskRun` */
+  commentAdded?:
+    | UserTaskEvent_UTECommented
+    | undefined;
+  /** Denotes that a comment on a `userTaskRun` has been edited */
+  commentEdited?:
+    | UserTaskEvent_UTECommented
+    | undefined;
+  /** Denotes that a comment on a `userTaskRun` was deleted */
+  commentDeleted?:
+    | UserTaskEvent_UTECommentDeleted
+    | undefined;
+  /** Denotes that a `userTaskRun` has been completed */
+  completed?: UserTaskEvent_UTECompleted | undefined;
 }
 
 /** Empty message used to denote that the `UserTaskRun` was cancelled. */
@@ -418,6 +472,31 @@ export interface UserTaskEvent_UTEAssigned {
     | undefined;
   /** The user_group after the ownership change, if set. */
   newUserGroup?: string | undefined;
+}
+
+/** Message to denote that a comment has been added or edited on a userTaskRun */
+export interface UserTaskEvent_UTECommented {
+  /** The id of the user comment */
+  userCommentId: number;
+  /** This is the id of the user */
+  userId: string;
+  /**
+   * This is the specific note/comment that a user wants to make
+   * on a `UserTask`
+   */
+  comment: string;
+}
+
+/** Message to denote that a userTaskRun has been deleted */
+export interface UserTaskEvent_UTECommentDeleted {
+  /** The id of the comment that will be deleted */
+  userCommentId: number;
+  /** The id of the user who deleted the comment */
+  userId: string;
+}
+
+/** Empty message denoting a `userTaskRunCompleted` */
+export interface UserTaskEvent_UTECompleted {
 }
 
 function createBaseUserTaskDef(): UserTaskDef {
@@ -1260,6 +1339,224 @@ export const CancelUserTaskRunRequest = {
   },
 };
 
+function createBasePutUserTaskRunCommentRequest(): PutUserTaskRunCommentRequest {
+  return { userTaskRunId: undefined, userId: "", comment: "" };
+}
+
+export const PutUserTaskRunCommentRequest = {
+  encode(message: PutUserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userTaskRunId !== undefined) {
+      UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
+    if (message.comment !== "") {
+      writer.uint32(26).string(message.comment);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutUserTaskRunCommentRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutUserTaskRunCommentRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userTaskRunId = UserTaskRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.comment = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutUserTaskRunCommentRequest>): PutUserTaskRunCommentRequest {
+    return PutUserTaskRunCommentRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutUserTaskRunCommentRequest>): PutUserTaskRunCommentRequest {
+    const message = createBasePutUserTaskRunCommentRequest();
+    message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
+      ? UserTaskRunId.fromPartial(object.userTaskRunId)
+      : undefined;
+    message.userId = object.userId ?? "";
+    message.comment = object.comment ?? "";
+    return message;
+  },
+};
+
+function createBaseEditUserTaskRunCommentRequest(): EditUserTaskRunCommentRequest {
+  return { userCommentId: 0, userTaskRunId: undefined, userId: "", comment: "" };
+}
+
+export const EditUserTaskRunCommentRequest = {
+  encode(message: EditUserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userCommentId !== 0) {
+      writer.uint32(8).int32(message.userCommentId);
+    }
+    if (message.userTaskRunId !== undefined) {
+      UserTaskRunId.encode(message.userTaskRunId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.userId !== "") {
+      writer.uint32(26).string(message.userId);
+    }
+    if (message.comment !== "") {
+      writer.uint32(34).string(message.comment);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EditUserTaskRunCommentRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEditUserTaskRunCommentRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userCommentId = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userTaskRunId = UserTaskRunId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.comment = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<EditUserTaskRunCommentRequest>): EditUserTaskRunCommentRequest {
+    return EditUserTaskRunCommentRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<EditUserTaskRunCommentRequest>): EditUserTaskRunCommentRequest {
+    const message = createBaseEditUserTaskRunCommentRequest();
+    message.userCommentId = object.userCommentId ?? 0;
+    message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
+      ? UserTaskRunId.fromPartial(object.userTaskRunId)
+      : undefined;
+    message.userId = object.userId ?? "";
+    message.comment = object.comment ?? "";
+    return message;
+  },
+};
+
+function createBaseDeleteUserTaskRunCommentRequest(): DeleteUserTaskRunCommentRequest {
+  return { userTaskRunId: undefined, userCommentId: 0, userId: "" };
+}
+
+export const DeleteUserTaskRunCommentRequest = {
+  encode(message: DeleteUserTaskRunCommentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userTaskRunId !== undefined) {
+      UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.userCommentId !== 0) {
+      writer.uint32(16).int32(message.userCommentId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(26).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteUserTaskRunCommentRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteUserTaskRunCommentRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userTaskRunId = UserTaskRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.userCommentId = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteUserTaskRunCommentRequest>): DeleteUserTaskRunCommentRequest {
+    return DeleteUserTaskRunCommentRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteUserTaskRunCommentRequest>): DeleteUserTaskRunCommentRequest {
+    const message = createBaseDeleteUserTaskRunCommentRequest();
+    message.userTaskRunId = (object.userTaskRunId !== undefined && object.userTaskRunId !== null)
+      ? UserTaskRunId.fromPartial(object.userTaskRunId)
+      : undefined;
+    message.userCommentId = object.userCommentId ?? 0;
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
 function createBaseUserTaskTriggerReference(): UserTaskTriggerReference {
   return { nodeRunId: undefined, userTaskEventNumber: 0, userId: undefined, userGroup: undefined };
 }
@@ -1341,7 +1638,17 @@ export const UserTaskTriggerReference = {
 };
 
 function createBaseUserTaskEvent(): UserTaskEvent {
-  return { time: undefined, taskExecuted: undefined, assigned: undefined, cancelled: undefined, saved: undefined };
+  return {
+    time: undefined,
+    taskExecuted: undefined,
+    assigned: undefined,
+    cancelled: undefined,
+    saved: undefined,
+    commentAdded: undefined,
+    commentEdited: undefined,
+    commentDeleted: undefined,
+    completed: undefined,
+  };
 }
 
 export const UserTaskEvent = {
@@ -1360,6 +1667,18 @@ export const UserTaskEvent = {
     }
     if (message.saved !== undefined) {
       UserTaskEvent_UTESaved.encode(message.saved, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.commentAdded !== undefined) {
+      UserTaskEvent_UTECommented.encode(message.commentAdded, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.commentEdited !== undefined) {
+      UserTaskEvent_UTECommented.encode(message.commentEdited, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.commentDeleted !== undefined) {
+      UserTaskEvent_UTECommentDeleted.encode(message.commentDeleted, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.completed !== undefined) {
+      UserTaskEvent_UTECompleted.encode(message.completed, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -1406,6 +1725,34 @@ export const UserTaskEvent = {
 
           message.saved = UserTaskEvent_UTESaved.decode(reader, reader.uint32());
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.commentAdded = UserTaskEvent_UTECommented.decode(reader, reader.uint32());
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.commentEdited = UserTaskEvent_UTECommented.decode(reader, reader.uint32());
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.commentDeleted = UserTaskEvent_UTECommentDeleted.decode(reader, reader.uint32());
+          continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.completed = UserTaskEvent_UTECompleted.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1432,6 +1779,18 @@ export const UserTaskEvent = {
       : undefined;
     message.saved = (object.saved !== undefined && object.saved !== null)
       ? UserTaskEvent_UTESaved.fromPartial(object.saved)
+      : undefined;
+    message.commentAdded = (object.commentAdded !== undefined && object.commentAdded !== null)
+      ? UserTaskEvent_UTECommented.fromPartial(object.commentAdded)
+      : undefined;
+    message.commentEdited = (object.commentEdited !== undefined && object.commentEdited !== null)
+      ? UserTaskEvent_UTECommented.fromPartial(object.commentEdited)
+      : undefined;
+    message.commentDeleted = (object.commentDeleted !== undefined && object.commentDeleted !== null)
+      ? UserTaskEvent_UTECommentDeleted.fromPartial(object.commentDeleted)
+      : undefined;
+    message.completed = (object.completed !== undefined && object.completed !== null)
+      ? UserTaskEvent_UTECompleted.fromPartial(object.completed)
       : undefined;
     return message;
   },
@@ -1728,6 +2087,163 @@ export const UserTaskEvent_UTEAssigned = {
     message.oldUserGroup = object.oldUserGroup ?? undefined;
     message.newUserId = object.newUserId ?? undefined;
     message.newUserGroup = object.newUserGroup ?? undefined;
+    return message;
+  },
+};
+
+function createBaseUserTaskEvent_UTECommented(): UserTaskEvent_UTECommented {
+  return { userCommentId: 0, userId: "", comment: "" };
+}
+
+export const UserTaskEvent_UTECommented = {
+  encode(message: UserTaskEvent_UTECommented, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userCommentId !== 0) {
+      writer.uint32(8).int32(message.userCommentId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
+    if (message.comment !== "") {
+      writer.uint32(26).string(message.comment);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskEvent_UTECommented {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserTaskEvent_UTECommented();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userCommentId = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.comment = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<UserTaskEvent_UTECommented>): UserTaskEvent_UTECommented {
+    return UserTaskEvent_UTECommented.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<UserTaskEvent_UTECommented>): UserTaskEvent_UTECommented {
+    const message = createBaseUserTaskEvent_UTECommented();
+    message.userCommentId = object.userCommentId ?? 0;
+    message.userId = object.userId ?? "";
+    message.comment = object.comment ?? "";
+    return message;
+  },
+};
+
+function createBaseUserTaskEvent_UTECommentDeleted(): UserTaskEvent_UTECommentDeleted {
+  return { userCommentId: 0, userId: "" };
+}
+
+export const UserTaskEvent_UTECommentDeleted = {
+  encode(message: UserTaskEvent_UTECommentDeleted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userCommentId !== 0) {
+      writer.uint32(8).int32(message.userCommentId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskEvent_UTECommentDeleted {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserTaskEvent_UTECommentDeleted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userCommentId = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<UserTaskEvent_UTECommentDeleted>): UserTaskEvent_UTECommentDeleted {
+    return UserTaskEvent_UTECommentDeleted.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<UserTaskEvent_UTECommentDeleted>): UserTaskEvent_UTECommentDeleted {
+    const message = createBaseUserTaskEvent_UTECommentDeleted();
+    message.userCommentId = object.userCommentId ?? 0;
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseUserTaskEvent_UTECompleted(): UserTaskEvent_UTECompleted {
+  return {};
+}
+
+export const UserTaskEvent_UTECompleted = {
+  encode(_: UserTaskEvent_UTECompleted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskEvent_UTECompleted {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserTaskEvent_UTECompleted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<UserTaskEvent_UTECompleted>): UserTaskEvent_UTECompleted {
+    return UserTaskEvent_UTECompleted.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<UserTaskEvent_UTECompleted>): UserTaskEvent_UTECompleted {
+    const message = createBaseUserTaskEvent_UTECompleted();
     return message;
   },
 };

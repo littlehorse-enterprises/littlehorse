@@ -9,8 +9,8 @@ import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventMod
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -37,12 +37,7 @@ public class DeleteCorrelatedEventRequestModel extends CoreSubCommand<DeleteCorr
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public Empty process(ProcessorExecutionContext ctx, LHServerConfig config) {
+    public Empty process(CoreProcessorContext ctx, LHServerConfig config) {
         GetableManager manager = ctx.getableManager();
 
         CorrelatedEventModel correlatedEvent = manager.delete(id);
