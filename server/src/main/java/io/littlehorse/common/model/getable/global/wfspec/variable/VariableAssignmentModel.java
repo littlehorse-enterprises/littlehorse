@@ -8,6 +8,8 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.InvalidExpressionException;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -126,10 +128,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             ReadOnlyMetadataManager manager,
             Map<String, ThreadVarDefModel> variableDefs,
             TypeDefinitionModel nodeOutputType)
-            throws LHApiException {
+            throws InvalidExpressionException {
         if (jsonPath != null) {
             // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
-            // which is why we are killing JSONPath with fire
+            // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
             return Optional.empty();
         }
 
@@ -141,7 +143,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case FORMAT_STRING:
                 return Optional.of(new TypeDefinitionModel(VariableType.STR));
             case NODE_OUTPUT:
-                // TODO: metric that warns users that they are using Bad Deprecated Features.
+                // TODO: handle here if nodeOutputType is a STRUCT and we access a field on it.
                 return Optional.ofNullable(nodeOutputType);
             case EXPRESSION:
                 // can be a given type.
@@ -154,7 +156,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // The problem with this is that in this scope we lack context about which node has the
                 // invalid VariableAssignment, so the client may have trouble determining the source. Still
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
-                throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
+                throw new InvalidExpressionException("VariableAssignment passed with missing source");
         }
 
         return Optional.empty();

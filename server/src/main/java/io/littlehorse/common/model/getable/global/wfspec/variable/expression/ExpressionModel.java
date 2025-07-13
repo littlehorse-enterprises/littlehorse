@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.getable.global.wfspec.variable;
+package io.littlehorse.common.model.getable.global.wfspec.variable.expression;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
@@ -7,6 +7,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -47,7 +48,8 @@ public class ExpressionModel extends LHSerializable<Expression> {
     public Optional<TypeDefinitionModel> resolveTypeDefinition(
             ReadOnlyMetadataManager manager,
             TypeDefinitionModel nodeOutputType,
-            Map<String, ThreadVarDefModel> variableDefs) {
+            Map<String, ThreadVarDefModel> variableDefs)
+            throws InvalidExpressionException {
 
         Optional<TypeDefinitionModel> lhsTypeOption = lhs.resolveType(manager, variableDefs, nodeOutputType);
         Optional<TypeDefinitionModel> rhsTypeOption = rhs.resolveType(manager, variableDefs, nodeOutputType);
@@ -59,7 +61,7 @@ public class ExpressionModel extends LHSerializable<Expression> {
         TypeDefinitionModel lhsType = lhsTypeOption.get();
         TypeDefinitionModel rhsType = rhsTypeOption.get();
 
-        return lhsType.resolveTypeAfterMutationWith(operation, rhsType);
+        return lhsType.resolveTypeAfterMutationWith(operation, rhsType, manager);
     }
 
     public VariableValueModel evaluate(VariableAssignerFunc variableFinder) throws LHVarSubError {
