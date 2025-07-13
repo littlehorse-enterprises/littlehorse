@@ -180,6 +180,7 @@ jobs:
         working-directory: ./dashboard
         run: |
           npm install --verbose
+          npm run build
           npm run test
 
   tests-sdk-dotnet:

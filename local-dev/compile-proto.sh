@@ -114,7 +114,7 @@ echo "Compiling protobuf sdk-js"
 $docker_run protoc \
 	--plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto \
 	--ts_proto_out /littlehorse/sdk-js/src/proto \
-	--ts_proto_opt=env=node,oneof=unions,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false,eslint_disable,esModuleInterop=true,useDate=string,stringEnums=true,exportCommonSymbols=false \
+	--ts_proto_opt=env=node,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false,eslint_disable,esModuleInterop=true,useDate=string,stringEnums=true,exportCommonSymbols=false \
 	-I /littlehorse/schemas/littlehorse \
     service.proto
 

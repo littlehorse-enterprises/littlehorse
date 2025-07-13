@@ -3,9 +3,12 @@
 set -e
 
 # Env variables to translate here
+# LHD_OAUTH_ENABLED
 # LHD_OAUTH_CLIENT_ID
 # LHD_OAUTH_CLIENT_SECRET
 # LHD_OAUTH_ISSUER_URI
+# LHD_OAUTH_CALLBACK_URL
+# LHD_OAUTH_CALLBACK_URL_INTERNAL
 # LHD_OAUTH_ENCRYPT_SECRET
 
 if [ -z "${LHC_API_HOST}" ]; then
@@ -18,41 +21,26 @@ if [ -z "${LHC_API_PORT}" ]; then
     exit 1
 fi
 
-# Check if any OAuth variable is set
-if [ -n "${LHD_OAUTH_CLIENT_ID}" ] || [ -n "${LHD_OAUTH_CLIENT_SECRET}" ] || [ -n "${LHD_OAUTH_ISSUER_URI}" ] || [ -n "${LHD_OAUTH_ENCRYPT_SECRET}" ]; then
-    # If any is set, check that all are set
-    missing_vars=""
-    
-    if [ -z "${LHD_OAUTH_CLIENT_ID}" ]; then
-        missing_vars="${missing_vars}LHD_OAUTH_CLIENT_ID "
-    fi
-    
-    if [ -z "${LHD_OAUTH_CLIENT_SECRET}" ]; then
-        missing_vars="${missing_vars}LHD_OAUTH_CLIENT_SECRET "
-    fi
-    
-    if [ -z "${LHD_OAUTH_ISSUER_URI}" ]; then
-        missing_vars="${missing_vars}LHD_OAUTH_ISSUER_URI "
-    fi
-    
-    if [ -z "${LHD_OAUTH_ENCRYPT_SECRET}" ]; then
-        missing_vars="${missing_vars}LHD_OAUTH_ENCRYPT_SECRET "
-    fi
-    
-    if [ -n "${missing_vars}" ]; then
-        echo "Authentication is enabled but the following OAuth configuration variables are missing: ${missing_vars}"
-        echo "Please refer to our documentation https://littlehorse.io/docs/server/operations/dashboard-configuration"
+export LHD_OAUTH_ENABLED=${LHD_OAUTH_ENABLED:-"false"}
+
+if [ "${LHD_OAUTH_ENABLED}" == "true" ]; then
+    if [ -z "${LHD_OAUTH_CLIENT_ID}" ] ||  [ -z "${LHD_OAUTH_CLIENT_SECRET}" ] || [ -z "${LHD_OAUTH_ISSUER_URI}" ] || [ -z "${LHD_OAUTH_ENCRYPT_SECRET}" ] || [ -z "${LHD_OAUTH_CALLBACK_URL}" ]; then
+        echo "Authentication is enabled and some configuration were not provided. Please refer to our documentation https://github.com/littlehorse-enterprises/littlehorse/blob/master/docs/DASHBOARD_CONFIGURATIONS.md"
         exit 1
     fi
+
+  export NEXTAUTH_URL=${LHD_OAUTH_CALLBACK_URL}
+
+  if [ -n "${LHD_OAUTH_CALLBACK_URL_INTERNAL}" ]; then
+      export NEXTAUTH_URL_INTERNAL=${LHD_OAUTH_CALLBACK_URL_INTERNAL}
+  fi
+
+  export KEYCLOAK_CLIENT_ID=${LHD_OAUTH_CLIENT_ID}
+  export KEYCLOAK_CLIENT_SECRET=${LHD_OAUTH_CLIENT_SECRET}
+  export KEYCLOAK_ISSUER_URI=${LHD_OAUTH_ISSUER_URI}
+  export NEXTAUTH_SECRET=${LHD_OAUTH_ENCRYPT_SECRET}
+else
+  export NEXTAUTH_SECRET=$(uuidgen)
 fi
-
-
-export AUTH_SECRET=${LHD_OAUTH_ENCRYPT_SECRET}
-export AUTH_TRUST_HOST=true # https://authjs.dev/getting-started/deployment#docker
-
-export KEYCLOAK_CLIENT_ID=${LHD_OAUTH_CLIENT_ID}
-export KEYCLOAK_CLIENT_SECRET=${LHD_OAUTH_CLIENT_SECRET}
-export KEYCLOAK_ISSUER_URI=${LHD_OAUTH_ISSUER_URI}
-
 
 /entrypoint.sh
