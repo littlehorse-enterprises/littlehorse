@@ -90,7 +90,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ workflowEvent }) => {
-                      if (!workflowEvent.id?.wfRunId) return;
+                      if (!workflowEvent.id?.wfRunId) return
                       return (
                         <TableRow key={workflowEvent.id.number}>
                           <TableCell>

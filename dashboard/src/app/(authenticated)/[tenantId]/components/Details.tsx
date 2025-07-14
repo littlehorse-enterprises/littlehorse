@@ -1,7 +1,6 @@
 import { TagIcon } from 'lucide-react'
 import { FC } from 'react'
 
-
 export type DetailsProps = {
   itemHeader: string
   header: string

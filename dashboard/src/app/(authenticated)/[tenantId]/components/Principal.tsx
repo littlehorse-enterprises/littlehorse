@@ -11,7 +11,6 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { signOut } from 'next-auth/react'
 import { FC } from 'react'
 
-
 export const Principal: FC = () => {
   const { user } = useWhoAmI()
 

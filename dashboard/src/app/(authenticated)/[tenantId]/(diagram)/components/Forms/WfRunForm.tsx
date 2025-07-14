@@ -14,7 +14,6 @@ type Prop = {
   onSubmit: (data: FormValues) => void
 }
 
-
 export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, onSubmit }, ref) => {
   const methods = useForm<FormValues>()
   const { register, handleSubmit, formState } = methods

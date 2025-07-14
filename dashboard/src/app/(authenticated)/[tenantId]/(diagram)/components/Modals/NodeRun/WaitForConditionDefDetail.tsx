@@ -1,12 +1,6 @@
 import { NodeRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 
-
-
-
-
-
-
 export const WaitForConditionDefDetail: FC<{ nodeRun: NodeRun }> = () => {
   // ? Commented out, but here incase we need it later.
   // const { tenantId } = useParams() as { tenantId: string }

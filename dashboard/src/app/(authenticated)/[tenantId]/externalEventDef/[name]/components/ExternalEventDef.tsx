@@ -103,7 +103,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ externalEvent }) => {
-                      if (!externalEvent.id?.wfRunId) return;
+                      if (!externalEvent.id?.wfRunId) return
                       return (
                         <TableRow key={externalEvent.id?.guid}>
                           <TableCell>

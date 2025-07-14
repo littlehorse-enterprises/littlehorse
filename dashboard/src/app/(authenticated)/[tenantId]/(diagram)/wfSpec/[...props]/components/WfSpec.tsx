@@ -11,14 +11,10 @@ import { ScheduledWfRuns } from './ScheduledWfRuns'
 import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
 
-
-
-
 type WfSpecProps = {
   spec: Spec
 }
 export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
-
   const { setModal, setShowModal } = useModal()
 
   const onClick = useCallback(() => {

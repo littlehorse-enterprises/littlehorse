@@ -35,7 +35,6 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const taskDefName = spec.id?.name || ''
 
   const {
-
     data: wfSpecsData,
     hasNextPage: wfSpecsHasNextPage,
     fetchNextPage: wfSpecsFetchNextPage,
@@ -162,7 +161,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                       <Fragment key={i}>
                         {page.resultsWithDetails.length > 0 ? (
                           page.resultsWithDetails.map(({ taskRun }) => {
-                            if (!taskRun.id?.wfRunId) return;
+                            if (!taskRun.id?.wfRunId) return
                             return (
                               <TableRow key={taskRun.id?.taskGuid}>
                                 <TableCell>

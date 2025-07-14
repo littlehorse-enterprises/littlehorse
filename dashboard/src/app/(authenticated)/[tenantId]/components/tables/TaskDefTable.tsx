@@ -4,7 +4,6 @@ import { SearchResultProps } from '.'
 import { SelectionLink } from '../SelectionLink'
 
 export const TaskDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
-
   if (pages.every(page => page.results.length === 0)) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No TaskDefs</div>
   }

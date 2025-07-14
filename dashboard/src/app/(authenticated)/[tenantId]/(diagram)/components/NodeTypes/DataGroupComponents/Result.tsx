@@ -2,8 +2,6 @@ import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/Overfl
 
 import { cn } from '@/components/utils'
 
-
-
 export function Result({
   resultString,
   resultMessage,

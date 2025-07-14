@@ -15,7 +15,7 @@ import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.waitForCondition) return null
 
-  const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted  } = data
+  const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted } = data
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>

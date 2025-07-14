@@ -159,7 +159,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ userTaskRun, nodeRun }) => {
-                      if (!userTaskRun.id?.wfRunId) return;
+                      if (!userTaskRun.id?.wfRunId) return
                       return (
                         <TableRow key={userTaskRun.id?.userTaskGuid}>
                           <TableCell>

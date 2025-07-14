@@ -1,4 +1,3 @@
-
 import LinkWithTenant from './LinkWithTenant'
 
 import { Fragment } from 'react'

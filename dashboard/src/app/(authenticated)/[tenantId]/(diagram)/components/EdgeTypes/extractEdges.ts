@@ -92,8 +92,8 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
       node.waitForThreads?.threads?.threads.forEach(thread => {
         const startThreadNodeName = thread.threadRunNumber?.variableName ?? ''
         const waitingThreadSpecName =
-          Object.entries(threadSpec.nodes).find(([id, ]) => id == startThreadNodeName)?.[1].startThread
-            ?.threadSpecName ?? ''
+          Object.entries(threadSpec.nodes).find(([id]) => id == startThreadNodeName)?.[1].startThread?.threadSpecName ??
+          ''
         const waitingThreadSpec = wfSpec.threadSpecs[waitingThreadSpecName]
         const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(([id, _], [id2, __]) => id.localeCompare(id2))
         const exitNodeId = sortedNodes[sortedNodes.length - 1][0]
