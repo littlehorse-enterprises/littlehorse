@@ -49,8 +49,10 @@ public abstract class ConfigBase {
 
     protected String getOrSetDefault(String key, String defaultVal) {
         if (!props.containsKey(key)) {
-            log.warn("Config: {} unset, defaulting to: {}", key, defaultVal);
-            if (defaultVal != null) props.setProperty(key, defaultVal);
+            if (defaultVal != null) {
+                log.info("Config: {} unset, defaulting to: {}", key, defaultVal);
+                props.setProperty(key, defaultVal);
+            }
             return defaultVal;
         } else {
             return String.valueOf(props.get(key));
