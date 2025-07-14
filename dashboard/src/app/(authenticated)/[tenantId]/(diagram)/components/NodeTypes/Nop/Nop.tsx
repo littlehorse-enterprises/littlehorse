@@ -2,14 +2,13 @@ import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
-import { nopHandles } from './nopHandles'
+
 
 const NopNode: FC<NodeProps> = props => {
   const {
     data: { fade },
   } = props
 
-  const handlers = nopHandles(props)
 
   return (
     <Fade fade={fade}>

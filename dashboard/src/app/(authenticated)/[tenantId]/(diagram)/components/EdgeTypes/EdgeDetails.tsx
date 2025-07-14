@@ -3,8 +3,8 @@ import { CSSProperties, FC, PropsWithChildren } from 'react'
 export const EdgeDetails: FC<PropsWithChildren<{ labelX: number; labelY: number; id: string }>> = ({
   children,
   labelX,
-  labelY,
-  id,
+  labelY
+  ,
 }) => {
   const wrapperStyle: CSSProperties = {
     position: 'absolute',

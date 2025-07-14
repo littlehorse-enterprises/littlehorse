@@ -1,8 +1,8 @@
-import { WfSpecData } from '@/types'
+
 import LinkWithTenant from './LinkWithTenant'
 
 import { Fragment } from 'react'
-import { TagIcon } from 'lucide-react'
+
 import { Separator } from '@/components/ui/separator'
 
 export const SelectionLink = ({

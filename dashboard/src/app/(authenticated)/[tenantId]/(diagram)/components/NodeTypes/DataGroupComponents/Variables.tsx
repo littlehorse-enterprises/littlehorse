@@ -1,9 +1,9 @@
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 import { getVariableValue } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
+
 import { VariableAssignment, VarNameAndVal } from 'littlehorse-client/proto'
-import { Dialog, DialogTrigger, DialogContent, DialogClose } from '@/components/ui/dialog'
+import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog'
 import { EyeIcon } from 'lucide-react'
 import { VARIABLE_TYPES } from '@/app/constants'
 

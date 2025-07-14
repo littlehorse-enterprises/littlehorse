@@ -1,6 +1,6 @@
 'use server'
 
-import { WfRunId } from 'littlehorse-client/proto'
+
 import { lhClient } from '../lhClient'
 
 export async function getUserTaskRun(tenantId: string, wfRunId: string, userTaskGuid: string) {

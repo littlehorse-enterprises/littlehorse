@@ -1,6 +1,6 @@
-import { formatTime, getVariableValue } from '@/app/utils'
+import { getVariableValue } from '@/app/utils'
 import { Comparator, Node as NodeProto } from 'littlehorse-client/proto'
-import { CircleEqualIcon, ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
+import { CircleEqualIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
@@ -9,13 +9,13 @@ import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 
 import { NodeRunsList } from '../../NodeRunsList'
-import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+
 import { Condition } from './Condition'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.waitForCondition) return null
 
-  const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted, nodeRun } = data
+  const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted  } = data
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>

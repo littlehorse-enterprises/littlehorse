@@ -103,15 +103,16 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ externalEvent }) => {
+                      if (!externalEvent.id?.wfRunId) return;
                       return (
                         <TableRow key={externalEvent.id?.guid}>
                           <TableCell>
                             <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(externalEvent.id?.wfRunId!)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
+                              href={`/wfRun/${concatWfRunIds(externalEvent.id.wfRunId)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
                             >
-                              {concatWfRunIds(externalEvent.id?.wfRunId!)}
+                              {concatWfRunIds(externalEvent.id.wfRunId)}
                             </LinkWithTenant>
                           </TableCell>
                           <TableCell>{externalEvent.id?.guid}</TableCell>

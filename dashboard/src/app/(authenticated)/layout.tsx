@@ -1,18 +1,10 @@
 import { Toaster } from '@/components/ui/sonner'
 import { WhoAmIContext } from '@/contexts/WhoAmIContext'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { SWRConfig } from 'swr'
 import getWhoAmI from '../getWhoami'
 import '../globals.css'
 import { Header } from './[tenantId]/components/Header'
 import { QueryProvider } from './[tenantId]/components/QueryProvider'
-
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'LittleHorse | Dashboard',
-}
 
 export default async function RootLayout({
   children,
