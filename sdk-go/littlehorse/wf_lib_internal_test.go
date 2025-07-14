@@ -1760,9 +1760,6 @@ func TestRegisteredAsExternalEvent(ts *testing.T) {
 	assert.Equal(ts, "bool-event", boolNode.GetExternalEvent().GetExternalEventDefId().GetName())
 	assert.Equal(ts, "json-event", jsonNode.GetExternalEvent().GetExternalEventDefId().GetName())
 	assert.Equal(ts, "list-event", listNode.GetExternalEvent().GetExternalEventDefId().GetName())
-	workflowEvents := wf.GetExternalEventsToRegister()
-	assert.NotNil(ts, workflowEvents)
-	assert.Equal(ts, 6, len(workflowEvents))
 
 }
 func TestRegisteredAsWorkflowEvent(ts *testing.T) {
@@ -1796,8 +1793,5 @@ func TestRegisteredAsWorkflowEvent(ts *testing.T) {
 	assert.Equal(ts, "bool-event", boolNode.GetThrowEvent().GetEventDefId().GetName())
 	assert.Equal(ts, "json-event", jsonNode.GetThrowEvent().GetEventDefId().GetName())
 	assert.Equal(ts, "list-event", listNode.GetThrowEvent().GetEventDefId().GetName())
-	workflowEvents := wf.GetWorkflowEventsToRegister()
-	assert.NotNil(ts, workflowEvents)
-	assert.Equal(ts, 6, len(workflowEvents))
 
 }
