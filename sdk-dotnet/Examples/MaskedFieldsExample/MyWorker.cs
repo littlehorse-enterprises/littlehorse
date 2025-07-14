@@ -6,7 +6,7 @@ namespace MaskedFieldsExample
     {
         [LHTaskMethod("create-greet")]
         [LHType(masked: true)]
-        public string CreateGreeting([LHType(masked: true)] string name)
+        public async Task<string> CreateGreeting([LHType(masked: true)] string name)
         {
             var message = $"Hello team, This is a New Greeting for {name}";
             Console.WriteLine($"Executing task create greet {name}");
@@ -14,7 +14,7 @@ namespace MaskedFieldsExample
         }
         
         [LHTaskMethod("update-greet")]
-        public string UpdateGreeting([LHType(masked: true)] string name)
+        public async Task<string> UpdateGreeting([LHType(masked: true)] string name)
         {
             var message = $"Hello team, This is Greeting Modification {name}";
             Console.WriteLine($"Executing task update greet {name}");
@@ -22,7 +22,7 @@ namespace MaskedFieldsExample
         }
         
         [LHTaskMethod("delete-greet")]
-        public string DeleteGreeting(string name)
+        public async Task<string> DeleteGreeting(string name)
         {
             var message = $"Hello team, This is a Greeting Deletion {name}";
             Console.WriteLine($"Executing task delete greet {name}");
