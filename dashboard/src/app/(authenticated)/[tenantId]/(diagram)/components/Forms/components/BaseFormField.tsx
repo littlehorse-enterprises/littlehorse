@@ -44,7 +44,7 @@ export const BaseFormField: FC<BaseFormFieldProps> = ({
     <div>
       <div className="mb-2 flex justify-between">
         <Label htmlFor={name} className="flex items-center gap-2">
-          {name.replace(DOT_REPLACEMENT_PATTERN, ".")}
+          {name.replace(DOT_REPLACEMENT_PATTERN, '.')}
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[accessLevel]}</span>
           {required ? (
             <span className="rounded bg-red-300 p-1 text-xs">Required</span>
