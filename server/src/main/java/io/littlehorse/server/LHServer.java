@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
@@ -183,7 +184,7 @@ public class LHServer {
         healthService.start();
     }
 
-    public void close() {
+    public void close() throws TimeoutException {
 
         CountDownLatch streamLatch = new CountDownLatch(2);
         new Thread(() -> {
@@ -203,9 +204,9 @@ public class LHServer {
                 .start();
         try {
             streamLatch.await();
-            log.info("Done shutting down all LHServer threads");
-        } catch (Exception exn) {
-            throw new RuntimeException(exn);
+            log.info("Done shutting down all Kafka Stream threads");
+        } catch (InterruptedException exn) {
+            throw new IllegalStateException("Failed to shut down Kafka Stream threads", exn);
         }
 
         CountDownLatch latch = new CountDownLatch(2);
@@ -214,6 +215,7 @@ public class LHServer {
                     log.info("Closing internalComms");
                     internalComms.close();
                     latch.countDown();
+                    log.info("Done closing internalComms");
                 })
                 .start();
 
@@ -221,13 +223,14 @@ public class LHServer {
                     log.info("Closing health service");
                     healthService.close();
                     latch.countDown();
+                    log.info("Done closing health service");
                 })
                 .start();
         try {
             latch.await();
             log.info("Done closing internalComms and health service");
-        } catch (Exception exn) {
-            throw new RuntimeException(exn);
+        } catch (InterruptedException exn) {
+            throw new IllegalStateException("Failed to shut down internalComms and health service", exn);
         }
 
         for (LHServerListener listener : listeners) {
