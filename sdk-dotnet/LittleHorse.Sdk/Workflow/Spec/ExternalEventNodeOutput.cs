@@ -52,7 +52,7 @@ public class ExternalEventNodeOutput : NodeOutput
         //should mask automatically
         bool shouldMaskAutomatically = (correlationId is WfRunVariable) && ((WfRunVariable)correlationId).IsMasked;
         Parent.SetCorrelationIdOnExternalEventNode(this, correlationId, shouldMaskAutomatically);
-        if (_correlatedEventConfig == null) _correlatedEventConfig = new CorrelatedEventConfig();
+        _correlatedEventConfig ??= new CorrelatedEventConfig();
 
         return this;
     }
@@ -99,6 +99,7 @@ public class ExternalEventNodeOutput : NodeOutput
             req.CorrelatedEventConfig = _correlatedEventConfig;
         return req;
     }
+
     /// <summary>
     /// Get the CorrelatedEventConfig
     /// </summary>
@@ -107,7 +108,7 @@ public class ExternalEventNodeOutput : NodeOutput
     {
         return _correlatedEventConfig ?? new CorrelatedEventConfig();
     }
-    
+
     /// <summary>
     /// Registers the event definition with the specified payload type.
     /// </summary>
@@ -118,5 +119,4 @@ public class ExternalEventNodeOutput : NodeOutput
         Parent.RegisterExternalEventDef(this);
         return this;
     }
-
 }

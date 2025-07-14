@@ -1,16 +1,17 @@
 ﻿using LittleHorse.Sdk;
-using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ExternalEventRegisterExample;
+namespace EventRegistrationExample;
 
 public class Program
 {
-    private const string WorkflowName = "external-event-registration";
+    private const string WorkflowName = "workflow-and-external-event-registration";
     private const string EventName = "doc-name";
+    private const string ThrowEventName = "doc-created";
+
     private static ServiceProvider? _serviceProvider;
 
     private static void SetupApplication()
@@ -24,7 +25,7 @@ public class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
 
@@ -37,13 +38,15 @@ public class Program
 
     private static Workflow GetWorkflow()
     {
+        return new Workflow(WorkflowName, MyEntryPoint);
+
         void MyEntryPoint(WorkflowThread wf)
         {
-            var docName=wf.WaitForEvent(EventName).RegisteredAs(typeof(string));
-            wf.Execute(MyWorker.CreateDoc, docName);
+            var docName = wf.WaitForEvent(EventName).RegisteredAs(typeof(string));
+            var doc = wf.Execute(MyWorker.CreateDoc, docName);
+            wf.ThrowEvent(ThrowEventName, doc)
+                .RegisteredAs(typeof(string));
         }
-
-        return new Workflow(WorkflowName, MyEntryPoint);
     }
 
     static async Task Main(string[] args)
@@ -52,7 +55,7 @@ public class Program
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetLHConfig(args, loggerFactory);
+            var config = GetConfig(args, loggerFactory);
 
             var executable = new MyWorker();
             var taskWorker = new LHTaskWorker<MyWorker>(executable, MyWorker.CreateDoc, config);

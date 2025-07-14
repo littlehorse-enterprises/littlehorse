@@ -1,6 +1,6 @@
 ﻿using LittleHorse.Sdk.Worker;
 
-namespace ExternalEventRegisterExample
+namespace EventRegistrationExample
 {
     public class MyWorker
     {

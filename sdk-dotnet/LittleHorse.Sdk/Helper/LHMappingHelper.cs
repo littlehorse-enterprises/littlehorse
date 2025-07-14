@@ -222,21 +222,10 @@ namespace LittleHorse.Sdk.Helper
         /// <exception cref="ArgumentException">Thrown if the type is not supported.</exception>
         public static ReturnType DotNetTypeToReturnType(Type? type)
         {
-            var typeDef = new TypeDefinition();
-            if (type == typeof(string))
-                typeDef.Type = VariableType.Str;
-            else if (type == typeof(int))
-                typeDef.Type = VariableType.Int;
-            else if (type == typeof(double))
-                typeDef.Type = VariableType.Double;
-            else if (type == typeof(bool))
-                typeDef.Type = VariableType.Bool;
-            else if (typeof(IDictionary).IsAssignableFrom(type))
-                typeDef.Type = VariableType.JsonObj;
-            else if (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string))
-                typeDef.Type = VariableType.JsonArr;
-            else
-                throw new ArgumentException("Unsupported payload type for workflow event.");
+            var typeDef = new TypeDefinition
+            {
+                Type = DotNetTypeToLHVariableType(type!)
+            };
             return new ReturnType { ReturnType_ = typeDef };
         }
 

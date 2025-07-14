@@ -387,7 +387,7 @@ public class WorkflowThread
         Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
-        return new ExternalEventNodeOutput(nodeName,externalEventDefName, this);
+        return new ExternalEventNodeOutput(nodeName, externalEventDefName, this);
     }
     
     /// <summary>

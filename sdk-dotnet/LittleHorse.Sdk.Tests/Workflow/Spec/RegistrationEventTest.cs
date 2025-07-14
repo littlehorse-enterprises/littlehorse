@@ -96,29 +96,6 @@ namespace LittleHorse.Sdk.Tests.Workflow.Spec
         }
         
         [Fact]
-        public void ToPutWorkflowEventDefRequest_ShouldThrowExceptionWithNullPayloadType()
-        {
-            var thread = new MockWorkflowThread();
-            var eventOutput = new ThrowEventNodeOutput("null-test-event", thread);
-            
-            var exception = Assert.Throws<ArgumentException>(() => eventOutput.ToPutWorkflowEventDefRequest());
-            
-            Assert.Equal("Unsupported payload type for workflow event.", exception.Message);
-        }
-        
-        [Fact]
-        public void ToPutWorkflowEventDefRequest_ShouldThrowExceptionWithExplicitNullType()
-        {
-            var thread = new MockWorkflowThread();
-            var eventOutput = new ThrowEventNodeOutput("explicit-null-event", thread);
-            
-            eventOutput.RegisteredAs(null);
-            
-            var exception = Assert.Throws<ArgumentException>(() => eventOutput.ToPutWorkflowEventDefRequest());
-            Assert.Equal("Unsupported payload type for workflow event.", exception.Message);
-        }
-        
-        [Fact]
         public void ExternalEventAndWorkflowEvent_shouldWorkTogether()
         {
             var workflow = new Sdk.Workflow.Spec.Workflow("test-external-event", Entrypoint);

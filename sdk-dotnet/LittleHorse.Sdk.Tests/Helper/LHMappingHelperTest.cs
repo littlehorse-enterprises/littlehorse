@@ -287,4 +287,24 @@ public class LHMappingHelperTest
             Assert.Equal(VariableType.JsonObj, result);
         }
     }
+
+    [Fact]
+    public void DotNetTypeToReturnType_WithIntType_ShouldReturnCorrectReturnType()
+    {
+        var result = LHMappingHelper.DotNetTypeToReturnType(typeof(int));
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.ReturnType_);
+        Assert.Equal(VariableType.Int, result.ReturnType_.Type);
+    }
+
+    [Fact]
+    public void DotNetTypeToReturnType_WithStringType_ShouldReturnCorrectReturnType()
+    {
+        var result = LHMappingHelper.DotNetTypeToReturnType(typeof(string));
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.ReturnType_);
+        Assert.Equal(VariableType.Str, result.ReturnType_.Type);
+    }
 }
