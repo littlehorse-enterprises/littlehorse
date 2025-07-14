@@ -26,7 +26,7 @@ repos:
     hooks:
       - id: shellcheck
         name: List Shell Scripts
-        args: ['-x', '--severity=error']
+        args: ["-x", "--severity=error"]
   - repo: local
     hooks:
       # Dependencies
@@ -74,6 +74,13 @@ repos:
         always_run: true
         pass_filenames: false
         entry: bash -c 'cd ./sdk-js && npm run lint:fix'
+
+      - id: format-dashboard
+        name: Format Dashboard
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: bash -c 'cd ./dashboard && npm run lint:fix'
 
       # Linters
 
