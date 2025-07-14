@@ -828,6 +828,11 @@ message SearchNodeRunRequest {
 
   // Specifies the status of NodeRun to search for.
   LHStatus status = 6;
+
+  // Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+  // Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+  optional ExternalEventDefId external_event_def = 7;
+
 }
 
 // List of NodeRun Id's.
