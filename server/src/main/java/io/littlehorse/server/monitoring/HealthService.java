@@ -59,7 +59,9 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
                 metadataCache,
                 new StandbyMetrics(standbyStores, config.getLHInstanceName()),
                 coreState);
-        this.server = Javalin.create();
+        this.server = Javalin.create(c -> {
+            c.useVirtualThreads = true;
+        });
 
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
