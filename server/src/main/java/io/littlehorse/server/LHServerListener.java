@@ -1,7 +1,6 @@
 package io.littlehorse.server;
 
 import com.google.common.base.Strings;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -12,9 +11,6 @@ import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
-import io.grpc.netty.shaded.io.netty.channel.ServerChannel;
-import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
-import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -233,19 +229,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
-                .workerEventLoopGroup(new NioEventLoopGroup(
-                        2,
-                        new ThreadFactoryBuilder()
-                                .setPriority(Thread.MIN_PRIORITY)
-                                .setNameFormat("lh-server-grpc-worker-%d")
-                                .build()))
-                .bossEventLoopGroup(new NioEventLoopGroup(
-                        2,
-                        new ThreadFactoryBuilder()
-                                .setPriority(Thread.MIN_PRIORITY)
-                                .setNameFormat("lh-server-grpc-boss-%d")
-                                .build()))
-                .channelFactory(NioServerSocketChannel::new)
+                .maxConcurrentCallsPerConnection(100)
                 .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {
@@ -254,17 +238,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         builder.intercept(new GlobalExceptionHandler());
         this.grpcListener = builder.build();
         this.commandSender = commandSender;
-    }
-
-    private static Class<? extends ServerChannel> epollServerChannelType() {
-        try {
-            Class<? extends ServerChannel> serverSocketChannel = Class.forName(
-                            "io.grpc.netty.shaded.io.netty.channel.epoll.EpollServerSocketChannel")
-                    .asSubclass(ServerChannel.class);
-            return serverSocketChannel;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Cannot load EpollServerSocketChannel", e);
-        }
     }
 
     public void start() throws IOException {
