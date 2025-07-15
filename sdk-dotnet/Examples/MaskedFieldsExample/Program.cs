@@ -50,7 +50,7 @@ public abstract class Program
             WfRunVariable maskedName = wf.DeclareStr("masked-name").Masked();
             wf.Execute("create-greet", maskedName);
             wf.Execute("update-greet", maskedName);
-            WfRunVariable name = wf.DeclareStr("input-name").Masked();
+            WfRunVariable name = wf.DeclareStr("input-name");
             wf.Execute("delete-greet", name);
         }
         return new Workflow("example-masked-fields", MyEntryPoint);
