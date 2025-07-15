@@ -236,6 +236,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                         new ThreadFactoryBuilder()
                                 .setPriority(Thread.MIN_PRIORITY)
                                 .build()))
+                .bossEventLoopGroup(new NioEventLoopGroup(
+                        2,
+                        new ThreadFactoryBuilder()
+                                .setPriority(Thread.MIN_PRIORITY)
+                                .build()))
                 .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {
