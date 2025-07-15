@@ -355,6 +355,15 @@ public class BackendInternalComms implements Closeable {
         return LHInternalsGrpc.newStub(getChannel(host)).withCallCredentials(credentials);
     }
 
+    public LHInternalsGrpc.LHInternalsFutureStub getInternalFutureClient(
+            HostInfo host, InternalCallCredentials credentials) {
+        if (host.port() == -1) {
+            throw new LHApiException(
+                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+        }
+        return LHInternalsGrpc.newFutureStub(getChannel(host)).withCallCredentials(credentials);
+    }
+
     private ManagedChannel getChannel(HostInfo host) {
         String key = host.host() + ":" + host.port();
         ManagedChannel channel = channels.get(key);

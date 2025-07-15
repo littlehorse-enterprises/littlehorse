@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -16,6 +17,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
@@ -24,6 +26,7 @@ import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
@@ -160,10 +163,23 @@ public class CommandSender {
                     .setCommandId(commandId.get())
                     .setPartition(meta.partition())
                     .build();
-            LHInternalsGrpc.LHInternalsBlockingStub internalClient =
-                    internalComms.getInternalClient(meta.activeHost(), InternalCallCredentials.forContext(context));
-            return CompletableFuture.completedFuture(
-                    buildRespFromBytes(internalClient.waitForCommand(req).getResult(), responseCls));
+            LHInternalsGrpc.LHInternalsFutureStub internalClient = internalComms.getInternalFutureClient(
+                    meta.activeHost(), InternalCallCredentials.forContext(context));
+            CompletableFuture<Message> out = new CompletableFuture<>();
+            ListenableFuture<WaitForCommandResponse> waitForCommandResponseListenableFuture =
+                    internalClient.waitForCommand(req);
+            waitForCommandResponseListenableFuture.addListener(
+                    () -> {
+                        try {
+                            WaitForCommandResponse waitForCommandResponse =
+                                    waitForCommandResponseListenableFuture.get();
+                            out.complete(buildRespFromBytes(waitForCommandResponse.getResult(), responseCls));
+                        } catch (InterruptedException | ExecutionException e) {
+                            out.completeExceptionally(e.getCause());
+                        }
+                    },
+                    Runnable::run);
+            return out;
         }
     }
 }
