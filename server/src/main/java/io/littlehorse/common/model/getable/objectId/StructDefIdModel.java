@@ -72,4 +72,10 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
     public StructDefIdModel bumpVersion() {
         return new StructDefIdModel(name, version + 1);
     }
+
+    public static StructDefIdModel fromProto(StructDefId p, ExecutionContext context) {
+        StructDefIdModel out = new StructDefIdModel();
+        out.initFrom(p, context);
+        return out;
+    }
 }
