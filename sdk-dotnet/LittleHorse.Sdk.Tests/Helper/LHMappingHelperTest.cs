@@ -299,12 +299,11 @@ public class LHMappingHelperTest
     }
 
     [Fact]
-    public void DotNetTypeToReturnType_WithStringType_ShouldReturnCorrectReturnType()
+    public void DotNetTypeToReturnType_WithNull_ShouldThrowException()
     {
-        var result = LHMappingHelper.DotNetTypeToReturnType(typeof(string));
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.ReturnType_);
-        Assert.Equal(VariableType.Str, result.ReturnType_.Type);
+        var exception= Assert.Throws<ArgumentNullException>(() => LHMappingHelper.DotNetTypeToReturnType(null!));
+        
+        Assert.Equal("type", exception.ParamName);
+        Assert.Equal("Type cannot be null. (Parameter 'type')", exception.Message);
     }
 }

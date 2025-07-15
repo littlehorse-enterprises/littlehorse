@@ -222,6 +222,10 @@ namespace LittleHorse.Sdk.Helper
         /// <exception cref="ArgumentException">Thrown if the type is not supported.</exception>
         public static ReturnType DotNetTypeToReturnType(Type? type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type),"Type cannot be null.");
+            }
             var typeDef = new TypeDefinition
             {
                 Type = DotNetTypeToLHVariableType(type!)
