@@ -1,5 +1,6 @@
 ﻿using LittleHorse.Sdk;
 using LittleHorse.Sdk.Worker;
+using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -19,11 +20,12 @@ public abstract class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetLHConfig(ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
         
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
@@ -40,6 +42,17 @@ public abstract class Program
         
         return workers;
     }
+    
+    private static Workflow GetWorkflow()
+    {
+        void MyEntryPoint(WorkflowThread wf)
+        {
+            var requestTime = wf.DeclareInt("request-time");
+            wf.Execute("task", requestTime);
+        }
+        
+        return new Workflow("example-worker-context", MyEntryPoint);
+    }   
 
     static async Task Main(string[] args)
     {
@@ -47,10 +60,11 @@ public abstract class Program
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetLHConfig(args, loggerFactory);
+            var config = GetLHConfig(loggerFactory);
             var workers = GetTaskWorkers(config);
 
             await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
+            await GetWorkflow().RegisterWfSpec(config.GetGrpcClientInstance());
             
             await Task.Delay(300);
 
