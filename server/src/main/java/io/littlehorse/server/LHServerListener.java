@@ -5,12 +5,12 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Context;
-import io.grpc.Grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -225,11 +225,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
         this.grpcListener = null;
 
-        ServerBuilder<?> builder = Grpc.newServerBuilderForPort(
-                        listenerConfig.getPort(), listenerConfig.getCredentials())
+        ServerBuilder<?> builder = NettyServerBuilder.forPort(listenerConfig.getPort(), listenerConfig.getCredentials())
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
+                .maxConcurrentCallsPerConnection(10)
                 .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {
