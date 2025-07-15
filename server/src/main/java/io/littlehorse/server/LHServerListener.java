@@ -1,6 +1,7 @@
 package io.littlehorse.server;
 
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -11,6 +12,7 @@ import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -229,7 +231,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
-                .maxConcurrentCallsPerConnection(1000)
+                .workerEventLoopGroup(new NioEventLoopGroup(
+                        2,
+                        new ThreadFactoryBuilder()
+                                .setPriority(Thread.MIN_PRIORITY)
+                                .build()))
                 .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {
