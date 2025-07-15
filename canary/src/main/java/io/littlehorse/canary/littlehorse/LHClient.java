@@ -4,11 +4,13 @@ import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import io.grpc.Deadline;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseFutureStub;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 public class LHClient {
 
@@ -20,7 +22,7 @@ public class LHClient {
 
     public LHClient(
             final LHConfig lhConfig, final String workflowName, final int workflowVersion, final int workflowRevision) {
-        this.futureStub = lhConfig.getFutureStub();
+        this.futureStub = lhConfig.getFutureStub().withDeadline(Deadline.after(1, TimeUnit.MINUTES));
         this.blockingStub = lhConfig.getBlockingStub();
         this.workflowName = workflowName;
         this.workflowRevision = workflowRevision;
