@@ -1168,11 +1168,12 @@ func (t *WorkflowThread) setCorrelationId(n *ExternalEventNodeOutput, id interfa
 		t.throwError(err)
 	}
 	node.GetExternalEvent().CorrelationKey = varAssn
-	// Check if id is a masked WfRunVariable and set MaskedValue=true if so
 	if v, ok := id.(*WfRunVariable); ok && v.threadVarDef.VarDef.TypeDef.Masked {
 		node.GetExternalEvent().MaskCorrelationKey = true
 	}
-
+	if n.correlatedEventConfig == nil {
+		n.correlatedEventConfig = &lhproto.CorrelatedEventConfig{}
+	}
 	return n
 }
 
@@ -1558,11 +1559,17 @@ func (t *WorkflowThread) checkIfIsActive() {
 		t.throwError(tracerr.Wrap(errors.New("using a inactive thread")))
 	}
 }
-func (n *ExternalEventNodeOutput) toPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest {
-	return &lhproto.PutExternalEventDefRequest{
+func (n *ExternalEventNodeOutput) ToPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest {
+	req := &lhproto.PutExternalEventDefRequest{
 		Name:        n.externalEventDefName,
 		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
 	}
+
+	if n.correlatedEventConfig != nil {
+		req.CorrelatedEventConfig = n.correlatedEventConfig
+	}
+
+	return req
 }
 func (n *ThrowEventNodeOutput) toPutWorkflowEventDefRequest() *lhproto.PutWorkflowEventDefRequest {
 	return &lhproto.PutWorkflowEventDefRequest{
@@ -1576,7 +1583,7 @@ func (wf *LHWorkflow) registerWfSpec(client lhproto.LittleHorseClient) (any, err
 	putWf, _ := wf.Compile()
 
 	for _, node := range wf.externalEventsToRegister {
-		req := node.toPutExternalEventDefRequest()
+		req := node.ToPutExternalEventDefRequest()
 		res, _ := client.PutExternalEventDef(context.Background(), req)
 		log.Printf("Registered ExternalEventDef: %s", req.Name)
 		PrintProto(res)

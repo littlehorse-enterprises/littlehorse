@@ -82,18 +82,22 @@ func (n *TaskNodeOutput) JsonPath(jsonPath string) NodeOutput {
 }
 
 type ExternalEventNodeOutput struct {
-	nodeName             string
-	jsonPath             *string
-	thread               *WorkflowThread
-	externalEventDefName string
-	payloadType          lhproto.VariableType
+	nodeName              string
+	jsonPath              *string
+	thread                *WorkflowThread
+	externalEventDefName  string
+	payloadType           lhproto.VariableType
+	correlatedEventConfig *lhproto.CorrelatedEventConfig
 }
 
 func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	return &ExternalEventNodeOutput{
-		nodeName: n.nodeName,
-		jsonPath: &jsonPath,
-		thread:   n.thread,
+		nodeName:              n.nodeName,
+		jsonPath:              &jsonPath,
+		thread:                n.thread,
+		externalEventDefName:  n.externalEventDefName,
+		payloadType:           n.payloadType,
+		correlatedEventConfig: n.correlatedEventConfig,
 	}
 }
 
@@ -114,6 +118,11 @@ func (n *ExternalEventNodeOutput) SetCorrelationId(id interface{}) *ExternalEven
 
 func (n *ExternalEventNodeOutput) MaskCorrelationId(maskId bool) *ExternalEventNodeOutput {
 	n.thread.maskCorrelationId(n, maskId)
+	return n
+}
+
+func (n *ExternalEventNodeOutput) WithCorrelatedEventConfig(config *lhproto.CorrelatedEventConfig) *ExternalEventNodeOutput {
+	n.correlatedEventConfig = config
 	return n
 }
 
