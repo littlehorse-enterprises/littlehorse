@@ -184,7 +184,7 @@ public class LHServer {
         healthService.start();
     }
 
-    public void close() throws TimeoutException {
+    public void close() {
 
         CountDownLatch streamLatch = new CountDownLatch(2);
         new Thread(() -> {
