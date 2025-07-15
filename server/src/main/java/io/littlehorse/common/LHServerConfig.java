@@ -52,6 +52,7 @@ import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
 import org.rocksdb.Cache;
+import org.rocksdb.InfoLogLevel;
 import org.rocksdb.LRUCache;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
@@ -150,6 +151,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
+    public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
+    public static final String ROCKSDB_LOG_LEVEL_KEY = "LHS_X_ROCKSDB_LOG_LEVEL";
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
@@ -734,6 +737,31 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
     }
 
+    public boolean getRocksDBUseLevelCompaction() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_LEVEL_COMPACTION_KEY, "false"));
+    }
+
+    public Optional<InfoLogLevel> getRocksDBLogLevel() {
+        String logLevel = getOrSetDefault(ROCKSDB_LOG_LEVEL_KEY, "NONE");
+        if (logLevel.equals("NONE")) {
+            return Optional.empty();
+        }
+        switch (logLevel) {
+            case "INFO":
+                return Optional.of(InfoLogLevel.INFO_LEVEL);
+            case "DEBUG":
+                return Optional.of(InfoLogLevel.DEBUG_LEVEL);
+            case "ERROR":
+                return Optional.of(InfoLogLevel.ERROR_LEVEL);
+            case "WARN":
+                return Optional.of(InfoLogLevel.WARN_LEVEL);
+            case "FATAL":
+                return Optional.of(InfoLogLevel.FATAL_LEVEL);
+        }
+        throw new LHMisconfigurationException(
+                "Unrecognized rocksdb log level: " + logLevel + "; allowed: INFO|DEBUG|WARN|ERROR|FATAL|NONE");
+    }
+
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -1125,7 +1153,7 @@ public class LHServerConfig extends ConfigBase {
         long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
-                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache);
+                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
         }
     }
 

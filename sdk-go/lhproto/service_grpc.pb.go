@@ -47,6 +47,9 @@ const (
 	LittleHorse_CancelUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/CancelUserTaskRun"
 	LittleHorse_SaveUserTaskRunProgress_FullMethodName    = "/littlehorse.LittleHorse/SaveUserTaskRunProgress"
 	LittleHorse_ListUserTaskRuns_FullMethodName           = "/littlehorse.LittleHorse/ListUserTaskRuns"
+	LittleHorse_PutUserTaskRunComment_FullMethodName      = "/littlehorse.LittleHorse/PutUserTaskRunComment"
+	LittleHorse_EditUserTaskRunComment_FullMethodName     = "/littlehorse.LittleHorse/EditUserTaskRunComment"
+	LittleHorse_DeleteUserTaskRunComment_FullMethodName   = "/littlehorse.LittleHorse/DeleteUserTaskRunComment"
 	LittleHorse_GetNodeRun_FullMethodName                 = "/littlehorse.LittleHorse/GetNodeRun"
 	LittleHorse_ListNodeRuns_FullMethodName               = "/littlehorse.LittleHorse/ListNodeRuns"
 	LittleHorse_GetTaskRun_FullMethodName                 = "/littlehorse.LittleHorse/GetTaskRun"
@@ -63,6 +66,7 @@ const (
 	LittleHorse_ListExternalEvents_FullMethodName         = "/littlehorse.LittleHorse/ListExternalEvents"
 	LittleHorse_ListWorkflowEvents_FullMethodName         = "/littlehorse.LittleHorse/ListWorkflowEvents"
 	LittleHorse_SearchWfRun_FullMethodName                = "/littlehorse.LittleHorse/SearchWfRun"
+	LittleHorse_SearchCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
 	LittleHorse_SearchNodeRun_FullMethodName              = "/littlehorse.LittleHorse/SearchNodeRun"
 	LittleHorse_SearchTaskRun_FullMethodName              = "/littlehorse.LittleHorse/SearchTaskRun"
 	LittleHorse_SearchUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/SearchUserTaskRun"
@@ -197,6 +201,12 @@ type LittleHorseClient interface {
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
+	// Adds userComment to a UserTaskRun
+	PutUserTaskRunComment(ctx context.Context, in *PutUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
+	// Edits userComment with the correlated userCommentId
+	EditUserTaskRunComment(ctx context.Context, in *EditUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
+	// Deletes a comment logically, this does not affect the userTaskEvent Log
+	DeleteUserTaskRunComment(ctx context.Context, in *DeleteUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
 	// Gets a specific NodeRun.
 	GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error)
 	// Lists all NodeRun's for a specific WfRun.
@@ -236,6 +246,9 @@ type LittleHorseClient interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
+	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+	// events that may be orphaned.
+	SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error)
 	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
 	// your workflows or Task Workers.
 	SearchNodeRun(ctx context.Context, in *SearchNodeRunRequest, opts ...grpc.CallOption) (*NodeRunIdList, error)
@@ -587,6 +600,33 @@ func (c *littleHorseClient) ListUserTaskRuns(ctx context.Context, in *ListUserTa
 	return out, nil
 }
 
+func (c *littleHorseClient) PutUserTaskRunComment(ctx context.Context, in *PutUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+	out := new(UserTaskRun)
+	err := c.cc.Invoke(ctx, LittleHorse_PutUserTaskRunComment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) EditUserTaskRunComment(ctx context.Context, in *EditUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+	out := new(UserTaskRun)
+	err := c.cc.Invoke(ctx, LittleHorse_EditUserTaskRunComment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) DeleteUserTaskRunComment(ctx context.Context, in *DeleteUserTaskRunCommentRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+	out := new(UserTaskRun)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteUserTaskRunComment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error) {
 	out := new(NodeRun)
 	err := c.cc.Invoke(ctx, LittleHorse_GetNodeRun_FullMethodName, in, out, opts...)
@@ -725,6 +765,15 @@ func (c *littleHorseClient) ListWorkflowEvents(ctx context.Context, in *ListWork
 func (c *littleHorseClient) SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error) {
 	out := new(WfRunIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchWfRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error) {
+	out := new(CorrelatedEventIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchCorrelatedEvent_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1197,6 +1246,12 @@ type LittleHorseServer interface {
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
+	// Adds userComment to a UserTaskRun
+	PutUserTaskRunComment(context.Context, *PutUserTaskRunCommentRequest) (*UserTaskRun, error)
+	// Edits userComment with the correlated userCommentId
+	EditUserTaskRunComment(context.Context, *EditUserTaskRunCommentRequest) (*UserTaskRun, error)
+	// Deletes a comment logically, this does not affect the userTaskEvent Log
+	DeleteUserTaskRunComment(context.Context, *DeleteUserTaskRunCommentRequest) (*UserTaskRun, error)
 	// Gets a specific NodeRun.
 	GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error)
 	// Lists all NodeRun's for a specific WfRun.
@@ -1236,6 +1291,9 @@ type LittleHorseServer interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
+	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+	// events that may be orphaned.
+	SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error)
 	// Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
 	// your workflows or Task Workers.
 	SearchNodeRun(context.Context, *SearchNodeRunRequest) (*NodeRunIdList, error)
@@ -1422,6 +1480,15 @@ func (UnimplementedLittleHorseServer) SaveUserTaskRunProgress(context.Context, *
 func (UnimplementedLittleHorseServer) ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserTaskRuns not implemented")
 }
+func (UnimplementedLittleHorseServer) PutUserTaskRunComment(context.Context, *PutUserTaskRunCommentRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskRunComment not implemented")
+}
+func (UnimplementedLittleHorseServer) EditUserTaskRunComment(context.Context, *EditUserTaskRunCommentRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditUserTaskRunComment not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteUserTaskRunComment(context.Context, *DeleteUserTaskRunCommentRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserTaskRunComment not implemented")
+}
 func (UnimplementedLittleHorseServer) GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNodeRun not implemented")
 }
@@ -1469,6 +1536,9 @@ func (UnimplementedLittleHorseServer) ListWorkflowEvents(context.Context, *ListW
 }
 func (UnimplementedLittleHorseServer) SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchCorrelatedEvent not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchNodeRun(context.Context, *SearchNodeRunRequest) (*NodeRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchNodeRun not implemented")
@@ -2086,6 +2156,60 @@ func _LittleHorse_ListUserTaskRuns_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_PutUserTaskRunComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutUserTaskRunCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutUserTaskRunComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutUserTaskRunComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutUserTaskRunComment(ctx, req.(*PutUserTaskRunCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_EditUserTaskRunComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditUserTaskRunCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).EditUserTaskRunComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_EditUserTaskRunComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).EditUserTaskRunComment(ctx, req.(*EditUserTaskRunCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_DeleteUserTaskRunComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserTaskRunCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteUserTaskRunComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteUserTaskRunComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteUserTaskRunComment(ctx, req.(*DeleteUserTaskRunCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetNodeRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NodeRunId)
 	if err := dec(in); err != nil {
@@ -2370,6 +2494,24 @@ func _LittleHorse_SearchWfRun_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).SearchWfRun(ctx, req.(*SearchWfRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchCorrelatedEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchCorrelatedEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchCorrelatedEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchCorrelatedEvent(ctx, req.(*SearchCorrelatedEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3200,6 +3342,18 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_ListUserTaskRuns_Handler,
 		},
 		{
+			MethodName: "PutUserTaskRunComment",
+			Handler:    _LittleHorse_PutUserTaskRunComment_Handler,
+		},
+		{
+			MethodName: "EditUserTaskRunComment",
+			Handler:    _LittleHorse_EditUserTaskRunComment_Handler,
+		},
+		{
+			MethodName: "DeleteUserTaskRunComment",
+			Handler:    _LittleHorse_DeleteUserTaskRunComment_Handler,
+		},
+		{
 			MethodName: "GetNodeRun",
 			Handler:    _LittleHorse_GetNodeRun_Handler,
 		},
@@ -3262,6 +3416,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchWfRun",
 			Handler:    _LittleHorse_SearchWfRun_Handler,
+		},
+		{
+			MethodName: "SearchCorrelatedEvent",
+			Handler:    _LittleHorse_SearchCorrelatedEvent_Handler,
 		},
 		{
 			MethodName: "SearchNodeRun",

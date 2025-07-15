@@ -20,20 +20,7 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
-import io.littlehorse.test.internal.step.AssignUserTask;
-import io.littlehorse.test.internal.step.AwaitWorkflowEventStep;
-import io.littlehorse.test.internal.step.CancelUserTaskRun;
-import io.littlehorse.test.internal.step.RescueThreadRunStep;
-import io.littlehorse.test.internal.step.SearchStep;
-import io.littlehorse.test.internal.step.SendExternalEventStep;
-import io.littlehorse.test.internal.step.VerifyAllTaskRunsStep;
-import io.littlehorse.test.internal.step.VerifyLastNodeRunStep;
-import io.littlehorse.test.internal.step.VerifyNodeRunStep;
-import io.littlehorse.test.internal.step.VerifyTaskExecution;
-import io.littlehorse.test.internal.step.VerifyTaskRunOutputsStep;
-import io.littlehorse.test.internal.step.VerifyVariableStep;
-import io.littlehorse.test.internal.step.VerifyWfRunStep;
-import io.littlehorse.test.internal.step.WaitForStatusStep;
+import io.littlehorse.test.internal.step.*;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -81,6 +68,12 @@ public class WfRunVerifier extends AbstractVerifier {
 
     public WfRunVerifier thenVerifyWfRun(Consumer<WfRun> wfRunMatcher) {
         steps.add(new VerifyWfRunStep(wfRunMatcher, steps.size() + 1));
+        return this;
+    }
+
+    public WfRunVerifier thenSendCorrelatedEvent(String externalEventName, String key, Object content) {
+        VariableValue contentVal = LHLibUtil.objToVarVal(content);
+        steps.add(new SendCorrelatedEventStep(externalEventName, key, contentVal, steps.size() + 1));
         return this;
     }
 
@@ -212,6 +205,24 @@ public class WfRunVerifier extends AbstractVerifier {
 
     public WfRunVerifier thenCancelUserTaskRun(int threadRunNumber, int nodeRunNumber) {
         steps.add(new CancelUserTaskRun(steps.size() + 1, threadRunNumber, nodeRunNumber));
+        return this;
+    }
+
+    public WfRunVerifier thenCommentUserTaskRun(int threadRunNumber, int nodeRunNumber, String userId, String comment) {
+        steps.add(new UserTaskRunCommentStep(steps.size() + 1, threadRunNumber, nodeRunNumber, userId, comment));
+        return this;
+    }
+
+    public WfRunVerifier thenDeleteCommentUserTaskRun(
+            int threadNumber, int nodeRunNumber, int commentId, String userId) {
+        steps.add(new DeleteUserTaskRunCommentStep(steps.size() + 1, threadNumber, nodeRunNumber, commentId, userId));
+        return this;
+    }
+
+    public WfRunVerifier thenEditComment(
+            int threadNumber, int nodeRunNumber, String userId, String comment, int commentId) {
+        steps.add(new EditUserTaskRunCommentStep(
+                steps.size() + 1, threadNumber, nodeRunNumber, userId, comment, commentId));
         return this;
     }
 }

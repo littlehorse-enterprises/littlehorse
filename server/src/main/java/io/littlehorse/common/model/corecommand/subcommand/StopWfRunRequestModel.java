@@ -11,8 +11,8 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 
 public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
 
@@ -40,7 +40,7 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
     }
 
     @Override
-    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager getableManager = executionContext.getableManager();
         WfRunModel wfRunModel = getableManager.get(wfRunId);
         if (wfRunModel == null) {
@@ -49,10 +49,6 @@ public class StopWfRunRequestModel extends CoreSubCommand<StopWfRunRequest> {
 
         wfRunModel.processStopRequest(this);
         return Empty.getDefaultInstance();
-    }
-
-    public boolean hasResponse() {
-        return true;
     }
 
     public static StopWfRunRequestModel fromProto(StopWfRunRequest p, ExecutionContext context) {

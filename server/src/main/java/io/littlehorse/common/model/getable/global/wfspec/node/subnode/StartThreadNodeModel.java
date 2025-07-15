@@ -10,9 +10,9 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,7 +54,7 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws LHApiException {
         WfSpecModel wfSpecModel = node.threadSpec.wfSpec;
 
         if (threadSpecName.equals(node.threadSpec.name)) {
@@ -79,7 +79,7 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
     }
 
     @Override
-    public StartThreadRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public StartThreadRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         StartThreadRunModel out = new StartThreadRunModel();
         out.threadSpecName = threadSpecName;
         return out;

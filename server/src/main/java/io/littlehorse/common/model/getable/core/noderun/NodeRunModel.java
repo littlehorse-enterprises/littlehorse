@@ -36,8 +36,8 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,7 +86,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public NodeRunModel() {}
 
-    public NodeRunModel(ProcessorExecutionContext processorContext) {
+    public NodeRunModel(CoreProcessorContext processorContext) {
         this.executionContext = processorContext;
     }
 
@@ -344,14 +344,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * Returns the ThreadRunModel representing the ThreadRun that the NodeRun for this NodeRunModel
      * is a part of.
      *
-     * Requires a ProcessorExecutionContext; meaning that this should only be called from within the
+     * Requires a CoreProcessorContext; meaning that this should only be called from within the
      * CommandProcessor execution context.
      * @return the ThreadRunModel for the ThreadRun that this NodeRunModel's NodeRun belongs to.
      */
     public ThreadRunModel getThreadRun() {
         if (threadRunDoNotUseMe == null) {
-            ProcessorExecutionContext processorContext =
-                    executionContext.castOnSupport(ProcessorExecutionContext.class);
+            CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
             WfRunModel wfRunModel = processorContext.getableManager().get(id.getWfRunId());
             threadRunDoNotUseMe = wfRunModel.getThreadRun(id.getThreadRunNumber());
         }
@@ -429,7 +428,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * This method may mutate the state of the NodeRun.
      * @return
      */
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         boolean completed;
         try {
             completed = getSubNodeRun().checkIfProcessingCompleted(processorContext);
@@ -443,14 +442,14 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         if (completed) {
             status = LHStatus.COMPLETED;
             endTime = executionContext
-                    .castOnSupport(ProcessorExecutionContext.class)
+                    .castOnSupport(CoreProcessorContext.class)
                     .currentCommand()
                     .getTime();
         }
         return completed;
     }
 
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         try {
             getSubNodeRun().arrive(time, processorContext);
             setStatus(LHStatus.RUNNING);
@@ -471,7 +470,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * @precondition the NodeRUnModel should already be completed or recovered from failure.
      * @return the output from this NodeRunModel's NodeRun, if such output exists.
      */
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         if (status != LHStatus.COMPLETED) {
             throw new IllegalStateException("Cannot get output from a non-completed NodeRun");
         }
@@ -484,7 +483,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * to HALTING. Returns true if the NodeRun is successfully HALTED.
      * @return true if the NodeRun is successfully HALTED; else false.
      */
-    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
         if (!isInProgress()) {
             // If the NodeRun is already completed, failed, or halted, then we're done (:
             return true;
@@ -514,7 +513,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * @return the WfSpecModel for the WfSpec of this NodeRunModel's NodeRun
      */
     public WfSpecModel getWfSpec() {
-        ProcessorExecutionContext ctx = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext ctx = executionContext.castOnSupport(CoreProcessorContext.class);
         return ctx.service().getWfSpec(wfSpecId);
     }
 
@@ -544,7 +543,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * @return the Node that the ThreadSpecModel should advance to next.
      * @throws NodeFailureException if evaluation of outgoing edges fails or if variable mutations fail.
      */
-    public NodeModel evaluateOutgoingEdgesAndMaybeMutateVariables(ProcessorExecutionContext processorContext)
+    public NodeModel evaluateOutgoingEdgesAndMaybeMutateVariables(CoreProcessorContext processorContext)
             throws NodeFailureException {
         NodeModel currentNode = getNode();
         ThreadRunModel thread = getThreadRun();

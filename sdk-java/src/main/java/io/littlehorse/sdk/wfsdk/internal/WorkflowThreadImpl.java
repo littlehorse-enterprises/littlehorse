@@ -271,6 +271,10 @@ final class WorkflowThreadImpl implements WorkflowThread {
         parent.addExternalEventDefToRegister(nodeOutputImpl);
     }
 
+    public void registerWorkflowEventDef(ThrowEventNodeOutputImpl nodeOutputImpl) {
+        parent.addWorkflowEventDefToRegister(nodeOutputImpl);
+    }
+
     @Override
     public void cancelUserTaskRunAfter(UserTaskOutput userTask, Serializable delaySeconds) {
         checkIfIsActive();
@@ -716,13 +720,15 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, nb.build());
     }
 
-    public void addCorrelationIdToExtEvtNode(ExternalEventNodeOutputImpl node, Serializable correlationId) {
+    public void addCorrelationIdToExtEvtNode(
+            ExternalEventNodeOutputImpl node, Serializable correlationId, boolean maskCorrelationKey) {
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
 
         VariableAssignment correlationValue = assignVariable(correlationId);
 
         ExternalEventNode.Builder evt = n.getExternalEventBuilder();
         evt.setCorrelationKey(correlationValue);
+        evt.setMaskCorrelationKey(maskCorrelationKey);
         n.setExternalEvent(evt);
 
         spec.putNodes(node.nodeName, n.build());
@@ -794,7 +800,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void throwEvent(String workflowEventDefName, Serializable content) {
+    public ThrowEventNodeOutputImpl throwEvent(String workflowEventDefName, Serializable content) {
         checkIfIsActive();
         parent.addWorkflowEventDefName(workflowEventDefName);
         ThrowEventNode node = ThrowEventNode.newBuilder()
@@ -804,6 +810,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 .setContent(assignVariable(content))
                 .build();
         addNode("throw-" + workflowEventDefName, NodeCase.THROW_EVENT, node);
+        return new ThrowEventNodeOutputImpl(workflowEventDefName, this);
     }
 
     @Override

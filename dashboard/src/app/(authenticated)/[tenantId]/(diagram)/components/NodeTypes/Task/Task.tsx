@@ -24,8 +24,7 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
         }
       >
         <SettingsIcon className="h-4 w-4 fill-orange-500" />
-        {task.taskDefId?.name}
-        {getVariable(task.dynamicTask)}
+        {task.taskDefId?.name ?? getVariable(task.dynamicTask)}
         <Handle type="source" position={Position.Right} className="bg-transparent" />
         <Handle type="target" position={Position.Left} className="bg-transparent" />
       </div>

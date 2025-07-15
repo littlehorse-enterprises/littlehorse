@@ -43,8 +43,7 @@ namespace LittleHorse.Sdk.Authentication
             {
                 new KeyValuePair<string, string>("client_id", _oAuthConfig.ClientId),
                 new KeyValuePair<string, string>("client_secret", _oAuthConfig.ClientSecret),
-                new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("scope", "openid")
+                new KeyValuePair<string, string>("grant_type", "client_credentials")
             });
             
             var client = new HttpClient();

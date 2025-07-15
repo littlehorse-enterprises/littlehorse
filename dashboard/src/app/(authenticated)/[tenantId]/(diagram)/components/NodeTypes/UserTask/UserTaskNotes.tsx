@@ -1,6 +1,7 @@
+import { getVariable } from '@/app/utils/variables'
 import { FC } from 'react'
 interface UserTaskNotesProps {
-  notes: string | number | boolean | Buffer | undefined
+  notes: ReturnType<typeof getVariable>
 }
 export const UserTaskNotes: FC<UserTaskNotesProps> = ({ notes }) => {
   return (

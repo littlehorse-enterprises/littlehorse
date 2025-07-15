@@ -6,10 +6,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.common.collect.Streams;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
-import io.littlehorse.canary.proto.*;
+import io.littlehorse.canary.proto.BeatKey;
+import io.littlehorse.canary.proto.BeatType;
+import io.littlehorse.canary.proto.BeatValue;
+import io.littlehorse.canary.proto.MetricKey;
+import io.littlehorse.canary.proto.MetricValue;
+import io.littlehorse.canary.proto.Tag;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -115,7 +121,10 @@ class MetricsTopologyTest {
                 .setServerPort(port)
                 .setType(type)
                 .setId(id);
-        BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
+
+        BeatValue.Builder valueBuilder =
+                // set time to 0 (Timestamps.EPOCH) to prevent windows to be closed
+                BeatValue.newBuilder().setTime(Timestamps.EPOCH);
 
         if (beatStatus != null) {
             keyBuilder.addTags(
@@ -150,7 +159,8 @@ class MetricsTopologyTest {
                 StreamsConfig.STATE_DIR_CONFIG,
                 Files.createTempDirectory("canaryStreamUnitTest").toString());
 
-        testDriver = new TopologyTestDriver(metricsTopology.toTopology(), properties);
+        // set time to 0 (Instant.EPOCH) to prevent windows to be closed
+        testDriver = new TopologyTestDriver(metricsTopology.toTopology(), properties, Instant.EPOCH);
         inputTopic = testDriver.createInputTopic(
                 inputTopicName,
                 ProtobufSerdes.BeatKey().serializer(),
@@ -190,7 +200,6 @@ class MetricsTopologyTest {
         assertThat(getCount()).isEqualTo(2);
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok", expectedTags)))
                 .isEqualTo(newMetricValue(20., 20., 1.));
-
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok"))).isEqualTo(newMetricValue(20., 20., 1.));
     }
 
@@ -223,9 +232,7 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "error"));
 
         assertThat(getCount()).isEqualTo(2);
-
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok"))).isEqualTo(newMetricValue(20., 30., 3.));
-
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "error")))
                 .isEqualTo(newMetricValue(20., 30., 3.));
     }
@@ -307,10 +314,8 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30L, null, null));
 
         assertThat(getCount()).isEqualTo(4);
-
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(20., 30., 3.));
         assertThat(store.get(newMetricKey("canary_duplicated_task_run"))).isEqualTo(newMetricValue(1.));
-
         assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_" + expectedTypeName)))
                 .isEqualTo(newMetricValue(20., 30., 3.));
         assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_duplicated_task_run")))

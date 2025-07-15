@@ -10,9 +10,9 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +24,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     private ExternalEventDefIdModel externalEventDefId;
     private VariableAssignmentModel timeoutSeconds;
     private VariableAssignmentModel corrrelationId;
+    private boolean maskCorrelationId;
 
     // Not in the proto
     private ExternalEventDefModel externalEventDef;
@@ -47,11 +48,13 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
             this.corrrelationId =
                     LHSerializable.fromProto(p.getCorrelationKey(), VariableAssignmentModel.class, ignored);
         }
+        this.maskCorrelationId = p.getMaskCorrelationKey();
     }
 
     public ExternalEventNode.Builder toProto() {
-        ExternalEventNode.Builder out =
-                ExternalEventNode.newBuilder().setExternalEventDefId(externalEventDefId.toProto());
+        ExternalEventNode.Builder out = ExternalEventNode.newBuilder()
+                .setExternalEventDefId(externalEventDefId.toProto())
+                .setMaskCorrelationKey(maskCorrelationId);
 
         if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
         if (corrrelationId != null) out.setCorrelationKey(corrrelationId.toProto());
@@ -71,7 +74,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws LHApiException {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
@@ -86,7 +89,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         }
     }
 
-    public ExternalEventNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public ExternalEventNodeRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new ExternalEventNodeRunModel(externalEventDefId, processorContext);
     }
 }

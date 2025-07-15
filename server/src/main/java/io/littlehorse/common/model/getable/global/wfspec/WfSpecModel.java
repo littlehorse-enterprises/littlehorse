@@ -31,9 +31,9 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -68,13 +68,13 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
     private boolean initializedVarToThreadSpec = false;
-    private MetadataCommandExecution executionContext;
+    private MetadataProcessorContext executionContext;
 
     public WfSpecModel() {
         // default constructor used by LHDeserializers
     }
 
-    public WfSpecModel(MetadataCommandExecution executionContext) {
+    public WfSpecModel(MetadataProcessorContext executionContext) {
         this.executionContext = executionContext;
     }
 
@@ -222,7 +222,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion, MetadataCommandExecution ctx)
+    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion, MetadataProcessorContext ctx)
             throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
@@ -301,7 +301,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
      * 2. Validating variable types for mutations, assignments, and task input.
      * 3. Incorporation of JsonSchema or Protobuf Schema for further validation.
      */
-    private void validateVariablesHelper(MetadataCommandExecution ctx) throws LHApiException {
+    private void validateVariablesHelper(MetadataProcessorContext ctx) throws LHApiException {
         varToThreadSpec = new HashMap<>();
         boolean hasParentWorkflow = parentWfSpec != null;
         WfSpecModel parentWfSpec = null;
@@ -419,7 +419,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
     2. setDAO :(
     3. implicitly pass context
      */
-    public WfRunModel startNewRun(RunWfRequestModel evt, ProcessorExecutionContext processorContext) {
+    public WfRunModel startNewRun(RunWfRequestModel evt, CoreProcessorContext processorContext) {
         CommandModel currentCommand = processorContext.currentCommand();
         GetableManager getableManager = processorContext.getableManager();
         WfRunModel out = new WfRunModel(processorContext);
@@ -442,7 +442,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
      * checking of variables, though. That is a future feature we will add in 1.0
      * or 1.1
      */
-    private WfSpecModel getParentWfSpec(MetadataCommandExecution ctx) {
+    private WfSpecModel getParentWfSpec(MetadataProcessorContext ctx) {
         WfSpecModel parent =
                 ctx.service().getWfSpec(parentWfSpec.getWfSpecName(), parentWfSpec.getWfSpecMajorVersion(), 0);
         if (parent == null) {

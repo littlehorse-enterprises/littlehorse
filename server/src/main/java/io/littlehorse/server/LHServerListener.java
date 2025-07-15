@@ -19,6 +19,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
@@ -105,6 +106,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWorkflowEventsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchCorrelatedEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
@@ -128,6 +130,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUser
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWorkflowEventsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
@@ -549,7 +552,34 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void putUserTaskRunComment(PutUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        PutUserTaskRunCommentReqeustModel reqModel =
+                LHSerializable.fromProto(req, PutUserTaskRunCommentReqeustModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        DeleteUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteUserTaskRunCommentRequestModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void editUserTaskRunComment(EditUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
+        EditUserTaskRunCommentRequestModel reqModel =
+                LHSerializable.fromProto(req, EditUserTaskRunCommentRequestModel.class, requestContext());
+
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);
@@ -732,6 +762,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchWfRun(SearchWfRunRequest req, StreamObserver<WfRunIdList> ctx) {
         handleScan(SearchWfRunRequestModel.fromProto(req, requestContext()), ctx, SearchWfRunReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
+    public void searchCorrelatedEvent(SearchCorrelatedEventRequest req, StreamObserver<CorrelatedEventIdList> ctx) {
+        SearchCorrelatedEventRequestModel reqModel =
+                LHSerializable.fromProto(req, SearchCorrelatedEventRequestModel.class, requestContext());
+        handleScan(reqModel, ctx, SearchCorrelatedEventReply.class);
     }
 
     @Override
@@ -1131,16 +1169,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                     futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
-        } catch (InterruptedException | ExecutionException e) {
-            Throwable cause = e.getCause() == null ? e : e.getCause();
-            log.error("Failed to process command %s".formatted(command), cause);
-            responseObserver.onError(cause);
+        } catch (InterruptedException e) {
+            responseObserver.onError(new StatusRuntimeException(
+                    Status.UNAVAILABLE.withDescription("This Server instance shutting down")));
         } catch (TimeoutException e) {
             responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
                     "Could not process command in time id: %s".formatted(command.getCommandId()))));
         } catch (Throwable e) {
-            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
-            log.error("Failed processing command", e);
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            if (cause instanceof StatusRuntimeException) {
+                responseObserver.onError(cause);
+            } else {
+                responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
+                log.error("Failed processing command", e);
+            }
         } finally {
             command.getCommandId().ifPresent(asyncWaiters::removeCommand);
         }

@@ -48,12 +48,22 @@ public class WorkflowImpl extends Workflow {
         // Create externalEventDef's that the user wanted us to create
         for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
             log.info(
-                    "Creating externalEventDef:\n {}",
+                    "Creating ExternalEventDef:\n {}",
                     LHLibUtil.protoToJson(client.putExternalEventDef(node.toPutExtDefRequest())));
+        }
+
+        for (ThrowEventNodeOutputImpl node : workflowEventsToRegister) {
+            log.info(
+                    "Creating WorkflowEventDef:\n {}",
+                    LHLibUtil.protoToJson(client.putWorkflowEventDef(node.toPutWorkflowEventDefRequest())));
         }
 
         // Now we do the dancin'
         log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(wfRequest)));
+    }
+
+    public void addWorkflowEventDefToRegister(ThrowEventNodeOutputImpl node) {
+        workflowEventsToRegister.add(node);
     }
 
     public void addExternalEventDefToRegister(ExternalEventNodeOutputImpl node) {
