@@ -229,7 +229,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
-                .maxConcurrentCallsPerConnection(10)
+                .maxConcurrentCallsPerConnection(1000)
                 .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {
