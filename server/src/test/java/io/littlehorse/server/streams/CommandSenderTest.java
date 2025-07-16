@@ -8,6 +8,7 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.TestStreamObserver;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -22,6 +23,7 @@ import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
@@ -56,8 +58,7 @@ class CommandSenderTest {
     private final AsyncWaiters asyncWaiters = mock(AsyncWaiters.class);
     private final RecordMetadata recordMetadata = mock(RecordMetadata.class);
     private final CommandSender sender = new CommandSender(
-            internalComms, threadPool, commandProducer, taskClaimProducer, 60l, serverConfig, asyncWaiters);
-    private final String topicName = "test-topic";
+            internalComms, threadPool, commandProducer, taskClaimProducer, 60L, serverConfig, asyncWaiters);
     private final HostInfo localHost = new HostInfo("localhost", 2024);
     private final HostInfo remoteHost = new HostInfo("localhost", 2023);
     private final LHInternalsGrpc.LHInternalsFutureStub internalFutureStub =
@@ -65,6 +66,7 @@ class CommandSenderTest {
 
     @BeforeEach
     public void setup() {
+        String topicName = "test-topic";
         when(serverConfig.getCoreCmdTopicName()).thenReturn(topicName);
         when(internalComms.getThisHost()).thenReturn(localHost);
         when(recordMetadata.topic()).thenReturn(topicName);
@@ -151,6 +153,8 @@ class CommandSenderTest {
         when(command.getCommandId()).thenReturn(Optional.of("test-command-id"));
         KeyQueryMetadata remoteKeyMetadata = mock(KeyQueryMetadata.class);
         RequestExecutionContext ctx = mock(RequestExecutionContext.class);
+        AuthorizationContext auth = mock(AuthorizationContext.class);
+        when(ctx.authorization()).thenReturn(auth);
         when(command.getPartitionKey()).thenReturn("test-partition-key");
         when(command.getStore()).thenReturn(LHStoreType.CORE);
         CompletableFuture<RecordMetadata> producerResult = new CompletableFuture<>();
@@ -159,12 +163,17 @@ class CommandSenderTest {
         when(remoteKeyMetadata.activeHost()).thenReturn(remoteHost);
         when(internalComms.lookupPartitionKey("core-store", "test-partition-key"))
                 .thenReturn(remoteKeyMetadata);
-        when(internalComms.getInternalFutureClient(same(remoteHost), any())).thenReturn(internalFutureStub);
+        ArgumentCaptor<InternalCallCredentials> credentialsCaptor =
+                ArgumentCaptor.forClass(InternalCallCredentials.class);
+        when(internalComms.getInternalFutureClient(same(remoteHost), credentialsCaptor.capture()))
+                .thenReturn(internalFutureStub);
         when(internalFutureStub.waitForCommand(any())).thenReturn(new CompletedListenableFuture<>(response));
         Future<Message> future = sender.doSend(command, Empty.class, principalId, tenantId, ctx);
         producerResult.complete(recordMetadata);
         Message message = future.get(10, TimeUnit.MILLISECONDS);
         assertThat((Empty) message).isNotNull().isEqualTo(protoResponse);
+        InternalCallCredentials credentials = credentialsCaptor.getValue();
+        assertThat(credentials.getAuthorization()).isSameAs(auth);
     }
 
     @Test

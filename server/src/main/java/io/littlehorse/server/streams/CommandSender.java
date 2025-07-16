@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -175,7 +176,8 @@ public class CommandSender {
                         } catch (ExecutionException e) {
                             out.completeExceptionally(e.getCause());
                         } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                            log.error("Unexpected interrupted exception", e);
+                            out.completeExceptionally(new StatusRuntimeException(Status.INTERNAL));
                         }
                     },
                     Runnable::run);
