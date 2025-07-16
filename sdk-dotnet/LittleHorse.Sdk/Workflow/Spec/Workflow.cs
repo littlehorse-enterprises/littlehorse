@@ -77,13 +77,13 @@ public class Workflow
         var request = Compile();
         foreach (var node in _externalEventsToRegister)
         {
-            client.PutExternalEventDef(node.ToPutExternalEventDefRequest());
-            _logger!.LogInformation($"Registered ExternalEventDef: {node.ToPutExternalEventDefRequest().Name}");
+           var externalEventResponse= client.PutExternalEventDef(node.ToPutExternalEventDefRequest());
+            _logger!.LogInformation($"Registered ExternalEventDef: \n{LHMappingHelper.ProtoToJson(externalEventResponse)}");
         }
         foreach (var node in _workflowEventsToRegister)
         {
-            client.PutWorkflowEventDef(node.ToPutWorkflowEventDefRequest());
-            _logger!.LogInformation($"Registered WorkflowEventDef: {node.ToPutWorkflowEventDefRequest().Name}");
+            var workflowEventResponse = client.PutWorkflowEventDef(node.ToPutWorkflowEventDefRequest());
+            _logger!.LogInformation($"Registered WorkflowEventDef: \n{LHMappingHelper.ProtoToJson(workflowEventResponse)}");
         }
 
         var wfSpec = await client.PutWfSpecAsync(request);

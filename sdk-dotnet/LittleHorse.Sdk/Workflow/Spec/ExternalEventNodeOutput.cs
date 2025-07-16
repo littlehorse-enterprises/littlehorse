@@ -90,11 +90,16 @@ public class ExternalEventNodeOutput : NodeOutput
     /// </summary>
     public PutExternalEventDefRequest ToPutExternalEventDefRequest()
     {
+    
         var req = new PutExternalEventDefRequest
         {
             Name = ExternalEventDefName,
-            ContentType = LHMappingHelper.DotNetTypeToReturnType(_payloadType)
         };
+        if (_payloadType != null)
+        {
+            req.ContentType = LHMappingHelper.DotNetTypeToReturnType(_payloadType);
+
+        }
         if (_correlatedEventConfig != null)
             req.CorrelatedEventConfig = _correlatedEventConfig;
         return req;
@@ -113,7 +118,7 @@ public class ExternalEventNodeOutput : NodeOutput
     /// Registers the event definition with the specified payload type.
     /// </summary>
     /// <param name="payloadType">The .NET type of the event payload.</param>
-    public ExternalEventNodeOutput RegisteredAs(Type payloadType)
+    public ExternalEventNodeOutput RegisteredAs(Type? payloadType)
     {
         _payloadType = payloadType;
         Parent.RegisterExternalEventDef(this);
