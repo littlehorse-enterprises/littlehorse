@@ -90,6 +90,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
+    public static final String ROCKSDB_FLUSH_THREADS_KEY = "LHS_ROCKSDB_FLUSH_THREADS";
     public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
@@ -735,6 +736,12 @@ public class LHServerConfig extends ConfigBase {
 
     public int getRocksDBCompactionThreads() {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
+    }
+
+    public int getRocksDBFlushThreads() {
+        // Defaults to whatever the compaction threads is set to
+        return Integer.valueOf(
+                getOrSetDefault(ROCKSDB_FLUSH_THREADS_KEY, String.valueOf(getRocksDBCompactionThreads())));
     }
 
     public boolean getRocksDBUseLevelCompaction() {
