@@ -1,6 +1,6 @@
+import { ThreadVarDef } from 'littlehorse-client/proto'
 import { DefaultSession } from 'next-auth'
 import { FieldValues, UseFormRegister } from 'react-hook-form'
-import { ThreadVarDef } from 'littlehorse-client/proto'
 
 export type WhoAmI = {
   user: DefaultSession['user']

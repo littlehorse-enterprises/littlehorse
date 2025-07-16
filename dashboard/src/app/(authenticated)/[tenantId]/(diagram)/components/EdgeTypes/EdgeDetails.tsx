@@ -4,7 +4,6 @@ export const EdgeDetails: FC<PropsWithChildren<{ labelX: number; labelY: number;
   children,
   labelX,
   labelY,
-  id,
 }) => {
   const wrapperStyle: CSSProperties = {
     position: 'absolute',

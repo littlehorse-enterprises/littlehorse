@@ -1,13 +1,12 @@
 import { getLatestWfSpecs } from '@/app/actions/getLatestWfSpec'
 import { WfSpecData } from '@/types'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { SearchResultProps } from '.'
 import { SelectionLink } from '../SelectionLink'
 
 import VersionTag from '../VersionTag'
 export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
-  const router = useRouter()
   const tenantId = useParams().tenantId as string
   const [wfSpecs, setWfSpecs] = useState<WfSpecData[]>([])
 
