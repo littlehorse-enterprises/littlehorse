@@ -1,3 +1,4 @@
+import { getVariableDefType } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -16,7 +17,6 @@ import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
-import { getVariableDefType } from '@/app/utils'
 
 export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
 
@@ -28,7 +28,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const formRef = useRef<HTMLFormElement | null>(null)
   const wfSpecVariables = useMemo(() => {
     return (
-      lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs?.map(variable => {
+      lhWorkflowSpec.threadSpecs?.[lhWorkflowSpec.entrypointThreadName]?.variableDefs?.map(variable => {
         const newVariable = { ...variable }
         if (newVariable.varDef?.name) {
           newVariable.varDef.name = newVariable.varDef.name.replace(/\./g, DOT_REPLACEMENT_PATTERN)
