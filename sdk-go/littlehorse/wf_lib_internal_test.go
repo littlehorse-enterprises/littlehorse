@@ -1762,6 +1762,20 @@ func TestRegisteredAsExternalEvent(ts *testing.T) {
 	assert.Equal(ts, "list-event", listNode.GetExternalEvent().GetExternalEventDefId().GetName())
 
 }
+
+func TestRegisteredAsEmptyExternalEvent(ts *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.WaitForEvent("empty-event").RegisteredAsEmpty()
+	}, "test-workflow")
+
+	putWf, err := wf.Compile()
+	assert.Nil(ts, err)
+	assert.NotNil(ts, putWf)
+	strNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["1-empty-event-EXTERNAL_EVENT"]
+	assert.NotNil(ts, strNode)
+	assert.Equal(ts, "empty-event", strNode.GetExternalEvent().GetExternalEventDefId().GetName())
+}
+
 func TestRegisteredAsWorkflowEvent(ts *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		t.ThrowEvent("str-event", "value").RegisteredAs(lhproto.VariableType_STR)

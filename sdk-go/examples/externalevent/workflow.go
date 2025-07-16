@@ -35,29 +35,29 @@ func ShowSummary(name string, age int) string {
 }
 
 const (
-	AskForNameTaskName       = "ask-for-name"
-	SummaryTaskName          = "show-summary"
-	SpecificGreetingTaskName = "specific-greeting"
-	EventDefName             = "my-name"
 	WorkflowName             = "external-event"
+	AskForNameTaskName       = "ask-for-name"
+	SpecificGreetingTaskName = "specific-greeting"
+	NameDefName              = "what-is-your-name"
 	AgeEventDefName          = "how-old-are-you"
+	AllowSummaryEventDefName = "allow-summary"
+	SummaryTaskName          = "show-summary"
 )
 
 func ExternalEventWorkflow(wf *littlehorse.WorkflowThread) {
-	nameVar := wf.DeclareStr("name")
-	wf.Execute(AskForNameTaskName)
 
-	eventOutput := wf.WaitForEvent(EventDefName) // This event is registered in ./deploy/main.go
+	name := wf.WaitForEvent(NameDefName) // This event is registered in ./deploy/main.go
 
-	wf.Mutate(nameVar, lhproto.VariableMutationType_ASSIGN, eventOutput)
+	greetingId := wf.Execute(SpecificGreetingTaskName, name)
 
-	greetingId := wf.Execute(SpecificGreetingTaskName, nameVar)
-	var age = wf.WaitForEvent(AgeEventDefName).
-		SetCorrelationId(greetingId).
+	age := wf.WaitForEvent(AgeEventDefName).
+		SetCorrelationId(greetingId). //You can unlock this event by using the ID generated in previous task or using the wfRunId.
 		MaskCorrelationId(true).
 		WithCorrelatedEventConfig(&lhproto.CorrelatedEventConfig{
 			DeleteAfterFirstCorrelation: true,
-		}).
-		RegisteredAs(lhproto.VariableType_INT) // This event will be registered when the workflow is registered, no need for manual registration.
-	wf.Execute(SummaryTaskName, nameVar, age)
+		}).RegisteredAs(lhproto.VariableType_INT) // This event will be registered when the workflow is registered, no need for manual registration.
+
+	wf.WaitForEvent(AllowSummaryEventDefName).RegisteredAsEmpty() // This external event will be registered without a payload.
+
+	wf.Execute(SummaryTaskName, name, age)
 }

@@ -1193,7 +1193,12 @@ func (t *WorkflowThread) registerWorkflowEventdAs(n *ThrowEventNodeOutput, paylo
 
 func (t *WorkflowThread) registerExternalEventdAs(n *ExternalEventNodeOutput, payloadType lhproto.VariableType) *ExternalEventNodeOutput {
 	t.checkIfIsActive()
-	n.payloadType = payloadType
+	n.payloadType = &payloadType
+	t.wf.externalEventsToRegister = append(t.wf.externalEventsToRegister, n)
+	return n
+}
+func (t *WorkflowThread) registerExternalEventAsEmpty(n *ExternalEventNodeOutput) *ExternalEventNodeOutput {
+	t.checkIfIsActive()
 	t.wf.externalEventsToRegister = append(t.wf.externalEventsToRegister, n)
 	return n
 }
@@ -1561,8 +1566,11 @@ func (t *WorkflowThread) checkIfIsActive() {
 }
 func (n *ExternalEventNodeOutput) ToPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest {
 	req := &lhproto.PutExternalEventDefRequest{
-		Name:        n.externalEventDefName,
-		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
+		Name: n.externalEventDefName,
+	}
+
+	if n.payloadType != nil {
+		req.ContentType = &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: *n.payloadType}}
 	}
 
 	if n.correlatedEventConfig != nil {

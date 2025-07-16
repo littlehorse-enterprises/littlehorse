@@ -14,7 +14,7 @@ func main() {
 
 	(*client).PutExternalEventDef(context.Background(),
 		&lhproto.PutExternalEventDefRequest{
-			Name: externalevent.EventDefName,
+			Name: externalevent.NameDefName,
 		},
 	)
 
