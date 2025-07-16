@@ -76,7 +76,11 @@ public final class PollTaskStub implements AutoCloseable {
 
     @Override
     public void close() {
-        observer.onCompleted();
+        try {
+            observer.onCompleted();
+        } catch (IllegalStateException ignored) {
+            // Already completed
+        }
     }
 
     private final class ServerResponseObserver implements StreamObserver<PollTaskResponse> {
