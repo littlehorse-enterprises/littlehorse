@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -20,6 +21,7 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -242,5 +245,19 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         TaskNodeRunModel out = new TaskNodeRunModel(processorContext);
         // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        switch (taskToExecuteType) {
+            case TASK_DEF_ID:
+                TaskDefModel taskDef = manager.get(taskDefId);
+                return Optional.of(taskDef.getReturnType());
+            case DYNAMIC_TASK:
+            case TASKTOEXECUTE_NOT_SET:
+        }
+        // With dynamic tasks, we can't know what the output type will be. We're forced to default to
+        // Chulla Vida typing mode.
+        return Optional.empty();
     }
 }
