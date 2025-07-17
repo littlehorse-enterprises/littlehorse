@@ -13,7 +13,7 @@ dotnet run
 In another terminal, use `lhctl` to run the workflow:
 
 ```
-lhctl run example-worker-context
+lhctl run example-worker-context request-time 1000
 ```
 
 In addition, you can check the result with:

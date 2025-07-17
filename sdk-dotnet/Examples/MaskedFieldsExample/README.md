@@ -15,7 +15,7 @@ In another terminal, use `lhctl` to run the workflow:
 # The "masked-name" variable should mask the value
 # And the input-name variable value will mantain the original plain text
 
-lhctl run example-basic masked-name pii-info input-name foo
+lhctl run example-masked-fields masked-name pii-info input-name foo
 ```
 
 In addition, you can check the result with:

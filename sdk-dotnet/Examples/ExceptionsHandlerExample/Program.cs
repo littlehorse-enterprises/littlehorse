@@ -22,11 +22,12 @@ public abstract class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetLHConfig(ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
-
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
+        
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
@@ -71,7 +72,7 @@ public abstract class Program
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetLHConfig(args, loggerFactory);
+            var config = GetLHConfig(loggerFactory);
             var workers = GetTaskWorkers(config);
 
             await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
