@@ -311,33 +311,33 @@ public class LHServerConfig extends ConfigBase {
 
         String coreChangelogTopicName = getCoreStoreChangelogTopic(clusterId);
         NewTopic coreStoreChangelog = new NewTopic(
-                coreChangelogTopicName, partitionsByTopic.get(coreChangelogTopicName), replicationFactor)
+                        coreChangelogTopicName, partitionsByTopic.get(coreChangelogTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
 
         String repartitionStoreChangelogTopicName = getRepartitionStoreChangelogTopic(clusterId);
         NewTopic repartitionStoreChangelog = new NewTopic(
-                repartitionStoreChangelogTopicName,
-                partitionsByTopic.get(repartitionStoreChangelogTopicName),
-                replicationFactor)
+                        repartitionStoreChangelogTopicName,
+                        partitionsByTopic.get(repartitionStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
         String timerStoreChangelogTopicName = getTimerStoreChangelogTopic(clusterId);
         NewTopic timerStoreChangelog = new NewTopic(
-                timerStoreChangelogTopicName,
-                partitionsByTopic.get(timerStoreChangelogTopicName),
-                replicationFactor)
+                        timerStoreChangelogTopicName,
+                        partitionsByTopic.get(timerStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
         String metadataStoreChangelogTopicName = getMetadataStoreChangelogTopic(clusterId);
         NewTopic metadataStoreChangelog = new NewTopic(
-                metadataStoreChangelogTopicName,
-                partitionsByTopic.get(metadataStoreChangelogTopicName),
-                replicationFactor)
+                        metadataStoreChangelogTopicName,
+                        partitionsByTopic.get(metadataStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
         String metadataCommandTopicName = getMetadataCmdTopicName(clusterId);
         NewTopic metadataCommand = new NewTopic(
-                metadataCommandTopicName, partitionsByTopic.get(metadataCommandTopicName), replicationFactor)
+                        metadataCommandTopicName, partitionsByTopic.get(metadataCommandTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
 
         return List.of(
