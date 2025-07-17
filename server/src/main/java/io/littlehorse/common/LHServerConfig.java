@@ -52,6 +52,7 @@ import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
 import org.rocksdb.Cache;
+import org.rocksdb.InfoLogLevel;
 import org.rocksdb.LRUCache;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
@@ -151,6 +152,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
+    public static final String ROCKSDB_LOG_LEVEL_KEY = "LHS_X_ROCKSDB_LOG_LEVEL";
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
@@ -309,33 +311,33 @@ public class LHServerConfig extends ConfigBase {
 
         String coreChangelogTopicName = getCoreStoreChangelogTopic(clusterId);
         NewTopic coreStoreChangelog = new NewTopic(
-                        coreChangelogTopicName, partitionsByTopic.get(coreChangelogTopicName), replicationFactor)
+                coreChangelogTopicName, partitionsByTopic.get(coreChangelogTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
 
         String repartitionStoreChangelogTopicName = getRepartitionStoreChangelogTopic(clusterId);
         NewTopic repartitionStoreChangelog = new NewTopic(
-                        repartitionStoreChangelogTopicName,
-                        partitionsByTopic.get(repartitionStoreChangelogTopicName),
-                        replicationFactor)
+                repartitionStoreChangelogTopicName,
+                partitionsByTopic.get(repartitionStoreChangelogTopicName),
+                replicationFactor)
                 .configs(compactedTopicConfig);
 
         String timerStoreChangelogTopicName = getTimerStoreChangelogTopic(clusterId);
         NewTopic timerStoreChangelog = new NewTopic(
-                        timerStoreChangelogTopicName,
-                        partitionsByTopic.get(timerStoreChangelogTopicName),
-                        replicationFactor)
+                timerStoreChangelogTopicName,
+                partitionsByTopic.get(timerStoreChangelogTopicName),
+                replicationFactor)
                 .configs(compactedTopicConfig);
 
         String metadataStoreChangelogTopicName = getMetadataStoreChangelogTopic(clusterId);
         NewTopic metadataStoreChangelog = new NewTopic(
-                        metadataStoreChangelogTopicName,
-                        partitionsByTopic.get(metadataStoreChangelogTopicName),
-                        replicationFactor)
+                metadataStoreChangelogTopicName,
+                partitionsByTopic.get(metadataStoreChangelogTopicName),
+                replicationFactor)
                 .configs(compactedTopicConfig);
 
         String metadataCommandTopicName = getMetadataCmdTopicName(clusterId);
         NewTopic metadataCommand = new NewTopic(
-                        metadataCommandTopicName, partitionsByTopic.get(metadataCommandTopicName), replicationFactor)
+                metadataCommandTopicName, partitionsByTopic.get(metadataCommandTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
 
         return List.of(
@@ -739,6 +741,27 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_LEVEL_COMPACTION_KEY, "false"));
     }
 
+    public Optional<InfoLogLevel> getRocksDBLogLevel() {
+        String logLevel = getOrSetDefault(ROCKSDB_LOG_LEVEL_KEY, "NONE");
+        if (logLevel.equals("NONE")) {
+            return Optional.empty();
+        }
+        switch (logLevel) {
+            case "INFO":
+                return Optional.of(InfoLogLevel.INFO_LEVEL);
+            case "DEBUG":
+                return Optional.of(InfoLogLevel.DEBUG_LEVEL);
+            case "ERROR":
+                return Optional.of(InfoLogLevel.ERROR_LEVEL);
+            case "WARN":
+                return Optional.of(InfoLogLevel.WARN_LEVEL);
+            case "FATAL":
+                return Optional.of(InfoLogLevel.FATAL_LEVEL);
+        }
+        throw new LHMisconfigurationException(
+                "Unrecognized rocksdb log level: " + logLevel + "; allowed: INFO|DEBUG|WARN|ERROR|FATAL|NONE");
+    }
+
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -1002,11 +1025,7 @@ public class LHServerConfig extends ConfigBase {
 
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("state.dir", getStateDirectory());
-
-        // Certain request failures are catchable and non-fatal, but if the producer keeps
-        // retrying until the end of the transaction timeout, we have biggger issues.
-        props.put("request.timeout.ms", (int) Math.floor(0.80 * getTransactionTimeoutMs()));
-
+        props.put("request.timeout.ms", 1000 * 60);
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
@@ -1014,8 +1033,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("probing.rebalance.interval.ms", 60 * 1000);
         props.put(
                 "metrics.recording.level",
-                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, getServerMetricLevel())
-                        .toUpperCase());
+                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getTransactionTimeoutMs());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
