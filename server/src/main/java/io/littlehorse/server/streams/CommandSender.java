@@ -1,9 +1,11 @@
 package io.littlehorse.server.streams;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -16,6 +18,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
@@ -24,6 +27,7 @@ import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
@@ -160,10 +164,24 @@ public class CommandSender {
                     .setCommandId(commandId.get())
                     .setPartition(meta.partition())
                     .build();
-            LHInternalsGrpc.LHInternalsBlockingStub internalClient =
-                    internalComms.getInternalClient(meta.activeHost(), InternalCallCredentials.forContext(context));
-            return CompletableFuture.completedFuture(
-                    buildRespFromBytes(internalClient.waitForCommand(req).getResult(), responseCls));
+            LHInternalsGrpc.LHInternalsFutureStub internalClient = internalComms.getInternalFutureClient(
+                    meta.activeHost(), InternalCallCredentials.forContext(context));
+            ListenableFuture<WaitForCommandResponse> futureResponse = internalClient.waitForCommand(req);
+            CompletableFuture<Message> out = new CompletableFuture<>();
+            futureResponse.addListener(
+                    () -> {
+                        try {
+                            WaitForCommandResponse response = futureResponse.get();
+                            out.complete(buildRespFromBytes(response.getResult(), responseCls));
+                        } catch (ExecutionException e) {
+                            out.completeExceptionally(e.getCause());
+                        } catch (InterruptedException e) {
+                            log.error("Unexpected interrupted exception", e);
+                            out.completeExceptionally(new StatusRuntimeException(Status.INTERNAL));
+                        }
+                    },
+                    Runnable::run);
+            return out;
         }
     }
 }
