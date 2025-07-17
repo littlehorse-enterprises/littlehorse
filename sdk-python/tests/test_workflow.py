@@ -3688,17 +3688,17 @@ class ExternalEventNodeTest(unittest.TestCase):
         self.assertEqual(no_payload_event.external_event.external_event_def_id.name, "no-payload-event")
         self.assertEqual(len(workflow._external_events_to_register), 6)
         self.assertEqual(str_node._payload_type, str)
-        self.assertEqual(str_node.external_event_def_name, "str-event")
+        self.assertEqual(str_node.event_name, "str-event")
         self.assertEqual(int_node._payload_type, int)
-        self.assertEqual(int_node.external_event_def_name, "int-event")
+        self.assertEqual(int_node.event_name, "int-event")
         self.assertEqual(float_node._payload_type, float)
-        self.assertEqual(float_node.external_event_def_name, "float-event")
+        self.assertEqual(float_node.event_name, "float-event")
         self.assertEqual(dict_node._payload_type, dict)
-        self.assertEqual(dict_node.external_event_def_name, "dict-event")
+        self.assertEqual(dict_node.event_name, "dict-event")
         self.assertEqual(list_node._payload_type, list)
-        self.assertEqual(list_node.external_event_def_name, "list-event")
+        self.assertEqual(list_node.event_name, "list-event")
         self.assertEqual(no_payload_node._payload_type, None)
-        self.assertEqual(no_payload_node.external_event_def_name, "no-payload-event")
+        self.assertEqual(no_payload_node.event_name, "no-payload-event")
 
 
 class TestWaitForThreads(unittest.TestCase):

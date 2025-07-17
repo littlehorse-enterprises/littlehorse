@@ -811,8 +811,10 @@ class ThrowEventNodeOutput:
 
         Returns:
             PutWorkflowEventDefRequest: The request object for event definition registration.
+            
         Raises:
             ValueError: If `_payload_type` is not set before generating the request.
+            
         """
         output = PutWorkflowEventDefRequest(
             name=self._event_name
@@ -825,7 +827,7 @@ class ThrowEventNodeOutput:
 
 class ExternalEventNodeOutput(NodeOutput):
     def __init__(self, node_name: str, 
-                 external_event_def_name: str, 
+                 event_name: str, 
                  parent: WorkflowThread, 
                  payload_type: Optional[type] = None, 
                  correlated_event_config: Optional[CorrelatedEventConfig] = None) -> None:
@@ -834,13 +836,13 @@ class ExternalEventNodeOutput(NodeOutput):
 
         Args:
             node_name (str): The specified node name.
-            external_event_def_name (str): The external event definition name.
+            event_name (str): The external event definition name.
             parent (WorkflowThread): The workflow thread where the ExternalEventNodeOutput belongs to.
             payload_type (Optional[type]): The type of the payload for the external event. If None, no payload type is set.
             correlated_event_config (Optional[CorrelatedEventConfig]): Configuration for correlated event
         """
         super().__init__(node_name)
-        self.external_event_def_name = external_event_def_name
+        self.event_name = event_name
         self.parent = parent
         self._payload_type: Optional[type] = payload_type
         self._correlated_event_config: Optional[CorrelatedEventConfig] = correlated_event_config
@@ -856,7 +858,7 @@ class ExternalEventNodeOutput(NodeOutput):
             ValueError: If `_payload_type` is not set before generating the request.
         """
         request = PutExternalEventDefRequest(
-            name=self.external_event_def_name
+            name=self.event_name
         )
 
         if self._payload_type:
@@ -1845,7 +1847,7 @@ class WorkflowThread:
         
         output = ExternalEventNodeOutput(
             node_name=node_name,
-            external_event_def_name=event_name,
+            event_name=event_name,
             parent=self,
             payload_type=return_type,
             correlated_event_config= correlated_event_config
