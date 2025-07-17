@@ -1807,12 +1807,20 @@ class WorkflowThread:
 
         Args:
             event_name (str): The name of ExternalEvent to wait for
-            timeout (int, optional): Timeout in seconds. If
-            it is 0 or less it does not set a timeout. Defaults to -1.
+            timeout (int, optional): Timeout in seconds. 
+                If it is 0 or less it does not set a timeout. Defaults to -1.
             correlation_id (Union[str, LHFormatString, WfRunVariable]): the
-            correlation id to be used for CorrelatedEvents.
+                correlation id to be used for CorrelatedEvents.
             mask_correlation_id (Optional[bool]): Whether to mask the correlation ID.
-            correlated_event_config (Optional[CorrelatedEventConfig]): Configuration for correlated events.
+            auto_register (Optional[bool]): If set, the External event will get registered
+                together with the workflow.
+            return_type (Optional[type]): The type of the payload to return by the external event.
+            correlated_event_config (Optional[CorrelatedEventConfig]): Configuration for correlated 
+                events.
+                
+        Note:
+            If any of auto_register, return_type, or correlated_event_config are set, 
+            the ExternalEventDef will be automatically registered with the workflow.                
 
         Returns:
             ExternalEventNodeOutput: An ExternalEventNodeOutput for this event.
@@ -1853,12 +1861,20 @@ class WorkflowThread:
                     auto_register: Optional[bool] = False, 
                     return_type: Optional[type] = None
                     ) -> ThrowEventNodeOutput:
-        """Adds a THROW_EVENT node which throws a WorkflowEvent.
+        """Adds a THROW_EVENT node which throws a WorkflowEvent.     
 
         Args:
             workflow_event_name (str): The WorkflowEventDefId name of
-            the WorkflowEvent to throw
+                the WorkflowEvent to throw
             content (Any): the content of the WorkflowEvent to throw
+            auto_register (Optional[bool]): If set, the WorkflowEventDef will be registered
+                together with the workflow.
+            return_type (Optional[type]): The type of the payload to return 
+                by the WorkflowEvent.
+                
+        Note:
+            If auto_register or return_type are set, the WorkflowEventDef will be automatically
+            registered with the workflow.
 
         Returns:
             NodeOutput: A NodeOutput for this event.
