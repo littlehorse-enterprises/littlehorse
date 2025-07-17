@@ -3592,11 +3592,11 @@ class ThrowEventNodeTest(unittest.TestCase):
     def test_throw_event_with_registered_payload(self):
         def wf_func(wf: WorkflowThread) -> None:
             name = wf.add_variable("name", VariableType.STR)
-            wf.throw_event("str-event", name).registered_as(payload_type=str)
-            wf.throw_event("int-event", name).registered_as(payload_type=int)
-            wf.throw_event("float-event", name).registered_as(payload_type=float)
-            wf.throw_event("dict-event", name).registered_as(payload_type=dict)
-            wf.throw_event("list-event", name).registered_as(payload_type=list)
+            wf.throw_event("str-event", name, return_type=str)
+            wf.throw_event("int-event", name, return_type=int)
+            wf.throw_event("float-event", name, return_type=float)
+            wf.throw_event("dict-event", name, return_type=dict)
+            wf.throw_event("list-event", name, return_type=list)
 
         workflow = Workflow("registered-payload-wf", wf_func)
         wf_spec = workflow.compile()
@@ -3653,11 +3653,12 @@ class ExternalEventNodeTest(unittest.TestCase):
         
     def test_external_event_with_registered_payload(self):
         def wf_func(wf: WorkflowThread) -> None:
-            wf.wait_for_event("str-event", 60).registered_as(payload_type=str)
-            wf.wait_for_event("int-event", 60).registered_as(payload_type=int)
-            wf.wait_for_event("float-event", 60).registered_as(payload_type=float)
-            wf.wait_for_event("dict-event", 60).registered_as(payload_type=dict)
-            wf.wait_for_event("list-event", 60).registered_as(payload_type=list)
+            wf.wait_for_event("str-event", return_type=str)
+            wf.wait_for_event("int-event", return_type=int)
+            wf.wait_for_event("float-event", return_type=float)
+            wf.wait_for_event("dict-event", return_type=dict)
+            wf.wait_for_event("list-event", return_type=list)
+            wf.wait_for_event("no-payload-event", auto_register=True)
 
         workflow = Workflow("registered-payload-wf", wf_func)
         wf_spec = workflow.compile()
@@ -3668,20 +3669,24 @@ class ExternalEventNodeTest(unittest.TestCase):
         float_event = entrypoint.nodes["3-float-event-EXTERNAL_EVENT"]
         dict_event = entrypoint.nodes["4-dict-event-EXTERNAL_EVENT"]
         list_event = entrypoint.nodes["5-list-event-EXTERNAL_EVENT"]
+        no_payload_event = entrypoint.nodes["6-no-payload-event-EXTERNAL_EVENT"]
+
         str_node=workflow._external_events_to_register[0]
         int_node=workflow._external_events_to_register[1]
         float_node=workflow._external_events_to_register[2]
         dict_node=workflow._external_events_to_register[3]
         list_node=workflow._external_events_to_register[4]
+        no_payload_node=workflow._external_events_to_register[5]
 
         self.assertEqual(len(wf_spec.thread_specs), 1)
-        self.assertEqual(len(entrypoint.nodes), 7)
+        self.assertEqual(len(entrypoint.nodes), 8)
         self.assertEqual(str_event.external_event.external_event_def_id.name, "str-event")
         self.assertEqual(int_event.external_event.external_event_def_id.name, "int-event")
         self.assertEqual(float_event.external_event.external_event_def_id.name, "float-event")
         self.assertEqual(dict_event.external_event.external_event_def_id.name, "dict-event")
         self.assertEqual(list_event.external_event.external_event_def_id.name, "list-event")
-        self.assertEqual(len(workflow._external_events_to_register), 5)
+        self.assertEqual(no_payload_event.external_event.external_event_def_id.name, "no-payload-event")
+        self.assertEqual(len(workflow._external_events_to_register), 6)
         self.assertEqual(str_node._payload_type, str)
         self.assertEqual(str_node.external_event_def_name, "str-event")
         self.assertEqual(int_node._payload_type, int)
@@ -3692,6 +3697,8 @@ class ExternalEventNodeTest(unittest.TestCase):
         self.assertEqual(dict_node.external_event_def_name, "dict-event")
         self.assertEqual(list_node._payload_type, list)
         self.assertEqual(list_node.external_event_def_name, "list-event")
+        self.assertEqual(no_payload_node._payload_type, None)
+        self.assertEqual(no_payload_node.external_event_def_name, "no-payload-event")
 
 
 class TestWaitForThreads(unittest.TestCase):

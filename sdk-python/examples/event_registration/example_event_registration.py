@@ -4,7 +4,7 @@ from pathlib import Path
 
 import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.model import VariableType, CorrelatedEventConfig
+from littlehorse.model import CorrelatedEventConfig
 from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import WorkflowThread, Workflow
 
@@ -29,26 +29,40 @@ def get_config() -> LHConfig:
 
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-
-        name = wf.wait_for_event(ASK_FOR_NAME_EVENT, timeout=60).registered_as(payload_type=str)
-        wf.execute(GREET, name)
+        name = wf.wait_for_event(ASK_FOR_NAME_EVENT, 
+                                 timeout=60, 
+                                 auto_register=True, 
+                                 return_type=str)
         greet_id = wf.declare_str("id")
-        greet_id.assign(wf.execute(GREET,name))
-        age = (wf.wait_for_event(ASK_FOR_AGE_EVENT, timeout=60, correlation_id=greet_id)
-               .with_correlated_event_config(CorrelatedEventConfig(delete_after_first_correlation=True))
-               .registered_as(payload_type=int))
-        wf.wait_for_event(ALLOW_SUMMARY_TASK).registered_as(payload_type=None)
+        greet_id.assign(wf.execute(GREET, name))
+        
+        age = wf.wait_for_event(ASK_FOR_AGE_EVENT, 
+                                timeout=60, 
+                                correlation_id=greet_id, 
+                                return_type=int,
+                                correlated_event_config=CorrelatedEventConfig(
+                                    delete_after_first_correlation=True,
+                                ))
+
+        wf.wait_for_event(ALLOW_SUMMARY_TASK, 
+                          correlation_id=greet_id, 
+                          auto_register=True)
+        
         summary = wf.execute(DO_SUMMARY_TASK, name, age)
-        wf.throw_event(THROW_EVENT, summary).registered_as(payload_type=str)
+        wf.throw_event(THROW_EVENT, summary, return_type=str)
 
     return Workflow(WORKFLOW_NAME, my_entrypoint)
 
 
-counter= 0
+counter = 0
+
+
 async def greet(name: str) -> str:
     msg = f"Hello, {name}"
     print(msg)
-    return "greeted-" + name+f"-{counter}"
+    return "greeted-" + name + f"-{counter}"
+
+
 async def show_summary(name: str, age: int) -> str:
     summary = f"Summary: Name: {name}, Age: {age}"
     if age < 18:
@@ -57,7 +71,6 @@ async def show_summary(name: str, age: int) -> str:
         summary += " (You are an adult)"
     print(summary)
     return summary
-
 
 
 async def main() -> None:

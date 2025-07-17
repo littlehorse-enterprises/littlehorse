@@ -34,6 +34,7 @@ The `throw_event` method throws the workflow event `THROW_EVENT` and registers i
 1. Ensure you have the LittleHorse SDK installed and configured.
 2. Run the example script:
    ```bash
+   poetry shell 
    python example_event_registration.py
    ```
 
