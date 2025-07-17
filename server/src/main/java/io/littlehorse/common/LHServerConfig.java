@@ -148,7 +148,6 @@ public class LHServerConfig extends ConfigBase {
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
     public static final String X_USE_AT_LEAST_ONCE_KEY = "LHS_X_USE_AT_LEAST_ONCE";
-    public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
@@ -1012,11 +1011,6 @@ public class LHServerConfig extends ConfigBase {
             props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), false);
         } else {
             props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
-        }
-
-        if (getOrSetDefault(X_USE_STATE_UPDATER_KEY, "false").equals("true")) {
-            log.warn("Using experimental internal config to use State Updater!");
-            props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
         }
 
         if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
