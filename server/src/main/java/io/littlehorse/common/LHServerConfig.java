@@ -90,7 +90,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
-    public static final String ROCKSDB_FLUSH_THREADS_KEY = "LHS_ROCKSDB_FLUSH_THREADS";
     public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
@@ -154,6 +153,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
     public static final String ROCKSDB_LOG_LEVEL_KEY = "LHS_X_ROCKSDB_LOG_LEVEL";
+    public static final String ROCKSDB_FLUSH_THREADS_KEY = "LHS_X_ROCKSDB_FLUSH_THREADS";
+    
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
