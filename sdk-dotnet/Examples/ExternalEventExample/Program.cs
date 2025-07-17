@@ -1,10 +1,11 @@
-﻿using ExternalEventExample;
-using LittleHorse.Sdk;
+﻿using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+namespace ExternalEventExample;
 
 public abstract class Program
 {
@@ -21,11 +22,12 @@ public abstract class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetLHConfig(ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
-
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
+        
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
@@ -70,7 +72,7 @@ public abstract class Program
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetConfig(args, loggerFactory);
+            var config = GetLHConfig(loggerFactory);
             var client = config.GetGrpcClientInstance();
             var workers = GetTaskWorkers(config);
 
