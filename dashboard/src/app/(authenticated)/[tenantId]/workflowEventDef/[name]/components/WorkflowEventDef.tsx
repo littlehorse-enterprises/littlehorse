@@ -90,15 +90,16 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ workflowEvent }) => {
+                      if (!workflowEvent.id?.wfRunId) return
                       return (
-                        <TableRow key={workflowEvent.id?.number}>
+                        <TableRow key={workflowEvent.id.number}>
                           <TableCell>
                             <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(workflowEvent.id?.wfRunId!)}?threadRunNumber=${workflowEvent.nodeRunId?.threadRunNumber}&nodeRunName=${workflowEvent.nodeRunId?.position}-throw-${spec.id?.name}-THROW_EVENT`}
+                              href={`/wfRun/${concatWfRunIds(workflowEvent.id.wfRunId)}?threadRunNumber=${workflowEvent.nodeRunId?.threadRunNumber}&nodeRunName=${workflowEvent.nodeRunId?.position}-throw-${spec.id?.name}-THROW_EVENT`}
                             >
-                              {concatWfRunIds(workflowEvent.id?.wfRunId!)}
+                              {concatWfRunIds(workflowEvent.id.wfRunId)}
                             </LinkWithTenant>
                           </TableCell>
                           <TableCell>{workflowEvent.id?.number}</TableCell>

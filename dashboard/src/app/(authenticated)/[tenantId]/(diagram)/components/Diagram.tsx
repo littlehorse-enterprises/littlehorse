@@ -66,7 +66,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const threadRunNumberFromRedirection = Number(searchParams.get('threadRunNumber'))
   const nodeRunNameToBeHighlighted = searchParams.get('nodeRunName')!
 
-  let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
+  const threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 
   const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
 

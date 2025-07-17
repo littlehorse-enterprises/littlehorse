@@ -16,7 +16,6 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.externalEvent) return null
 
   const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
-  externalEventNode.externalEventDefId?.name
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>

@@ -1,6 +1,6 @@
 import { UserTaskDefDetails } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 import { UserIcon } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
+
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { ExternalLinkButton } from '../../ExternalLinkButton'
@@ -11,9 +11,6 @@ import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
-  const router = useRouter()
-  const tenantId = useParams().tenantId as string
-
   if (!data.userTask) return null
   const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
 
