@@ -22,13 +22,14 @@ export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
 
 export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
-  const lhWorkflowSpec = data as WfSpec
+  const wfSpec = data as WfSpec
   const tenantId = useParams().tenantId as string
   const router = useRouter()
   const formRef = useRef<HTMLFormElement | null>(null)
   const wfSpecVariables = useMemo(() => {
+    if (!wfSpec.threadSpecs?.[wfSpec.entrypointThreadName]) return []
     return (
-      lhWorkflowSpec.threadSpecs?.[lhWorkflowSpec.entrypointThreadName]?.variableDefs?.map(variable => {
+      wfSpec.threadSpecs[wfSpec.entrypointThreadName].variableDefs?.map(variable => {
         const newVariable = { ...variable }
         if (newVariable.varDef?.name) {
           newVariable.varDef.name = newVariable.varDef.name.replace(/\./g, DOT_REPLACEMENT_PATTERN)
@@ -36,7 +37,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
         return newVariable
       }) ?? []
     )
-  }, [lhWorkflowSpec])
+  }, [wfSpec])
 
   const formatVariablesPayload = (values: FormValues) => {
     const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
@@ -71,13 +72,13 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const handleFormSubmit = async (values: FormValues) => {
     const customWfRunId = values.customWfRunId as string
     delete values.customWfRunId
-    if (!lhWorkflowSpec.id) return
+    if (!wfSpec.id) return
     try {
       const wfRun = await runWfSpec({
         tenantId,
-        wfSpecName: lhWorkflowSpec.id.name,
-        majorVersion: lhWorkflowSpec.id.majorVersion,
-        revision: lhWorkflowSpec.id.revision,
+        wfSpecName: wfSpec.id.name,
+        majorVersion: wfSpec.id.majorVersion,
+        revision: wfSpec.id.revision,
         id: customWfRunId || undefined,
         variables: formatVariablesPayload(values),
       })
@@ -86,7 +87,11 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
       setShowModal(false)
       router.push(`/${tenantId}/wfRun/${wfRun.id.id}`)
     } catch (error: any) {
-      toast.error(error.message?.split(':')?.[1])
+      if (error.message) {
+        toast.error(error.message.split(':')[1])
+      } else {
+        toast.error('An error occurred while executing the workflow')
+      }
     }
   }
 
@@ -94,7 +99,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Execute {lhWorkflowSpec.id?.name}</DialogTitle>
+          <DialogTitle>Execute {wfSpec.id?.name}</DialogTitle>
           <DialogDescription className="text-primary/50">
             You can leave all optional fields blank if desired.
           </DialogDescription>
