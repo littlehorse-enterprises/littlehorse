@@ -23,7 +23,7 @@ const withAuth = nextAuth(async req => {
     if (!response.ok) {
       return NextResponse.redirect(`${baseUrl}/api/auth/signin?callbackUrl=${currentPath}`)
     }
-  } catch (error) {
+  } catch {
     return NextResponse.redirect(`${baseUrl}/api/auth/signin?callbackUrl=${currentPath}`)
   }
 

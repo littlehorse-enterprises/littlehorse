@@ -2,11 +2,11 @@
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
 import {
+  NodeRun,
+  SearchWorkflowEventRequest,
   WorkflowEvent,
   WorkflowEventId,
   WorkflowEventIdList,
-  NodeRun,
-  SearchWorkflowEventRequest,
 } from 'littlehorse-client/proto'
 
 export interface runDetails {
@@ -46,7 +46,9 @@ export const searchWorkflowEvent = async ({
       let nodeRun = null
       try {
         nodeRun = await client.getNodeRun(workflowEvent.id!)
-      } catch {}
+      } catch {
+        // nodeRun is null if the node run is not found
+      }
 
       return {
         workflowEvent,

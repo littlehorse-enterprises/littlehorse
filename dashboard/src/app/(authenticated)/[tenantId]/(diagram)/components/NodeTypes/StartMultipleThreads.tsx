@@ -8,13 +8,7 @@ import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 const Node: FC<NodeProps> = ({ data }) => {
   const { fade } = data
@@ -59,7 +53,9 @@ const Node: FC<NodeProps> = ({ data }) => {
             <div className="mt-2">
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">View Thread List</Button>
+                  <Button variant="outline" size="sm">
+                    View Thread List
+                  </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>

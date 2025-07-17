@@ -1,11 +1,5 @@
-import React, { type FC, useCallback } from 'react';
-import {
-  getSmoothStepPath,
-  EdgeLabelRenderer,
-  BaseEdge,
-  type EdgeProps,
-  Position,
-} from 'reactflow'
+import React, { type FC, useCallback } from 'react'
+import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
 import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { Edge as EdgeProto } from 'littlehorse-client/proto'
@@ -31,7 +25,7 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
     targetY,
     targetPosition,
     borderRadius: 0,
-  });
+  })
 
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
@@ -52,19 +46,13 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
           }}
         >
           <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
-            {(data?.variableMutations?.length ?? 0) > 0 && (
-              <CircleAlertIcon size={16} className={`fill-gray-200`} />
-            )}
-            {label && (
-              <div className="rounded-md bg-gray-200 px-2 text-center text-xs text-gray-600">
-                {label}
-              </div>
-            )}
+            {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
+            {label && <div className="rounded-md bg-gray-200 px-2 text-center text-xs text-gray-600">{label}</div>}
           </div>
         </div>
       </EdgeLabelRenderer>
     </>
-  );
-};
+  )
+}
 
-export default CustomEdge;
+export default CustomEdge

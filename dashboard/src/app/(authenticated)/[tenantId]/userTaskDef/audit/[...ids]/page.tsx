@@ -5,7 +5,7 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { Details } from '@/app/(authenticated)/[tenantId]/components/Details'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { AuditTable } from './AuditTable'
-import Link from 'next/link'
+
 import { Button } from '@/components/ui/button'
 
 type Props = { params: { ids: string[]; tenantId: string } }
