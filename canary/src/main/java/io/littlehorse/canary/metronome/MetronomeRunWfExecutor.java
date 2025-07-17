@@ -149,7 +149,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
         @Override
         public void onFailure(final Throwable t) {
-            log.error("Error executing runWf {}", t.getMessage(), t);
+            log.debug("Error executing runWf {}", t.getMessage(), t);
 
             final BeatStatus.BeatStatusBuilder statusBuilder = BeatStatus.builder(BeatStatus.Code.ERROR)
                     .reason(t.getClass().getSimpleName());
