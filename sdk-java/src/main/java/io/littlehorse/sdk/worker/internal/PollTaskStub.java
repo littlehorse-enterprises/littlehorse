@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public final class PollTaskStub {
+public final class PollTaskStub implements AutoCloseable {
     private final ServerResponseObserver responseObserver;
     private final Semaphore semaphore;
     private final ScheduledTaskExecutor taskExecutor;
@@ -72,6 +72,15 @@ public final class PollTaskStub {
 
     public void acquireNextPermit() throws InterruptedException {
         semaphore.acquire();
+    }
+
+    @Override
+    public void close() {
+        try {
+            observer.onCompleted();
+        } catch (IllegalStateException ignored) {
+            // Already completed
+        }
     }
 
     private final class ServerResponseObserver implements StreamObserver<PollTaskResponse> {

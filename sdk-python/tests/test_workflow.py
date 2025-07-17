@@ -3877,7 +3877,7 @@ class CorrelationIdTest(unittest.TestCase):
         self.assertTrue(
             static_node.external_event.mask_correlation_key,
         )
-    
+
     def test_should_not_mask_normal_var_as_correlation_id(self):
         def wf_func(wf: WorkflowThread) -> None:
             my_var = wf.declare_str("my-var")
@@ -3899,10 +3899,10 @@ class CorrelationIdTest(unittest.TestCase):
                 correlation_id=my_var,
                 mask_correlation_id=True,
             )
-        
+
         wf = Workflow("obiwan", wf_func).compile()
         entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
-        
+
         static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
         self.assertTrue(
             static_node.external_event.mask_correlation_key,
