@@ -2,12 +2,13 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
-import org.rocksdb.Env;
+import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
 import org.rocksdb.RateLimiter;
 
@@ -49,9 +50,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
 
-        ///////////////////////////////////////////////////////////////////////
-        // Block Cache Configuration
-        ///////////////////////////////////////////////////////////////////////
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
@@ -60,7 +58,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             Cache oldCache = tableConfig.blockCache();
             tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
             tableConfig.setCacheIndexAndFilterBlocks(true);
-
             oldCache.close();
         }
 
@@ -68,62 +65,40 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setBlockSize(BLOCK_SIZE);
         options.setTableFormatConfig(tableConfig);
 
+        options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
+        options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
+
         options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
 
-        ///////////////////////////////////////////////////////////////////////
-        // Write Buffer Configuration
-        ///////////////////////////////////////////////////////////////////////
-        options.setMinWriteBufferNumberToMerge(2);
-        options.setWriteBufferSize(
-                isCoreStore(storeName) ? serverConfig.getCoreMemtableSize() : serverConfig.getTimerMemtableSize());
-        if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
-            options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
-        }
-
-        ///////////////////////////////////////////////////////////////////////
-        // Compaction and Flushing
-        ///////////////////////////////////////////////////////////////////////
         if (serverConfig.getRocksDBUseLevelCompaction()) {
             options.setCompactionStyle(CompactionStyle.LEVEL);
         } else {
             options.setCompactionStyle(CompactionStyle.UNIVERSAL);
         }
 
-        // Direct I/O can be useful in containerized environments when the Host OS does
-        // not clear page cache aggressively enough, which can cause OOM on containers
-        // with low total memory limits.
-        options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
-        options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
+        Optional<InfoLogLevel> rocksDBLogLevel = serverConfig.getRocksDBLogLevel();
+        if (rocksDBLogLevel.isPresent()) {
+            options.setInfoLogLevel(rocksDBLogLevel.get());
+        }
 
-        // See here: https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#parallelism-options
-        // RocksDB recommends setting threads for compaction to be equal to number of cores. This is
-        // separate from the number of *jobs* that can be running: parallelism vs concurrency.
-        //
-        // This is safer than using options.setIncreaseParallelism() because that config would end up
-        // creating a thread pool for each separate rocksdb instance which causes an explosion in the
-        // number of background threads.
-        Env env = Env.getDefault();
-        env.setBackgroundThreads(serverConfig.getRocksDBCompactionThreads());
-        options.setEnv(env);
+        options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
 
-        // Max background jobs (flushes and compactions) that can be going on concurrently. These
-        // jobs can be bottlenecked by I/O, so this number should be higher than the value
-        // passed into `setIncreaseParallelism()`.
-        options.setMaxBackgroundJobs(serverConfig.getRocksDBCompactionThreads() * 3);
+        // Memtable size
+        options.setWriteBufferSize(
+                isCoreStore(storeName) ? serverConfig.getCoreMemtableSize() : serverConfig.getTimerMemtableSize());
 
-        // Speeds up compaction by deploying sub compactions. A subcompaction is a "job" that
-        // runs inside the background job threadpool (setIncreaseParallelism) and counts
-        // against the setMaxBackgroundJobs().
+        if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
+            options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
+        }
+        // Streams default is 3
+        options.setMaxWriteBufferNumber(5);
+        //  Concurrent jobs for both flushes and compaction
+        options.setMaxBackgroundJobs(serverConfig.getRocksDBCompactionThreads());
+        // Speeds up compaction by deploying sub compactions.
+        // there may be max_background_jobs * max_subcompactions background threads running compaction
         options.setMaxSubcompactions(3);
-
-        ///////////////////////////////////////////////////////////////////////
-        // Rate Limiter
-        ///////////////////////////////////////////////////////////////////////
         long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
         if (rateLimit > 0) {
-            // The Rate Limiter limits the rate at which data can be written to disk by
-            // flush and compaction. It does not limit the the rate at which we can call
-            // `store.put()`.
             options.setRateLimiter(new RateLimiter(
                     rateLimit,
                     RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
