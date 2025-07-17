@@ -739,9 +739,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public int getRocksDBFlushThreads() {
-        // Defaults to whatever the compaction threads is set to
-        return Integer.valueOf(
-                getOrSetDefault(ROCKSDB_FLUSH_THREADS_KEY, String.valueOf(getRocksDBCompactionThreads())));
+        return Integer.valueOf(getOrSetDefault(ROCKSDB_FLUSH_THREADS_KEY, "1"));
     }
 
     public boolean getRocksDBUseLevelCompaction() {
