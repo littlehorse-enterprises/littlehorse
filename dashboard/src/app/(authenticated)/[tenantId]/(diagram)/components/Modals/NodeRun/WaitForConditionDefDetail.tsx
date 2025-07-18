@@ -1,13 +1,7 @@
-import { FC } from 'react'
 import { NodeRun } from 'littlehorse-client/proto'
-import { useQuery } from '@tanstack/react-query'
-import { utcToLocalDateTime } from '@/app/utils'
-import { cn } from '@/components/utils'
-import { getWaitForCondition } from '../../NodeTypes/WaitForCondition/getWaitForCondition'
-import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
-import { useParams } from 'next/navigation'
+import { FC } from 'react'
 
-export const WaitForConditionDefDetail: FC<{ nodeRun: NodeRun }> = ({ nodeRun }) => {
+export const WaitForConditionDefDetail: FC<{ nodeRun: NodeRun }> = () => {
   // ? Commented out, but here incase we need it later.
   // const { tenantId } = useParams() as { tenantId: string }
 

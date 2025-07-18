@@ -46,7 +46,9 @@ export const searchExternalEvent = async ({
       let nodeRun = null
       try {
         nodeRun = await client.getNodeRun(externalEvent.id!)
-      } catch {}
+      } catch {
+        // nodeRun is null if the node run is not found
+      }
 
       return {
         externalEvent,
