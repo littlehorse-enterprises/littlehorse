@@ -42,23 +42,22 @@ public class WorkflowThread
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
-
+        _lastNodeCondition = null;
+        _retentionPolicy = null;
+        _isStartNopActive = false;
+        IsActive = true;
         var entrypointNode = new Node { Entrypoint = new EntrypointNode() };
-
         var entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
-        IsActive = true;
         Parent.Threads.Push(this);
         action.Invoke(this);
-
         var lastNode = FindNode(LastNodeName);
         if (lastNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
         IsActive = false;
-        
         _spec.RetentionPolicy = GetRetentionPolicy();
     }
 
@@ -388,7 +387,7 @@ public class WorkflowThread
         Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
-        return new ExternalEventNodeOutput(nodeName, this);
+        return new ExternalEventNodeOutput(nodeName, externalEventDefName, this);
     }
     
     /// <summary>
@@ -1214,7 +1213,7 @@ public class WorkflowThread
     /// <param name="content">
     /// It is the content of the WorkflowEvent that is thrown.
     /// </param>
-    public void ThrowEvent(string workflowEventDefName, object content)
+    public ThrowEventNodeOutput ThrowEvent(string workflowEventDefName, object content)
     {
         CheckIfWorkflowThreadIsActive();
         Parent.AddWorkflowEventDefName(workflowEventDefName);
@@ -1226,10 +1225,21 @@ public class WorkflowThread
             },
             Content = AssignVariable(content)
         };
-        
         AddNode("throw-" + workflowEventDefName, Node.NodeOneofCase.ThrowEvent, node);
+        return new ThrowEventNodeOutput(workflowEventDefName, this);
     }
-    
+
+ 
+    internal void RegisterWorkflowEventDef(ThrowEventNodeOutput nodeOutput)
+    {
+        Parent.AddWorkflowEventDefToRegister(nodeOutput);
+    }
+
+    internal void RegisterExternalEventDef(ExternalEventNodeOutput nodeOutput)
+    {
+        Parent.AddExternalEventDefToRegister(nodeOutput);
+    }
+       
     /// <summary>
     /// Adds a Reminder Task to a User Task Node.
     /// </summary>

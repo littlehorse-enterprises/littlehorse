@@ -10,6 +10,7 @@ namespace ExternalEventExample;
 public abstract class Program
 {
     private static ServiceProvider? _serviceProvider;
+
     private static void SetupApplication()
     {
         _serviceProvider = new ServiceCollection()
@@ -32,29 +33,36 @@ public abstract class Program
 
         return config;
     }
-    
+
     private static List<LHTaskWorker<WaitForExternalEventWorker>> GetTaskWorkers(LHConfig config)
     {
         var executable = new WaitForExternalEventWorker();
         var workers = new List<LHTaskWorker<WaitForExternalEventWorker>>
         {
-            new(executable, "ask-for-name", config),
-            new(executable, "greet", config)
+            new(executable, "greet", config),
+            new(executable, "summary", config)
         };
-        
+
         return workers;
     }
-    
+
     private static Workflow GetWorkflow()
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            WfRunVariable name = wf.DeclareStr("name").Searchable();
-            wf.Execute("ask-for-name");
-            name.Assign(wf.WaitForEvent("name-event"));
-            wf.Execute("greet", name);
+            var name = wf.WaitForEvent("what-is-your-name");
+            var id = wf.Execute("greet", name);
+            var age = wf.WaitForEvent("how-old-are-you")
+                .WithCorrelationId(id, true)
+                .WithCorrelatedEventConfig(new CorrelatedEventConfig
+                {
+                    DeleteAfterFirstCorrelation = false
+                })
+                .RegisteredAs(typeof(int));
+            wf.WaitForEvent("allow-show-summary").RegisteredAs(null);
+            wf.Execute("summary", name, age);
         }
-        
+
         return new Workflow("example-external-event", MyEntryPoint);
     }
 
@@ -69,18 +77,13 @@ public abstract class Program
             var workers = GetTaskWorkers(config);
 
             await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
-            
+
             var workflow = GetWorkflow();
-            
-            // Register external event if it does not exist
-            foreach (var externalEventName in workflow.GetRequiredExternalEventDefNames())
-            {
-                Console.WriteLine($"Registering external event {externalEventName}");
-                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName });
-            }
-            
+         
+            client.PutExternalEventDef(new PutExternalEventDefRequest { Name = "what-is-your-name" });
+
             await workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-            
+
             await Task.Delay(300);
 
             await Task.WhenAll(workers.Select(worker => worker.Start()));
