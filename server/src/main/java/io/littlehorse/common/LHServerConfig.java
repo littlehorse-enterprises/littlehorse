@@ -153,7 +153,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
     public static final String ROCKSDB_LOG_LEVEL_KEY = "LHS_X_ROCKSDB_LOG_LEVEL";
     public static final String ROCKSDB_FLUSH_THREADS_KEY = "LHS_X_ROCKSDB_FLUSH_THREADS";
-    
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
