@@ -2,27 +2,35 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.grpc.Status;
+
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.NodeRunIdList;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType;
+
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +43,8 @@ public class SearchNodeRunRequestModel
     private LHStatus status;
     private Timestamp earliestStart;
     private Timestamp latestStart;
+    private ExternalEventDefIdModel externalEventDefId;
+    private ExecutionContext context;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.NODE_RUN;
@@ -61,6 +71,10 @@ public class SearchNodeRunRequestModel
 
         nodeType = p.getNodeType();
         status = p.getStatus();
+        this.context = context;
+        if (p.hasExternalEventDef()) {
+            externalEventDefId = ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
+        }
     }
 
     public SearchNodeRunRequest.Builder toProto() {
@@ -71,6 +85,9 @@ public class SearchNodeRunRequestModel
         }
         if (limit != null) {
             out.setLimit(limit);
+        }
+        if (externalEventDefId != null) {
+            out.setExternalEventDef(externalEventDefId.toProto());
         }
 
         if (earliestStart != null) out.setEarliestStart(earliestStart);
@@ -86,6 +103,18 @@ public class SearchNodeRunRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
+        if (externalEventDefId != null) {
+            if (nodeType != NodeType.EXTERNAL_EVENT) {
+                throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "external_event_def filter only valid when node_type=EXTERNAL_EVENT");
+            }
+            if (context.service().getExternalEventDef(externalEventDefId.getName()) == null) {
+                throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    String.format("ExternalEventDef '%s' does not exist.", externalEventDefId.getName()));
+            }
+        }
         return TagStorageType.LOCAL;
     }
 
@@ -104,6 +133,12 @@ public class SearchNodeRunRequestModel
 
     @Override
     public List<Attribute> getSearchAttributes() {
-        return List.of(new Attribute("status", status.toString()), new Attribute("type", nodeType.toString()));
+        List<Attribute> attrs = new ArrayList<>();
+        attrs.add(new Attribute("status", status.toString()));
+        attrs.add(new Attribute("type", nodeType.toString()));
+        if (externalEventDefId != null) {
+            attrs.add(new Attribute("extEvtDefName", externalEventDefId.toString()));
+        }
+        return attrs;
     }
 }
