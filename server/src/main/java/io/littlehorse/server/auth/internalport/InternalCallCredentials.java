@@ -39,6 +39,10 @@ public class InternalCallCredentials extends CallCredentials {
         });
     }
 
+    public AuthorizationContext getAuthorization() {
+        return currentAuthorization;
+    }
+
     public static InternalCallCredentials forContext(BackgroundContext callbackContext) {
         return new InternalCallCredentials(callbackContext.authorization());
     }
