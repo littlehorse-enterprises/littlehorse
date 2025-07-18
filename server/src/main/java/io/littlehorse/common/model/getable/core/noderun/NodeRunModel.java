@@ -172,21 +172,18 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         GetableIndex<NodeRunModel> baseIndex = new GetableIndex<>(
-            List.of(
-                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                Pair.of("type", GetableIndex.ValueType.SINGLE)
-            ),
-            Optional.of(TagStorageType.LOCAL)
-        );
+                List.of(
+                        Pair.of("status", GetableIndex.ValueType.SINGLE),
+                        Pair.of("type", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageType.LOCAL));
         GetableIndex<NodeRunModel> externalEventIndex = new GetableIndex<>(
-            List.of(
-                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                Pair.of("type", GetableIndex.ValueType.SINGLE),
-                Pair.of("extEvtDefName", GetableIndex.ValueType.DYNAMIC)
-            ),
-            Optional.of(TagStorageType.LOCAL),
-            nodeRun -> nodeRun.externalEventRun != null && nodeRun.externalEventRun.getExternalEventDefId() != null
-        );
+                List.of(
+                        Pair.of("status", GetableIndex.ValueType.SINGLE),
+                        Pair.of("type", GetableIndex.ValueType.SINGLE),
+                        Pair.of("extEvtDefName", GetableIndex.ValueType.DYNAMIC)),
+                Optional.of(TagStorageType.LOCAL),
+                nodeRun ->
+                        nodeRun.externalEventRun != null && nodeRun.externalEventRun.getExternalEventDefId() != null);
         return List.of(baseIndex, externalEventIndex);
     }
 
