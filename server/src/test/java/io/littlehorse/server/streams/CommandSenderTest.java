@@ -82,8 +82,9 @@ class CommandSenderTest {
         when(client.getPrincipalId()).thenReturn(new PrincipalIdModel("test-principal"));
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
         producerWithResult(taskClaimProducer, producerResult);
-        CompletableFuture<RecordMetadata> future = sender.doSend(scheduledTask, client);
-        assertThat(future.get()).isSameAs(recordMetadata);
+        sender.doSend(scheduledTask, client);
+        threadPool.shutdown();
+        threadPool.awaitTermination(10, TimeUnit.SECONDS);
         verify(client).sendResponse(scheduledTask);
     }
 
@@ -99,8 +100,9 @@ class CommandSenderTest {
         producerWithResult(taskClaimProducer, producerResult);
         ArgumentCaptor<LHApiException> exceptionCaptor = ArgumentCaptor.forClass(LHApiException.class);
 
-        CompletableFuture<RecordMetadata> future = sender.doSend(scheduledTask, client);
-        future.get();
+        sender.doSend(scheduledTask, client);
+        threadPool.shutdown();
+        threadPool.awaitTermination(10, TimeUnit.SECONDS);
         verify(client).onError(exceptionCaptor.capture());
         LHApiException thrown = exceptionCaptor.getValue();
         assertThat(thrown.getMessage()).isEqualTo("UNAVAILABLE: Failed recording task claim to Kafka");
