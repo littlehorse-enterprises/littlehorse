@@ -97,7 +97,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
     // General LittleHorse Runtime Behavior Config Env Vars
-    public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
     public static final String INTERNAL_BIND_PORT_KEY = "LHS_INTERNAL_BIND_PORT";
     public static final String INTERNAL_ADVERTISED_HOST_KEY = "LHS_INTERNAL_ADVERTISED_HOST";
     public static final String INTERNAL_ADVERTISED_PORT_KEY = "LHS_INTERNAL_ADVERTISED_PORT";
@@ -1097,14 +1096,6 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean areStructDefsEnabled() {
         return Boolean.valueOf(getOrSetDefault(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "false"));
-    }
-
-    public int getNumNetworkThreads() {
-        int out = Integer.valueOf(getOrSetDefault(NUM_NETWORK_THREADS_KEY, "2"));
-        if (out < 2) {
-            throw new LHMisconfigurationException("Requires at least 2 network threads");
-        }
-        return out;
     }
 
     public String getRackId() {
