@@ -3,14 +3,17 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExitRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 
@@ -53,5 +56,11 @@ public class ExitNodeModel extends SubNode<ExitNode> {
             out.addAll(failureDef.getNeededVariableNames());
         }
         return out;
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        // No output.
+        return Optional.of(new ReturnTypeModel());
     }
 }

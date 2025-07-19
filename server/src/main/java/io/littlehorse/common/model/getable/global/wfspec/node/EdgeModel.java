@@ -1,14 +1,18 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
 import io.littlehorse.sdk.common.proto.Edge;
+import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.VariableMutation;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,6 +164,29 @@ public class EdgeModel extends LHSerializable<Edge> {
         // to the data store by actually telling the ThreadRun to mutate the variables.
         for (Map.Entry<String, VariableValueModel> entry : writeAheadBuffer.entrySet()) {
             threadRun.mutateVariable(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec) {
+        if (this.getSinkNodeName().equals(source.getName())) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
+        }
+
+        NodeModel sink = threadSpec.nodes.get(this.getSinkNodeName());
+        if (sink == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    String.format("Outgoing edge referring to missing node %s!", this.getSinkNodeName()));
+        }
+
+        if (sink.type == NodeCase.ENTRYPOINT) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    String.format(
+                            "Entrypoint node has incoming edge from node %s.", threadSpec.name, source.getName()));
+        }
+        if (this.getCondition() != null) {
+            this.getCondition().validate();
         }
     }
 }

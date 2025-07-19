@@ -3,9 +3,22 @@ package io.littlehorse.common.model.getable.global.wfspec;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.IntReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.InvalidExpressionException;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +34,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public TypeDefinitionModel() {}
 
     public TypeDefinitionModel(VariableType type) {
+        // TODO: determine whether this should be refactored to fail when type == Struct.
         this.type = type;
     }
 
@@ -41,6 +55,57 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
         this.type = p.getType();
+    }
+
+    public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
+            VariableMutationType operation, TypeDefinitionModel rhs, ReadOnlyMetadataManager manager)
+            throws InvalidExpressionException {
+        return getTypeStrategy().resolveOperation(manager, operation, rhs.getTypeStrategy());
+    }
+
+    public ReturnTypeStrategy getTypeStrategy() {
+        // TODO: Support StructDefs
+        switch (type) {
+            case INT:
+                return new IntReturnTypeStrategy();
+            case DOUBLE:
+                return new DoubleReturnTypeStrategy();
+            case STR:
+                return new StrReturnTypeStrategy();
+            case BOOL:
+                return new BoolReturnTypeStrategy();
+            case WF_RUN_ID:
+                return new WfRunIdReturnTypeStrategy();
+            case BYTES:
+                return new BytesReturnTypeStrategy();
+            case JSON_ARR:
+                return new JsonArrReturnTypeStrategy();
+            case JSON_OBJ:
+                return new JsonObjReturnTypeStrategy();
+            case UNRECOGNIZED:
+        }
+        throw new IllegalStateException();
+    }
+
+    /**
+     * Being primitive means that a variable can be used as a leaf in a json tree, and that its value
+     * can be serialized to a string easily.
+     */
+    public boolean isPrimitive() {
+        // TODO: Extend this when adding Struct and StructDef.
+        switch (type) {
+            case INT:
+            case BOOL:
+            case DOUBLE:
+            case WF_RUN_ID:
+            case STR:
+                return true;
+            case JSON_OBJ:
+            case JSON_ARR:
+            case BYTES:
+            case UNRECOGNIZED:
+        }
+        return false;
     }
 
     public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {

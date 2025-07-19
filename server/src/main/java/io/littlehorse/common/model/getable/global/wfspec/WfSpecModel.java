@@ -255,11 +255,16 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         return threadSpecs.get(entrypointThreadName);
     }
 
+    public ThreadSpecModel fetchThreadSpec(String threadSpecName) {
+        if (!threadSpecs.containsKey(threadSpecName)) {
+            throw new IllegalArgumentException("Invalid threadSpecName " + threadSpecName);
+        }
+        return threadSpecs.get(threadSpecName);
+    }
+
     /**
-     * Returns a Map from Variable Name to ThreadVarDefModel. Excludes the reserved "INPUT"
-     * variable.
-     * @return a mapping from variable name to ThreadVarDefModel for all variables in the
-     * WfSpec.
+     * Returns a Map from Variable Name to ThreadVarDefModel. Excludes the reserved "INPUT" variable.
+     * @return a mapping from variable name to ThreadVarDefModel for all variables in the WfSpec.
      */
     public Map<String, ThreadVarDefModel> getAllVariables() {
         return threadSpecs.values().stream()

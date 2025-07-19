@@ -6,15 +6,18 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 
@@ -91,5 +94,11 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
 
     public ExternalEventNodeRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new ExternalEventNodeRunModel(externalEventDefId, processorContext);
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        ExternalEventDefModel event = manager.get(externalEventDefId);
+        return event.getReturnType();
     }
 }
