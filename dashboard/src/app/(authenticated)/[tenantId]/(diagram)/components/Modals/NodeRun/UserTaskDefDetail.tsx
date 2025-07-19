@@ -8,17 +8,14 @@ import { AccordionNode } from './AccordionContent'
 
 export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) => {
   const taskId = nodeRun?.userTask?.userTaskRunId?.userTaskGuid
-  const wfRunId = nodeRun?.userTask?.userTaskRunId?.wfRunId?.id
+  const wfRunId = nodeRun?.userTask?.userTaskRunId?.wfRunId
   const { data, isLoading } = useQuery({
     queryKey: ['userTaskRun', wfRunId, taskId],
     queryFn: async () => {
       if (!wfRunId) return
       if (!taskId) return
       const taskRun = await getUserTaskRun({
-        wfRunId: {
-          id: wfRunId,
-          parentWfRunId: undefined,
-        },
+        wfRunId,
         userTaskGuid: taskId,
       })
 
