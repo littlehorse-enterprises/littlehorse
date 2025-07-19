@@ -5,9 +5,10 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.InvalidExpressionException;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
@@ -16,7 +17,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
@@ -33,8 +33,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private String variableName;
     private VariableValueModel rhsLiteralValue;
     private FormatStringModel formatString;
-
-    @Deprecated(forRemoval = true)
     private NodeOutputReferenceModel nodeOutputReference;
 
     private ExpressionModel expression;
@@ -125,9 +123,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     public Optional<TypeDefinitionModel> resolveType(
-            ReadOnlyMetadataManager manager,
-            Map<String, ThreadVarDefModel> variableDefs,
-            TypeDefinitionModel nodeOutputType)
+            ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
         if (jsonPath != null) {
             // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
@@ -137,17 +133,28 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
-                return Optional.of(variableDefs.get(variableName).getVarDef().getTypeDef());
+                return Optional.of(wfSpec.fetchThreadSpec(threadSpecName)
+                        .getVarDef(variableName)
+                        .getVarDef()
+                        .getTypeDef());
             case LITERAL_VALUE:
                 return Optional.of(rhsLiteralValue.getTypeDefinition());
             case FORMAT_STRING:
                 return Optional.of(new TypeDefinitionModel(VariableType.STR));
             case NODE_OUTPUT:
                 // TODO: handle here if nodeOutputType is a STRUCT and we access a field on it.
-                return Optional.ofNullable(nodeOutputType);
+                Optional<ReturnTypeModel> returnTypeOption = wfSpec.fetchThreadSpec(threadSpecName)
+                        .getNode(nodeOutputReference.getNodeName())
+                        .getOutputType(manager);
+                if (returnTypeOption.isPresent()) {
+                    ReturnTypeModel returnType = returnTypeOption.get();
+                    return returnType.getOutputType();
+                } else {
+                    return Optional.empty();
+                }
             case EXPRESSION:
                 // can be a given type.
-                return expression.resolveTypeDefinition(manager, nodeOutputType, variableDefs);
+                return expression.resolveTypeDefinition(manager, wfSpec, threadSpecName);
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException

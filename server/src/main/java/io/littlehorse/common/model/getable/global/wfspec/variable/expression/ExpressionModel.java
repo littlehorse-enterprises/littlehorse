@@ -6,14 +6,13 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
-import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
 
@@ -46,13 +45,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
     }
 
     public Optional<TypeDefinitionModel> resolveTypeDefinition(
-            ReadOnlyMetadataManager manager,
-            TypeDefinitionModel nodeOutputType,
-            Map<String, ThreadVarDefModel> variableDefs)
+            ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
 
-        Optional<TypeDefinitionModel> lhsTypeOption = lhs.resolveType(manager, variableDefs, nodeOutputType);
-        Optional<TypeDefinitionModel> rhsTypeOption = rhs.resolveType(manager, variableDefs, nodeOutputType);
+        Optional<TypeDefinitionModel> lhsTypeOption = lhs.resolveType(manager, wfSpec, threadSpecName);
+        Optional<TypeDefinitionModel> rhsTypeOption = rhs.resolveType(manager, wfSpec, threadSpecName);
 
         if (lhsTypeOption.isEmpty() || rhsTypeOption.isEmpty()) {
             return Optional.empty();

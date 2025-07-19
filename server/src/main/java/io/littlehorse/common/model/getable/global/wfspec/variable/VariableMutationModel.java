@@ -6,16 +6,20 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 
 @Slf4j
 @Getter
@@ -177,5 +181,9 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             out.addAll(rhsRhsAssignment.getRequiredWfRunVarNames());
         }
         return out;
+    }
+
+    public void validate(ReadOnlyMetadataManager manager, WfSpecModel wfSpec, NodeModel node) {
+        throw new NotImplementedException();
     }
 }

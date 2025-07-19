@@ -230,6 +230,10 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return wfSpec.lookupVarDef(name);
     }
 
+    public NodeModel getNode(String name) {
+        return nodes.get(name);
+    }
+
     public void validate(MetadataProcessorContext ctx) throws LHApiException {
         if (entrypointNodeName == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOINT node!");

@@ -209,29 +209,9 @@ public class NodeModel extends LHSerializable<Node> {
 
     public void validate(MetadataProcessorContext ctx) throws LHApiException {
         for (EdgeModel e : outgoingEdges) {
-            if (e.getSinkNodeName().equals(name)) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
-            }
-
-            NodeModel sink = threadSpec.nodes.get(e.getSinkNodeName());
-            if (sink == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        String.format("Outgoing edge referring to missing node %s!", e.getSinkNodeName()));
-            }
-
-            if (sink.type == NodeCase.ENTRYPOINT) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, name));
-            }
-            if (e.getCondition() != null) {
-                e.getCondition().validate();
-            }
+            e.validate(this, ctx.metadataManager(), threadSpec);
         }
-
         validateFailureHandlers();
-
         getSubNode().validate(ctx);
     }
 

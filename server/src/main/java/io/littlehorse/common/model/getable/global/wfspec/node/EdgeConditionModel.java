@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
     public Comparator comparator;
@@ -52,7 +54,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
     public EdgeModel edge;
 
     public void validate() throws LHApiException {
-        // TODO: do some type checking here...
+        throw new NotImplementedException();
     }
 
     public Set<String> getRequiredVariableNames() {
