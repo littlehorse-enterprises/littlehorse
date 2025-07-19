@@ -786,13 +786,19 @@ class WaitForThreadsNodeOutput(NodeOutput):
             failure_handler,
         )
         return self
-    
+
+
 class ThrowEventNodeOutput:
     """
     Represents the output of a ThrowEvent node in a workflow, allowing event definition registration.
     """
 
-    def __init__(self, event_name: str, parent: WorkflowThread, payload_type: Optional[type] = None) -> None:
+    def __init__(
+        self,
+        event_name: str,
+        parent: WorkflowThread,
+        payload_type: Optional[type] = None,
+    ) -> None:
         """
         Initializes a new instance of the ThrowEventNodeOutput class.
 
@@ -811,14 +817,12 @@ class ThrowEventNodeOutput:
 
         Returns:
             PutWorkflowEventDefRequest: The request object for event definition registration.
-            
+
         Raises:
             ValueError: If `_payload_type` is not set before generating the request.
-            
+
         """
-        output = PutWorkflowEventDefRequest(
-            name=self._event_name
-        )
+        output = PutWorkflowEventDefRequest(name=self._event_name)
         if self._payload_type is not None:
             output.content_type.CopyFrom(python_type_to_return_type(self._payload_type))
 
@@ -826,11 +830,14 @@ class ThrowEventNodeOutput:
 
 
 class ExternalEventNodeOutput(NodeOutput):
-    def __init__(self, node_name: str, 
-                 event_name: str, 
-                 parent: WorkflowThread, 
-                 payload_type: Optional[type] = None, 
-                 correlated_event_config: Optional[CorrelatedEventConfig] = None) -> None:
+    def __init__(
+        self,
+        node_name: str,
+        event_name: str,
+        parent: WorkflowThread,
+        payload_type: Optional[type] = None,
+        correlated_event_config: Optional[CorrelatedEventConfig] = None,
+    ) -> None:
         """
         Initializes a new instance of the ExternalEventNodeOutput class.
 
@@ -845,7 +852,9 @@ class ExternalEventNodeOutput(NodeOutput):
         self.event_name = event_name
         self.parent = parent
         self._payload_type: Optional[type] = payload_type
-        self._correlated_event_config: Optional[CorrelatedEventConfig] = correlated_event_config
+        self._correlated_event_config: Optional[CorrelatedEventConfig] = (
+            correlated_event_config
+        )
 
     def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
         """
@@ -857,18 +866,18 @@ class ExternalEventNodeOutput(NodeOutput):
         Raises:
             ValueError: If `_payload_type` is not set before generating the request.
         """
-        request = PutExternalEventDefRequest(
-            name=self.event_name
-        )
+        request = PutExternalEventDefRequest(name=self.event_name)
 
         if self._payload_type:
-            request.content_type.CopyFrom(python_type_to_return_type(self._payload_type))
+            request.content_type.CopyFrom(
+                python_type_to_return_type(self._payload_type)
+            )
 
         if self._correlated_event_config:
             request.correlated_event_config.CopyFrom(self._correlated_event_config)
 
         return request
-   
+
 
 class WorkflowNode:
     def __init__(
@@ -1802,14 +1811,14 @@ class WorkflowThread:
         mask_correlation_id: Optional[bool] = None,
         auto_register: Optional[bool] = False,
         return_type: Optional[type] = None,
-        correlated_event_config: Optional[CorrelatedEventConfig] = None
+        correlated_event_config: Optional[CorrelatedEventConfig] = None,
     ) -> ExternalEventNodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
 
         Args:
             event_name (str): The name of ExternalEvent to wait for
-            timeout (int, optional): Timeout in seconds. 
+            timeout (int, optional): Timeout in seconds.
                 If it is 0 or less it does not set a timeout. Defaults to -1.
             correlation_id (Union[str, LHFormatString, WfRunVariable]): the
                 correlation id to be used for CorrelatedEvents.
@@ -1817,12 +1826,12 @@ class WorkflowThread:
             auto_register (Optional[bool]): If set, the External event will get registered
                 together with the workflow.
             return_type (Optional[type]): The type of the payload to return by the external event.
-            correlated_event_config (Optional[CorrelatedEventConfig]): Configuration for correlated 
+            correlated_event_config (Optional[CorrelatedEventConfig]): Configuration for correlated
                 events.
-                
+
         Note:
-            If any of auto_register, return_type, or correlated_event_config are set, 
-            the ExternalEventDef will be automatically registered with the workflow.                
+            If any of auto_register, return_type, or correlated_event_config are set,
+            the ExternalEventDef will be automatically registered with the workflow.
 
         Returns:
             ExternalEventNodeOutput: An ExternalEventNodeOutput for this event.
@@ -1847,26 +1856,27 @@ class WorkflowThread:
             mask_correlation_key=mask_correlation_id,
         )
         node_name = self.add_node(event_name, wait_node)
-        
+
         output = ExternalEventNodeOutput(
             node_name=node_name,
             event_name=event_name,
             parent=self,
             payload_type=return_type,
-            correlated_event_config= correlated_event_config
+            correlated_event_config=correlated_event_config,
         )
         if auto_register or return_type or correlated_event_config:
             self.register_external_event_def(output)
 
         return output
 
-    def throw_event(self, 
-                    workflow_event_name: str, 
-                    content: Any, 
-                    auto_register: Optional[bool] = False, 
-                    return_type: Optional[type] = None
-                    ) -> ThrowEventNodeOutput:
-        """Adds a THROW_EVENT node which throws a WorkflowEvent.     
+    def throw_event(
+        self,
+        workflow_event_name: str,
+        content: Any,
+        auto_register: Optional[bool] = False,
+        return_type: Optional[type] = None,
+    ) -> ThrowEventNodeOutput:
+        """Adds a THROW_EVENT node which throws a WorkflowEvent.
 
         Args:
             workflow_event_name (str): The WorkflowEventDefId name of
@@ -1874,9 +1884,9 @@ class WorkflowThread:
             content (Any): the content of the WorkflowEvent to throw
             auto_register (Optional[bool]): If set, the WorkflowEventDef will be registered
                 together with the workflow.
-            return_type (Optional[type]): The type of the payload to return 
+            return_type (Optional[type]): The type of the payload to return
                 by the WorkflowEvent.
-                
+
         Note:
             If auto_register or return_type are set, the WorkflowEventDef will be automatically
             registered with the workflow.
@@ -1892,13 +1902,11 @@ class WorkflowThread:
         self.add_node("throw-" + workflow_event_name, throw_node)
 
         output = ThrowEventNodeOutput(
-            event_name=workflow_event_name,
-            parent=self,
-            payload_type=return_type
+            event_name=workflow_event_name, parent=self, payload_type=return_type
         )
         if auto_register or return_type:
             self.register_workflow_event_def(output)
-            
+
         return output
 
     def mutate(
@@ -2521,13 +2529,21 @@ def create_workflow_spec(
 
     for external_node in workflow.external_events_to_register:
         external_event_request = external_node.to_put_external_event_def_request()
-        external_event_response = stub.PutExternalEventDef(external_event_request, timeout=timeout)
-        logging.info(f"Registered ExternalEventDef: \n{MessageToJson(external_event_response)}")
+        external_event_response = stub.PutExternalEventDef(
+            external_event_request, timeout=timeout
+        )
+        logging.info(
+            f"Registered ExternalEventDef: \n{MessageToJson(external_event_response)}"
+        )
 
     for workflow_node in workflow.workflow_events_to_register:
         workflow_event_request = workflow_node.to_put_workflow_event_def_request()
-        workflow_event_response = stub.PutWorkflowEventDef(workflow_event_request, timeout=timeout)
-        logging.info(f"Registered WorkflowEventDef: \n{MessageToJson(workflow_event_response)}")
+        workflow_event_response = stub.PutWorkflowEventDef(
+            workflow_event_request, timeout=timeout
+        )
+        logging.info(
+            f"Registered WorkflowEventDef: \n{MessageToJson(workflow_event_response)}"
+        )
 
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
     stub.PutWfSpec(request, timeout=timeout)
@@ -2585,5 +2601,3 @@ def create_workflow_event_def(
     )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")
-
-

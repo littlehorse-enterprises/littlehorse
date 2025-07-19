@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, WfRunId, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
@@ -17,6 +17,15 @@ import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
+
+const buildWfRunId = (flattenedId: string): WfRunId => {
+  const ids = flattenedId.split('_')
+
+  return ids.reduce<WfRunId | undefined>((parentWfRunId, currentId) => ({
+    id: currentId,
+    parentWfRunId
+  }), undefined)!
+}
 
 export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
 
@@ -43,6 +52,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
       if (values[key] === undefined) return acc
       const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
+      console.log(transformedKey, wfSpecVariables)
       acc[transformedKey] = { [matchVariableType(transformedKey)]: values[key] }
       return acc
     }, {})
@@ -71,16 +81,21 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
 
   const handleFormSubmit = async (values: FormValues) => {
     const customWfRunId = values.customWfRunId as string
+    const parentWfRunId = values.parentWfRunId as string
     delete values.customWfRunId
-    if (!wfSpec.id) return
+    delete values.parentWfRunId
+    if (!wfSpec.id || !parentWfRunId) return
+    const variables = formatVariablesPayload(values)
+
     try {
       const wfRun = await runWfSpec({
         tenantId,
+        parentWfRunId: buildWfRunId(parentWfRunId),
         wfSpecName: wfSpec.id.name,
         majorVersion: wfSpec.id.majorVersion,
         revision: wfSpec.id.revision,
         id: customWfRunId || undefined,
-        variables: formatVariablesPayload(values),
+        variables,
       })
       if (!wfRun.id) return
       toast.success('Workflow has been executed')
@@ -105,7 +120,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <WfRunForm wfSpecVariables={wfSpecVariables} onSubmit={handleFormSubmit} ref={formRef} />
+        <WfRunForm wfSpecVariables={wfSpecVariables} wfSpec={wfSpec} onSubmit={handleFormSubmit} ref={formRef} />
 
         <DialogFooter>
           <DialogClose className="mr-4">Cancel</DialogClose>
