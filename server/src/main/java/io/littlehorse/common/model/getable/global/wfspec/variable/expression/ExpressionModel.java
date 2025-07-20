@@ -1,8 +1,10 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable.expression;
 
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;

@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.MissingThreadRunException;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
@@ -578,17 +578,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         this.advance(new Date());
     }
 
-    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationError {
+    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationException {
         int threadRunNumber = req.getNodeRunId().getThreadRunNumber();
         int nodeRunPosition = req.getNodeRunId().getPosition();
         if (threadRunNumber >= threadRunsUseMeCarefully.size() || threadRunNumber < 0) {
-            throw new LHValidationError(null, "Reference to nonexistent thread.");
+            throw new LHValidationException(null, "Reference to nonexistent thread.");
         }
 
         ThreadRunModel thread = getThreadRun(threadRunNumber);
 
         if (nodeRunPosition > thread.currentNodePosition) {
-            throw new LHValidationError(null, "Reference to nonexistent nodeRun");
+            throw new LHValidationException(null, "Reference to nonexistent nodeRun");
         }
 
         thread.processSleepNodeMatured(req);

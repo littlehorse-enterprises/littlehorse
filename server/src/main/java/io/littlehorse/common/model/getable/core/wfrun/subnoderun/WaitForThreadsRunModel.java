@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -227,7 +227,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         // If this fails, then it means that we have an invalid WfSpec.
         try {
             handlerSpec.validateStartVariables(vars);
-        } catch (LHValidationError exn) {
+        } catch (LHValidationException exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failure Handler spec %s for thread %d rejected input variables: %s"
                             .formatted(handlerSpec.getName(), failedChildThread.getThreadRunNumber(), exn.getMessage()),

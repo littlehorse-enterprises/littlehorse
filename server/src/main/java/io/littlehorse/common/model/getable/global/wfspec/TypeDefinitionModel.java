@@ -1,13 +1,14 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.IntReturnTypeStrategy;
-import io.littlehorse.common.model.getable.global.wfspec.variable.expression.InvalidExpressionException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ReturnTypeStrategy;
