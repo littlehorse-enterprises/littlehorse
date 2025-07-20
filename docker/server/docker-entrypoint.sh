@@ -4,7 +4,7 @@ set -e
 
 if [ "$1" = 'server' ]; then
     shift
-    exec java $JAVA_OPTS -jar /lh/server.jar "$@"
+    exec /lh/bin/server
 fi
 
 exec "$@"
