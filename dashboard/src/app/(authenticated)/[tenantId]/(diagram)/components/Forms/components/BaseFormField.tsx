@@ -73,16 +73,14 @@ export function VariableLabel(threadVarDef: ThreadVarDef) {
   if (!name) return null
 
   return (
-    <Label htmlFor={name} className="flex items-center gap-2" >
+    <Label htmlFor={name} className="flex items-center gap-2">
       {name}
-      <span className="rounded bg-green-300 p-1 text-xs" > {accessLevels[threadVarDef.accessLevel]}</span >
-      {
-        threadVarDef.required ? (
-          <span className="rounded bg-red-300 p-1 text-xs" > Required</span>
-        ) : (
-          <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
-        )
-      }
+      <span className="rounded bg-green-300 p-1 text-xs"> {accessLevels[threadVarDef.accessLevel]}</span>
+      {threadVarDef.required ? (
+        <span className="rounded bg-red-300 p-1 text-xs"> Required</span>
+      ) : (
+        <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
+      )}
     </Label>
   )
 }

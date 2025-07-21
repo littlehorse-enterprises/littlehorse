@@ -40,18 +40,29 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, w
           </Label>
           <Input type="text" id="customWfRunId" {...register('customWfRunId')} placeholder="Enter string value" />
         </div>
-        {wfSpec.parentWfSpec && <div>
-          <Label htmlFor="customWfRunId" className="mb-2 flex items-center gap-2">
-            Parent WfRun Id
-            <span className="rounded bg-gray-300 p-1 text-xs">Required</span>
-          </Label>
-          <Input type="text" id="customWfRunId" {...register('parentWfRunId')} placeholder="Enter string value" required />
-        </div>
-        }
+        {wfSpec.parentWfSpec && (
+          <div>
+            <Label htmlFor="customWfRunId" className="mb-2 flex items-center gap-2">
+              Parent WfRun Id
+              <span className="rounded bg-gray-300 p-1 text-xs">Required</span>
+            </Label>
+            <Input
+              type="text"
+              id="customWfRunId"
+              {...register('parentWfRunId')}
+              placeholder="Enter string value"
+              required
+            />
+          </div>
+        )}
         {!!sortedVariables.length &&
-          sortedVariables.map((variable: ThreadVarDef) => (
-            variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR ? <VariableLabel key={variable.varDef?.name} {...variable} /> : <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
-          ))}
+          sortedVariables.map((variable: ThreadVarDef) =>
+            variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR ? (
+              <VariableLabel key={variable.varDef?.name} {...variable} />
+            ) : (
+              <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
+            )
+          )}
       </form>
     </FormProvider>
   )

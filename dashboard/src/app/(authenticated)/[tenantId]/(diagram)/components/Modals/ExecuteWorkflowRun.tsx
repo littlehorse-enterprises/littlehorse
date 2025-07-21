@@ -21,10 +21,13 @@ import { FormValues, WfRunForm } from '../Forms/WfRunForm'
 const buildWfRunId = (flattenedId: string): WfRunId => {
   const ids = flattenedId.split('_')
 
-  return ids.reduce<WfRunId | undefined>((parentWfRunId, currentId) => ({
-    id: currentId,
-    parentWfRunId
-  }), undefined)!
+  return ids.reduce<WfRunId | undefined>(
+    (parentWfRunId, currentId) => ({
+      id: currentId,
+      parentWfRunId,
+    }),
+    undefined
+  )!
 }
 
 export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
@@ -53,7 +56,12 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
       if (values[key] === undefined) return acc
       const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
 
-      if (wfSpecVariables.some(variable => variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR && variable.varDef?.name === transformedKey)) {
+      if (
+        wfSpecVariables.some(
+          variable =>
+            variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR && variable.varDef?.name === transformedKey
+        )
+      ) {
         return acc
       }
 
