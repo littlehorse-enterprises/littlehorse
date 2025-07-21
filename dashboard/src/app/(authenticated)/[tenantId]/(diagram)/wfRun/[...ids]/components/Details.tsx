@@ -31,12 +31,12 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
       <span className="italic">WfRun</span>
       <div className="flex items-center">
         <h1 className="block text-2xl font-bold">{id.id}</h1>
-        <CopyToClipboard textToCopy={flattenWfRunId(id)} />
+        <CopyToClipboard tooltipText="Copy full wfRun ID" textToCopy={flattenWfRunId(id)} />
       </div>
       {id.parentWfRunId && (
         <div className="flex items-center gap-2">
           Parent WfRun:
-          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id.parentWfRunId)}`}>{id.parentWfRunId.id}</LinkWithTenant>
+          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id.parentWfRunId)}`} linkStyle><p>{id.parentWfRunId.id}</p></LinkWithTenant>
         </div>
       )}
       <div className="flex flex-row gap-2 text-sm text-gray-500">
