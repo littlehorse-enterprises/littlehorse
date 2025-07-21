@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { ThreadVarDef, VariableType, WfRunId, WfSpec } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, WfRunId, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
@@ -52,7 +52,11 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
       if (values[key] === undefined) return acc
       const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
-      console.log(transformedKey, wfSpecVariables)
+
+      if (wfSpecVariables.some(variable => variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR && variable.varDef?.name === transformedKey)) {
+        return acc
+      }
+
       acc[transformedKey] = { [matchVariableType(transformedKey)]: values[key] }
       return acc
     }, {})
@@ -84,13 +88,13 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     const parentWfRunId = values.parentWfRunId as string
     delete values.customWfRunId
     delete values.parentWfRunId
-    if (!wfSpec.id || !parentWfRunId) return
+    if (!wfSpec.id || (wfSpec.parentWfSpec && !parentWfRunId)) return
     const variables = formatVariablesPayload(values)
 
     try {
       const wfRun = await runWfSpec({
         tenantId,
-        parentWfRunId: buildWfRunId(parentWfRunId),
+        parentWfRunId: wfSpec.parentWfSpec ? buildWfRunId(parentWfRunId) : undefined,
         wfSpecName: wfSpec.id.name,
         majorVersion: wfSpec.id.majorVersion,
         revision: wfSpec.id.revision,

@@ -1,8 +1,9 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ThreadVarDef, WfSpec } from 'littlehorse-client/proto'
+import { ThreadVarDef, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
 import { forwardRef } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { VariableLabel } from './components/BaseFormField'
 import { FormFields } from './components/FormFields'
 
 export type FormValues = {
@@ -49,7 +50,7 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, w
         }
         {!!sortedVariables.length &&
           sortedVariables.map((variable: ThreadVarDef) => (
-            <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
+            variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR ? <VariableLabel key={variable.varDef?.name} {...variable} /> : <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
           ))}
       </form>
     </FormProvider>
