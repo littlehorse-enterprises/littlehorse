@@ -1,4 +1,4 @@
-import { getVariableDefType } from '@/app/utils'
+import { concatWfRunIds, getVariableDefType } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -104,7 +104,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
       if (!wfRun.id) return
       toast.success('Workflow has been executed')
       setShowModal(false)
-      router.push(`/${tenantId}/wfRun/${wfRun.id.id}`)
+      router.push(`/${tenantId}/wfRun/${concatWfRunIds(wfRun.id)}`)
     } catch (error: any) {
       if (error.message) {
         toast.error(error.message.split(':')[1])
