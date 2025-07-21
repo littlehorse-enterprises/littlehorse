@@ -28,7 +28,7 @@ jobs:
         run: sed -i "s/version=.*/version=${{ inputs.tag }}/g" gradle.properties
 
       - name: Tests and Build
-        run: ./gradlew server:test server:shadowJar
+        run: ./gradlew server:test server:shadowJar server:installDist
 
       - uses: actions/upload-artifact@v4
         with:
