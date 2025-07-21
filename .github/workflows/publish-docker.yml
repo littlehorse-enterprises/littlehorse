@@ -35,6 +35,11 @@ jobs:
           name: server-jar
           path: server/build/libs/server-*-all.jar
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-dist
+          path: server/build/install/server
+
   lh-server:
     runs-on: ubuntu-latest
     needs:
@@ -43,11 +48,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Server Jar artifact
+      - name: Download Server Binaries
         uses: actions/download-artifact@v4
         with:
-          name: server-jar
-          path: server/build/libs/
+          name: server-dist
+          path: server/build/install/server
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
@@ -191,3 +196,4 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
+
