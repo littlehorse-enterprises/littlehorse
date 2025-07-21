@@ -12,7 +12,7 @@ interface CopyToClipboardProps {
 export const CopyToClipboard: FC<CopyToClipboardProps> = ({
   textToCopy,
   className = '',
-  tooltipText = 'Copy to clipboard'
+  tooltipText = 'Copy to clipboard',
 }) => {
   const [copied, setCopied] = useState(false)
 

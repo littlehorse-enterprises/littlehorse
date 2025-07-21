@@ -36,7 +36,9 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
       {id.parentWfRunId && (
         <div className="flex items-center gap-2">
           Parent WfRun:
-          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id.parentWfRunId)}`} linkStyle><p>{id.parentWfRunId.id}</p></LinkWithTenant>
+          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id.parentWfRunId)}`} linkStyle>
+            <p>{id.parentWfRunId.id}</p>
+          </LinkWithTenant>
         </div>
       )}
       <div className="flex flex-row gap-2 text-sm text-gray-500">
