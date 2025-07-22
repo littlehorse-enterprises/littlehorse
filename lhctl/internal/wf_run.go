@@ -48,8 +48,8 @@ And the optional flag:
 - [--status]
 
   * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-          flags to put a time bound on WfRun's which are returned.
-          The time bound applies to the time that the WfRun was created.
+		  flags to put a time bound on WfRun's which are returned.
+		  The time bound applies to the time that the WfRun was created.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
@@ -93,16 +93,18 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			log.Fatal("Must specify wfSpecName!")
 		}
 
+		// Build search request, optionally filtering by parent workflow run ID
+		parentId, _ := cmd.Flags().GetString("parentWfRunId")
 		search := &lhproto.SearchWfRunRequest{
-			Bookmark:      bookmark,
-			Limit:         &limit,
-			EarliestStart: earliest,
-			LatestStart:   latest,
-			WfSpecName:    wfSpecName,
-			Status:        status,
-
+			Bookmark:           bookmark,
+			Limit:              &limit,
+			EarliestStart:      earliest,
+			LatestStart:        latest,
+			WfSpecName:         wfSpecName,
+			Status:             status,
 			WfSpecMajorVersion: majorVersion,
 			WfSpecRevision:     revision,
+			ParentWfRunId:      littlehorse.StrToWfRunId(parentId),
 		}
 
 		littlehorse.PrintResp(
@@ -330,6 +332,7 @@ func init() {
 	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
+	searchWfRunCmd.Flags().String("parentWfRunId", "", "Filter results to children of a specific parent workflow run ID")
 
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")

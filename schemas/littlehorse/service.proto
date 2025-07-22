@@ -708,6 +708,9 @@ message SearchWfRunRequest {
     // works for the Variables in the entrypiont threadrun (that is, variables
     // where the threadRunNumber == 0).
     repeated VariableMatch variable_filters = 9;
+    
+    // If set, only return WfRuns that are direct children of the given parent WfRun
+    optional WfRunId parent_wf_run_id = 10;
 }
 
 // List of WfRun Id's
