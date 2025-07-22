@@ -715,6 +715,11 @@ export interface SearchNodeRunRequest {
   nodeType: SearchNodeRunRequest_NodeType;
   /** Specifies the status of NodeRun to search for. */
   status: LHStatus;
+  /**
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   */
+  externalEventDef?: ExternalEventDefId | undefined;
 }
 
 /** This enum denotes the type of a NodeRun. */
@@ -4085,6 +4090,7 @@ function createBaseSearchNodeRunRequest(): SearchNodeRunRequest {
     latestStart: undefined,
     nodeType: SearchNodeRunRequest_NodeType.TASK,
     status: LHStatus.STARTING,
+    externalEventDef: undefined,
   };
 }
 
@@ -4107,6 +4113,9 @@ export const SearchNodeRunRequest = {
     }
     if (message.status !== LHStatus.STARTING) {
       writer.uint32(48).int32(lHStatusToNumber(message.status));
+    }
+    if (message.externalEventDef !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDef, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -4160,6 +4169,13 @@ export const SearchNodeRunRequest = {
 
           message.status = lHStatusFromJSON(reader.int32());
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.externalEventDef = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -4180,6 +4196,9 @@ export const SearchNodeRunRequest = {
     message.latestStart = object.latestStart ?? undefined;
     message.nodeType = object.nodeType ?? SearchNodeRunRequest_NodeType.TASK;
     message.status = object.status ?? LHStatus.STARTING;
+    message.externalEventDef = (object.externalEventDef !== undefined && object.externalEventDef !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDef)
+      : undefined;
     return message;
   },
 };
