@@ -171,19 +171,22 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        GetableIndex<? extends AbstractGetable<?>> basicIndex = new GetableIndex<>(
+                List.of(
+                        Pair.of("status", GetableIndex.ValueType.SINGLE),
+                        Pair.of("type", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageType.LOCAL));
 
-        return List.of(
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("type", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("type", GetableIndex.ValueType.SINGLE),
-                                Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)));
+        if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
+            GetableIndex<? extends AbstractGetable<?>> extEvtIndex = new GetableIndex<>(
+                    List.of(
+                            Pair.of("status", GetableIndex.ValueType.SINGLE),
+                            Pair.of("type", GetableIndex.ValueType.SINGLE),
+                            Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL));
+            return List.of(basicIndex, extEvtIndex);
+        }
+        return List.of(basicIndex);
     }
 
     @Override
