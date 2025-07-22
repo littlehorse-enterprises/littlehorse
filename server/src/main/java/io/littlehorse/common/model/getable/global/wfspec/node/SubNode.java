@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -17,7 +17,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createSubNodeRun(Date time, CoreProcessorContext processorContext);
 
-    public abstract void validate(MetadataProcessorContext ctx) throws LHApiException;
+    public abstract void validate(MetadataProcessorContext ctx) throws InvalidNodeException;
 
     protected NodeModel node;
 

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
@@ -12,10 +12,10 @@ import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.commons.lang3.NotImplementedException;
 
 public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
@@ -53,7 +53,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
     public EdgeModel edge;
 
-    public void validate() throws LHApiException {
+    public void validate(MetadataProcessorContext context) throws InvalidEdgeException {
         throw new NotImplementedException();
     }
 

@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -167,23 +166,22 @@ public class EdgeModel extends LHSerializable<Edge> {
         }
     }
 
-    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec) {
+    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidEdgeException {
         if (this.getSinkNodeName().equals(source.getName())) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
+            throw new InvalidEdgeException("Self loop not allowed!", this);
         }
 
         NodeModel sink = threadSpec.nodes.get(this.getSinkNodeName());
         if (sink == null) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    String.format("Outgoing edge referring to missing node %s!", this.getSinkNodeName()));
+            throw new InvalidEdgeException(
+                    String.format("Outgoing edge referring to missing node %s!", this.getSinkNodeName()), this);
         }
 
         if (sink.type == NodeCase.ENTRYPOINT) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    String.format(
-                            "Entrypoint node has incoming edge from node %s.", threadSpec.name, source.getName()));
+            throw new InvalidEdgeException(
+                    String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, source.getName()),
+                    this);
         }
         if (this.getCondition() != null) {
             this.getCondition().validate();

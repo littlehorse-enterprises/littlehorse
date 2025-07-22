@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -153,22 +152,20 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {
                     if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.getThreadSpec())) {
-                        throw new LHApiException(
-                                Status.INVALID_ARGUMENT,
-                                "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
+                        throw new InvalidNodeException(
+                                "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!", node);
                     }
                 }
                 break;
             case THREAD_LIST:
                 if (!threadList.canBeType(VariableType.JSON_ARR, node.getThreadSpec())) {
-                    throw new LHApiException(
-                            Status.INVALID_ARGUMENT,
-                            "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to JSON_ARR!");
+                    throw new InvalidNodeException(
+                            "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to JSON_ARR!", node);
                 }
                 break;
             case THREADSTOWAITFOR_NOT_SET:

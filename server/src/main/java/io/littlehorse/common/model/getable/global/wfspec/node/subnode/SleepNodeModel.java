@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunModel;
@@ -71,10 +70,8 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
-        // TODO: once we have schemas, we need to validate that the
-        // variable assignments are types that make sense (unsigned int, long,
-        // or date string).
+    public void validate(MetadataProcessorContext ctx) {
+        // TODO (#1759)
     }
 
     @Override

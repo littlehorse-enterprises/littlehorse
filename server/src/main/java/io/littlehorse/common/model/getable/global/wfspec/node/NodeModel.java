@@ -4,6 +4,8 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
@@ -207,9 +209,13 @@ public class NodeModel extends LHSerializable<Node> {
         return Optional.empty();
     }
 
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         for (EdgeModel e : outgoingEdges) {
-            e.validate(this, ctx.metadataManager(), threadSpec);
+            try {
+                e.validate(this, ctx.metadataManager(), threadSpec);
+            } catch (InvalidEdgeException exn) {
+                throw new InvalidNodeException(exn.getMessage(), this);
+            }
         }
         validateFailureHandlers();
         getSubNode().validate(ctx);

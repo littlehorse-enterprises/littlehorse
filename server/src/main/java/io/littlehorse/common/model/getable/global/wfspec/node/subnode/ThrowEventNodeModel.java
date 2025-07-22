@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ThrowEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
@@ -57,11 +56,10 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         WorkflowEventDefModel eventDef = context.service().getWorkflowEventDef(workflowEventDefId);
         if (eventDef == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT.withDescription(
-                    "Refers to missing workflowEventDef %s".formatted(workflowEventDefId)));
+            throw new InvalidNodeException("Refers to missing workflowEventDef %s".formatted(workflowEventDefId), node);
         }
     }
 

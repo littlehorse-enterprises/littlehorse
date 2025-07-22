@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
@@ -79,11 +80,11 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return typeDef.isMasked();
     }
 
-    public void validateValue(VariableValueModel value) throws LHValidationException {
+    public void validateValue(VariableValueModel value) throws InvalidThreadSpecException {
         if (value.getType() == null || value.getType() == typeDef.getType()) {
             return;
         }
-        throw new LHValidationException(
+        throw new InvalidThreadSpecException(
                 null, "Variable " + name + " should be " + typeDef + " but is of type " + value.getType());
     }
 

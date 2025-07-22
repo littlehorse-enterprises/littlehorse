@@ -2,6 +2,8 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHValidationException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForConditionNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeConditionModel;
@@ -40,8 +42,12 @@ public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext context) {
-        condition.validate();
+    public void validate(MetadataProcessorContext context) throws InvalidNodeException {
+        try {
+            condition.validate(context);
+        } catch (LHValidationException exn) {
+            throw new InvalidNodeException(exn, node);
+        }
     }
 
     @Override

@@ -1,10 +1,10 @@
 package io.littlehorse.common.model.getable.global.wfspec.thread;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationException;
+import io.littlehorse.common.exceptions.validation.InvalidInterruptDefException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
+import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -234,9 +234,9 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return nodes.get(name);
     }
 
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidThreadSpecException {
         if (entrypointNodeName == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOINT node!");
+            throw new InvalidThreadSpecException(this, "missing ENTRYPOINT node!");
         }
 
         boolean seenEntrypoint = false;
@@ -245,30 +245,28 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 // TODO: as per popular demand, we will relax this constraint.
                 Pair<String, ThreadVarDefModel> result = lookupVarDef(varName);
                 if (result == null) {
-                    throw new LHApiException(
-                            Status.INVALID_ARGUMENT,
-                            " node " + node.name + " refers to unknown or out-of-scope variable " + varName);
+                    throw new InvalidThreadSpecException(
+                            this, " node " + node.name + " refers to unknown or out-of-scope variable " + varName);
                 }
             }
             if (node.type == NodeCase.ENTRYPOINT) {
                 if (seenEntrypoint) {
-                    throw new LHApiException(Status.INVALID_ARGUMENT, "Multiple ENTRYPOINT nodes!");
+                    throw new InvalidThreadSpecException(this, "Multiple ENTRYPOINT nodes!");
                 }
                 seenEntrypoint = true;
             }
             try {
                 node.validate(ctx);
-            } catch (LHApiException exn) {
-                throw exn.getCopyWithPrefix("Node " + node.name);
+            } catch (InvalidNodeException exn) {
+                throw new InvalidThreadSpecException(this, exn.getMessage());
             }
         }
 
         for (InterruptDefModel idef : interruptDefs) {
             try {
                 idef.validate();
-            } catch (LHApiException exn) {
-                throw exn.getCopyWithPrefix(
-                        "Interrupt Def for " + idef.getExternalEventDefId().getName());
+            } catch (InvalidInterruptDefException exn) {
+                throw new InvalidThreadSpecException(this, exn);
             }
         }
         validateExternalEventDefUse();
@@ -287,29 +285,29 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
      *
      * If an ExternalEvent comes in and multiple live threads have
      */
-    private void validateExternalEventDefUse() throws LHApiException {
+    private void validateExternalEventDefUse() throws InvalidThreadSpecException {
         // Check that interrupts aren't used anywhere else
         for (InterruptDefModel idef : interruptDefs) {
             String eedn = idef.getExternalEventDefId().getName();
             if (wfSpec.getNodeExternalEventDefs().contains(eedn)) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "ExternalEventDef " + eedn + " used for Node and Interrupt!");
+                throw new InvalidThreadSpecException(
+                        this, "ExternalEventDef " + eedn + " used for Node and Interrupt!");
             }
 
             for (ThreadSpecModel tspec : wfSpec.threadSpecs.values()) {
                 if (tspec.name.equals(name)) continue;
 
                 if (tspec.getInterruptExternalEventDefs().contains(eedn)) {
-                    throw new LHApiException(
-                            Status.INVALID_ARGUMENT,
-                            "ExternalEventDef " + eedn + " used by multiple threads as interrupt!");
+                    throw new InvalidThreadSpecException(
+                            this, "ExternalEventDef " + eedn + " used by multiple threads as interrupt!");
                 }
             }
         }
     }
 
     // TODO: check input variables.
-    public void validateStartVariables(Map<String, VariableValueModel> inputVariables) throws LHValidationException {
+    public void validateStartVariables(Map<String, VariableValueModel> inputVariables)
+            throws InvalidThreadSpecException {
         for (Map.Entry<String, ThreadVarDefModel> e : getInputVariableDefs().entrySet()) {
             String varName = e.getKey();
             ThreadVarDefModel threadVarDef = e.getValue();
@@ -317,8 +315,10 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             VariableDefModel varDef = threadVarDef.getVarDef();
             if (inputVariableValue == null) {
                 if (threadVarDef.isRequired()) {
-                    throw new LHValidationException("Must provide required input variable %s of type %s"
-                            .formatted(varName, varDef.getTypeDef()));
+                    throw new InvalidThreadSpecException(
+                            this,
+                            "Must provide required input variable %s of type %s"
+                                    .formatted(varName, varDef.getTypeDef()));
                 }
                 log.debug("Variable {} not provided, defaulting to null", varName);
                 continue;
@@ -327,8 +327,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 if (inputVariables.containsKey(varName)) {
-                    throw new LHValidationException(
-                            "Variable %s is an inherited var but it was provided as input".formatted(varName));
+                    throw new InvalidThreadSpecException(
+                            this, "Variable %s is an inherited var but it was provided as input".formatted(varName));
                 }
             }
         }
@@ -336,18 +336,20 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (Map.Entry<String, VariableValueModel> e : inputVariables.entrySet()) {
             String varName = e.getKey();
             if (getVd(varName) == null) {
-                throw new LHValidationException("Var " + varName + " provided but not needed for thread " + name
-                        + " Current variables" + variableDefs);
+                throw new InvalidThreadSpecException(
+                        this,
+                        "Var " + varName + " provided but not needed for thread " + name + " Current variables"
+                                + variableDefs);
             }
         }
     }
 
     public void validateTimeoutAssignment(String nodeName, VariableAssignmentModel timeoutSeconds)
-            throws LHValidationException {
+            throws InvalidThreadSpecException {
         if (timeoutSeconds.getRhsSourceType() == SourceCase.VARIABLE_NAME) {
             Pair<String, ThreadVarDefModel> defPair = lookupVarDef(timeoutSeconds.getVariableName());
             if (defPair == null) {
-                throw new LHValidationException(
+                throw new InvalidThreadSpecException(
                         null,
                         "Timeout on node "
                                 + nodeName
@@ -356,12 +358,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
         }
         if (!timeoutSeconds.canBeType(VariableType.INT, this)) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "Timeout on node " + nodeName + " refers to non INT variable.");
+            throw new InvalidThreadSpecException(this, "Timeout on node " + nodeName + " refers to non INT variable.");
         }
     }
 
-    public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars) throws LHApiException {
+    public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars)
+            throws InvalidThreadSpecException {
         Map<String, ThreadVarDefModel> inputVarDefs = getInputVariableDefs();
 
         for (Map.Entry<String, ThreadVarDefModel> e : inputVarDefs.entrySet()) {
@@ -372,8 +374,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
 
             if (!assn.canBeType(e.getValue().getVarDef().getTypeDef(), this)) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
+                throw new InvalidThreadSpecException(
+                        this,
                         "Var " + e.getKey() + " should be "
                                 + e.getValue().getVarDef().getTypeDef());
             }
@@ -381,8 +383,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
         for (Map.Entry<String, VariableAssignmentModel> e : vars.entrySet()) {
             if (localGetVarDef(e.getKey()) == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Var " + e.getKey() + " provided but not needed for thread " + name);
+                throw new InvalidThreadSpecException(
+                        this, "Var " + e.getKey() + " provided but not needed for thread " + name);
             }
         }
     }
