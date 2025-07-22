@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
+import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -184,7 +185,14 @@ public class EdgeModel extends LHSerializable<Edge> {
                     this);
         }
         if (this.getCondition() != null) {
-            this.getCondition().validate();
+            this.getCondition().validate(source, manager, threadSpec);
+        }
+        for (VariableMutationModel variableMutation : variableMutations) {
+            try {
+                variableMutation.validate(source, manager, threadSpec);
+            } catch(InvalidMutationException exn) {
+                throw new InvalidEdgeException(exn, this);
+            }
         }
     }
 }

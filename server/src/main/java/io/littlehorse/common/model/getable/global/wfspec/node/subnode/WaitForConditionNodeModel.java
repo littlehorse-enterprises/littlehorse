@@ -44,7 +44,7 @@ public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
     @Override
     public void validate(MetadataProcessorContext context) throws InvalidNodeException {
         try {
-            condition.validate(context);
+            condition.validate(node, context.metadataManager(), node.threadSpec);
         } catch (LHValidationException exn) {
             throw new InvalidNodeException(exn, node);
         }

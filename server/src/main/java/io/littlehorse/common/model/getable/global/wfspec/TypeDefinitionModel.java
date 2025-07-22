@@ -125,4 +125,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         // TODO: Extend this when we add StructDef's and Structs.
         return value.getType() == type;
     }
+
+    /**
+     * Returns true if the other type is compatible with this type. Note that it requires
+     * exact match for now. In the future we'll support casting.
+     */
+    public boolean isCompatibleWith(TypeDefinitionModel other) {
+        return this.equals(other);
+    }
 }

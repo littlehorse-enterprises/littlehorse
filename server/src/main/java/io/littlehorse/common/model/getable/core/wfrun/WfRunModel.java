@@ -62,7 +62,6 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
@@ -482,11 +481,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         ThreadRunModel handler = getThreadRun(timeout.getNodeRunId().getThreadRunNumber());
         handler.processExtEvtTimeout(timeout);
         advance(processorContext.currentCommand().getTime());
-    }
-
-    public void failDueToWfSpecDeletion() {
-        throw new NotImplementedException();
-        // getThreadRun(0).fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
     }
 
     public void processExternalEvent(ExternalEventModel event) {
