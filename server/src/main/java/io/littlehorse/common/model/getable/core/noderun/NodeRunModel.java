@@ -182,7 +182,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                         List.of(
                                 Pair.of("status", GetableIndex.ValueType.SINGLE),
                                 Pair.of("type", GetableIndex.ValueType.SINGLE),
-                                Pair.of("extEvtDefName", GetableIndex.ValueType.DYNAMIC)),
+                                Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)));
     }
 
