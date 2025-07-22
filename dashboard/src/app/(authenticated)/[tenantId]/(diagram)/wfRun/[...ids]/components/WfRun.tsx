@@ -6,13 +6,13 @@ import { useSearchParams } from 'next/navigation'
 import { FC } from 'react'
 import { Details } from './Details'
 import { Variables } from './Variables'
-export const WfRun: FC<{ id: string, tenantId: string }> = ({ id, tenantId }) => {
+export const WfRun: FC<{ id: string; tenantId: string }> = ({ id, tenantId }) => {
   const searchParams = useSearchParams()
   const threadRunNumber = Number(searchParams.get('threadRunNumber'))
   const { wfRunData, isLoading, isError } = useWfRun({ wfRunId: { id }, tenantId })
 
   if (!wfRunData) return null
-  const { wfRun, wfSpec, nodeRuns, variables } = wfRunData;
+  const { wfRun, wfSpec, nodeRuns, variables } = wfRunData
 
   if (!wfRun) return null
 
