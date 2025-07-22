@@ -1,10 +1,11 @@
+import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { FormFieldProp } from '@/types'
+import { ThreadVarDef } from 'littlehorse-client/proto'
 import { CircleAlert } from 'lucide-react'
 import { FC, ReactNode } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { accessLevels } from '../../../wfSpec/[...props]/components/Variables'
-import { Button } from '@/components/ui/button'
 import { DOT_REPLACEMENT_PATTERN } from '../../Modals/ExecuteWorkflowRun'
 
 type BaseFormFieldProps = FormFieldProp & {
@@ -43,15 +44,7 @@ export const BaseFormField: FC<BaseFormFieldProps> = ({
   return (
     <div>
       <div className="mb-2 flex justify-between">
-        <Label htmlFor={name} className="flex items-center gap-2">
-          {name.replace(DOT_REPLACEMENT_PATTERN, '.')}
-          <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[accessLevel]}</span>
-          {required ? (
-            <span className="rounded bg-red-300 p-1 text-xs">Required</span>
-          ) : (
-            <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
-          )}
-        </Label>
+        <VariableLabel {...variables} />
         {!required && (
           <Button
             type="button"
@@ -72,5 +65,22 @@ export const BaseFormField: FC<BaseFormFieldProps> = ({
         </p>
       )}
     </div>
+  )
+}
+
+export function VariableLabel(threadVarDef: ThreadVarDef) {
+  const name = threadVarDef.varDef?.name?.replace(DOT_REPLACEMENT_PATTERN, '.')
+  if (!name) return null
+
+  return (
+    <Label htmlFor={name} className="flex items-center gap-2">
+      {name}
+      <span className="rounded bg-green-300 p-1 text-xs"> {accessLevels[threadVarDef.accessLevel]}</span>
+      {threadVarDef.required ? (
+        <span className="rounded bg-red-300 p-1 text-xs"> Required</span>
+      ) : (
+        <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
+      )}
+    </Label>
   )
 }

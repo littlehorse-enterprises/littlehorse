@@ -29,25 +29,26 @@ def get_config() -> LHConfig:
 
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        name = wf.wait_for_event(ASK_FOR_NAME_EVENT, 
-                                 timeout=60, 
-                                 auto_register=True, 
-                                 return_type=str)
+        name = wf.wait_for_event(
+            ASK_FOR_NAME_EVENT, timeout=60, auto_register=True, return_type=str
+        )
         greet_id = wf.declare_str("id")
         greet_id.assign(wf.execute(GREET, name))
-        
-        age = wf.wait_for_event(ASK_FOR_AGE_EVENT, 
-                                timeout=60, 
-                                correlation_id=greet_id, 
-                                return_type=int,
-                                correlated_event_config=CorrelatedEventConfig(
-                                    delete_after_first_correlation=True,
-                                ))
 
-        wf.wait_for_event(ALLOW_SUMMARY_TASK, 
-                          correlation_id=greet_id, 
-                          auto_register=True)
-        
+        age = wf.wait_for_event(
+            ASK_FOR_AGE_EVENT,
+            timeout=60,
+            correlation_id=greet_id,
+            return_type=int,
+            correlated_event_config=CorrelatedEventConfig(
+                delete_after_first_correlation=True,
+            ),
+        )
+
+        wf.wait_for_event(
+            ALLOW_SUMMARY_TASK, correlation_id=greet_id, auto_register=True
+        )
+
         summary = wf.execute(DO_SUMMARY_TASK, name, age)
         wf.throw_event(THROW_EVENT, summary, return_type=str)
 
