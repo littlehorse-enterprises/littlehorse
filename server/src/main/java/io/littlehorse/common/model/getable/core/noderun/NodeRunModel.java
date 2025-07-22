@@ -178,13 +178,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 Optional.of(TagStorageType.LOCAL));
 
         if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
-            GetableIndex<? extends AbstractGetable<?>> extEvtIndex = new GetableIndex<>(
+            GetableIndex<? extends AbstractGetable<?>> externalEventIndex = new GetableIndex<>(
                     List.of(
                             Pair.of("status", GetableIndex.ValueType.SINGLE),
                             Pair.of("type", GetableIndex.ValueType.SINGLE),
                             Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL));
-            return List.of(basicIndex, extEvtIndex);
+            return List.of(basicIndex, externalEventIndex);
         }
         return List.of(basicIndex);
     }
