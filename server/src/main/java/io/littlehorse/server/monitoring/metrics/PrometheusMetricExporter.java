@@ -77,12 +77,9 @@ public class PrometheusMetricExporter implements Closeable {
         processorMetrics.bindTo(prometheusRegistry);
     }
 
-    //    public Handler handleRequest() {
-    //        return ctx -> {
-    //            log.trace("Processing metrics request");
-    //            ctx.result(prometheusRegistry.scrape());
-    //        };
-    //    }
+    public String handleRequest() {
+        return prometheusRegistry.scrape();
+    }
 
     @Override
     public void close() {

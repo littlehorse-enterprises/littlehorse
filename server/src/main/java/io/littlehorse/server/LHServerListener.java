@@ -11,6 +11,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -1087,6 +1088,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             resources = {},
             actions = {})
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
+        ServerCallStreamObserver<?> s = (ServerCallStreamObserver<?>) responseObserver;
+        s.setOnCancelHandler(() -> {});
         RequestExecutionContext requestContext = requestContext();
         AuthorizationContext authorizationContext = requestContext.authorization();
         PrincipalIdModel principalId = authorizationContext.principalId();
