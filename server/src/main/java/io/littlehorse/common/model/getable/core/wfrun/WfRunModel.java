@@ -100,7 +100,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     // K -> V
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(
+        List<GetableIndex<? extends AbstractGetable<?>>> indexes = new ArrayList<>(List.of(
                 new GetableIndex<>(
                         List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
@@ -110,7 +110,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
-                        List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
+                        List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)), 
+                        Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
                         List.of(Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
@@ -123,7 +124,22 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         List.of(
                                 Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)));
+                        Optional.of(TagStorageType.LOCAL))
+        ));
+        
+        // Only create parentWfRunId indexes if this workflow has a parent
+        if (id != null && id.getParentWfRunId() != null) {
+            indexes.add(new GetableIndex<>(
+                    List.of(Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL)));
+            indexes.add(new GetableIndex<>(
+                    List.of(
+                            Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL)));
+        }
+        
+        return indexes;
     }
 
     @Override
@@ -144,7 +160,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             case "wfSpecId" -> {
                 return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
             }
+            case "parentWfRunId" -> {
+                if (id.getParentWfRunId() != null) {
+                    return List.of(new IndexedField(key, id.getParentWfRunId().toString(), tagStorageType.get()));
+                } 
+            }
         }
+        log.warn("Tried to get value for unknown index field {}", key);
         return List.of();
     }
 

@@ -48,6 +48,7 @@ public class SearchWfRunRequestModel
 
     private Date earliestStart;
     private Date latestStart;
+    private WfRunIdModel parentWfRunId;
 
     // not from proto
     private ExecutionContext executionContext;
@@ -79,6 +80,8 @@ public class SearchWfRunRequestModel
 
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
+        if (p.hasParentWfRunId())
+            parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
 
         for (VariableMatch vm : p.getVariableFiltersList()) {
             variableMatches.add(LHSerializable.fromProto(vm, VariableMatchModel.class, context));
@@ -101,6 +104,7 @@ public class SearchWfRunRequestModel
 
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
+        if (parentWfRunId != null) out.setParentWfRunId(parentWfRunId.toProto());
 
         for (VariableMatchModel vmm : variableMatches) {
             out.addVariableFilters(vmm.toProto());
@@ -136,6 +140,10 @@ public class SearchWfRunRequestModel
 
         if (status != null) {
             out.add(new Attribute("status", status.toString()));
+        }
+
+        if (parentWfRunId != null) {
+            out.add(new Attribute("parentWfRunId", parentWfRunId.toString()));
         }
 
         return out;
