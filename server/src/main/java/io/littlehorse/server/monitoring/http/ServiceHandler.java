@@ -13,7 +13,9 @@ import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpVersion;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.LastHttpContent;
 import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
     private final StatusServer.HttpEndpointRegistry registry;
 
@@ -27,8 +29,13 @@ public class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
             if (!registry.isPresent(httpRequest.uri())) {
                 writeNotFoundResponse(ctx);
             } else {
-                SimpleResponse response = registry.getResponse(httpRequest.uri());
-                writeResponse(ctx, response);
+                try {
+                    SimpleResponse response = registry.getResponse(httpRequest.uri());
+                    writeResponse(ctx, response);
+                } catch (Exception e) {
+                    log.error("Error processing http request", e);
+                    writeInternalErrorResponse(ctx);
+                }
             }
         } else if (request instanceof LastHttpContent trailer) {
             ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
@@ -45,6 +52,13 @@ public class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
     private void writeNotFoundResponse(ChannelHandlerContext ctx) {
         FullHttpResponse response =
                 new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND, Unpooled.EMPTY_BUFFER);
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
+    private void writeInternalErrorResponse(ChannelHandlerContext ctx) {
+        ByteBuf responseBody = Unpooled.copiedBuffer("Internal server error", StandardCharsets.UTF_8);
+        FullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR, responseBody);
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 }
