@@ -104,7 +104,10 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			Status:             status,
 			WfSpecMajorVersion: majorVersion,
 			WfSpecRevision:     revision,
-			ParentWfRunId:      littlehorse.StrToWfRunId(parentId),
+		}
+
+		if parentId != "" {
+			search.ParentWfRunId = littlehorse.StrToWfRunId(parentId)
 		}
 
 		littlehorse.PrintResp(

@@ -126,15 +126,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL))
         ));
-        
-        // Only create parentWfRunId indexes if this workflow has a parent
         if (id != null && id.getParentWfRunId() != null) {
             indexes.add(new GetableIndex<>(
-                    List.of(Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    List.of(
+                            Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL)));
             indexes.add(new GetableIndex<>(
                     List.of(
                             Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                            Pair.of("status", GetableIndex.ValueType.SINGLE),
                             Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL)));
         }
