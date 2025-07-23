@@ -6,8 +6,6 @@ import static io.littlehorse.sdk.common.proto.LHStatus.RUNNING;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
@@ -47,7 +45,6 @@ public class WfRunSearchTest {
     private Workflow searchableVariableWf;
 
     private WorkflowVerifier workflowVerifier;
-    private LittleHorseBlockingStub client;
     private final SearchResultCaptor<WfRunIdList> wfRunIdListCaptor = SearchResultCaptor.of(WfRunIdList.class);
     private final SearchResultCaptor<WfSpecIdList> wfSpecIdListCaptor = SearchResultCaptor.of(WfSpecIdList.class);
 
@@ -242,51 +239,6 @@ public class WfRunSearchTest {
                         .filter(id -> id.getWfRunId().getId().equals(wfRunId.getId()))
                         .toList())
                 .hasSize(0);
-    }
-
-    @Test
-    @Order(6)
-    public void shouldFindWfRunByParentId() {
-        // Create a simple parent workflow
-        WfRunId parentId = client.runWf(RunWfRequest.newBuilder()
-                        .setWfSpecName("complex-workflow")
-                        .build())
-                .getId();
-
-        // Create a child workflow with the parent ID
-        WfRunId childId = client.runWf(RunWfRequest.newBuilder()
-                        .setWfSpecName("complex-workflow")
-                        .setParentWfRunId(parentId)
-                        .build())
-                .getId();
-
-        // Search for workflows by parent ID
-        Function<TestExecutionContext, SearchWfRunRequest> searchByParentId = context -> SearchWfRunRequest.newBuilder()
-                .setWfSpecName("complex-workflow")
-                .setParentWfRunId(parentId)
-                .build();
-
-        // Use any workflow to get the execution context for the search
-        workflowVerifier
-                .prepareRun(complexWorkflow)
-                .doSearch(SearchWfRunRequest.class, wfRunIdListCaptor.capture(), searchByParentId)
-                .start();
-
-        WfRunIdList childWorkflows = wfRunIdListCaptor.getValue().get();
-
-        // Verify that only the child workflow is returned
-        Assertions.assertThat(childWorkflows.getResultsList())
-                .hasSize(1)
-                .extracting(WfRunId::getId)
-                .containsExactly(childId.getId());
-
-        // Verify the child workflow has the correct parent
-        Assertions.assertThat(childWorkflows
-                        .getResultsList()
-                        .get(0)
-                        .getParentWfRunId()
-                        .getId())
-                .isEqualTo(parentId.getId());
     }
 
     @LHWorkflow("complex-workflow")

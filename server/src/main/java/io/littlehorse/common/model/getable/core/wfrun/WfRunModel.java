@@ -110,8 +110,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
-                        List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)), 
-                        Optional.of(TagStorageType.LOCAL)),
+                        List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
                         List.of(Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
@@ -124,8 +123,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         List.of(
                                 Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL))
-        ));
+                        Optional.of(TagStorageType.LOCAL))));
         if (id != null && id.getParentWfRunId() != null) {
             indexes.add(new GetableIndex<>(
                     List.of(
@@ -139,7 +137,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                             Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL)));
         }
-        
+
         return indexes;
     }
 
@@ -164,7 +162,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             case "parentWfRunId" -> {
                 if (id.getParentWfRunId() != null) {
                     return List.of(new IndexedField(key, id.getParentWfRunId().toString(), tagStorageType.get()));
-                } 
+                }
             }
         }
         log.warn("Tried to get value for unknown index field {}", key);

@@ -93,7 +93,6 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			log.Fatal("Must specify wfSpecName!")
 		}
 
-		// Build search request, optionally filtering by parent workflow run ID
 		parentId, _ := cmd.Flags().GetString("parentWfRunId")
 		search := &lhproto.SearchWfRunRequest{
 			Bookmark:           bookmark,
@@ -335,7 +334,7 @@ func init() {
 	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
-	searchWfRunCmd.Flags().String("parentWfRunId", "", "Filter results to children of a specific parent workflow run ID")
+	searchWfRunCmd.Flags().String("parentWfRunId", "", "Filter child WfRuns by parent WfRun ID")
 
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
