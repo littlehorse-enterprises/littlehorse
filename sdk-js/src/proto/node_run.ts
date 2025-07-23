@@ -64,19 +64,54 @@ export interface NodeRun {
     | undefined;
   /** A list of Failures thrown by this NodeRun. */
   failures: Failure[];
-  nodeType?:
-    | { $case: "task"; task: TaskNodeRun }
-    | { $case: "externalEvent"; externalEvent: ExternalEventNodeRun }
-    | { $case: "entrypoint"; entrypoint: EntrypointRun }
-    | { $case: "exit"; exit: ExitRun }
-    | { $case: "startThread"; startThread: StartThreadRun }
-    | { $case: "waitThreads"; waitThreads: WaitForThreadsRun }
-    | { $case: "sleep"; sleep: SleepNodeRun }
-    | { $case: "userTask"; userTask: UserTaskNodeRun }
-    | { $case: "startMultipleThreads"; startMultipleThreads: StartMultipleThreadsRun }
-    | { $case: "throwEvent"; throwEvent: ThrowEventNodeRun }
-    | { $case: "waitForCondition"; waitForCondition: WaitForConditionRun }
+  /** Denotes a TASK node, which runs a TaskRun. */
+  task?:
+    | TaskNodeRun
     | undefined;
+  /** An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. */
+  externalEvent?:
+    | ExternalEventNodeRun
+    | undefined;
+  /** An ENTRYPOINT node is the first thing that runs in a ThreadRun. */
+  entrypoint?:
+    | EntrypointRun
+    | undefined;
+  /** An EXIT node completes a ThreadRun. */
+  exit?:
+    | ExitRun
+    | undefined;
+  /** A START_THREAD node starts a child ThreadRun. */
+  startThread?:
+    | StartThreadRun
+    | undefined;
+  /** A WAIT_THREADS node waits for one or more child ThreadRun's to complete. */
+  waitThreads?:
+    | WaitForThreadsRun
+    | undefined;
+  /** A SLEEP node makes the ThreadRun block for a certain amount of time. */
+  sleep?:
+    | SleepNodeRun
+    | undefined;
+  /** A USER_TASK node waits until a human executes some work and reports the result. */
+  userTask?:
+    | UserTaskNodeRun
+    | undefined;
+  /**
+   * A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
+   * child ThreadRun for each element in the list.
+   */
+  startMultipleThreads?:
+    | StartMultipleThreadsRun
+    | undefined;
+  /** A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef. */
+  throwEvent?:
+    | ThrowEventNodeRun
+    | undefined;
+  /**
+   * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+   * evaluates to True.
+   */
+  waitForCondition?: WaitForConditionRun | undefined;
 }
 
 /** The sub-node structure for a TASK NodeRun. */
@@ -326,7 +361,17 @@ function createBaseNodeRun(): NodeRun {
     nodeName: "",
     errorMessage: undefined,
     failures: [],
-    nodeType: undefined,
+    task: undefined,
+    externalEvent: undefined,
+    entrypoint: undefined,
+    exit: undefined,
+    startThread: undefined,
+    waitThreads: undefined,
+    sleep: undefined,
+    userTask: undefined,
+    startMultipleThreads: undefined,
+    throwEvent: undefined,
+    waitForCondition: undefined,
   };
 }
 
@@ -364,40 +409,38 @@ export const NodeRun = {
     for (const v of message.failures) {
       Failure.encode(v!, writer.uint32(98).fork()).ldelim();
     }
-    switch (message.nodeType?.$case) {
-      case "task":
-        TaskNodeRun.encode(message.nodeType.task, writer.uint32(106).fork()).ldelim();
-        break;
-      case "externalEvent":
-        ExternalEventNodeRun.encode(message.nodeType.externalEvent, writer.uint32(114).fork()).ldelim();
-        break;
-      case "entrypoint":
-        EntrypointRun.encode(message.nodeType.entrypoint, writer.uint32(122).fork()).ldelim();
-        break;
-      case "exit":
-        ExitRun.encode(message.nodeType.exit, writer.uint32(130).fork()).ldelim();
-        break;
-      case "startThread":
-        StartThreadRun.encode(message.nodeType.startThread, writer.uint32(138).fork()).ldelim();
-        break;
-      case "waitThreads":
-        WaitForThreadsRun.encode(message.nodeType.waitThreads, writer.uint32(146).fork()).ldelim();
-        break;
-      case "sleep":
-        SleepNodeRun.encode(message.nodeType.sleep, writer.uint32(154).fork()).ldelim();
-        break;
-      case "userTask":
-        UserTaskNodeRun.encode(message.nodeType.userTask, writer.uint32(162).fork()).ldelim();
-        break;
-      case "startMultipleThreads":
-        StartMultipleThreadsRun.encode(message.nodeType.startMultipleThreads, writer.uint32(170).fork()).ldelim();
-        break;
-      case "throwEvent":
-        ThrowEventNodeRun.encode(message.nodeType.throwEvent, writer.uint32(178).fork()).ldelim();
-        break;
-      case "waitForCondition":
-        WaitForConditionRun.encode(message.nodeType.waitForCondition, writer.uint32(186).fork()).ldelim();
-        break;
+    if (message.task !== undefined) {
+      TaskNodeRun.encode(message.task, writer.uint32(106).fork()).ldelim();
+    }
+    if (message.externalEvent !== undefined) {
+      ExternalEventNodeRun.encode(message.externalEvent, writer.uint32(114).fork()).ldelim();
+    }
+    if (message.entrypoint !== undefined) {
+      EntrypointRun.encode(message.entrypoint, writer.uint32(122).fork()).ldelim();
+    }
+    if (message.exit !== undefined) {
+      ExitRun.encode(message.exit, writer.uint32(130).fork()).ldelim();
+    }
+    if (message.startThread !== undefined) {
+      StartThreadRun.encode(message.startThread, writer.uint32(138).fork()).ldelim();
+    }
+    if (message.waitThreads !== undefined) {
+      WaitForThreadsRun.encode(message.waitThreads, writer.uint32(146).fork()).ldelim();
+    }
+    if (message.sleep !== undefined) {
+      SleepNodeRun.encode(message.sleep, writer.uint32(154).fork()).ldelim();
+    }
+    if (message.userTask !== undefined) {
+      UserTaskNodeRun.encode(message.userTask, writer.uint32(162).fork()).ldelim();
+    }
+    if (message.startMultipleThreads !== undefined) {
+      StartMultipleThreadsRun.encode(message.startMultipleThreads, writer.uint32(170).fork()).ldelim();
+    }
+    if (message.throwEvent !== undefined) {
+      ThrowEventNodeRun.encode(message.throwEvent, writer.uint32(178).fork()).ldelim();
+    }
+    if (message.waitForCondition !== undefined) {
+      WaitForConditionRun.encode(message.waitForCondition, writer.uint32(186).fork()).ldelim();
     }
     return writer;
   },
@@ -494,86 +537,77 @@ export const NodeRun = {
             break;
           }
 
-          message.nodeType = { $case: "task", task: TaskNodeRun.decode(reader, reader.uint32()) };
+          message.task = TaskNodeRun.decode(reader, reader.uint32());
           continue;
         case 14:
           if (tag !== 114) {
             break;
           }
 
-          message.nodeType = {
-            $case: "externalEvent",
-            externalEvent: ExternalEventNodeRun.decode(reader, reader.uint32()),
-          };
+          message.externalEvent = ExternalEventNodeRun.decode(reader, reader.uint32());
           continue;
         case 15:
           if (tag !== 122) {
             break;
           }
 
-          message.nodeType = { $case: "entrypoint", entrypoint: EntrypointRun.decode(reader, reader.uint32()) };
+          message.entrypoint = EntrypointRun.decode(reader, reader.uint32());
           continue;
         case 16:
           if (tag !== 130) {
             break;
           }
 
-          message.nodeType = { $case: "exit", exit: ExitRun.decode(reader, reader.uint32()) };
+          message.exit = ExitRun.decode(reader, reader.uint32());
           continue;
         case 17:
           if (tag !== 138) {
             break;
           }
 
-          message.nodeType = { $case: "startThread", startThread: StartThreadRun.decode(reader, reader.uint32()) };
+          message.startThread = StartThreadRun.decode(reader, reader.uint32());
           continue;
         case 18:
           if (tag !== 146) {
             break;
           }
 
-          message.nodeType = { $case: "waitThreads", waitThreads: WaitForThreadsRun.decode(reader, reader.uint32()) };
+          message.waitThreads = WaitForThreadsRun.decode(reader, reader.uint32());
           continue;
         case 19:
           if (tag !== 154) {
             break;
           }
 
-          message.nodeType = { $case: "sleep", sleep: SleepNodeRun.decode(reader, reader.uint32()) };
+          message.sleep = SleepNodeRun.decode(reader, reader.uint32());
           continue;
         case 20:
           if (tag !== 162) {
             break;
           }
 
-          message.nodeType = { $case: "userTask", userTask: UserTaskNodeRun.decode(reader, reader.uint32()) };
+          message.userTask = UserTaskNodeRun.decode(reader, reader.uint32());
           continue;
         case 21:
           if (tag !== 170) {
             break;
           }
 
-          message.nodeType = {
-            $case: "startMultipleThreads",
-            startMultipleThreads: StartMultipleThreadsRun.decode(reader, reader.uint32()),
-          };
+          message.startMultipleThreads = StartMultipleThreadsRun.decode(reader, reader.uint32());
           continue;
         case 22:
           if (tag !== 178) {
             break;
           }
 
-          message.nodeType = { $case: "throwEvent", throwEvent: ThrowEventNodeRun.decode(reader, reader.uint32()) };
+          message.throwEvent = ThrowEventNodeRun.decode(reader, reader.uint32());
           continue;
         case 23:
           if (tag !== 186) {
             break;
           }
 
-          message.nodeType = {
-            $case: "waitForCondition",
-            waitForCondition: WaitForConditionRun.decode(reader, reader.uint32()),
-          };
+          message.waitForCondition = WaitForConditionRun.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -601,83 +635,37 @@ export const NodeRun = {
     message.nodeName = object.nodeName ?? "";
     message.errorMessage = object.errorMessage ?? undefined;
     message.failures = object.failures?.map((e) => Failure.fromPartial(e)) || [];
-    if (object.nodeType?.$case === "task" && object.nodeType?.task !== undefined && object.nodeType?.task !== null) {
-      message.nodeType = { $case: "task", task: TaskNodeRun.fromPartial(object.nodeType.task) };
-    }
-    if (
-      object.nodeType?.$case === "externalEvent" &&
-      object.nodeType?.externalEvent !== undefined &&
-      object.nodeType?.externalEvent !== null
-    ) {
-      message.nodeType = {
-        $case: "externalEvent",
-        externalEvent: ExternalEventNodeRun.fromPartial(object.nodeType.externalEvent),
-      };
-    }
-    if (
-      object.nodeType?.$case === "entrypoint" &&
-      object.nodeType?.entrypoint !== undefined &&
-      object.nodeType?.entrypoint !== null
-    ) {
-      message.nodeType = { $case: "entrypoint", entrypoint: EntrypointRun.fromPartial(object.nodeType.entrypoint) };
-    }
-    if (object.nodeType?.$case === "exit" && object.nodeType?.exit !== undefined && object.nodeType?.exit !== null) {
-      message.nodeType = { $case: "exit", exit: ExitRun.fromPartial(object.nodeType.exit) };
-    }
-    if (
-      object.nodeType?.$case === "startThread" &&
-      object.nodeType?.startThread !== undefined &&
-      object.nodeType?.startThread !== null
-    ) {
-      message.nodeType = { $case: "startThread", startThread: StartThreadRun.fromPartial(object.nodeType.startThread) };
-    }
-    if (
-      object.nodeType?.$case === "waitThreads" &&
-      object.nodeType?.waitThreads !== undefined &&
-      object.nodeType?.waitThreads !== null
-    ) {
-      message.nodeType = {
-        $case: "waitThreads",
-        waitThreads: WaitForThreadsRun.fromPartial(object.nodeType.waitThreads),
-      };
-    }
-    if (object.nodeType?.$case === "sleep" && object.nodeType?.sleep !== undefined && object.nodeType?.sleep !== null) {
-      message.nodeType = { $case: "sleep", sleep: SleepNodeRun.fromPartial(object.nodeType.sleep) };
-    }
-    if (
-      object.nodeType?.$case === "userTask" &&
-      object.nodeType?.userTask !== undefined &&
-      object.nodeType?.userTask !== null
-    ) {
-      message.nodeType = { $case: "userTask", userTask: UserTaskNodeRun.fromPartial(object.nodeType.userTask) };
-    }
-    if (
-      object.nodeType?.$case === "startMultipleThreads" &&
-      object.nodeType?.startMultipleThreads !== undefined &&
-      object.nodeType?.startMultipleThreads !== null
-    ) {
-      message.nodeType = {
-        $case: "startMultipleThreads",
-        startMultipleThreads: StartMultipleThreadsRun.fromPartial(object.nodeType.startMultipleThreads),
-      };
-    }
-    if (
-      object.nodeType?.$case === "throwEvent" &&
-      object.nodeType?.throwEvent !== undefined &&
-      object.nodeType?.throwEvent !== null
-    ) {
-      message.nodeType = { $case: "throwEvent", throwEvent: ThrowEventNodeRun.fromPartial(object.nodeType.throwEvent) };
-    }
-    if (
-      object.nodeType?.$case === "waitForCondition" &&
-      object.nodeType?.waitForCondition !== undefined &&
-      object.nodeType?.waitForCondition !== null
-    ) {
-      message.nodeType = {
-        $case: "waitForCondition",
-        waitForCondition: WaitForConditionRun.fromPartial(object.nodeType.waitForCondition),
-      };
-    }
+    message.task = (object.task !== undefined && object.task !== null)
+      ? TaskNodeRun.fromPartial(object.task)
+      : undefined;
+    message.externalEvent = (object.externalEvent !== undefined && object.externalEvent !== null)
+      ? ExternalEventNodeRun.fromPartial(object.externalEvent)
+      : undefined;
+    message.entrypoint = (object.entrypoint !== undefined && object.entrypoint !== null)
+      ? EntrypointRun.fromPartial(object.entrypoint)
+      : undefined;
+    message.exit = (object.exit !== undefined && object.exit !== null) ? ExitRun.fromPartial(object.exit) : undefined;
+    message.startThread = (object.startThread !== undefined && object.startThread !== null)
+      ? StartThreadRun.fromPartial(object.startThread)
+      : undefined;
+    message.waitThreads = (object.waitThreads !== undefined && object.waitThreads !== null)
+      ? WaitForThreadsRun.fromPartial(object.waitThreads)
+      : undefined;
+    message.sleep = (object.sleep !== undefined && object.sleep !== null)
+      ? SleepNodeRun.fromPartial(object.sleep)
+      : undefined;
+    message.userTask = (object.userTask !== undefined && object.userTask !== null)
+      ? UserTaskNodeRun.fromPartial(object.userTask)
+      : undefined;
+    message.startMultipleThreads = (object.startMultipleThreads !== undefined && object.startMultipleThreads !== null)
+      ? StartMultipleThreadsRun.fromPartial(object.startMultipleThreads)
+      : undefined;
+    message.throwEvent = (object.throwEvent !== undefined && object.throwEvent !== null)
+      ? ThrowEventNodeRun.fromPartial(object.throwEvent)
+      : undefined;
+    message.waitForCondition = (object.waitForCondition !== undefined && object.waitForCondition !== null)
+      ? WaitForConditionRun.fromPartial(object.waitForCondition)
+      : undefined;
     return message;
   },
 };
@@ -1458,7 +1446,6 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

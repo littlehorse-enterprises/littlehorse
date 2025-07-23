@@ -276,14 +276,28 @@ export interface ManualHalt {
 
 /** Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context. */
 export interface ThreadHaltReason {
-  reason?:
-    | { $case: "parentHalted"; parentHalted: ParentHalted }
-    | { $case: "interrupted"; interrupted: Interrupted }
-    | { $case: "pendingInterrupt"; pendingInterrupt: PendingInterruptHaltReason }
-    | { $case: "pendingFailure"; pendingFailure: PendingFailureHandlerHaltReason }
-    | { $case: "handlingFailure"; handlingFailure: HandlingFailureHaltReason }
-    | { $case: "manualHalt"; manualHalt: ManualHalt }
+  /** Parent threadRun halted. */
+  parentHalted?:
+    | ParentHalted
     | undefined;
+  /** Handling an Interrupt. */
+  interrupted?:
+    | Interrupted
+    | undefined;
+  /** Waiting to handle Interrupt. */
+  pendingInterrupt?:
+    | PendingInterruptHaltReason
+    | undefined;
+  /** Waiting to handle a failure. */
+  pendingFailure?:
+    | PendingFailureHandlerHaltReason
+    | undefined;
+  /** Handling a failure. */
+  handlingFailure?:
+    | HandlingFailureHaltReason
+    | undefined;
+  /** Manually stopped the WfRun. */
+  manualHalt?: ManualHalt | undefined;
 }
 
 function createBaseWfRun(): WfRun {
@@ -1153,30 +1167,35 @@ export const ManualHalt = {
 };
 
 function createBaseThreadHaltReason(): ThreadHaltReason {
-  return { reason: undefined };
+  return {
+    parentHalted: undefined,
+    interrupted: undefined,
+    pendingInterrupt: undefined,
+    pendingFailure: undefined,
+    handlingFailure: undefined,
+    manualHalt: undefined,
+  };
 }
 
 export const ThreadHaltReason = {
   encode(message: ThreadHaltReason, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.reason?.$case) {
-      case "parentHalted":
-        ParentHalted.encode(message.reason.parentHalted, writer.uint32(10).fork()).ldelim();
-        break;
-      case "interrupted":
-        Interrupted.encode(message.reason.interrupted, writer.uint32(18).fork()).ldelim();
-        break;
-      case "pendingInterrupt":
-        PendingInterruptHaltReason.encode(message.reason.pendingInterrupt, writer.uint32(26).fork()).ldelim();
-        break;
-      case "pendingFailure":
-        PendingFailureHandlerHaltReason.encode(message.reason.pendingFailure, writer.uint32(34).fork()).ldelim();
-        break;
-      case "handlingFailure":
-        HandlingFailureHaltReason.encode(message.reason.handlingFailure, writer.uint32(42).fork()).ldelim();
-        break;
-      case "manualHalt":
-        ManualHalt.encode(message.reason.manualHalt, writer.uint32(50).fork()).ldelim();
-        break;
+    if (message.parentHalted !== undefined) {
+      ParentHalted.encode(message.parentHalted, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.interrupted !== undefined) {
+      Interrupted.encode(message.interrupted, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.pendingInterrupt !== undefined) {
+      PendingInterruptHaltReason.encode(message.pendingInterrupt, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.pendingFailure !== undefined) {
+      PendingFailureHandlerHaltReason.encode(message.pendingFailure, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.handlingFailure !== undefined) {
+      HandlingFailureHaltReason.encode(message.handlingFailure, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.manualHalt !== undefined) {
+      ManualHalt.encode(message.manualHalt, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -1193,51 +1212,42 @@ export const ThreadHaltReason = {
             break;
           }
 
-          message.reason = { $case: "parentHalted", parentHalted: ParentHalted.decode(reader, reader.uint32()) };
+          message.parentHalted = ParentHalted.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.reason = { $case: "interrupted", interrupted: Interrupted.decode(reader, reader.uint32()) };
+          message.interrupted = Interrupted.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.reason = {
-            $case: "pendingInterrupt",
-            pendingInterrupt: PendingInterruptHaltReason.decode(reader, reader.uint32()),
-          };
+          message.pendingInterrupt = PendingInterruptHaltReason.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.reason = {
-            $case: "pendingFailure",
-            pendingFailure: PendingFailureHandlerHaltReason.decode(reader, reader.uint32()),
-          };
+          message.pendingFailure = PendingFailureHandlerHaltReason.decode(reader, reader.uint32());
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.reason = {
-            $case: "handlingFailure",
-            handlingFailure: HandlingFailureHaltReason.decode(reader, reader.uint32()),
-          };
+          message.handlingFailure = HandlingFailureHaltReason.decode(reader, reader.uint32());
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.reason = { $case: "manualHalt", manualHalt: ManualHalt.decode(reader, reader.uint32()) };
+          message.manualHalt = ManualHalt.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1253,57 +1263,24 @@ export const ThreadHaltReason = {
   },
   fromPartial(object: DeepPartial<ThreadHaltReason>): ThreadHaltReason {
     const message = createBaseThreadHaltReason();
-    if (
-      object.reason?.$case === "parentHalted" &&
-      object.reason?.parentHalted !== undefined &&
-      object.reason?.parentHalted !== null
-    ) {
-      message.reason = { $case: "parentHalted", parentHalted: ParentHalted.fromPartial(object.reason.parentHalted) };
-    }
-    if (
-      object.reason?.$case === "interrupted" &&
-      object.reason?.interrupted !== undefined &&
-      object.reason?.interrupted !== null
-    ) {
-      message.reason = { $case: "interrupted", interrupted: Interrupted.fromPartial(object.reason.interrupted) };
-    }
-    if (
-      object.reason?.$case === "pendingInterrupt" &&
-      object.reason?.pendingInterrupt !== undefined &&
-      object.reason?.pendingInterrupt !== null
-    ) {
-      message.reason = {
-        $case: "pendingInterrupt",
-        pendingInterrupt: PendingInterruptHaltReason.fromPartial(object.reason.pendingInterrupt),
-      };
-    }
-    if (
-      object.reason?.$case === "pendingFailure" &&
-      object.reason?.pendingFailure !== undefined &&
-      object.reason?.pendingFailure !== null
-    ) {
-      message.reason = {
-        $case: "pendingFailure",
-        pendingFailure: PendingFailureHandlerHaltReason.fromPartial(object.reason.pendingFailure),
-      };
-    }
-    if (
-      object.reason?.$case === "handlingFailure" &&
-      object.reason?.handlingFailure !== undefined &&
-      object.reason?.handlingFailure !== null
-    ) {
-      message.reason = {
-        $case: "handlingFailure",
-        handlingFailure: HandlingFailureHaltReason.fromPartial(object.reason.handlingFailure),
-      };
-    }
-    if (
-      object.reason?.$case === "manualHalt" &&
-      object.reason?.manualHalt !== undefined &&
-      object.reason?.manualHalt !== null
-    ) {
-      message.reason = { $case: "manualHalt", manualHalt: ManualHalt.fromPartial(object.reason.manualHalt) };
-    }
+    message.parentHalted = (object.parentHalted !== undefined && object.parentHalted !== null)
+      ? ParentHalted.fromPartial(object.parentHalted)
+      : undefined;
+    message.interrupted = (object.interrupted !== undefined && object.interrupted !== null)
+      ? Interrupted.fromPartial(object.interrupted)
+      : undefined;
+    message.pendingInterrupt = (object.pendingInterrupt !== undefined && object.pendingInterrupt !== null)
+      ? PendingInterruptHaltReason.fromPartial(object.pendingInterrupt)
+      : undefined;
+    message.pendingFailure = (object.pendingFailure !== undefined && object.pendingFailure !== null)
+      ? PendingFailureHandlerHaltReason.fromPartial(object.pendingFailure)
+      : undefined;
+    message.handlingFailure = (object.handlingFailure !== undefined && object.handlingFailure !== null)
+      ? HandlingFailureHaltReason.fromPartial(object.handlingFailure)
+      : undefined;
+    message.manualHalt = (object.manualHalt !== undefined && object.manualHalt !== null)
+      ? ManualHalt.fromPartial(object.manualHalt)
+      : undefined;
     return message;
   },
 };
@@ -1313,7 +1290,6 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

@@ -367,7 +367,7 @@ class TaskRunIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TaskRunId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchNodeRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "node_type", "status"]
+    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "node_type", "status", "external_event_def"]
     class NodeType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
         TASK: _ClassVar[SearchNodeRunRequest.NodeType]
@@ -394,13 +394,15 @@ class SearchNodeRunRequest(_message.Message):
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
     NODE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
     node_type: SearchNodeRunRequest.NodeType
     status: _common_enums_pb2.LHStatus
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_type: _Optional[_Union[SearchNodeRunRequest.NodeType, str]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ...) -> None: ...
+    external_event_def: _object_id_pb2.ExternalEventDefId
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_type: _Optional[_Union[SearchNodeRunRequest.NodeType, str]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., external_event_def: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ...) -> None: ...
 
 class NodeRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]

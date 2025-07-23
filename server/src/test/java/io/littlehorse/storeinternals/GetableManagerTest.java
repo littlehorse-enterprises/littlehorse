@@ -15,6 +15,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
@@ -592,5 +593,26 @@ public class GetableManagerTest {
                         .getValue()
                         .getStrVal())
                 .isEqualTo(valueAfterModify);
+    }
+
+    @Test
+    void storeNodeRunWithExternalEventDefNameTag() {
+        String eventName = "test-name";
+        NodeRunModel nodeRunModel = TestUtil.nodeRun();
+        nodeRunModel.setType(NodeRun.NodeTypeCase.EXTERNAL_EVENT);
+        ExternalEventNodeRunModel extEvtRun =
+                new ExternalEventNodeRunModel(new ExternalEventDefIdModel(eventName), executionContext);
+        nodeRunModel.setExternalEventRun(extEvtRun);
+
+        getableManager.put(nodeRunModel);
+        getableManager.commit();
+
+        List<String> storedKeys = getAllKeys(store);
+        assertThat(storedKeys).hasSize(3);
+        assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/4/0000000/1/0"));
+        assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/5/4/__status_RUNNING__type_EXTERNAL\\_EVENT"));
+        assertThat(storedKeys)
+                .anyMatch(key -> key.contains(
+                        "myTenant/5/4/__status_RUNNING__type_EXTERNAL\\_EVENT__extEvtDefName_" + eventName));
     }
 }

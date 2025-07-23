@@ -715,6 +715,11 @@ export interface SearchNodeRunRequest {
   nodeType: SearchNodeRunRequest_NodeType;
   /** Specifies the status of NodeRun to search for. */
   status: LHStatus;
+  /**
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   */
+  externalEventDef?: ExternalEventDefId | undefined;
 }
 
 /** This enum denotes the type of a NodeRun. */
@@ -948,8 +953,15 @@ export interface SearchUserTaskDefRequest {
     | Buffer
     | undefined;
   /** Maximum results to return in one request. */
-  limit?: number | undefined;
-  userTaskDefCriteria?: { $case: "prefix"; prefix: string } | { $case: "name"; name: string } | undefined;
+  limit?:
+    | number
+    | undefined;
+  /** Return all UserTaskDef's with a specific prefix. */
+  prefix?:
+    | string
+    | undefined;
+  /** Return all UserTaskDef's with a specific name. */
+  name?: string | undefined;
 }
 
 /** List of UserTaskDef Id's. */
@@ -971,11 +983,19 @@ export interface SearchWfSpecRequest {
     | Buffer
     | undefined;
   /** Maximum results to return in one request. */
-  limit?: number | undefined;
-  wfSpecCriteria?: { $case: "name"; name: string } | { $case: "prefix"; prefix: string } | {
-    $case: "taskDefName";
-    taskDefName: string;
-  } | undefined;
+  limit?:
+    | number
+    | undefined;
+  /** Return WfSpec's with a specific name. */
+  name?:
+    | string
+    | undefined;
+  /** Return WfSpec's with a specific prefix. */
+  prefix?:
+    | string
+    | undefined;
+  /** Return all WfSpec's that make use of a given TaskDef. */
+  taskDefName?: string | undefined;
 }
 
 /** List of WfSpec Id's. */
@@ -1074,8 +1094,15 @@ export interface SearchPrincipalRequest {
     | string
     | undefined;
   /** Specifies to return only Principals's created before this time */
-  latestStart?: string | undefined;
-  principalCriteria?: { $case: "isAdmin"; isAdmin: boolean } | { $case: "tenantId"; tenantId: string } | undefined;
+  latestStart?:
+    | string
+    | undefined;
+  /** List only Principals that are admins */
+  isAdmin?:
+    | boolean
+    | undefined;
+  /** List Principals associated with this Tenant ID */
+  tenantId?: string | undefined;
 }
 
 export interface PrincipalIdList {
@@ -1374,10 +1401,16 @@ export interface ReportTaskRun {
     | undefined;
   /** Attempt number of the TaskRun */
   attemptNumber: number;
-  result?: { $case: "output"; output: VariableValue } | { $case: "error"; error: LHTaskError } | {
-    $case: "exception";
-    exception: LHTaskException;
-  } | undefined;
+  /** Successfully completed task */
+  output?:
+    | VariableValue
+    | undefined;
+  /** Technical error */
+  error?:
+    | LHTaskError
+    | undefined;
+  /** Business exception */
+  exception?: LHTaskException | undefined;
 }
 
 /** Message to HALT a WfRun. */
@@ -4057,6 +4090,7 @@ function createBaseSearchNodeRunRequest(): SearchNodeRunRequest {
     latestStart: undefined,
     nodeType: SearchNodeRunRequest_NodeType.TASK,
     status: LHStatus.STARTING,
+    externalEventDef: undefined,
   };
 }
 
@@ -4079,6 +4113,9 @@ export const SearchNodeRunRequest = {
     }
     if (message.status !== LHStatus.STARTING) {
       writer.uint32(48).int32(lHStatusToNumber(message.status));
+    }
+    if (message.externalEventDef !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDef, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -4132,6 +4169,13 @@ export const SearchNodeRunRequest = {
 
           message.status = lHStatusFromJSON(reader.int32());
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.externalEventDef = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -4152,6 +4196,9 @@ export const SearchNodeRunRequest = {
     message.latestStart = object.latestStart ?? undefined;
     message.nodeType = object.nodeType ?? SearchNodeRunRequest_NodeType.TASK;
     message.status = object.status ?? LHStatus.STARTING;
+    message.externalEventDef = (object.externalEventDef !== undefined && object.externalEventDef !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDef)
+      : undefined;
     return message;
   },
 };
@@ -4700,7 +4747,7 @@ export const TaskDefIdList = {
 };
 
 function createBaseSearchUserTaskDefRequest(): SearchUserTaskDefRequest {
-  return { bookmark: undefined, limit: undefined, userTaskDefCriteria: undefined };
+  return { bookmark: undefined, limit: undefined, prefix: undefined, name: undefined };
 }
 
 export const SearchUserTaskDefRequest = {
@@ -4711,13 +4758,11 @@ export const SearchUserTaskDefRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    switch (message.userTaskDefCriteria?.$case) {
-      case "prefix":
-        writer.uint32(26).string(message.userTaskDefCriteria.prefix);
-        break;
-      case "name":
-        writer.uint32(34).string(message.userTaskDefCriteria.name);
-        break;
+    if (message.prefix !== undefined) {
+      writer.uint32(26).string(message.prefix);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(34).string(message.name);
     }
     return writer;
   },
@@ -4748,14 +4793,14 @@ export const SearchUserTaskDefRequest = {
             break;
           }
 
-          message.userTaskDefCriteria = { $case: "prefix", prefix: reader.string() };
+          message.prefix = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.userTaskDefCriteria = { $case: "name", name: reader.string() };
+          message.name = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4773,20 +4818,8 @@ export const SearchUserTaskDefRequest = {
     const message = createBaseSearchUserTaskDefRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    if (
-      object.userTaskDefCriteria?.$case === "prefix" &&
-      object.userTaskDefCriteria?.prefix !== undefined &&
-      object.userTaskDefCriteria?.prefix !== null
-    ) {
-      message.userTaskDefCriteria = { $case: "prefix", prefix: object.userTaskDefCriteria.prefix };
-    }
-    if (
-      object.userTaskDefCriteria?.$case === "name" &&
-      object.userTaskDefCriteria?.name !== undefined &&
-      object.userTaskDefCriteria?.name !== null
-    ) {
-      message.userTaskDefCriteria = { $case: "name", name: object.userTaskDefCriteria.name };
-    }
+    message.prefix = object.prefix ?? undefined;
+    message.name = object.name ?? undefined;
     return message;
   },
 };
@@ -4848,7 +4881,7 @@ export const UserTaskDefIdList = {
 };
 
 function createBaseSearchWfSpecRequest(): SearchWfSpecRequest {
-  return { bookmark: undefined, limit: undefined, wfSpecCriteria: undefined };
+  return { bookmark: undefined, limit: undefined, name: undefined, prefix: undefined, taskDefName: undefined };
 }
 
 export const SearchWfSpecRequest = {
@@ -4859,16 +4892,14 @@ export const SearchWfSpecRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
-    switch (message.wfSpecCriteria?.$case) {
-      case "name":
-        writer.uint32(26).string(message.wfSpecCriteria.name);
-        break;
-      case "prefix":
-        writer.uint32(34).string(message.wfSpecCriteria.prefix);
-        break;
-      case "taskDefName":
-        writer.uint32(42).string(message.wfSpecCriteria.taskDefName);
-        break;
+    if (message.name !== undefined) {
+      writer.uint32(26).string(message.name);
+    }
+    if (message.prefix !== undefined) {
+      writer.uint32(34).string(message.prefix);
+    }
+    if (message.taskDefName !== undefined) {
+      writer.uint32(42).string(message.taskDefName);
     }
     return writer;
   },
@@ -4899,21 +4930,21 @@ export const SearchWfSpecRequest = {
             break;
           }
 
-          message.wfSpecCriteria = { $case: "name", name: reader.string() };
+          message.name = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.wfSpecCriteria = { $case: "prefix", prefix: reader.string() };
+          message.prefix = reader.string();
           continue;
         case 5:
           if (tag !== 42) {
             break;
           }
 
-          message.wfSpecCriteria = { $case: "taskDefName", taskDefName: reader.string() };
+          message.taskDefName = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4931,27 +4962,9 @@ export const SearchWfSpecRequest = {
     const message = createBaseSearchWfSpecRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
-    if (
-      object.wfSpecCriteria?.$case === "name" &&
-      object.wfSpecCriteria?.name !== undefined &&
-      object.wfSpecCriteria?.name !== null
-    ) {
-      message.wfSpecCriteria = { $case: "name", name: object.wfSpecCriteria.name };
-    }
-    if (
-      object.wfSpecCriteria?.$case === "prefix" &&
-      object.wfSpecCriteria?.prefix !== undefined &&
-      object.wfSpecCriteria?.prefix !== null
-    ) {
-      message.wfSpecCriteria = { $case: "prefix", prefix: object.wfSpecCriteria.prefix };
-    }
-    if (
-      object.wfSpecCriteria?.$case === "taskDefName" &&
-      object.wfSpecCriteria?.taskDefName !== undefined &&
-      object.wfSpecCriteria?.taskDefName !== null
-    ) {
-      message.wfSpecCriteria = { $case: "taskDefName", taskDefName: object.wfSpecCriteria.taskDefName };
-    }
+    message.name = object.name ?? undefined;
+    message.prefix = object.prefix ?? undefined;
+    message.taskDefName = object.taskDefName ?? undefined;
     return message;
   },
 };
@@ -5376,7 +5389,8 @@ function createBaseSearchPrincipalRequest(): SearchPrincipalRequest {
     limit: undefined,
     earliestStart: undefined,
     latestStart: undefined,
-    principalCriteria: undefined,
+    isAdmin: undefined,
+    tenantId: undefined,
   };
 }
 
@@ -5394,13 +5408,11 @@ export const SearchPrincipalRequest = {
     if (message.latestStart !== undefined) {
       Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
     }
-    switch (message.principalCriteria?.$case) {
-      case "isAdmin":
-        writer.uint32(40).bool(message.principalCriteria.isAdmin);
-        break;
-      case "tenantId":
-        writer.uint32(50).string(message.principalCriteria.tenantId);
-        break;
+    if (message.isAdmin !== undefined) {
+      writer.uint32(40).bool(message.isAdmin);
+    }
+    if (message.tenantId !== undefined) {
+      writer.uint32(50).string(message.tenantId);
     }
     return writer;
   },
@@ -5445,14 +5457,14 @@ export const SearchPrincipalRequest = {
             break;
           }
 
-          message.principalCriteria = { $case: "isAdmin", isAdmin: reader.bool() };
+          message.isAdmin = reader.bool();
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.principalCriteria = { $case: "tenantId", tenantId: reader.string() };
+          message.tenantId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -5472,20 +5484,8 @@ export const SearchPrincipalRequest = {
     message.limit = object.limit ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
-    if (
-      object.principalCriteria?.$case === "isAdmin" &&
-      object.principalCriteria?.isAdmin !== undefined &&
-      object.principalCriteria?.isAdmin !== null
-    ) {
-      message.principalCriteria = { $case: "isAdmin", isAdmin: object.principalCriteria.isAdmin };
-    }
-    if (
-      object.principalCriteria?.$case === "tenantId" &&
-      object.principalCriteria?.tenantId !== undefined &&
-      object.principalCriteria?.tenantId !== null
-    ) {
-      message.principalCriteria = { $case: "tenantId", tenantId: object.principalCriteria.tenantId };
-    }
+    message.isAdmin = object.isAdmin ?? undefined;
+    message.tenantId = object.tenantId ?? undefined;
     return message;
   },
 };
@@ -6751,7 +6751,9 @@ function createBaseReportTaskRun(): ReportTaskRun {
     status: TaskStatus.TASK_SCHEDULED,
     logOutput: undefined,
     attemptNumber: 0,
-    result: undefined,
+    output: undefined,
+    error: undefined,
+    exception: undefined,
   };
 }
 
@@ -6772,16 +6774,14 @@ export const ReportTaskRun = {
     if (message.attemptNumber !== 0) {
       writer.uint32(48).int32(message.attemptNumber);
     }
-    switch (message.result?.$case) {
-      case "output":
-        VariableValue.encode(message.result.output, writer.uint32(34).fork()).ldelim();
-        break;
-      case "error":
-        LHTaskError.encode(message.result.error, writer.uint32(58).fork()).ldelim();
-        break;
-      case "exception":
-        LHTaskException.encode(message.result.exception, writer.uint32(66).fork()).ldelim();
-        break;
+    if (message.output !== undefined) {
+      VariableValue.encode(message.output, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.error !== undefined) {
+      LHTaskError.encode(message.error, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.exception !== undefined) {
+      LHTaskException.encode(message.exception, writer.uint32(66).fork()).ldelim();
     }
     return writer;
   },
@@ -6833,21 +6833,21 @@ export const ReportTaskRun = {
             break;
           }
 
-          message.result = { $case: "output", output: VariableValue.decode(reader, reader.uint32()) };
+          message.output = VariableValue.decode(reader, reader.uint32());
           continue;
         case 7:
           if (tag !== 58) {
             break;
           }
 
-          message.result = { $case: "error", error: LHTaskError.decode(reader, reader.uint32()) };
+          message.error = LHTaskError.decode(reader, reader.uint32());
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.result = { $case: "exception", exception: LHTaskException.decode(reader, reader.uint32()) };
+          message.exception = LHTaskException.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -6872,19 +6872,15 @@ export const ReportTaskRun = {
       ? VariableValue.fromPartial(object.logOutput)
       : undefined;
     message.attemptNumber = object.attemptNumber ?? 0;
-    if (object.result?.$case === "output" && object.result?.output !== undefined && object.result?.output !== null) {
-      message.result = { $case: "output", output: VariableValue.fromPartial(object.result.output) };
-    }
-    if (object.result?.$case === "error" && object.result?.error !== undefined && object.result?.error !== null) {
-      message.result = { $case: "error", error: LHTaskError.fromPartial(object.result.error) };
-    }
-    if (
-      object.result?.$case === "exception" &&
-      object.result?.exception !== undefined &&
-      object.result?.exception !== null
-    ) {
-      message.result = { $case: "exception", exception: LHTaskException.fromPartial(object.result.exception) };
-    }
+    message.output = (object.output !== undefined && object.output !== null)
+      ? VariableValue.fromPartial(object.output)
+      : undefined;
+    message.error = (object.error !== undefined && object.error !== null)
+      ? LHTaskError.fromPartial(object.error)
+      : undefined;
+    message.exception = (object.exception !== undefined && object.exception !== null)
+      ? LHTaskException.fromPartial(object.exception)
+      : undefined;
     return message;
   },
 };
@@ -10217,7 +10213,6 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

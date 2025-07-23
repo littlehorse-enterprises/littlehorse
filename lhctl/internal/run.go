@@ -56,9 +56,7 @@ lhctl run my_workflow_id foo '{"bar":"baz"}'
 
 		parentWfRunId, _ := cmd.Flags().GetString("parentWfRunId")
 		if parentWfRunId != "" {
-			parentId := &lhproto.WfRunId{}
-			parentId.Id = parentWfRunId
-			runReq.ParentWfRunId = parentId
+			runReq.ParentWfRunId = littlehorse.StrToWfRunId(parentWfRunId)
 		}
 
 		// Now parse variables

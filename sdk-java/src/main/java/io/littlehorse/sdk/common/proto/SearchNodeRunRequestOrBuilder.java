@@ -136,4 +136,34 @@ public interface SearchNodeRunRequestOrBuilder extends
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.LHStatus getStatus();
+
+  /**
+   * <pre>
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * @return Whether the externalEventDef field is set.
+   */
+  boolean hasExternalEventDef();
+  /**
+   * <pre>
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * @return The externalEventDef.
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDef();
+  /**
+   * <pre>
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefOrBuilder();
 }

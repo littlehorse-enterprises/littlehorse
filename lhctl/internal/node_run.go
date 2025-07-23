@@ -104,7 +104,7 @@ var searchNodeRunCmd = &cobra.Command{
 Search for NodeRun's by providing the type of the Node and the status of the NodeRun.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get nodeRun'. Optionally
-provde --earliestMinutesAgo and --latestMinutesAgo to filter by NodeRun creation time.
+provide --earliestMinutesAgo and --latestMinutesAgo to filter by NodeRun creation time.
 
 Valid options for the Node Type:
 - TASK
@@ -126,9 +126,8 @@ Valid options for Status:
 - ERROR
 - EXCEPTION
 
-* Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-  options to filter returned NodeRun ID's based on the NodeRun creation
-  time.
+If nodeType is EXTERNAL_EVENT, you can optionally specify --externalEventDefName to filter
+for NodeRuns waiting on a specific type of external event.
 `,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -139,13 +138,14 @@ Valid options for Status:
 			log.Fatal("Invalid value for nodeType: " + nodeTypeStr + ". See lhctl search nodeRun --help")
 		}
 
-		statusInt, ok := lhproto.TaskStatus_value[statusStr]
+		statusInt, ok := lhproto.LHStatus_value[statusStr]
 		if !ok {
 			log.Fatal("Invalid value for status: " + statusStr + ". See lhctl search nodeRun --help")
 		}
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
+		externalEventDefName, _ := cmd.Flags().GetString("externalEventDefName")
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
@@ -156,6 +156,15 @@ Valid options for Status:
 			Limit:         &limit,
 			NodeType:      lhproto.SearchNodeRunRequest_NodeType(nodeTypeInt),
 			Status:        lhproto.LHStatus(statusInt),
+		}
+
+		if externalEventDefName != "" {
+			if nodeTypeStr != "EXTERNAL_EVENT" {
+				log.Fatal("externalEventDefName can only be specified when nodeType is EXTERNAL_EVENT")
+			}
+			search.ExternalEventDef = &lhproto.ExternalEventDefId{
+				Name: externalEventDefName,
+			}
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(cmd), search))
@@ -195,5 +204,6 @@ func init() {
 
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
+	searchNodeRunCmd.Flags().String("externalEventDefName", "", "When nodeType is EXTERNAL_EVENT, filter by ExternalEventDef name")
 	listNodeRunCmd.Flags().Int32("threadRunNumber", -1, "Filter by ThreadRun Number")
 }

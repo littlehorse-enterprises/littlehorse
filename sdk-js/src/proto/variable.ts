@@ -16,17 +16,43 @@ import { StructDefId, VariableId, WfRunId, WfSpecId } from "./object_id";
  * from a TaskRun, as the value of a WfRun's Variable, etc.
  */
 export interface VariableValue {
-  value?:
-    | { $case: "jsonObj"; jsonObj: string }
-    | { $case: "jsonArr"; jsonArr: string }
-    | { $case: "double"; double: number }
-    | { $case: "bool"; bool: boolean }
-    | { $case: "str"; str: string }
-    | { $case: "int"; int: number }
-    | { $case: "bytes"; bytes: Buffer }
-    | { $case: "wfRunId"; wfRunId: WfRunId }
-    | { $case: "struct"; struct: Struct }
+  /** A String representing a serialized json object. */
+  jsonObj?:
+    | string
     | undefined;
+  /** A String representing a serialized json list. */
+  jsonArr?:
+    | string
+    | undefined;
+  /** A 64-bit floating point number. */
+  double?:
+    | number
+    | undefined;
+  /** A boolean. */
+  bool?:
+    | boolean
+    | undefined;
+  /** A string. */
+  str?:
+    | string
+    | undefined;
+  /**
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
+   */
+  int?:
+    | number
+    | undefined;
+  /** An arbitrary String of bytes. */
+  bytes?:
+    | Buffer
+    | undefined;
+  /** Reference to a WfRunId */
+  wfRunId?:
+    | WfRunId
+    | undefined;
+  /** A Struct object. */
+  struct?: Struct | undefined;
 }
 
 /** A Variable is an instance of a variable assigned to a WfRun. */
@@ -80,10 +106,16 @@ export interface InlineStruct_FieldsEntry {
 
 /** A StructField represents the value for a single field in a struct. */
 export interface StructField {
-  structValue?: { $case: "primitive"; primitive: VariableValue } | { $case: "struct"; struct: InlineStruct } | {
-    $case: "list";
-    list: StructField_FieldList;
-  } | undefined;
+  /** The `value` of the field is an untyped primitive `VariableValue`. */
+  primitive?:
+    | VariableValue
+    | undefined;
+  /** The `value` of the field is a complex `Struct`. */
+  struct?:
+    | InlineStruct
+    | undefined;
+  /** The `value` of the field is a list of fields. */
+  list?: StructField_FieldList | undefined;
 }
 
 /** A FieldList is a sub-structure of a `Struct` */
@@ -92,39 +124,47 @@ export interface StructField_FieldList {
 }
 
 function createBaseVariableValue(): VariableValue {
-  return { value: undefined };
+  return {
+    jsonObj: undefined,
+    jsonArr: undefined,
+    double: undefined,
+    bool: undefined,
+    str: undefined,
+    int: undefined,
+    bytes: undefined,
+    wfRunId: undefined,
+    struct: undefined,
+  };
 }
 
 export const VariableValue = {
   encode(message: VariableValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.value?.$case) {
-      case "jsonObj":
-        writer.uint32(18).string(message.value.jsonObj);
-        break;
-      case "jsonArr":
-        writer.uint32(26).string(message.value.jsonArr);
-        break;
-      case "double":
-        writer.uint32(33).double(message.value.double);
-        break;
-      case "bool":
-        writer.uint32(40).bool(message.value.bool);
-        break;
-      case "str":
-        writer.uint32(50).string(message.value.str);
-        break;
-      case "int":
-        writer.uint32(56).int64(message.value.int);
-        break;
-      case "bytes":
-        writer.uint32(66).bytes(message.value.bytes);
-        break;
-      case "wfRunId":
-        WfRunId.encode(message.value.wfRunId, writer.uint32(74).fork()).ldelim();
-        break;
-      case "struct":
-        Struct.encode(message.value.struct, writer.uint32(82).fork()).ldelim();
-        break;
+    if (message.jsonObj !== undefined) {
+      writer.uint32(18).string(message.jsonObj);
+    }
+    if (message.jsonArr !== undefined) {
+      writer.uint32(26).string(message.jsonArr);
+    }
+    if (message.double !== undefined) {
+      writer.uint32(33).double(message.double);
+    }
+    if (message.bool !== undefined) {
+      writer.uint32(40).bool(message.bool);
+    }
+    if (message.str !== undefined) {
+      writer.uint32(50).string(message.str);
+    }
+    if (message.int !== undefined) {
+      writer.uint32(56).int64(message.int);
+    }
+    if (message.bytes !== undefined) {
+      writer.uint32(66).bytes(message.bytes);
+    }
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(74).fork()).ldelim();
+    }
+    if (message.struct !== undefined) {
+      Struct.encode(message.struct, writer.uint32(82).fork()).ldelim();
     }
     return writer;
   },
@@ -141,63 +181,63 @@ export const VariableValue = {
             break;
           }
 
-          message.value = { $case: "jsonObj", jsonObj: reader.string() };
+          message.jsonObj = reader.string();
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.value = { $case: "jsonArr", jsonArr: reader.string() };
+          message.jsonArr = reader.string();
           continue;
         case 4:
           if (tag !== 33) {
             break;
           }
 
-          message.value = { $case: "double", double: reader.double() };
+          message.double = reader.double();
           continue;
         case 5:
           if (tag !== 40) {
             break;
           }
 
-          message.value = { $case: "bool", bool: reader.bool() };
+          message.bool = reader.bool();
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.value = { $case: "str", str: reader.string() };
+          message.str = reader.string();
           continue;
         case 7:
           if (tag !== 56) {
             break;
           }
 
-          message.value = { $case: "int", int: longToNumber(reader.int64() as Long) };
+          message.int = longToNumber(reader.int64() as Long);
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.value = { $case: "bytes", bytes: reader.bytes() as Buffer };
+          message.bytes = reader.bytes() as Buffer;
           continue;
         case 9:
           if (tag !== 74) {
             break;
           }
 
-          message.value = { $case: "wfRunId", wfRunId: WfRunId.decode(reader, reader.uint32()) };
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
         case 10:
           if (tag !== 82) {
             break;
           }
 
-          message.value = { $case: "struct", struct: Struct.decode(reader, reader.uint32()) };
+          message.struct = Struct.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -213,33 +253,19 @@ export const VariableValue = {
   },
   fromPartial(object: DeepPartial<VariableValue>): VariableValue {
     const message = createBaseVariableValue();
-    if (object.value?.$case === "jsonObj" && object.value?.jsonObj !== undefined && object.value?.jsonObj !== null) {
-      message.value = { $case: "jsonObj", jsonObj: object.value.jsonObj };
-    }
-    if (object.value?.$case === "jsonArr" && object.value?.jsonArr !== undefined && object.value?.jsonArr !== null) {
-      message.value = { $case: "jsonArr", jsonArr: object.value.jsonArr };
-    }
-    if (object.value?.$case === "double" && object.value?.double !== undefined && object.value?.double !== null) {
-      message.value = { $case: "double", double: object.value.double };
-    }
-    if (object.value?.$case === "bool" && object.value?.bool !== undefined && object.value?.bool !== null) {
-      message.value = { $case: "bool", bool: object.value.bool };
-    }
-    if (object.value?.$case === "str" && object.value?.str !== undefined && object.value?.str !== null) {
-      message.value = { $case: "str", str: object.value.str };
-    }
-    if (object.value?.$case === "int" && object.value?.int !== undefined && object.value?.int !== null) {
-      message.value = { $case: "int", int: object.value.int };
-    }
-    if (object.value?.$case === "bytes" && object.value?.bytes !== undefined && object.value?.bytes !== null) {
-      message.value = { $case: "bytes", bytes: object.value.bytes };
-    }
-    if (object.value?.$case === "wfRunId" && object.value?.wfRunId !== undefined && object.value?.wfRunId !== null) {
-      message.value = { $case: "wfRunId", wfRunId: WfRunId.fromPartial(object.value.wfRunId) };
-    }
-    if (object.value?.$case === "struct" && object.value?.struct !== undefined && object.value?.struct !== null) {
-      message.value = { $case: "struct", struct: Struct.fromPartial(object.value.struct) };
-    }
+    message.jsonObj = object.jsonObj ?? undefined;
+    message.jsonArr = object.jsonArr ?? undefined;
+    message.double = object.double ?? undefined;
+    message.bool = object.bool ?? undefined;
+    message.str = object.str ?? undefined;
+    message.int = object.int ?? undefined;
+    message.bytes = object.bytes ?? undefined;
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.struct = (object.struct !== undefined && object.struct !== null)
+      ? Struct.fromPartial(object.struct)
+      : undefined;
     return message;
   },
 };
@@ -509,21 +535,19 @@ export const InlineStruct_FieldsEntry = {
 };
 
 function createBaseStructField(): StructField {
-  return { structValue: undefined };
+  return { primitive: undefined, struct: undefined, list: undefined };
 }
 
 export const StructField = {
   encode(message: StructField, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.structValue?.$case) {
-      case "primitive":
-        VariableValue.encode(message.structValue.primitive, writer.uint32(10).fork()).ldelim();
-        break;
-      case "struct":
-        InlineStruct.encode(message.structValue.struct, writer.uint32(18).fork()).ldelim();
-        break;
-      case "list":
-        StructField_FieldList.encode(message.structValue.list, writer.uint32(26).fork()).ldelim();
-        break;
+    if (message.primitive !== undefined) {
+      VariableValue.encode(message.primitive, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.struct !== undefined) {
+      InlineStruct.encode(message.struct, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.list !== undefined) {
+      StructField_FieldList.encode(message.list, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -540,21 +564,21 @@ export const StructField = {
             break;
           }
 
-          message.structValue = { $case: "primitive", primitive: VariableValue.decode(reader, reader.uint32()) };
+          message.primitive = VariableValue.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.structValue = { $case: "struct", struct: InlineStruct.decode(reader, reader.uint32()) };
+          message.struct = InlineStruct.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.structValue = { $case: "list", list: StructField_FieldList.decode(reader, reader.uint32()) };
+          message.list = StructField_FieldList.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -570,27 +594,15 @@ export const StructField = {
   },
   fromPartial(object: DeepPartial<StructField>): StructField {
     const message = createBaseStructField();
-    if (
-      object.structValue?.$case === "primitive" &&
-      object.structValue?.primitive !== undefined &&
-      object.structValue?.primitive !== null
-    ) {
-      message.structValue = { $case: "primitive", primitive: VariableValue.fromPartial(object.structValue.primitive) };
-    }
-    if (
-      object.structValue?.$case === "struct" &&
-      object.structValue?.struct !== undefined &&
-      object.structValue?.struct !== null
-    ) {
-      message.structValue = { $case: "struct", struct: InlineStruct.fromPartial(object.structValue.struct) };
-    }
-    if (
-      object.structValue?.$case === "list" &&
-      object.structValue?.list !== undefined &&
-      object.structValue?.list !== null
-    ) {
-      message.structValue = { $case: "list", list: StructField_FieldList.fromPartial(object.structValue.list) };
-    }
+    message.primitive = (object.primitive !== undefined && object.primitive !== null)
+      ? VariableValue.fromPartial(object.primitive)
+      : undefined;
+    message.struct = (object.struct !== undefined && object.struct !== null)
+      ? InlineStruct.fromPartial(object.struct)
+      : undefined;
+    message.list = (object.list !== undefined && object.list !== null)
+      ? StructField_FieldList.fromPartial(object.list)
+      : undefined;
     return message;
   },
 };
@@ -645,7 +657,6 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

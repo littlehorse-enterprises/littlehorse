@@ -171,11 +171,22 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(new GetableIndex<NodeRunModel>(
+        GetableIndex<? extends AbstractGetable<?>> basicIndex = new GetableIndex<>(
                 List.of(
                         Pair.of("status", GetableIndex.ValueType.SINGLE),
                         Pair.of("type", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)));
+                Optional.of(TagStorageType.LOCAL));
+
+        if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
+            GetableIndex<? extends AbstractGetable<?>> externalEventIndex = new GetableIndex<>(
+                    List.of(
+                            Pair.of("status", GetableIndex.ValueType.SINGLE),
+                            Pair.of("type", GetableIndex.ValueType.SINGLE),
+                            Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL));
+            return List.of(basicIndex, externalEventIndex);
+        }
+        return List.of(basicIndex);
     }
 
     @Override
@@ -186,6 +197,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             }
             case "type" -> {
                 return List.of(new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
+            }
+            case "extEvtDefName" -> {
+                if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
+                    String externalEventName =
+                            externalEventRun.getExternalEventDefId().toString();
+                    return List.of(new IndexedField(key, externalEventName, TagStorageType.LOCAL));
+                }
             }
         }
         log.warn("Tried to get value for unknown index field {}", key);

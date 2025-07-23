@@ -35,14 +35,14 @@ public class PollThreadTest {
     private PollThread pollThread;
     private QueuedStreamObserver<PollTaskRequest, PollTaskResponse> recordableObserver;
     private PollThreadFactory pollThreadFactory;
+    private QueuedStreamObserver.DelegatedStreamObserver<PollTaskRequest> delegatedObserver;
 
     @BeforeEach
     public void setup() throws NoSuchMethodException {
         this.taskMethod = this.getClass().getDeclaredMethod("myTaskMethod");
         when(config.getAsyncStub(anyString(), anyInt())).thenReturn(stub);
         ArgumentCaptor<StreamObserver<PollTaskResponse>> argumentCaptor = ArgumentCaptor.forClass(StreamObserver.class);
-        QueuedStreamObserver.DelegatedStreamObserver<PollTaskRequest> delegatedObserver =
-                new QueuedStreamObserver.DelegatedStreamObserver<>();
+        delegatedObserver = new QueuedStreamObserver.DelegatedStreamObserver<>();
         when(config.getInflightTasks()).thenReturn(1);
         when(stub.pollTask(any())).thenReturn(delegatedObserver);
         when(config.getTaskWorkerVersion()).thenReturn(taskWorkerVersion);
@@ -86,6 +86,8 @@ public class PollThreadTest {
         Awaitility.await().until(() -> !pollThread.isAlive());
         verify(taskExecutor, times(2)).doTask(any(), same(bootstrapStub), eq(mappings), same(this), eq(taskMethod));
         assertThat(pollThread.isRunning()).isFalse();
+        pollThread.close();
+        assertThat(delegatedObserver.isCompleted()).isTrue();
     }
 
     public void myTaskMethod() {}

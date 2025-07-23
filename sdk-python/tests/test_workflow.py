@@ -3589,6 +3589,134 @@ class ThrowEventNodeTest(unittest.TestCase):
             second_throw.throw_event.content.literal_value.str, "some-content"
         )
 
+    def test_throw_event_with_registered_payload(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            name = wf.add_variable("name", VariableType.STR)
+            wf.throw_event("str-event", name, return_type=str)
+            wf.throw_event("int-event", name, return_type=int)
+            wf.throw_event("float-event", name, return_type=float)
+            wf.throw_event("dict-event", name, return_type=dict)
+            wf.throw_event("list-event", name, return_type=list)
+
+        workflow = Workflow("registered-payload-wf", wf_func)
+        wf_spec = workflow.compile()
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+
+        str_event = entrypoint.nodes["1-throw-str-event-THROW_EVENT"]
+        int_event = entrypoint.nodes["2-throw-int-event-THROW_EVENT"]
+        float_event = entrypoint.nodes["3-throw-float-event-THROW_EVENT"]
+        dict_event = entrypoint.nodes["4-throw-dict-event-THROW_EVENT"]
+        list_event = entrypoint.nodes["5-throw-list-event-THROW_EVENT"]
+        str_node = workflow._workflow_events_to_register[0]
+        int_node = workflow._workflow_events_to_register[1]
+        float_node = workflow._workflow_events_to_register[2]
+        dict_node = workflow._workflow_events_to_register[3]
+        list_node = workflow._workflow_events_to_register[4]
+
+        self.assertEqual(len(wf_spec.thread_specs), 1)
+        self.assertEqual(len(entrypoint.nodes), 7)
+        self.assertEqual(str_event.throw_event.event_def_id.name, "str-event")
+        self.assertEqual(int_event.throw_event.event_def_id.name, "int-event")
+        self.assertEqual(float_event.throw_event.event_def_id.name, "float-event")
+        self.assertEqual(dict_event.throw_event.event_def_id.name, "dict-event")
+        self.assertEqual(list_event.throw_event.event_def_id.name, "list-event")
+        self.assertEqual(len(workflow._workflow_events_to_register), 5)
+        self.assertEqual(str_node._payload_type, str)
+        self.assertEqual(str_node._event_name, "str-event")
+        self.assertEqual(int_node._payload_type, int)
+        self.assertEqual(int_node._event_name, "int-event")
+        self.assertEqual(float_node._payload_type, float)
+        self.assertEqual(float_node._event_name, "float-event")
+        self.assertEqual(dict_node._payload_type, dict)
+        self.assertEqual(dict_node._event_name, "dict-event")
+        self.assertEqual(list_node._payload_type, list)
+        self.assertEqual(list_node._event_name, "list-event")
+
+
+class ExternalEventNodeTest(unittest.TestCase):
+    def test_external_event_node(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            wf.wait_for_event("my-event", timeout=60)
+            wf.wait_for_event("another-event", timeout=60)
+
+        wf_spec = Workflow("throw-event-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 1)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        self.assertEqual(len(entrypoint.nodes), 4)
+
+        first_throw = entrypoint.nodes["1-my-event-EXTERNAL_EVENT"]
+        self.assertEqual(
+            first_throw.external_event.external_event_def_id.name, "my-event"
+        )
+
+        second_throw = entrypoint.nodes["2-another-event-EXTERNAL_EVENT"]
+        self.assertEqual(
+            second_throw.external_event.external_event_def_id.name, "another-event"
+        )
+
+    def test_external_event_with_registered_payload(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            wf.wait_for_event("str-event", return_type=str)
+            wf.wait_for_event("int-event", return_type=int)
+            wf.wait_for_event("float-event", return_type=float)
+            wf.wait_for_event("dict-event", return_type=dict)
+            wf.wait_for_event("list-event", return_type=list)
+            wf.wait_for_event("no-payload-event", auto_register=True)
+
+        workflow = Workflow("registered-payload-wf", wf_func)
+        wf_spec = workflow.compile()
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+
+        str_event = entrypoint.nodes["1-str-event-EXTERNAL_EVENT"]
+        int_event = entrypoint.nodes["2-int-event-EXTERNAL_EVENT"]
+        float_event = entrypoint.nodes["3-float-event-EXTERNAL_EVENT"]
+        dict_event = entrypoint.nodes["4-dict-event-EXTERNAL_EVENT"]
+        list_event = entrypoint.nodes["5-list-event-EXTERNAL_EVENT"]
+        no_payload_event = entrypoint.nodes["6-no-payload-event-EXTERNAL_EVENT"]
+
+        str_node = workflow._external_events_to_register[0]
+        int_node = workflow._external_events_to_register[1]
+        float_node = workflow._external_events_to_register[2]
+        dict_node = workflow._external_events_to_register[3]
+        list_node = workflow._external_events_to_register[4]
+        no_payload_node = workflow._external_events_to_register[5]
+
+        self.assertEqual(len(wf_spec.thread_specs), 1)
+        self.assertEqual(len(entrypoint.nodes), 8)
+        self.assertEqual(
+            str_event.external_event.external_event_def_id.name, "str-event"
+        )
+        self.assertEqual(
+            int_event.external_event.external_event_def_id.name, "int-event"
+        )
+        self.assertEqual(
+            float_event.external_event.external_event_def_id.name, "float-event"
+        )
+        self.assertEqual(
+            dict_event.external_event.external_event_def_id.name, "dict-event"
+        )
+        self.assertEqual(
+            list_event.external_event.external_event_def_id.name, "list-event"
+        )
+        self.assertEqual(
+            no_payload_event.external_event.external_event_def_id.name,
+            "no-payload-event",
+        )
+        self.assertEqual(len(workflow._external_events_to_register), 6)
+        self.assertEqual(str_node._payload_type, str)
+        self.assertEqual(str_node.event_name, "str-event")
+        self.assertEqual(int_node._payload_type, int)
+        self.assertEqual(int_node.event_name, "int-event")
+        self.assertEqual(float_node._payload_type, float)
+        self.assertEqual(float_node.event_name, "float-event")
+        self.assertEqual(dict_node._payload_type, dict)
+        self.assertEqual(dict_node.event_name, "dict-event")
+        self.assertEqual(list_node._payload_type, list)
+        self.assertEqual(list_node.event_name, "list-event")
+        self.assertEqual(no_payload_node._payload_type, None)
+        self.assertEqual(no_payload_node.event_name, "no-payload-event")
+
 
 class TestWaitForThreads(unittest.TestCase):
 
@@ -3766,7 +3894,7 @@ class CorrelationIdTest(unittest.TestCase):
         self.assertTrue(
             static_node.external_event.mask_correlation_key,
         )
-    
+
     def test_should_not_mask_normal_var_as_correlation_id(self):
         def wf_func(wf: WorkflowThread) -> None:
             my_var = wf.declare_str("my-var")
@@ -3788,10 +3916,10 @@ class CorrelationIdTest(unittest.TestCase):
                 correlation_id=my_var,
                 mask_correlation_id=True,
             )
-        
+
         wf = Workflow("obiwan", wf_func).compile()
         entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
-        
+
         static_node = entrypoint.nodes["1-some-event-EXTERNAL_EVENT"]
         self.assertTrue(
             static_node.external_event.mask_correlation_key,
