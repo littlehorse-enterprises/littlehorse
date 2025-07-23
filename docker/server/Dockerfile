@@ -6,6 +6,7 @@ RUN apk add --no-cache jemalloc bash
 WORKDIR /lh
 RUN mkdir /lh-data
 RUN chown appuser:appuser -R /lh-data
+RUN chmod -R ug+w /lh-data
 COPY ./docker/server/docker-entrypoint.sh /lh
 COPY ./server/build/install/server/lib /lh/lib
 COPY ./server/build/install/server/server /lh/bin
