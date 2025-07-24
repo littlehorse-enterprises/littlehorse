@@ -55,7 +55,7 @@ fi
 
 if [[ ${server} = true ]]; then
     echo "Building lh-server"
-    ./gradlew server:shadowJar -x test -x spotlessJavaCheck
+    ./gradlew server:installDist -x test -x spotlessJavaCheck
     docker build -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
 fi
 

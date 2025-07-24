@@ -1,4 +1,4 @@
-import { Node as NodeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
+import { Node as NodeProto, WfSpec } from 'littlehorse-client/proto'
 import { Node, NodeProps } from 'reactflow'
 import { ThreadSpecWithName } from '../Diagram'
 

@@ -1,8 +1,9 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { concatWfRunIds, formatDate } from '@/app/utils'
-import { WfRun } from 'littlehorse-client/proto'
+import { WfRun, WfRunId } from 'littlehorse-client/proto'
 import { FC } from 'react'
+import { CopyToClipboard } from './CopyToClipboard'
 
 type DetailsProps = WfRun
 
@@ -17,25 +18,37 @@ export const statusColors: { [key in WfRun['status']]: string } = {
   UNRECOGNIZED: 'bg-gray-200',
 }
 
+const flattenWfRunId = (wfRunId: WfRunId): string => {
+  if (!wfRunId.parentWfRunId) return wfRunId.id
+  return flattenWfRunId(wfRunId.parentWfRunId) + '_' + wfRunId.id
+}
+
 export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) => {
+  if (!id || !wfSpecId) return null
+
   return (
     <div className="mb-4">
       <span className="italic">WfRun</span>
-      <h1 className="block text-2xl font-bold">{id?.id}</h1>
-      {id?.parentWfRunId && (
+      <div className="flex items-center">
+        <h1 className="block text-2xl font-bold">{id.id}</h1>
+        <CopyToClipboard tooltipText="Copy full wfRun ID" textToCopy={flattenWfRunId(id)} />
+      </div>
+      {id.parentWfRunId && (
         <div className="flex items-center gap-2">
           Parent WfRun:
-          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id?.parentWfRunId)}`}>{id?.parentWfRunId?.id}</LinkWithTenant>
+          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id.parentWfRunId)}`} linkStyle>
+            <p>{id.parentWfRunId.id}</p>
+          </LinkWithTenant>
         </div>
       )}
       <div className="flex flex-row gap-2 text-sm text-gray-500">
         <div className="flex items-center gap-2">
           WfSpec:
           <LinkWithTenant
-            href={`/wfSpec/${wfSpecId?.name}/${wfSpecId?.majorVersion}/${wfSpecId?.revision}`}
+            href={`/wfSpec/${wfSpecId.name}/${wfSpecId.majorVersion}/${wfSpecId.revision}`}
             className="flex items-center gap-2 text-blue-500 underline"
           >
-            {`${wfSpecId?.name} ${wfSpecId?.majorVersion}.${wfSpecId?.revision}`}
+            {`${wfSpecId.name} ${wfSpecId.majorVersion}.${wfSpecId.revision}`}
           </LinkWithTenant>
         </div>
         <div className="flex items-center">

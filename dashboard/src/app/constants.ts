@@ -20,10 +20,6 @@ export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEve
 export const WF_RUN_STATUSES = Object.values(LHStatus).filter(status => status !== 'UNRECOGNIZED')
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 
-const toTime = (minutes: number) => {
-  return minutes * 60
-}
-
 export const TIME_RANGES = [-1, 5, 15, 30, 60, 180, 360, 720, 1440, 4320] as const
 export type TimeRange = (typeof TIME_RANGES)[number]
 

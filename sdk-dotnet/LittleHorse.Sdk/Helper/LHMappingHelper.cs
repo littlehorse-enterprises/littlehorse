@@ -214,6 +214,25 @@ namespace LittleHorse.Sdk.Helper
             }
         }
 
+        /// <summary>
+        /// Maps a .NET <see cref="Type"/> to a workflow <see cref="ReturnType"/>.
+        /// </summary>
+        /// <param name="type">The .NET type to map.</param>
+        /// <returns>The corresponding workflow <see cref="ReturnType"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the type is not supported.</exception>
+        public static ReturnType DotNetTypeToReturnType(Type? type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type),"Type cannot be null.");
+            }
+            var typeDef = new TypeDefinition
+            {
+                Type = DotNetTypeToLHVariableType(type!)
+            };
+            return new ReturnType { ReturnType_ = typeDef };
+        }
+
         internal static bool IsFloat(Type type)
         {
             return type.IsAssignableFrom(typeof(float))

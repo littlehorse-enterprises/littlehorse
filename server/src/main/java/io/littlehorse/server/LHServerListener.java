@@ -18,24 +18,9 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.ValidateStructDefEvolutionRequestModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.*;
-import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteCorrelatedEventRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.PutCorrelatedEventRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
-import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -50,7 +35,6 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
-import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -60,7 +44,6 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
-import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
@@ -89,7 +72,6 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequ
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
-import io.littlehorse.common.util.InlineStructDefUtil;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseImplBase;
@@ -159,7 +141,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -432,34 +413,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             throw new StatusRuntimeException(Status.UNIMPLEMENTED);
         }
 
-        InlineStructDefModel newInlineStructDef =
-                LHSerializable.fromProto(req.getStructDef(), InlineStructDefModel.class, requestContext());
-        newInlineStructDef.validate();
+        ValidateStructDefEvolutionRequestModel reqModel =
+                LHSerializable.fromProto(req, ValidateStructDefEvolutionRequestModel.class, requestContext());
 
-        StructDefIdModel sdId =
-                LHSerializable.fromProto(req.getStructDefId(), StructDefIdModel.class, requestContext());
-        StructDefModel existingStructDef = getServiceFromContext().getStructDef(sdId);
-
-        if (existingStructDef == null) {
-            ctx.onNext(ValidateStructDefEvolutionResponse.newBuilder()
-                    .setIsValid(true)
-                    .build());
-            ctx.onCompleted();
-        } else {
-            InlineStructDefModel oldInlineStructDef = existingStructDef.getStructDef();
-
-            Set<String> invalidFields = InlineStructDefUtil.getIncompatibleFields(
-                    req.getCompatibilityType(), newInlineStructDef, oldInlineStructDef);
-
-            System.out.println(invalidFields);
-
-            ValidateStructDefEvolutionResponse resp = ValidateStructDefEvolutionResponse.newBuilder()
-                    .setIsValid(invalidFields.isEmpty())
-                    .build();
-
-            ctx.onNext(resp);
-            ctx.onCompleted();
-        }
+        ctx.onNext(reqModel.validate(requestContext()));
+        ctx.onCompleted();
     }
 
     @Override

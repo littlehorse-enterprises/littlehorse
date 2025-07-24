@@ -2,14 +2,14 @@ import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { cn } from '@/components/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
+import { FC } from 'react'
 import { getExternalEvent } from '../../NodeTypes/ExternalEvent/actions'
 import { AccordionNode } from './AccordionContent'
-import { FC } from 'react'
 
 export const ExternalEventDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
   const externalEventDefId = nodeRun.externalEvent?.externalEventId?.externalEventDefId
   const guid = nodeRun.externalEvent?.externalEventId?.guid
-  const wfRunId = nodeRun.externalEvent?.externalEventId?.wfRunId?.id
+  const wfRunId = nodeRun.externalEvent?.externalEventId?.wfRunId
   const { data, isLoading } = useQuery({
     queryKey: ['externalEvent', wfRunId, externalEventDefId],
     queryFn: async () => {
@@ -17,10 +17,7 @@ export const ExternalEventDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
       if (!externalEventDefId) return
       if (!guid) return
       const externalEventRun = await getExternalEvent({
-        wfRunId: {
-          id: wfRunId,
-          parentWfRunId: undefined,
-        },
+        wfRunId,
         externalEventDefId,
         guid,
       })

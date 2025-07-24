@@ -1,8 +1,6 @@
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
-import { getVariableValue } from '@/app/utils/variables'
+
 import { cn } from '@/components/utils'
-import { LHTaskError, LHTaskException, VariableValue } from 'littlehorse-client/proto'
-import { FC } from 'react'
 
 export function Result({
   resultString,

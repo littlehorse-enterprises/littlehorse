@@ -34,7 +34,7 @@ export const WfRuns: FC<WfSpec> = spec => {
     }
   }, [window])
 
-  const getKey = (pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
+  const getKey = (_pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
     return [
       'wfRun',
@@ -107,9 +107,10 @@ export const WfRuns: FC<WfSpec> = spec => {
                   </span>
                   <span className="ml-2 rounded bg-gray-200 px-2">
                     Started:{' '}
-                    {resolvedWfRuns[wfRunId.id]?.wfRun.startTime
-                      ? new Date(resolvedWfRuns[wfRunId.id]?.wfRun.startTime!).toLocaleString()
-                      : ''}
+                    {(() => {
+                      const startTime = resolvedWfRuns[wfRunId.id]?.wfRun.startTime
+                      return startTime ? new Date(startTime).toLocaleString() : ''
+                    })()}
                   </span>
                 </SelectionLink>
               ))}

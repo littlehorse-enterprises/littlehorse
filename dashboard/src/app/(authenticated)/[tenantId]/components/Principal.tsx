@@ -10,9 +10,6 @@ import {
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { signOut } from 'next-auth/react'
 import { FC } from 'react'
-function classNames(...classes: Array<string | boolean>) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export const Principal: FC = () => {
   const { user } = useWhoAmI()
