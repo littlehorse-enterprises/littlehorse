@@ -123,29 +123,31 @@ public class SearchWfRunRequestModel
     }
 
     public List<Attribute> getSearchAttributes() {
+
+        boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
+        boolean hasMajor = wfSpecMajorVersion != null;
+        boolean hasRevision = wfSpecRevision != null;
+
+        if (!hasName && (hasMajor || hasRevision)) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Cannot provide wfSpecMajorVersion or wfSpecRevision without wfSpecName");
+        }
+
+        if (hasRevision && !hasMajor) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
+        }
         List<Attribute> out = new ArrayList<>();
 
-        if (wfSpecName != null && !wfSpecName.isEmpty()) {
-            if (wfSpecMajorVersion != null) {
-                if (wfSpecRevision == null) {
-                    out.add(new Attribute(
-                            "majorVersion", wfSpecName + "/" + LHUtil.toLHDbVersionFormat(wfSpecMajorVersion)));
-                } else {
-                    out.add(new Attribute(
-                            "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
-                }
+        if (hasName) {
+            if (hasMajor && hasRevision) {
+                out.add(new Attribute(
+                        "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
+            } else if (hasMajor) {
+                out.add(new Attribute(
+                        "majorVersion", wfSpecName + "/" + LHUtil.toLHDbVersionFormat(wfSpecMajorVersion)));
             } else {
-                if (wfSpecRevision != null) {
-                    throw new LHApiException(
-                            Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
-                }
                 out.add(new Attribute("wfSpecName", wfSpecName));
-            }
-        } else {
-            if (wfSpecMajorVersion != null || wfSpecRevision != null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "Cannot provide wfSpecMajorVersion or wfSpecRevision without wfSpecName");
             }
         }
 
