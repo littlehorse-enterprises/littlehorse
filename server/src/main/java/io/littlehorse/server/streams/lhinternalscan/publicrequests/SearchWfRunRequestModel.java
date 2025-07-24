@@ -91,7 +91,10 @@ public class SearchWfRunRequestModel
     }
 
     public SearchWfRunRequest.Builder toProto() {
-        SearchWfRunRequest.Builder out = SearchWfRunRequest.newBuilder().setWfSpecName(wfSpecName);
+        SearchWfRunRequest.Builder out = SearchWfRunRequest.newBuilder();
+        if (wfSpecName != null) {
+            out.setWfSpecName(wfSpecName);
+        }
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
@@ -122,20 +125,28 @@ public class SearchWfRunRequestModel
     public List<Attribute> getSearchAttributes() {
         List<Attribute> out = new ArrayList<>();
 
-        if (wfSpecMajorVersion != null) {
-            if (wfSpecRevision == null) {
-                out.add(new Attribute(
-                        "majorVersion", wfSpecName + "/" + LHUtil.toLHDbVersionFormat(wfSpecMajorVersion)));
+        if (wfSpecName != null && !wfSpecName.isEmpty()) {
+            if (wfSpecMajorVersion != null) {
+                if (wfSpecRevision == null) {
+                    out.add(new Attribute(
+                            "majorVersion", wfSpecName + "/" + LHUtil.toLHDbVersionFormat(wfSpecMajorVersion)));
+                } else {
+                    out.add(new Attribute(
+                            "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
+                }
             } else {
-                out.add(new Attribute(
-                        "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
+                if (wfSpecRevision != null) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
+                }
+                out.add(new Attribute("wfSpecName", wfSpecName));
             }
         } else {
-            if (wfSpecRevision != null) {
+            if (wfSpecMajorVersion != null || wfSpecRevision != null) {
                 throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
+                        Status.INVALID_ARGUMENT,
+                        "Cannot provide wfSpecMajorVersion or wfSpecRevision without wfSpecName");
             }
-            out.add(new Attribute("wfSpecName", wfSpecName));
         }
 
         if (status != null) {
@@ -169,6 +180,13 @@ public class SearchWfRunRequestModel
     @Override
     public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) throws LHApiException {
         // TODO: optimize it so that we send a Variable Search query before sending a WfRun Scan.
+
+        if (wfSpecName == null || wfSpecName.isEmpty()) {
+            if (!variableMatches.isEmpty()) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Cannot filter by variables without specifying wfSpecName");
+            }
+        }
 
         WfSpecModel wfSpec = ctx.service().getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
         if (wfSpec == null) {

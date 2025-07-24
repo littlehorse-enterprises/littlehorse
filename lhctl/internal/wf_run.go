@@ -37,15 +37,17 @@ var getScheduledWfRun = &cobra.Command{
 }
 
 var searchWfRunCmd = &cobra.Command{
-	Use:   "wfRun <wfSpecName> [<majorVersion>] [<revision>]",
+	Use:   "wfRun [<wfSpecName>] [<majorVersion>] [<revision>]",
 	Short: "Search for WfRuns",
 	Long: `
 Search for WfRuns. You may provide the optional arguments:
+- [<wfSpecName>] (required unless --parentWfRunId is specified)
 - [<majorVersion>]
 - [<revision>]
 
-And the optional flag:
+And the optional flags:
 - [--status]
+- [--parentWfRunId]
 
   * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
 		  flags to put a time bound on WfRun's which are returned.
@@ -53,9 +55,13 @@ And the optional flag:
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
-	Args: cobra.RangeArgs(1, 3),
+	Args: cobra.RangeArgs(0, 3),
 	Run: func(cmd *cobra.Command, args []string) {
-		wfSpecName := args[0]
+		var wfSpecName string
+		if len(args) > 0 {
+			wfSpecName = args[0]
+		}
+
 		statusRaw, _ := cmd.Flags().GetString("status")
 		var status *lhproto.LHStatus
 		var majorVersion *int32 = nil
@@ -89,20 +95,24 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		if wfSpecName == "" {
-			log.Fatal("Must specify wfSpecName!")
+		parentId, _ := cmd.Flags().GetString("parentWfRunId")
+
+		if wfSpecName == "" && parentId == "" {
+			log.Fatal("Must specify either wfSpecName or --parentWfRunId")
 		}
 
-		parentId, _ := cmd.Flags().GetString("parentWfRunId")
 		search := &lhproto.SearchWfRunRequest{
 			Bookmark:           bookmark,
 			Limit:              &limit,
 			EarliestStart:      earliest,
 			LatestStart:        latest,
-			WfSpecName:         wfSpecName,
 			Status:             status,
 			WfSpecMajorVersion: majorVersion,
 			WfSpecRevision:     revision,
+		}
+
+		if wfSpecName != "" {
+			search.WfSpecName = wfSpecName
 		}
 
 		if parentId != "" {
