@@ -155,6 +155,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     @Override
     public void close() {
         this.prom.close();
+        this.statusServer.close();
     }
 
     @Override

@@ -15,14 +15,25 @@ import io.grpc.netty.shaded.io.netty.handler.codec.http.LastHttpContent;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A Netty channel handler that processes HTTP requests by delegating to registered endpoints.
+ * This handler supports request routing, error handling, and response generation based on
+ * the registered endpoints in the StatusServer.
+ */
 @Slf4j
-public class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
+class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
     private final StatusServer.HttpEndpointRegistry registry;
 
-    public ServiceHandler(StatusServer.HttpEndpointRegistry registry) {
+    ServiceHandler(StatusServer.HttpEndpointRegistry registry) {
         this.registry = registry;
     }
 
+    /**
+     * Handles incoming HTTP requests by routing them to appropriate endpoints or generating error responses.
+     * @param ctx     The channel handler context
+     * @param request The incoming HTTP request object
+     * @throws Exception If an error occurs during request processing
+     */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject request) throws Exception {
         if (request instanceof HttpRequest httpRequest) {
@@ -42,6 +53,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
         }
     }
 
+    // Creates the http response from the handler content.
     private void writeResponse(ChannelHandlerContext ctx, SimpleResponse response) throws Exception {
         ByteBuf bytes = Unpooled.copiedBuffer(response.content(), StandardCharsets.UTF_8);
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, bytes);
@@ -49,12 +61,14 @@ public class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
         ctx.writeAndFlush(httpResponse).addListener(ChannelFutureListener.CLOSE);
     }
 
+    // Writes a 404 when the registry does not contain the request path
     private void writeNotFoundResponse(ChannelHandlerContext ctx) {
         FullHttpResponse response =
                 new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND, Unpooled.EMPTY_BUFFER);
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 
+    // Any exception from the handler
     private void writeInternalErrorResponse(ChannelHandlerContext ctx) {
         ByteBuf responseBody = Unpooled.copiedBuffer("Internal server error", StandardCharsets.UTF_8);
         FullHttpResponse response = new DefaultFullHttpResponse(

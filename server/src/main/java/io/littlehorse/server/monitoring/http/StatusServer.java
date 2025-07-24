@@ -39,21 +39,48 @@ public class StatusServer implements Closeable {
         server.bind(port);
     }
 
+    /**
+     * Registers a GET endpoint handler for the specified path with the given content type.
+     *
+     * @param path             The URL path to handle
+     * @param contentType      The content type of the response
+     * @param functionResponse Supplier function that provides the response content
+     */
     public void handle(String path, ContentType contentType, Supplier<String> functionResponse) {
         registry.handleGet(path, contentType.getType(), functionResponse);
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        workerGroup.close();
+        bossGroup.close();
+    }
 
+    /**
+     * Registry for HTTP endpoints that manages supported paths and their corresponding handlers.
+     * HttpEndpointRegistry maintains a thread-safe mapping of URL paths to their respective endpoint configurations.
+     */
     class HttpEndpointRegistry {
 
         private final ConcurrentHashMap<String, Endpoint> supportedEndpoints = new ConcurrentHashMap<>();
 
+        /**
+         * Registers a GET endpoint handler for the specified path.
+         *
+         * @param path             The URL path to handle
+         * @param contentType      The content type of the response
+         * @param functionResponse Supplier function that provides the response content
+         */
         private void handleGet(String path, String contentType, Supplier<String> functionResponse) {
             supportedEndpoints.put(path, new Endpoint(path, contentType, functionResponse));
         }
 
+        /**
+         * Checks if a handler exists for the specified path.
+         *
+         * @param path The URL path to check
+         * @return true if a handler exists for the path, false otherwise
+         */
         boolean isPresent(String path) {
             return supportedEndpoints.containsKey(path);
         }
@@ -69,6 +96,13 @@ public class StatusServer implements Closeable {
             return new SimpleResponse(content, endpoint.contentType);
         }
 
+        /**
+         * Record representing an HTTP endpoint configuration.
+         *
+         * @param path             The URL path for this endpoint
+         * @param contentType      The content type of responses from this endpoint
+         * @param functionResponse The supplier function that generates response content
+         */
         private record Endpoint(String path, String contentType, Supplier<String> functionResponse) {
 
             public String buildContent() {
