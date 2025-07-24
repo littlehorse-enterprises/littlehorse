@@ -183,11 +183,13 @@ public class SearchWfRunRequestModel
     public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) throws LHApiException {
         // TODO: optimize it so that we send a Variable Search query before sending a WfRun Scan.
 
+        List<ScanFilterModel> out = new ArrayList<>();
         if (wfSpecName == null || wfSpecName.isEmpty()) {
             if (!variableMatches.isEmpty()) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "Cannot filter by variables without specifying wfSpecName");
             }
+            return out;
         }
 
         WfSpecModel wfSpec = ctx.service().getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
@@ -201,7 +203,6 @@ public class SearchWfRunRequestModel
         Map<String, ThreadVarDefModel> vars = thread.getVariableDefs().stream()
                 .collect(Collectors.toMap(var -> var.getVarDef().getName(), var -> var));
 
-        List<ScanFilterModel> out = new ArrayList<>();
         for (VariableMatchModel variableMatch : variableMatches) {
             ThreadVarDefModel var = vars.get(variableMatch.getVarName());
 
