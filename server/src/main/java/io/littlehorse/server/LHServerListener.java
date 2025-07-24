@@ -1088,8 +1088,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             resources = {},
             actions = {})
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
-        ServerCallStreamObserver<?> s = (ServerCallStreamObserver<?>) responseObserver;
-        s.setOnCancelHandler(() -> {});
         RequestExecutionContext requestContext = requestContext();
         AuthorizationContext authorizationContext = requestContext.authorization();
         PrincipalIdModel principalId = authorizationContext.principalId();

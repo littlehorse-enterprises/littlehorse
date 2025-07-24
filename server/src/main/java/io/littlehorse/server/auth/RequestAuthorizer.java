@@ -57,6 +57,12 @@ public class RequestAuthorizer implements LHServerInterceptor {
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+        Context.current()
+                .addListener(
+                        context -> {
+                            log.info("RequestAuthorizer: context canceled: {}", context.isCancelled());
+                        },
+                        Runnable::run);
         String clientIdStr = headers.get(CLIENT_ID);
         PrincipalIdModel clientId = clientIdStr == null
                 ? null
