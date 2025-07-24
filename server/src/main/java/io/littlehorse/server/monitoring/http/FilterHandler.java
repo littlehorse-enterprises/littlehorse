@@ -45,7 +45,6 @@ public class FilterHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
         ctx.close();
     }
 }

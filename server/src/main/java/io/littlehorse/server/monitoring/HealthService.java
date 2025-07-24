@@ -30,7 +30,8 @@ import org.apache.kafka.streams.processor.TaskId;
 public class HealthService implements Closeable, StateRestoreListener, StandbyUpdateListener {
 
     private PrometheusMetricExporter prom;
-    private StatusServer statusServer;
+    private final StatusServer statusServer;
+    private final Gson gson = new Gson();
     private LHServerConfig config;
 
     private Map<TopicPartition, InProgressRestoration> restorations;
@@ -121,7 +122,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private String getStandbyStatus() {
         try {
-            return new Gson().toJson(standbyStores);
+            return gson.toJson(standbyStores);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -141,16 +142,13 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         try {
             ServerHealthState result =
                     new ServerHealthState(config, coreStreams, timerStreams, restorations, standbyStores);
-            Gson gson = new Gson();
             return gson.toJson(result);
         } catch (Exception exn) {
-            exn.printStackTrace();
             throw new RuntimeException(exn);
         }
     }
 
     private String getDiskUsage() {
-        Gson gson = new Gson();
         return gson.toJson(Map.of("diskUsageBytes", FileUtils.sizeOfDirectory(new File(config.getStateDirectory()))));
     }
 
