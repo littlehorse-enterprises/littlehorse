@@ -103,12 +103,13 @@ export const TaskDetails: FC<{
                 </Entry>
               )}
               <Entry label="Worker Log Output:">
-                <div className={'min-h-5 w-full text-nowrap rounded-lg border border-black bg-gray-300 text-center'}>
-                  <OverflowText
-                    text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? '-'}
-                    className="text-xs"
-                    variant={resultString === 'ERROR' ? 'error' : undefined}
-                  />
+                <div className="flex w-full text-nowrap items-center justify-center rounded-lg border border-black bg-gray-300 p-1">
+                  <div className="max-w-52">
+                    <OverflowText
+                      text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? '-'}
+                      className="text-xs"
+                    />
+                  </div>
                 </div>
               </Entry>
               <Entry separator>
