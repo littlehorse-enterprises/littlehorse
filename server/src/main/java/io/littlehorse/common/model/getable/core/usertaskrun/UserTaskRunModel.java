@@ -60,7 +60,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
@@ -437,11 +436,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
     public NodeRunModel getNodeRun() {
         return processorContext.getableManager().get(nodeRunId);
-    }
-
-    // TODO: LH-314
-    public void processTaskSavedEvent() {
-        throw new NotImplementedException();
     }
 
     private List<List<String>> getIndexHelper() {

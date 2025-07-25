@@ -3,13 +3,18 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
+import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
@@ -17,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 
@@ -54,7 +60,7 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         WfSpecModel wfSpecModel = node.threadSpec.wfSpec;
 
         if (threadSpecName.equals(node.threadSpec.name)) {
@@ -66,7 +72,11 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to start nonexistent thread " + threadSpecName);
         }
 
-        childThreadSpecModel.validateStartVariablesByType(variables);
+        try {
+            childThreadSpecModel.validateStartVariablesByType(variables);
+        } catch (InvalidThreadSpecException exn) {
+            throw new InvalidNodeException(exn, node);
+        }
     }
 
     @Override
@@ -83,5 +93,10 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
         StartThreadRunModel out = new StartThreadRunModel();
         out.threadSpecName = threadSpecName;
         return out;
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        return Optional.of(new ReturnTypeModel(VariableType.INT));
     }
 }
