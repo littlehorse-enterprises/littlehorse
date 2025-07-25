@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.StructDefUtil;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,7 +52,7 @@ public class TaskDefBuilder {
             structDefs.add(structDef.build());
         }
 
-        return structDefs;
+        return Collections.unmodifiableList(structDefs);
     }
 
     @Override

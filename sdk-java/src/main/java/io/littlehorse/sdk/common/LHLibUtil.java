@@ -32,7 +32,8 @@ import java.util.List;
 public class LHLibUtil {
 
     public static Date fromProtoTs(Timestamp proto) {
-        if (proto == null) return null;
+        if (proto == null)
+            return null;
         Date out = Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
 
         if (out.getTime() == 0) {
@@ -43,7 +44,8 @@ public class LHLibUtil {
     }
 
     public static Timestamp fromDate(Date date) {
-        if (date == null) return null;
+        if (date == null)
+            return null;
         return fromMillis(date.getTime());
     }
 
@@ -148,7 +150,8 @@ public class LHLibUtil {
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {
-        if (o instanceof VariableValue) return (VariableValue) o;
+        if (o instanceof VariableValue)
+            return (VariableValue) o;
 
         VariableValue.Builder out = VariableValue.newBuilder();
         if (o == null) {
@@ -197,7 +200,9 @@ public class LHLibUtil {
     }
 
     /**
-     * Converts a ValueCase (from the VariableValue.value oneof field) to a VariableType Enum.
+     * Converts a ValueCase (from the VariableValue.value oneof field) to a
+     * VariableType Enum.
+     * 
      * @param valueCase is the ValueCase from the VariableValue.
      * @return the corresponding VariableType.
      */
@@ -260,25 +265,56 @@ public class LHLibUtil {
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {
-        if (isINT(cls)) return VariableType.INT;
+        if (isINT(cls))
+            return VariableType.INT;
 
-        if (isDOUBLE(cls)) return VariableType.DOUBLE;
+        if (isDOUBLE(cls))
+            return VariableType.DOUBLE;
 
-        if (isSTR(cls)) return VariableType.STR;
+        if (isSTR(cls))
+            return VariableType.STR;
 
-        if (isBOOL(cls)) return VariableType.BOOL;
+        if (isBOOL(cls))
+            return VariableType.BOOL;
 
-        if (isBYTES(cls)) return VariableType.BYTES;
+        if (isBYTES(cls))
+            return VariableType.BYTES;
 
-        if (isJSON_ARR(cls)) return VariableType.JSON_ARR;
+        if (isJSON_ARR(cls))
+            return VariableType.JSON_ARR;
 
-        if (isWfRunId(cls)) return VariableType.WF_RUN_ID;
+        if (isWfRunId(cls))
+            return VariableType.WF_RUN_ID;
 
         return VariableType.JSON_OBJ;
     }
 
+    public static boolean isJavaClassLHPrimitive(Class<?> clazz) {
+        if (clazz.isPrimitive())
+            return true;
+        if (clazz.equals(Byte.class))
+            return true;
+        if (clazz.equals(Short.class))
+            return true;
+        if (clazz.equals(Integer.class))
+            return true;
+        if (clazz.equals(Boolean.class))
+            return true;
+        if (clazz.equals(Long.class))
+            return true;
+        if (clazz.equals(Float.class))
+            return true;
+        if (clazz.equals(Double.class))
+            return true;
+        if (clazz.equals(String.class))
+            return true;
+
+        return false;
+    }
+
     public static boolean areVariableValuesEqual(VariableValue a, VariableValue b) {
-        if (a.getValueCase() != b.getValueCase()) return false;
+        if (a.getValueCase() != b.getValueCase())
+            return false;
 
         switch (a.getValueCase()) {
             case INT:
@@ -299,6 +335,8 @@ public class LHLibUtil {
                 return a.getWfRunId().equals(b.getWfRunId());
             case VALUE_NOT_SET:
                 return true;
+            default:
+                break;
         }
         throw new IllegalStateException("Not possible to get here");
     }
