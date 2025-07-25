@@ -26,7 +26,8 @@ public class VariableAssignmentModelTest {
         jsonVar.setAccessLevel(WfRunVariableAccessLevel.PRIVATE_VAR);
         jsonVar.setVarDef(new VariableDefModel());
         jsonVar.getVarDef().setTypeDef(new TypeDefinitionModel(VariableType.JSON_OBJ));
-        jsonVar.getVarDef().setName("my-json-var");;
+        jsonVar.getVarDef().setName("my-json-var");
+        ;
 
         ThreadSpecModel threadSpec = new ThreadSpecModel();
         threadSpec.setVariableDefs(List.of(jsonVar));
