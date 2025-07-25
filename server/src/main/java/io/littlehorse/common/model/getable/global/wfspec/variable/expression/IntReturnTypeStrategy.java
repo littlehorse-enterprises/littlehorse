@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import java.util.Optional;
 
-public class IntReturnTypeStrategy implements ReturnTypeStrategy {
+public class IntReturnTypeStrategy implements LHTypeStrategy {
 
     @Override
     public TypeDefinitionModel getIdentity() {
@@ -14,7 +14,7 @@ public class IntReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> add(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> add(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.INT));
@@ -23,7 +23,7 @@ public class IntReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> subtract(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> subtract(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.INT));
@@ -32,7 +32,7 @@ public class IntReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> multiply(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> multiply(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.INT));
@@ -41,7 +41,7 @@ public class IntReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> divide(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> divide(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.INT));
@@ -50,25 +50,25 @@ public class IntReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT on an INT");
     }
 
     @Override
-    public Optional<TypeDefinitionModel> removeKey(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> removeKey(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_KEY on an INT");
     }
 
     @Override
-    public Optional<TypeDefinitionModel> removeIndex(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> removeIndex(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_INDEX on an INT");
     }
 
     @Override
-    public Optional<TypeDefinitionModel> extend(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> extend(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call EXTEND on an INT");
     }
@@ -76,5 +76,10 @@ public class IntReturnTypeStrategy implements ReturnTypeStrategy {
     @Override
     public boolean isNumeric(ReadOnlyMetadataManager manager) {
         return true;
+    }
+
+    @Override
+    public String getDescription() {
+        return "INT";
     }
 }

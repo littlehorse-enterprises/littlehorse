@@ -10,6 +10,8 @@ import org.rocksdb.CompactionStyle;
 import org.rocksdb.Options;
 import org.rocksdb.RateLimiter;
 
+import com.google.rpc.RetryInfo;
+
 @Slf4j
 public class RocksConfigSetter implements RocksDBConfigSetter {
 

@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import java.util.Optional;
 
-public class StrReturnTypeStrategy implements ReturnTypeStrategy {
+public class StrReturnTypeStrategy implements LHTypeStrategy {
 
     @Override
     public TypeDefinitionModel getIdentity() {
@@ -14,7 +14,7 @@ public class StrReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> add(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> add(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (other.isPrimitive(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.STR));
@@ -24,25 +24,25 @@ public class StrReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> subtract(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> subtract(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot subtract from a STR");
     }
 
     @Override
-    public Optional<TypeDefinitionModel> multiply(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> multiply(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot multiply to a STR");
     }
 
     @Override
-    public Optional<TypeDefinitionModel> divide(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> divide(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot divide a STR");
     }
 
     @Override
-    public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (!other.isPrimitive(manager)) {
             throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT with non-primitive type on a STR");
@@ -51,13 +51,13 @@ public class StrReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> removeKey(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> removeKey(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_KEY on a STR");
     }
 
     @Override
-    public Optional<TypeDefinitionModel> removeIndex(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> removeIndex(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (!other.isNumeric(manager)) {
             throw new InvalidExpressionException(
@@ -67,7 +67,7 @@ public class StrReturnTypeStrategy implements ReturnTypeStrategy {
     }
 
     @Override
-    public Optional<TypeDefinitionModel> extend(ReadOnlyMetadataManager manager, ReturnTypeStrategy other)
+    public Optional<TypeDefinitionModel> extend(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (!other.isPrimitive(manager)) {
             throw new InvalidExpressionException("Cannot extend a STR with non-primitive type " + other.getIdentity());
@@ -78,5 +78,10 @@ public class StrReturnTypeStrategy implements ReturnTypeStrategy {
     @Override
     public boolean isNumeric(ReadOnlyMetadataManager manager) {
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "STR";
     }
 }

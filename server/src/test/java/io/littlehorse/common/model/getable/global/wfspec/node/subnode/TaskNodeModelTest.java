@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import io.grpc.Status.Code;
-import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -32,7 +32,7 @@ public class TaskNodeModelTest {
     }
 
     @Test
-    void shouldBeFineWithNoRetryPolicy() {
+    void shouldBeFineWithNoRetryPolicy() throws InvalidNodeException {
         TaskNodeModel noRetry = createTaskNodeWithEmptyTaskDef();
         noRetry.validate(commandContext);
     }
@@ -46,8 +46,7 @@ public class TaskNodeModelTest {
         try {
             toTest.validate(commandContext);
             throw new RuntimeException("Should've gotten an error!");
-        } catch (LHApiException exn) {
-            assertThat(exn.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
+        } catch (InvalidNodeException exn) {
         }
     }
 
@@ -59,9 +58,8 @@ public class TaskNodeModelTest {
         try {
             toTest.validate(commandContext);
             throw new RuntimeException("Should've gotten an error!");
-        } catch (LHApiException exn) {
-            assertThat(exn.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
-            assertThat(exn.getStatus().getDescription().toLowerCase()).contains("base interval must be > 0");
+        } catch (InvalidNodeException exn) {
+            assertThat(exn.getMessage().toLowerCase()).contains("base interval must be > 0");
         }
     }
 
@@ -73,9 +71,8 @@ public class TaskNodeModelTest {
         try {
             toTest.validate(commandContext);
             throw new RuntimeException("Should've gotten an error!");
-        } catch (LHApiException exn) {
-            assertThat(exn.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
-            assertThat(exn.getStatus().getDescription().toLowerCase()).contains("negative retries");
+        } catch (InvalidNodeException exn) {
+            assertThat(exn.getMessage().toLowerCase()).contains("negative retries");
         }
     }
 }

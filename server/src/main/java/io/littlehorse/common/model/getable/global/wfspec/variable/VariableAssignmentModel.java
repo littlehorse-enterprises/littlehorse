@@ -148,6 +148,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                         .getOutputType(manager);
                 if (returnTypeOption.isPresent()) {
                     ReturnTypeModel returnType = returnTypeOption.get();
+                    System.out.println(returnType);
                     return returnType.getOutputType();
                 } else {
                     return Optional.empty();

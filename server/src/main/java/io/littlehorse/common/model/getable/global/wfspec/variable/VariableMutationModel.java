@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 
 @Slf4j
 @Getter
@@ -192,24 +191,18 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             // Can't validate anything, sorry.
             return;
         }
-        if (operation != VariableMutationType.ASSIGN) {
-            // This means that the client was using the legacy mutation type, rather than
-            // passing in an expression, which is what the `WfRunVariable#assign()` now does.
-            // Validation for the mutations is much more difficult here.
-            return;
-        }
 
         TypeDefinitionModel lhsType = threadSpec.getVarDef(lhsName).getVarDef().getTypeDef();
 
         try {
-            Optional<TypeDefinitionModel> rhsType = rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), lhsJsonPath);
+            Optional<TypeDefinitionModel> rhsType = rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             if (rhsType.isEmpty()) {
                 return;
             }
 
             Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy().resolveOperation(manager, operation, rhsType.get().getTypeStrategy());
             if (resultingType.isPresent() && !lhsType.isCompatibleWith(resultingType.get())) {
-                
+                throw new InvalidMutationException("Cannot mutate a " + lhsType + " by assigning it a value of type " + resultingType.get());
             }
         } catch(InvalidExpressionException exn) {
             throw new InvalidMutationException("Mutation of variable " + lhsName + " invalid: " + exn.getMessage());

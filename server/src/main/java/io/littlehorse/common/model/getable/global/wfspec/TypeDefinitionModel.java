@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Dou
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.IntReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
-import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -63,7 +63,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         return getTypeStrategy().resolveOperation(manager, operation, rhs.getTypeStrategy());
     }
 
-    public ReturnTypeStrategy getTypeStrategy() {
+    public LHTypeStrategy getTypeStrategy() {
         // TODO: Support StructDefs
         switch (type) {
             case INT:
