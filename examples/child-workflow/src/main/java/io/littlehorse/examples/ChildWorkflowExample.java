@@ -17,6 +17,24 @@ import java.util.Properties;
 
 public class ChildWorkflowExample {
 
+    public static Workflow getGrandChild() {
+        WorkflowImpl out = new WorkflowImpl(
+            "grand-child",
+            wf -> {
+                WfRunVariable theName = wf.addVariable(
+                    "name",
+                    VariableType.STR
+                ).withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+
+                wf.execute("greet", theName);
+
+                wf.mutate(theName, VariableMutationType.ASSIGN, "yoda");
+            }
+        );
+        out.setParent("child");
+
+        return out;
+    }
     public static Workflow getChild() {
         WorkflowImpl out = new WorkflowImpl(
             "child",
@@ -84,6 +102,7 @@ public class ChildWorkflowExample {
         // Register a workflow
         getParent().registerWfSpec(config.getBlockingStub());
         getChild().registerWfSpec(config.getBlockingStub());
+        getGrandChild().registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();
