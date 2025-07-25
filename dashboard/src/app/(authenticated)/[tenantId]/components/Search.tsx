@@ -9,14 +9,14 @@ import { SearchHeader } from './SearchHeader'
 import { SearchResponse, search } from './searchAction'
 import { ExternalEventDefTable, TaskDefTable, UserTaskDefTable, WfSpecTable, WorkflowEventDefTable } from './tables'
 
-export const Search: FC<{}> = () => {
+export const Search: FC = () => {
   const [prefix, setPrefix] = useState<string | undefined>()
   const searchParams = useSearchParams()
   const type = getType(searchParams.get('type'))
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const tenantId = useParams().tenantId as string
 
-  const getKey = (pageIndex: number, previousPageData: SearchResponse | null) => {
+  const getKey = (_pageIndex: number, previousPageData: SearchResponse | null) => {
     if (previousPageData && !previousPageData.bookmark) return null // reached the end
     return ['search', type, tenantId, limit, prefix, previousPageData?.bookmark]
   }

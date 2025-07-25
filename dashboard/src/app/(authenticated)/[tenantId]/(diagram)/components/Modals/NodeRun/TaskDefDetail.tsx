@@ -11,7 +11,7 @@ import { AccordionNode } from './AccordionContent'
 
 export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
   const taskId = nodeRun.task?.taskRunId?.taskGuid
-  const wfRunId = nodeRun.task?.taskRunId?.wfRunId?.id
+  const wfRunId = nodeRun.task?.taskRunId?.wfRunId
 
   const { data, isLoading } = useQuery({
     queryKey: ['taskRun', wfRunId, taskId],
@@ -19,10 +19,7 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
       if (!wfRunId) return
       if (!taskId) return
       const taskRun = await getTaskRun({
-        wfRunId: {
-          id: wfRunId,
-          parentWfRunId: undefined,
-        },
+        wfRunId,
         taskGuid: taskId,
       })
 
@@ -47,7 +44,6 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
           <div>
             <h2 className="mb-2 text-sm font-bold">Input Variables</h2>
             {data.inputVariables?.map(({ varName, value }) => {
-              const type = Object.keys(value || {})?.[0]
               return (
                 <div key={varName} className="mb-1 flex items-center gap-1">
                   <div className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{varName}</div>

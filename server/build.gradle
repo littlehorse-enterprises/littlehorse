@@ -17,6 +17,11 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
+def defaultJvmArgs = [
+    '-XX:+UseZGC'
+]
+
+
 javadoc {
     excludes = [
         'io/littlehorse/common/model/**',
@@ -146,6 +151,7 @@ application {
     // Define the main class for the application.
     mainClass = 'io.littlehorse.App'
     executableDir = 'server'
+    applicationDefaultJvmArgs = defaultJvmArgs
 }
 
 compileJava {
@@ -154,6 +160,12 @@ compileJava {
 
 shadowJar {
     mergeServiceFiles()
+    manifest {
+        attributes(
+            'Main-Class': 'io.littlehorse.App',
+            'JVM-Args': defaultJvmArgs.join(' ')
+        )
+    }
 }
 
 test {

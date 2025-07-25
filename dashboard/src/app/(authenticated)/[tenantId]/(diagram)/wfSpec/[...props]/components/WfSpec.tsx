@@ -1,31 +1,20 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
-import { ScheduledWfRunIdList, WfSpec as Spec } from 'littlehorse-client/proto'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { WfSpec as Spec } from 'littlehorse-client/proto'
 import { LucidePlayCircle } from 'lucide-react'
-import { FC, useCallback, useState } from 'react'
+import { FC, useCallback } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { useModal } from '../../../hooks/useModal'
 import { Details } from './Details'
+import { ScheduledWfRuns } from './ScheduledWfRuns'
 import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ScheduledWfRuns } from './ScheduledWfRuns'
-import { ScheduledWfRun } from 'littlehorse-client/proto'
-import { useWfSpec } from '@/app/hooks/useWfSpec'
-import { useParams } from 'next/navigation'
 
 type WfSpecProps = {
   spec: Spec
 }
 export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
-  const tenantId = useParams().tenantId as string
-  const { wfSpec, isLoading, isError } = useWfSpec(
-    tenantId,
-    spec.id!.name,
-    spec.id!.majorVersion.toString(),
-    spec.id!.revision.toString()
-  )
-
   const { setModal, setShowModal } = useModal()
 
   const onClick = useCallback(() => {

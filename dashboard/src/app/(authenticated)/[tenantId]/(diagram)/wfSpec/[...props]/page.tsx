@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
 import { getWfSpec } from './actions/getWfSpec'
-import { getScheduleWfSpec } from './actions/getScheduleWfSpec'
+
 import { WfSpec } from './components/WfSpec'
 
 type Props = { params: { props: string[]; tenantId: string } }

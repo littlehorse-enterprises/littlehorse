@@ -8,17 +8,14 @@ import { AccordionNode } from './AccordionContent'
 
 export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) => {
   const taskId = nodeRun?.userTask?.userTaskRunId?.userTaskGuid
-  const wfRunId = nodeRun?.userTask?.userTaskRunId?.wfRunId?.id
+  const wfRunId = nodeRun?.userTask?.userTaskRunId?.wfRunId
   const { data, isLoading } = useQuery({
     queryKey: ['userTaskRun', wfRunId, taskId],
     queryFn: async () => {
       if (!wfRunId) return
       if (!taskId) return
       const taskRun = await getUserTaskRun({
-        wfRunId: {
-          id: wfRunId,
-          parentWfRunId: undefined,
-        },
+        wfRunId,
         userTaskGuid: taskId,
       })
 
@@ -71,7 +68,7 @@ export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) 
         {lhUserTaskRun.status === UserTaskRunStatus.DONE && (
           <div className="ml-3  mt-1">
             <span className="font-bold">Completed On: </span>
-            <span> {nodeRun!?.endTime && utcToLocalDateTime(nodeRun!?.endTime)}</span>
+            <span> {nodeRun?.endTime && utcToLocalDateTime(nodeRun?.endTime)}</span>
           </div>
         )}
         {lhUserTaskRun.status === UserTaskRunStatus.CANCELLED && (
@@ -80,11 +77,11 @@ export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) 
             <span> {cancellationHistory[0].time && utcToLocalDateTime(cancellationHistory[0].time)}</span>
           </div>
         )}
-        {userTaskNode!?.onCancellationExceptionName !== undefined && (
+        {userTaskNode?.onCancellationExceptionName !== undefined && (
           <div className="ml-3">
             <span className="font-bold">Exception upon cancellation: </span>
             <span className="rounded bg-red-300 p-1 text-xs">
-              {getVariable(userTaskNode!?.onCancellationExceptionName)}
+              {getVariable(userTaskNode?.onCancellationExceptionName)}
             </span>
           </div>
         )}

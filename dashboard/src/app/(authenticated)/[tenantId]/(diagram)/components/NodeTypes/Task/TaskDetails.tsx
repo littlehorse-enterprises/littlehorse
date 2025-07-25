@@ -54,8 +54,7 @@ export const TaskDetails: FC<{
   const message =
     taskRunData?.attempts[taskAttemptIndex].error?.message ??
     taskRunData?.attempts[taskAttemptIndex].exception?.message ??
-    String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ??
-    undefined
+    String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output))
   const resultString = taskRunData?.attempts[taskAttemptIndex].error
     ? 'ERROR'
     : taskRunData?.attempts[taskAttemptIndex].exception
@@ -94,7 +93,7 @@ export const TaskDetails: FC<{
               <Entry label="Status:">
                 <Status status={taskRunData.attempts[taskAttemptIndex].status} />
               </Entry>
-              {message && resultString && (
+              {message && message !== '' && resultString && (
                 <Entry label="Result:">
                   <Result
                     resultString={resultString}
@@ -104,12 +103,13 @@ export const TaskDetails: FC<{
                 </Entry>
               )}
               <Entry label="Worker Log Output:">
-                <div className={'min-h-5 w-full text-nowrap rounded-lg border border-black bg-gray-300 text-center'}>
-                  <OverflowText
-                    text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? '-'}
-                    className="text-xs"
-                    variant={resultString === 'ERROR' ? 'error' : undefined}
-                  />
+                <div className="flex w-full items-center justify-center text-nowrap rounded-lg border border-black bg-gray-300 p-1">
+                  <div className="max-w-52">
+                    <OverflowText
+                      text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? '-'}
+                      className="text-xs"
+                    />
+                  </div>
                 </div>
               </Entry>
               <Entry separator>

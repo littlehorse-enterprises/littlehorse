@@ -1,6 +1,5 @@
 'use server'
 
-import { WfSpecId } from 'littlehorse-client/proto'
 import { lhClient } from '../lhClient'
 import { WfSpecData } from '@/types'
 

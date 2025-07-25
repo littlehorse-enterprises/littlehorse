@@ -1,5 +1,5 @@
 import { getVariable } from '@/app/utils/variables'
-import { WfRunId } from 'littlehorse-client/proto'
+
 import { FC } from 'react'
 interface UserTaskRunDetailsProps {
   userGroup: ReturnType<typeof getVariable>
