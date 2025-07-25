@@ -4,7 +4,6 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.exceptions.validation.InvalidWfSpecException;
@@ -97,7 +96,8 @@ public class WfSpecModelTest {
     }
 
     @Test
-    public void shouldIncreaseTheMajorVersionWhenAPublicVariableChangesItsAccessLevelToPrivate() throws InvalidThreadSpecException, InvalidWfSpecException {
+    public void shouldIncreaseTheMajorVersionWhenAPublicVariableChangesItsAccessLevelToPrivate()
+            throws InvalidThreadSpecException, InvalidWfSpecException {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-wf");
         ThreadVarDefModel publicVariable =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PUBLIC_VAR);
@@ -114,7 +114,8 @@ public class WfSpecModelTest {
     }
 
     @Test
-    public void shouldNotIncreaseTheMajorVersionWhenAInheritedVariableChangesItsAccessLevelToPrivate() throws LHValidationException {
+    public void shouldNotIncreaseTheMajorVersionWhenAInheritedVariableChangesItsAccessLevelToPrivate()
+            throws LHValidationException {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-parent-wf");
         ThreadVarDefModel inheritedVar =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.INHERITED_VAR);

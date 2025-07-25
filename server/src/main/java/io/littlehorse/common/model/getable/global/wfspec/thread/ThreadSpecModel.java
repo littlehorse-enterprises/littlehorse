@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.validation.InvalidInterruptDefException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
+import io.littlehorse.common.exceptions.validation.InvalidVariableDefException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -323,7 +324,11 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 log.debug("Variable {} not provided, defaulting to null", varName);
                 continue;
             }
-            varDef.validateValue(inputVariableValue);
+            try {
+                varDef.validateValue(inputVariableValue);
+            } catch (InvalidVariableDefException exn) {
+                throw new InvalidThreadSpecException(this, exn);
+            }
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 if (inputVariables.containsKey(varName)) {

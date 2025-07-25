@@ -43,7 +43,8 @@ public interface LHTypeStrategy {
 
     default Optional<TypeDefinitionModel> assign(LHTypeStrategy other) throws InvalidExpressionException {
         if (!other.getIdentity().isCompatibleWith(getIdentity())) {
-            throw new InvalidExpressionException("Cannot use a " + other.getDescription() + " as a " + this.getDescription());
+            throw new InvalidExpressionException(
+                    "Cannot use a " + other.getDescription() + " as a " + this.getDescription());
         }
         // Absent a cast, the LHS preserves its type.
         return Optional.of(getIdentity());

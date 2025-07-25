@@ -190,7 +190,7 @@ public class EdgeModel extends LHSerializable<Edge> {
         for (VariableMutationModel variableMutation : variableMutations) {
             try {
                 variableMutation.validate(source, manager, threadSpec);
-            } catch(InvalidMutationException exn) {
+            } catch (InvalidMutationException exn) {
                 throw new InvalidEdgeException(exn, this);
             }
         }

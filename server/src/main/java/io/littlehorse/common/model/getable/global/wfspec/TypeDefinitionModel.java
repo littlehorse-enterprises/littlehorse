@@ -131,6 +131,17 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * exact match for now. In the future we'll support casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
+        if (type == VariableType.INT || type == VariableType.DOUBLE) {
+            return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
+        }
         return this.equals(other);
+    }
+
+    @Override
+    public String toString() {
+        // TODO: when we have Structs, print out structdefid
+        String result = type.toString();
+        if (masked) result += " MASKED";
+        return result;
     }
 }

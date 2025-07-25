@@ -186,7 +186,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         return out;
     }
 
-    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec) throws InvalidMutationException {
+    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidMutationException {
         if (lhsJsonPath != null) {
             // Can't validate anything, sorry.
             return;
@@ -195,16 +196,19 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         TypeDefinitionModel lhsType = threadSpec.getVarDef(lhsName).getVarDef().getTypeDef();
 
         try {
-            Optional<TypeDefinitionModel> rhsType = rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
+            Optional<TypeDefinitionModel> rhsType =
+                    rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             if (rhsType.isEmpty()) {
                 return;
             }
 
-            Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy().resolveOperation(manager, operation, rhsType.get().getTypeStrategy());
+            Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy()
+                    .resolveOperation(manager, operation, rhsType.get().getTypeStrategy());
             if (resultingType.isPresent() && !lhsType.isCompatibleWith(resultingType.get())) {
-                throw new InvalidMutationException("Cannot mutate a " + lhsType + " by assigning it a value of type " + resultingType.get());
+                throw new InvalidMutationException(
+                        "Cannot mutate a " + lhsType + " by assigning it a value of type " + resultingType.get());
             }
-        } catch(InvalidExpressionException exn) {
+        } catch (InvalidExpressionException exn) {
             throw new InvalidMutationException("Mutation of variable " + lhsName + " invalid: " + exn.getMessage());
         }
     }

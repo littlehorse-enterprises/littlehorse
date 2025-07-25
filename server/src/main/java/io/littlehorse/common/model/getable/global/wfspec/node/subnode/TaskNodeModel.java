@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -11,6 +12,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -152,6 +154,24 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             for (int i = 0; i < variables.size(); i++) {
                 VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
                 VariableAssignmentModel assn = variables.get(i);
+
+                try {
+                    Optional<TypeDefinitionModel> typeDef = assn.resolveType(
+                            ctx.metadataManager(),
+                            node.getThreadSpec().getWfSpec(),
+                            node.getThreadSpec().getName());
+                    if (typeDef.isPresent() && !typeDef.get().isCompatibleWith(taskDefVar.getTypeDef())) {
+                        throw new InvalidNodeException(
+                                "Task input variable with name " + taskDefVar.getName() + " at position " + i
+                                        + " expects type " + taskDefVar.getTypeDef() + " but is type " + typeDef.get(),
+                                node);
+                    }
+                } catch (InvalidExpressionException exn) {
+                    throw new InvalidNodeException(
+                            "Task input variable with name " + taskDefVar.getName() + " at position " + i
+                                    + " could not resolve type: " + exn.getMessage(),
+                            node);
+                }
                 if (!assn.canBeType(taskDefVar.getTypeDef(), this.node.getThreadSpec())) {
                     throw new InvalidNodeException(
                             "Input variable " + i + " needs to be " + taskDefVar.getTypeDef() + " but cannot be!",
