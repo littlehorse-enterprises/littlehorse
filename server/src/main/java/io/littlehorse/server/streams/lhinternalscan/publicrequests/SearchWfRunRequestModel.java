@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.VariableMatch;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
+import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
@@ -123,7 +124,7 @@ public class SearchWfRunRequestModel
     }
 
     public List<Attribute> getSearchAttributes() {
-
+        List<Attribute> out = new ArrayList<>();
         boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
         boolean hasMajor = wfSpecMajorVersion != null;
         boolean hasRevision = wfSpecRevision != null;
@@ -137,7 +138,10 @@ public class SearchWfRunRequestModel
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
         }
-        List<Attribute> out = new ArrayList<>();
+
+        if (!hasName && parentWfRunId != null && status == null) {
+            return out;
+        }
 
         if (hasName) {
             if (hasMajor && hasRevision) {
@@ -175,6 +179,13 @@ public class SearchWfRunRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
+        if (!hasName && parentWfRunId != null && status == null) {
+            String parentId = parentWfRunId.toString();
+            String partitionKey = parentWfRunId.getPartitionKey().orElse(parentId);
+            return new ObjectIdScanBoundaryStrategy(partitionKey, parentId + "_", parentId + "_~");
+        }
+
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
@@ -189,6 +200,9 @@ public class SearchWfRunRequestModel
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "Cannot filter by variables without specifying wfSpecName");
             }
+
+            // When using Object ID Scan with parentWfRunId, don't add any filters
+            // This will return the full family tree
             return out;
         }
 
