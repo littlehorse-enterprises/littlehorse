@@ -26,10 +26,17 @@ public class VariableAssignmentModelTest {
         jsonVar.setAccessLevel(WfRunVariableAccessLevel.PRIVATE_VAR);
         jsonVar.setVarDef(new VariableDefModel());
         jsonVar.getVarDef().setTypeDef(new TypeDefinitionModel(VariableType.JSON_OBJ));
+        jsonVar.getVarDef().setName("my-json-var");;
 
-        Map<String, ThreadVarDefModel> vars = Map.of("my-json-var", jsonVar);
+        ThreadSpecModel threadSpec = new ThreadSpecModel();
+        threadSpec.setVariableDefs(List.of(jsonVar));
 
-        Optional<TypeDefinitionModel> resolvedType = varAssn.resolveType(null, null, null);
+        WfSpecModel wfSpec = new WfSpecModel();
+        wfSpec.setThreadSpecs(Map.of("entrypoint", threadSpec));
+        threadSpec.setName("entrypoint");
+        threadSpec.setWfSpec(wfSpec);
+
+        Optional<TypeDefinitionModel> resolvedType = varAssn.resolveType(null, wfSpec, "entrypoint");
         Assertions.assertThat(resolvedType).isPresent();
     }
 

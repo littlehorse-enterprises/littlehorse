@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
@@ -24,8 +25,11 @@ public class TaskNodeModelTest {
     private static TaskNodeModel createTaskNodeWithEmptyTaskDef() {
         TaskDefIdModel id = new TaskDefIdModel("some-task");
         ReadOnlyMetadataManager manager = Mockito.mock(ReadOnlyMetadataManager.class);
+        NodeModel node = new NodeModel();
         TaskNodeModel toTest = new TaskNodeModel();
         toTest.setTaskDefId(id);
+        node.setTaskNode(toTest);
+        toTest.setNode(node);
         when(manager.get(id)).thenReturn(new TaskDefModel());
         return toTest;
     }
