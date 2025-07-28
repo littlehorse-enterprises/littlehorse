@@ -60,12 +60,12 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
         if (handlerThread.status == LHStatus.COMPLETED) {
             handledNode.getLatestFailure().get().setProperlyHandled(true);
 
-            if (handledNode.getType() == NodeTypeCase.WAIT_THREADS) {
+            if (handledNode.getType() == NodeTypeCase.WAIT_FOR_THREADS) {
                 // The current implementation of failure handlers for wait_thread nodes
                 // is an all-or-nothing handler that catches all failed children.
                 //
                 // Therefore, what we must do here is add each of the failed children.
-                for (WaitForThreadModel wft : handledNode.getWaitThreadsRun().getThreads()) {
+                for (WaitForThreadModel wft : handledNode.getWaitForThreadsRun().getThreads()) {
                     if (wft.getThreadStatus() == LHStatus.ERROR || wft.getThreadStatus() == LHStatus.EXCEPTION) {
                         originalThatFailed.handledFailedChildren.add(wft.getThreadRunNumber());
                     } else if (wft.getThreadStatus() != LHStatus.COMPLETED
@@ -77,7 +77,8 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
             }
             return true;
         } else if (handlerThread.status == LHStatus.EXCEPTION || handlerThread.status == LHStatus.ERROR) {
-            // Shouldn't need to do anything here since the new ThreadRunModel#advance() will detect this and fail
+            // Shouldn't need to do anything here since the new ThreadRunModel#advance()
+            // will detect this and fail
             // anyways. Just remove the halt reason so that the threadRun properly fails.
             return true;
         } else {

@@ -61,7 +61,7 @@ private static final long serialVersionUID = 0L;
     ENTRYPOINT(15),
     EXIT(16),
     START_THREAD(17),
-    WAIT_THREADS(18),
+    WAIT_FOR_THREADS(18),
     SLEEP(19),
     USER_TASK(20),
     START_MULTIPLE_THREADS(21),
@@ -89,7 +89,7 @@ private static final long serialVersionUID = 0L;
         case 15: return ENTRYPOINT;
         case 16: return EXIT;
         case 17: return START_THREAD;
-        case 18: return WAIT_THREADS;
+        case 18: return WAIT_FOR_THREADS;
         case 19: return SLEEP;
         case 20: return USER_TASK;
         case 21: return START_MULTIPLE_THREADS;
@@ -770,29 +770,29 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StartThreadRun.getDefaultInstance();
   }
 
-  public static final int WAIT_THREADS_FIELD_NUMBER = 18;
+  public static final int WAIT_FOR_THREADS_FIELD_NUMBER = 18;
   /**
    * <pre>
-   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
    * </pre>
    *
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
-   * @return Whether the waitThreads field is set.
+   * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
+   * @return Whether the waitForThreads field is set.
    */
   @java.lang.Override
-  public boolean hasWaitThreads() {
+  public boolean hasWaitForThreads() {
     return nodeTypeCase_ == 18;
   }
   /**
    * <pre>
-   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
    * </pre>
    *
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
-   * @return The waitThreads.
+   * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
+   * @return The waitForThreads.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitThreads() {
+  public io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitForThreads() {
     if (nodeTypeCase_ == 18) {
        return (io.littlehorse.sdk.common.proto.WaitForThreadsRun) nodeType_;
     }
@@ -800,13 +800,13 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
    * </pre>
    *
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitThreadsOrBuilder() {
+  public io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitForThreadsOrBuilder() {
     if (nodeTypeCase_ == 18) {
        return (io.littlehorse.sdk.common.proto.WaitForThreadsRun) nodeType_;
     }
@@ -1288,8 +1288,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getStartThread())) return false;
         break;
       case 18:
-        if (!getWaitThreads()
-            .equals(other.getWaitThreads())) return false;
+        if (!getWaitForThreads()
+            .equals(other.getWaitForThreads())) return false;
         break;
       case 19:
         if (!getSleep()
@@ -1381,8 +1381,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getStartThread().hashCode();
         break;
       case 18:
-        hash = (37 * hash) + WAIT_THREADS_FIELD_NUMBER;
-        hash = (53 * hash) + getWaitThreads().hashCode();
+        hash = (37 * hash) + WAIT_FOR_THREADS_FIELD_NUMBER;
+        hash = (53 * hash) + getWaitForThreads().hashCode();
         break;
       case 19:
         hash = (37 * hash) + SLEEP_FIELD_NUMBER;
@@ -1600,8 +1600,8 @@ private static final long serialVersionUID = 0L;
       if (startThreadBuilder_ != null) {
         startThreadBuilder_.clear();
       }
-      if (waitThreadsBuilder_ != null) {
-        waitThreadsBuilder_.clear();
+      if (waitForThreadsBuilder_ != null) {
+        waitForThreadsBuilder_.clear();
       }
       if (sleepBuilder_ != null) {
         sleepBuilder_.clear();
@@ -1734,8 +1734,8 @@ private static final long serialVersionUID = 0L;
         result.nodeType_ = startThreadBuilder_.build();
       }
       if (nodeTypeCase_ == 18 &&
-          waitThreadsBuilder_ != null) {
-        result.nodeType_ = waitThreadsBuilder_.build();
+          waitForThreadsBuilder_ != null) {
+        result.nodeType_ = waitForThreadsBuilder_.build();
       }
       if (nodeTypeCase_ == 19 &&
           sleepBuilder_ != null) {
@@ -1890,8 +1890,8 @@ private static final long serialVersionUID = 0L;
           mergeStartThread(other.getStartThread());
           break;
         }
-        case WAIT_THREADS: {
-          mergeWaitThreads(other.getWaitThreads());
+        case WAIT_FOR_THREADS: {
+          mergeWaitForThreads(other.getWaitForThreads());
           break;
         }
         case SLEEP: {
@@ -2058,7 +2058,7 @@ private static final long serialVersionUID = 0L;
             } // case 138
             case 146: {
               input.readMessage(
-                  getWaitThreadsFieldBuilder().getBuilder(),
+                  getWaitForThreadsFieldBuilder().getBuilder(),
                   extensionRegistry);
               nodeTypeCase_ = 18;
               break;
@@ -4455,88 +4455,88 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WaitForThreadsRun, io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder> waitThreadsBuilder_;
+        io.littlehorse.sdk.common.proto.WaitForThreadsRun, io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder> waitForThreadsBuilder_;
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
-     * @return Whether the waitThreads field is set.
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
+     * @return Whether the waitForThreads field is set.
      */
     @java.lang.Override
-    public boolean hasWaitThreads() {
+    public boolean hasWaitForThreads() {
       return nodeTypeCase_ == 18;
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
-     * @return The waitThreads.
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
+     * @return The waitForThreads.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitThreads() {
-      if (waitThreadsBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitForThreads() {
+      if (waitForThreadsBuilder_ == null) {
         if (nodeTypeCase_ == 18) {
           return (io.littlehorse.sdk.common.proto.WaitForThreadsRun) nodeType_;
         }
         return io.littlehorse.sdk.common.proto.WaitForThreadsRun.getDefaultInstance();
       } else {
         if (nodeTypeCase_ == 18) {
-          return waitThreadsBuilder_.getMessage();
+          return waitForThreadsBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.WaitForThreadsRun.getDefaultInstance();
       }
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
      */
-    public Builder setWaitThreads(io.littlehorse.sdk.common.proto.WaitForThreadsRun value) {
-      if (waitThreadsBuilder_ == null) {
+    public Builder setWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsRun value) {
+      if (waitForThreadsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         nodeType_ = value;
         onChanged();
       } else {
-        waitThreadsBuilder_.setMessage(value);
+        waitForThreadsBuilder_.setMessage(value);
       }
       nodeTypeCase_ = 18;
       return this;
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
      */
-    public Builder setWaitThreads(
+    public Builder setWaitForThreads(
         io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder builderForValue) {
-      if (waitThreadsBuilder_ == null) {
+      if (waitForThreadsBuilder_ == null) {
         nodeType_ = builderForValue.build();
         onChanged();
       } else {
-        waitThreadsBuilder_.setMessage(builderForValue.build());
+        waitForThreadsBuilder_.setMessage(builderForValue.build());
       }
       nodeTypeCase_ = 18;
       return this;
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
      */
-    public Builder mergeWaitThreads(io.littlehorse.sdk.common.proto.WaitForThreadsRun value) {
-      if (waitThreadsBuilder_ == null) {
+    public Builder mergeWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsRun value) {
+      if (waitForThreadsBuilder_ == null) {
         if (nodeTypeCase_ == 18 &&
             nodeType_ != io.littlehorse.sdk.common.proto.WaitForThreadsRun.getDefaultInstance()) {
           nodeType_ = io.littlehorse.sdk.common.proto.WaitForThreadsRun.newBuilder((io.littlehorse.sdk.common.proto.WaitForThreadsRun) nodeType_)
@@ -4547,9 +4547,9 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (nodeTypeCase_ == 18) {
-          waitThreadsBuilder_.mergeFrom(value);
+          waitForThreadsBuilder_.mergeFrom(value);
         } else {
-          waitThreadsBuilder_.setMessage(value);
+          waitForThreadsBuilder_.setMessage(value);
         }
       }
       nodeTypeCase_ = 18;
@@ -4557,13 +4557,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
      */
-    public Builder clearWaitThreads() {
-      if (waitThreadsBuilder_ == null) {
+    public Builder clearWaitForThreads() {
+      if (waitForThreadsBuilder_ == null) {
         if (nodeTypeCase_ == 18) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
@@ -4574,31 +4574,31 @@ private static final long serialVersionUID = 0L;
           nodeTypeCase_ = 0;
           nodeType_ = null;
         }
-        waitThreadsBuilder_.clear();
+        waitForThreadsBuilder_.clear();
       }
       return this;
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
      */
-    public io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder getWaitThreadsBuilder() {
-      return getWaitThreadsFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder getWaitForThreadsBuilder() {
+      return getWaitForThreadsFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitThreadsOrBuilder() {
-      if ((nodeTypeCase_ == 18) && (waitThreadsBuilder_ != null)) {
-        return waitThreadsBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitForThreadsOrBuilder() {
+      if ((nodeTypeCase_ == 18) && (waitForThreadsBuilder_ != null)) {
+        return waitForThreadsBuilder_.getMessageOrBuilder();
       } else {
         if (nodeTypeCase_ == 18) {
           return (io.littlehorse.sdk.common.proto.WaitForThreadsRun) nodeType_;
@@ -4608,19 +4608,19 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+     * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
      * </pre>
      *
-     * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+     * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WaitForThreadsRun, io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder> 
-        getWaitThreadsFieldBuilder() {
-      if (waitThreadsBuilder_ == null) {
+        getWaitForThreadsFieldBuilder() {
+      if (waitForThreadsBuilder_ == null) {
         if (!(nodeTypeCase_ == 18)) {
           nodeType_ = io.littlehorse.sdk.common.proto.WaitForThreadsRun.getDefaultInstance();
         }
-        waitThreadsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        waitForThreadsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.WaitForThreadsRun, io.littlehorse.sdk.common.proto.WaitForThreadsRun.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder>(
                 (io.littlehorse.sdk.common.proto.WaitForThreadsRun) nodeType_,
                 getParentForChildren(),
@@ -4629,7 +4629,7 @@ private static final long serialVersionUID = 0L;
       }
       nodeTypeCase_ = 18;
       onChanged();
-      return waitThreadsBuilder_;
+      return waitForThreadsBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
