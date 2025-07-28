@@ -84,8 +84,8 @@ export interface NodeRun {
   startThread?:
     | StartThreadRun
     | undefined;
-  /** A WAIT_THREADS node waits for one or more child ThreadRun's to complete. */
-  waitThreads?:
+  /** A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete. */
+  waitForThreads?:
     | WaitForThreadsRun
     | undefined;
   /** A SLEEP node makes the ThreadRun block for a certain amount of time. */
@@ -366,7 +366,7 @@ function createBaseNodeRun(): NodeRun {
     entrypoint: undefined,
     exit: undefined,
     startThread: undefined,
-    waitThreads: undefined,
+    waitForThreads: undefined,
     sleep: undefined,
     userTask: undefined,
     startMultipleThreads: undefined,
@@ -424,8 +424,8 @@ export const NodeRun = {
     if (message.startThread !== undefined) {
       StartThreadRun.encode(message.startThread, writer.uint32(138).fork()).ldelim();
     }
-    if (message.waitThreads !== undefined) {
-      WaitForThreadsRun.encode(message.waitThreads, writer.uint32(146).fork()).ldelim();
+    if (message.waitForThreads !== undefined) {
+      WaitForThreadsRun.encode(message.waitForThreads, writer.uint32(146).fork()).ldelim();
     }
     if (message.sleep !== undefined) {
       SleepNodeRun.encode(message.sleep, writer.uint32(154).fork()).ldelim();
@@ -572,7 +572,7 @@ export const NodeRun = {
             break;
           }
 
-          message.waitThreads = WaitForThreadsRun.decode(reader, reader.uint32());
+          message.waitForThreads = WaitForThreadsRun.decode(reader, reader.uint32());
           continue;
         case 19:
           if (tag !== 154) {
@@ -648,8 +648,8 @@ export const NodeRun = {
     message.startThread = (object.startThread !== undefined && object.startThread !== null)
       ? StartThreadRun.fromPartial(object.startThread)
       : undefined;
-    message.waitThreads = (object.waitThreads !== undefined && object.waitThreads !== null)
-      ? WaitForThreadsRun.fromPartial(object.waitThreads)
+    message.waitForThreads = (object.waitForThreads !== undefined && object.waitForThreads !== null)
+      ? WaitForThreadsRun.fromPartial(object.waitForThreads)
       : undefined;
     message.sleep = (object.sleep !== undefined && object.sleep !== null)
       ? SleepNodeRun.fromPartial(object.sleep)

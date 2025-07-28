@@ -410,7 +410,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             ThreadRunModel parent = getParent();
             if (parent.getStatus() == LHStatus.ERROR) {
                 NodeRunModel parentCurrentNR = parent.getCurrentNodeRun();
-                if (parentCurrentNR.getType() == NodeTypeCase.WAIT_THREADS
+                if (parentCurrentNR.getType() == NodeTypeCase.WAIT_FOR_THREADS
                         || parentCurrentNR.getType() == NodeTypeCase.EXIT) {
 
                     FailureModel parentFailure =

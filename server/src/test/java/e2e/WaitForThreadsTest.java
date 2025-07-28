@@ -55,13 +55,13 @@ public class WaitForThreadsTest {
         Map<String, Integer> event1 = Map.of("myInt", 5);
         Map<String, Integer> event2 = Map.of("myInt", 10);
         Consumer<NodeRun> verifyWaitForThreadNodeBeforeFirstExternalEvent = nodeRun -> {
-            WaitForThreadsRun waitForThreadsRun = nodeRun.getWaitThreads();
+            WaitForThreadsRun waitForThreadsRun = nodeRun.getWaitForThreads();
             assertThat(waitForThreadsRun.getThreadsCount()).isEqualTo(2);
             assertThat(waitForThreadsRun.getThreads(0).getThreadRunNumber()).isEqualTo(1);
             assertThat(waitForThreadsRun.getThreads(1).getThreadRunNumber()).isEqualTo(2);
         };
         Consumer<NodeRun> verifyWaitForThreadNodeAfterFirstExternalEvent = nodeRun -> {
-            WaitForThreadsRun waitForThreadsRun = nodeRun.getWaitThreads();
+            WaitForThreadsRun waitForThreadsRun = nodeRun.getWaitForThreads();
             assertThat(waitForThreadsRun.getThreads(0).getThreadRunNumber()).isEqualTo(1);
             assertThat(waitForThreadsRun.getThreads(1).getThreadRunNumber()).isEqualTo(2);
             assertThat(waitForThreadsRun.getThreads(0).getThreadStatus()).isEqualTo(COMPLETED);
@@ -83,9 +83,9 @@ public class WaitForThreadsTest {
                 .waitForStatus(COMPLETED)
                 .thenVerifyNodeRun(entrypointThreadNumber, 3, nodeRun -> {
                     assertThat(nodeRun.getStatus()).isEqualTo(COMPLETED);
-                    assertThat(nodeRun.getWaitThreads().getThreads(0).getThreadStatus())
+                    assertThat(nodeRun.getWaitForThreads().getThreads(0).getThreadStatus())
                             .isEqualTo(COMPLETED);
-                    assertThat(nodeRun.getWaitThreads().getThreads(1).getThreadStatus())
+                    assertThat(nodeRun.getWaitForThreads().getThreads(1).getThreadStatus())
                             .isEqualTo(COMPLETED);
                 })
                 .start();
@@ -119,7 +119,7 @@ public class WaitForThreadsTest {
                     assertThat(nodeRun.getFailures(0).getFailureName()).isEqualTo("VAR_SUB_ERROR");
                 })
                 .thenVerifyNodeRun(entrypointThreadNumber, 3, nodeRun -> {
-                    WaitForThreadsRun waitForThreadsRun = nodeRun.getWaitThreads();
+                    WaitForThreadsRun waitForThreadsRun = nodeRun.getWaitForThreads();
                     assertThat(waitForThreadsRun.getThreads(0).getThreadStatus())
                             .isEqualTo(ERROR);
                     assertThat(waitForThreadsRun.getThreads(1).getThreadStatus())
