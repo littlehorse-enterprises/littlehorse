@@ -27,8 +27,7 @@ const ExitNode: FC<NodeProps> = ({ data }) => {
       <div
         className={`flex h-6 w-6 cursor-pointer rounded-xl border-[3px] border-gray-500 ${failureDef ? 'bg-red-200' : 'bg-green-200'}`}
       >
-        <Handle type="target" position={Position.Left} className="bg-transparent" id="target-0" />
-        <Handle type="source" position={Position.Right} className="bg-transparent" id="source-0" />
+        <Handle type="target" position={Position.Left} className="bg-transparent" />
       </div>
     </Fade>
   )
