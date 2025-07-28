@@ -711,6 +711,10 @@ message SearchWfRunRequest {
     
     // If set, only return WfRuns that are direct children of the given parent WfRun
     optional WfRunId parent_wf_run_id = 10;
+    
+    // If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+    // using Object ID scan. If false or not set, uses index-based search for direct children only.
+    optional bool show_full_tree = 11;
 }
 
 // List of WfRun Id's

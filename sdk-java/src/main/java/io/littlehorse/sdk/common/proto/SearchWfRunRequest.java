@@ -426,6 +426,35 @@ private static final long serialVersionUID = 0L;
     return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
   }
 
+  public static final int SHOW_FULL_TREE_FIELD_NUMBER = 11;
+  private boolean showFullTree_ = false;
+  /**
+   * <pre>
+   * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+   * using Object ID scan. If false or not set, uses index-based search for direct children only.
+   * </pre>
+   *
+   * <code>optional bool show_full_tree = 11;</code>
+   * @return Whether the showFullTree field is set.
+   */
+  @java.lang.Override
+  public boolean hasShowFullTree() {
+    return ((bitField0_ & 0x00000100) != 0);
+  }
+  /**
+   * <pre>
+   * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+   * using Object ID scan. If false or not set, uses index-based search for direct children only.
+   * </pre>
+   *
+   * <code>optional bool show_full_tree = 11;</code>
+   * @return The showFullTree.
+   */
+  @java.lang.Override
+  public boolean getShowFullTree() {
+    return showFullTree_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -469,6 +498,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000080) != 0)) {
       output.writeMessage(10, getParentWfRunId());
+    }
+    if (((bitField0_ & 0x00000100) != 0)) {
+      output.writeBool(11, showFullTree_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -517,6 +549,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000080) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, getParentWfRunId());
+    }
+    if (((bitField0_ & 0x00000100) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(11, showFullTree_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -576,6 +612,11 @@ private static final long serialVersionUID = 0L;
       if (!getParentWfRunId()
           .equals(other.getParentWfRunId())) return false;
     }
+    if (hasShowFullTree() != other.hasShowFullTree()) return false;
+    if (hasShowFullTree()) {
+      if (getShowFullTree()
+          != other.getShowFullTree()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -624,6 +665,11 @@ private static final long serialVersionUID = 0L;
     if (hasParentWfRunId()) {
       hash = (37 * hash) + PARENT_WF_RUN_ID_FIELD_NUMBER;
       hash = (53 * hash) + getParentWfRunId().hashCode();
+    }
+    if (hasShowFullTree()) {
+      hash = (37 * hash) + SHOW_FULL_TREE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getShowFullTree());
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -797,6 +843,7 @@ private static final long serialVersionUID = 0L;
         parentWfRunIdBuilder_.dispose();
         parentWfRunIdBuilder_ = null;
       }
+      showFullTree_ = false;
       return this;
     }
 
@@ -884,6 +931,10 @@ private static final long serialVersionUID = 0L;
             ? parentWfRunId_
             : parentWfRunIdBuilder_.build();
         to_bitField0_ |= 0x00000080;
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.showFullTree_ = showFullTree_;
+        to_bitField0_ |= 0x00000100;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -987,6 +1038,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasParentWfRunId()) {
         mergeParentWfRunId(other.getParentWfRunId());
       }
+      if (other.hasShowFullTree()) {
+        setShowFullTree(other.getShowFullTree());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1077,6 +1131,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000200;
               break;
             } // case 82
+            case 88: {
+              showFullTree_ = input.readBool();
+              bitField0_ |= 0x00000400;
+              break;
+            } // case 88
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2309,6 +2368,66 @@ private static final long serialVersionUID = 0L;
         parentWfRunId_ = null;
       }
       return parentWfRunIdBuilder_;
+    }
+
+    private boolean showFullTree_ ;
+    /**
+     * <pre>
+     * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+     * using Object ID scan. If false or not set, uses index-based search for direct children only.
+     * </pre>
+     *
+     * <code>optional bool show_full_tree = 11;</code>
+     * @return Whether the showFullTree field is set.
+     */
+    @java.lang.Override
+    public boolean hasShowFullTree() {
+      return ((bitField0_ & 0x00000400) != 0);
+    }
+    /**
+     * <pre>
+     * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+     * using Object ID scan. If false or not set, uses index-based search for direct children only.
+     * </pre>
+     *
+     * <code>optional bool show_full_tree = 11;</code>
+     * @return The showFullTree.
+     */
+    @java.lang.Override
+    public boolean getShowFullTree() {
+      return showFullTree_;
+    }
+    /**
+     * <pre>
+     * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+     * using Object ID scan. If false or not set, uses index-based search for direct children only.
+     * </pre>
+     *
+     * <code>optional bool show_full_tree = 11;</code>
+     * @param value The showFullTree to set.
+     * @return This builder for chaining.
+     */
+    public Builder setShowFullTree(boolean value) {
+
+      showFullTree_ = value;
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+     * using Object ID scan. If false or not set, uses index-based search for direct children only.
+     * </pre>
+     *
+     * <code>optional bool show_full_tree = 11;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearShowFullTree() {
+      bitField0_ = (bitField0_ & ~0x00000400);
+      showFullTree_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

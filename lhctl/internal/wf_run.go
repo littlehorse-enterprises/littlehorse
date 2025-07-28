@@ -96,6 +96,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		limit, _ := cmd.Flags().GetInt32("limit")
 
 		parentId, _ := cmd.Flags().GetString("parentWfRunId")
+		showFullTree, _ := cmd.Flags().GetBool("show-full-tree")
 
 		if wfSpecName == "" && parentId == "" {
 			log.Fatal("Must specify either wfSpecName or --parentWfRunId")
@@ -117,6 +118,9 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 
 		if parentId != "" {
 			search.ParentWfRunId = littlehorse.StrToWfRunId(parentId)
+			if showFullTree {
+				search.ShowFullTree = &showFullTree
+			}
 		}
 
 		littlehorse.PrintResp(
@@ -345,6 +349,7 @@ func init() {
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
 	searchWfRunCmd.Flags().String("parentWfRunId", "", "Filter child WfRuns by parent WfRun ID")
+	searchWfRunCmd.Flags().Bool("show-full-tree", false, "Use full object scan instead of index-based search for complete tree discovery")
 
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
