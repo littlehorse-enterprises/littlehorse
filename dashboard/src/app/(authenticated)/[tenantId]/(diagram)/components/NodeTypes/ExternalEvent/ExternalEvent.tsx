@@ -1,4 +1,4 @@
-import { formatTime, getVariableValue } from '@/app/utils'
+import { formatTime, getVariable, getVariableValue } from '@/app/utils'
 import { Node as NodeProto } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
 import { FC, memo } from 'react'
@@ -10,12 +10,13 @@ import { NodeDetails } from '../NodeDetails'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
+import { Entry } from '../DataGroupComponents/Entry'
 import PostEvent from './PostEvent'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.externalEvent) return null
-
   const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
+
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -30,14 +31,14 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
                 {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
               </LinkWithTenant>
             </div>
-            <div className="flex gap-2 text-nowrap">
-              <div className="flex items-center justify-center">
-                Timeout:{' '}
-                {externalEventNode.timeoutSeconds
-                  ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
-                  : 'N/A'}
-              </div>
-            </div>
+            <Entry label="Timeout">
+              {externalEventNode.timeoutSeconds
+                ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
+                : 'N/A'}
+            </Entry>
+            <Entry label="Correlation Key:">
+              {nodeRun ? nodeRun?.externalEvent?.correlationKey : getVariable(externalEventNode.correlationKey)}
+            </Entry>
             {nodeRun && !nodeRun.externalEvent?.eventTime && <PostEvent nodeRun={nodeRun} />}
           </div>
         </DiagramDataGroup>
