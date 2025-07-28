@@ -3,9 +3,10 @@ import { PlusIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
-import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
+import { NodeRunsList } from '../NodeRunsList'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
+import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 const Node: FC<NodeProps> = ({ data }) => {
   const { fade, nodeRunsList } = data
 
@@ -37,9 +38,8 @@ const Node: FC<NodeProps> = ({ data }) => {
           <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[1px] border-gray-500 bg-gray-200">
             <PlusIcon className="h-4 w-4 rotate-45 fill-gray-500" />
           </div>
-          <Handle type="target" position={Position.Left} className="bg-transparent" id="target-0" />
-          <Handle type="target" position={Position.Bottom} className="bg-transparent" id="bottom-0" />
-          <Handle type="source" position={Position.Right} className="bg-transparent" id="source-0" />
+          <Handle type="target" position={Position.Left} className="bg-transparent" />
+          <Handle type="source" position={Position.Right} className="bg-transparent" />
         </div>
       </Fade>
     </>

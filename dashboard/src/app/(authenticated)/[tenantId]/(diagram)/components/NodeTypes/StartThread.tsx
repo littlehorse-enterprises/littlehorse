@@ -46,9 +46,8 @@ const Node: FC<NodeProps> = ({ data }) => {
             <PlusIcon className="h-5 w-5 rotate-45 fill-gray-500" />
           </div>
         </div>
-        <Handle type="source" position={Position.Right} className="bg-transparent" id="source-0" />
-        <Handle type="source" position={Position.Bottom} className="bg-transparent" id="bottom-0" />
-        <Handle type="target" position={Position.Left} className="bg-transparent" id="target-0" />
+        <Handle type="source" position={Position.Right} className="bg-transparent" />
+        <Handle type="target" position={Position.Left} className="bg-transparent" />
       </Fade>
     </>
   )
