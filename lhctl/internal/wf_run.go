@@ -3,12 +3,54 @@ package internal
 import (
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 )
+
+func filterWfRunsByLevels(resp *lhproto.WfRunIdList, rootParentId string, maxLevels int) *lhproto.WfRunIdList {
+	if maxLevels <= 0 {
+		return &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
+	}
+
+	filtered := &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
+
+	for _, wfRun := range resp.Results {
+		depth := calculateDepthFromRoot(wfRun, rootParentId)
+		if depth > 0 && depth <= maxLevels {
+			filtered.Results = append(filtered.Results, wfRun)
+		}
+	}
+
+	return filtered
+}
+
+func calculateDepthFromRoot(wfRun *lhproto.WfRunId, rootParentId string) int {
+	if wfRun.ParentWfRunId == nil {
+		return 0
+	}
+
+	currentParentId := rootParentId
+	if separatorIndex := strings.LastIndex(rootParentId, "_"); separatorIndex != -1 {
+		currentParentId = rootParentId[separatorIndex+1:]
+	}
+
+	depth := 1
+	current := wfRun.ParentWfRunId
+
+	for current != nil {
+		if current.Id == currentParentId {
+			return depth
+		}
+		depth++
+		current = current.ParentWfRunId
+	}
+
+	return 0
+}
 
 var getWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
@@ -97,6 +139,11 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 
 		parentId, _ := cmd.Flags().GetString("parentWfRunId")
 		showFullTree, _ := cmd.Flags().GetBool("show-full-tree")
+		levels, _ := cmd.Flags().GetInt("levels")
+
+		if levels != -1 && !showFullTree {
+			log.Fatal("--levels flag can only be used with --show-full-tree")
+		}
 
 		if wfSpecName == "" && parentId == "" {
 			log.Fatal("Must specify either wfSpecName or --parentWfRunId")
@@ -123,9 +170,16 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			}
 		}
 
-		littlehorse.PrintResp(
-			getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
-		)
+		resp, err := getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search)
+		if err != nil {
+			log.Fatal("Failed to search WfRuns:", err)
+		}
+
+		if parentId != "" && showFullTree && levels != -1 {
+			resp = filterWfRunsByLevels(resp, parentId, levels)
+		}
+
+		littlehorse.PrintResp(resp, err)
 	},
 }
 
@@ -350,6 +404,7 @@ func init() {
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
 	searchWfRunCmd.Flags().String("parentWfRunId", "", "Filter child WfRuns by parent WfRun ID")
 	searchWfRunCmd.Flags().Bool("show-full-tree", false, "Use full object scan instead of index-based search for complete tree discovery")
+	searchWfRunCmd.Flags().Int("levels", -1, "Limit search depth when using --show-full-tree (only applicable with --show-full-tree)")
 
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")

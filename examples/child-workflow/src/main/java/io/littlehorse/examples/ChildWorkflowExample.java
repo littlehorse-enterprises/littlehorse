@@ -21,14 +21,7 @@ public class ChildWorkflowExample {
         WorkflowImpl out = new WorkflowImpl(
             "grand-child",
             wf -> {
-                WfRunVariable theName = wf.addVariable(
-                    "name",
-                    VariableType.STR
-                ).withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
-
-                wf.execute("greet", theName);
-
-                wf.mutate(theName, VariableMutationType.ASSIGN, "yoda");
+               wf.waitForEvent("some-event").registeredAs(String.class);
             }
         );
         out.setParent("child");
