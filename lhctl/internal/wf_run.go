@@ -11,47 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func filterWfRunsByLevels(resp *lhproto.WfRunIdList, rootParentId string, maxLevels int) *lhproto.WfRunIdList {
-	if maxLevels <= 0 {
-		return &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
-	}
-
-	filtered := &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
-
-	for _, wfRun := range resp.Results {
-		depth := calculateDepthFromRoot(wfRun, rootParentId)
-		if depth > 0 && depth <= maxLevels {
-			filtered.Results = append(filtered.Results, wfRun)
-		}
-	}
-
-	return filtered
-}
-
-func calculateDepthFromRoot(wfRun *lhproto.WfRunId, rootParentId string) int {
-	if wfRun.ParentWfRunId == nil {
-		return 0
-	}
-
-	currentParentId := rootParentId
-	if separatorIndex := strings.LastIndex(rootParentId, "_"); separatorIndex != -1 {
-		currentParentId = rootParentId[separatorIndex+1:]
-	}
-
-	depth := 1
-	current := wfRun.ParentWfRunId
-
-	for current != nil {
-		if current.Id == currentParentId {
-			return depth
-		}
-		depth++
-		current = current.ParentWfRunId
-	}
-
-	return 0
-}
-
 var getWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Get a Workflow Run.",
@@ -141,8 +100,13 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		showFullTree, _ := cmd.Flags().GetBool("show-full-tree")
 		levels, _ := cmd.Flags().GetInt("levels")
 
-		if levels != -1 && !showFullTree {
-			log.Fatal("--levels flag can only be used with --show-full-tree")
+		if levels != -1 {
+			if !showFullTree {
+				log.Fatal("--levels flag can only be used with --show-full-tree")
+			}
+			if levels <= 0 {
+				log.Fatal("--levels flag must be positive")
+			}
 		}
 
 		if wfSpecName == "" && parentId == "" {
@@ -412,4 +376,45 @@ func init() {
 
 	stopWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
 	resumeWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
+}
+
+func filterWfRunsByLevels(resp *lhproto.WfRunIdList, rootParentId string, maxLevels int) *lhproto.WfRunIdList {
+	if maxLevels <= 0 {
+		return &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
+	}
+
+	filteredTree := &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
+
+	for _, wfRun := range resp.Results {
+		depth := calculateDepthFromRoot(wfRun, rootParentId)
+		if depth > 0 && depth <= maxLevels {
+			filteredTree.Results = append(filteredTree.Results, wfRun)
+		}
+	}
+
+	return filteredTree
+}
+
+func calculateDepthFromRoot(wfRun *lhproto.WfRunId, rootParentId string) int {
+	if wfRun.ParentWfRunId == nil {
+		return 0
+	}
+
+	currentParentId := rootParentId
+	if separatorIndex := strings.LastIndex(rootParentId, "_"); separatorIndex != -1 {
+		currentParentId = rootParentId[separatorIndex+1:]
+	}
+
+	depth := 1
+	current := wfRun.ParentWfRunId
+
+	for current != nil {
+		if current.Id == currentParentId {
+			return depth
+		}
+		depth++
+		current = current.ParentWfRunId
+	}
+
+	return 0
 }
