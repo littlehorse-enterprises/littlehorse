@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.sdk.common.proto.LHErrorType;
@@ -26,7 +27,7 @@ public class NodeModelTest {
             TestCommandExecutionContext.create(dummyCommand.toProto().build());
 
     @Test
-    public void shouldValidateFailureName() {
+    public void shouldValidateFailureName() throws InvalidNodeException {
         doReturn(mockSubnode).when(node).getSubNode();
         node.getFailureHandlers().add(exceptionHandlerDef);
         node.getFailureHandlers().add(invalidExceptionHandlerDef);
@@ -39,7 +40,7 @@ public class NodeModelTest {
     }
 
     @Test
-    public void shouldNotValidatePredefinedTechnicalErrors() {
+    public void shouldNotValidatePredefinedTechnicalErrors() throws InvalidNodeException {
         doReturn(mockSubnode).when(node).getSubNode();
         node.getFailureHandlers().add(technicalErrorHandlerDef);
         node.validate(commandContext);

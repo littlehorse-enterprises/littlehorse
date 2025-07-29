@@ -24,9 +24,9 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.ExpressionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -410,7 +410,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             ThreadRunModel parent = getParent();
             if (parent.getStatus() == LHStatus.ERROR) {
                 NodeRunModel parentCurrentNR = parent.getCurrentNodeRun();
-                if (parentCurrentNR.getType() == NodeTypeCase.WAIT_THREADS
+                if (parentCurrentNR.getType() == NodeTypeCase.WAIT_FOR_THREADS
                         || parentCurrentNR.getType() == NodeTypeCase.EXIT) {
 
                     FailureModel parentFailure =

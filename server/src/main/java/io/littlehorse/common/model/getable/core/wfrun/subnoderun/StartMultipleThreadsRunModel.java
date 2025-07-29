@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -99,7 +99,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                         .startThread(threadSpecName, time, parentThreadNumber, inputs, ThreadType.CHILD);
                 childThreadIds.add(child.getNumber());
             }
-        } catch (LHVarSubError | LHSerdeException | LHValidationError e) {
+        } catch (LHVarSubError | LHSerdeException | LHValidationException e) {
             FailureModel failure = new FailureModel();
             failure.message = "Failed constructing input variables for thread: " + e.getMessage();
             failure.failureName = LHConstants.VAR_SUB_ERROR;

@@ -1,16 +1,18 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -20,6 +22,7 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -87,7 +91,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                 dynamicTask = LHSerializable.fromProto(p.getDynamicTask(), VariableAssignmentModel.class, context);
                 break;
             case TASKTOEXECUTE_NOT_SET:
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Task Node did not set taskdef");
+                throw new IllegalStateException("Task Node did not set taskdef");
         }
 
         simpleRetries = p.getRetries();
@@ -112,7 +116,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                 out.setDynamicTask(dynamicTask.toProto());
                 break;
             case TASKTOEXECUTE_NOT_SET:
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Task Node did not set taskdef");
+                throw new IllegalStateException("Task Node did not set taskdef");
         }
 
         if (exponentialBackoffRetryPolicy != null) {
@@ -122,24 +126,24 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         // Can only validate the type of TaskDef if we know it ahead of time...
         if (taskToExecuteType == TaskToExecuteCase.TASK_DEF_ID) {
             TaskDefModel taskDef = ctx.metadataManager().get(new TaskDefIdModel(taskDefId.getName()));
             if (taskDef == null) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefId);
+                throw new InvalidNodeException("Refers to nonexistent TaskDef " + taskDefId, node);
             }
 
             // Now need to validate that all of the variables are provided.
             if (variables.size() != taskDef.inputVars.size()) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
+                throw new InvalidNodeException(
                         "For TaskDef "
                                 + taskDef.getName()
                                 + " we need "
                                 + taskDef.inputVars.size()
                                 + " input vars, but we have "
-                                + variables.size());
+                                + variables.size(),
+                        node);
             }
 
             // Currently, we don't do any type-checking for JSON_ARR or JSON_OBJ variables
@@ -150,10 +154,28 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             for (int i = 0; i < variables.size(); i++) {
                 VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
                 VariableAssignmentModel assn = variables.get(i);
+
+                try {
+                    Optional<TypeDefinitionModel> typeDef = assn.resolveType(
+                            ctx.metadataManager(),
+                            node.getThreadSpec().getWfSpec(),
+                            node.getThreadSpec().getName());
+                    if (typeDef.isPresent() && !typeDef.get().isCompatibleWith(taskDefVar.getTypeDef())) {
+                        throw new InvalidNodeException(
+                                "Task input variable with name " + taskDefVar.getName() + " at position " + i
+                                        + " expects type " + taskDefVar.getTypeDef() + " but is type " + typeDef.get(),
+                                node);
+                    }
+                } catch (InvalidExpressionException exn) {
+                    throw new InvalidNodeException(
+                            "Task input variable with name " + taskDefVar.getName() + " at position " + i
+                                    + " could not resolve type: " + exn.getMessage(),
+                            node);
+                }
                 if (!assn.canBeType(taskDefVar.getTypeDef(), this.node.getThreadSpec())) {
-                    throw new LHApiException(
-                            Status.INVALID_ARGUMENT,
-                            "Input variable " + i + " needs to be " + taskDefVar.getTypeDef() + " but cannot be!");
+                    throw new InvalidNodeException(
+                            "Input variable " + i + " needs to be " + taskDefVar.getTypeDef() + " but cannot be!",
+                            node);
                 }
             }
         }
@@ -165,20 +187,19 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         validateRetryPolicy();
     }
 
-    private void validateRetryPolicy() throws LHApiException {
+    private void validateRetryPolicy() throws InvalidNodeException {
         if (simpleRetries < 0) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot have negative retries!");
+            throw new InvalidNodeException("Cannot have negative retries!", node);
         }
         if (exponentialBackoffRetryPolicy == null) return;
         if (exponentialBackoffRetryPolicy.getBaseIntervalMs() <= 0) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Exponential Backoff Base interval must be > 0!");
+            throw new InvalidNodeException("Exponential Backoff Base interval must be > 0!", node);
         }
         if (exponentialBackoffRetryPolicy.getMultiplier() < 1.0) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Exponential Backoff Multiplier must be at least 1.0!");
+            throw new InvalidNodeException("Exponential Backoff Multiplier must be at least 1.0!", node);
         }
         if (exponentialBackoffRetryPolicy.getMaxDelayMs() < exponentialBackoffRetryPolicy.getBaseIntervalMs()) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "Exponential Backoff max delay cannot be less than base delay");
+            throw new InvalidNodeException("Exponential Backoff max delay cannot be less than base delay", node);
         }
         return;
     }
@@ -208,7 +229,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                 return out;
             case TASKTOEXECUTE_NOT_SET:
         }
-        throw new LHApiException(Status.INVALID_ARGUMENT, "Node does not specify Task to execute");
+        throw new IllegalStateException("Node does not specify Task to execute");
     }
 
     public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread, CoreProcessorContext processorContext)
@@ -242,5 +263,19 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         TaskNodeRunModel out = new TaskNodeRunModel(processorContext);
         // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        switch (taskToExecuteType) {
+            case TASK_DEF_ID:
+                TaskDefModel taskDef = manager.get(taskDefId);
+                return Optional.of(taskDef.getReturnType());
+            case DYNAMIC_TASK:
+            case TASKTOEXECUTE_NOT_SET:
+        }
+        // With dynamic tasks, we can't know what the output type will be. We're forced to default to
+        // Chulla Vida typing mode.
+        return Optional.empty();
     }
 }
