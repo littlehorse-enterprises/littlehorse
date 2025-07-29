@@ -95,6 +95,40 @@ public class ChildWorkflowTest {
         cleanupParentChild(parentChild);
     }
 
+    @Test
+    void shouldFailWhenChildWfRunWithSameIdAndParentAlreadyExists() {
+        Pair<String, String> parentChild = createParentAndChild();
+        WfRunId parent = client.runWf(RunWfRequest.newBuilder()
+                        .setWfSpecName(parentChild.getLeft())
+                        .build())
+                .getId();
+
+        String id = "duplicate-child-id";
+
+        client.runWf(RunWfRequest.newBuilder()
+                .setWfSpecName(parentChild.getRight())
+                .setId(id)
+                .setParentWfRunId(parent)
+                .build());
+
+        StatusRuntimeException caught = null;
+        try {
+            client.runWf(RunWfRequest.newBuilder()
+                    .setWfSpecName(parentChild.getRight())
+                    .setId(id)
+                    .setParentWfRunId(parent)
+                    .build());
+        } catch (StatusRuntimeException exn) {
+            caught = exn;
+        }
+        
+        assertThat(caught).isNotNull();
+        Assertions.assertEquals(caught.getStatus().getCode(), Code.ALREADY_EXISTS);
+        assertThat(caught.getMessage()).contains("WfRun with id " + id + " already exists!");
+
+        cleanupParentChild(parentChild);
+    }
+
     /*
      * Creates a unique parent and child WfSpec. Returns the names of both in a pair.
      * Future work: only do this once for all workflows...?
