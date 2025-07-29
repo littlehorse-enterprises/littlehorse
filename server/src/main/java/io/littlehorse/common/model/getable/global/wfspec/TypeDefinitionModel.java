@@ -134,7 +134,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         if (type == VariableType.INT || type == VariableType.DOUBLE) {
             return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
         }
-        return this.equals(other);
+        return this.getType().equals(other.getType());
     }
 
     @Override
