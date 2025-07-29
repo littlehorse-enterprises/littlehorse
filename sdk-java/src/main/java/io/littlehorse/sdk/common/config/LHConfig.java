@@ -3,6 +3,7 @@ package io.littlehorse.sdk.common.config;
 import io.grpc.CallCredentials;
 import io.grpc.Channel;
 import io.grpc.CompositeCallCredentials;
+import io.grpc.Deadline;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.TlsChannelCredentials;
@@ -328,7 +329,7 @@ public class LHConfig extends ConfigBase {
      * @return a future gRPC stub for that host/port combo.
      */
     public LittleHorseFutureStub getFutureStub(String host, int port) {
-        return getBaseFutureStub(host, port).withCallCredentials(getCredentials());
+        return getBaseFutureStub(host, port).withCallCredentials(getCredentials()).withDeadline(Deadline.after(10, TimeUnit.SECONDS));
     }
 
     /**
