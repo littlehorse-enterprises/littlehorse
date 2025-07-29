@@ -36,6 +36,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public TypeDefinitionModel(VariableType type) {
         // TODO: determine whether this should be refactored to fail when type == Struct.
         this.type = type;
+        this.masked = false;
+    }
+
+    public TypeDefinitionModel(VariableType type, boolean masked) {
+        this.type = type;
+        this.masked = masked;
     }
 
     @Override
