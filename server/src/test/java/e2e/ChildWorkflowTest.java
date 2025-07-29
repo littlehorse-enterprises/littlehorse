@@ -121,7 +121,7 @@ public class ChildWorkflowTest {
         } catch (StatusRuntimeException exn) {
             caught = exn;
         }
-        
+
         assertThat(caught).isNotNull();
         Assertions.assertEquals(caught.getStatus().getCode(), Code.ALREADY_EXISTS);
         assertThat(caught.getMessage()).contains("WfRun with id " + id + " already exists!");
