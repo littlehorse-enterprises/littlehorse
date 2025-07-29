@@ -4,11 +4,13 @@ import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import io.grpc.Deadline;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseFutureStub;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 public class LHClient {
 
@@ -17,6 +19,8 @@ public class LHClient {
     private final String workflowName;
     private final int workflowRevision;
     private final int workflowVersion;
+    private final long maxDuration = 1;
+    private final TimeUnit maxDurationUnit = TimeUnit.MINUTES;
 
     public LHClient(
             final LHConfig lhConfig, final String workflowName, final int workflowVersion, final int workflowRevision) {
@@ -32,7 +36,7 @@ public class LHClient {
     }
 
     public ListenableFuture<WfRun> runCanaryWf(final String id, final Instant start, final boolean sampleIteration) {
-        return futureStub.runWf(RunWfRequest.newBuilder()
+        return futureStub.withDeadline(Deadline.after(maxDuration, maxDurationUnit)).runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)
                 .setId(id)
                 .setRevision(workflowRevision)
@@ -47,6 +51,6 @@ public class LHClient {
     }
 
     public WfRun getCanaryWfRun(final String id) {
-        return blockingStub.getWfRun(WfRunId.newBuilder().setId(id).build());
+        return blockingStub.withDeadline(Deadline.after(maxDuration, maxDurationUnit)).getWfRun(WfRunId.newBuilder().setId(id).build());
     }
 }
