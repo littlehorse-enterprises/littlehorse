@@ -5,8 +5,8 @@ import { FC } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 
-export const Edge: FC<Modal> = ({ data }) => {
-  const { variableMutations } = data as EdgeProto
+export const Edge: FC<Modal<EdgeProto>> = ({ data }) => {
+  const { variableMutations } = data
   const { showModal, setShowModal } = useModal()
 
   return (
@@ -19,9 +19,8 @@ export const Edge: FC<Modal> = ({ data }) => {
           <div key={mutation.lhsName} className="mb-1 flex items-center gap-1">
             <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{`${mutation.lhsName}${mutation.lhsJsonPath ? `.${mutation.lhsJsonPath}` : ''}`}</span>
             <span className="rounded bg-green-300 p-1 text-xs">{mutation.operation}</span>
-            <NodeOutput nodeOutput={mutation.nodeOutput} />
-            <LiteralValue literalValue={mutation.literalValue} />
-            <RhsAssignment rhsAssignment={mutation.rhsAssignment} />
+
+            <MutationRhS rhsValue={mutation.rhsValue} />
           </div>
         ))}
       </DialogContent>
@@ -29,8 +28,25 @@ export const Edge: FC<Modal> = ({ data }) => {
   )
 }
 
-const NodeOutput: FC<Pick<VariableMutation, 'nodeOutput'>> = ({ nodeOutput }) => {
-  if (!nodeOutput) return <></>
+const MutationRhS: FC<{ rhsValue: VariableMutation['rhsValue'] }> = ({ rhsValue }) => {
+  if (!rhsValue) return <></>
+
+  switch (rhsValue.$case) {
+    case 'nodeOutput':
+      return <NodeOutput value={rhsValue} />
+    case 'rhsAssignment':
+      return <RhsAssignment value={rhsValue} />
+    case 'literalValue':
+      return <LiteralValue value={rhsValue} />
+
+    default:
+      break
+  }
+}
+
+const NodeOutput: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'nodeOutput' }> }> = ({
+  value: { value: nodeOutput },
+}) => {
   return (
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">Node Output</span>
@@ -41,8 +57,9 @@ const NodeOutput: FC<Pick<VariableMutation, 'nodeOutput'>> = ({ nodeOutput }) =>
   )
 }
 
-const RhsAssignment: FC<Pick<VariableMutation, 'rhsAssignment'>> = ({ rhsAssignment }) => {
-  if (!rhsAssignment) return <></>
+const RhsAssignment: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'rhsAssignment' }> }> = ({
+  value: { value: rhsAssignment },
+}) => {
   return (
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">RHS Assignment</span>
@@ -51,8 +68,9 @@ const RhsAssignment: FC<Pick<VariableMutation, 'rhsAssignment'>> = ({ rhsAssignm
   )
 }
 
-const LiteralValue: FC<Pick<VariableMutation, 'literalValue'>> = ({ literalValue }) => {
-  if (!literalValue) return <></>
+const LiteralValue: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'literalValue' }> }> = ({
+  value: { value: literalValue },
+}) => {
   return (
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">Literal Value</span>

@@ -1,22 +1,20 @@
 import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { cn } from '@/components/utils'
 import { useQuery } from '@tanstack/react-query'
-import { NodeRun } from 'littlehorse-client/proto'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC } from 'react'
 import { getWorkflowEvent } from '../../NodeTypes/ThrowEvent/getWorkflowEvent'
+import { AccordionNode } from './AccordionContent'
 
-export const WorkflowEventDefDetail: FC<{ nodeRun: NodeRun }> = ({ nodeRun }) => {
+export const WorkflowEventDefDetail: FC<AccordionNode<'throwEvent'>> = ({ nodeRun }) => {
   const tenantId = useParams().tenantId as string
-  const wfRunId = nodeRun?.throwEvent?.workflowEventId?.wfRunId?.id
-  const workflowEventDefId = nodeRun?.throwEvent?.workflowEventId
+  const { workflowEventId } = nodeRun.nodeType.value
   const { data, isLoading } = useQuery({
-    queryKey: ['taskRun', wfRunId, workflowEventDefId, tenantId],
+    queryKey: ['taskRun', workflowEventId, tenantId],
     queryFn: async () => {
-      if (!wfRunId) return
-      if (!workflowEventDefId) return
-      const taskRun = await getWorkflowEvent({ tenantId, ...workflowEventDefId })
+      if (!workflowEventId) return
+      const taskRun = await getWorkflowEvent({ tenantId, ...workflowEventId })
 
       return taskRun
     },
@@ -57,10 +55,12 @@ export const WorkflowEventDefDetail: FC<{ nodeRun: NodeRun }> = ({ nodeRun }) =>
         </div>
       </div>
 
-      <div className={cn('mt-2 flex w-full flex-col overflow-auto rounded p-1', 'bg-zinc-500 text-white')}>
-        <h3 className="font-bold">Content</h3>
-        <pre className="overflow-auto">{getVariableValue(data.content)}</pre>
-      </div>
+      {data.content && (
+        <div className={cn('mt-2 flex w-full flex-col overflow-auto rounded p-1', 'bg-zinc-500 text-white')}>
+          <h3 className="font-bold">Content</h3>
+          <pre className="overflow-auto">{getVariableValue(data.content)}</pre>
+        </div>
+      )}
     </div>
   )
 }

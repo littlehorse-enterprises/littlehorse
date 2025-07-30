@@ -8,11 +8,8 @@ import { QueryProvider } from './[tenantId]/components/QueryProvider'
 
 export default async function RootLayout({
   children,
-  params,
-}: Readonly<{
-  children: React.ReactNode
-  params?: { tenantId?: string }
-}>) {
+  params: { tenantId },
+}: PropsWithChildren<{ params: WithTenant }>) {
   const { tenants, user } = await getWhoAmI()
 
   return (
@@ -25,7 +22,7 @@ export default async function RootLayout({
         revalidateIfStale: true,
       }}
     >
-      <WhoAmIContext user={user} tenants={tenants} tenantId={params?.tenantId}>
+      <WhoAmIContext user={user} tenants={tenants} tenantId={tenantId}>
         <Header />
         <QueryProvider>
           <div className="mx-auto max-w-screen-xl px-8">{children}</div>

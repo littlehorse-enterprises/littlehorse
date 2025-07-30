@@ -1,3 +1,4 @@
+import { SleepNode } from 'littlehorse-client/proto'
 import { ClockIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -5,12 +6,12 @@ import { NodeProps } from '..'
 import { Fade } from '../Fade'
 import { SleepDetails } from './SleepDetails'
 
-const Node: FC<NodeProps> = ({ data }) => {
-  const { fade, sleep, nodeRunsList } = data
+const Node: FC<NodeProps<'sleep', SleepNode>> = ({ data }) => {
+  const { fade, nodeRunsList, sleepLength } = data
 
   return (
     <>
-      <SleepDetails sleepNode={sleep} nodeRunsList={nodeRunsList} />
+      <SleepDetails sleepLength={sleepLength} nodeRunsList={nodeRunsList} />
       <Fade fade={fade} status={nodeRunsList?.[nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer">
           <div className="ml-1 flex h-10 w-10 items-center justify-center rounded-full border-[1px] border-gray-500 bg-gray-200">

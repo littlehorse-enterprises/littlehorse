@@ -1,22 +1,21 @@
 import { getVariable } from '@/app/utils'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { StartMultipleThreadsNode as StartMultipleThreadsNodeProto } from 'littlehorse-client/proto'
 import { PlusIcon } from 'lucide-react'
 import { FC, memo, useState } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { useThread } from '../../hooks/useThread'
+import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
-import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
-const Node: FC<NodeProps> = ({ data }) => {
-  const { fade } = data
+const Node: FC<NodeProps<"startMultipleThreads", StartMultipleThreadsNodeProto>> = ({ data }) => {
+  const { fade, nodeRun } = data
   const { setThread } = useThread()
   const [isOpen, setIsOpen] = useState(false)
-
-  if (data.startMultipleThreads === undefined) return
-  const variables = Object.entries(data.startMultipleThreads.variables)
+  const variables = Object.entries(data.variables)
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -25,16 +24,16 @@ const Node: FC<NodeProps> = ({ data }) => {
             {data.nodeRun === undefined ? (
               <button
                 className="block whitespace-nowrap text-blue-500 hover:underline"
-                onClick={() => setThread({ name: data.startMultipleThreads?.threadSpecName || '', number: 0 })}
+                onClick={() => setThread({ name: data.threadSpecName || '', number: 0 })}
               >
-                {data.startMultipleThreads?.threadSpecName}
+                {data.threadSpecName}
               </button>
             ) : (
-              <div>{data.startMultipleThreads?.threadSpecName}</div>
+              <div>{data.threadSpecName}</div>
             )}
           </div>
           <div className="">
-            <span className="font-bold">Iterable:</span> {getVariable(data.startMultipleThreads.iterable)}
+            <span className="font-bold">Iterable:</span> {getVariable(data.iterable!)}
           </div>
           {variables.length > 0 && (
             <div className="mt-2">
@@ -49,7 +48,7 @@ const Node: FC<NodeProps> = ({ data }) => {
             </div>
           )}
 
-          {data.nodeRun && (
+          {nodeRun && nodeRun.nodeType?.$case === 'startMultipleThreads' && (
             <div className="mt-2">
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
@@ -63,16 +62,16 @@ const Node: FC<NodeProps> = ({ data }) => {
                   </DialogHeader>
                   <div className="max-h-[300px] overflow-y-auto">
                     <ul className="space-y-2">
-                      {data.nodeRun.startMultipleThreads?.childThreadIds.map(number => (
+                      {nodeRun.nodeType.value.childThreadIds.map(number => (
                         <li key={number}>
                           <button
                             className="w-full text-left text-blue-500 hover:underline"
                             onClick={() => {
-                              setThread({ name: data.startMultipleThreads?.threadSpecName || '', number })
+                              setThread({ name: data.threadSpecName || '', number })
                               setIsOpen(false)
                             }}
                           >
-                            {data.nodeRun?.startMultipleThreads?.threadSpecName}-{number}
+                            {nodeRun.threadSpecName}-{number}
                           </button>
                         </li>
                       ))}
@@ -84,7 +83,7 @@ const Node: FC<NodeProps> = ({ data }) => {
           )}
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRun?.status}>
+      <Fade fade={fade} status={nodeRun?.status}>
         <div className="relative cursor-pointer">
           <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[2px] border-gray-500 bg-gray-200">
             <PlusIcon className="h-5 w-5 rotate-45 fill-gray-500" />

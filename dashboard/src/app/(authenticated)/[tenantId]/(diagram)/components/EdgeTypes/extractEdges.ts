@@ -42,5 +42,5 @@ const extractEdgeLabel = ({ condition }: EdgeProto) => {
   if (!condition) return
 
   const { left, right, comparator } = condition
-  return `${getVariable(left)} ${getComparatorSymbol(comparator)} ${getVariable(right)}`
+  return `${getVariable(left!)} ${getComparatorSymbol(comparator)} ${getVariable(right!)}`
 }

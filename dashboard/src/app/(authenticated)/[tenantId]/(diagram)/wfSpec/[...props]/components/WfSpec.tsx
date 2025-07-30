@@ -51,6 +51,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
           <ScheduledWfRuns {...spec} />
         </TabsContent>
       </Tabs>
+      <p>{JSON.stringify(spec)}</p>
     </>
   )
 }

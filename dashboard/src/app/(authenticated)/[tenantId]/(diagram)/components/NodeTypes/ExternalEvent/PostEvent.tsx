@@ -14,17 +14,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { NodeRun } from 'littlehorse-client/proto'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { VariableValue } from 'littlehorse-client/proto'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { getValidation } from '../../Forms/components/validation'
+import { NodeRunCase } from '../../Modals/NodeRun/AccordionContent'
 import { putExternalEvent } from './actions'
 
-export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
+export default function PostEvent({ nodeRun }: { nodeRun: NodeRunCase<'externalEvent'> }) {
   const [open, setOpen] = useState(false)
-  const [contentType, setContentType] = useState<string>('STR')
+  const [contentType, setContentType] = useState<NonNullable<VariableValue['value']>['$case']>('str')
   const [contentValue, setContentValue] = useState<string>('')
   const [jsonError, setJsonError] = useState<string | null>(null)
+  const { tenantId } = useWhoAmI()
 
   const validateJson = (value: string, type: string) => {
     if (!value.trim()) {
@@ -48,7 +51,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
   }
 
   const handleSubmit = async () => {
-    const externalEventDefId = nodeRun.externalEvent?.externalEventDefId
+    const externalEventDefId = nodeRun.nodeType.value.externalEventDefId
     const wfRunId = nodeRun.id?.wfRunId
 
     if (!externalEventDefId || !wfRunId) return toast.error('No externalEventDefId or wfRunId')
@@ -56,7 +59,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
 
     try {
       // Validate JSON if applicable
-      if (contentType === 'JSON_OBJ' || contentType === 'JSON_ARR') {
+      if (contentType === 'jsonObj' || contentType === 'jsonArr') {
         const validator = getValidation(contentType)
         if (validator) {
           const validationResult = validator(contentValue)
@@ -67,6 +70,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
       }
 
       await putExternalEvent({
+        tenantId,
         externalEventDefId,
         wfRunId,
         content: getTypedContent(contentType, contentValue),
@@ -80,7 +84,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
 
   const renderInputField = () => {
     switch (contentType) {
-      case 'BOOL':
+      case 'bool':
         return (
           <Select value={contentValue} onValueChange={setContentValue}>
             <SelectTrigger>
@@ -92,8 +96,8 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
             </SelectContent>
           </Select>
         )
-      case 'JSON_OBJ':
-      case 'JSON_ARR':
+      case 'jsonObj':
+      case 'jsonArr':
         return (
           <div>
             <Textarea
@@ -109,12 +113,12 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
             {jsonError && <div className="mt-1 text-xs text-red-500">{jsonError}</div>}
             {!jsonError && contentValue.trim() && (
               <div className="mt-1 text-xs text-green-500">
-                Valid JSON {contentType === 'JSON_OBJ' ? 'object' : 'array'}
+                Valid JSON {contentType === 'jsonObj' ? 'object' : 'array'}
               </div>
             )}
           </div>
         )
-      case 'INT':
+      case 'int':
         return (
           <Input
             type="number"
@@ -131,7 +135,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
             step="1"
           />
         )
-      case 'DOUBLE':
+      case 'double':
         return (
           <Input
             type="number"
@@ -141,7 +145,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
             step="0.01"
           />
         )
-      case 'BYTES':
+      case 'bytes':
         return (
           <div>
             <Input
@@ -182,7 +186,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
             <Label htmlFor="content-type">Content Type</Label>
             <Select
               value={contentType}
-              onValueChange={value => {
+              onValueChange={(value: keyof typeof VARIABLE_TYPES) => {
                 setContentType(value)
                 setContentValue('') // Reset value when type changes
               }}
@@ -191,13 +195,11 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
                 <SelectValue placeholder="Select content type" />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(VARIABLE_TYPES)
-                  .filter(([type]) => type !== 'UNRECOGNIZED')
-                  .map(([type, label]) => (
-                    <SelectItem key={type} value={type}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                {Object.entries(VARIABLE_TYPES).map(([type, label]) => (
+                  <SelectItem key={type} value={type}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
