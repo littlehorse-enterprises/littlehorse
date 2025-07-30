@@ -21,7 +21,7 @@ export const Mutations: FC<Props> = ({ nodes }) => {
         <div key={mutation.lhsName} className="mb-1 flex items-center gap-1">
           <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{mutation.lhsName}</span>
           <span className="rounded bg-green-300 p-1 text-xs">{mutation.operation}</span>
-          <NodeOutput nodeOutput={mutation.nodeOutput} />
+          { mutation.rhsValue?.$case === "nodeOutput" && <NodeOutput nodeOutput={mutation.rhsValue} />
           <LiteralValue literalValue={mutation.literalValue} />
         </div>
       ))}

@@ -1,30 +1,36 @@
 import { getVariable } from '@/app/utils'
+import { WaitForThreadsNode } from 'littlehorse-client/proto'
 import { PlusIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
-import { NodeRunsList } from '../NodeRunsList'
+import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
-import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
-const Node: FC<NodeProps> = ({ data }) => {
-  const { fade, nodeRunsList } = data
+const Node: FC<NodeProps<'waitForThreads', WaitForThreadsNode>> = ({ data }) => {
+  const { fade, nodeRunsList, threadsToWaitFor } = data
+
+  if (!threadsToWaitFor) return null
 
   return (
     <>
       <NodeDetails nodeRunList={nodeRunsList}>
         <DiagramDataGroup label="WaitForThreads">
-          {data.waitForThreads?.threadList && (
-            <div className="whitespace-nowrap">{getVariable(data.waitForThreads?.threadList)}</div>
+          {threadsToWaitFor.$case === 'threadList' && (
+            <div className="whitespace-nowrap">{getVariable(threadsToWaitFor.value)}</div>
           )}
-          {data.waitForThreads?.threads?.threads.map(thread => (
-            <div
-              key={`${getVariable(thread.threadRunNumber)}`}
-              className="flex items-center justify-center whitespace-nowrap"
-            >
-              {getVariable(thread.threadRunNumber)}
-            </div>
-          ))}
+          {threadsToWaitFor.$case === 'threads' &&
+            threadsToWaitFor.value.threads.map(thread => {
+              if (!thread.threadRunNumber) return null
+              return (
+                <div
+                  key={`${JSON.stringify(thread.threadRunNumber)}`}
+                  className="flex items-center justify-center whitespace-nowrap"
+                >
+                  {getVariable(thread.threadRunNumber)}
+                </div>
+              )
+            })}
           {data.nodeRun && data.nodeRun.errorMessage && (
             <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
               <h3 className="font-bold">Error</h3>

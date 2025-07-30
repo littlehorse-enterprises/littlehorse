@@ -1,4 +1,4 @@
-import { Node as NodeProto } from 'littlehorse-client/proto'
+import { ThrowEventNode } from 'littlehorse-client/proto'
 import { CircleArrowOutUpRightIcon, ExternalLinkIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -10,10 +10,9 @@ import { NodeDetails } from '../NodeDetails'
 
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  if (!data.throwEvent) return null
-
-  const { fade, throwEvent: throwEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
+const Node: FC<NodeProps<'throwEvent', ThrowEventNode>> = ({ data }) => {
+  const { fade, nodeNeedsToBeHighlighted, nodeRun, eventDefId } = data
+  if (!eventDefId) return null
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -24,9 +23,9 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
                 <LinkWithTenant
                   className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
                   target="_blank"
-                  href={`/workflowEventDef/${throwEventNode.eventDefId?.name}`}
+                  href={`/workflowEventDef/${eventDefId.name}`}
                 >
-                  {throwEventNode.eventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
+                  {eventDefId.name} <ExternalLinkIcon className="h-4 w-4" />
                 </LinkWithTenant>
               </div>
             </div>
@@ -48,7 +47,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
           <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center">
-            <div className="block">{data.throwEvent?.eventDefId?.name}</div>
+            <div className="block">{eventDefId.name}</div>
           </div>
         </div>
       </Fade>

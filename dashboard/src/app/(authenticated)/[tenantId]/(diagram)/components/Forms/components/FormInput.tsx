@@ -1,4 +1,4 @@
-import { VARIABLE_TYPES } from '@/app/constants'
+import { getVariableDefType } from '@/app/utils/variables'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/components/utils'
 import { FormFieldProp } from '@/types'
@@ -6,7 +6,6 @@ import { VariableType } from 'littlehorse-client/proto'
 import { FC, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { BaseFormField } from './BaseFormField'
-import { getVariableDefType } from '@/app/utils/variables'
 
 export const FormInput: FC<FormFieldProp> = props => {
   const [isDisabled, setIsDisabled] = useState(!props.variables?.required)
@@ -39,7 +38,7 @@ export const FormInput: FC<FormFieldProp> = props => {
         id={name}
         step={type === VariableType.DOUBLE ? '0.01' : undefined}
         disabled={isDisabled}
-        placeholder={`Enter ${VARIABLE_TYPES[type]?.toLowerCase()} value`}
+        placeholder={`Enter ${type.toLowerCase()} value`}
         {...register(name, {
           required: required ? `${name} is required` : false,
           setValueAs: (value: string) => {

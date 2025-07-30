@@ -377,6 +377,7 @@ type ExternalEventRetentionPolicy struct {
 	// until matched with a WfRun (which may mean it is never cleaned up).
 	//
 	// Types that are assignable to ExtEvtGcPolicy:
+	//
 	//	*ExternalEventRetentionPolicy_SecondsAfterPut
 	ExtEvtGcPolicy isExternalEventRetentionPolicy_ExtEvtGcPolicy `protobuf_oneof:"ext_evt_gc_policy"`
 }

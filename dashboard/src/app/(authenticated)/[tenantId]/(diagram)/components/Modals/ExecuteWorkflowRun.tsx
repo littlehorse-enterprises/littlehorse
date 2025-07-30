@@ -1,4 +1,4 @@
-import { concatWfRunIds, getVariableDefType } from '@/app/utils'
+import { getVariableDefType, wfRunIdFromFlattenedId, wfRunIdToPath } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { ThreadVarDef, VariableType, WfRunId, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
@@ -18,30 +18,17 @@ import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
 
-const buildWfRunId = (flattenedId: string): WfRunId => {
-  const ids = flattenedId.split('_')
-
-  return ids.reduce<WfRunId | undefined>(
-    (parentWfRunId, currentId) => ({
-      id: currentId,
-      parentWfRunId,
-    }),
-    undefined
-  )!
-}
-
 export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
 
-export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
+export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
   const { showModal, setShowModal } = useModal()
-  const wfSpec = data as WfSpec
   const tenantId = useParams().tenantId as string
-  const router = useRouter()
   const formRef = useRef<HTMLFormElement | null>(null)
+  const router = useRouter()
   const wfSpecVariables = useMemo(() => {
-    if (!wfSpec.threadSpecs?.[wfSpec.entrypointThreadName]) return []
+    if (!wfSpec.threadSpecs[wfSpec.entrypointThreadName]) return []
     return (
-      wfSpec.threadSpecs[wfSpec.entrypointThreadName].variableDefs?.map(variable => {
+      wfSpec.threadSpecs[wfSpec.entrypointThreadName].variableDefs.map(variable => {
         const newVariable = { ...variable }
         if (newVariable.varDef?.name) {
           newVariable.varDef.name = newVariable.varDef.name.replace(/\./g, DOT_REPLACEMENT_PATTERN)
@@ -102,7 +89,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     try {
       const wfRun = await runWfSpec({
         tenantId,
-        parentWfRunId: wfSpec.parentWfSpec ? buildWfRunId(parentWfRunId) : undefined,
+        parentWfRunId: wfSpec.parentWfSpec ? wfRunIdFromFlattenedId(parentWfRunId) : undefined,
         wfSpecName: wfSpec.id.name,
         majorVersion: wfSpec.id.majorVersion,
         revision: wfSpec.id.revision,
@@ -112,7 +99,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
       if (!wfRun.id) return
       toast.success('Workflow has been executed')
       setShowModal(false)
-      router.push(`/${tenantId}/wfRun/${concatWfRunIds(wfRun.id)}`)
+      router.push(`/${tenantId}/wfRun/${wfRunIdToPath(wfRun.id)}`)
     } catch (error: any) {
       if (error.message) {
         toast.error(error.message.split(':')[1])

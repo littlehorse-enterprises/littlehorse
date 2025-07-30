@@ -2,7 +2,7 @@ import { utcToLocalDateTime } from '@/app/utils'
 import { FC } from 'react'
 import { AccordionNode } from './AccordionContent'
 
-export const StartThreadDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
+export const StartThreadDefDetail: FC<AccordionNode<"startThread">> = ({ nodeRun }) => {
   return (
     <div className="mb-2 items-center gap-2">
       {nodeRun.arrivalTime && (

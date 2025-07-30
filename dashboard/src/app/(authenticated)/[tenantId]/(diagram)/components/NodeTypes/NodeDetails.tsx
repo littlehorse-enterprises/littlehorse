@@ -1,5 +1,5 @@
 'use client'
-import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
+import { sortNodeRunsByLatest } from '@/app/utils/sortNodeRunsByLatest'
 import { NodeRun } from 'littlehorse-client/proto'
 import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'

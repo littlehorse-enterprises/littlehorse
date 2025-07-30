@@ -4,7 +4,7 @@ import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigati
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
+import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -168,9 +168,9 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${concatWfRunIds(taskRun.id.wfRunId)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
+                                    href={`/wfRun/${wfRunIdToPath(taskRun.id.wfRunId)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
                                   >
-                                    {concatWfRunIds(taskRun.id.wfRunId)}
+                                    {wfRunIdToPath(taskRun.id.wfRunId)}
                                   </LinkWithTenant>
                                 </TableCell>
                                 <TableCell>{taskRun.id?.taskGuid}</TableCell>

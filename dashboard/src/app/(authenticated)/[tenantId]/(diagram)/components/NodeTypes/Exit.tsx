@@ -1,14 +1,13 @@
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 
-import { LHStatus } from 'littlehorse-client/proto'
+import { ExitNode as ExitNodeProto, LHStatus } from 'littlehorse-client/proto'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 
-const ExitNode: FC<NodeProps> = ({ data }) => {
-  const { fade } = data
-  const failureDef = data.exit?.failureDef
+const ExitNode: FC<NodeProps<"exit", ExitNodeProto>> = ({ data }) => {
+  const { fade, failureDef } = data
   return (
     <Fade fade={fade} status={failureDef ? LHStatus.EXCEPTION : undefined}>
       {failureDef && (

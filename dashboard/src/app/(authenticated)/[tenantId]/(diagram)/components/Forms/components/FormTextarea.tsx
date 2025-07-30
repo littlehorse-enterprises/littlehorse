@@ -1,4 +1,4 @@
-import { VARIABLE_TYPES } from '@/app/constants'
+import { getVariableDefType } from '@/app/utils/variables'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/components/utils'
 import { FormFieldProp } from '@/types'
@@ -6,7 +6,6 @@ import { FC, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { BaseFormField } from './BaseFormField'
 import { getValidation } from './validation'
-import { getVariableDefType } from '@/app/utils/variables'
 
 export const FormTextarea: FC<FormFieldProp> = props => {
   const [isDisabled, setIsDisabled] = useState(!props.variables?.required)
@@ -36,7 +35,7 @@ export const FormTextarea: FC<FormFieldProp> = props => {
         className={cn(errors[name] && 'border-destructive')}
         id={name}
         disabled={isDisabled}
-        placeholder={`Enter ${VARIABLE_TYPES[type]?.toLowerCase()} value`}
+        placeholder={`Enter ${type.toLowerCase()} value`}
         {...register(name, {
           required: required ? `${name} is required` : false,
           validate: getValidation(type),
