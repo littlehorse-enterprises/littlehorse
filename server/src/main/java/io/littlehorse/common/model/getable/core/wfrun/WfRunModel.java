@@ -135,6 +135,11 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                     Optional.of(TagStorageType.LOCAL)));
             indexes.add(new GetableIndex<>(
                     List.of(
+                            Pair.of("status", GetableIndex.ValueType.SINGLE),
+                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL)));
+            indexes.add(new GetableIndex<>(
+                    List.of(
                             Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
                             Pair.of("status", GetableIndex.ValueType.SINGLE),
                             Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),

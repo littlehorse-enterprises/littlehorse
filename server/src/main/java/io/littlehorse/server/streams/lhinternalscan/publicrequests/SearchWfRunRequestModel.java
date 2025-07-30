@@ -142,12 +142,6 @@ public class SearchWfRunRequestModel
                     Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
         }
 
-        // If parentWfRunId is set without wfSpecName/status, and showFullTree is true,
-        // return empty (Object ID scan will be used instead of index)
-        if (!hasName && parentWfRunId != null && status == null && showFullTree != null && showFullTree) {
-            return out;
-        }
-
         if (hasName) {
             if (hasMajor && hasRevision) {
                 out.add(new Attribute(
@@ -186,14 +180,12 @@ public class SearchWfRunRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
 
-        // If parentWfRunId is set and showFullTree is true, use Object ID scan
-        if (!hasName && parentWfRunId != null && status == null && showFullTree != null && showFullTree) {
+        if (!hasName && parentWfRunId != null && showFullTree != null && showFullTree) {
             String parentId = parentWfRunId.toString();
             String partitionKey = parentWfRunId.getPartitionKey().orElse(parentId);
             return new ObjectIdScanBoundaryStrategy(partitionKey, parentId + "_", parentId + "_~");
         }
 
-        // Otherwise, use Tag scan (this includes parent searches when showFullTree is false/null)
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
@@ -209,8 +201,9 @@ public class SearchWfRunRequestModel
                         Status.INVALID_ARGUMENT, "Cannot filter by variables without specifying wfSpecName");
             }
 
-            // When using Object ID Scan with parentWfRunId, don't add any filters
-            // This will return the full family tree
+            if (parentWfRunId != null && status != null) {
+                out.add(new ScanFilterModel(status));
+            }
             return out;
         }
 

@@ -626,7 +626,7 @@ public class GetableManagerTest {
         getableManager.commit();
 
         List<String> storedKeys = getAllKeys(store);
-        assertThat(storedKeys).hasSize(10);
+        assertThat(storedKeys).hasSize(11);
         assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/3/parent-wf-run-id_child-wf-run"));
         assertThat(storedKeys)
                 .anyMatch(key ->
@@ -644,7 +644,7 @@ public class GetableManagerTest {
         getableManager.commit();
 
         List<String> storedKeys = getAllKeys(store);
-        assertThat(storedKeys).hasSize(10);
+        assertThat(storedKeys).hasSize(11);
         assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/3/parent-wf-run-id-2_child-wf-run-2"));
         assertThat(storedKeys)
                 .anyMatch(key ->
