@@ -37,7 +37,7 @@ public class LHClient {
     }
 
     public ListenableFuture<WfRun> runCanaryWf(
-            final String id, final Instant start, final boolean sampleIteration, Deadline deadline) {
+            final String id, final Instant start, final boolean sampleIteration, final Deadline deadline) {
         final LittleHorseFutureStub stub = deadline != null ? this.futureStub.withDeadline(deadline) : this.futureStub;
         return stub.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)

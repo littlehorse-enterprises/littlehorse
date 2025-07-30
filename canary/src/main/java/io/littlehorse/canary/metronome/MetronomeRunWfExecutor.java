@@ -95,7 +95,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
         log.debug("Executing run {}", wfId);
 
-        Deadline deadline = !inflightRequests.tryAcquire() ? inmediateDeadline : null;
+        final Deadline deadline = !inflightRequests.tryAcquire() ? inmediateDeadline : null;
         final ListenableFuture<WfRun> future = lhClient.runCanaryWf(wfId, start, isSampleIteration, deadline);
         Futures.addCallback(future, new MetronomeCallback(wfId, start, isSampleIteration), requestsExecutor);
     }
