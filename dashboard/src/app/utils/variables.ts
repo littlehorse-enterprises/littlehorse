@@ -16,6 +16,7 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
     case 'formatString':
       return getValueFromFormatString(variable.source)
     case 'literalValue':
+      if (Object.keys(variable.source.value).length === 0) return 'null'
       return getVariableValue(variable.source.value)
     case 'nodeOutput':
       return variable.source.value.nodeName
@@ -66,29 +67,29 @@ export const formatJsonOrReturnOriginalValue = (value: string) => {
   }
 }
 
-export const getTypedContent = (
-  contentType: NonNullable<VariableValue['value']>['$case'],
-  contentValue: string
+export const getTypedVariableValue = (
+  type: NonNullable<VariableValue['value']>['$case'],
+  value: string
 ): VariableValue => {
-  const value =
-    contentType === 'jsonObj'
-      ? { jsonObj: JSON.parse(contentValue) }
-      : contentType === 'jsonArr'
-        ? { jsonArr: JSON.parse(contentValue) }
-        : contentType === 'double'
-          ? { double: parseFloat(contentValue) }
-          : contentType === 'bool'
-            ? { bool: contentValue.toLowerCase() === 'true' }
-            : contentType === 'str'
-              ? { str: contentValue }
-              : contentType === 'int'
-                ? { int: parseInt(contentValue, 10) }
-                : contentType === 'bytes'
-                  ? { bytes: Buffer.from(contentValue) }
-                  : contentType === 'wfRunId'
-                    ? { wfRunId: wfRunIdFromFlattenedId(contentValue) }
+  const variable =
+    type === 'jsonObj'
+      ? { jsonObj: JSON.parse(value) }
+      : type === 'jsonArr'
+        ? { jsonArr: JSON.parse(value) }
+        : type === 'double'
+          ? { double: parseFloat(value) }
+          : type === 'bool'
+            ? { bool: value.toLowerCase() === 'true' }
+            : type === 'str'
+              ? { str: value }
+              : type === 'int'
+                ? { int: parseInt(value, 10) }
+                : type === 'bytes'
+                  ? { bytes: Buffer.from(value) }
+                  : type === 'wfRunId'
+                    ? { wfRunId: wfRunIdFromFlattenedId(value) }
                     : undefined
-  return VariableValue.fromJSON(value)
+  return VariableValue.fromJSON(variable)
 }
 
 const getExpressionSymbol = (expression: VariableMutationType): String => {
@@ -138,11 +139,34 @@ const formatVariableExpression = (
  * Old server versions may keep around both old and new Variables, so this function
  * determines which typing strategy a Variable uses.
  */
-export const getVariableDefType = (varDef: VariableDef): VariableType => {
+export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
   if (varDef.typeDef) {
-    return varDef.typeDef.type
+    return getVariableCaseFromType(varDef.typeDef.type)
   } else if (varDef.type) {
-    return varDef.type
+    return getVariableCaseFromType(varDef.type)
   }
   throw new Error('Variable must have type or typeDef.')
+}
+
+export const getVariableCaseFromType = (type: VariableType): NonNullable<VariableValue['value']>['$case'] => {
+  switch (type) {
+    case VariableType.BOOL:
+      return 'bool'
+    case VariableType.DOUBLE:
+      return 'double'
+    case VariableType.INT:
+      return 'int'
+    case VariableType.STR:
+      return 'str'
+    case VariableType.JSON_OBJ:
+      return 'jsonObj'
+    case VariableType.JSON_ARR:
+      return 'jsonArr'
+    case VariableType.WF_RUN_ID:
+      return 'wfRunId'
+    case VariableType.BYTES:
+      return 'bytes'
+    default:
+      throw new Error(`Unknown variable type: ${type}`)
+  }
 }

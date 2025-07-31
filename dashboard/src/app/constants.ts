@@ -1,10 +1,10 @@
-import { LHStatus, VariableType, VariableValue } from 'littlehorse-client/proto'
+import { LHStatus, VariableValue } from 'littlehorse-client/proto'
 
 export const SEARCH_LIMITS = [10, 20, 30, 60, 100] as const
 export type SearchLimit = (typeof SEARCH_LIMITS)[number]
 export const SEARCH_DEFAULT_LIMIT: SearchLimit = 10
 
-export const VARIABLE_TYPES: { [key in NonNullable<VariableValue["value"]>["$case"]]: string } = {
+export const VARIABLE_TYPES: { [key in NonNullable<VariableValue['value']>['$case']]: string } = {
   jsonObj: 'JSON Object',
   jsonArr: 'JSON Array',
   double: 'Double',
@@ -12,7 +12,7 @@ export const VARIABLE_TYPES: { [key in NonNullable<VariableValue["value"]>["$cas
   str: 'String',
   int: 'Integer',
   bytes: 'Bytes',
-  wfRunId: 'WfRunId'
+  wfRunId: 'WfRunId',
 }
 
 export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const

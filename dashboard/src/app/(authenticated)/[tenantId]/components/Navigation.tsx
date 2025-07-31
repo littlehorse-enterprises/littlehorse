@@ -12,7 +12,7 @@ export const Navigation: FC<Props> = ({ title, href }) => {
   return (
     <div className="mb-4 flex">
       <LinkWithTenant href={href} className="flex items-center text-blue-500">
-        <ChevronLeftIcon className="ml-[-6px] h-6 w-6 stroke-none" />
+        <ChevronLeftIcon className="ml-[-6px] h-6 w-6 color-blue-500" />
         {title}
       </LinkWithTenant>
     </div>

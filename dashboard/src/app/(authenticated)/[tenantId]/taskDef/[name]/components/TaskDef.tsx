@@ -43,7 +43,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
-      return await searchWfSpecs({ tenantId, bookmarkAsString: pageParam, limit: wfSpecLimit, taskDefName })
+      return await searchWfSpecs({
+        tenantId,
+        bookmarkAsString: pageParam,
+        limit: wfSpecLimit,
+        wfSpecCriteria: { $case: 'taskDefName', value: taskDefName },
+      })
     },
   })
 
@@ -168,7 +173,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${wfRunIdToPath(taskRun.id.wfRunId)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
+                                    href={`/wfRun/${wfRunIdToPath(taskRun.id.wfRunId)}?threadRunNumber=${taskRun.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
                                   >
                                     {wfRunIdToPath(taskRun.id.wfRunId)}
                                   </LinkWithTenant>

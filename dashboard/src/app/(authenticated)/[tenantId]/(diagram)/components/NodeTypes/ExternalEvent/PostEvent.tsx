@@ -1,5 +1,5 @@
 import { VARIABLE_TYPES } from '@/app/constants'
-import { getTypedContent } from '@/app/utils/variables'
+import { getTypedVariableValue } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -73,7 +73,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRunCase<'externalE
         tenantId,
         externalEventDefId,
         wfRunId,
-        content: getTypedContent(contentType, contentValue),
+        content: getTypedVariableValue(contentType, contentValue),
       })
       toast.success('Event posted successfully')
       setOpen(false)

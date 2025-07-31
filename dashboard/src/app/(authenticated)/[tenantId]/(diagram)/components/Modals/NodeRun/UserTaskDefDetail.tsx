@@ -1,7 +1,7 @@
-import { getVariable, getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { getVariable, getVariableValue, hasEventCase, utcToLocalDateTime } from '@/app/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
-import { UserTaskRun as LHUserTaskRun, UserTaskEvent, UserTaskRunStatus } from 'littlehorse-client/proto'
+import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client/proto'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { FC } from 'react'
 import { getUserTaskRun } from '../../NodeTypes/UserTask/getUserTaskRun'
@@ -185,13 +185,4 @@ export const UserTaskDefDetail: FC<AccordionNode<'userTask'>> = ({ nodeRun, user
       </div>
     </>
   )
-}
-
-function hasEventCase<
-  C extends UserTaskEvent['event'] extends infer U ? (U extends { $case: string } ? U['$case'] : never) : never,
->(caseName: C) {
-  return (
-    e: UserTaskEvent
-  ): e is Omit<UserTaskEvent, 'event'> & { event: Extract<NonNullable<UserTaskEvent['event']>, { $case: C }> } =>
-    !!e.event && e.event.$case === caseName
 }

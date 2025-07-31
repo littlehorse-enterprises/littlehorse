@@ -5,6 +5,8 @@ import getWhoAmI from '../getWhoami'
 import '../globals.css'
 import { Header } from './[tenantId]/components/Header'
 import { QueryProvider } from './[tenantId]/components/QueryProvider'
+import { PropsWithChildren } from 'react'
+import { WithTenant } from '@/types'
 
 export default async function RootLayout({
   children,
