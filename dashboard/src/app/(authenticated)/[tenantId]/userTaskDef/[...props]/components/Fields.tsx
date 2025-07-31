@@ -1,4 +1,5 @@
 import { VARIABLE_TYPES } from '@/app/constants'
+import { getVariableCaseFromType } from '@/app/utils'
 import { UserTaskDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
 
@@ -14,7 +15,7 @@ export const Fields: FC<Props> = ({ fields }) => {
           {displayName && (
             <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-sm text-gray-500">display: {displayName}</span>
           )}
-          <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[type]}</span>
+          <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[getVariableCaseFromType(type)]}</span>
           {required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
           {description && <span className="rounded p-1 text-xs italic">{description}</span>}
         </div>

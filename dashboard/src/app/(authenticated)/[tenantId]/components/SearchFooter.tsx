@@ -1,9 +1,9 @@
-import { SEARCH_LIMITS } from '@/app/constants'
+import { SEARCH_LIMITS, SearchLimit } from '@/app/constants'
 import { FC } from 'react'
 
 type Props = {
   currentLimit: number
-  setLimit: (limit: number) => void
+  setLimit: (limit: SearchLimit) => void
   hasNextPage: boolean
   fetchNextPage: () => void
 }
@@ -15,7 +15,7 @@ export const SearchFooter: FC<Props> = ({ hasNextPage, fetchNextPage, currentLim
         <select
           value={currentLimit}
           onChange={e => {
-            setLimit(parseInt(e.target.value))
+            setLimit(parseInt(e.target.value) as SearchLimit)
           }}
           className="rounded bg-blue-500 px-2 text-white"
         >

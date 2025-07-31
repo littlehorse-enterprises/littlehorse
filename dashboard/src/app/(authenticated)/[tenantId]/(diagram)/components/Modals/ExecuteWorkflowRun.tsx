@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { ThreadVarDef, VariableType, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
+import { RunWfRequest, ThreadVarDef, VariableValue, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
@@ -39,7 +39,7 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
   }, [wfSpec])
 
   const formatVariablesPayload = (values: FormValues) => {
-    const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
+    const transformedObj = Object.keys(values).reduce((acc: RunWfRequest['variables'], key) => {
       if (values[key] === undefined) return acc
       const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
 
@@ -52,30 +52,18 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
         return acc
       }
 
-      acc[transformedKey] = { [matchVariableType(transformedKey)]: values[key] }
+      acc[transformedKey] = VariableValue.fromJSON({ [matchVariableType(transformedKey)]: values[key] })
       return acc
     }, {})
 
     return transformedObj
   }
 
-  const matchVariableType = (key: string): string => {
+  const matchVariableType = (key: string) => {
     const variable = wfSpecVariables.find((variable: ThreadVarDef) => variable.varDef?.name === key)
+    if (!variable || !variable.varDef) return ''
 
-    if (!variable) return ''
-
-    if (!variable.varDef) return ''
-
-    const type = getVariableDefType(variable.varDef)
-
-    switch (type) {
-      case VariableType.JSON_ARR:
-        return 'jsonArr'
-      case VariableType.JSON_OBJ:
-        return 'jsonObj'
-      default:
-        return type.toLowerCase()
-    }
+    return getVariableDefType(variable.varDef)
   }
 
   const handleFormSubmit = async (values: FormValues) => {

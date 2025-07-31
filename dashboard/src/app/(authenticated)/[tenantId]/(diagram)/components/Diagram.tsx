@@ -1,19 +1,8 @@
 'use client'
-import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
-import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
-import 'reactflow/dist/base.css'
-import { ThreadProvider, ThreadType } from '../context'
-import { edgeTypes } from './EdgeTypes'
-import { extractEdges } from './EdgeTypes/extractEdges'
-import { Layouter } from './Layouter'
-import nodeTypes from './NodeTypes'
-import { extractNodes } from './NodeTypes/extractNodes'
-import { ThreadPanel } from './ThreadPanel'
 import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
-import { Button } from '@/components/ui/button'
-import { PlayCircleIcon, PlayIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
+import { rescueWfRun } from '@/app/actions/rescueWfRun'
+import { resumeWfRun } from '@/app/actions/resumeWfRun'
+import { stopWfRun } from '@/app/actions/stopWfRun'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,9 +14,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { resumeWfRun } from '@/app/actions/resumeWfRun'
-import { stopWfRun } from '@/app/actions/stopWfRun'
-import { rescueWfRun } from '@/app/actions/rescueWfRun'
+import { Button } from '@/components/ui/button'
+import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
+import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
+import 'reactflow/dist/base.css'
+import { ThreadProvider, ThreadType } from '../context'
+import edgeTypes from './EdgeTypes'
+import { extractEdges } from './EdgeTypes/extractEdges'
+import { Layouter } from './Layouter'
+import nodeTypes from './NodeTypes'
+import { extractNodes } from './NodeTypes/extractNodes'
+import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -95,6 +95,13 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   useEffect(() => {
     updateGraph()
   }, [updateGraph])
+
+  const { edgesTypes, nodesTypes } = useMemo(() => {
+    return {
+      edgesTypes: edgeTypes,
+      nodesTypes: nodeTypes,
+    }
+  }, [])
 
   const verb =
     wfRun?.status === LHStatus.RUNNING
@@ -168,8 +175,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           nodesConnectable={false}
           elementsSelectable
           minZoom={0.3}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
+          nodeTypes={nodesTypes}
+          edgeTypes={edgesTypes}
           snapToGrid={true}
           className="min-h-[800px] min-w-full bg-slate-50"
         >

@@ -1,5 +1,5 @@
 import { VariableAssignment, VariableMutationType } from 'littlehorse-client/proto'
-import { getTypedContent, getVariable } from './variables'
+import { getTypedVariableValue, getVariable } from './variables'
 
 describe('getVariable', () => {
   it('should return from literalValue str', () => {
@@ -171,7 +171,6 @@ describe('getVariable', () => {
     expect(getVariable(variable)).toEqual('{arg1} => arg1')
   })
 
-
   it('should handle variable expressions', async () => {
     const variable: VariableAssignment = {
       source: {
@@ -218,7 +217,7 @@ describe('getVariable', () => {
               value: {
                 value: {
                   $case: 'jsonArr',
-                  value: "[1, 2, 3]",
+                  value: '[1, 2, 3]',
                 },
               },
             },
@@ -280,7 +279,7 @@ describe('getVariable', () => {
 
 describe('getTypedContent', () => {
   it('should return str', async () => {
-    const content = getTypedContent('str', 'test')
-    expect(content).toEqual({ value: {$case: 'str', value: 'test' } })
+    const content = getTypedVariableValue('str', 'test')
+    expect(content).toEqual({ value: { $case: 'str', value: 'test' } })
   })
 })

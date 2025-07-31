@@ -1,11 +1,12 @@
+import { Details } from '@/app/(authenticated)/[tenantId]/components/Details'
+import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { getUserTaskRun } from '@/app/actions/getUserTaskRun'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
-import { Details } from '@/app/(authenticated)/[tenantId]/components/Details'
-import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { AuditTable } from './AuditTable'
 
+import { hasEventCase } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 
 type Props = { params: { ids: string[]; tenantId: string } }
@@ -15,7 +16,7 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
 
   try {
     const userTaskRun = await getUserTaskRun(tenantId, wfRunId, userTaskGuid)
-
+    const savedEvents = userTaskRun.events.filter(hasEventCase('saved'))
     return (
       <div>
         <Details
@@ -31,8 +32,8 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
             userTaskRunId: userTaskGuid,
           }}
         />
-        {userTaskRun.events.some(event => event.saved !== undefined) ? (
-          <AuditTable events={userTaskRun.events} />
+        {savedEvents.length > 0 ? (
+          <AuditTable events={savedEvents} />
         ) : (
           <div className="mt-20 w-full text-center">
             <p className="text-center text-xl font-bold">No save history found.</p>

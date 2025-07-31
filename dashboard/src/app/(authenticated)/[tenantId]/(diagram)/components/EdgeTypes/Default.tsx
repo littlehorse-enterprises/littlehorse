@@ -30,7 +30,6 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
     if (!data) return
-    
     setModal({ type: 'edge', data })
     setShowModal(true)
   }, [data, setModal, setShowModal])
