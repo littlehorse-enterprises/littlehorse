@@ -1,459 +1,214 @@
 # Type Casting and Coercion in LittleHorse
 
-- [Type Casting and Coercion in LittleHorse](#type-casting-and-coercion-in-littlehorse)
-  - [Motivation](#motivation)
-    - [Current Problem](#current-problem)
-    - [Why We Need Type Casting](#why-we-need-type-casting)
-    - [Goals](#goals)
-  - [Proposed Solution](#proposed-solution)
-    - [Implicit Type Coercion](#implicit-type-coercion)
-    - [Explicit Type Casting](#explicit-type-casting)
-    - [Type Safety Guarantees](#type-safety-guarantees)
-  - [Implementation Details](#implementation-details)
-    - [Coercion Rules Matrix](#coercion-rules-matrix)
-    - [SDK Changes](#sdk-changes)
-    - [Server-Side Validation](#server-side-validation)
-    - [Error Handling](#error-handling)
-  - [Migration Strategy](#migration-strategy)
-  - [Future Considerations](#future-considerations)
-
 ## Motivation
 
 ### Current Problem
 
-LittleHorse currently has strict typing without automatic type coercion, leading to runtime errors that are confusing to users. For example:
+LittleHorse currently has strict typing without type conversion, leading to registration or runtime errors:
 
+**Example 1: INT → STR conversion needed**
 ```java
-// This fails because calculate-age returns INT but greet expects STR for age parameter
-var age = wf.execute("calculate-age", birthYear);  // Returns INT
-wf.execute("greet", name, age);                    // Expects (STR, STR) but gets (STR, INT)
+public static Workflow getStringErrorWorkflow() {
+    return new WorkflowImpl(
+        "string-error-example",
+        wf -> {
+            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
+            var result = wf.execute("int-method", intVar); // this returns an INT
+            wf.execute("string-method", result);           // ERROR: expects STR but gets INT
+        }
+    );
+}
 ```
 
-The error messages are cryptic:
-- `Input variable 0 needs to be INT but cannot be!`
-- `Task input variable with name arg1 at position 1 expects type STR but is type INT`
+**Error Message:**
+```
+Exception in thread "main" io.grpc.StatusRuntimeException: INVALID_ARGUMENT: 
+PutWfSpecRequest is invalid: ThreadSpec entrypoint invalid: Node 2-string-method-TASK invalid: 
+Task input variable with name arg0 at position 0 expects type STR but is type INT
+```
 
-### Why We Need Type Casting
+**Example 2: INT → DOUBLE conversion needed**
+```java
+public static Workflow getDoubleErrorWorkflow() {
+    return new WorkflowImpl(
+        "double-error-example",
+        wf -> {
+            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
+            // This workflow fails at registration
+            wf.execute("double-method", intVar); // ERROR at registration: expects DOUBLE but gets INT
+        }
+    );
+}
+```
 
-1. **Usability**: Common type conversions (like `INT` to `STR`) should be automatic and safe
-2. **Consistency**: Match expectations from programming languages where basic type coercion is common
-3. **Backwards Compatibility**: Enable gradual migration without breaking existing workflows
-4. **Developer Experience**: Reduce friction and make workflows more intuitive to write
+**Error Message** (occurs at **workflow registration**):
+```
+Exception in thread "main" io.grpc.StatusRuntimeException: INVALID_ARGUMENT: 
+PutWfSpecRequest is invalid: ThreadSpec entrypoint invalid: Node 1-double-method-TASK invalid: 
+Input variable 0 needs to be DOUBLE but cannot be!
+```
 
-### Goals
+**Example 3: Runtime INT → DOUBLE conversion error**
+```java
+public static Workflow getDoubleRuntimeErrorWorkflow() {
+    return new WorkflowImpl(
+        "double-runtime-error-example",
+        wf -> {
+            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
+            var result = wf.execute("int-method", intVar); // this returns an INT
+            wf.execute("double-method", result);           // ERROR: expects DOUBLE but gets INT
+        }
+    );
+}
+```
 
-1. **Safe by Default**: Only allow coercions that don't lose information or cause runtime errors
-2. **Explicit When Dangerous**: Require explicit casting for potentially lossy operations
-3. **Predictable**: Clear, documented rules for when coercion happens
-4. **Performance**: Minimal overhead for type checking and conversion
-5. **Debuggable**: Clear error messages when coercion fails
+**Error Message** (occurs at **workflow runtime**):
+```
+Failed calculating TaskRun Input Vars: Variable arg0 invalid: should be DOUBLE but is of type INT
+```
+
+**Note**: Examples 1 and 2 fail during workflow registration, while Example 3 shows the runtime error when the workflow actually executes and encounters the type mismatch during task execution.
+
+While these error messages indicate the type mismatch, they could be improved to better guide users toward solutions.
 
 ## Proposed Solution
 
-### Implicit Type Coercion (Safe Automatic Conversions)
+We propose implementing **two types of type conversion** for **primitive types only, for now**:
 
-We propose implementing automatic type conversions for safe, lossless operations:
+### Scope Limitation
+This proposal **only covers primitive types**: `INT`, `DOUBLE`, `STR`, `BOOL`, `BYTES`, and `WF_RUN_ID`. 
 
-#### Safe Automatic Conversions (No Data Loss)
-- `INT` → `DOUBLE` (safe: `42` becomes `42.0`)
-- `INT` → `STR` (safe: `42` becomes `"42"`)
-- `DOUBLE` → `STR` (safe: `42.5` becomes `"42.5"`)
-- `BOOL` → `STR` (safe: `true` becomes `"true"`)
-- `WF_RUN_ID` → `STR` (safe: UUID becomes string)
-- `BYTES` → `STR` (safe: converts to Base64 string)
+**Complex types excluded**: `JSON_OBJ` and `JSON_ARR` are explicitly excluded from this proposal. Type conversions for complex/structured types will be addressed in a future proposal once struct definitions are fully implemented.
 
-#### Example:
-```java
-// This should work automatically with server-side conversion
-// No SDK changes required - existing code benefits immediately
-WfRunVariable birthYear = wf.addVariable("year-of-birth", VariableType.INT);
-var age = wf.execute("calculate-age", birthYear);  // Returns INT
-wf.execute("greet", name, age);                    // Server AUTO-converts INT age to STR
-```
+### 1. Automatic Conversions (Server-Side)
+- **Any primitive type → STR**: All LittleHorse primitive types automatically convert to string
+- **INT → DOUBLE**: Integers automatically widen to doubles
 
-### Immediate Benefits for Existing Code
+### 2. Manual Conversions (Explicit Casting)
+- All other primitive conversions require explicit `.cast()` calls
+- Provides safety for potentially unsafe conversions
 
-Your current `BasicExample` would work immediately after server upgrade:
+## Conversion Rules
 
-```java
-// This exact code (unchanged) would work after server implements widening conversions
-public static Workflow getWorkflow() {
-    return new WorkflowImpl(
-        "example-basic",
-        wf -> {
-            WfRunVariable birthYear = wf.addVariable("year-of-birth", VariableType.INT).searchable();
-            WfRunVariable name = wf.addVariable("name", VariableType.STR).searchable();
-            var age = wf.execute("calculate-age", birthYear);  // Returns INT
-            wf.execute("greet", name, age);                    // Server converts INT → STR automatically
-        }
-    );
-}
+**Primitive Types Only**: The following rules apply only to primitive LittleHorse types (`INT`, `DOUBLE`, `STR`, `BOOL`, `BYTES`, `WF_RUN_ID`).
 
-// Task remains unchanged - server handles the conversion
-@LHTaskMethod("greet")
-public String greeting(String name, String age) {  // Still expects String age
-    var message = "hello there, " + name + ". You are " + age + " years old.";
-    return message;
-}
-```
+| From Type | To Type | Rule | Examples |
+|-----------|---------|------|----------|
+| `INT` | `STR` | ✅ Automatic | `42` → `"42"` |
+| `DOUBLE` | `STR` | ✅ Automatic | `42.5` → `"42.5"` |
+| `BOOL` | `STR` | ✅ Automatic | `true` → `"true"` |
+| `WF_RUN_ID` | `STR` | ✅ Automatic | UUID → string |
+| `BYTES` | `STR` | ✅ Automatic | Base64 encoding |
+| `INT` | `DOUBLE` | ✅ Automatic | `42` → `42.0` |
+| `DOUBLE` | `INT` | 🔧 Manual Cast | `42.7` → `42` (loses precision) |
+| `STR` | `INT` | 🔧 Manual Cast | `"42"` → `42` (can fail) |
+| `STR` | `DOUBLE` | 🔧 Manual Cast | `"42.7"` → `42.7` (can fail) |
+| `STR` | `BOOL` | 🔧 Manual Cast | `"true"` → `true` (can fail) |
+| `STR` | `BYTES` | 🔧 Manual Cast | Base64 decode (can fail) |
+| `STR` | `WF_RUN_ID` | 🔧 Manual Cast | String → UUID (can fail) |
+| `INT` | `BOOL` | ❌ Not Allowed | No clear conversion rule |
+| `DOUBLE` | `BOOL` | ❌ Not Allowed | No clear conversion rule |
 
-### Explicit Type Casting (Potentially Unsafe Conversions)
-
-For conversions that might lose data or fail, require explicit casting:
-
-#### Explicit Casts Required (Potential Data Loss or Failure)
-- `DOUBLE` → `INT` (loses decimal part: `42.7` becomes `42`)
-- `STR` → `INT` (can fail: `"abc"` can't become a number)
-- `STR` → `DOUBLE` (can fail: `"abc"` can't become a number)
-- `STR` → `BOOL` (can fail: `"maybe"` can't become true/false)
-- `STR` → `BYTES` (can fail: invalid Base64 strings)
-- `STR` → `WF_RUN_ID` (can fail: invalid UUID strings)
-
-#### SDK API (Optional Future Enhancement):
-```java
-// These APIs can be added to future SDK versions without breaking existing code
-// Existing SDKs will continue to work - the server handles conversions automatically
-
-// Java SDK - optional convenience methods for explicit casting
-var ageDouble = wf.execute("get-age-precise");    // Returns DOUBLE
-var ageInt = wf.cast(ageDouble, VariableType.INT); // Optional explicit cast (loses decimal part)
-wf.execute("process-age", ageInt);
-
-// Alternative fluent API (optional)
-var ageInt = wf.execute("get-age-precise").castTo(VariableType.INT);
-
-// Current code continues to work unchanged:
-var ageDouble = wf.execute("get-age");           // Returns INT  
-wf.execute("process-precise-age", ageDouble);    // Server automatically converts INT → DOUBLE
-```
-
-### Type Safety Guarantees
-
-1. **Server-side Validation**: Server validates all type conversions during workflow execution
-2. **Runtime Safety**: Failed conversions result in clear error messages, not crashes  
-3. **Backwards Compatibility**: Existing workflows that work today continue to work
-4. **Progressive Enhancement**: New workflows benefit from automatic casting without code changes
-
-## Implementation Details
-
-### Coercion Rules Matrix (Simple Rules)
-
-Following the principle of safe automatic conversions:
-
-**Type Safety Hierarchy (safe → less safe):**
-```
-BOOL → INT → DOUBLE → STR
-     ↘ WF_RUN_ID ↗
-BYTES ────────────→ STR
-```
-
-| From Type | To Type | Rule | Why | Examples |
-|-----------|---------|------|-----|----------|
-| `INT` | `DOUBLE` | ✅ Automatic | No data lost | `42` → `42.0` |
-| `INT` | `STR` | ✅ Automatic | Always works | `42` → `"42"` |
-| `BOOL` | `INT` | ✅ Automatic | Standard conversion | `true` → `1`, `false` → `0` |
-| `BOOL` | `DOUBLE` | ✅ Automatic | No data lost | `true` → `1.0` |
-| `BOOL` | `STR` | ✅ Automatic | Always works | `true` → `"true"` |
-| `WF_RUN_ID` | `STR` | ✅ Automatic | Always works | UUID → string |
-| `BYTES` | `STR` | ✅ Automatic | Always works | Base64 encoding |
-| `DOUBLE` | `INT` | 🔧 Explicit Cast | Loses decimal part | `42.7` → `42` |
-| `STR` | `INT` | 🔧 Explicit Cast | Can fail with bad input | `"42"` → `42`, `"abc"` → ERROR |
-| `STR` | `DOUBLE` | 🔧 Explicit Cast | Can fail with bad input | `"42.7"` → `42.7`, `"abc"` → ERROR |
-| `STR` | `BOOL` | 🔧 Explicit Cast | Can fail with bad input | `"true"` → `true`, `"maybe"` → ERROR |
-| `STR` | `BYTES` | 🔧 Explicit Cast | Can fail with bad input | Valid Base64 → bytes, invalid → ERROR |
-| `STR` | `WF_RUN_ID` | 🔧 Explicit Cast | Can fail with bad input | Valid UUID → WF_RUN_ID, invalid → ERROR |
-| `INT` | `BOOL` | ❌ Not Allowed | No clear rule | - |
-| `DOUBLE` | `BOOL` | ❌ Not Allowed | No clear rule | - |
-
-Legend:
-- ✅ Automatic: Safe conversion, happens automatically
-- 🔧 Explicit Cast: Potentially unsafe, requires explicit cast
+**Legend:**
+- ✅ Automatic: Server handles conversion automatically
+- 🔧 Manual Cast: Requires explicit `.cast()` call
 - ❌ Not Allowed: No conversion available
 
-### SDK Changes (Additive Only - No Breaking Changes)
+### Excluded Types
+- **`JSON_OBJ`**: Complex object conversions excluded until struct definitions are implemented
+- **`JSON_ARR`**: Array conversions excluded until struct definitions are implemented
+- **Future Proposal**: Complex type casting will be addressed in a separate proposal focused on structured data conversions
 
-#### Java SDK (New Methods Added, Existing Methods Unchanged)
+## Usage Examples
 
+### Automatic Conversions (No Code Changes Needed)
 ```java
-// EXISTING APIs remain unchanged - full backwards compatibility
+// This works automatically after server upgrade
+public static Workflow getWorkflow() {
+    return new WorkflowImpl("casting-example", wf -> {
+        WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
+        WfRunVariable doubleVar = wf.addVariable("double-var", VariableType.DOUBLE);
+        WfRunVariable stringVar = wf.addVariable("string-var", VariableType.STR);
+        WfRunVariable booleanVar = wf.addVariable("boolean-var", VariableType.BOOL);
+
+        // Automatic conversions - no casting needed
+        wf.execute("string-method", intVar);     // INT → STR (automatic)
+        wf.execute("string-method", doubleVar);  // DOUBLE → STR (automatic)
+        wf.execute("string-method", booleanVar); // BOOL → STR (automatic)
+        wf.execute("double-method", intVar);     // INT → DOUBLE (automatic)
+    });
+}
+```
+
+### Manual Conversions (Explicit Casting)
+```java
+// For potentially unsafe conversions, explicit casting required
+public static Workflow getWorkflow() {
+    return new WorkflowImpl("casting-example", wf -> {
+        WfRunVariable intVar = wf.addVariable("year-of-birth", VariableType.INT);
+        WfRunVariable doubleVar = wf.addVariable("double-var", VariableType.DOUBLE);
+        WfRunVariable stringVar = wf.addVariable("string-var", VariableType.STR);
+
+        // Manual casts for potentially unsafe conversions
+        wf.execute("int-method", doubleVar.cast(VariableType.INT));    // DOUBLE → INT (loses precision)
+        wf.execute("int-method", stringVar.cast(VariableType.INT));    // STR → INT (can fail)
+        
+        // Casting NodeOutput results
+        NodeOutput doubleOutput = wf.execute("double-method", doubleVar); // Returns 3.15
+        NodeOutput intOutput = wf.execute("int-method", doubleOutput.cast(VariableType.INT)); // Cast to 3
+        
+        // Important: Casting creates new values, doesn't modify originals
+        wf.execute("double-method", doubleOutput); // Original value still 3.15
+    });
+}
+
+// Conversions that should fail (no clear conversion rule)
+// wf.execute("boolean-method", intVar.cast(VariableType.BOOL)); // ❌ Not allowed
+```
+
+## Implementation
+
+### SDK Changes (Backwards Compatible)
+```java
+// Add cast() methods to existing interfaces
 public interface WfRunVariable {
-    // All existing methods continue to work exactly as before
-    // ... existing methods unchanged ...
-    
-    // NEW convenience methods added (backwards compatible)
-    WfRunVariable castTo(VariableType targetType);
-    WfRunVariable castTo(VariableType targetType, CastOptions options);
+    // Existing methods unchanged...
+    WfRunVariable cast(VariableType targetType);  // NEW - Returns new variable, doesn't modify original
 }
 
-// EXISTING WorkflowBuilder unchanged
-public interface WorkflowBuilder {
-    // All existing methods continue to work exactly as before
-    // ... existing methods unchanged ...
-    
-    // NEW casting utilities added (backwards compatible)
-    WfRunVariable cast(WfRunVariable source, VariableType targetType);
-    WfRunVariable cast(WfRunVariable source, VariableType targetType, CastOptions options);
-}
-
-// NEW class - doesn't affect existing code
-public class CastOptions {
-    private boolean failOnError = true;
-    private WfRunVariable defaultValue = null;
-    
-    public static CastOptions withDefault(WfRunVariable defaultValue) {
-        return new CastOptions().setFailOnError(false).setDefaultValue(defaultValue);
-    }
+public interface NodeOutput {
+    // Existing methods unchanged...
+    NodeOutput cast(VariableType targetType);     // NEW - Returns new output, doesn't modify original
 }
 ```
 
-#### Enhanced Error Messages (Server-Side)
+**Important**: Casting operations are **immutable** - they create new values without modifying the original variable or output. This ensures data integrity and prevents unexpected side effects.
 
+### Server-Side Changes
+- **Automatic conversions**: Server performs safe conversions during task execution
+- **Enhanced validation**: Better error messages for type mismatches
+- **Backwards compatible**: All existing workflows continue to work unchanged
+
+### Error Messages (Improved)
 ```java
-// Server responses improve without requiring SDK changes
+// Before: "Task input variable with name arg1 at position 1 expects type STR but is type INT"
+// An error should't happen here because of automatic casting to STR
 
-// Before: "Input variable 0 needs to be INT but cannot be!"
-// After: "Task 'calculate-age' parameter 'birthYear' expects INT but received STR '1990'. Consider using string parsing or updating the task to accept STR."
-
-// Before: "Task input variable with name arg1 at position 1 expects type STR but is type INT"  
-// After: "Task 'greet' parameter 'age' expects STR but received INT '25'. This conversion is performed automatically by the server."
+// For manual casts:
+// "Task 'process-age' parameter 'age' expects INT but received STR 'abc'. Use .cast(INT) or fix the input."
 ```
 
-### Server-Side Changes (Backwards Compatible)
+## Benefits
 
-#### Enhanced VariableValueModel (Internal Changes Only)
-
-```java
-public class VariableValueModel {
-    // EXISTING methods unchanged - full backwards compatibility
-    public VariableValueModel coerceToType(VariableType otherType) throws LHVarSubError {
-        // Existing implementation continues to work
-        return coerceToType(otherType, false); // Default to automatic widening
-    }
-    
-    // NEW method added - doesn't break existing calls
-    public VariableValueModel coerceToType(VariableType otherType, boolean isExplicitCast) throws LHVarSubError {
-        if (!isCoercionAllowed(getType(), otherType, isExplicitCast)) {
-            throw new LHVarSubError(null, formatCoercionError(getType(), otherType, isExplicitCast));
-        }
-        
-        return performCoercion(otherType);
-    }
-    
-    // NEW internal helper methods - don't affect existing APIs
-    private boolean isCoercionAllowed(VariableType from, VariableType to, boolean isExplicitCast) {
-        if (from == to) return true;
-        
-        // Safe automatic conversions
-        if (!isExplicitCast) {
-            return SAFE_AUTOMATIC_CONVERSIONS.contains(new TypePair(from, to));
-        }
-        
-        // Explicit casts (potentially unsafe)
-        return EXPLICIT_CAST_CONVERSIONS.contains(new TypePair(from, to));
-    }
-    
-    // NEW configuration constants - internal implementation
-    private static final Set<TypePair> SAFE_AUTOMATIC_CONVERSIONS = Set.of(
-        new TypePair(VariableType.INT, VariableType.DOUBLE),
-        new TypePair(VariableType.INT, VariableType.STR),
-        new TypePair(VariableType.BOOL, VariableType.INT),
-        new TypePair(VariableType.BOOL, VariableType.DOUBLE),
-        new TypePair(VariableType.BOOL, VariableType.STR),
-        new TypePair(VariableType.DOUBLE, VariableType.STR),
-        new TypePair(VariableType.WF_RUN_ID, VariableType.STR),
-        new TypePair(VariableType.BYTES, VariableType.STR)
-    );
-    
-    private static final Set<TypePair> EXPLICIT_CAST_CONVERSIONS = Set.of(
-        new TypePair(VariableType.DOUBLE, VariableType.INT),
-        new TypePair(VariableType.STR, VariableType.INT),
-        new TypePair(VariableType.STR, VariableType.DOUBLE),
-        new TypePair(VariableType.STR, VariableType.BOOL),
-        new TypePair(VariableType.STR, VariableType.BYTES),
-        new TypePair(VariableType.STR, VariableType.WF_RUN_ID)
-    );
-}
-```
-
-#### Type Checking During WfSpec Registration (Enhanced, Backwards Compatible)
-
-```java
-// Enhanced server-side validation - existing protobuf messages unchanged
-// All existing client workflows continue to work
-
-public class TaskNodeModel {
-    // EXISTING validate() method enhanced internally, signature unchanged
-    public void validate() throws LHValidationError {
-        TaskDefModel taskDef = getTaskDef();
-        
-        for (int i = 0; i < variables.size(); i++) {
-            VariableAssignmentModel assignment = variables.get(i);
-            TypeDefinitionModel expectedType = taskDef.getInputVars().get(i).getTypeDef();
-            TypeDefinitionModel actualType = assignment.getType();
-            
-    // NEW: Check if safe automatic conversion is available
-    if (!isAssignmentValid(actualType, expectedType)) {
-        if (isSafeAutomaticConversionAvailable(actualType.getType(), expectedType.getType())) {
-            // Allow it - server will handle conversion automatically
-            continue;
-        }
-        
-        String suggestion = getSuggestion(actualType, expectedType);
-        throw new LHValidationError(
-            String.format("Task '%s' parameter %d expects %s but received %s. %s",
-                taskDef.getName(), i, expectedType.getType(), actualType.getType(), suggestion)
-        );
-    }
-        }
-    }
-    
-    // NEW helper methods - internal implementation
-    private String getSuggestion(TypeDefinitionModel from, TypeDefinitionModel to) {
-        if (isSafeAutomaticConversionAvailable(from.getType(), to.getType())) {
-            return "This safe conversion will be performed automatically by the server.";
-        } else if (isExplicitCastAvailable(from.getType(), to.getType())) {
-            return "This conversion requires explicit handling in your task implementation (potential data loss or failure).";
-        } else {
-            return "No conversion available between these types.";
-        }
-    }
-}
-```
-
-### Error Handling (Server-Side)
-
-#### Graceful Conversion Failures
-
-```java
-// Server-side handling - existing SDK error handling continues to work
-
-// Current behavior: Type mismatch causes workflow failure
-// New behavior: Server attempts widening conversion, fails gracefully with better errors
-
-// For narrowing conversions that can't be done automatically:
-// Server provides clear error messages explaining the limitation
-// Users can update their task implementations to handle the conversion
-```
-
-## Implementation Strategy
-
-### Backwards Compatible Implementation (No Migration Required)
-
-All changes will be implemented with **strict backwards compatibility**. Existing clients continue to work unchanged, and no migration is required.
-
-### Server Changes (Backwards Compatible)
-1. **Enhanced type conversion in VariableValueModel**: Server automatically performs widening conversions during workflow execution
-2. **Improved error messages**: Better error responses, but existing client error handling continues to work
-3. **Enhanced validation**: Server provides better validation, but existing protobuf messages remain unchanged
-
-### SDK Changes (Additive Only)
-1. **New convenience methods**: SDKs can add new casting methods without breaking existing APIs
-2. **Enhanced builders**: New overloads and fluent APIs, existing methods remain unchanged
-3. **Optional features**: All new features are opt-in, existing code paths unaffected
-
-### Compatibility Guarantee
-- **Protocol Buffer compatibility**: No breaking changes to existing messages
-- **Existing workflows work unchanged**: All currently working workflows continue to work
-- **Existing SDK versions supported**: Old SDK versions remain fully functional with new server
-- **No client updates required**: Users can upgrade server and benefit immediately
-
-### Phase 1: Server-Side Safe Conversions (LH 1.1.0)
-1. **Server-only implementation**: All safe automatic conversions handled during workflow execution
-2. **Zero breaking changes**: Existing SDKs and workflows work unchanged
-3. **Immediate benefit**: Users get automatic type conversion without any code changes
-4. **Backwards compatible**: All existing protobuf messages and APIs remain the same
-
-### Phase 2: Enhanced Error Messages (LH 1.2.0) 
-1. **Improved server error responses**: Better error messages in existing error response format
-2. **Backwards compatible**: Existing client error handling continues to work unchanged
-3. **Additive SDK features**: SDKs can add convenience casting APIs without breaking existing methods
-
-### Phase 3: Additive SDK Enhancements (LH 1.3.0+)
-1. **New convenience APIs**: SDKs add `.castTo()` methods alongside existing methods
-2. **Enhanced validation**: New SDK versions can add compile-time validation as opt-in feature
-3. **Full compatibility**: All existing SDK versions continue to work with enhanced server
-
-### No Migration Required
-- **Existing deployments**: Continue working immediately after server upgrade
-- **Mixed versions**: Old and new SDK versions can work with the same server
-- **Gradual adoption**: Teams can upgrade SDKs at their own pace or never upgrade
-- **Zero breaking changes**: No API changes, no protobuf changes, no behavior changes for existing code
-
-### Server Configuration Options
-
-```properties
-# littlehorse.config (server-side configuration)
-lh.server.types.safe-conversions.enabled=true
-lh.server.types.safe-conversions.bool-to-int=true
-lh.server.types.safe-conversions.int-to-double=true
-lh.server.types.safe-conversions.int-to-string=true
-lh.server.types.validation.strict-mode=false
-```
-
-### Backwards Compatibility Guarantee
-
-1. **No breaking changes**: All existing workflows, SDKs, and client code continue to work unchanged
-2. **No migration required**: Users can upgrade server and benefit immediately without any code changes
-3. **Mixed environments**: Old and new SDK versions can coexist with the enhanced server
-4. **Additive only**: All changes are additions to existing functionality, not modifications
-5. **Protocol compatibility**: No changes to protobuf messages or network protocol
+1. **Immediate Relief**: Existing code with INT→STR and INT→DOUBLE issues works automatically
+2. **Type Safety**: Potentially unsafe conversions require explicit intent
+3. **Backwards Compatible**: Zero breaking changes, existing workflows continue working
+4. **Better UX**: Clear error messages guide users to solutions
+5. **Performance**: Automatic conversions are fast, explicit casts only when needed
 
 ## Future Considerations
 
-### Struct Support
-When `Struct` and `StructDef` are implemented:
-- Field-level type coercion within structs
-- Structural type compatibility (duck typing)
-- Schema evolution with type migration
+- **Complex Type Casting**: A separate proposal will address `JSON_OBJ` and `JSON_ARR` conversions once struct definitions are mature
 
-### Advanced Casting
-- Custom cast functions for user-defined types
-- Locale-aware string conversions
-- Precision control for numeric conversions
 
-### Performance Optimizations
-- Compile-time type inference
-- Cached coercion functions
-- Zero-copy conversions where possible
 
-### Integration with Strong Typing Initiative
-This proposal complements proposal 002 (Moving Towards Strong Typing) by:
-- Providing a smooth migration path from loose to strict typing using Java semantics
-- Maintaining user-friendly APIs while enforcing type safety with familiar casting rules
-- Enabling gradual adoption of stronger type constraints following established Java patterns
-
-### Java-Style Type Hierarchy Examples
-
-#### Safe Automatic Conversions (No Cast Required)
-```java
-// Simple rule: if it's always safe and never fails, it's automatic
-WfRunVariable isActive = wf.addVariable("active", VariableType.BOOL);
-WfRunVariable count = wf.addVariable("count", VariableType.INT);
-
-// These work automatically (safe conversions)
-wf.execute("process-int", isActive);      // BOOL → INT (true=1, false=0)
-wf.execute("process-double", count);      // INT → DOUBLE (42 → 42.0)
-wf.execute("process-string", count);      // INT → STR (42 → "42")
-wf.execute("log-message", isActive);      // BOOL → STR (true → "true")
-```
-
-#### Explicit Casts Required (Potentially Unsafe)
-```java
-// Rule: if data might be lost or conversion might fail, explicit cast required
-WfRunVariable price = wf.addVariable("price", VariableType.DOUBLE);
-WfRunVariable ageStr = wf.addVariable("age-str", VariableType.STR);
-
-// These require explicit casts (potentially unsafe)
-var priceInt = wf.cast(price, VariableType.INT);           // DOUBLE → INT (loses decimal: 42.7 → 42)
-var age = wf.cast(ageStr, VariableType.INT);               // STR → INT (can fail: "abc" → ERROR)
-var isValid = wf.cast(ageStr, VariableType.BOOL);          // STR → BOOL (can fail: "maybe" → ERROR)
-```
-
----
-
-**Related Issues:**
-- Implements type casting mentioned in Proposal 002 Future Work
-- Addresses user experience issues with current strict typing
-- Provides foundation for advanced type system features
-
-**Implementation Priority:** High - addresses immediate user pain points while supporting long-term typing goals
