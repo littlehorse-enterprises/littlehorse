@@ -17,6 +17,8 @@ type Prop = {
 }
 
 export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, wfSpec, onSubmit }, ref) => {
+  console.log('wfSpecVariables', wfSpecVariables)
+  console.log('wfSpec', wfSpec)
   const methods = useForm<FormValues>()
   const { register, handleSubmit, formState } = methods
 
@@ -58,9 +60,14 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, w
         {!!sortedVariables.length &&
           sortedVariables.map((variable: ThreadVarDef) =>
             variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR ? (
-              <VariableLabel key={variable.varDef?.name} {...variable} />
+              <VariableLabel key={JSON.stringify(variable)} {...variable} />
             ) : (
-              <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
+              <FormFields
+                key={JSON.stringify(variable)}
+                variables={variable}
+                register={register}
+                formState={formState}
+              />
             )
           )}
       </form>
