@@ -45,7 +45,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
     private final int sampleRate;
     private ScheduledFuture<?> scheduledFuture;
     private final Semaphore inflightRequests;
-    private final Deadline inmediateDeadline = Deadline.after(0, TimeUnit.NANOSECONDS);
+    private final Deadline expiredDeadline = Deadline.after(0, TimeUnit.NANOSECONDS);
 
     public MetronomeRunWfExecutor(
             final BeatProducer producer,
@@ -95,7 +95,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
         log.debug("Executing run {}", wfId);
 
-        final Deadline deadline = !inflightRequests.tryAcquire() ? inmediateDeadline : null;
+        final Deadline deadline = !inflightRequests.tryAcquire() ? expiredDeadline : null;
         final ListenableFuture<WfRun> future = lhClient.runCanaryWf(wfId, start, isSampleIteration, deadline);
         Futures.addCallback(future, new MetronomeCallback(wfId, start, isSampleIteration), requestsExecutor);
     }
