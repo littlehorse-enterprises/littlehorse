@@ -4,6 +4,7 @@ import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import io.grpc.Deadline;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseFutureStub;
@@ -32,7 +33,13 @@ public class LHClient {
     }
 
     public ListenableFuture<WfRun> runCanaryWf(final String id, final Instant start, final boolean sampleIteration) {
-        return futureStub.runWf(RunWfRequest.newBuilder()
+        return this.runCanaryWf(id, start, sampleIteration, null);
+    }
+
+    public ListenableFuture<WfRun> runCanaryWf(
+            final String id, final Instant start, final boolean sampleIteration, final Deadline deadline) {
+        final LittleHorseFutureStub stub = deadline != null ? this.futureStub.withDeadline(deadline) : this.futureStub;
+        return stub.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)
                 .setId(id)
                 .setRevision(workflowRevision)
