@@ -96,13 +96,6 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     updateGraph()
   }, [updateGraph])
 
-  const { edgesTypes, nodesTypes } = useMemo(() => {
-    return {
-      edgesTypes: edgeTypes,
-      nodesTypes: nodeTypes,
-    }
-  }, [])
-
   const verb =
     wfRun?.status === LHStatus.RUNNING
       ? 'Stop'
@@ -175,8 +168,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           nodesConnectable={false}
           elementsSelectable
           minZoom={0.3}
-          nodeTypes={nodesTypes}
-          edgeTypes={edgesTypes}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           snapToGrid={true}
           className="min-h-[800px] min-w-full bg-slate-50"
         >
