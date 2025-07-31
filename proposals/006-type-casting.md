@@ -1,4 +1,4 @@
-# Type Casting and Coercion in LittleHorse
+# Type Casting
 
 ## Motivation
 
@@ -13,8 +13,7 @@ public static Workflow getStringErrorWorkflow() {
         "string-error-example",
         wf -> {
             WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
-            var result = wf.execute("int-method", intVar); // this returns an INT
-            wf.execute("string-method", result);           // ERROR: expects STR but gets INT
+            wf.execute("string-method", intVar); // ERROR: expects STR but gets INT
         }
     );
 }
@@ -23,7 +22,7 @@ public static Workflow getStringErrorWorkflow() {
 **Error Message:**
 ```
 Exception in thread "main" io.grpc.StatusRuntimeException: INVALID_ARGUMENT: 
-PutWfSpecRequest is invalid: ThreadSpec entrypoint invalid: Node 2-string-method-TASK invalid: 
+PutWfSpecRequest is invalid: ThreadSpec entrypoint invalid: Node 1-string-method-TASK invalid: 
 Task input variable with name arg0 at position 0 expects type STR but is type INT
 ```
 
@@ -34,14 +33,13 @@ public static Workflow getDoubleErrorWorkflow() {
         "double-error-example",
         wf -> {
             WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
-            // This workflow fails at registration
-            wf.execute("double-method", intVar); // ERROR at registration: expects DOUBLE but gets INT
+            wf.execute("double-method", intVar); // ERROR: expects DOUBLE but gets INT
         }
     );
 }
 ```
 
-**Error Message** (occurs at **workflow registration**):
+**Error Message:**
 ```
 Exception in thread "main" io.grpc.StatusRuntimeException: INVALID_ARGUMENT: 
 PutWfSpecRequest is invalid: ThreadSpec entrypoint invalid: Node 1-double-method-TASK invalid: 
@@ -50,13 +48,13 @@ Input variable 0 needs to be DOUBLE but cannot be!
 
 **Example 3: Runtime INT → DOUBLE conversion error**
 ```java
-public static Workflow getDoubleRuntimeErrorWorkflow() {
+public static Workflow getDoubleErrorFromNodeWorkflow() {
     return new WorkflowImpl(
-        "double-runtime-error-example",
+        "double-from-node-error-example",
         wf -> {
             WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
-            var result = wf.execute("int-method", intVar); // this returns an INT
-            wf.execute("double-method", result);           // ERROR: expects DOUBLE but gets INT
+            NodeOutput result = wf.execute("int-method", intVar); // this returns an INT
+            wf.execute("double-method", result);                  // ERROR: expects DOUBLE but gets INT
         }
     );
 }
@@ -82,7 +80,7 @@ This proposal **only covers primitive types**: `INT`, `DOUBLE`, `STR`, `BOOL`, `
 
 ### 1. Automatic Conversions (Server-Side)
 - **Any primitive type → STR**: All LittleHorse primitive types automatically convert to string
-- **INT → DOUBLE**: Integers automatically widen to doubles
+- **INT → DOUBLE**: Integers automatically widen to doubles, since we are putting a lower into a higher type
 
 ### 2. Manual Conversions (Explicit Casting)
 - All other primitive conversions require explicit `.cast()` calls
@@ -92,22 +90,22 @@ This proposal **only covers primitive types**: `INT`, `DOUBLE`, `STR`, `BOOL`, `
 
 **Primitive Types Only**: The following rules apply only to primitive LittleHorse types (`INT`, `DOUBLE`, `STR`, `BOOL`, `BYTES`, `WF_RUN_ID`).
 
-| From Type | To Type | Rule | Examples |
-|-----------|---------|------|----------|
-| `INT` | `STR` | ✅ Automatic | `42` → `"42"` |
-| `DOUBLE` | `STR` | ✅ Automatic | `42.5` → `"42.5"` |
-| `BOOL` | `STR` | ✅ Automatic | `true` → `"true"` |
-| `WF_RUN_ID` | `STR` | ✅ Automatic | UUID → string |
-| `BYTES` | `STR` | ✅ Automatic | Base64 encoding |
-| `INT` | `DOUBLE` | ✅ Automatic | `42` → `42.0` |
-| `DOUBLE` | `INT` | 🔧 Manual Cast | `42.7` → `42` (loses precision) |
-| `STR` | `INT` | 🔧 Manual Cast | `"42"` → `42` (can fail) |
-| `STR` | `DOUBLE` | 🔧 Manual Cast | `"42.7"` → `42.7` (can fail) |
-| `STR` | `BOOL` | 🔧 Manual Cast | `"true"` → `true` (can fail) |
-| `STR` | `BYTES` | 🔧 Manual Cast | Base64 decode (can fail) |
-| `STR` | `WF_RUN_ID` | 🔧 Manual Cast | String → UUID (can fail) |
-| `INT` | `BOOL` | ❌ Not Allowed | No clear conversion rule |
-| `DOUBLE` | `BOOL` | ❌ Not Allowed | No clear conversion rule |
+| From Type | To Type | Rule | Examples | Error Messages |
+|-----------|---------|------|----------|----------------|
+| `INT` | `STR` |  Automatic | `42` → `"42"` | None  |
+| `DOUBLE` | `STR` |  Automatic | `42.5` → `"42.5"` | None  |
+| `BOOL` | `STR` |  Automatic | `true` → `"true"` | None  |
+| `WF_RUN_ID` | `STR` |  Automatic | UUID → string | None  |
+| `BYTES` | `STR` |  Automatic | Base64 encoding | None  |
+| `INT` | `DOUBLE` |  Automatic | `42` → `42.0` | None  |
+| `DOUBLE` | `INT` | 🔧 Manual Cast | ✅ `42.7` → `42` | `No errors but we lose decimal part here` |
+| `STR` | `INT` | 🔧 Manual Cast | ✅ `"42"` → `42` ❌ `"abc"` → error | `"Cannot parse 'abc' as INT"` |
+| `STR` | `DOUBLE` | 🔧 Manual Cast | ✅ `"42.7"` → `42.7` ❌ `"xyz"` → error | `"Cannot parse 'xyz' as DOUBLE"` |
+| `STR` | `BOOL` | 🔧 Manual Cast | ✅ `"true"` → `true` ❌ `"maybe"` → error | `"Cannot parse 'maybe' as BOOL (use 'true'/'false')"` |
+| `STR` | `BYTES` | 🔧 Manual Cast | ✅ `"SGVsbG8="` → `Hello` ❌ `"invalid!"` → error | `"Invalid Base64 string: 'invalid!'"` |
+| `STR` | `WF_RUN_ID` | 🔧 Manual Cast | ✅ Valid UUID string ❌ `"not-uuid"` → error | `"Invalid UUID format: 'not-uuid'"` |
+| `INT` | `BOOL` | ❌ Not Allowed | No clear conversion rule | `"Casting INT to BOOL not supported"` |
+| `DOUBLE` | `BOOL` | ❌ Not Allowed | No clear conversion rule | `"Casting DOUBLE to BOOL not supported"` |
 
 **Legend:**
 - ✅ Automatic: Server handles conversion automatically
