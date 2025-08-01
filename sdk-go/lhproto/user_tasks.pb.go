@@ -1057,6 +1057,7 @@ type UserTaskEvent struct {
 	// The event that occurred.
 	//
 	// Types that are assignable to Event:
+	//
 	//	*UserTaskEvent_TaskExecuted
 	//	*UserTaskEvent_Assigned
 	//	*UserTaskEvent_Cancelled

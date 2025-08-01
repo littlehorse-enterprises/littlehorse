@@ -441,6 +441,7 @@ type ServerACL struct {
 	// The actions that are permitted.
 	AllowedActions []ACLAction `protobuf:"varint,2,rep,packed,name=allowed_actions,json=allowedActions,proto3,enum=littlehorse.ACLAction" json:"allowed_actions,omitempty"`
 	// Types that are assignable to ResourceFilter:
+	//
 	//	*ServerACL_Name
 	//	*ServerACL_Prefix
 	ResourceFilter isServerACL_ResourceFilter `protobuf_oneof:"resource_filter"`

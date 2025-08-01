@@ -43,8 +43,12 @@ public class MyWorker {
     @LHTaskMethod("send")
     public String result(@LHType(masked = true) ProcessedText processedText) {
         log.debug(
-            "Executing task sentiment-analysis vars (%s)".formatted(processedText)
-        );
+                "Executing task sentiment-analysis vars (%s)".formatted(processedText));
         return "";
+    }
+    
+    @LHTaskMethod("expr-add-one")
+    public int addOne(int input) {
+        return input + 1;
     }
 }

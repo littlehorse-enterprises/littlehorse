@@ -3,7 +3,7 @@ import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
 
-const NopNode: FC<NodeProps> = props => {
+const NopNode: FC<NodeProps<'entrypoint', {}>> = props => {
   const {
     data: { fade },
   } = props
