@@ -10,14 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
 import { NodeRun } from 'littlehorse-client/proto'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { getValidation } from '../../Forms/components/validation'
+import VariableInputField from '../../Forms/components/VariableInputField'
 import { putExternalEvent } from './actions'
 
 export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
@@ -78,94 +77,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
     }
   }
 
-  const renderInputField = () => {
-    switch (contentType) {
-      case 'BOOL':
-        return (
-          <Select value={contentValue} onValueChange={setContentValue}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a value" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="true">True</SelectItem>
-              <SelectItem value="false">False</SelectItem>
-            </SelectContent>
-          </Select>
-        )
-      case 'JSON_OBJ':
-      case 'JSON_ARR':
-        return (
-          <div>
-            <Textarea
-              value={contentValue}
-              onChange={e => {
-                const newValue = e.target.value
-                setContentValue(newValue)
-                validateJson(newValue, contentType)
-              }}
-              placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase()} value`}
-              className={`min-h-[120px] ${jsonError ? 'border-red-500' : contentValue.trim() ? 'border-green-500' : ''}`}
-            />
-            {jsonError && <div className="mt-1 text-xs text-red-500">{jsonError}</div>}
-            {!jsonError && contentValue.trim() && (
-              <div className="mt-1 text-xs text-green-500">
-                Valid JSON {contentType === 'JSON_OBJ' ? 'object' : 'array'}
-              </div>
-            )}
-          </div>
-        )
-      case 'INT':
-        return (
-          <Input
-            type="number"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            onKeyDown={e => {
-              if (e.key === '.' || e.key === ',') {
-                e.preventDefault()
-              }
-            }}
-            value={contentValue}
-            onChange={e => setContentValue(e.target.value)}
-            placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase()} value`}
-            step="1"
-          />
-        )
-      case 'DOUBLE':
-        return (
-          <Input
-            type="number"
-            value={contentValue}
-            onChange={e => setContentValue(e.target.value)}
-            placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase()} value`}
-            step="0.01"
-          />
-        )
-      case 'BYTES':
-        return (
-          <div>
-            <Input
-              type="text"
-              value={contentValue}
-              onChange={e => setContentValue(e.target.value)}
-              placeholder="Enter data to be converted to bytes (UTF-8 encoded)"
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              Input will be converted to bytes using UTF-8 encoding. Use plain text for standard strings.
-            </p>
-          </div>
-        )
-      default:
-        return (
-          <Input
-            type="text"
-            value={contentValue}
-            onChange={e => setContentValue(e.target.value)}
-            placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase() || 'string'} value`}
-          />
-        )
-    }
-  }
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -204,7 +116,13 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
 
           <div className="grid gap-2">
             <Label htmlFor="content-value">Content Value</Label>
-            {renderInputField()}
+            <VariableInputField
+              contentType={contentType}
+              contentValue={contentValue}
+              setContentValue={setContentValue}
+              validateJson={validateJson}
+              jsonError={jsonError}
+            />
           </div>
         </div>
 
