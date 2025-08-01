@@ -1,7 +1,6 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
-import { getTaskDef } from '@/app/(authenticated)/[tenantId]/taskDef/[name]/getTaskDef'
 import { getVariable, getVariableValue } from '@/app/utils'
 import { useQuery } from '@tanstack/react-query'
 import { TaskNode } from 'littlehorse-client/proto'
@@ -19,8 +18,8 @@ import { ViewVariableAssignments, ViewVariables } from '../DataGroupComponents/V
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
 
-export const TaskDetails: FC<NodeProps<'task', TaskNode>> = ({ data, selected }) => {
-  const { taskToExecute, nodeRunsList, nodeRun } = data
+export const TaskDetails: FC<NodeProps<'task', TaskNode>> = ({ data }) => {
+  const { nodeRunsList, nodeRun } = data
   const [nodeRunsIndex, setNodeRunsIndex] = useState(0)
   const [taskAttemptIndex, setTaskAttemptIndex] = useState(0)
   const tenantId = useParams().tenantId as string
@@ -32,21 +31,8 @@ export const TaskDetails: FC<NodeProps<'task', TaskNode>> = ({ data, selected })
     },
   })
 
-  const { data: taskDef } = useQuery({
-    queryKey: ['taskDef', taskToExecute, tenantId, nodeRun, selected],
-    queryFn: async () => {
-      if (taskToExecute?.value) return null
-      if (nodeRun?.nodeType.value?.taskRunId) return null
-      if (!selected) return null
-      const taskDef = await getTaskDef(tenantId, {
-        name: getTaskName(taskToExecute),
-      })
-      return taskDef
-    },
-  })
-
-  if (!taskToExecute || (!taskDef && !nodeRun?.nodeType.value?.taskRunId)) return null
   taskRunData?.attempts.sort((a, b) => new Date(b.startTime ?? 0).getTime() - new Date(a.startTime ?? 0).getTime())
+
   return (
     <NodeDetails nodeRunList={nodeRunsList} nodeRunsIndex={nodeRunsIndex} setNodeRunsIndex={setNodeRunsIndex}>
       {nodeRun ? (

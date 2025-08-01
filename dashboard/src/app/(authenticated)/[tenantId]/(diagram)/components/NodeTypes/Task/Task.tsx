@@ -6,7 +6,7 @@ import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
-import { TaskDetails } from './TaskDetails'
+import { getTaskName, TaskDetails } from './TaskDetails'
 
 const Node: FC<NodeProps<'task', TaskNode>> = node => {
   const { fade, nodeNeedsToBeHighlighted, nodeRunsList, taskToExecute } = node.data
@@ -25,7 +25,7 @@ const Node: FC<NodeProps<'task', TaskNode>> = node => {
           }
         >
           <SettingsIcon className="h-4 w-4 fill-orange-500" />
-          {taskToExecute.$case === 'taskDefId' ? taskToExecute.value.name : getVariable(taskToExecute.value)}
+          {getTaskName(taskToExecute)}
           <Handle type="source" position={Position.Right} className="bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
         </div>

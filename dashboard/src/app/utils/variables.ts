@@ -35,6 +35,13 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
   }
 }
 
+/**
+ * Retrieves the value from a VariableValue.
+ * Handles different types of values including bytes, wfRunIds, and other primitive types.
+ *
+ * @param value - The VariableValue to retrieve the value from.
+ * @returns A string representation of the value.
+ */
 export const getVariableValue = ({ value }: VariableValue): string => {
   if (!value) return ''
 
@@ -46,24 +53,6 @@ export const getVariableValue = ({ value }: VariableValue): string => {
     default:
       return value.value.toString()
   }
-}
-
-const getValueFromVariableName = (
-  { value }: Extract<VariableAssignment['source'], { $case: 'variableName' }>,
-  jsonPath?: string
-): string => {
-  if (!value) return ''
-  if (jsonPath) return `{${jsonPath.replace('$', value)}}`
-  return `{${value}}`
-}
-
-const getValueFromFormatString = ({
-  value,
-}: Extract<VariableAssignment['source'], { $case: 'formatString' }>): string => {
-  const template = getVariable(value.format!)
-  const args = value.args.map(getVariable)
-
-  return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
 
 /**
@@ -115,46 +104,6 @@ export const getTypedVariableValue = (
   return VariableValue.fromJSON(variable)
 }
 
-const getExpressionSymbol = (expression: VariableMutationType): String => {
-  switch (expression) {
-    case VariableMutationType.ASSIGN:
-      return '='
-    case VariableMutationType.ADD:
-      return '+'
-    case VariableMutationType.SUBTRACT:
-      return '-'
-    case VariableMutationType.DIVIDE:
-      return '/'
-    case VariableMutationType.MULTIPLY:
-      return '*'
-    case VariableMutationType.EXTEND:
-      return 'extends'
-    case VariableMutationType.REMOVE_IF_PRESENT:
-      return 'removeIfPresent'
-    case VariableMutationType.REMOVE_INDEX:
-      return 'removeIndex'
-    case VariableMutationType.REMOVE_KEY:
-      return 'removeKey'
-    default:
-      return ''
-  }
-}
-
-const formatVariableExpression = (
-  { value }: Extract<VariableAssignment['source'], { $case: 'expression' }>,
-  depth = 0
-): string => {
-  const { lhs, rhs, operation } = value
-  const result =
-    operation === VariableMutationType.REMOVE_IF_PRESENT ||
-    operation === VariableMutationType.REMOVE_INDEX ||
-    operation === VariableMutationType.REMOVE_KEY ||
-    operation === VariableMutationType.EXTEND
-      ? `${getVariable(lhs!, depth + 1)}.${getExpressionSymbol(operation)}(${getVariable(rhs!, depth + 1)})` // Dot notation for these operations
-      : `${getVariable(lhs!, depth + 1)} ${getExpressionSymbol(operation)} ${getVariable(rhs!, depth + 1)}` // Arithmetic operations
-  return depth > 0 ? `(${result})` : result
-}
-
 /**
  * After 0.13.2, the `VariableDef.type` and `VariableDef.maskedValue` fields are deprecated.
  * These fields are replaced with `VariableDef.typeDef`.
@@ -199,4 +148,62 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
     default:
       throw new Error(`Unknown variable type: ${type}`)
   }
+}
+
+const getValueFromVariableName = (
+  { value }: Extract<VariableAssignment['source'], { $case: 'variableName' }>,
+  jsonPath?: string
+): string => {
+  if (!value) return ''
+  if (jsonPath) return `{${jsonPath.replace('$', value)}}`
+  return `{${value}}`
+}
+
+const getValueFromFormatString = ({
+  value,
+}: Extract<VariableAssignment['source'], { $case: 'formatString' }>): string => {
+  const template = getVariable(value.format!)
+  const args = value.args.map(getVariable)
+
+  return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
+}
+
+const getExpressionSymbol = (expression: VariableMutationType): String => {
+  switch (expression) {
+    case VariableMutationType.ASSIGN:
+      return '='
+    case VariableMutationType.ADD:
+      return '+'
+    case VariableMutationType.SUBTRACT:
+      return '-'
+    case VariableMutationType.DIVIDE:
+      return '/'
+    case VariableMutationType.MULTIPLY:
+      return '*'
+    case VariableMutationType.EXTEND:
+      return 'extends'
+    case VariableMutationType.REMOVE_IF_PRESENT:
+      return 'removeIfPresent'
+    case VariableMutationType.REMOVE_INDEX:
+      return 'removeIndex'
+    case VariableMutationType.REMOVE_KEY:
+      return 'removeKey'
+    default:
+      return ''
+  }
+}
+
+const formatVariableExpression = (
+  { value }: Extract<VariableAssignment['source'], { $case: 'expression' }>,
+  depth = 0
+): string => {
+  const { lhs, rhs, operation } = value
+  const result =
+    operation === VariableMutationType.REMOVE_IF_PRESENT ||
+    operation === VariableMutationType.REMOVE_INDEX ||
+    operation === VariableMutationType.REMOVE_KEY ||
+    operation === VariableMutationType.EXTEND
+      ? `${getVariable(lhs!, depth + 1)}.${getExpressionSymbol(operation)}(${getVariable(rhs!, depth + 1)})` // Dot notation for these operations
+      : `${getVariable(lhs!, depth + 1)} ${getExpressionSymbol(operation)} ${getVariable(rhs!, depth + 1)}` // Arithmetic operations
+  return depth > 0 ? `(${result})` : result
 }
