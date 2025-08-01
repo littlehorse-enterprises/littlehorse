@@ -11,7 +11,7 @@ import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 
-const Node: FC<NodeProps<"startMultipleThreads", StartMultipleThreadsNodeProto>> = ({ data }) => {
+const Node: FC<NodeProps<'startMultipleThreads', StartMultipleThreadsNodeProto>> = ({ data }) => {
   const { fade, nodeRun } = data
   const { setThread } = useThread()
   const [isOpen, setIsOpen] = useState(false)

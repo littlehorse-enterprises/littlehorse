@@ -6,7 +6,7 @@ import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 
-const ExitNode: FC<NodeProps<"exit", ExitNodeProto>> = ({ data }) => {
+const ExitNode: FC<NodeProps<'exit', ExitNodeProto>> = ({ data }) => {
   const { fade, failureDef } = data
   return (
     <Fade fade={fade} status={failureDef ? LHStatus.EXCEPTION : undefined}>

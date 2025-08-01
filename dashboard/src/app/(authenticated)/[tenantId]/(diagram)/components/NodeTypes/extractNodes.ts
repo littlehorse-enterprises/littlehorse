@@ -16,7 +16,7 @@ export const extractNodes = (spec: ThreadSpec): Node<NodeProto, NodeType>[] => {
 export type NodeRunTypeList = Exclude<
   NodeType,
   'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'
-  >
+>
 
 export type NodeType = NonNullable<NodeProto['node']>['$case']
 export type NodeData<T = any> = NodeProps<NodeProto & T>
