@@ -7,6 +7,14 @@ import {
 } from 'littlehorse-client/proto'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 
+/**
+ * Retrieves the value of a variable based on its assignment and source.
+ * Handles different types of variable sources including expressions, format strings, literals, node outputs, and variable names.
+ *
+ * @param variable - The variable assignment to retrieve the value from.
+ * @param depth - The current depth in nested expressions (default is 0).
+ * @returns The formatted string representation of the variable value.
+ */
 export const getVariable = (variable: VariableAssignment, depth = 0): string => {
   if (!variable || !variable.source) return ''
 
@@ -58,6 +66,13 @@ const getValueFromFormatString = ({
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
 
+/**
+ * Formats a JSON string or returns the original value if parsing fails.
+ * This is useful for displaying JSON in a readable format in the UI.
+ *
+ * @param value - The string value to format as JSON.
+ * @returns A formatted JSON string or the original value if parsing fails.
+ */
 export const formatJsonOrReturnOriginalValue = (value: string) => {
   try {
     const json = JSON.parse(value)
@@ -67,15 +82,23 @@ export const formatJsonOrReturnOriginalValue = (value: string) => {
   }
 }
 
+/**
+ * Converts a string value to a typed VariableValue based on the provided type.
+ * Handles various types including JSON objects, arrays, doubles, booleans, strings, integers, bytes, and wfRunIds.
+ *
+ * @param type - The type of the variable value.
+ * @param value - The string value to convert.
+ * @returns A VariableValue object with the appropriate type and value.
+ */
 export const getTypedVariableValue = (
   type: NonNullable<VariableValue['value']>['$case'],
   value: string
 ): VariableValue => {
   const variable =
     type === 'jsonObj'
-      ? { jsonObj: JSON.parse(value) }
+      ? { jsonObj: JSON.stringify(JSON.parse(value)) }
       : type === 'jsonArr'
-        ? { jsonArr: JSON.parse(value) }
+        ? { jsonArr: JSON.stringify(JSON.parse(value)) }
         : type === 'double'
           ? { double: parseFloat(value) }
           : type === 'bool'
@@ -148,6 +171,13 @@ export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableVal
   throw new Error('Variable must have type or typeDef.')
 }
 
+/**
+ * Maps a VariableType to its corresponding VariableValue case.
+ * This is used to determine the type of value stored in a VariableValue.
+ *
+ * @param type - The VariableType to map.
+ * @returns The corresponding VariableValue case.
+ */
 export const getVariableCaseFromType = (type: VariableType): NonNullable<VariableValue['value']>['$case'] => {
   switch (type) {
     case VariableType.BOOL:

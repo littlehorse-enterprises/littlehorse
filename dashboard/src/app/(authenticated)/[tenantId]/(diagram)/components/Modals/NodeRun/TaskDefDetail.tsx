@@ -10,7 +10,7 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { AccordionNode } from './AccordionContent'
 
-export const TaskDefDetail: FC<AccordionNode<"task">> = ({ nodeRun }) => {
+export const TaskDefDetail: FC<AccordionNode<'task'>> = ({ nodeRun }) => {
   const { taskRunId } = nodeRun.nodeType.value
   const { tenantId } = useWhoAmI()
 

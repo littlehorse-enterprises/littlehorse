@@ -2,7 +2,7 @@ import { NodeRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { AccordionNode } from './AccordionContent'
 
-export const WaitForConditionDefDetail: FC<AccordionNode<"waitForCondition">> = ({ }) => {
+export const WaitForConditionDefDetail: FC<AccordionNode<'waitForCondition'>> = ({}) => {
   // ? Commented out, but here incase we need it later.
   // const { tenantId } = useParams() as { tenantId: string }
 

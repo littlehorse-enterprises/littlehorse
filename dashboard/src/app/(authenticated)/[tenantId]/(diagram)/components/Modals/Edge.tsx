@@ -8,7 +8,7 @@ import { MutationRhS } from '../../wfSpec/[...props]/components/Mutations'
 export const Edge: FC<Modal<EdgeProto>> = ({ data }) => {
   const { variableMutations } = data
   const { showModal, setShowModal } = useModal()
-  if (variableMutations.length === 0) return 
+  if (variableMutations.length === 0) return
 
   return (
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>

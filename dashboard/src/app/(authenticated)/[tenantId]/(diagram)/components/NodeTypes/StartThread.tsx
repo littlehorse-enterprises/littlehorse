@@ -9,7 +9,7 @@ import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 import { StartThreadNode } from 'littlehorse-client/proto'
 
-const Node: FC<NodeProps<"startThread", StartThreadNode>> = ({ data }) => {
+const Node: FC<NodeProps<'startThread', StartThreadNode>> = ({ data }) => {
   const { fade, nodeRunsList } = data
   const { setThread } = useThread()
 
