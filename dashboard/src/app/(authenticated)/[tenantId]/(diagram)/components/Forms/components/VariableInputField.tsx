@@ -43,7 +43,7 @@ export default function VariableInputField({
                             setContentValue(newValue)
                             validateJson?.(newValue, contentType)
                         }}
-                        placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase()} value`}
+                        placeholder={`Enter ${VARIABLE_TYPES[contentType]?.toLowerCase()} value`}
                         className={`min-h-[120px] ${jsonError ? 'border-red-500' : contentValue.trim() ? 'border-green-500' : ''}`}
                     />
                     {jsonError && <div className="mt-1 text-xs text-red-500">{jsonError}</div>}
@@ -67,7 +67,7 @@ export default function VariableInputField({
                     }}
                     value={contentValue}
                     onChange={e => setContentValue(e.target.value)}
-                    placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase()} value`}
+                    placeholder={`Enter ${VARIABLE_TYPES[contentType]?.toLowerCase()} value`}
                     step="1"
                 />
             )
@@ -77,7 +77,7 @@ export default function VariableInputField({
                     type="number"
                     value={contentValue}
                     onChange={e => setContentValue(e.target.value)}
-                    placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase()} value`}
+                    placeholder={`Enter ${VARIABLE_TYPES[contentType]?.toLowerCase()} value`}
                     step="0.01"
                 />
             )
