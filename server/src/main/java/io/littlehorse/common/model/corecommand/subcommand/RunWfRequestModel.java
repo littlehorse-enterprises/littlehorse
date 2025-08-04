@@ -109,7 +109,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
         // TODO: Add WfRun Start Metrics
 
-        WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id));
+        WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id, parentWfRunId));
         if (oldWfRun != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
         }

@@ -36,6 +36,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public TypeDefinitionModel(VariableType type) {
         // TODO: determine whether this should be refactored to fail when type == Struct.
         this.type = type;
+        this.masked = false;
+    }
+
+    public TypeDefinitionModel(VariableType type, boolean masked) {
+        this.type = type;
+        this.masked = masked;
     }
 
     @Override
@@ -134,7 +140,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         if (type == VariableType.INT || type == VariableType.DOUBLE) {
             return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
         }
-        return this.equals(other);
+        return this.getType().equals(other.getType());
     }
 
     @Override
