@@ -3,6 +3,7 @@ package io.littlehorse.canary.metronome;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import io.grpc.Deadline;
 import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.canary.infra.HealthStatusBinder;
@@ -26,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,8 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
     private final LocalRepository repository;
     private final int sampleRate;
     private ScheduledFuture<?> scheduledFuture;
+    private final Semaphore inflightRequests;
+    private final Deadline expiredDeadline = Deadline.after(0, TimeUnit.NANOSECONDS);
 
     public MetronomeRunWfExecutor(
             final BeatProducer producer,
@@ -55,6 +59,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
         this.lhClient = lhClient;
         this.frequency = frequency;
         this.runs = runs;
+        this.inflightRequests = new Semaphore(runs);
         this.repository = repository;
         this.sampleRate = sampleRate;
 
@@ -90,7 +95,8 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
         log.debug("Executing run {}", wfId);
 
-        final ListenableFuture<WfRun> future = lhClient.runCanaryWf(wfId, start, isSampleIteration);
+        final Deadline deadline = !inflightRequests.tryAcquire() ? expiredDeadline : null;
+        final ListenableFuture<WfRun> future = lhClient.runCanaryWf(wfId, start, isSampleIteration, deadline);
         Futures.addCallback(future, new MetronomeCallback(wfId, start, isSampleIteration), requestsExecutor);
     }
 
@@ -136,6 +142,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
         @Override
         public void onSuccess(final WfRun result) {
+            inflightRequests.release();
             if (!isSampleIteration) return;
 
             final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
@@ -149,6 +156,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
         @Override
         public void onFailure(final Throwable t) {
+            inflightRequests.release();
             log.debug("Error executing runWf {}", t.getMessage(), t);
 
             final BeatStatus.BeatStatusBuilder statusBuilder = BeatStatus.builder(BeatStatus.Code.ERROR)
