@@ -28,7 +28,13 @@ import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/pr
 import { RefreshCwIcon, Trash2 } from 'lucide-react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
-import { deleteCorrelatedEvent, PaginatedCorrelatedEventList, PaginatedExternalEventList, searchCorrelatedEvent, searchExternalEvent } from '../actions/searchExternalEvent'
+import {
+  deleteCorrelatedEvent,
+  PaginatedCorrelatedEventList,
+  PaginatedExternalEventList,
+  searchCorrelatedEvent,
+  searchExternalEvent,
+} from '../actions/searchExternalEvent'
 import CreateCorrelatedEventDialog from './CreateCorrelatedEventDialog'
 import { Details } from './Details'
 
@@ -79,7 +85,6 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
     }
   }
 
-
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['externalEvent', tenantId, createdAfter, limit, createdBefore, isClaimed],
     initialPageParam: undefined,
@@ -102,9 +107,16 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
     data: correlatedData,
     hasNextPage: hasCorrelatedNextPage,
     fetchNextPage: fetchCorrelatedNextPage,
-    refetch: refetchCorrelatedEvents
+    refetch: refetchCorrelatedEvents,
   } = useInfiniteQuery({
-    queryKey: ['correlatedEvent', tenantId, correlatedCreatedAfter, correlatedLimit, correlatedCreatedBefore, hasExternalEvents],
+    queryKey: [
+      'correlatedEvent',
+      tenantId,
+      correlatedCreatedAfter,
+      correlatedLimit,
+      correlatedCreatedBefore,
+      hasExternalEvents,
+    ],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedCorrelatedEventList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
@@ -303,17 +315,21 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                   {correlatedEvent.createdAt ? utcToLocalDateTime(correlatedEvent.createdAt) : 'N/A'}
                                 </TableCell>
                                 <TableCell>
-                                  <pre className="text-xs">{correlatedEvent.content ? JSON.stringify(JSON.parse(getVariableValue(correlatedEvent.content)?.toString() ?? ''), null, 2) : 'N/A'}</pre>
+                                  <pre className="text-xs">
+                                    {correlatedEvent.content
+                                      ? JSON.stringify(
+                                          JSON.parse(getVariableValue(correlatedEvent.content)?.toString() ?? ''),
+                                          null,
+                                          2
+                                        )
+                                      : 'N/A'}
+                                  </pre>
                                 </TableCell>
                                 <TableCell>{correlatedEvent.externalEvents?.length ?? 0}</TableCell>
                                 <TableCell>
                                   <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                      <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        disabled={isDeleting}
-                                      >
+                                      <Button variant="destructive" size="sm" disabled={isDeleting}>
                                         <Trash2 className="h-4 w-4" />
                                       </Button>
                                     </AlertDialogTrigger>
@@ -321,7 +337,8 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>Delete Correlated Event</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                          Are you sure you want to delete the correlated event with key "{correlatedEvent.id?.key}"?
+                                          Are you sure you want to delete the correlated event with key "
+                                          {correlatedEvent.id?.key}"?
                                         </AlertDialogDescription>
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>

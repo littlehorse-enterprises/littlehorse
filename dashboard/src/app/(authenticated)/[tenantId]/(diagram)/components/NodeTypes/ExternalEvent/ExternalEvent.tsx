@@ -36,7 +36,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
                 ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
                 : 'N/A'}
             </Entry>
-            <Entry label="Correlation Key:">
+            <Entry label="Correlation Key">
               {nodeRun ? nodeRun?.externalEvent?.correlationKey : getVariable(externalEventNode.correlationKey)}
             </Entry>
             {nodeRun && !nodeRun.externalEvent?.eventTime && <PostEvent nodeRun={nodeRun} />}
