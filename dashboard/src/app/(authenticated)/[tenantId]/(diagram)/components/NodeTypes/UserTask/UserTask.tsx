@@ -1,6 +1,7 @@
 import { UserTaskDefDetails } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 import { UserIcon } from 'lucide-react'
 
+import { UserTaskNode } from 'littlehorse-client/proto'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { ExternalLinkButton } from '../../ExternalLinkButton'
@@ -10,27 +11,29 @@ import { Fade } from '../Fade'
 import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
 
-const Node: FC<NodeProps> = ({ data, selected }) => {
-  if (!data.userTask) return null
-  const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
+const Node: FC<NodeProps<'userTask', UserTaskNode>> = ({ data, selected }) => {
+  const { fade, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList, ...userTaskNode } = data
 
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
         <DiagramDataGroup label={nodeRun ? 'UserTaskRun' : 'UserTaskDef'}>
           <div className="flex flex-col">
-            <ExternalLinkButton href={`/userTaskDef/${userTask.userTaskDefName}`} label={userTask.userTaskDefName} />
+            <ExternalLinkButton
+              href={`/userTaskDef/${userTaskNode.userTaskDefName}`}
+              label={userTaskNode.userTaskDefName}
+            />
             {nodeRun && (
               <ExternalLinkButton
-                href={`/userTaskDef/audit/${nodeRun.id?.wfRunId?.id}/${nodeRun.userTask?.userTaskRunId?.userTaskGuid}`}
+                href={`/userTaskDef/audit/${nodeRun.id?.wfRunId?.id}/${nodeRun.nodeType.value.userTaskRunId?.userTaskGuid}`}
                 label="Audit Log"
               />
             )}
 
             {nodeRun ? (
-              <NodeRunsList nodeRuns={nodeRunsList} userTaskNode={userTask} nodeRun={nodeRun} />
+              <NodeRunsList nodeRuns={nodeRunsList} userTaskNode={userTaskNode} nodeRun={nodeRun} />
             ) : (
-              <UserTaskDefDetails userTask={userTask} />
+              <UserTaskDefDetails userTask={userTaskNode} />
             )}
           </div>
         </DiagramDataGroup>
@@ -44,7 +47,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
           }
         >
           <UserIcon className="h-4 w-4 text-blue-500" />
-          {data.userTask?.userTaskDefName}
+          {data.userTaskDefName}
           <Handle type="source" position={Position.Right} className="bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
         </div>

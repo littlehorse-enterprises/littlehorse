@@ -3,13 +3,13 @@ import { cn } from '@/components/utils'
 import { FC, Fragment } from 'react'
 import { AccordionNode } from './AccordionContent'
 
-export const SleepDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
+export const SleepDefDetail: FC<AccordionNode<'sleep'>> = ({ nodeRun }) => {
   return (
     <Fragment>
       <div className="mb-2 items-center gap-2">
-        {nodeRun.arrivalTime && (
+        {nodeRun && (
           <div className="mb-2 mt-1 text-sm font-bold">
-            Arrival Time : <span className=" pb-2">{utcToLocalDateTime(nodeRun.arrivalTime)}</span>
+            Arrival Time : <span className=" pb-2">{utcToLocalDateTime(nodeRun.arrivalTime!)}</span>
           </div>
         )}
         {nodeRun.endTime && (
@@ -20,14 +20,14 @@ export const SleepDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
       </div>
       <div className="mb-2 items-center gap-2">
         <div className="mb-2 mt-1 text-sm font-bold">
-          Matured : <span className="border-2 border-blue-500 p-1">{nodeRun.sleep?.matured?.toString()}</span>
+          Matured : <span className="border-2 border-blue-500 p-1">{nodeRun.nodeType.value.matured.toString()}</span>
         </div>
       </div>
 
       <div className={cn('flex w-full flex-col overflow-auto rounded p-1', 'bg-zinc-500 text-white')}>
         <h3 className="font-bold">Maturation Time</h3>
-        {nodeRun.sleep?.maturationTime && (
-          <pre className="overflow-auto">{utcToLocalDateTime(nodeRun.sleep?.maturationTime)}</pre>
+        {nodeRun.nodeType.value.maturationTime && (
+          <pre className="overflow-auto">{utcToLocalDateTime(nodeRun.nodeType.value.maturationTime)}</pre>
         )}
       </div>
     </Fragment>

@@ -2994,6 +2994,7 @@ type SearchUserTaskDefRequest struct {
 	// returned.
 	//
 	// Types that are assignable to UserTaskDefCriteria:
+	//
 	//	*SearchUserTaskDefRequest_Prefix
 	//	*SearchUserTaskDefRequest_Name
 	UserTaskDefCriteria isSearchUserTaskDefRequest_UserTaskDefCriteria `protobuf_oneof:"user_task_def_criteria"`
@@ -3158,6 +3159,7 @@ type SearchWfSpecRequest struct {
 	// returned.
 	//
 	// Types that are assignable to WfSpecCriteria:
+	//
 	//	*SearchWfSpecRequest_Name
 	//	*SearchWfSpecRequest_Prefix
 	//	*SearchWfSpecRequest_TaskDefName
@@ -3707,6 +3709,7 @@ type SearchPrincipalRequest struct {
 	// Specifies to return only Principals's created before this time
 	LatestStart *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
 	// Types that are assignable to PrincipalCriteria:
+	//
 	//	*SearchPrincipalRequest_IsAdmin
 	//	*SearchPrincipalRequest_TenantId
 	PrincipalCriteria isSearchPrincipalRequest_PrincipalCriteria `protobuf_oneof:"principal_criteria"`
@@ -3889,8 +3892,8 @@ type SearchExternalEventRequest struct {
 	LatestStart *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
 	// Search for ExternalEvents by their ExternalEventDefId
 	//
-	// * Note: If ExternalEventDefId is not provided or does not exist,
-	//         gRPC status code 'INVALID_ARGUMENT' will be returned.
+	//   - Note: If ExternalEventDefId is not provided or does not exist,
+	//     gRPC status code 'INVALID_ARGUMENT' will be returned.
 	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,5,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
 	// Optionally search for only ExternalEvents that are claimed or not.
 	IsClaimed *bool `protobuf:"varint,6,opt,name=is_claimed,json=isClaimed,proto3,oneof" json:"is_claimed,omitempty"`
@@ -4049,8 +4052,8 @@ type SearchWorkflowEventRequest struct {
 	LatestStart *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
 	// Search for WorkflowEvents by their WorkflowEventDefId
 	//
-	// * Note: If WorkflowEventDefId is not provided or does not exist,
-	//         gRPC status code 'INVALID_ARGUMENT' will be returned.
+	//   - Note: If WorkflowEventDefId is not provided or does not exist,
+	//     gRPC status code 'INVALID_ARGUMENT' will be returned.
 	WorkflowEventDefId *WorkflowEventDefId `protobuf:"bytes,5,opt,name=workflow_event_def_id,json=workflowEventDefId,proto3" json:"workflow_event_def_id,omitempty"`
 }
 
@@ -5092,12 +5095,13 @@ type ReportTaskRun struct {
 	// Attempt number of the TaskRun
 	AttemptNumber int32 `protobuf:"varint,6,opt,name=attempt_number,json=attemptNumber,proto3" json:"attempt_number,omitempty"`
 	// Result can be one of three things:
-	// 1. output: the TaskRun was successfully executed and returned some output.
-	// 2. error: the TaskRun failed with a technical problem.
-	// 3. exception: the business logic threw an LHTaskException due to some business
-	//      precondition not being met.
+	//  1. output: the TaskRun was successfully executed and returned some output.
+	//  2. error: the TaskRun failed with a technical problem.
+	//  3. exception: the business logic threw an LHTaskException due to some business
+	//     precondition not being met.
 	//
 	// Types that are assignable to Result:
+	//
 	//	*ReportTaskRun_Output
 	//	*ReportTaskRun_Error
 	//	*ReportTaskRun_Exception

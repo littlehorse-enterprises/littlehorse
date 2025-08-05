@@ -1,6 +1,6 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { concatWfRunIds, formatDate } from '@/app/utils'
+import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
 import { WfRun, WfRunId } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
@@ -18,11 +18,6 @@ export const statusColors: { [key in WfRun['status']]: string } = {
   UNRECOGNIZED: 'bg-gray-200',
 }
 
-const flattenWfRunId = (wfRunId: WfRunId): string => {
-  if (!wfRunId.parentWfRunId) return wfRunId.id
-  return flattenWfRunId(wfRunId.parentWfRunId) + '_' + wfRunId.id
-}
-
 export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) => {
   if (!id || !wfSpecId) return null
 
@@ -36,7 +31,7 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
       {id.parentWfRunId && (
         <div className="flex items-center gap-2">
           Parent WfRun:
-          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id.parentWfRunId)}`} linkStyle>
+          <LinkWithTenant href={`/wfRun/${wfRunIdToPath(id.parentWfRunId)}`} linkStyle>
             <p>{id.parentWfRunId.id}</p>
           </LinkWithTenant>
         </div>
