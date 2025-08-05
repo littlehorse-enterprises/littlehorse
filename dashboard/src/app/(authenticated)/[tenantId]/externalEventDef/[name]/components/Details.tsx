@@ -11,10 +11,10 @@ export const Details: FC<DetailsProps> = ({ spec: { id, retentionPolicy } }) => 
     <div className="mb-4">
       <span className="italic">ExternalEventDef</span>
       <h1 className="block text-2xl font-bold">{id?.name}</h1>
-      {retentionPolicy?.secondsAfterPut && (
+      {retentionPolicy && retentionPolicy.extEvtGcPolicy && (
         <div className="flex items-center gap-2">
           Retention Policy:
-          <span className="font-mono text-gray-400">{retentionPolicy.secondsAfterPut} seconds</span>
+          <span className="font-mono text-gray-400">{retentionPolicy.extEvtGcPolicy.value} seconds</span>
         </div>
       )}
     </div>

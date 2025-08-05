@@ -254,6 +254,7 @@ type TaskAttempt struct {
 	// can throw a business EXCEPTION (eg. `credit-card-declined`).
 	//
 	// Types that are assignable to Result:
+	//
 	//	*TaskAttempt_Output
 	//	*TaskAttempt_Error
 	//	*TaskAttempt_Exception
@@ -412,6 +413,7 @@ type TaskRunSource struct {
 	// The source of the TaskRun.
 	//
 	// Types that are assignable to TaskRunSource:
+	//
 	//	*TaskRunSource_TaskNode
 	//	*TaskRunSource_UserTaskTrigger
 	TaskRunSource isTaskRunSource_TaskRunSource `protobuf_oneof:"task_run_source"`

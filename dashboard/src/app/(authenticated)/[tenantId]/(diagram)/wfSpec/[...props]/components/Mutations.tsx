@@ -1,4 +1,5 @@
-import { ThreadSpec, VariableMutation, VariableValue } from 'littlehorse-client/proto'
+import { getVariable, getVariableValue } from '@/app/utils'
+import { ThreadSpec, VariableMutation } from 'littlehorse-client/proto'
 import { FC, useMemo } from 'react'
 
 type Props = Pick<ThreadSpec, 'nodes'>
@@ -21,16 +22,31 @@ export const Mutations: FC<Props> = ({ nodes }) => {
         <div key={mutation.lhsName} className="mb-1 flex items-center gap-1">
           <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{mutation.lhsName}</span>
           <span className="rounded bg-green-300 p-1 text-xs">{mutation.operation}</span>
-          <NodeOutput nodeOutput={mutation.nodeOutput} />
-          <LiteralValue literalValue={mutation.literalValue} />
+          <MutationRhS rhsValue={mutation.rhsValue} />
         </div>
       ))}
     </div>
   )
 }
 
-const NodeOutput: FC<Pick<VariableMutation, 'nodeOutput'>> = ({ nodeOutput }) => {
-  if (!nodeOutput) return <></>
+export const MutationRhS: FC<{ rhsValue: VariableMutation['rhsValue'] }> = ({ rhsValue }) => {
+  if (!rhsValue) return <></>
+  switch (rhsValue.$case) {
+    case 'nodeOutput':
+      return <NodeOutput value={rhsValue} />
+    case 'rhsAssignment':
+      return <RhsAssignment value={rhsValue} />
+    case 'literalValue':
+      return <LiteralValue value={rhsValue} />
+
+    default:
+      break
+  }
+}
+
+const NodeOutput: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'nodeOutput' }> }> = ({
+  value: { value: nodeOutput },
+}) => {
   return (
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">Node Output</span>
@@ -41,14 +57,25 @@ const NodeOutput: FC<Pick<VariableMutation, 'nodeOutput'>> = ({ nodeOutput }) =>
   )
 }
 
-const LiteralValue: FC<Pick<VariableMutation, 'literalValue'>> = ({ literalValue }) => {
-  if (!literalValue) return <></>
-  const type = Object.keys(literalValue)[0] as keyof VariableValue
+const RhsAssignment: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'rhsAssignment' }> }> = ({
+  value: { value: rhsAssignment },
+}) => {
+  return (
+    <>
+      <span className="rounded bg-gray-200 p-1 text-xs">RHS Assignment</span>
+      <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{getVariable(rhsAssignment)}</span>
+    </>
+  )
+}
+
+const LiteralValue: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'literalValue' }> }> = ({
+  value: { value: literalValue },
+}) => {
   return (
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">Literal Value</span>
       <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">
-        {literalValue[type]?.toString()}
+        {getVariableValue(literalValue)}
       </span>
     </>
   )

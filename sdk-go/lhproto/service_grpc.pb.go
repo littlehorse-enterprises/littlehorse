@@ -130,7 +130,6 @@ type LittleHorseClient interface {
 	GetWfSpec(ctx context.Context, in *WfSpecId, opts ...grpc.CallOption) (*WfSpec, error)
 	// Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
 	GetLatestWfSpec(ctx context.Context, in *GetLatestWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	//
 	// EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
 	// same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
 	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
@@ -138,7 +137,7 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	// EXPERIMENTAL: Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef“.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -277,7 +276,6 @@ type LittleHorseClient interface {
 	SearchWorkflowEventDef(ctx context.Context, in *SearchWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
-	//
 	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -1175,7 +1173,6 @@ type LittleHorseServer interface {
 	GetWfSpec(context.Context, *WfSpecId) (*WfSpec, error)
 	// Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
 	GetLatestWfSpec(context.Context, *GetLatestWfSpecRequest) (*WfSpec, error)
-	//
 	// EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
 	// same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
 	// you must update WfRun's that are in the RUNNING state rather than allowing them to run to
@@ -1183,7 +1180,7 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
-	// EXPERIMENTAL: Creates a new `StructDef``.
+	// EXPERIMENTAL: Creates a new `StructDef“.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
@@ -1322,7 +1319,6 @@ type LittleHorseServer interface {
 	SearchWorkflowEventDef(context.Context, *SearchWorkflowEventDefRequest) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
-	//
 	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
