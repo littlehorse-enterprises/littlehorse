@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
@@ -9,6 +10,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.sdk.common.proto.ExitRun;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -65,10 +67,26 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
         }
 
         if (allComplete) {
+            maybeStoreOutputIntoThreadRun(processorContext);
             return true;
         } else {
             throw new NodeFailureException(
                     new FailureModel("Child thread (or threads) failed:" + failedChildren, LHConstants.CHILD_FAILURE));
+        }
+    }
+
+    private void maybeStoreOutputIntoThreadRun(CoreProcessorContext ctx) throws NodeFailureException {
+        ThreadRunModel thread = getNodeRun().getThreadRun();
+        ExitNodeModel exitNode = nodeRun.getNode().getExitNode();
+        if (exitNode.getReturnContent() == null) return;
+
+        try {
+            VariableValueModel result = thread.assignVariable(exitNode.getReturnContent());
+            thread.setOutput(result);
+        } catch (LHVarSubError exn) {
+            FailureModel failure = new FailureModel(
+                    "Failed calculating threadRun output: " + exn.getMessage(), LHErrorType.VAR_ERROR.name());
+            throw new NodeFailureException(failure);
         }
     }
 

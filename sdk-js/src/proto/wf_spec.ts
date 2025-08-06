@@ -456,7 +456,11 @@ export interface ExitNode {
    *
    * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
    */
-  failureDef?: FailureDef | undefined;
+  failureDef?:
+    | FailureDef
+    | undefined;
+  /** If set, the ExitNode returns the value that comes from this VariableAssignment. */
+  returnContent?: VariableAssignment | undefined;
 }
 
 /** Defines a Failure that can be thrown. */
@@ -2035,13 +2039,16 @@ export const EntrypointNode = {
 };
 
 function createBaseExitNode(): ExitNode {
-  return { failureDef: undefined };
+  return { failureDef: undefined, returnContent: undefined };
 }
 
 export const ExitNode = {
   encode(message: ExitNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.failureDef !== undefined) {
       FailureDef.encode(message.failureDef, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.returnContent !== undefined) {
+      VariableAssignment.encode(message.returnContent, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -2060,6 +2067,13 @@ export const ExitNode = {
 
           message.failureDef = FailureDef.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.returnContent = VariableAssignment.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2076,6 +2090,9 @@ export const ExitNode = {
     const message = createBaseExitNode();
     message.failureDef = (object.failureDef !== undefined && object.failureDef !== null)
       ? FailureDef.fromPartial(object.failureDef)
+      : undefined;
+    message.returnContent = (object.returnContent !== undefined && object.returnContent !== null)
+      ? VariableAssignment.fromPartial(object.returnContent)
       : undefined;
     return message;
   },

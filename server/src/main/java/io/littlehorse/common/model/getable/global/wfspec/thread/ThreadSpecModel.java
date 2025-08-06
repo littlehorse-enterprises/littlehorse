@@ -2,15 +2,20 @@ package io.littlehorse.common.model.getable.global.wfspec.thread;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.InvalidInterruptDefException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.exceptions.validation.InvalidVariableDefException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.sdk.common.proto.ExitNode.ResultCase;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
@@ -27,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -271,6 +277,45 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
         }
         validateExternalEventDefUse();
+        validateExitNodeReturnTypes(ctx);
+    }
+
+    private void validateExitNodeReturnTypes(MetadataProcessorContext ctx) throws InvalidThreadSpecException {
+        List<ExitNodeModel> exitNodes = nodes.values().stream()
+                .filter(node -> node.getType() == NodeCase.EXIT)
+                // ignore nodes that throw exceptions
+                .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
+                .map(NodeModel::getExitNode)
+                .toList();
+
+        Optional<TypeDefinitionModel> firstSeenOutputType = null;
+
+        for (ExitNodeModel exitNode : exitNodes) {
+            try {
+                Optional<ReturnTypeModel> returnTypeOption = exitNode.getThreadReturnType(ctx.metadataManager());
+                if (returnTypeOption.isEmpty()) {
+                    throw new IllegalStateException("We always know what an ExitNode returns! This is a bug.");
+                }
+                Optional<TypeDefinitionModel> typeDefOption =
+                        returnTypeOption.get().getOutputType();
+
+                if (firstSeenOutputType == null) {
+                    // Record the first one we see.
+                    firstSeenOutputType = typeDefOption;
+                } else {
+                    // Enforce that all subsequent EXIT nodes are the same.
+                    if ((firstSeenOutputType.isPresent() && !typeDefOption.isPresent())
+                            || firstSeenOutputType.isEmpty() && typeDefOption.isPresent()
+                            || !firstSeenOutputType.get().isCompatibleWith(typeDefOption.get())) {
+                        throw new InvalidThreadSpecException(
+                                this, "Detected that different EXIT nodes returned different output types!");
+                    }
+                }
+            } catch (InvalidExpressionException impossible) {
+                throw new IllegalStateException(
+                        "We already called getOutputType() earlier, so it shouldn't throw an error here.");
+            }
+        }
     }
 
     /*
