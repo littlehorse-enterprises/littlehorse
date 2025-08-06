@@ -64,6 +64,7 @@ private static final long serialVersionUID = 0L;
     WORKFLOW_EVENT_DEF(15),
     DELETE_WORKFLOW_EVENT_DEF(16),
     PUT_STRUCT_DEF(17),
+    PUT_METRIC(18),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -95,6 +96,7 @@ private static final long serialVersionUID = 0L;
         case 15: return WORKFLOW_EVENT_DEF;
         case 16: return DELETE_WORKFLOW_EVENT_DEF;
         case 17: return PUT_STRUCT_DEF;
+        case 18: return PUT_METRIC;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -629,6 +631,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
   }
 
+  public static final int PUT_METRIC_FIELD_NUMBER = 18;
+  /**
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+   * @return Whether the putMetric field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutMetric() {
+    return metadataCommandCase_ == 18;
+  }
+  /**
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+   * @return The putMetric.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutMetricSpecRequest getPutMetric() {
+    if (metadataCommandCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutMetricSpecRequestOrBuilder getPutMetricOrBuilder() {
+    if (metadataCommandCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -690,6 +723,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 17) {
       output.writeMessage(17, (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 18) {
+      output.writeMessage(18, (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -762,6 +798,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 17) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(17, (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 18) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(18, (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -846,6 +886,10 @@ private static final long serialVersionUID = 0L;
         if (!getPutStructDef()
             .equals(other.getPutStructDef())) return false;
         break;
+      case 18:
+        if (!getPutMetric()
+            .equals(other.getPutMetric())) return false;
+        break;
       case 0:
       default:
     }
@@ -924,6 +968,10 @@ private static final long serialVersionUID = 0L;
       case 17:
         hash = (37 * hash) + PUT_STRUCT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getPutStructDef().hashCode();
+        break;
+      case 18:
+        hash = (37 * hash) + PUT_METRIC_FIELD_NUMBER;
+        hash = (53 * hash) + getPutMetric().hashCode();
         break;
       case 0:
       default:
@@ -1111,6 +1159,9 @@ private static final long serialVersionUID = 0L;
       if (putStructDefBuilder_ != null) {
         putStructDefBuilder_.clear();
       }
+      if (putMetricBuilder_ != null) {
+        putMetricBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1218,6 +1269,10 @@ private static final long serialVersionUID = 0L;
       if (metadataCommandCase_ == 17 &&
           putStructDefBuilder_ != null) {
         result.metadataCommand_ = putStructDefBuilder_.build();
+      }
+      if (metadataCommandCase_ == 18 &&
+          putMetricBuilder_ != null) {
+        result.metadataCommand_ = putMetricBuilder_.build();
       }
     }
 
@@ -1328,6 +1383,10 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_STRUCT_DEF: {
           mergePutStructDef(other.getPutStructDef());
+          break;
+        }
+        case PUT_METRIC: {
+          mergePutMetric(other.getPutMetric());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1470,6 +1529,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 17;
               break;
             } // case 138
+            case 146: {
+              input.readMessage(
+                  getPutMetricFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 18;
+              break;
+            } // case 146
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3722,6 +3788,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 17;
       onChanged();
       return putStructDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.PutMetricSpecRequest.Builder, io.littlehorse.sdk.common.proto.PutMetricSpecRequestOrBuilder> putMetricBuilder_;
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     * @return Whether the putMetric field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutMetric() {
+      return metadataCommandCase_ == 18;
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     * @return The putMetric.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutMetricSpecRequest getPutMetric() {
+      if (putMetricBuilder_ == null) {
+        if (metadataCommandCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 18) {
+          return putMetricBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     */
+    public Builder setPutMetric(io.littlehorse.sdk.common.proto.PutMetricSpecRequest value) {
+      if (putMetricBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        putMetricBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     */
+    public Builder setPutMetric(
+        io.littlehorse.sdk.common.proto.PutMetricSpecRequest.Builder builderForValue) {
+      if (putMetricBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        putMetricBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     */
+    public Builder mergePutMetric(io.littlehorse.sdk.common.proto.PutMetricSpecRequest value) {
+      if (putMetricBuilder_ == null) {
+        if (metadataCommandCase_ == 18 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutMetricSpecRequest.newBuilder((io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 18) {
+          putMetricBuilder_.mergeFrom(value);
+        } else {
+          putMetricBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     */
+    public Builder clearPutMetric() {
+      if (putMetricBuilder_ == null) {
+        if (metadataCommandCase_ == 18) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 18) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        putMetricBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutMetricSpecRequest.Builder getPutMetricBuilder() {
+      return getPutMetricFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutMetricSpecRequestOrBuilder getPutMetricOrBuilder() {
+      if ((metadataCommandCase_ == 18) && (putMetricBuilder_ != null)) {
+        return putMetricBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutMetricSpecRequest put_metric = 18;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.PutMetricSpecRequest.Builder, io.littlehorse.sdk.common.proto.PutMetricSpecRequestOrBuilder> 
+        getPutMetricFieldBuilder() {
+      if (putMetricBuilder_ == null) {
+        if (!(metadataCommandCase_ == 18)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance();
+        }
+        putMetricBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.PutMetricSpecRequest.Builder, io.littlehorse.sdk.common.proto.PutMetricSpecRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 18;
+      onChanged();
+      return putMetricBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

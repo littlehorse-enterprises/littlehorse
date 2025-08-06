@@ -601,6 +601,18 @@ export function measurableObjectFromJSON(object: any): MeasurableObject {
   }
 }
 
+export function measurableObjectToJSON(object: MeasurableObject): string {
+  switch (object) {
+    case MeasurableObject.WORKFLOW:
+      return "WORKFLOW";
+    case MeasurableObject.TASK:
+      return "TASK";
+    case MeasurableObject.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function measurableObjectToNumber(object: MeasurableObject): number {
   switch (object) {
     case MeasurableObject.WORKFLOW:
@@ -639,6 +651,22 @@ export function aggregationTypeFromJSON(object: any): AggregationType {
     case "UNRECOGNIZED":
     default:
       return AggregationType.UNRECOGNIZED;
+  }
+}
+
+export function aggregationTypeToJSON(object: AggregationType): string {
+  switch (object) {
+    case AggregationType.COUNT:
+      return "COUNT";
+    case AggregationType.AVG:
+      return "AVG";
+    case AggregationType.RATIO:
+      return "RATIO";
+    case AggregationType.LATENCY:
+      return "LATENCY";
+    case AggregationType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 
@@ -689,6 +717,22 @@ export function userTaskRunStatusFromJSON(object: any): UserTaskRunStatus {
     case "UNRECOGNIZED":
     default:
       return UserTaskRunStatus.UNRECOGNIZED;
+  }
+}
+
+export function userTaskRunStatusToJSON(object: UserTaskRunStatus): string {
+  switch (object) {
+    case UserTaskRunStatus.UNASSIGNED:
+      return "UNASSIGNED";
+    case UserTaskRunStatus.ASSIGNED:
+      return "ASSIGNED";
+    case UserTaskRunStatus.DONE:
+      return "DONE";
+    case UserTaskRunStatus.CANCELLED:
+      return "CANCELLED";
+    case UserTaskRunStatus.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 

@@ -42,9 +42,13 @@ public final class CommonEnums {
       "ATION_ERROR\020\002\022\027\n\023USER_TASK_CANCELLED\020\003\022\013" +
       "\n\007TIMEOUT\020\004\022\020\n\014TASK_FAILURE\020\005\022\r\n\tVAR_ERR" +
       "OR\020\006\022\016\n\nTASK_ERROR\020\007\022\022\n\016INTERNAL_ERROR\020\010" +
-      "BM\n\037io.littlehorse.sdk.common.protoP\001Z\t." +
-      ";lhproto\252\002\034LittleHorse.Sdk.Common.Protob" +
-      "\006proto3"
+      "**\n\020MeasurableObject\022\014\n\010WORKFLOW\020\000\022\010\n\004TA" +
+      "SK\020\001*=\n\017AggregationType\022\t\n\005COUNT\020\000\022\007\n\003AV" +
+      "G\020\001\022\t\n\005RATIO\020\002\022\013\n\007LATENCY\020\003*J\n\021UserTaskR" +
+      "unStatus\022\016\n\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010" +
+      "\n\004DONE\020\003\022\r\n\tCANCELLED\020\004BM\n\037io.littlehors" +
+      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
+      "Horse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

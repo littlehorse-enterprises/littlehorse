@@ -10,10 +10,18 @@ import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
+  AggregationType,
+  aggregationTypeFromJSON,
+  aggregationTypeToJSON,
+  aggregationTypeToNumber,
   LHStatus,
   lHStatusFromJSON,
   lHStatusToJSON,
   lHStatusToNumber,
+  MeasurableObject,
+  measurableObjectFromJSON,
+  measurableObjectToJSON,
+  measurableObjectToNumber,
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToJSON,
@@ -22,6 +30,10 @@ import {
   taskStatusFromJSON,
   taskStatusToJSON,
   taskStatusToNumber,
+  UserTaskRunStatus,
+  userTaskRunStatusFromJSON,
+  userTaskRunStatusToJSON,
+  userTaskRunStatusToNumber,
 } from "./common_enums";
 import { ReturnType, VariableDef } from "./common_wfspec";
 import {
@@ -31,13 +43,17 @@ import {
   ExternalEventDef,
   ExternalEventRetentionPolicy,
 } from "./external_event";
+import { Duration } from "./google/protobuf/duration";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { Metric, MetricSpec } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
+  MetricSpecId,
+  NodeReference,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -46,6 +62,7 @@ import {
   TaskRunId,
   TaskWorkerGroupId,
   TenantId,
+  ThreadSpecReference,
   UserTaskDefId,
   UserTaskRunId,
   VariableId,
@@ -69,10 +86,6 @@ import {
   UserTaskDef,
   UserTaskField,
   UserTaskRun,
-  UserTaskRunStatus,
-  userTaskRunStatusFromJSON,
-  userTaskRunStatusToJSON,
-  userTaskRunStatusToNumber,
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
 import { WfRun } from "./wf_run";
@@ -243,6 +256,20 @@ export interface PutWfSpecRequest {
 export interface PutWfSpecRequest_ThreadSpecsEntry {
   key: string;
   value: ThreadSpec | undefined;
+}
+
+/** Creates a MetricSpec. This configuration specifies how the server will collect and measure metrics. */
+export interface PutMetricSpecRequest {
+  /** Defines how the metric will be computed and collected */
+  aggregationType: AggregationType;
+  reference?:
+    | { $case: "object"; value: MeasurableObject }
+    | { $case: "node"; value: NodeReference }
+    | { $case: "wfSpecId"; value: WfSpecId }
+    | { $case: "threadSpec"; value: ThreadSpecReference }
+    | undefined;
+  /** Defines a length for every window recorded for this MetricSpec */
+  windowLength: Duration | undefined;
 }
 
 /** Creates a TaskDef. */
@@ -1741,6 +1768,43 @@ export interface LittleHorseVersion {
   preReleaseIdentifier?: string | undefined;
 }
 
+/**
+ * List MetricSpecs based on specified filter criteria.
+ * If no filters are applied, all MetricSpecs are returned
+ */
+export interface ListMetricSpecRequest {
+  /** Filters the results based on the provided WfSpecId */
+  wfSpecId?:
+    | WfSpecId
+    | undefined;
+  /** Filters the results based on the provided ThreadSpec */
+  threadSpecReference?: ThreadSpecReference | undefined;
+}
+
+/** A list of MetricSpecs */
+export interface MetricSpecList {
+  /** Query result */
+  results: MetricSpec[];
+}
+
+export interface MetricList {
+  results: Metric[];
+}
+
+/** List the latest metrics for a given MetricSpecId */
+export interface ListMetricsRequest {
+  /** Filters by metric id */
+  metricSpecId:
+    | MetricSpecId
+    | undefined;
+  /** Filters by window length */
+  windowLength:
+    | Duration
+    | undefined;
+  /** Filters by aggregation type */
+  aggregationType: AggregationType;
+}
+
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
   return { name: "" };
 }
@@ -2040,6 +2104,171 @@ export const PutWfSpecRequest_ThreadSpecsEntry = {
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? ThreadSpec.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBasePutMetricSpecRequest(): PutMetricSpecRequest {
+  return { aggregationType: AggregationType.COUNT, reference: undefined, windowLength: undefined };
+}
+
+export const PutMetricSpecRequest = {
+  encode(message: PutMetricSpecRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(8).int32(aggregationTypeToNumber(message.aggregationType));
+    }
+    switch (message.reference?.$case) {
+      case "object":
+        writer.uint32(16).int32(measurableObjectToNumber(message.reference.value));
+        break;
+      case "node":
+        NodeReference.encode(message.reference.value, writer.uint32(26).fork()).ldelim();
+        break;
+      case "wfSpecId":
+        WfSpecId.encode(message.reference.value, writer.uint32(34).fork()).ldelim();
+        break;
+      case "threadSpec":
+        ThreadSpecReference.encode(message.reference.value, writer.uint32(42).fork()).ldelim();
+        break;
+    }
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(50).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutMetricSpecRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutMetricSpecRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.reference = { $case: "object", value: measurableObjectFromJSON(reader.int32()) };
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.reference = { $case: "node", value: NodeReference.decode(reader, reader.uint32()) };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.reference = { $case: "wfSpecId", value: WfSpecId.decode(reader, reader.uint32()) };
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.reference = { $case: "threadSpec", value: ThreadSpecReference.decode(reader, reader.uint32()) };
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutMetricSpecRequest {
+    return {
+      aggregationType: isSet(object.aggregationType)
+        ? aggregationTypeFromJSON(object.aggregationType)
+        : AggregationType.COUNT,
+      reference: isSet(object.object)
+        ? { $case: "object", value: measurableObjectFromJSON(object.object) }
+        : isSet(object.node)
+        ? { $case: "node", value: NodeReference.fromJSON(object.node) }
+        : isSet(object.wfSpecId)
+        ? { $case: "wfSpecId", value: WfSpecId.fromJSON(object.wfSpecId) }
+        : isSet(object.threadSpec)
+        ? { $case: "threadSpec", value: ThreadSpecReference.fromJSON(object.threadSpec) }
+        : undefined,
+      windowLength: isSet(object.windowLength) ? Duration.fromJSON(object.windowLength) : undefined,
+    };
+  },
+
+  toJSON(message: PutMetricSpecRequest): unknown {
+    const obj: any = {};
+    if (message.aggregationType !== AggregationType.COUNT) {
+      obj.aggregationType = aggregationTypeToJSON(message.aggregationType);
+    }
+    if (message.reference?.$case === "object") {
+      obj.object = measurableObjectToJSON(message.reference.value);
+    }
+    if (message.reference?.$case === "node") {
+      obj.node = NodeReference.toJSON(message.reference.value);
+    }
+    if (message.reference?.$case === "wfSpecId") {
+      obj.wfSpecId = WfSpecId.toJSON(message.reference.value);
+    }
+    if (message.reference?.$case === "threadSpec") {
+      obj.threadSpec = ThreadSpecReference.toJSON(message.reference.value);
+    }
+    if (message.windowLength !== undefined) {
+      obj.windowLength = Duration.toJSON(message.windowLength);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PutMetricSpecRequest>): PutMetricSpecRequest {
+    return PutMetricSpecRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutMetricSpecRequest>): PutMetricSpecRequest {
+    const message = createBasePutMetricSpecRequest();
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
+    if (
+      object.reference?.$case === "object" && object.reference?.value !== undefined && object.reference?.value !== null
+    ) {
+      message.reference = { $case: "object", value: object.reference.value };
+    }
+    if (
+      object.reference?.$case === "node" && object.reference?.value !== undefined && object.reference?.value !== null
+    ) {
+      message.reference = { $case: "node", value: NodeReference.fromPartial(object.reference.value) };
+    }
+    if (
+      object.reference?.$case === "wfSpecId" &&
+      object.reference?.value !== undefined &&
+      object.reference?.value !== null
+    ) {
+      message.reference = { $case: "wfSpecId", value: WfSpecId.fromPartial(object.reference.value) };
+    }
+    if (
+      object.reference?.$case === "threadSpec" &&
+      object.reference?.value !== undefined &&
+      object.reference?.value !== null
+    ) {
+      message.reference = { $case: "threadSpec", value: ThreadSpecReference.fromPartial(object.reference.value) };
+    }
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
       : undefined;
     return message;
   },
@@ -10740,6 +10969,299 @@ export const LittleHorseVersion = {
   },
 };
 
+function createBaseListMetricSpecRequest(): ListMetricSpecRequest {
+  return { wfSpecId: undefined, threadSpecReference: undefined };
+}
+
+export const ListMetricSpecRequest = {
+  encode(message: ListMetricSpecRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.threadSpecReference !== undefined) {
+      ThreadSpecReference.encode(message.threadSpecReference, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListMetricSpecRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListMetricSpecRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.threadSpecReference = ThreadSpecReference.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListMetricSpecRequest {
+    return {
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
+      threadSpecReference: isSet(object.threadSpecReference)
+        ? ThreadSpecReference.fromJSON(object.threadSpecReference)
+        : undefined,
+    };
+  },
+
+  toJSON(message: ListMetricSpecRequest): unknown {
+    const obj: any = {};
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
+    }
+    if (message.threadSpecReference !== undefined) {
+      obj.threadSpecReference = ThreadSpecReference.toJSON(message.threadSpecReference);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ListMetricSpecRequest>): ListMetricSpecRequest {
+    return ListMetricSpecRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListMetricSpecRequest>): ListMetricSpecRequest {
+    const message = createBaseListMetricSpecRequest();
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
+    message.threadSpecReference = (object.threadSpecReference !== undefined && object.threadSpecReference !== null)
+      ? ThreadSpecReference.fromPartial(object.threadSpecReference)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseMetricSpecList(): MetricSpecList {
+  return { results: [] };
+}
+
+export const MetricSpecList = {
+  encode(message: MetricSpecList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      MetricSpec.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricSpecList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricSpecList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(MetricSpec.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MetricSpecList {
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => MetricSpec.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: MetricSpecList): unknown {
+    const obj: any = {};
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => MetricSpec.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MetricSpecList>): MetricSpecList {
+    return MetricSpecList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricSpecList>): MetricSpecList {
+    const message = createBaseMetricSpecList();
+    message.results = object.results?.map((e) => MetricSpec.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseMetricList(): MetricList {
+  return { results: [] };
+}
+
+export const MetricList = {
+  encode(message: MetricList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      Metric.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(Metric.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MetricList {
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => Metric.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: MetricList): unknown {
+    const obj: any = {};
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => Metric.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MetricList>): MetricList {
+    return MetricList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricList>): MetricList {
+    const message = createBaseMetricList();
+    message.results = object.results?.map((e) => Metric.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseListMetricsRequest(): ListMetricsRequest {
+  return { metricSpecId: undefined, windowLength: undefined, aggregationType: AggregationType.COUNT };
+}
+
+export const ListMetricsRequest = {
+  encode(message: ListMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.metricSpecId !== undefined) {
+      MetricSpecId.encode(message.metricSpecId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(24).int32(aggregationTypeToNumber(message.aggregationType));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListMetricsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListMetricsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.metricSpecId = MetricSpecId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListMetricsRequest {
+    return {
+      metricSpecId: isSet(object.metricSpecId) ? MetricSpecId.fromJSON(object.metricSpecId) : undefined,
+      windowLength: isSet(object.windowLength) ? Duration.fromJSON(object.windowLength) : undefined,
+      aggregationType: isSet(object.aggregationType)
+        ? aggregationTypeFromJSON(object.aggregationType)
+        : AggregationType.COUNT,
+    };
+  },
+
+  toJSON(message: ListMetricsRequest): unknown {
+    const obj: any = {};
+    if (message.metricSpecId !== undefined) {
+      obj.metricSpecId = MetricSpecId.toJSON(message.metricSpecId);
+    }
+    if (message.windowLength !== undefined) {
+      obj.windowLength = Duration.toJSON(message.windowLength);
+    }
+    if (message.aggregationType !== AggregationType.COUNT) {
+      obj.aggregationType = aggregationTypeToJSON(message.aggregationType);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
+    return ListMetricsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
+    const message = createBaseListMetricsRequest();
+    message.metricSpecId = (object.metricSpecId !== undefined && object.metricSpecId !== null)
+      ? MetricSpecId.fromPartial(object.metricSpecId)
+      : undefined;
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
+      : undefined;
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
+    return message;
+  },
+};
+
 export type LittleHorseDefinition = typeof LittleHorseDefinition;
 export const LittleHorseDefinition = {
   name: "LittleHorse",
@@ -10805,6 +11327,15 @@ export const LittleHorseDefinition = {
       requestType: PutWfSpecRequest,
       requestStream: false,
       responseType: WfSpec,
+      responseStream: false,
+      options: {},
+    },
+    /** Creates a new metric spec */
+    putMetricSpec: {
+      name: "PutMetricSpec",
+      requestType: PutMetricSpecRequest,
+      requestStream: false,
+      responseType: MetricSpec,
       responseStream: false,
       options: {},
     },
@@ -11623,6 +12154,23 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    listMetricSpecs: {
+      name: "ListMetricSpecs",
+      requestType: ListMetricSpecRequest,
+      requestStream: false,
+      responseType: MetricSpecList,
+      responseStream: false,
+      options: {},
+    },
+    /** List the latest metrics for a given MetricSpecId */
+    listMetrics: {
+      name: "ListMetrics",
+      requestType: ListMetricsRequest,
+      requestStream: false,
+      responseType: MetricList,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -11650,6 +12198,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<WorkflowEventDef>>;
   /** Creates a WfSpec. */
   putWfSpec(request: PutWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
+  /** Creates a new metric spec */
+  putMetricSpec(request: PutMetricSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<MetricSpec>>;
   /** Gets a WfSpec. */
   getWfSpec(request: WfSpecId, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /** Returns the latest WfSpec with a specified name (and optionally a specified Major Version). */
@@ -12050,6 +12600,12 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
+  listMetricSpecs(
+    request: ListMetricSpecRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<MetricSpecList>>;
+  /** List the latest metrics for a given MetricSpecId */
+  listMetrics(request: ListMetricsRequest, context: CallContext & CallContextExt): Promise<DeepPartial<MetricList>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -12076,6 +12632,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<WorkflowEventDef>;
   /** Creates a WfSpec. */
   putWfSpec(request: DeepPartial<PutWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
+  /** Creates a new metric spec */
+  putMetricSpec(
+    request: DeepPartial<PutMetricSpecRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricSpec>;
   /** Gets a WfSpec. */
   getWfSpec(request: DeepPartial<WfSpecId>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /** Returns the latest WfSpec with a specified name (and optionally a specified Major Version). */
@@ -12485,6 +13046,12 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
+  listMetricSpecs(
+    request: DeepPartial<ListMetricSpecRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricSpecList>;
+  /** List the latest metrics for a given MetricSpecId */
+  listMetrics(request: DeepPartial<ListMetricsRequest>, options?: CallOptions & CallOptionsExt): Promise<MetricList>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

@@ -27,7 +27,7 @@ enum StoreableType {
     INITIALIZATION_LOG = 8;
     WFRUN_STORED_INVENTORY = 9;
     CORRELATION_MARKER = 10;
-    METRIC_PARTITION_INVENTORY = 10;
+    METRIC_PARTITION_INVENTORY = 11;
 }
 
 enum GetableClassEnum {
@@ -49,11 +49,11 @@ enum GetableClassEnum {
     WORKFLOW_EVENT_DEF = 15;
     WORKFLOW_EVENT = 16;
     SCHEDULED_WF_RUN = 17;
-    METRIC = 18;
-    PARTITION_METRIC = 19;
-    METRIC_SPEC = 20;
     STRUCT_DEF = 18;
     CORRELATED_EVENT = 19;
+    METRIC = 20;
+    PARTITION_METRIC = 21;
+    METRIC_SPEC = 22;
 }
 
 message AttributePb {

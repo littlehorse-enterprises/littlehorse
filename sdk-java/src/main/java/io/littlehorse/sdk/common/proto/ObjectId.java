@@ -114,6 +114,26 @@ public final class ObjectId {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ScheduledWfRunId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_NodeReference_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_NodeReference_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_ThreadSpecReference_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_ThreadSpecReference_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricSpecId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_MetricSpecId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_MetricId_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -125,54 +145,74 @@ public final class ObjectId {
     java.lang.String[] descriptorData = {
       "\n\017object_id.proto\022\013littlehorse\032\037google/p" +
       "rotobuf/timestamp.proto\032\022common_enums.pr" +
-      "oto\"A\n\010WfSpecId\022\014\n\004name\030\001 \001(\t\022\025\n\rmajor_v" +
-      "ersion\030\002 \001(\005\022\020\n\010revision\030\003 \001(\005\"\031\n\tTaskDe" +
-      "fId\022\014\n\004name\030\001 \001(\t\",\n\013StructDefId\022\014\n\004name" +
-      "\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\"\"\n\022ExternalEvent" +
-      "DefId\022\014\n\004name\030\001 \001(\t\".\n\rUserTaskDefId\022\014\n\004" +
-      "name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\"\"\n\022WorkflowE" +
-      "ventDefId\022\014\n\004name\030\001 \001(\t\"@\n\021TaskWorkerGro" +
-      "upId\022+\n\013task_def_id\030\001 \001(\0132\026.littlehorse." +
-      "TaskDefId\"^\n\nVariableId\022\'\n\twf_run_id\030\001 \001" +
-      "(\0132\024.littlehorse.WfRunId\022\031\n\021thread_run_n" +
-      "umber\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\"\210\001\n\017ExternalEv" +
-      "entId\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.W" +
-      "fRunId\022>\n\025external_event_def_id\030\002 \001(\0132\037." +
-      "littlehorse.ExternalEventDefId\022\014\n\004guid\030\003" +
-      " \001(\t\"`\n\021CorrelatedEventId\022\013\n\003key\030\001 \001(\t\022>" +
+      "oto\032\036google/protobuf/duration.proto\"A\n\010W" +
+      "fSpecId\022\014\n\004name\030\001 \001(\t\022\025\n\rmajor_version\030\002" +
+      " \001(\005\022\020\n\010revision\030\003 \001(\005\"\031\n\tTaskDefId\022\014\n\004n" +
+      "ame\030\001 \001(\t\",\n\013StructDefId\022\014\n\004name\030\001 \001(\t\022\017" +
+      "\n\007version\030\002 \001(\005\"\"\n\022ExternalEventDefId\022\014\n" +
+      "\004name\030\001 \001(\t\".\n\rUserTaskDefId\022\014\n\004name\030\001 \001" +
+      "(\t\022\017\n\007version\030\002 \001(\005\"\"\n\022WorkflowEventDefI" +
+      "d\022\014\n\004name\030\001 \001(\t\"@\n\021TaskWorkerGroupId\022+\n\013" +
+      "task_def_id\030\001 \001(\0132\026.littlehorse.TaskDefI" +
+      "d\"^\n\nVariableId\022\'\n\twf_run_id\030\001 \001(\0132\024.lit" +
+      "tlehorse.WfRunId\022\031\n\021thread_run_number\030\002 " +
+      "\001(\005\022\014\n\004name\030\003 \001(\t\"\210\001\n\017ExternalEventId\022\'\n" +
+      "\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRunId\022>" +
       "\n\025external_event_def_id\030\002 \001(\0132\037.littleho" +
-      "rse.ExternalEventDefId\"_\n\007WfRunId\022\n\n\002id\030" +
-      "\001 \001(\t\0223\n\020parent_wf_run_id\030\002 \001(\0132\024.little" +
-      "horse.WfRunIdH\000\210\001\001B\023\n\021_parent_wf_run_id\"" +
-      "a\n\tNodeRunId\022\'\n\twf_run_id\030\001 \001(\0132\024.little" +
-      "horse.WfRunId\022\031\n\021thread_run_number\030\002 \001(\005" +
-      "\022\020\n\010position\030\003 \001(\005\"\212\001\n\017WorkflowEventId\022\'" +
-      "\n\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRunId\022" +
-      ">\n\025workflow_event_def_id\030\002 \001(\0132\037.littleh" +
-      "orse.WorkflowEventDefId\022\016\n\006number\030\003 \001(\005\"" +
-      "G\n\tTaskRunId\022\'\n\twf_run_id\030\001 \001(\0132\024.little" +
-      "horse.WfRunId\022\021\n\ttask_guid\030\002 \001(\t\"P\n\rUser" +
-      "TaskRunId\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehor" +
-      "se.WfRunId\022\026\n\016user_task_guid\030\002 \001(\t\"\250\001\n\020T" +
-      "askDefMetricsId\0220\n\014window_start\030\001 \001(\0132\032." +
-      "google.protobuf.Timestamp\0225\n\013window_type" +
-      "\030\002 \001(\0162 .littlehorse.MetricsWindowLength" +
-      "\022+\n\013task_def_id\030\003 \001(\0132\026.littlehorse.Task" +
-      "DefId\"\245\001\n\017WfSpecMetricsId\0220\n\014window_star" +
-      "t\030\001 \001(\0132\032.google.protobuf.Timestamp\0225\n\013w" +
-      "indow_type\030\002 \001(\0162 .littlehorse.MetricsWi" +
-      "ndowLength\022)\n\nwf_spec_id\030\003 \001(\0132\025.littleh" +
-      "orse.WfSpecId\"\031\n\013PrincipalId\022\n\n\002id\030\001 \001(\t" +
-      "\"\026\n\010TenantId\022\n\n\002id\030\001 \001(\t\"\036\n\020ScheduledWfR" +
-      "unId\022\n\n\002id\030\001 \001(\tBM\n\037io.littlehorse.sdk.c" +
-      "ommon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.S" +
-      "dk.Common.Protob\006proto3"
+      "rse.ExternalEventDefId\022\014\n\004guid\030\003 \001(\t\"`\n\021" +
+      "CorrelatedEventId\022\013\n\003key\030\001 \001(\t\022>\n\025extern" +
+      "al_event_def_id\030\002 \001(\0132\037.littlehorse.Exte" +
+      "rnalEventDefId\"_\n\007WfRunId\022\n\n\002id\030\001 \001(\t\0223\n" +
+      "\020parent_wf_run_id\030\002 \001(\0132\024.littlehorse.Wf" +
+      "RunIdH\000\210\001\001B\023\n\021_parent_wf_run_id\"a\n\tNodeR" +
+      "unId\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.Wf" +
+      "RunId\022\031\n\021thread_run_number\030\002 \001(\005\022\020\n\010posi" +
+      "tion\030\003 \001(\005\"\212\001\n\017WorkflowEventId\022\'\n\twf_run" +
+      "_id\030\001 \001(\0132\024.littlehorse.WfRunId\022>\n\025workf" +
+      "low_event_def_id\030\002 \001(\0132\037.littlehorse.Wor" +
+      "kflowEventDefId\022\016\n\006number\030\003 \001(\005\"G\n\tTaskR" +
+      "unId\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.Wf" +
+      "RunId\022\021\n\ttask_guid\030\002 \001(\t\"P\n\rUserTaskRunI" +
+      "d\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRun" +
+      "Id\022\026\n\016user_task_guid\030\002 \001(\t\"\250\001\n\020TaskDefMe" +
+      "tricsId\0220\n\014window_start\030\001 \001(\0132\032.google.p" +
+      "rotobuf.Timestamp\0225\n\013window_type\030\002 \001(\0162 " +
+      ".littlehorse.MetricsWindowLength\022+\n\013task" +
+      "_def_id\030\003 \001(\0132\026.littlehorse.TaskDefId\"\245\001" +
+      "\n\017WfSpecMetricsId\0220\n\014window_start\030\001 \001(\0132" +
+      "\032.google.protobuf.Timestamp\0225\n\013window_ty" +
+      "pe\030\002 \001(\0162 .littlehorse.MetricsWindowLeng" +
+      "th\022)\n\nwf_spec_id\030\003 \001(\0132\025.littlehorse.WfS" +
+      "pecId\"\031\n\013PrincipalId\022\n\n\002id\030\001 \001(\t\"\026\n\010Tena" +
+      "ntId\022\n\n\002id\030\001 \001(\t\"\036\n\020ScheduledWfRunId\022\n\n\002" +
+      "id\030\001 \001(\t\"\257\001\n\rNodeReference\022:\n\013thread_spe" +
+      "c\030\001 \001(\0132 .littlehorse.ThreadSpecReferenc" +
+      "eH\000\210\001\001\022\026\n\tnode_type\030\002 \001(\tH\001\210\001\001\022\032\n\rnode_p" +
+      "osition\030\003 \001(\005H\002\210\001\001B\016\n\014_thread_specB\014\n\n_n" +
+      "ode_typeB\020\n\016_node_position\"n\n\023ThreadSpec" +
+      "Reference\022)\n\nwf_spec_id\030\001 \001(\0132\025.littleho" +
+      "rse.WfSpecId\022\032\n\rthread_number\030\002 \001(\005H\000\210\001\001" +
+      "B\020\n\016_thread_number\"\336\001\n\014MetricSpecId\022/\n\006o" +
+      "bject\030\001 \001(\0162\035.littlehorse.MeasurableObje" +
+      "ctH\000\022*\n\004node\030\002 \001(\0132\032.littlehorse.NodeRef" +
+      "erenceH\000\022+\n\nwf_spec_id\030\003 \001(\0132\025.littlehor" +
+      "se.WfSpecIdH\000\0227\n\013thread_spec\030\004 \001(\0132 .lit" +
+      "tlehorse.ThreadSpecReferenceH\000B\013\n\trefere" +
+      "nce\"\331\001\n\010MetricId\0221\n\016metric_spec_id\030\001 \001(\013" +
+      "2\031.littlehorse.MetricSpecId\0220\n\rwindow_le" +
+      "ngth\030\002 \001(\0132\031.google.protobuf.Duration\0220\n" +
+      "\014window_start\030\003 \001(\0132\032.google.protobuf.Ti" +
+      "mestamp\0226\n\020aggregation_type\030\004 \001(\0162\034.litt" +
+      "lehorse.AggregationTypeBM\n\037io.littlehors" +
+      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
+      "Horse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
+          com.google.protobuf.DurationProto.getDescriptor(),
         });
     internal_static_littlehorse_WfSpecId_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -294,8 +334,33 @@ public final class ObjectId {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ScheduledWfRunId_descriptor,
         new java.lang.String[] { "Id", });
+    internal_static_littlehorse_NodeReference_descriptor =
+      getDescriptor().getMessageTypes().get(20);
+    internal_static_littlehorse_NodeReference_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_NodeReference_descriptor,
+        new java.lang.String[] { "ThreadSpec", "NodeType", "NodePosition", "ThreadSpec", "NodeType", "NodePosition", });
+    internal_static_littlehorse_ThreadSpecReference_descriptor =
+      getDescriptor().getMessageTypes().get(21);
+    internal_static_littlehorse_ThreadSpecReference_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_ThreadSpecReference_descriptor,
+        new java.lang.String[] { "WfSpecId", "ThreadNumber", "ThreadNumber", });
+    internal_static_littlehorse_MetricSpecId_descriptor =
+      getDescriptor().getMessageTypes().get(22);
+    internal_static_littlehorse_MetricSpecId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_MetricSpecId_descriptor,
+        new java.lang.String[] { "Object", "Node", "WfSpecId", "ThreadSpec", "Reference", });
+    internal_static_littlehorse_MetricId_descriptor =
+      getDescriptor().getMessageTypes().get(23);
+    internal_static_littlehorse_MetricId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_MetricId_descriptor,
+        new java.lang.String[] { "MetricSpecId", "WindowLength", "WindowStart", "AggregationType", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
+    com.google.protobuf.DurationProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

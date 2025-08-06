@@ -6,76 +6,19 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
+import {
+  UserTaskRunStatus,
+  userTaskRunStatusFromJSON,
+  userTaskRunStatusToJSON,
+  userTaskRunStatusToNumber,
+  VariableType,
+  variableTypeFromJSON,
+  variableTypeToJSON,
+  variableTypeToNumber,
+} from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, TaskRunId, UserTaskDefId, UserTaskRunId } from "./object_id";
 import { VariableValue } from "./variable";
-
-/** The status that a UserTaskRun can be in. */
-export enum UserTaskRunStatus {
-  /** UNASSIGNED - Not assigned to a specific user yet. */
-  UNASSIGNED = "UNASSIGNED",
-  /** ASSIGNED - Assigned to a specific user, but not completed or cancelled yet. */
-  ASSIGNED = "ASSIGNED",
-  /** DONE - Done. */
-  DONE = "DONE",
-  /** CANCELLED - Cancelled. */
-  CANCELLED = "CANCELLED",
-  UNRECOGNIZED = "UNRECOGNIZED",
-}
-
-export function userTaskRunStatusFromJSON(object: any): UserTaskRunStatus {
-  switch (object) {
-    case 0:
-    case "UNASSIGNED":
-      return UserTaskRunStatus.UNASSIGNED;
-    case 1:
-    case "ASSIGNED":
-      return UserTaskRunStatus.ASSIGNED;
-    case 3:
-    case "DONE":
-      return UserTaskRunStatus.DONE;
-    case 4:
-    case "CANCELLED":
-      return UserTaskRunStatus.CANCELLED;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return UserTaskRunStatus.UNRECOGNIZED;
-  }
-}
-
-export function userTaskRunStatusToJSON(object: UserTaskRunStatus): string {
-  switch (object) {
-    case UserTaskRunStatus.UNASSIGNED:
-      return "UNASSIGNED";
-    case UserTaskRunStatus.ASSIGNED:
-      return "ASSIGNED";
-    case UserTaskRunStatus.DONE:
-      return "DONE";
-    case UserTaskRunStatus.CANCELLED:
-      return "CANCELLED";
-    case UserTaskRunStatus.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
-export function userTaskRunStatusToNumber(object: UserTaskRunStatus): number {
-  switch (object) {
-    case UserTaskRunStatus.UNASSIGNED:
-      return 0;
-    case UserTaskRunStatus.ASSIGNED:
-      return 1;
-    case UserTaskRunStatus.DONE:
-      return 3;
-    case UserTaskRunStatus.CANCELLED:
-      return 4;
-    case UserTaskRunStatus.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}
 
 /** UserTaskDef is the metadata blueprint for UserTaskRuns. */
 export interface UserTaskDef {

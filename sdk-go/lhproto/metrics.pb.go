@@ -488,6 +488,7 @@ type Metric struct {
 	// Unique id of the metric value
 	Id *MetricId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// Types that are assignable to Value:
+	//
 	//	*Metric_Count
 	//	*Metric_LatencyAvg
 	Value isMetric_Value `protobuf_oneof:"value"`
