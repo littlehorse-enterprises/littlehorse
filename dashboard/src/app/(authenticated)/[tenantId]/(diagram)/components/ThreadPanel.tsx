@@ -22,9 +22,9 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
           <ChevronLeftIcon className="h-6 w-6" />
         </button>
       </div>
-      <div className="flex touch-pan-y items-center text-nowrap w-full" ref={containerRef}>
+      <div className="flex w-full touch-pan-y items-center text-nowrap" ref={containerRef}>
         <div
-          className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex gap-2 will-change-transform overflow-x-auto"
+          className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex gap-2 overflow-x-auto will-change-transform"
           style={{ transform: `translateX(${scroll}px)` }}
           ref={itemsRef}
         >

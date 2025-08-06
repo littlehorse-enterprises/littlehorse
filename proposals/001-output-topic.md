@@ -180,115 +180,29 @@ Of course, future Proposals may add additional records by extending the `oneof` 
 // An OutputTopicRecord is a single record in the output topic, which can
 // denote one of several different types of events.
 message OutputTopicRecord {
-    // The ID of the WfRun that produced this record.
-    WfRunId id = 1;
-
     // The time at which the event occurred.
-    google.protobuf.Timestamp timestamp = 2;
+    google.protobuf.Timestamp timestamp = 1;
 
     oneof payload {
         // Records the results of a TaskRun in the Output Topic.
-        TaskRunExecutedRecord task_run_executed = 3;
+        TaskRun task_run = 2;
 
         // Records a WorkflowEvent that was thrown into the Output Topic.
-        WorkflowEventRecord workflow_event = 4;
+        WorkflowEvent workflow_event = 3;
 
-        // Records an update to a WfRun which is treated as an "Entity", with
-        // the public variables of the WfRun treated as fields in the Entity.
-        WfRunEntityRecord wf_run_entity = 5;
+        // Records an update to a WfRun, triggered by a change to the status of a
+        // `ThreadRun`.
+        WfRun wf_run = 4;
 
         // Updates about a user task run.
-        UserTaskRunUpdateRecord user_task_run = 6;
+        UserTaskRun user_task_run = 5;
 
         // Updates about a specific Variable changing.
-        VariableUpdateRecord variable_update = 7;
+        Variable variable = 6;
+
+        // Updates about an `ExternalEvent` changing.
+        ExternalEvent external_event = 7;
     }
-}
-
-// Record to state that a TaskRun was executed (`TASK_SUCCESS`,
-// `TASK_ERROR`, or `TASK_EXCEPTION`).
-message TaskRunExecutedRecord {
-    // The TaskRun that was executed. All information about TaskAttempts,
-    // input variables, start times, failures, etc is included in the
-    // TaskRun itself.
-    //
-    // Not sent until the `TaskRun` is in a terminal state.
-    TaskRun task_run = 1;
-}
-
-// Record in the Output Topic to denote that a WorkflowEvent was thrown
-// by a WfRun.
-message WorkflowEventRecord {
-    // The WorkflowEvent that was thrown.
-    WorkflowEvent workflow_event = 1;
-
-    // The WfSpecId for the WfRun that threw the WorkflowEvent.
-    WfSpecId wf_spec_id = 2;
-}
-
-// Represents a snapshot of a WfRun as an entity. Used in the Output Topic
-// to allow exporting a WfRun's public variables into external systems. This
-// only includes Variables that are of type `PUBLIC_VAR` and in the entrypoint
-// ThreadRun.
-message WfRunEntityRecord {
-    // The current status of the WfRun.
-    LHStatus status = 1;
-
-    // Denotes the reason that this `WfRunEntityRecord` was recorded to the
-    // Output Topic.
-    enum UpdateReason {
-        // Recorded because the `WfRun` was started.
-        WFRUN_STARTED = 0;
-
-        // Recorded because a public variable was changed.
-        VARIABLE_CHANGED = 1;
-
-        // Recorded because the status of the `WfRun` was changed.
-        WFRUN_STATUS_CHANGED = 2;
-    }
-
-    // The public Variables in the entrypoint ThreadRun
-    map<String, Variable> public_variables = 2;
-
-    // The reason(s) for this update.
-    repeated UpdateReason update_reasons = 3;
-}
-
-// Represents a snapshot of a UserTaskRun being updated. Used in the Output Topic
-// to allow exporting information about User Tasks into external systems.
-message UserTaskRunUpdateRecord {
-    // The current snapshot of the UserTaskRun.
-    UserTaskRun user_task_run = 1;
-
-    // Denotes the reason for a UserTaskRunUpdateReason to be recorded to the Output
-    // Topic.
-    enum UserTaskRunUpdateReason {
-        // UserTaskRun was created.
-        USER_TASK_CREATED = 0;
-
-        // UserTaskRun was assigned.
-        USER_TASK_ASSIGNED = 1;
-
-        // UserTaskRun was saved.
-        USER_TASK_SAVED = 2;
-
-        // UserTaskRun was canceled.
-        USER_TASK_CANCELED = 3;
-
-        // UserTaskRun was completed.
-        USER_TASK_COMPLETED = 4;
-    }
-
-    // The reason(s) for the UserTaskRunUpdateRecord to be recorded into the Output
-    // Topic.
-    repeated UserTaskRunUpdateReason reasons = 2;
-}
-
-// Represents a snapshot of an individual Variable being updated. Used in the Output
-// Topic to allow exporting information for specific Variables to external systems.
-message VariableUpdateRecord {
-    // The cuurrent snapshot of the Variable in question.
-    Variable current_variable = 1;
 }
 ```
 
@@ -301,14 +215,25 @@ The Metadata Output Topic is intended for consumers of the output topic to have 
 The topic can look something like this:
 
 ```protobuf
-message MetadataRecord {
-  oneof metadata_record {
-    WfSpec wf_spec = 1;
-    TaskDef task_def = 2;
-    ExternalEventDef external_event_def = 3;
-    WorkflowEventDef workflow_event_def = 4;
-    UserTaskDef user_task_def = 5;
-  }
+// Message to configure data sent to the Metadata Output Topic
+message MetadataOutputTopicRecord {
+    // The data that was sent
+    oneof metadata_record {
+        // A WfSpec update
+        WfSpec wf_spec = 1;
+
+        // A TaskDef update
+        TaskDef task_def = 2;
+
+        // An ExternalEventDef Update
+        ExternalEventDef external_event_def = 3;
+
+        // A WorkflowEventDef update
+        WorkflowEventDef workflow_event_def = 4;
+
+        // A UserTaskDef update
+        UserTaskDef user_task_def = 5;
+    }
 }
 ```
 
@@ -346,11 +271,11 @@ WfRunVariable myVar = wf.declareStr("some-var").asPublic().withoutOutputTopic();
 
 We will add another sink to the Core Processor (in `ServerTopology.java`) which determines the topic dynamically based on the `Tenant` information.
 
-We will place a "sniffer" in the `ProcessorExecutionContext` that watches for `put()`'s with updates to `Getable`s, and then in the `endExecution()` method does a series of `context.forward()`'s for any `Getable`s that changed and are configured to be sent to the Output Topic.
+We will place a "sniffer" in the `CoreProcessorContext` that watches for `put()`'s with updates to `Getable`s, and then in the `endExecution()` method does a series of `context.forward()`'s for any `Getable`s that changed and are configured to be sent to the Output Topic.
 
 ### Reads vs Puts
 
-Currently, we have a weakness in the `GetableUpdates` inside the `ProcessorExecutionContext`. Every time we _read_ a `Getable`, we put it in the buffer of changes. The reason for this is:
+Currently, we have a weakness in the `GetableUpdates` inside the `CoreProcessorContext`. Every time we _read_ a `Getable`, we put it in the buffer of changes. The reason for this is:
 
 * To cache reads, meaning that we only read a single `Getable` from RocksDB once per `Command`.
 * To prevent multiple `Model` copies of the same `Getable` from floating around in the code during one single `Command` processing.

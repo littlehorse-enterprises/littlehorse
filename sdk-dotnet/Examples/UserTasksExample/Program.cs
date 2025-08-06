@@ -28,11 +28,12 @@ public abstract class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetLHConfig(ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
         
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
@@ -105,9 +106,7 @@ public abstract class Program
                             itRequest.WithJsonPath("$.RequestedItem")
                         )
                     );
-                },
-                // Request denied ):
-                elseBody => {
+                }).DoElse(elseBody => {
                     elseBody.Execute(
                         EmailTaskName,
                         userId,
@@ -117,44 +116,42 @@ public abstract class Program
                             itRequest.WithJsonPath("$.RequestedItem")
                         )
                     );
-                }
-            );
+                });
         }
         
         return new Workflow(WorkflowName, MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetLHConfig(args, loggerFactory);
+            var config = GetLHConfig(loggerFactory);
             var client = config.GetGrpcClientInstance();
             var worker = new LHTaskWorker<EmailSender>(new EmailSender(), "send-email", config);
-            worker.RegisterTaskDef();
+
+            await worker.RegisterTaskDef();
             
             // Create the User Task Def
             UserTaskSchema requestForm = new UserTaskSchema(
                 new ItemRequestForm(),
                 ItRequestForm
             );
-            client.PutUserTaskDef(requestForm.Compile());
+            await client.PutUserTaskDefAsync(requestForm.Compile());
 
             UserTaskSchema approvalForm = new UserTaskSchema(
                 new ApprovalForm(),
                 ApprovalForm
             );
-            client.PutUserTaskDef(approvalForm.Compile());
+            await client.PutUserTaskDefAsync(approvalForm.Compile());
 
-            var workflow = GetWorkflow();
-            
-            workflow.RegisterWfSpec(client);
-            
-            Thread.Sleep(300);
+            await GetWorkflow().RegisterWfSpec(client);
 
-            worker.Start();
+            await Task.Delay(300);
+
+            await worker.Start();
         }
     }
 }

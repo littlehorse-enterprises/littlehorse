@@ -30,6 +30,16 @@ poetry shell
 python -m unittest discover -v
 ```
 
+## Validate Indentations
+```
+poetry run ruff check .
+```
+
+## Validate types
+```
+poetry run mypy .
+```
+
 ## Useful Commands
 
 Set python version:
@@ -50,4 +60,11 @@ VariableType.BOOL:     bool
 VariableType.STR:      str
 VariableType.INT:      int
 VariableType.BYTES:    bytes
+```
+
+## Python Code Formatter 
+
+```
+poetry shell
+black . 
 ```

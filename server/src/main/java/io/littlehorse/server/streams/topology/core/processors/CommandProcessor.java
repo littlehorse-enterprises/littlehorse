@@ -32,8 +32,9 @@ import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
@@ -45,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
@@ -67,6 +69,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private KeyValueStore<String, Bytes> nativeStore;
     private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
+    private final AsyncWaiters asyncWaiters;
 
     private final LHProcessingExceptionHandler exceptionHandler;
 
@@ -74,12 +77,14 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
-            TaskQueueManager globalTaskQueueManager) {
+            TaskQueueManager globalTaskQueueManager,
+            AsyncWaiters asyncWaiters) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        this.exceptionHandler = new LHProcessingExceptionHandler(server);
+        this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncWaiters);
+        this.asyncWaiters = asyncWaiters;
     }
 
     @Override
@@ -97,25 +102,22 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void processHelper(final Record<String, Command> commandRecord) {
-        ProcessorExecutionContext executionContext = buildExecutionContext(commandRecord);
+        CoreProcessorContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),
                 command.type,
-                command.commandId,
+                command.getCommandId(),
                 command.getPartitionKey());
         try {
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
-            if (command.hasResponse() && command.getCommandId() != null) {
-                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCommandId(command.getCommandId())
-                        .setResultTime(LHUtil.fromDate(new Date()))
-                        .setResult(response.toByteString())
-                        .build();
 
-                server.onResponseReceived(command.getCommandId(), cmdReply);
+            if (command.hasResponse()) {
+                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                        command.getCommandId().get(), Message.class, new CompletableFuture<>());
+                completable.complete(response);
             }
         } catch (KafkaException ke) {
             throw ke;
@@ -124,10 +126,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         }
     }
 
-    private ProcessorExecutionContext buildExecutionContext(Record<String, Command> commandRecord) {
+    private CoreProcessorContext buildExecutionContext(Record<String, Command> commandRecord) {
         Headers metadataHeaders = commandRecord.headers();
         Command commandToProcess = commandRecord.value();
-        return new ProcessorExecutionContext(
+        return new CoreProcessorContext(
                 commandToProcess, metadataHeaders, config, ctx, globalTaskQueueManager, metadataCache, server);
     }
 

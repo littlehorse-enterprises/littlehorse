@@ -17,6 +17,8 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRun
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
@@ -45,7 +47,7 @@ import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +78,7 @@ public class TestUtil {
     public static TaskDefModel taskDef(String name) {
         TaskDefModel taskDef = new TaskDefModel();
         taskDef.setId(new TaskDefIdModel(name));
+        taskDef.setReturnType(new ReturnTypeModel(VariableType.STR));
         return taskDef;
     }
 
@@ -110,14 +113,14 @@ public class TestUtil {
         return nodeRunModel;
     }
 
-    public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId, ProcessorExecutionContext processorContext) {
+    public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId, CoreProcessorContext processorContext) {
         UserTaskRunModel utr = userTaskRun(wfRunId, processorContext);
         UserTaskNodeRunModel out = new UserTaskNodeRunModel();
         out.setUserTaskRunId(utr.getObjectId());
         return out;
     }
 
-    public static UserTaskRunModel userTaskRun(String wfRunId, ProcessorExecutionContext processorContext) {
+    public static UserTaskRunModel userTaskRun(String wfRunId, CoreProcessorContext processorContext) {
         UserTaskRunModel userTaskRun = new UserTaskRunModel(processorContext);
         userTaskRun.setId(new UserTaskRunIdModel(new WfRunIdModel(wfRunId), "fdsa"));
         userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
@@ -130,7 +133,7 @@ public class TestUtil {
     }
 
     public static UserTaskRunModel userTaskRun(
-            String wfRunId, NodeRunModel nodeRun, ProcessorExecutionContext processorContext) {
+            String wfRunId, NodeRunModel nodeRun, CoreProcessorContext processorContext) {
         UserTaskRunModel userTaskRun = new UserTaskRunModel(processorContext);
         userTaskRun.setId(new UserTaskRunIdModel(new WfRunIdModel(wfRunId), "fdsa"));
         userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
@@ -259,7 +262,7 @@ public class TestUtil {
     public static VariableDefModel variableDef(String name, VariableType variableTypePb) {
         VariableDefModel variableDef = new VariableDefModel();
         variableDef.setName(name);
-        variableDef.setType(variableTypePb);
+        variableDef.setTypeDef(new TypeDefinitionModel(variableTypePb));
         return variableDef;
     }
 

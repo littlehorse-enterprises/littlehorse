@@ -8,11 +8,9 @@ import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
-import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,14 +25,14 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * NodeRun. This is only to be called once.
      * @param time the time at which the NodeRun was arrived at.
      */
-    public abstract void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException;
+    public abstract void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException;
 
     /**
      * Returns the output of the NodeRun. Can only be called after completion. Requires the CommandProcessor
      * execution context.
      * @return the output of the SubNodeRun if any output exists.
      */
-    public abstract Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext);
+    public abstract Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext);
 
     /**
      * Checks if the processing of this SubNodeRun has been completed, and returns true. This method can
@@ -45,7 +43,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * @return true if the processing for this SubNodeRun has been completed; false otherwise.
      * @throws NodeFailureException if the SubNodeRun throws a failure.
      */
-    public abstract boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext)
+    public abstract boolean checkIfProcessingCompleted(CoreProcessorContext processorContext)
             throws NodeFailureException;
 
     /**
@@ -57,7 +55,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * the UserTaskRun from `ASSIGNED` to `ASSIGNED_BUT_HALTED` or something like that...
      * @return true if the SubNodeRun was successfully halted.
      */
-    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
         return !nodeRun.isInProgress();
     }
 
@@ -109,9 +107,5 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      */
     public Optional<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableId() {
         return Optional.empty();
-    }
-
-    public Set<MetricSpecIdModel> metricsToCollect() {
-        return Set.of();
     }
 }

@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -15,6 +16,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyM
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -30,7 +32,9 @@ import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.server.metrics.TaskRunStatusUpdate;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +48,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class TaskRunModel extends CoreGetable<TaskRun> {
+public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopicGetable<TaskRun> {
 
     private TaskRunIdModel id;
     private List<TaskAttemptModel> attempts;
@@ -60,7 +64,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public TaskRunModel() {
         scheduledAt = new Date();
@@ -72,7 +76,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             List<VarNameAndValModel> inputVars,
             TaskRunSourceModel source,
             TaskNodeModel node,
-            ProcessorExecutionContext processorContext,
+            CoreProcessorContext processorContext,
             TaskRunIdModel id,
             TaskDefIdModel taskDefId) {
         this();
@@ -121,7 +125,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         }
 
         this.executionContext = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override
@@ -297,8 +301,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             return;
         }
         TaskDefModel taskDef = executionContext.metadataManager().get(taskDefId);
-        if (taskDef.getSchemaOutput() != null
-                && taskDef.getSchemaOutput().getValueDef().isMaskedValue()) {
+
+        Optional<TypeDefinitionModel> returnType = taskDef.getReturnType().getOutputType();
+        if (returnType.isPresent() && returnType.get().isMasked()) {
             attempt.setMaskedValue(true);
         }
 

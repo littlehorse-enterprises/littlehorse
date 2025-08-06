@@ -3,16 +3,26 @@ import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
 import { rescueWfRun } from '@/app/actions/rescueWfRun'
 import { resumeWfRun } from '@/app/actions/resumeWfRun'
 import { stopWfRun } from '@/app/actions/stopWfRun'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { LHStatus, NodeRun, ThreadSpec, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
 import { ThreadProvider, ThreadType } from '../context'
-import { edgeTypes } from './EdgeTypes'
+import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
 import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
@@ -56,26 +66,28 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const threadRunNumberFromRedirection = Number(searchParams.get('threadRunNumber'))
   const nodeRunNameToBeHighlighted = searchParams.get('nodeRunName')!
 
-  let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
+  const threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 
   const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
 
-  const threadSpec: ThreadSpecWithName = useMemo(() => {
-    if (thread === undefined) return { name: spec.entrypointThreadName, threadSpec: spec.threadSpecs[spec.entrypointThreadName] }
-    return { name: thread.name, threadSpec: spec.threadSpecs[thread.name] }
+  const threadSpec = useMemo(() => {
+    if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
+    return spec.threadSpecs[thread.name]
   }, [spec, thread])
 
-  const [edges, setEdges] = useEdgesState(extractEdges(spec, threadSpec))
-  const [nodes, setNodes] = useNodesState(extractNodes(spec, threadSpec))
+  const [edges, setEdges] = useEdgesState(extractEdges(threadSpec))
+  const [nodes, setNodes] = useNodesState(extractNodes(threadSpec))
 
-  // const threadNodeRuns = useMemo(() => {
-  //   if (!wfRun) return
-  //   return wfRun.threadRuns[thread.number].nodeRuns
-  // }, [thread, wfRun])
+  const threadNodeRuns = useMemo(() => {
+    if (!wfRun) return
+    return wfRun.threadRuns[thread.number].nodeRuns
+  }, [thread, wfRun])
 
   const updateGraph = useCallback(() => {
-    const nodes = extractNodes(spec, threadSpec)
-    const edges = extractEdges(spec, threadSpec)
+    const { name } = thread
+    const threadSpec = spec.threadSpecs[name]
+    const nodes = extractNodes(threadSpec)
+    const edges = extractEdges(threadSpec)
     setNodes(nodes)
     setEdges(edges)
   }, [spec.threadSpecs, thread, setNodes, setEdges])
@@ -163,13 +175,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         >
           <Controls />
         </ReactFlow>
-        <Layouter wfRun={wfRun} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
+        <Layouter nodeRuns={threadNodeRuns} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
       </div>
     </ThreadProvider>
   )
-}
-
-export type ThreadSpecWithName = {
-  name: string
-  threadSpec: ThreadSpec
 }

@@ -60,7 +60,7 @@ public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
                     try {
                         scheduledRun();
                     } catch (Exception e) {
-                        log.error("Error when executing workflow run", e);
+                        log.debug("Error when executing workflow run", e);
                     }
                 },
                 0,
@@ -114,7 +114,7 @@ public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
     private void sendBeat(final String id, final LHStatus status, final Duration latency) {
         // for debug reasons
         if (!LHStatus.COMPLETED.equals(status)) {
-            log.error("GetWfRun returns workflow error {} {}", id, status);
+            log.debug("GetWfRun returns workflow error {} {}", id, status);
         }
 
         // only running WFs are retryable, the others are deleted
@@ -140,7 +140,7 @@ public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
     }
 
     private void sendExhaustedRetries(final String id) {
-        log.error("Exhausted retries getWfRun {}", id);
+        log.debug("Exhausted retries getWfRun {}", id);
 
         // delete because it reaches the max attempt
         repository.delete(id);
@@ -158,7 +158,7 @@ public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
     }
 
     private void sendError(final String id, final Exception e) {
-        log.error("Error executing getWfRun {}", id, e);
+        log.debug("Error executing getWfRun {}", id, e);
 
         // delete because error is not retryable
         repository.delete(id);

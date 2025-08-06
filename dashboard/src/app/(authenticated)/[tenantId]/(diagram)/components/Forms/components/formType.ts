@@ -1,15 +1,16 @@
-import { FormInput, FormTextarea, FormSelect } from './'
-import { VariableType } from 'littlehorse-client/proto'
+import { VARIABLE_TYPES } from '@/app/constants'
+import { FC } from 'react'
+import { FormInput, FormSelect, FormTextarea } from './'
 
-export const FormComponent = {
-  [VariableType.INT]: FormInput,
-  [VariableType.STR]: FormInput,
-  [VariableType.DOUBLE]: FormInput,
-  [VariableType.BOOL]: FormSelect,
-  [VariableType.JSON_OBJ]: FormTextarea,
-  [VariableType.JSON_ARR]: FormTextarea,
-  [VariableType.BYTES]: FormInput,
-  [VariableType.UNRECOGNIZED]: FormInput,
+export const FormComponent: Record<keyof typeof VARIABLE_TYPES, FC<React.ComponentProps<typeof FormInput>>> = {
+  int: FormInput,
+  str: FormInput,
+  double: FormInput,
+  bool: FormSelect,
+  jsonObj: FormTextarea,
+  jsonArr: FormTextarea,
+  bytes: FormInput,
+  wfRunId: FormTextarea,
 } as const
 
 export type FormFieldType = keyof typeof FormComponent

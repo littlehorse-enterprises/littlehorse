@@ -7,9 +7,8 @@ option java_package = "io.littlehorse.canary.proto";
 message MetricKey {
   string server_host = 1;
   int32 server_port = 2;
-  string server_version = 3;
-  string name = 4;
-  repeated Tag tags = 5;
+  string name = 3;
+  repeated Tag tags = 4;
 }
 
 message MetricValue {

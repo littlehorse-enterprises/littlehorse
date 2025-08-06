@@ -27,6 +27,7 @@ from littlehorse.model import (
     TaskDefId,
     WorkflowEventDefId,
     PutExternalEventDefRequest,
+    CorrelatedEventConfig,
     PutWorkflowEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
@@ -41,6 +42,7 @@ from littlehorse.model import (
     JsonIndex,
     Node,
     NopNode,
+    ReturnType,
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
@@ -48,6 +50,7 @@ from littlehorse.model import (
     ThreadSpec,
     ThreadVarDef,
     ThrowEventNode,
+    TypeDefinition,
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
@@ -375,8 +378,14 @@ class WorkflowIfStatement:
         self._last_nop_node_name = last_nop_node_name
         self._was_else_executed = False
 
-    def _get_first_nop_node(self) -> WorkflowNode:
-        return self._parent_workflow_thread._find_node(self._first_nop_node_name)
+    def get_first_nop_node_name(self) -> str:
+        return self._first_nop_node_name
+
+    def get_last_nop_node_name(self) -> str:
+        return self._last_nop_node_name
+
+    def _is_not_initialized(self) -> bool:
+        return self._first_nop_node_name == "" and self._last_nop_node_name == ""
 
     def do_else_if(
         self, condition: WorkflowCondition, body: "ThreadInitializer"
@@ -392,7 +401,15 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if the provided
             WorkflowCondition is satisfied.
         """
-        return self._do_else_if(condition, body)
+        if self._is_not_initialized():
+            raise AttributeError(
+                "'WorkflowIfStatement' object has no attribute 'do_else_if'"
+            )
+        self._parent_workflow_thread.organize_edges_for_else_if_execution(
+            self, condition, body
+        )
+
+        return self
 
     def do_else(self, body: "ThreadInitializer") -> None:
         """After checking all previous condition(s) of the If Statement,
@@ -404,70 +421,19 @@ class WorkflowIfStatement:
             ThreadSpec code to be executed if all previous
             WorkflowConditions were not satisfied.
         """
+        if self._is_not_initialized():
+            raise AttributeError(
+                "'WorkflowIfStatement' object has no attribute 'do_else'"
+            )
         if self._was_else_executed:
             raise RuntimeError(
                 "Else block has already been executed. Cannot add another else block."
             )
 
         self._was_else_executed = True
-        self._do_else_if(None, body)
-
-    def _do_else_if(
-        self, input_condition: Optional[WorkflowCondition], body: "ThreadInitializer"
-    ) -> WorkflowIfStatement:
-        else_edge = self._get_first_nop_node().outgoing_edges.pop()
-
-        else_if_condition = input_condition.compile() if input_condition else None
-
-        # Get the last node of the parent thread
-        last_node_of_parent_thread = self._parent_workflow_thread._last_node()
-
-        # Execute the Else If body
-        body(self._parent_workflow_thread)
-
-        # Get the last node of the Else If body to reference later
-        last_node_of_body = self._parent_workflow_thread._last_node()
-
-        # If no nodes were added from body
-        if last_node_of_parent_thread.name == last_node_of_body.name:
-            # Add edge from nop 1 to nop 2 with variable mutations
-            self._get_first_nop_node().outgoing_edges.append(
-                Edge(
-                    sink_node_name=self._last_nop_node_name,
-                    variable_mutations=self._parent_workflow_thread._collect_variable_mutations(),
-                    condition=else_if_condition,
-                )
-            )
-        # Otherwise, move nodes that were added
-        else:
-            # Remove edge between last node of parent thread and first node of body
-            last_outgoing_edge = last_node_of_parent_thread.outgoing_edges.pop()
-
-            # Get the first node of the body
-            first_node_of_body_name = last_outgoing_edge.sink_node_name
-
-            # Add an edge from the first NOP node to the first node of the body
-            self._get_first_nop_node().outgoing_edges.append(
-                Edge(
-                    sink_node_name=first_node_of_body_name,
-                    variable_mutations=last_outgoing_edge.variable_mutations,
-                    condition=else_if_condition,
-                )
-            )
-
-            # Add edge from last node of the body to last NOP node
-            last_node_of_body.outgoing_edges.append(
-                Edge(
-                    sink_node_name=self._last_nop_node_name,
-                    variable_mutations=self._parent_workflow_thread._collect_variable_mutations(),
-                )
-            )
-
-        # If else condition was not replaced, add it back
-        if else_if_condition is not None:
-            self._get_first_nop_node().outgoing_edges.append(else_edge)
-
-        return self
+        self._parent_workflow_thread.organize_edges_for_else_if_execution(
+            self, None, body
+        )
 
 
 class WfRunVariable:
@@ -656,10 +622,9 @@ class WfRunVariable:
         """
         return ThreadVarDef(
             var_def=VariableDef(
-                type=self.type,
+                type_def=TypeDefinition(type=self.type, masked=self._masked),
                 name=self.name,
                 default_value=self.default_value,
-                masked_value=self._masked,
             ),
             json_indexes=self._json_indexes.copy(),
             searchable=self._searchable,
@@ -686,10 +651,10 @@ class WfRunVariable:
         return self.parent.condition(self, Comparator.LESS_THAN, rhs)
 
     def does_contain(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.IN, rhs)
+        return self.parent.condition(rhs, Comparator.IN, self)
 
     def does_not_contain(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.NOT_IN, rhs)
+        return self.parent.condition(rhs, Comparator.NOT_IN, self)
 
     def is_in(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.IN, rhs)
@@ -821,6 +786,97 @@ class WaitForThreadsNodeOutput(NodeOutput):
             failure_handler,
         )
         return self
+
+
+class ThrowEventNodeOutput:
+    """
+    Represents the output of a ThrowEvent node in a workflow, allowing event definition registration.
+    """
+
+    def __init__(
+        self,
+        event_name: str,
+        parent: WorkflowThread,
+        payload_type: Optional[type] = None,
+    ) -> None:
+        """
+        Initializes a new instance of the ThrowEventNodeOutput class.
+
+        Args:
+            event_name (str): The name of the workflow event definition.
+            parent (WorkflowThread): The parent workflow thread.
+            payload_type (Optional[type]): The type of the payload for the event. If None, no payload type is set.
+        """
+        self._event_name = event_name
+        self._parent = parent
+        self._payload_type: Optional[type] = payload_type
+
+    def to_put_workflow_event_def_request(self) -> PutWorkflowEventDefRequest:
+        """
+        Returns a PutWorkflowEventDefRequest for registering this workflow event definition.
+
+        Returns:
+            PutWorkflowEventDefRequest: The request object for event definition registration.
+
+        Raises:
+            ValueError: If `_payload_type` is not set before generating the request.
+
+        """
+        output = PutWorkflowEventDefRequest(name=self._event_name)
+        if self._payload_type is not None:
+            output.content_type.CopyFrom(python_type_to_return_type(self._payload_type))
+
+        return output
+
+
+class ExternalEventNodeOutput(NodeOutput):
+    def __init__(
+        self,
+        node_name: str,
+        event_name: str,
+        parent: WorkflowThread,
+        payload_type: Optional[type] = None,
+        correlated_event_config: Optional[CorrelatedEventConfig] = None,
+    ) -> None:
+        """
+        Initializes a new instance of the ExternalEventNodeOutput class.
+
+        Args:
+            node_name (str): The specified node name.
+            event_name (str): The external event definition name.
+            parent (WorkflowThread): The workflow thread where the ExternalEventNodeOutput belongs to.
+            payload_type (Optional[type]): The type of the payload for the external event. If None, no payload type is set.
+            correlated_event_config (Optional[CorrelatedEventConfig]): Configuration for correlated event
+        """
+        super().__init__(node_name)
+        self.event_name = event_name
+        self.parent = parent
+        self._payload_type: Optional[type] = payload_type
+        self._correlated_event_config: Optional[CorrelatedEventConfig] = (
+            correlated_event_config
+        )
+
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        """
+        Returns a PutExternalEventDefRequest for registering this external event definition.
+
+        Returns:
+            PutExternalEventDefRequest: The request object for external event definition registration.
+
+        Raises:
+            ValueError: If `_payload_type` is not set before generating the request.
+        """
+        request = PutExternalEventDefRequest(name=self.event_name)
+
+        if self._payload_type:
+            request.content_type.CopyFrom(
+                python_type_to_return_type(self._payload_type)
+            )
+
+        if self._correlated_event_config:
+            request.correlated_event_config.CopyFrom(self._correlated_event_config)
+
+        return request
 
 
 class WorkflowNode:
@@ -1066,7 +1122,8 @@ class WorkflowThread:
         self._validate_initializer(initializer)
 
         self.is_active = True
-        self.add_node("entrypoint", EntrypointNode())
+        self._last_node_name: str = self.add_node("entrypoint", EntrypointNode())
+
         initializer(self)
         node = self._last_node()
         if node.node_case != NodeCase.EXIT:
@@ -1231,6 +1288,24 @@ class WorkflowThread:
         thread_name = self._workflow.add_sub_thread(f"interrupt-{name}", handler)
         self._wf_interruptions.append(WorkflowInterruption(name, thread_name))
 
+    def register_external_event_def(self, node_output: ExternalEventNodeOutput) -> None:
+        """
+        Registers an external event definition for the parent workflow.
+
+        Args:
+            node_output (ExternalEventNodeOutput): The external event node output.
+        """
+        self._workflow.add_external_event_def_to_register(node_output)
+
+    def register_workflow_event_def(self, node_output: ThrowEventNodeOutput) -> None:
+        """
+        Registers a workflow event definition for the parent workflow.
+
+        Args:
+            node_output (ThrowEventNodeOutput): The workflow event node output.
+        """
+        self._workflow.add_workflow_event_def_to_register(node_output)
+
     def _validate_initializer(self, initializer: "ThreadInitializer") -> None:
         if initializer is None:
             raise ValueError("ThreadInitializer cannot be None")
@@ -1264,16 +1339,7 @@ class WorkflowThread:
             raise ReferenceError("Using an inactive thread, check your workflow")
 
     def _last_node(self) -> WorkflowNode:
-        # search for universal sink
-        for node in self._nodes:
-            if not node._has_outgoing_edge():
-                return node
-
-        # if no universal sinks, return last node added to array
-        if len(self._nodes) > 0:
-            return self._nodes[-1]
-
-        raise Exception("No universal sink exists! Error building workflow.")
+        return self._find_node(self._last_node_name)
 
     def _find_node(self, name: str) -> WorkflowNode:
         for node in self._nodes:
@@ -1572,6 +1638,11 @@ class WorkflowThread:
             ),
         )
 
+    def complete(self) -> None:
+        """Adds an Exit Node, returning from the WorkflowThread early"""
+        self._check_if_active()
+        self.add_node("complete", ExitNode())
+
     def assign_user_task(
         self,
         user_task_def_name: str,
@@ -1601,6 +1672,16 @@ class WorkflowThread:
             raise ValueError(
                 "Must provide either user_id or user_group to assign_user_task()"
             )
+
+        if user_id is not None and isinstance(user_id, str) and user_id.strip() == "":
+            raise ValueError("UserId can't be empty to assign_user_task()")
+
+        if (
+            user_group is not None
+            and isinstance(user_group, str)
+            and user_group.strip() == ""
+        ):
+            raise ValueError("UserGroup can't be empty to assign_user_task()")
 
         ug = to_variable_assignment(user_group) if user_group else None
         ui = to_variable_assignment(user_id) if user_id else None
@@ -1722,33 +1803,93 @@ class WorkflowThread:
             args,
         )
 
-    def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
+    def wait_for_event(
+        self,
+        event_name: str,
+        timeout: int = -1,
+        correlation_id: Optional[Union[str, LHFormatString, WfRunVariable]] = None,
+        mask_correlation_id: Optional[bool] = None,
+        auto_register: Optional[bool] = False,
+        return_type: Optional[type] = None,
+        correlated_event_config: Optional[CorrelatedEventConfig] = None,
+    ) -> ExternalEventNodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
 
         Args:
             event_name (str): The name of ExternalEvent to wait for
-            timeout (int, optional): Timeout in seconds. If
-            it is 0 or less it does not set a timeout. Defaults to -1.
+            timeout (int, optional): Timeout in seconds.
+                If it is 0 or less it does not set a timeout. Defaults to -1.
+            correlation_id (Union[str, LHFormatString, WfRunVariable]): the
+                correlation id to be used for CorrelatedEvents.
+            mask_correlation_id (Optional[bool]): Whether to mask the correlation ID.
+            auto_register (Optional[bool]): If set, the External event will get registered
+                together with the workflow.
+            return_type (Optional[type]): The type of the payload to return by the external event.
+            correlated_event_config (Optional[CorrelatedEventConfig]): Configuration for correlated
+                events.
+
+        Note:
+            If any of auto_register, return_type, or correlated_event_config are set,
+            the ExternalEventDef will be automatically registered with the workflow.
 
         Returns:
-            NodeOutput: A NodeOutput for this event.
+            ExternalEventNodeOutput: An ExternalEventNodeOutput for this event.
         """
         self._check_if_active()
+
+        correlation_var_assn: Optional[VariableAssignment] = None
+        if correlation_id is not None:
+            correlation_var_assn = to_variable_assignment(correlation_id)
+            if (
+                isinstance(correlation_id, WfRunVariable)
+                and mask_correlation_id is None
+            ):
+                mask_correlation_id = correlation_id._masked
+        if mask_correlation_id is None:
+            mask_correlation_id = False
+
         wait_node = ExternalEventNode(
             external_event_def_id=ExternalEventDefId(name=event_name),
             timeout_seconds=None if timeout <= 0 else to_variable_assignment(timeout),
+            correlation_key=correlation_var_assn,
+            mask_correlation_key=mask_correlation_id,
         )
         node_name = self.add_node(event_name, wait_node)
-        return NodeOutput(node_name)
 
-    def throw_event(self, workflow_event_name: str, content: Any) -> None:
+        output = ExternalEventNodeOutput(
+            node_name=node_name,
+            event_name=event_name,
+            parent=self,
+            payload_type=return_type,
+            correlated_event_config=correlated_event_config,
+        )
+        if auto_register or return_type or correlated_event_config:
+            self.register_external_event_def(output)
+
+        return output
+
+    def throw_event(
+        self,
+        workflow_event_name: str,
+        content: Any,
+        auto_register: Optional[bool] = False,
+        return_type: Optional[type] = None,
+    ) -> ThrowEventNodeOutput:
         """Adds a THROW_EVENT node which throws a WorkflowEvent.
 
         Args:
             workflow_event_name (str): The WorkflowEventDefId name of
-            the WorkflowEvent to throw
+                the WorkflowEvent to throw
             content (Any): the content of the WorkflowEvent to throw
+            auto_register (Optional[bool]): If set, the WorkflowEventDef will be registered
+                together with the workflow.
+            return_type (Optional[type]): The type of the payload to return
+                by the WorkflowEvent.
+
+        Note:
+            If auto_register or return_type are set, the WorkflowEventDef will be automatically
+            registered with the workflow.
 
         Returns:
             NodeOutput: A NodeOutput for this event.
@@ -1759,6 +1900,14 @@ class WorkflowThread:
             content=to_variable_assignment(content),
         )
         self.add_node("throw-" + workflow_event_name, throw_node)
+
+        output = ThrowEventNodeOutput(
+            event_name=workflow_event_name, parent=self, payload_type=return_type
+        )
+        if auto_register or return_type:
+            self.register_workflow_event_def(output)
+
+        return output
 
     def mutate(
         self, left_hand: WfRunVariable, operation: VariableMutationType, right_hand: Any
@@ -1776,6 +1925,12 @@ class WorkflowThread:
             use the output of a Node Run to mutate variables).
         """
         self._check_if_active()
+
+        if self._last_node().node_case == NodeCase.EXIT:
+            raise TypeError(
+                "You cannot mutate a variable in a given thread after the thread has completed."
+            )
+
         node_output: Optional[VariableMutation.NodeOutputSource] = None
         literal_value: Optional[VariableValue] = None
         rhs_assignment = to_variable_assignment(right_hand)
@@ -1824,6 +1979,12 @@ class WorkflowThread:
             WfRunVariable: A handle to the created WfRunVariable.
         """
         self._check_if_active()
+
+        if len(self._nodes) > 0 and self._last_node().node_case == NodeCase.EXIT:
+            raise TypeError(
+                "You cannot add a variable in a given thread after the thread has completed."
+            )
+
         for var in self._wf_run_variables:
             if var.name == variable_name:
                 raise ValueError(f"Variable {variable_name} already added")
@@ -1879,16 +2040,23 @@ class WorkflowThread:
 
         if len(self._nodes) > 0:
             last_node = self._last_node()
-            last_node.outgoing_edges.append(
-                Edge(
-                    sink_node_name=next_node_name,
-                    variable_mutations=self._collect_variable_mutations(),
-                    condition=self._last_node_condition,
+
+            if last_node.node_case != NodeCase.EXIT:
+                last_node.outgoing_edges.append(
+                    Edge(
+                        sink_node_name=next_node_name,
+                        variable_mutations=self._collect_variable_mutations(),
+                        condition=self._last_node_condition,
+                    )
                 )
-            )
-            self._last_node_condition = None
+                self._last_node_condition = None
+            elif node_type != NodeCase.NOP:
+                raise TypeError(
+                    "You cannot add a Node in a given thread after the thread has completed."
+                )
 
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
+        self._last_node_name = next_node_name
 
         return next_node_name
 
@@ -1959,7 +2127,7 @@ class WorkflowThread:
         condition: WorkflowCondition,
         if_body: "ThreadInitializer",
         else_body: Optional["ThreadInitializer"] = None,
-    ) -> Optional[WorkflowIfStatement]:
+    ) -> WorkflowIfStatement:
         """Conditionally executes some workflow code; equivalent
         to an if() statement in programming.
 
@@ -1982,7 +2150,71 @@ class WorkflowThread:
 
         self._validate_initializer(else_body)
         self._do_if(condition, if_body).do_else(else_body)
-        return None
+
+        return WorkflowIfStatement(self, "", "")
+
+    def organize_edges_for_else_if_execution(
+        self,
+        if_statement: WorkflowIfStatement,
+        input_condition: Optional[WorkflowCondition],
+        body: "ThreadInitializer",
+    ) -> None:
+        first_nop_node = self._find_node(if_statement.get_first_nop_node_name())
+        else_edge = first_nop_node.outgoing_edges.pop()
+
+        else_if_condition = input_condition.compile() if input_condition else None
+
+        # Get the last node of the parent thread
+        last_node_of_parent_thread_name = self._last_node_name
+        last_node_of_parent_thread = self._last_node()
+
+        # Execute the Else If body
+        body(self)
+
+        # Get the last node of the Else If body to reference later
+        last_node_of_body = self._last_node()
+
+        # If no nodes were added from body
+        if last_node_of_parent_thread.name == last_node_of_body.name:
+            # Add edge from nop 1 to nop 2 with variable mutations
+            first_nop_node.outgoing_edges.append(
+                Edge(
+                    sink_node_name=if_statement.get_last_nop_node_name(),
+                    variable_mutations=self._collect_variable_mutations(),
+                    condition=else_if_condition,
+                )
+            )
+        # Otherwise, move nodes that were added
+        else:
+            # Remove edge between last node of parent thread and first node of body
+            last_outgoing_edge = last_node_of_parent_thread.outgoing_edges.pop()
+
+            # Get the first node of the body
+            first_node_of_body_name = last_outgoing_edge.sink_node_name
+
+            # Add an edge from the first NOP node to the first node of the body
+            first_nop_node.outgoing_edges.append(
+                Edge(
+                    sink_node_name=first_node_of_body_name,
+                    variable_mutations=last_outgoing_edge.variable_mutations,
+                    condition=else_if_condition,
+                )
+            )
+
+            # Add edge from last node of the body to last NOP node
+            if last_node_of_body.node_case != NodeCase.EXIT:
+                last_node_of_body.outgoing_edges.append(
+                    Edge(
+                        sink_node_name=if_statement.get_last_nop_node_name(),
+                        variable_mutations=self._collect_variable_mutations(),
+                    )
+                )
+
+        # If else condition was not replaced, add it back
+        if else_if_condition is not None:
+            first_nop_node.outgoing_edges.append(else_edge)
+
+        self._last_node_name = last_node_of_parent_thread_name
 
     def _do_if(
         self, condition: WorkflowCondition, body: "ThreadInitializer"
@@ -2055,6 +2287,39 @@ class WorkflowThread:
         )
 
 
+def python_type_to_return_type(py_type: type | None) -> ReturnType:
+    """
+    Maps a Python type to a ReturnType.
+
+    Args:
+        py_type (type): The Python type.
+
+    Returns:
+        ReturnType: The corresponding ReturnType.
+
+    Raises:
+        ValueError: If the type is unsupported.
+    """
+    if py_type is None:
+        raise ValueError("Payload type must be set before generating the request.")
+    type_def = TypeDefinition()
+    if py_type is str:
+        type_def.type = VariableType.STR
+    elif py_type is int:
+        type_def.type = VariableType.INT
+    elif py_type is float:
+        type_def.type = VariableType.DOUBLE
+    elif py_type is bool:
+        type_def.type = VariableType.BOOL
+    elif issubclass(py_type, dict):
+        type_def.type = VariableType.JSON_OBJ
+    elif issubclass(py_type, list):
+        type_def.type = VariableType.JSON_ARR
+    else:
+        raise ValueError("Unsupported payload type.")
+    return ReturnType(return_type=type_def)
+
+
 ThreadInitializer = Callable[[WorkflowThread], None]
 
 
@@ -2087,6 +2352,8 @@ class Workflow:
             None
         )
         self._default_retries: Optional[int] = None
+        self._workflow_events_to_register: list[ThrowEventNodeOutput] = []
+        self._external_events_to_register: list[ExternalEventNodeOutput] = []
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -2220,6 +2487,32 @@ class Workflow:
         self._default_timeout_seconds = timeout_seconds
         return self
 
+    def add_workflow_event_def_to_register(self, node: ThrowEventNodeOutput) -> None:
+        """
+        Adds a workflow event definition to the list for registration.
+
+        Args:
+            node (ThrowEventNodeOutput): The workflow event node to register.
+        """
+        self._workflow_events_to_register.append(node)
+
+    def add_external_event_def_to_register(self, node: ExternalEventNodeOutput) -> None:
+        """
+        Adds an external event definition to the list for registration.
+
+        Args:
+            node (ExternalEventNodeOutput): The external event node to register.
+        """
+        self._external_events_to_register.append(node)
+
+    @property
+    def external_events_to_register(self) -> list[ExternalEventNodeOutput]:
+        return self._external_events_to_register
+
+    @property
+    def workflow_events_to_register(self) -> list[ThrowEventNodeOutput]:
+        return self._workflow_events_to_register
+
 
 def create_workflow_spec(
     workflow: Workflow, config: LHConfig, timeout: Optional[int] = None
@@ -2233,6 +2526,25 @@ def create_workflow_spec(
     """
     stub = config.stub()
     request = workflow.compile()
+
+    for external_node in workflow.external_events_to_register:
+        external_event_request = external_node.to_put_external_event_def_request()
+        external_event_response = stub.PutExternalEventDef(
+            external_event_request, timeout=timeout
+        )
+        logging.info(
+            f"Registered ExternalEventDef: \n{MessageToJson(external_event_response)}"
+        )
+
+    for workflow_node in workflow.workflow_events_to_register:
+        workflow_event_request = workflow_node.to_put_workflow_event_def_request()
+        workflow_event_response = stub.PutWorkflowEventDef(
+            workflow_event_request, timeout=timeout
+        )
+        logging.info(
+            f"Registered WorkflowEventDef: \n{MessageToJson(workflow_event_response)}"
+        )
+
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
     stub.PutWfSpec(request, timeout=timeout)
 
@@ -2252,7 +2564,10 @@ def create_task_def(
 
 
 def create_external_event_def(
-    name: str, config: LHConfig, timeout: Optional[int] = None
+    name: str,
+    config: LHConfig,
+    timeout: Optional[int] = None,
+    correlated_event_config: Optional[CorrelatedEventConfig] = None,
 ) -> None:
     """Creates a new ExternalEventDef at the LH Server.
 
@@ -2262,7 +2577,9 @@ def create_external_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutExternalEventDefRequest(name=name)
+    request = PutExternalEventDefRequest(
+        name=name, correlated_event_config=correlated_event_config
+    )
     stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
 
@@ -2278,6 +2595,9 @@ def create_workflow_event_def(
         timeout (Optional[int]): Timeout
     """
     stub = config.stub()
-    request = PutWorkflowEventDefRequest(name=name, type=type)
+    request = PutWorkflowEventDefRequest(
+        name=name,
+        content_type=ReturnType(TypeDefinition(type=type)),
+    )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")

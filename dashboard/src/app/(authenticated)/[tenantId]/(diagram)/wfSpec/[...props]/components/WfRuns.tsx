@@ -3,7 +3,7 @@ import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/Search
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
-import { concatWfRunIds } from '@/app/utils'
+import { wfRunIdToPath } from '@/app/utils'
 import { cn } from '@/lib/utils'
 import { lHStatusFromJSON, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
@@ -34,7 +34,7 @@ export const WfRuns: FC<WfSpec> = spec => {
     }
   }, [window])
 
-  const getKey = (pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
+  const getKey = (_pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
     return [
       'wfRun',
@@ -100,16 +100,17 @@ export const WfRuns: FC<WfSpec> = spec => {
           {data?.map((page, i) => (
             <Fragment key={i}>
               {page.results.map(wfRunId => (
-                <SelectionLink key={wfRunId.id} href={`/wfRun/${concatWfRunIds(wfRunId)}`}>
+                <SelectionLink key={wfRunId.id} href={`/wfRun/${wfRunIdToPath(wfRunId)}`}>
                   <p>{wfRunId.id}</p>
                   <span className={cn('ml-2 rounded px-2', statusColors[resolvedWfRuns[wfRunId.id]?.wfRun.status])}>
                     {`${resolvedWfRuns[wfRunId.id]?.wfRun.status}`}
                   </span>
                   <span className="ml-2 rounded bg-gray-200 px-2">
                     Started:{' '}
-                    {resolvedWfRuns[wfRunId.id]?.wfRun.startTime
-                      ? new Date(resolvedWfRuns[wfRunId.id]?.wfRun.startTime!).toLocaleString()
-                      : ''}
+                    {(() => {
+                      const startTime = resolvedWfRuns[wfRunId.id]?.wfRun.startTime
+                      return startTime ? new Date(startTime).toLocaleString() : ''
+                    })()}
                   </span>
                 </SelectionLink>
               ))}

@@ -1,10 +1,11 @@
-﻿using ConditionalsWhileExample;
-using LittleHorse.Sdk;
+﻿using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+namespace ConditionalsWhileExample;
 
 public abstract class Program
 {
@@ -20,11 +21,12 @@ public abstract class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetLHConfig(ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
         
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
@@ -58,28 +60,22 @@ public abstract class Program
         return new Workflow("example-conditionals-while", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetLHConfig(args, loggerFactory);
+            var config = GetLHConfig(loggerFactory);
             var workers = GetTaskWorkers(config);
-            foreach (var worker in workers)
-            {
-                worker.RegisterTaskDef();
-            }
 
-            var workflow = GetWorkflow();
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-            
-            Thread.Sleep(300);
+            await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
 
-            foreach (var worker in workers)
-            {
-                worker.Start();
-            }
+            await GetWorkflow().RegisterWfSpec(config.GetGrpcClientInstance());
+
+            await Task.Delay(300);
+
+            await Task.WhenAll(workers.Select(worker => worker.Start()));
         }
     }
 }

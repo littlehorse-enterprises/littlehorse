@@ -8,9 +8,11 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -29,17 +31,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class TimerProcessorTest {
 
-    private final KeyValueStore<String, LHTimer> nativeInMemoryStore = Stores.keyValueStoreBuilder(
+    private final KeyValueStore<String, LHTimer> nativeInMemoryStore = spy(Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.TIMER_STORE),
                     Serdes.String(),
                     new LHSerde<>(LHTimer.class))
             .withLoggingDisabled()
-            .build();
+            .build());
 
     private final MockProcessorContext<String, LHTimer> mockProcessorContext = new MockProcessorContext<>();
 
@@ -89,6 +92,49 @@ public class TimerProcessorTest {
     }
 
     @Test
+    public void shouldRememberPreviousTimersOnMaturationTimeReached() {
+        LocalDateTime fixedDate = LocalDateTime.of(6020, 1, 1, 0, 0, 0);
+        LocalDateTime nextDayTime = fixedDate.plusDays(1);
+        LocalDateTime nextMonthTime = fixedDate.plusMonths(1);
+        List<LHTimer> allTasks = ImmutableList.of(
+                buildNewTimer("task-0", fixedDate),
+                buildNewTimer("task-1", fixedDate),
+                buildNewTimer("task-2", fixedDate),
+                buildNewTimer("1-task-0", nextDayTime),
+                buildNewTimer("1-task-1", nextDayTime),
+                buildNewTimer("1-task-2", nextDayTime),
+                buildNewTimer("2-task-0", nextMonthTime),
+                buildNewTimer("2-task-1", nextMonthTime),
+                buildNewTimer("2-task-2", nextMonthTime));
+
+        for (LHTimer task : allTasks) {
+            processor.process(new Record<>(task.getStoreKey(), task, 0L));
+        }
+
+        LocalDateTime firstPunctuateTime = fixedDate.plusDays(1);
+        LocalDateTime secondPunctuateTime = nextDayTime.plusDays(1);
+        LocalDateTime thirdPunctuateTime = nextMonthTime.plusDays(1);
+        LocalDateTime fourthPunctuateTime = thirdPunctuateTime.plusDays(1);
+        LocalDateTime fifthPunctuateTime = fourthPunctuateTime.plusDays(1);
+
+        punctuateAndVerifyForwardedRecords(firstPunctuateTime, 3);
+        punctuateAndVerifyForwardedRecords(secondPunctuateTime, 3);
+        punctuateAndVerifyForwardedRecords(thirdPunctuateTime, 3);
+        punctuateAndVerifyForwardedRecords(fourthPunctuateTime, 0);
+        punctuateAndVerifyForwardedRecords(fifthPunctuateTime, 0);
+        ArgumentCaptor<String> startKeyCaptor = ArgumentCaptor.forClass(String.class);
+        verify(nativeInMemoryStore, times(5)).range(startKeyCaptor.capture(), any());
+        List<String> startKeys = startKeyCaptor.getAllValues();
+        Assertions.assertThat(startKeys)
+                .containsExactly(
+                        "0000000000",
+                        LHUtil.toLhDbFormat(timeToDate(firstPunctuateTime)),
+                        LHUtil.toLhDbFormat(timeToDate(secondPunctuateTime)),
+                        LHUtil.toLhDbFormat(timeToDate(thirdPunctuateTime)),
+                        LHUtil.toLhDbFormat(timeToDate(fourthPunctuateTime)));
+    }
+
+    @Test
     public void shouldForwardTimerWithHeadersMetadata() {
         LocalDateTime currentTime = LocalDateTime.now();
         LHTimer tomorrowTask = buildNewTimer("tomorrowTask", currentTime);
@@ -119,12 +165,12 @@ public class TimerProcessorTest {
 
     @Test
     public void supportTimerDistinctionByTenant() {
-        LHTimer tenantATask = buildNewTimer("my-task", LocalDateTime.now());
+        LHTimer tenantATask = buildNewTimer("my-task", LocalDateTime.now().plus(Duration.ofSeconds(5)));
         tenantATask.setTenantId(new TenantIdModel("tenantA"));
-        LHTimer tenantBTask = buildNewTimer("otherTask", LocalDateTime.now());
+        LHTimer tenantBTask = buildNewTimer("otherTask", LocalDateTime.now().plus(Duration.ofSeconds(5)));
         tenantBTask.setTenantId(new TenantIdModel("tenantB"));
-        processor.process(new Record<>("my-task", tenantATask, 0L));
-        processor.process(new Record<>("my-task", tenantBTask, 0L));
+        processor.process(new Record<>("my-task", tenantATask, System.currentTimeMillis() + 5000L));
+        processor.process(new Record<>("my-task", tenantBTask, System.currentTimeMillis() + 5000L));
         Assertions.assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).hasSize(2);
         ImmutableList<KeyValue<String, LHTimer>> tasks = ImmutableList.copyOf(nativeInMemoryStore.all());
         Assertions.assertThat(tasks)

@@ -5,6 +5,8 @@ import io.grpc.ChannelCredentials;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.RocksConfigSetter;
 import io.littlehorse.sdk.common.config.ConfigBase;
@@ -34,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -47,8 +50,8 @@ import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
-import org.jetbrains.annotations.Nullable;
 import org.rocksdb.Cache;
+import org.rocksdb.InfoLogLevel;
 import org.rocksdb.LRUCache;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
@@ -64,6 +67,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String LHS_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
     public static final String REPLICATION_FACTOR_KEY = "LHS_REPLICATION_FACTOR";
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
+    public static final String OUTPUT_TOPIC_PARTITIONS_KEY = "LHS_OUTPUT_TOPIC_PARTITIONS";
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
 
@@ -78,6 +82,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String TIMER_STATESTORE_CACHE_BYTES_KEY = "LHS_TIMER_STATESTORE_CACHE_BYTES";
     public static final String ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES";
     public static final String ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES";
+    public static final String ROCKSDB_USE_DIRECT_IO_KEY = "LHS_ROCKSDB_USE_DIRECT_IO";
     public static final String ROCKSDB_RATE_LIMIT_BYTES_KEY = "LHS_ROCKSDB_RATE_LIMIT_BYTES";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
@@ -91,7 +96,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
     // General LittleHorse Runtime Behavior Config Env Vars
-    public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
     public static final String INTERNAL_BIND_PORT_KEY = "LHS_INTERNAL_BIND_PORT";
     public static final String INTERNAL_ADVERTISED_HOST_KEY = "LHS_INTERNAL_ADVERTISED_HOST";
     public static final String INTERNAL_ADVERTISED_PORT_KEY = "LHS_INTERNAL_ADVERTISED_PORT";
@@ -145,6 +149,10 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
+    public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
+    public static final String ROCKSDB_LOG_LEVEL_KEY = "LHS_X_ROCKSDB_LOG_LEVEL";
+
+    public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
     // Instance configs
     private final String lhsMetricsLevel;
@@ -353,6 +361,40 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(String.class.cast(props.getOrDefault(LHServerConfig.CLUSTER_PARTITIONS_KEY, "12")));
     }
 
+    public int getOutputToppicPartitions() {
+        return Integer.valueOf(String.class.cast(props.getOrDefault(
+                LHServerConfig.OUTPUT_TOPIC_PARTITIONS_KEY, String.valueOf(getClusterPartitions()))));
+    }
+
+    public static String getExecutionOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "_" + tenantId.toString() + "_execution";
+    }
+
+    public static String getMetadataOutputTopicName(String clusterId, TenantIdModel tenantId) {
+        return clusterId + "_" + tenantId.toString() + "_metadata";
+    }
+
+    public String getExecutionOutputTopicName(TenantIdModel tenant) {
+        return getExecutionOutputTopicName(getLHClusterId(), tenant);
+    }
+
+    public String getMetadataOutputTopicName(TenantIdModel tenant) {
+        return getMetadataOutputTopicName(getLHClusterId(), tenant);
+    }
+
+    public Pair<NewTopic, NewTopic> getOutputTopicsFor(TenantModel tenant) {
+        String executionTopicName = getExecutionOutputTopicName(tenant.getId());
+        String metadataTopicName = getMetadataOutputTopicName(tenant.getId());
+
+        // metadata topic is compacted
+        Map<String, String> compactedTopicConfig =
+                Map.of(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+
+        return Pair.of(
+                new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
+                new NewTopic(executionTopicName, getClusterPartitions(), getReplicationFactor()));
+    }
+
     public String getKafkaGroupId(String component) {
         return getLHClusterId() + "-" + component;
     }
@@ -510,7 +552,6 @@ public class LHServerConfig extends ConfigBase {
         return new TLSConfig(certChain, privateKey);
     }
 
-    @Nullable
     @SuppressWarnings("null")
     private File getFile(String configName) {
         String fileLocation = getOrSetDefault(configName, null);
@@ -693,9 +734,38 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
     }
 
+    public boolean getRocksDBUseLevelCompaction() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_LEVEL_COMPACTION_KEY, "false"));
+    }
+
+    public Optional<InfoLogLevel> getRocksDBLogLevel() {
+        String logLevel = getOrSetDefault(ROCKSDB_LOG_LEVEL_KEY, "NONE");
+        if (logLevel.equals("NONE")) {
+            return Optional.empty();
+        }
+        switch (logLevel) {
+            case "INFO":
+                return Optional.of(InfoLogLevel.INFO_LEVEL);
+            case "DEBUG":
+                return Optional.of(InfoLogLevel.DEBUG_LEVEL);
+            case "ERROR":
+                return Optional.of(InfoLogLevel.ERROR_LEVEL);
+            case "WARN":
+                return Optional.of(InfoLogLevel.WARN_LEVEL);
+            case "FATAL":
+                return Optional.of(InfoLogLevel.FATAL_LEVEL);
+        }
+        throw new LHMisconfigurationException(
+                "Unrecognized rocksdb log level: " + logLevel + "; allowed: INFO|DEBUG|WARN|ERROR|FATAL|NONE");
+    }
+
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
+    }
+
+    public boolean useDirectIOForRocksDB() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_DIRECT_IO_KEY, "false"));
     }
 
     // Timer Topology generally has smaller values that are written. The majority of them
@@ -846,7 +916,7 @@ public class LHServerConfig extends ConfigBase {
         // changelog (the WfRun, NodeRun, and TaskRun each are saved on the first two commands).
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
-        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "3000"));
+        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "500"));
         result.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
         result.put(
                 "statestore.cache.max.bytes",
@@ -1022,12 +1092,8 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
     }
 
-    public int getNumNetworkThreads() {
-        int out = Integer.valueOf(getOrSetDefault(NUM_NETWORK_THREADS_KEY, "2"));
-        if (out < 2) {
-            throw new LHMisconfigurationException("Requires at least 2 network threads");
-        }
-        return out;
+    public boolean areStructDefsEnabled() {
+        return Boolean.valueOf(getOrSetDefault(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "false"));
     }
 
     public String getRackId() {
@@ -1076,7 +1142,7 @@ public class LHServerConfig extends ConfigBase {
         long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
-                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache);
+                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
         }
     }
 

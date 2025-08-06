@@ -26,6 +26,7 @@ enum StoreableType {
     METRIC_WINDOW = 7;
     INITIALIZATION_LOG = 8;
     WFRUN_STORED_INVENTORY = 9;
+    CORRELATION_MARKER = 10;
     METRIC_PARTITION_INVENTORY = 10;
 }
 
@@ -51,6 +52,8 @@ enum GetableClassEnum {
     METRIC = 18;
     PARTITION_METRIC = 19;
     METRIC_SPEC = 20;
+    STRUCT_DEF = 18;
+    CORRELATED_EVENT = 19;
 }
 
 message AttributePb {
@@ -110,4 +113,15 @@ message StoredGetablePb {
 
 message PartitionMetricInventory {
     repeated PartitionMetricId metrics = 1;
+}
+
+message EventCorrelationMarker {
+  // NodeRunId of the `ExternalEventNodeRun` that are waiting
+  repeated NodeRunId source_node_runs = 1;
+
+  // ExternalEventDefId that we're waiting for
+  ExternalEventDefId event_def_id = 2;
+
+  // Correlation key
+  string correlation_key = 3;
 }

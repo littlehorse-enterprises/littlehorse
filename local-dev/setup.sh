@@ -11,9 +11,7 @@ services:
     ports:
       - "9092:9092"
     container_name: lh-server-kafka
-    image: apache/kafka:3.8.0
-    environment:
-      JAVA_TOOL_OPTIONS: -XX:UseSVE=0
+    image: apache/kafka:4.0.0
 EOF
 )
 

@@ -21,12 +21,15 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     private ProcessorContext<String, LHTimer> context;
     private KeyValueStore<String, LHTimer> timerStore;
     private Cancellable punctuator;
+    private String lastSeenKey;
 
     public void init(final ProcessorContext<String, LHTimer> context) {
         this.context = context;
         timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
         this.punctuator = context.schedule(
                 LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
+
+        this.lastSeenKey = "0000000000";
     }
 
     @Override
@@ -36,25 +39,33 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
 
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
-        timerStore.put(timer.getStoreKey(), timer);
+
+        // If the timer is already matured, no sense in putting it into the store. Just forward now.
+        if (timer.maturationTime.getTime() <= System.currentTimeMillis()) {
+            sendOneTimer(timer);
+        } else {
+            timerStore.put(timer.getStoreKey(), timer);
+        }
     }
 
     private void clearTimers(long timestamp) {
-        String start = "00000000";
         String end = LHUtil.toLhDbFormat(new Date(timestamp));
 
-        try (KeyValueIterator<String, LHTimer> iter = timerStore.range(start, end)) {
+        try (KeyValueIterator<String, LHTimer> iter = timerStore.range(lastSeenKey, end)) {
             while (iter.hasNext()) {
                 KeyValue<String, LHTimer> entry = iter.next();
-                LHTimer timer = entry.value;
-                if (!entry.key.equals(timer.getStoreKey())) throw new RuntimeException("WTF?");
-                Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
-                // Now we gotta forward the timer.
-                Record<String, LHTimer> record =
-                        new Record<String, LHTimer>(timer.key, timer, timer.maturationTime.getTime(), metadata);
-                context.forward(record);
+                sendOneTimer(entry.value);
                 timerStore.delete(entry.key);
             }
         }
+        lastSeenKey = end;
+    }
+
+    private void sendOneTimer(LHTimer timer) {
+        Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
+        // Now we gotta forward the timer.
+        Record<String, LHTimer> toSend =
+                new Record<String, LHTimer>(timer.key, timer, timer.maturationTime.getTime(), metadata);
+        context.forward(toSend);
     }
 }

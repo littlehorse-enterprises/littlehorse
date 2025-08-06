@@ -20,11 +20,12 @@ public abstract class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetLHConfig(ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
         
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
@@ -57,24 +58,23 @@ public abstract class Program
         return new Workflow("spawn-parallel-threads-from-json-arr-variable", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetLHConfig(args, loggerFactory);
+            var config = GetLHConfig(loggerFactory);
             var client = config.GetGrpcClientInstance();
             var worker = new LHTaskWorker<MyWorker>(new MyWorker(), "task-executor", config);
-            worker.RegisterTaskDef();
-
-            var workflow = GetWorkflow();
             
-            workflow.RegisterWfSpec(client);
-            
-            Thread.Sleep(300);
+            await worker.RegisterTaskDef();
 
-            worker.Start();
+            await GetWorkflow().RegisterWfSpec(client);
+            
+            await Task.Delay(300);
+
+            await worker.Start();
         }
     }
 }

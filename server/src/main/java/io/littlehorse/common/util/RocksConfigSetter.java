@@ -2,11 +2,13 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
+import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
 import org.rocksdb.RateLimiter;
 
@@ -55,6 +57,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             // to .close() it to avoid leaks so that we can provide a global one.
             Cache oldCache = tableConfig.blockCache();
             tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
+            tableConfig.setCacheIndexAndFilterBlocks(true);
             oldCache.close();
         }
 
@@ -62,8 +65,21 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setBlockSize(BLOCK_SIZE);
         options.setTableFormatConfig(tableConfig);
 
+        options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
+        options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
+
         options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
-        options.setCompactionStyle(CompactionStyle.UNIVERSAL);
+
+        if (serverConfig.getRocksDBUseLevelCompaction()) {
+            options.setCompactionStyle(CompactionStyle.LEVEL);
+        } else {
+            options.setCompactionStyle(CompactionStyle.UNIVERSAL);
+        }
+
+        Optional<InfoLogLevel> rocksDBLogLevel = serverConfig.getRocksDBLogLevel();
+        if (rocksDBLogLevel.isPresent()) {
+            options.setInfoLogLevel(rocksDBLogLevel.get());
+        }
 
         options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
 
@@ -76,6 +92,11 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
         // Streams default is 3
         options.setMaxWriteBufferNumber(5);
+        //  Concurrent jobs for both flushes and compaction
+        options.setMaxBackgroundJobs(serverConfig.getRocksDBCompactionThreads());
+        // Speeds up compaction by deploying sub compactions.
+        // there may be max_background_jobs * max_subcompactions background threads running compaction
+        options.setMaxSubcompactions(3);
         long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
         if (rateLimit > 0) {
             options.setRateLimiter(new RateLimiter(

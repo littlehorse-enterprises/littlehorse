@@ -4,17 +4,26 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
@@ -25,6 +34,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private VariableValueModel rhsLiteralValue;
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
+
     private ExpressionModel expression;
 
     public Class<VariableAssignment> getProtoBaseClass() {
@@ -107,6 +117,57 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return out;
     }
 
+    public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
+        // TODO: extend this to support Struct and StructDef when we implement that.
+        return canBeType(type.getType(), tspec);
+    }
+
+    public Optional<TypeDefinitionModel> resolveType(
+            ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
+            throws InvalidExpressionException {
+        if (jsonPath != null) {
+            // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
+            // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
+            return Optional.empty();
+        }
+
+        switch (rhsSourceType) {
+            case VARIABLE_NAME:
+                return Optional.of(wfSpec.fetchThreadSpec(threadSpecName)
+                        .getVarDef(variableName)
+                        .getVarDef()
+                        .getTypeDef());
+            case LITERAL_VALUE:
+                return Optional.of(rhsLiteralValue.getTypeDefinition());
+            case FORMAT_STRING:
+                return Optional.of(new TypeDefinitionModel(VariableType.STR));
+            case NODE_OUTPUT:
+                // TODO: handle here if nodeOutputType is a STRUCT and we access a field on it.
+                Optional<ReturnTypeModel> returnTypeOption = wfSpec.fetchThreadSpec(threadSpecName)
+                        .getNode(nodeOutputReference.getNodeName())
+                        .getOutputType(manager);
+                if (returnTypeOption.isPresent()) {
+                    return returnTypeOption.get().getOutputType();
+                } else {
+                    return Optional.empty();
+                }
+            case EXPRESSION:
+                // can be a given type.
+                return expression.resolveTypeDefinition(manager, wfSpec, threadSpecName);
+            case SOURCE_NOT_SET:
+                // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
+                // protobuf that does not set the source type. Instead of throwing an IllegalStateException
+                // we should throw an error that will get propagated back to the client.
+                //
+                // The problem with this is that in this scope we lack context about which node has the
+                // invalid VariableAssignment, so the client may have trouble determining the source. Still
+                // it is better to return INVALID_ARGUMENT than INTERNAL.
+                throw new InvalidExpressionException("VariableAssignment passed with missing source");
+        }
+
+        return Optional.empty();
+    }
+
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
@@ -116,7 +177,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
-                baseType = varDef.getType();
+
+                // This will need to be refactored once we introduce Structs and StructDefs.
+                baseType = varDef.getTypeDef().getType();
                 break;
             case LITERAL_VALUE:
                 baseType = rhsLiteralValue.getType();
@@ -139,7 +202,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
-
         return baseType == type;
     }
 }

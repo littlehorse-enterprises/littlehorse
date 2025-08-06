@@ -13,16 +13,20 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.NoOpJob;
 import io.littlehorse.server.LHServer;
-import io.littlehorse.server.TestProcessorExecutionContext;
+import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.logging.log4j.message.Message;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -36,10 +40,12 @@ public class BulkUpdateJobTest {
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final TaskQueueManager queueManager = mock();
-    private final CommandProcessor processor = new CommandProcessor(lhConfig, server, metadataCache, queueManager);
+    private final AsyncWaiters asyncWaiters = mock();
+    private final CommandProcessor processor =
+            new CommandProcessor(lhConfig, server, metadataCache, queueManager, asyncWaiters);
     private final Command command = commandProto();
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
-    private final TestProcessorExecutionContext testProcessorContext = TestProcessorExecutionContext.create(
+    private final TestCoreProcessorContext testProcessorContext = TestCoreProcessorContext.create(
             command,
             HeadersUtil.metadataHeadersFor(
                     new TenantIdModel(LHConstants.DEFAULT_TENANT),
@@ -48,7 +54,7 @@ public class BulkUpdateJobTest {
     private final GetableManager getableManager = testProcessorContext.getableManager();
 
     @Test
-    public void shouldExecuteBulkUpdateFromBeginningToEnd() {
+    public void shouldExecuteBulkUpdateFromBeginningToEnd() throws Exception {
         when(lhConfig.getMaxBulkJobIterDurationMs()).thenReturn(1);
         WfRunModel wfRun1 = TestUtil.wfRun(UUID.randomUUID().toString());
         WfRunModel wfRun2 = TestUtil.wfRun(UUID.randomUUID().toString());
@@ -58,8 +64,11 @@ public class BulkUpdateJobTest {
         getableManager.put(wfRun3);
         getableManager.commit();
         processor.init(mockProcessor);
+        CompletableFuture<Message> futureResponse = new CompletableFuture<>();
+        when(asyncWaiters.getOrRegisterFuture(eq(command.getCommandId()), any(), any(CompletableFuture.class)))
+                .thenReturn(futureResponse);
         processor.process(new Record<>("", command, 0L, testProcessorContext.getRecordMetadata()));
-        verify(server, never()).sendErrorToClient(anyString(), any());
+        Assertions.assertThat(futureResponse).isCompleted();
     }
 
     private Command commandProto() {
@@ -70,6 +79,9 @@ public class BulkUpdateJobTest {
                 .setEndKey(GetableClassEnum.WF_RUN_VALUE + "/~")
                 .setNoOp(job)
                 .build();
-        return Command.newBuilder().setBulkJob(bulkJob).build();
+        return Command.newBuilder()
+                .setCommandId(UUID.randomUUID().toString())
+                .setBulkJob(bulkJob)
+                .build();
     }
 }

@@ -1,5 +1,7 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { WithBookmark } from '@/types'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { VariableDef, VariableValue, WfSpec } from 'littlehorse-client/proto'
+import { VariableDef, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -23,8 +25,6 @@ import { searchVariables } from '../actions/searchVariables'
 type Props = {
   spec: WfSpec
 }
-
-const LIMIT = 10
 
 export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const variables = Object.keys(spec.threadSpecs)
@@ -37,7 +37,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const [variable, setVariable] = useState(variables[0])
   const [variableValue, setVariableValue] = useState('')
   const [variableValueDebounced] = useDebounce(variableValue, 250)
-  const [limit, setLimit] = useState(LIMIT)
+  const [limit, setLimit] = useState(SEARCH_DEFAULT_LIMIT)
   const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
@@ -54,7 +54,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
         limit,
         bookmark: pageParam,
         varName: variable.name,
-        value: convertToVariableValue({ type: variable.type.toLowerCase(), value: variableValueDebounced }),
+        value: getTypedVariableValue(getVariableDefType(variable), variableValueDebounced),
       })
     },
   })
@@ -126,19 +126,4 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
       </DialogContent>
     </Dialog>
   )
-}
-
-function convertToVariableValue({ type, value }: { type: string; value: string }): VariableValue {
-  switch (type) {
-    case 'str':
-      return { str: value }
-    case 'int':
-      return { int: parseInt(value) }
-    case 'bool':
-      return { bool: value.toLowerCase() === 'true' }
-    case 'double':
-      return { double: parseFloat(value) }
-    default:
-      return { str: value }
-  }
 }

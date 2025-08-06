@@ -1,6 +1,6 @@
-import { formatTime, getVariableValue } from '@/app/utils'
-import { Comparator, Node as NodeProto } from 'littlehorse-client/proto'
-import { CircleEqualIcon, ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
+import { getVariable } from '@/app/utils'
+import { WaitForConditionNode } from 'littlehorse-client/proto'
+import { CircleEqualIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
@@ -9,13 +9,13 @@ import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 
 import { NodeRunsList } from '../../NodeRunsList'
-import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { Condition } from './Condition'
-import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  if (!data.waitForCondition) return null
 
-  const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted, nodeRun } = data
+import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
+import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
+import { Condition } from './Condition'
+const Node: FC<NodeProps<'waitForCondition', WaitForConditionNode>> = ({ data }) => {
+  const { fade, nodeNeedsToBeHighlighted, condition } = data
+  if (!condition) return null
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -28,25 +28,23 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
               <div className="flex flex-col gap-1 text-nowrap">
                 <div className="flex flex-col">
                   <div className="font-semibold">Left Side Variable:</div>
-                  <div className="w-fit bg-gray-200 px-1">{waitForConditionNode.condition?.left?.variableName}</div>
+                  <div className="w-fit bg-gray-200 px-1">{condition.left ? getVariable(condition.left) : 'N/A'}</div>
                 </div>
                 <div className="flex flex-col justify-center">
                   <div className="font-semibold">Comparator:</div>
-                  <div className="w-fit bg-gray-200 px-1">{waitForConditionNode.condition?.comparator}</div>
+                  <div className="w-fit bg-gray-200 px-1">{getComparatorSymbol(condition.comparator)}</div>
                 </div>
                 <div className="flex flex-col">
                   <div className="font-semibold">Right Side Value:</div>
-                  <div className="w-fit bg-gray-200 px-1">
-                    {getVariableValue(waitForConditionNode.condition?.right?.literalValue)?.toString()}
-                  </div>
+                  <div className="w-fit bg-gray-200 px-1">{condition.right ? getVariable(condition.right) : 'N/A'}</div>
                 </div>
               </div>
             }
           </div>
-          <NodeRunsList nodeRuns={data?.nodeRunsList} />
+          <NodeRunsList nodeRuns={data.nodeRunsList} />
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
+      <Fade fade={fade} status={data.nodeRunsList[data.nodeRunsList.length - 1].status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={
@@ -63,12 +61,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center"></div>
         </div>
       </Fade>
-      <Condition
-        className="absolute flex w-full items-center justify-center whitespace-nowrap text-center"
-        variableName={waitForConditionNode.condition?.left?.variableName ?? ''}
-        comparator={waitForConditionNode.condition?.comparator ?? Comparator.EQUALS}
-        rightSide={getVariableValue(waitForConditionNode.condition?.right?.literalValue)?.toString() ?? ''}
-      />
+      <Condition {...condition} />
     </>
   )
 }

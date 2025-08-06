@@ -5,12 +5,13 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.MissingThreadRunException;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
@@ -31,9 +32,11 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
 import io.littlehorse.sdk.common.proto.PendingInterrupt;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
@@ -45,9 +48,13 @@ import io.littlehorse.server.metrics.GetableStatusUpdate;
 import io.littlehorse.server.metrics.GetableUpdates;
 import io.littlehorse.server.metrics.Sensor;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,13 +67,12 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
 @Getter
-public class WfRunModel extends CoreGetable<WfRun> {
+public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGetable<WfRun> {
 
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
@@ -87,7 +93,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public WfRunModel() {}
 
-    public WfRunModel(ProcessorExecutionContext processorContext) {
+    public WfRunModel(CoreProcessorContext processorContext) {
         this.executionContext = processorContext;
     }
 
@@ -196,6 +202,19 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     @Override
+    public boolean shouldProduceToOutputTopic(
+            WfRun previousValue,
+            ReadOnlyMetadataManager metadataManager,
+            ReadOnlyGetableManager getableManager,
+            OutputTopicConfigModel config) {
+        if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            return false;
+        }
+
+        return previousValue == null || previousValue.getStatus() != this.status;
+    }
+
+    @Override
     public WfRunIdModel getObjectId() {
         return id;
     }
@@ -209,6 +228,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         return getThreadRun(0).isRunning();
     }
 
+    @Override
     public WfRun.Builder toProto() {
         WfRun.Builder out = WfRun.newBuilder()
                 .setId(id.toProto())
@@ -253,7 +273,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             Integer parentThreadId,
             Map<String, VariableValueModel> variables,
             ThreadType type) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         ThreadSpecModel tspec = getWfSpec().getThreadSpecs().get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
@@ -302,7 +322,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     private boolean startInterrupts(Date time) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         boolean somethingChanged = false;
 
         // Current server behavior is that only one ThreadRun may be interrupted at a single time. This will be
@@ -398,7 +418,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
                                 "Failed launching exception handler thread with id: " + fh.number,
                                 LHConstants.CHILD_FAILURE),
                         time,
-                        executionContext.castOnSupport(ProcessorExecutionContext.class));
+                        executionContext.castOnSupport(CoreProcessorContext.class));
             } else {
                 failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
             }
@@ -408,7 +428,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     private void putFailureOnThreadRun(
-            ThreadRunModel threadToFail, FailureModel failure, Date time, ProcessorExecutionContext processorContext) {
+            ThreadRunModel threadToFail, FailureModel failure, Date time, CoreProcessorContext processorContext) {
         NodeRunModel nodeRun = threadToFail.getCurrentNodeRun();
         nodeRun.getFailures().add(failure);
         threadToFail.setStatus(failure.getStatus());
@@ -481,15 +501,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         ThreadRunModel handler = getThreadRun(timeout.getNodeRunId().getThreadRunNumber());
         handler.processExtEvtTimeout(timeout);
         advance(processorContext.currentCommand().getTime());
-    }
-
-    public void failDueToWfSpecDeletion() {
-        throw new NotImplementedException();
-        // getThreadRun(0).fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
     }
 
     public void processExternalEvent(ExternalEventModel event) {
@@ -524,14 +539,14 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
-    public void rescueThreadRun(int threadRunNumber, boolean skipCurrentNode, ProcessorExecutionContext ctx)
+    public void rescueThreadRun(int threadRunNumber, boolean skipCurrentNode, CoreProcessorContext ctx)
             throws MissingThreadRunException, UnRescuableThreadRunException, ThreadRunRescueFailedException {
         validateCanRescueThreadRun(threadRunNumber, ctx);
         ThreadRunModel toRescue = getThreadRun(threadRunNumber);
         toRescue.rescue(skipCurrentNode, ctx);
     }
 
-    private void validateCanRescueThreadRun(int threadRunNumber, ProcessorExecutionContext ctx)
+    private void validateCanRescueThreadRun(int threadRunNumber, CoreProcessorContext ctx)
             throws MissingThreadRunException, UnRescuableThreadRunException {
         // Some validations
         if (threadRunNumber > getGreatestThreadRunNumber() || threadRunNumber < 0) {
@@ -581,17 +596,17 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date());
     }
 
-    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationError {
+    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationException {
         int threadRunNumber = req.getNodeRunId().getThreadRunNumber();
         int nodeRunPosition = req.getNodeRunId().getPosition();
         if (threadRunNumber >= threadRunsUseMeCarefully.size() || threadRunNumber < 0) {
-            throw new LHValidationError(null, "Reference to nonexistent thread.");
+            throw new LHValidationException(null, "Reference to nonexistent thread.");
         }
 
         ThreadRunModel thread = getThreadRun(threadRunNumber);
 
         if (nodeRunPosition > thread.currentNodePosition) {
-            throw new LHValidationError(null, "Reference to nonexistent nodeRun");
+            throw new LHValidationException(null, "Reference to nonexistent nodeRun");
         }
 
         thread.processSleepNodeMatured(req);
@@ -599,7 +614,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public void transitionTo(LHStatus status) {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         GetableStatusUpdate statusChanged;
         if (Objects.equals(status, LHStatus.COMPLETED)) {
             statusChanged = GetableUpdates.create(

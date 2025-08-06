@@ -232,37 +232,6 @@ public final class LittleHorseGrpc {
     return getPutWfSpecMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
-      io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "PutMetricSpec",
-      requestType = io.littlehorse.sdk.common.proto.PutMetricSpecRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.MetricSpec.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
-      io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod;
-    if ((getPutMetricSpecMethod = LittleHorseGrpc.getPutMetricSpecMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getPutMetricSpecMethod = LittleHorseGrpc.getPutMetricSpecMethod) == null) {
-          LittleHorseGrpc.getPutMetricSpecMethod = getPutMetricSpecMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpec>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutMetricSpec"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.MetricSpec.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutMetricSpec"))
-              .build();
-        }
-      }
-    }
-    return getPutMetricSpecMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId,
       io.littlehorse.sdk.common.proto.WfSpec> getGetWfSpecMethod;
 
@@ -354,6 +323,99 @@ public final class LittleHorseGrpc {
       }
     }
     return getMigrateWfSpecMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutStructDefRequest,
+      io.littlehorse.sdk.common.proto.StructDef> getPutStructDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutStructDef",
+      requestType = io.littlehorse.sdk.common.proto.PutStructDefRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.StructDef.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutStructDefRequest,
+      io.littlehorse.sdk.common.proto.StructDef> getPutStructDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutStructDefRequest, io.littlehorse.sdk.common.proto.StructDef> getPutStructDefMethod;
+    if ((getPutStructDefMethod = LittleHorseGrpc.getPutStructDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutStructDefMethod = LittleHorseGrpc.getPutStructDefMethod) == null) {
+          LittleHorseGrpc.getPutStructDefMethod = getPutStructDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutStructDefRequest, io.littlehorse.sdk.common.proto.StructDef>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutStructDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutStructDef"))
+              .build();
+        }
+      }
+    }
+    return getPutStructDefMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StructDefId,
+      io.littlehorse.sdk.common.proto.StructDef> getGetStructDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetStructDef",
+      requestType = io.littlehorse.sdk.common.proto.StructDefId.class,
+      responseType = io.littlehorse.sdk.common.proto.StructDef.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StructDefId,
+      io.littlehorse.sdk.common.proto.StructDef> getGetStructDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDef> getGetStructDefMethod;
+    if ((getGetStructDefMethod = LittleHorseGrpc.getGetStructDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetStructDefMethod = LittleHorseGrpc.getGetStructDefMethod) == null) {
+          LittleHorseGrpc.getGetStructDefMethod = getGetStructDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDef>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetStructDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetStructDef"))
+              .build();
+        }
+      }
+    }
+    return getGetStructDefMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+      io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ValidateStructDefEvolution",
+      requestType = io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+      io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest, io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> getValidateStructDefEvolutionMethod;
+    if ((getValidateStructDefEvolutionMethod = LittleHorseGrpc.getValidateStructDefEvolutionMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getValidateStructDefEvolutionMethod = LittleHorseGrpc.getValidateStructDefEvolutionMethod) == null) {
+          LittleHorseGrpc.getValidateStructDefEvolutionMethod = getValidateStructDefEvolutionMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest, io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ValidateStructDefEvolution"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ValidateStructDefEvolution"))
+              .build();
+        }
+      }
+    }
+    return getValidateStructDefEvolutionMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutUserTaskDefRequest,
@@ -790,6 +852,99 @@ public final class LittleHorseGrpc {
     return getListUserTaskRunsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getPutUserTaskRunCommentMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutUserTaskRunComment",
+      requestType = io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.UserTaskRun.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getPutUserTaskRunCommentMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest, io.littlehorse.sdk.common.proto.UserTaskRun> getPutUserTaskRunCommentMethod;
+    if ((getPutUserTaskRunCommentMethod = LittleHorseGrpc.getPutUserTaskRunCommentMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutUserTaskRunCommentMethod = LittleHorseGrpc.getPutUserTaskRunCommentMethod) == null) {
+          LittleHorseGrpc.getPutUserTaskRunCommentMethod = getPutUserTaskRunCommentMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest, io.littlehorse.sdk.common.proto.UserTaskRun>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutUserTaskRunComment"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.UserTaskRun.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutUserTaskRunComment"))
+              .build();
+        }
+      }
+    }
+    return getPutUserTaskRunCommentMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getEditUserTaskRunCommentMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "EditUserTaskRunComment",
+      requestType = io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.UserTaskRun.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getEditUserTaskRunCommentMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest, io.littlehorse.sdk.common.proto.UserTaskRun> getEditUserTaskRunCommentMethod;
+    if ((getEditUserTaskRunCommentMethod = LittleHorseGrpc.getEditUserTaskRunCommentMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getEditUserTaskRunCommentMethod = LittleHorseGrpc.getEditUserTaskRunCommentMethod) == null) {
+          LittleHorseGrpc.getEditUserTaskRunCommentMethod = getEditUserTaskRunCommentMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest, io.littlehorse.sdk.common.proto.UserTaskRun>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "EditUserTaskRunComment"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.UserTaskRun.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("EditUserTaskRunComment"))
+              .build();
+        }
+      }
+    }
+    return getEditUserTaskRunCommentMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getDeleteUserTaskRunCommentMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteUserTaskRunComment",
+      requestType = io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.UserTaskRun.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getDeleteUserTaskRunCommentMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest, io.littlehorse.sdk.common.proto.UserTaskRun> getDeleteUserTaskRunCommentMethod;
+    if ((getDeleteUserTaskRunCommentMethod = LittleHorseGrpc.getDeleteUserTaskRunCommentMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteUserTaskRunCommentMethod = LittleHorseGrpc.getDeleteUserTaskRunCommentMethod) == null) {
+          LittleHorseGrpc.getDeleteUserTaskRunCommentMethod = getDeleteUserTaskRunCommentMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest, io.littlehorse.sdk.common.proto.UserTaskRun>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteUserTaskRunComment"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.UserTaskRun.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteUserTaskRunComment"))
+              .build();
+        }
+      }
+    }
+    return getDeleteUserTaskRunCommentMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.NodeRunId,
       io.littlehorse.sdk.common.proto.NodeRun> getGetNodeRunMethod;
 
@@ -1007,6 +1162,37 @@ public final class LittleHorseGrpc {
     return getPutExternalEventMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getPutCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.CorrelatedEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getPutCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEvent> getPutCorrelatedEventMethod;
+    if ((getPutCorrelatedEventMethod = LittleHorseGrpc.getPutCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutCorrelatedEventMethod = LittleHorseGrpc.getPutCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getPutCorrelatedEventMethod = getPutCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getPutCorrelatedEventMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventId,
       io.littlehorse.sdk.common.proto.ExternalEvent> getGetExternalEventMethod;
 
@@ -1036,6 +1222,37 @@ public final class LittleHorseGrpc {
       }
     }
     return getGetExternalEventMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CorrelatedEventId,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getGetCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.CorrelatedEventId.class,
+      responseType = io.littlehorse.sdk.common.proto.CorrelatedEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CorrelatedEventId,
+      io.littlehorse.sdk.common.proto.CorrelatedEvent> getGetCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CorrelatedEventId, io.littlehorse.sdk.common.proto.CorrelatedEvent> getGetCorrelatedEventMethod;
+    if ((getGetCorrelatedEventMethod = LittleHorseGrpc.getGetCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetCorrelatedEventMethod = LittleHorseGrpc.getGetCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getGetCorrelatedEventMethod = getGetCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CorrelatedEventId, io.littlehorse.sdk.common.proto.CorrelatedEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEventId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getGetCorrelatedEventMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest,
@@ -1222,6 +1439,37 @@ public final class LittleHorseGrpc {
       }
     }
     return getSearchWfRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.CorrelatedEventIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
+      io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod;
+    if ((getSearchCorrelatedEventMethod = LittleHorseGrpc.getSearchCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchCorrelatedEventMethod = LittleHorseGrpc.getSearchCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getSearchCorrelatedEventMethod = getSearchCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest, io.littlehorse.sdk.common.proto.CorrelatedEventIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CorrelatedEventIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getSearchCorrelatedEventMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchNodeRunRequest,
@@ -1875,6 +2123,37 @@ public final class LittleHorseGrpc {
     return getDeleteTaskDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteStructDefRequest,
+      com.google.protobuf.Empty> getDeleteStructDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteStructDef",
+      requestType = io.littlehorse.sdk.common.proto.DeleteStructDefRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteStructDefRequest,
+      com.google.protobuf.Empty> getDeleteStructDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteStructDefRequest, com.google.protobuf.Empty> getDeleteStructDefMethod;
+    if ((getDeleteStructDefMethod = LittleHorseGrpc.getDeleteStructDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteStructDefMethod = LittleHorseGrpc.getDeleteStructDefMethod) == null) {
+          LittleHorseGrpc.getDeleteStructDefMethod = getDeleteStructDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteStructDefRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteStructDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteStructDef"))
+              .build();
+        }
+      }
+    }
+    return getDeleteStructDefMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfSpecRequest,
       com.google.protobuf.Empty> getDeleteWfSpecMethod;
 
@@ -1966,6 +2245,37 @@ public final class LittleHorseGrpc {
       }
     }
     return getDeleteExternalEventDefMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest,
+      com.google.protobuf.Empty> getDeleteCorrelatedEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteCorrelatedEvent",
+      requestType = io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest,
+      com.google.protobuf.Empty> getDeleteCorrelatedEventMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest, com.google.protobuf.Empty> getDeleteCorrelatedEventMethod;
+    if ((getDeleteCorrelatedEventMethod = LittleHorseGrpc.getDeleteCorrelatedEventMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteCorrelatedEventMethod = LittleHorseGrpc.getDeleteCorrelatedEventMethod) == null) {
+          LittleHorseGrpc.getDeleteCorrelatedEventMethod = getDeleteCorrelatedEventMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteCorrelatedEvent"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteCorrelatedEvent"))
+              .build();
+        }
+      }
+    }
+    return getDeleteCorrelatedEventMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest,
@@ -2341,96 +2651,34 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.sdk.common.proto.ServerVersion> getGetServerVersionMethod;
+      io.littlehorse.sdk.common.proto.LittleHorseVersion> getGetServerVersionMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetServerVersion",
       requestType = com.google.protobuf.Empty.class,
-      responseType = io.littlehorse.sdk.common.proto.ServerVersion.class,
+      responseType = io.littlehorse.sdk.common.proto.LittleHorseVersion.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.sdk.common.proto.ServerVersion> getGetServerVersionMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersion> getGetServerVersionMethod;
+      io.littlehorse.sdk.common.proto.LittleHorseVersion> getGetServerVersionMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.LittleHorseVersion> getGetServerVersionMethod;
     if ((getGetServerVersionMethod = LittleHorseGrpc.getGetServerVersionMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getGetServerVersionMethod = LittleHorseGrpc.getGetServerVersionMethod) == null) {
           LittleHorseGrpc.getGetServerVersionMethod = getGetServerVersionMethod =
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersion>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.LittleHorseVersion>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetServerVersion"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.LittleHorseVersion.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetServerVersion"))
               .build();
         }
       }
     }
     return getGetServerVersionMethod;
-  }
-
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
-      io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListMetricSpecs",
-      requestType = io.littlehorse.sdk.common.proto.ListMetricSpecRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.MetricSpecList.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
-      io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod;
-    if ((getListMetricSpecsMethod = LittleHorseGrpc.getListMetricSpecsMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getListMetricSpecsMethod = LittleHorseGrpc.getListMetricSpecsMethod) == null) {
-          LittleHorseGrpc.getListMetricSpecsMethod = getListMetricSpecsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpecList>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetricSpecs"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListMetricSpecRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.MetricSpecList.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetricSpecs"))
-              .build();
-        }
-      }
-    }
-    return getListMetricSpecsMethod;
-  }
-
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
-      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListMetrics",
-      requestType = io.littlehorse.sdk.common.proto.ListMetricsRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.MetricList.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
-      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
-    if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
-          LittleHorseGrpc.getListMetricsMethod = getListMetricsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetrics"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListMetricsRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetrics"))
-              .build();
-        }
-      }
-    }
-    return getListMetricsMethod;
   }
 
   /**
@@ -2553,16 +2801,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric spec
-     * </pre>
-     */
-    default void putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutMetricSpecMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
      * Gets a WfSpec.
      * </pre>
      */
@@ -2593,6 +2831,42 @@ public final class LittleHorseGrpc {
     default void migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getMigrateWfSpecMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    default void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Get a StructDef.
+     * </pre>
+     */
+    default void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    default void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getValidateStructDefEvolutionMethod(), responseObserver);
     }
 
     /**
@@ -2755,6 +3029,36 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Adds userComment to a UserTaskRun
+     * </pre>
+     */
+    default void putUserTaskRunComment(io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutUserTaskRunCommentMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Edits userComment with the correlated userCommentId 
+     * </pre>
+     */
+    default void editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getEditUserTaskRunCommentMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
+     * </pre>
+     */
+    default void deleteUserTaskRunComment(io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteUserTaskRunCommentMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Gets a specific NodeRun.
      * </pre>
      */
@@ -2817,12 +3121,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     default void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutExternalEventMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    default void putCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutCorrelatedEventMethod(), responseObserver);
     }
 
     /**
@@ -2833,6 +3147,16 @@ public final class LittleHorseGrpc {
     default void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetExternalEventMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    default void getCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEventId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetCorrelatedEventMethod(), responseObserver);
     }
 
     /**
@@ -2897,6 +3221,17 @@ public final class LittleHorseGrpc {
     default void searchWfRun(io.littlehorse.sdk.common.proto.SearchWfRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunIdList> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWfRunMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    default void searchCorrelatedEvent(io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEventIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchCorrelatedEventMethod(), responseObserver);
     }
 
     /**
@@ -3126,6 +3461,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Deletes a StructDef.
+     * </pre>
+     */
+    default void deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -3152,6 +3497,16 @@ public final class LittleHorseGrpc {
     default void deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteExternalEventDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    default void deleteCorrelatedEvent(io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteCorrelatedEventMethod(), responseObserver);
     }
 
     /**
@@ -3276,25 +3631,8 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     default void getServerVersion(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersion> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetServerVersionMethod(), responseObserver);
-    }
-
-    /**
-     */
-    default void listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricSpecsMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
-     * List the latest metrics for a given MetricSpecId
-     * </pre>
-     */
-    default void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricsMethod(), responseObserver);
     }
   }
 
@@ -3404,17 +3742,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric spec
-     * </pre>
-     */
-    public void putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getPutMetricSpecMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     * <pre>
      * Gets a WfSpec.
      * </pre>
      */
@@ -3448,6 +3775,45 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getMigrateWfSpecMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    public void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Get a StructDef.
+     * </pre>
+     */
+    public void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public void validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3624,6 +3990,39 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Adds userComment to a UserTaskRun
+     * </pre>
+     */
+    public void putUserTaskRunComment(io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutUserTaskRunCommentMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Edits userComment with the correlated userCommentId 
+     * </pre>
+     */
+    public void editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getEditUserTaskRunCommentMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
+     * </pre>
+     */
+    public void deleteUserTaskRunComment(io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteUserTaskRunCommentMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Gets a specific NodeRun.
      * </pre>
      */
@@ -3692,13 +4091,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     public void putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPutExternalEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    public void putCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3710,6 +4120,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    public void getCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEventId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3780,6 +4201,18 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunIdList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    public void searchCorrelatedEvent(io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEventIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4030,6 +4463,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Deletes a StructDef.
+     * </pre>
+     */
+    public void deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -4059,6 +4503,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteExternalEventDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    public void deleteCorrelatedEvent(io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteCorrelatedEventMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4195,28 +4650,9 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     public void getServerVersion(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersion> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     */
-    public void listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListMetricSpecsMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     * <pre>
-     * List the latest metrics for a given MetricSpecId
-     * </pre>
-     */
-    public void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -4308,16 +4744,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric spec
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.MetricSpec putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getPutMetricSpecMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
      * Gets a WfSpec.
      * </pre>
      */
@@ -4348,6 +4774,42 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfSpec migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getMigrateWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Get a StructDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getValidateStructDefEvolutionMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4510,6 +4972,36 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Adds userComment to a UserTaskRun
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRun putUserTaskRunComment(io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutUserTaskRunCommentMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Edits userComment with the correlated userCommentId 
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRun editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getEditUserTaskRunCommentMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRun deleteUserTaskRunComment(io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteUserTaskRunCommentMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Gets a specific NodeRun.
      * </pre>
      */
@@ -4572,12 +5064,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEvent putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEvent putCorrelatedEvent(io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutCorrelatedEventMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4588,6 +5090,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.ExternalEvent getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEvent getCorrelatedEvent(io.littlehorse.sdk.common.proto.CorrelatedEventId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetCorrelatedEventMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4652,6 +5164,17 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfRunIdList searchWfRun(io.littlehorse.sdk.common.proto.SearchWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventIdList searchCorrelatedEvent(io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchCorrelatedEventMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4870,6 +5393,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Deletes a StructDef.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -4896,6 +5429,16 @@ public final class LittleHorseGrpc {
     public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteCorrelatedEvent(io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteCorrelatedEventMethod(), getCallOptions(), request);
     }
 
     /**
@@ -5019,26 +5562,9 @@ public final class LittleHorseGrpc {
      * Gets the version of the LH Server.
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ServerVersion getServerVersion(com.google.protobuf.Empty request) {
+    public io.littlehorse.sdk.common.proto.LittleHorseVersion getServerVersion(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public io.littlehorse.sdk.common.proto.MetricSpecList listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListMetricSpecsMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
-     * List the latest metrics for a given MetricSpecId
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.MetricList listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListMetricsMethod(), getCallOptions(), request);
     }
   }
 
@@ -5137,17 +5663,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric spec
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricSpec> putMetricSpec(
-        io.littlehorse.sdk.common.proto.PutMetricSpecRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getPutMetricSpecMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
      * Gets a WfSpec.
      * </pre>
      */
@@ -5181,6 +5696,45 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getMigrateWfSpecMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Note that this request is idempotent: if you
+     * make a request to create a `StructDef` identical to the currently-created
+     * one with the same `name`, no new `StructDef` will be created. This is the
+     * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+     * enum within the `PutStructDefRequest`.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> putStructDef(
+        io.littlehorse.sdk.common.proto.PutStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Get a StructDef.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> getStructDef(
+        io.littlehorse.sdk.common.proto.StructDefId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> validateStructDefEvolution(
+        io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5357,6 +5911,39 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Adds userComment to a UserTaskRun
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRun> putUserTaskRunComment(
+        io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutUserTaskRunCommentMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Edits userComment with the correlated userCommentId 
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRun> editUserTaskRunComment(
+        io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getEditUserTaskRunCommentMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a comment logically, this does not affect the userTaskEvent Log
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRun> deleteUserTaskRunComment(
+        io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteUserTaskRunCommentMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Gets a specific NodeRun.
      * </pre>
      */
@@ -5425,13 +6012,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Post an ExternalEvent. This RPC is highly useful for
+     * Post an ExternalEvent.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEvent> putExternalEvent(
         io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPutExternalEventMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CorrelatedEvent> putCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutCorrelatedEventMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5443,6 +6041,17 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Get a specific CorrelatedEvent
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CorrelatedEvent> getCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.CorrelatedEventId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetCorrelatedEventMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5513,6 +6122,18 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.SearchWfRunRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+     * events that may be orphaned.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CorrelatedEventIdList> searchCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchCorrelatedEventMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5751,6 +6372,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Deletes a StructDef.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteStructDef(
+        io.littlehorse.sdk.common.proto.DeleteStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Deletes a WfSpec.
      * </pre>
      */
@@ -5780,6 +6412,17 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteExternalEventDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a CorrelatedEvent
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteCorrelatedEvent(
+        io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteCorrelatedEventMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5915,29 +6558,10 @@ public final class LittleHorseGrpc {
      * Gets the version of the LH Server.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ServerVersion> getServerVersion(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.LittleHorseVersion> getServerVersion(
         com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request);
-    }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricSpecList> listMetricSpecs(
-        io.littlehorse.sdk.common.proto.ListMetricSpecRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListMetricSpecsMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
-     * List the latest metrics for a given MetricSpecId
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricList> listMetrics(
-        io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request);
     }
   }
 
@@ -5948,77 +6572,85 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_EXTERNAL_EVENT_DEF = 4;
   private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 5;
   private static final int METHODID_PUT_WF_SPEC = 6;
-  private static final int METHODID_PUT_METRIC_SPEC = 7;
-  private static final int METHODID_GET_WF_SPEC = 8;
-  private static final int METHODID_GET_LATEST_WF_SPEC = 9;
-  private static final int METHODID_MIGRATE_WF_SPEC = 10;
-  private static final int METHODID_PUT_USER_TASK_DEF = 11;
-  private static final int METHODID_GET_USER_TASK_DEF = 12;
-  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 13;
-  private static final int METHODID_RUN_WF = 14;
-  private static final int METHODID_SCHEDULE_WF = 15;
-  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 16;
-  private static final int METHODID_GET_SCHEDULED_WF_RUN = 17;
-  private static final int METHODID_GET_WF_RUN = 18;
-  private static final int METHODID_GET_USER_TASK_RUN = 19;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 20;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 21;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 22;
-  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 23;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 24;
-  private static final int METHODID_GET_NODE_RUN = 25;
-  private static final int METHODID_LIST_NODE_RUNS = 26;
-  private static final int METHODID_GET_TASK_RUN = 27;
-  private static final int METHODID_LIST_TASK_RUNS = 28;
-  private static final int METHODID_GET_VARIABLE = 29;
-  private static final int METHODID_LIST_VARIABLES = 30;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 31;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 32;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 33;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 34;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 35;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 36;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 37;
-  private static final int METHODID_SEARCH_WF_RUN = 38;
-  private static final int METHODID_SEARCH_NODE_RUN = 39;
-  private static final int METHODID_SEARCH_TASK_RUN = 40;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 41;
-  private static final int METHODID_SEARCH_VARIABLE = 42;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 43;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 44;
-  private static final int METHODID_SEARCH_TASK_DEF = 45;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 46;
-  private static final int METHODID_SEARCH_WF_SPEC = 47;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 48;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 49;
-  private static final int METHODID_SEARCH_TENANT = 50;
-  private static final int METHODID_SEARCH_PRINCIPAL = 51;
-  private static final int METHODID_REGISTER_TASK_WORKER = 52;
-  private static final int METHODID_REPORT_TASK = 53;
-  private static final int METHODID_STOP_WF_RUN = 54;
-  private static final int METHODID_RESUME_WF_RUN = 55;
-  private static final int METHODID_RESCUE_THREAD_RUN = 56;
-  private static final int METHODID_DELETE_WF_RUN = 57;
-  private static final int METHODID_DELETE_TASK_DEF = 58;
-  private static final int METHODID_DELETE_WF_SPEC = 59;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 60;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 61;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 62;
-  private static final int METHODID_DELETE_PRINCIPAL = 63;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 64;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 65;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 66;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 67;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 68;
-  private static final int METHODID_PUT_TENANT = 69;
-  private static final int METHODID_GET_TENANT = 70;
-  private static final int METHODID_PUT_PRINCIPAL = 71;
-  private static final int METHODID_GET_PRINCIPAL = 72;
-  private static final int METHODID_WHOAMI = 73;
-  private static final int METHODID_GET_SERVER_VERSION = 74;
-  private static final int METHODID_LIST_METRIC_SPECS = 75;
-  private static final int METHODID_LIST_METRICS = 76;
-  private static final int METHODID_POLL_TASK = 77;
+  private static final int METHODID_GET_WF_SPEC = 7;
+  private static final int METHODID_GET_LATEST_WF_SPEC = 8;
+  private static final int METHODID_MIGRATE_WF_SPEC = 9;
+  private static final int METHODID_PUT_STRUCT_DEF = 10;
+  private static final int METHODID_GET_STRUCT_DEF = 11;
+  private static final int METHODID_VALIDATE_STRUCT_DEF_EVOLUTION = 12;
+  private static final int METHODID_PUT_USER_TASK_DEF = 13;
+  private static final int METHODID_GET_USER_TASK_DEF = 14;
+  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 15;
+  private static final int METHODID_RUN_WF = 16;
+  private static final int METHODID_SCHEDULE_WF = 17;
+  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 18;
+  private static final int METHODID_GET_SCHEDULED_WF_RUN = 19;
+  private static final int METHODID_GET_WF_RUN = 20;
+  private static final int METHODID_GET_USER_TASK_RUN = 21;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 22;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 23;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 24;
+  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 25;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 26;
+  private static final int METHODID_PUT_USER_TASK_RUN_COMMENT = 27;
+  private static final int METHODID_EDIT_USER_TASK_RUN_COMMENT = 28;
+  private static final int METHODID_DELETE_USER_TASK_RUN_COMMENT = 29;
+  private static final int METHODID_GET_NODE_RUN = 30;
+  private static final int METHODID_LIST_NODE_RUNS = 31;
+  private static final int METHODID_GET_TASK_RUN = 32;
+  private static final int METHODID_LIST_TASK_RUNS = 33;
+  private static final int METHODID_GET_VARIABLE = 34;
+  private static final int METHODID_LIST_VARIABLES = 35;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 36;
+  private static final int METHODID_PUT_CORRELATED_EVENT = 37;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 38;
+  private static final int METHODID_GET_CORRELATED_EVENT = 39;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 40;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 41;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 42;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 43;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 44;
+  private static final int METHODID_SEARCH_WF_RUN = 45;
+  private static final int METHODID_SEARCH_CORRELATED_EVENT = 46;
+  private static final int METHODID_SEARCH_NODE_RUN = 47;
+  private static final int METHODID_SEARCH_TASK_RUN = 48;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 49;
+  private static final int METHODID_SEARCH_VARIABLE = 50;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 51;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 52;
+  private static final int METHODID_SEARCH_TASK_DEF = 53;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 54;
+  private static final int METHODID_SEARCH_WF_SPEC = 55;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 56;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 57;
+  private static final int METHODID_SEARCH_TENANT = 58;
+  private static final int METHODID_SEARCH_PRINCIPAL = 59;
+  private static final int METHODID_REGISTER_TASK_WORKER = 60;
+  private static final int METHODID_REPORT_TASK = 61;
+  private static final int METHODID_STOP_WF_RUN = 62;
+  private static final int METHODID_RESUME_WF_RUN = 63;
+  private static final int METHODID_RESCUE_THREAD_RUN = 64;
+  private static final int METHODID_DELETE_WF_RUN = 65;
+  private static final int METHODID_DELETE_TASK_DEF = 66;
+  private static final int METHODID_DELETE_STRUCT_DEF = 67;
+  private static final int METHODID_DELETE_WF_SPEC = 68;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 69;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 70;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 71;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 72;
+  private static final int METHODID_DELETE_PRINCIPAL = 73;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 74;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 75;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 76;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 77;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 78;
+  private static final int METHODID_PUT_TENANT = 79;
+  private static final int METHODID_GET_TENANT = 80;
+  private static final int METHODID_PUT_PRINCIPAL = 81;
+  private static final int METHODID_GET_PRINCIPAL = 82;
+  private static final int METHODID_WHOAMI = 83;
+  private static final int METHODID_GET_SERVER_VERSION = 84;
+  private static final int METHODID_POLL_TASK = 85;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6065,10 +6697,6 @@ public final class LittleHorseGrpc {
           serviceImpl.putWfSpec((io.littlehorse.sdk.common.proto.PutWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec>) responseObserver);
           break;
-        case METHODID_PUT_METRIC_SPEC:
-          serviceImpl.putMetricSpec((io.littlehorse.sdk.common.proto.PutMetricSpecRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec>) responseObserver);
-          break;
         case METHODID_GET_WF_SPEC:
           serviceImpl.getWfSpec((io.littlehorse.sdk.common.proto.WfSpecId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec>) responseObserver);
@@ -6080,6 +6708,18 @@ public final class LittleHorseGrpc {
         case METHODID_MIGRATE_WF_SPEC:
           serviceImpl.migrateWfSpec((io.littlehorse.sdk.common.proto.MigrateWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec>) responseObserver);
+          break;
+        case METHODID_PUT_STRUCT_DEF:
+          serviceImpl.putStructDef((io.littlehorse.sdk.common.proto.PutStructDefRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef>) responseObserver);
+          break;
+        case METHODID_GET_STRUCT_DEF:
+          serviceImpl.getStructDef((io.littlehorse.sdk.common.proto.StructDefId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDef>) responseObserver);
+          break;
+        case METHODID_VALIDATE_STRUCT_DEF_EVOLUTION:
+          serviceImpl.validateStructDefEvolution((io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>) responseObserver);
           break;
         case METHODID_PUT_USER_TASK_DEF:
           serviceImpl.putUserTaskDef((io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) request,
@@ -6137,6 +6777,18 @@ public final class LittleHorseGrpc {
           serviceImpl.listUserTaskRuns((io.littlehorse.sdk.common.proto.ListUserTaskRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList>) responseObserver);
           break;
+        case METHODID_PUT_USER_TASK_RUN_COMMENT:
+          serviceImpl.putUserTaskRunComment((io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun>) responseObserver);
+          break;
+        case METHODID_EDIT_USER_TASK_RUN_COMMENT:
+          serviceImpl.editUserTaskRunComment((io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun>) responseObserver);
+          break;
+        case METHODID_DELETE_USER_TASK_RUN_COMMENT:
+          serviceImpl.deleteUserTaskRunComment((io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun>) responseObserver);
+          break;
         case METHODID_GET_NODE_RUN:
           serviceImpl.getNodeRun((io.littlehorse.sdk.common.proto.NodeRunId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRun>) responseObserver);
@@ -6165,9 +6817,17 @@ public final class LittleHorseGrpc {
           serviceImpl.putExternalEvent((io.littlehorse.sdk.common.proto.PutExternalEventRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent>) responseObserver);
           break;
+        case METHODID_PUT_CORRELATED_EVENT:
+          serviceImpl.putCorrelatedEvent((io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent>) responseObserver);
+          break;
         case METHODID_GET_EXTERNAL_EVENT:
           serviceImpl.getExternalEvent((io.littlehorse.sdk.common.proto.ExternalEventId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEvent>) responseObserver);
+          break;
+        case METHODID_GET_CORRELATED_EVENT:
+          serviceImpl.getCorrelatedEvent((io.littlehorse.sdk.common.proto.CorrelatedEventId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEvent>) responseObserver);
           break;
         case METHODID_AWAIT_WORKFLOW_EVENT:
           serviceImpl.awaitWorkflowEvent((io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest) request,
@@ -6192,6 +6852,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_WF_RUN:
           serviceImpl.searchWfRun((io.littlehorse.sdk.common.proto.SearchWfRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunIdList>) responseObserver);
+          break;
+        case METHODID_SEARCH_CORRELATED_EVENT:
+          serviceImpl.searchCorrelatedEvent((io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CorrelatedEventIdList>) responseObserver);
           break;
         case METHODID_SEARCH_NODE_RUN:
           serviceImpl.searchNodeRun((io.littlehorse.sdk.common.proto.SearchNodeRunRequest) request,
@@ -6273,6 +6937,10 @@ public final class LittleHorseGrpc {
           serviceImpl.deleteTaskDef((io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
+        case METHODID_DELETE_STRUCT_DEF:
+          serviceImpl.deleteStructDef((io.littlehorse.sdk.common.proto.DeleteStructDefRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
         case METHODID_DELETE_WF_SPEC:
           serviceImpl.deleteWfSpec((io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
@@ -6283,6 +6951,10 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_DELETE_EXTERNAL_EVENT_DEF:
           serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_DELETE_CORRELATED_EVENT:
+          serviceImpl.deleteCorrelatedEvent((io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_WORKFLOW_EVENT_DEF:
@@ -6335,15 +7007,7 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_GET_SERVER_VERSION:
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersion>) responseObserver);
-          break;
-        case METHODID_LIST_METRIC_SPECS:
-          serviceImpl.listMetricSpecs((io.littlehorse.sdk.common.proto.ListMetricSpecRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList>) responseObserver);
-          break;
-        case METHODID_LIST_METRICS:
-          serviceImpl.listMetrics((io.littlehorse.sdk.common.proto.ListMetricsRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -6416,13 +7080,6 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfSpec>(
                 service, METHODID_PUT_WF_SPEC)))
         .addMethod(
-          getPutMetricSpecMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
-              io.littlehorse.sdk.common.proto.MetricSpec>(
-                service, METHODID_PUT_METRIC_SPEC)))
-        .addMethod(
           getGetWfSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -6443,6 +7100,27 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.MigrateWfSpecRequest,
               io.littlehorse.sdk.common.proto.WfSpec>(
                 service, METHODID_MIGRATE_WF_SPEC)))
+        .addMethod(
+          getPutStructDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutStructDefRequest,
+              io.littlehorse.sdk.common.proto.StructDef>(
+                service, METHODID_PUT_STRUCT_DEF)))
+        .addMethod(
+          getGetStructDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.StructDefId,
+              io.littlehorse.sdk.common.proto.StructDef>(
+                service, METHODID_GET_STRUCT_DEF)))
+        .addMethod(
+          getValidateStructDefEvolutionMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
+              io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>(
+                service, METHODID_VALIDATE_STRUCT_DEF_EVOLUTION)))
         .addMethod(
           getPutUserTaskDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6542,6 +7220,27 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.UserTaskRunList>(
                 service, METHODID_LIST_USER_TASK_RUNS)))
         .addMethod(
+          getPutUserTaskRunCommentMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutUserTaskRunCommentRequest,
+              io.littlehorse.sdk.common.proto.UserTaskRun>(
+                service, METHODID_PUT_USER_TASK_RUN_COMMENT)))
+        .addMethod(
+          getEditUserTaskRunCommentMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest,
+              io.littlehorse.sdk.common.proto.UserTaskRun>(
+                service, METHODID_EDIT_USER_TASK_RUN_COMMENT)))
+        .addMethod(
+          getDeleteUserTaskRunCommentMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest,
+              io.littlehorse.sdk.common.proto.UserTaskRun>(
+                service, METHODID_DELETE_USER_TASK_RUN_COMMENT)))
+        .addMethod(
           getGetNodeRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -6591,12 +7290,26 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ExternalEvent>(
                 service, METHODID_PUT_EXTERNAL_EVENT)))
         .addMethod(
+          getPutCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest,
+              io.littlehorse.sdk.common.proto.CorrelatedEvent>(
+                service, METHODID_PUT_CORRELATED_EVENT)))
+        .addMethod(
           getGetExternalEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ExternalEventId,
               io.littlehorse.sdk.common.proto.ExternalEvent>(
                 service, METHODID_GET_EXTERNAL_EVENT)))
+        .addMethod(
+          getGetCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CorrelatedEventId,
+              io.littlehorse.sdk.common.proto.CorrelatedEvent>(
+                service, METHODID_GET_CORRELATED_EVENT)))
         .addMethod(
           getAwaitWorkflowEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6639,6 +7352,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.SearchWfRunRequest,
               io.littlehorse.sdk.common.proto.WfRunIdList>(
                 service, METHODID_SEARCH_WF_RUN)))
+        .addMethod(
+          getSearchCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
+              io.littlehorse.sdk.common.proto.CorrelatedEventIdList>(
+                service, METHODID_SEARCH_CORRELATED_EVENT)))
         .addMethod(
           getSearchNodeRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6787,6 +7507,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_TASK_DEF)))
         .addMethod(
+          getDeleteStructDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteStructDefRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_STRUCT_DEF)))
+        .addMethod(
           getDeleteWfSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -6807,6 +7534,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
+        .addMethod(
+          getDeleteCorrelatedEventMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_CORRELATED_EVENT)))
         .addMethod(
           getDeleteWorkflowEventDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6896,22 +7630,8 @@ public final class LittleHorseGrpc {
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               com.google.protobuf.Empty,
-              io.littlehorse.sdk.common.proto.ServerVersion>(
+              io.littlehorse.sdk.common.proto.LittleHorseVersion>(
                 service, METHODID_GET_SERVER_VERSION)))
-        .addMethod(
-          getListMetricSpecsMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
-              io.littlehorse.sdk.common.proto.MetricSpecList>(
-                service, METHODID_LIST_METRIC_SPECS)))
-        .addMethod(
-          getListMetricsMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ListMetricsRequest,
-              io.littlehorse.sdk.common.proto.MetricList>(
-                service, METHODID_LIST_METRICS)))
         .build();
   }
 
@@ -6967,10 +7687,12 @@ public final class LittleHorseGrpc {
               .addMethod(getGetExternalEventDefMethod())
               .addMethod(getPutWorkflowEventDefMethod())
               .addMethod(getPutWfSpecMethod())
-              .addMethod(getPutMetricSpecMethod())
               .addMethod(getGetWfSpecMethod())
               .addMethod(getGetLatestWfSpecMethod())
               .addMethod(getMigrateWfSpecMethod())
+              .addMethod(getPutStructDefMethod())
+              .addMethod(getGetStructDefMethod())
+              .addMethod(getValidateStructDefEvolutionMethod())
               .addMethod(getPutUserTaskDefMethod())
               .addMethod(getGetUserTaskDefMethod())
               .addMethod(getGetLatestUserTaskDefMethod())
@@ -6985,6 +7707,9 @@ public final class LittleHorseGrpc {
               .addMethod(getCancelUserTaskRunMethod())
               .addMethod(getSaveUserTaskRunProgressMethod())
               .addMethod(getListUserTaskRunsMethod())
+              .addMethod(getPutUserTaskRunCommentMethod())
+              .addMethod(getEditUserTaskRunCommentMethod())
+              .addMethod(getDeleteUserTaskRunCommentMethod())
               .addMethod(getGetNodeRunMethod())
               .addMethod(getListNodeRunsMethod())
               .addMethod(getGetTaskRunMethod())
@@ -6992,13 +7717,16 @@ public final class LittleHorseGrpc {
               .addMethod(getGetVariableMethod())
               .addMethod(getListVariablesMethod())
               .addMethod(getPutExternalEventMethod())
+              .addMethod(getPutCorrelatedEventMethod())
               .addMethod(getGetExternalEventMethod())
+              .addMethod(getGetCorrelatedEventMethod())
               .addMethod(getAwaitWorkflowEventMethod())
               .addMethod(getGetWorkflowEventDefMethod())
               .addMethod(getGetWorkflowEventMethod())
               .addMethod(getListExternalEventsMethod())
               .addMethod(getListWorkflowEventsMethod())
               .addMethod(getSearchWfRunMethod())
+              .addMethod(getSearchCorrelatedEventMethod())
               .addMethod(getSearchNodeRunMethod())
               .addMethod(getSearchTaskRunMethod())
               .addMethod(getSearchUserTaskRunMethod())
@@ -7020,9 +7748,11 @@ public final class LittleHorseGrpc {
               .addMethod(getRescueThreadRunMethod())
               .addMethod(getDeleteWfRunMethod())
               .addMethod(getDeleteTaskDefMethod())
+              .addMethod(getDeleteStructDefMethod())
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
+              .addMethod(getDeleteCorrelatedEventMethod())
               .addMethod(getDeleteWorkflowEventDefMethod())
               .addMethod(getDeletePrincipalMethod())
               .addMethod(getDeleteScheduledWfRunMethod())
@@ -7036,8 +7766,6 @@ public final class LittleHorseGrpc {
               .addMethod(getGetPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())
-              .addMethod(getListMetricSpecsMethod())
-              .addMethod(getListMetricsMethod())
               .build();
         }
       }

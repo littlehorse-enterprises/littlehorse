@@ -9,19 +9,19 @@ import {
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import React, { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Details } from './Details'
 import { Fields } from './Fields'
-import { useParams, useRouter } from 'next/navigation'
 
 type Props = {
   spec: UserTaskDefProto
@@ -43,7 +43,6 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [userIdToSearchFor] = useDebounce(userId, DEBOUNCE_DELAY)
   const [userGroupToSearchFor] = useDebounce(userGroup, DEBOUNCE_DELAY)
-  const router = useRouter()
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: [
@@ -160,15 +159,16 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ userTaskRun, nodeRun }) => {
+                      if (!userTaskRun.id?.wfRunId) return
                       return (
                         <TableRow key={userTaskRun.id?.userTaskGuid}>
                           <TableCell>
                             <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
+                              href={`/wfRun/${wfRunIdToPath(userTaskRun.id.wfRunId)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
                             >
-                              {concatWfRunIds(userTaskRun.id?.wfRunId!)}
+                              {wfRunIdToPath(userTaskRun.id.wfRunId)}
                             </LinkWithTenant>
                           </TableCell>
                           <TableCell>{userTaskRun.id?.userTaskGuid}</TableCell>

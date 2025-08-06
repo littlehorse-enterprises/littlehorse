@@ -18,9 +18,9 @@ namespace LittleHorse.Sdk.Worker
         
         private ILogger<LHTaskSignature<T>?> _logger;
 
-        private TaskDefOutputSchema? _taskDefOutputSchema;
+        private ReturnType? _outputSchema;
 
-        internal TaskDefOutputSchema? TaskDefOutputSchema => _taskDefOutputSchema;
+        internal ReturnType? ReturnType => _outputSchema;
 
         internal LHTaskSignature(string taskDefName, T executable)
         {
@@ -52,8 +52,7 @@ namespace LittleHorse.Sdk.Worker
 
             BuildInputVarsSignature(methodParams);
 
-            if (!TaskMethod.ReturnType.IsAssignableFrom(typeof(void)))
-                BuildOutputSchemaSignature();
+            _outputSchema = BuildReturnType();
         }
         
         private bool IsValidLHTaskWorkerValue(Attribute? lhtaskWorkerAttribute, string taskDefName)
@@ -103,35 +102,36 @@ namespace LittleHorse.Sdk.Worker
                     Name = paramName,
                     IsMasked = maskedParam
                 };
-                
+
                 _lhMethodParams.Add(lhMethodParam);
             }
         }
         
-        private void BuildOutputSchemaSignature()
+        private ReturnType BuildReturnType()
         {
-            var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType);
-            var maskedValue = false;
-            string outputSchemaVarName = "output";
-
-            if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
-                maskedValue = lhType!.Masked;
-                if (lhType.Name.Trim() != "") {
-                    outputSchemaVarName = lhType.Name;
-                }
+            if (TaskMethod.ReturnType != typeof(Task) &&
+                (!TaskMethod.ReturnType.IsGenericType || TaskMethod.ReturnType.GetGenericTypeDefinition() != typeof(Task<>)))
+            {
+                throw new LHTaskSchemaMismatchException("Task methods must return Task<type> or Task");
             }
+            if (TaskMethod.ReturnType == typeof(Task)) {
+                return new ReturnType{};
+            } else {
+                var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType.GetGenericArguments().First());
+                var maskedValue = false;
 
-            var variableDef = new VariableDef
-            {
-                Name = outputSchemaVarName,
-                Type = returnType,
-                MaskedValue = maskedValue
-            };
+                if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
+                    maskedValue = lhType!.Masked;
+                }
 
-            _taskDefOutputSchema = new TaskDefOutputSchema
-            {
-                ValueDef = variableDef
-            };
+                return new ReturnType
+                {
+                    ReturnType_ = new TypeDefinition{
+                        Type = returnType,
+                        Masked = maskedValue
+                    }
+                };
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "variable.proto";
 import "object_id.proto";
+import "common_wfspec.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -55,6 +56,49 @@ message ExternalEventDef {
   // The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
   // ExternalEvent **only before** it is matched with a WfRun.
   ExternalEventRetentionPolicy retention_policy = 3;
+
+  // Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+  //
+  // It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+  // before 0.13.2 will not have a schema. For those `ExternalEventDef`s that do not have
+  // a specified type_information, we do not validate the WfSpec's usage of the ExternalEvent
+  // nor do we validate the type of `content` in the `rpc PutExternalEvent`.
+  optional ReturnType type_information = 4;
+
+  // If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
+  // type.
+  optional CorrelatedEventConfig correlated_event_config = 5;
+}
+
+// Configures behavior of `CorrelatedEvent`s created for a specific `ExternalEventDef`.
+message CorrelatedEventConfig {
+  // If ttl_seconds is set, then `CorrelatedEvent`s will be automatically
+  // cleaned up based on the provided ttl.
+  optional int64 ttl_seconds = 1;
+
+  // If true, delete the `CorrelatedEvent` after the first `ExternalEvent` is created.
+  bool delete_after_first_correlation = 2;
+}
+
+// A CorrelatedEvent is a piece of data that has been posted into LittleHorse but is not
+// yet associated with any specific `WfRun`. This allows users to indirectly create
+// `ExternalEvent`s without knowing the `WfRunId` that they are posting the
+// `ExternalEvent` to by taking advantage of the correlation id feature of a
+// `CorrelatedEvent`.
+//
+// CorrelatedEvents also serve as a way to simply store data in LittleHorse.
+message CorrelatedEvent {
+  // The ID of the CorrelatedEvent
+  CorrelatedEventId id = 1;
+
+  // The time at which the `CorrelatedEvent` was created.
+  google.protobuf.Timestamp created_at = 2;
+
+  // The content of the `CorrelatedEvent`.
+  VariableValue content = 3;
+
+  // List of `ExternalEvent`s that have been created for this `CorrelatedEvent`.
+  repeated ExternalEventId external_events = 4;
 }
 
 // Policy to determine how long an ExternalEvent is retained after creation if it

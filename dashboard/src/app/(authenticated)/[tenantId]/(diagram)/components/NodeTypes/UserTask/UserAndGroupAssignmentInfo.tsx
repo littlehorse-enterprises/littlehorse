@@ -1,7 +1,9 @@
+import { getVariable } from '@/app/utils/variables'
+
 import { FC } from 'react'
 interface UserTaskRunDetailsProps {
-  userGroup: string | number | boolean | Buffer | undefined
-  userId: string | number | boolean | Buffer | undefined
+  userGroup: ReturnType<typeof getVariable>
+  userId: ReturnType<typeof getVariable>
 }
 export const UserAndGroupAssignmentInfo: FC<UserTaskRunDetailsProps> = ({ userGroup, userId }) => {
   return (

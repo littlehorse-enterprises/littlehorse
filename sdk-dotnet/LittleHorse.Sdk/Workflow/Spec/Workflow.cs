@@ -29,6 +29,8 @@ public class Workflow
     private ThreadRetentionPolicy? _defaultThreadRetentionPolicy;
     private WorkflowRetentionPolicy? _wfRetentionPolicy;
     internal readonly Stack<WorkflowThread> Threads;
+    private readonly List<ThrowEventNodeOutput> _workflowEventsToRegister;
+    private readonly List<ExternalEventNodeOutput> _externalEventsToRegister;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Workflow"/> class.
@@ -47,6 +49,8 @@ public class Workflow
         _requiredTaskDefNames = new HashSet<string>();
         _requiredEedNames = new HashSet<string>();
         _requiredWorkflowEventDefNames = new HashSet<string>();
+        _workflowEventsToRegister = new List<ThrowEventNodeOutput>();
+        _externalEventsToRegister = new List<ExternalEventNodeOutput>();
         Threads = new Stack<WorkflowThread>();
     }
     
@@ -60,7 +64,7 @@ public class Workflow
     {
         return _compiledWorkflow ??= CompileWorkflowDetails();
     }
-    
+
     /// <summary>
     /// Deploys the WfSpec object to the LH Server. Registering the WfSpec via
     /// Workflow::RegisterWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
@@ -68,9 +72,22 @@ public class Workflow
     /// <param name="client">
     /// It is a LHClient.
     /// </param>
-    public void RegisterWfSpec(LittleHorseClient client)
+    public async Task RegisterWfSpec(LittleHorseClient client)
     {
-        _logger!.LogInformation($"Created wfSpec:\n{LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile()))}");
+        var request = Compile();
+        foreach (var node in _externalEventsToRegister)
+        {
+           var externalEventResponse= client.PutExternalEventDef(node.ToPutExternalEventDefRequest());
+            _logger!.LogInformation($"Registered ExternalEventDef: \n{LHMappingHelper.ProtoToJson(externalEventResponse)}");
+        }
+        foreach (var node in _workflowEventsToRegister)
+        {
+            var workflowEventResponse = client.PutWorkflowEventDef(node.ToPutWorkflowEventDefRequest());
+            _logger!.LogInformation($"Registered WorkflowEventDef: \n{LHMappingHelper.ProtoToJson(workflowEventResponse)}");
+        }
+
+        var wfSpec = await client.PutWfSpecAsync(request);
+        _logger!.LogInformation($"Created wfSpec:\n{LHMappingHelper.ProtoToJson(wfSpec)}");
     }
 
     internal string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
@@ -240,6 +257,16 @@ public class Workflow
     internal void AddWorkflowEventDefName(string name) 
     {
         _requiredWorkflowEventDefNames.Add(name);
+    }
+    
+    internal void AddWorkflowEventDefToRegister(ThrowEventNodeOutput node)
+    {
+        _workflowEventsToRegister.Add(node);
+    }
+    
+    internal void AddExternalEventDefToRegister(ExternalEventNodeOutput node)
+    {
+        _externalEventsToRegister.Add(node);
     }
     
     internal ThreadRetentionPolicy? GetDefaultThreadRetentionPolicy() 

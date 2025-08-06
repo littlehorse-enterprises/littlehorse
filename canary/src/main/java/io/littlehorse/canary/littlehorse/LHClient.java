@@ -4,7 +4,7 @@ import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.protobuf.Empty;
+import io.grpc.Deadline;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseFutureStub;
@@ -28,22 +28,18 @@ public class LHClient {
         this.workflowVersion = workflowVersion;
     }
 
-    public String getServerVersion() {
-        final ServerVersion response = blockingStub.getServerVersion(Empty.getDefaultInstance());
-        return "%s.%s.%s%s"
-                .formatted(
-                        response.getMajorVersion(),
-                        response.getMinorVersion(),
-                        response.getPatchVersion(),
-                        response.hasPreReleaseIdentifier() ? "-" + response.getPreReleaseIdentifier() : "");
-    }
-
     public void registerWorkflow(final Workflow workflow) {
         workflow.registerWfSpec(blockingStub);
     }
 
     public ListenableFuture<WfRun> runCanaryWf(final String id, final Instant start, final boolean sampleIteration) {
-        return futureStub.runWf(RunWfRequest.newBuilder()
+        return this.runCanaryWf(id, start, sampleIteration, null);
+    }
+
+    public ListenableFuture<WfRun> runCanaryWf(
+            final String id, final Instant start, final boolean sampleIteration, final Deadline deadline) {
+        final LittleHorseFutureStub stub = deadline != null ? this.futureStub.withDeadline(deadline) : this.futureStub;
+        return stub.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)
                 .setId(id)
                 .setRevision(workflowRevision)

@@ -34,7 +34,7 @@ public class VariableMapping {
 
         String msg = null;
 
-        switch (input.getType()) {
+        switch (input.getTypeDef().getType()) {
             case INT:
                 if (!LHLibUtil.isINT(type)) {
                     msg = "TaskDef provides INT, func accepts " + type.getName();
@@ -110,6 +110,8 @@ public class VariableMapping {
             case JSON_OBJ:
                 jsonStr = val.getJsonObj();
                 break;
+            case WF_RUN_ID:
+                return val.getWfRunId();
             case VALUE_NOT_SET:
                 return null;
         }

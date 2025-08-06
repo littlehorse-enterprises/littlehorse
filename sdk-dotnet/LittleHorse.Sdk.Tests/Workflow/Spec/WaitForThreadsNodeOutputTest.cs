@@ -118,10 +118,14 @@ public class WaitForThreadsNodeOutputTest
         };
         
         var exit = new Node {Exit = new ExitNode()};
-        
+
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-child-thread-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-child-thread-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         
@@ -237,10 +241,17 @@ public class WaitForThreadsNodeOutputTest
         };
         
         var exit = new Node {Exit = new ExitNode()};
-        
+
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-child-thread-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-child-thread-START_THREAD",
+                TypeDef = new TypeDefinition
+                {
+                    Type = VariableType.Int
+                }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         
@@ -359,7 +370,11 @@ public class WaitForThreadsNodeOutputTest
 
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-child-thread-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-child-thread-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         
@@ -478,7 +493,11 @@ public class WaitForThreadsNodeOutputTest
 
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-child-thread-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-child-thread-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         
@@ -596,7 +615,11 @@ public class WaitForThreadsNodeOutputTest
 
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-child-thread-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-child-thread-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         

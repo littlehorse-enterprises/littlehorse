@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -15,8 +15,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.StartThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,11 +51,11 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) {
         return true;
     }
 
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         StartThreadNodeModel stn = getNode().startThreadNode;
         Map<String, VariableValueModel> variables = new HashMap<>();
 
@@ -77,7 +77,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
         ThreadSpecModel threadSpec = getWfSpec().getThreadSpecs().get(threadSpecName);
         try {
             threadSpec.validateStartVariables(variables);
-        } catch (LHValidationError exn) {
+        } catch (LHValidationException exn) {
             throw new NodeFailureException(new FailureModel(
                     "Invalid input variables for child thread: %s".formatted(exn.getMessage()),
                     LHErrorType.VAR_SUB_ERROR.toString()));
@@ -91,7 +91,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         return Optional.of(new VariableValueModel(childThreadId));
     }
 

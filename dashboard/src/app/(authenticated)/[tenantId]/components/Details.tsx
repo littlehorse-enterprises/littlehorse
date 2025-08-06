@@ -1,6 +1,5 @@
 import { TagIcon } from 'lucide-react'
 import { FC } from 'react'
-import { Versions } from '../userTaskDef/[...props]/components/Versions'
 
 export type DetailsProps = {
   itemHeader: string

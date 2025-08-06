@@ -3,8 +3,6 @@ package e2e;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.common.util.Arg;
@@ -13,7 +11,6 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
-import io.littlehorse.test.LHWorkflowEvent;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
 import org.assertj.core.api.Assertions;
@@ -65,13 +62,7 @@ public class WorkflowEventsTest {
             WfRunVariable sleepTime = entrypoint.addVariable("sleep-time", 0);
             WfRunVariable input = entrypoint.addVariable("input", "hello there");
             entrypoint.sleepSeconds(sleepTime);
-            entrypoint.throwEvent("user-created", input);
+            entrypoint.throwEvent("user-created", input).registeredAs(String.class);
         });
     }
-
-    @LHWorkflowEvent
-    public final PutWorkflowEventDefRequest eventDef = PutWorkflowEventDefRequest.newBuilder()
-            .setType(VariableType.STR)
-            .setName("user-created")
-            .build();
 }

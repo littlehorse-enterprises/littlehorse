@@ -8,7 +8,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.List;
 import java.util.UUID;
 import org.apache.kafka.common.serialization.Serdes;
@@ -29,7 +29,7 @@ public class ClusterScopedStoreTest {
             .withLoggingDisabled()
             .build();
 
-    private ProcessorExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
+    private CoreProcessorContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
     private final ClusterScopedStore store = ClusterScopedStore.newInstance(nativeInMemoryStore, executionContext);
 

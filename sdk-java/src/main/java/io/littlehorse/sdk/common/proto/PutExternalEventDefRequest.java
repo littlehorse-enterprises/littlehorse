@@ -43,6 +43,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.class, io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder.class);
   }
 
+  private int bitField0_;
   public static final int NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
@@ -149,6 +150,82 @@ private static final long serialVersionUID = 0L;
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
+  public static final int CONTENT_TYPE_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.ReturnType contentType_;
+  /**
+   * <pre>
+   * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+   * @return Whether the contentType field is set.
+   */
+  @java.lang.Override
+  public boolean hasContentType() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+   * @return The contentType.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ReturnType getContentType() {
+    return contentType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : contentType_;
+  }
+  /**
+   * <pre>
+   * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder() {
+    return contentType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : contentType_;
+  }
+
+  public static final int CORRELATED_EVENT_CONFIG_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.CorrelatedEventConfig correlatedEventConfig_;
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+   * @return Whether the correlatedEventConfig field is set.
+   */
+  @java.lang.Override
+  public boolean hasCorrelatedEventConfig() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+   * @return The correlatedEventConfig.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CorrelatedEventConfig getCorrelatedEventConfig() {
+    return correlatedEventConfig_ == null ? io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+  }
+  /**
+   * <pre>
+   * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+   * </pre>
+   *
+   * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder getCorrelatedEventConfigOrBuilder() {
+    return correlatedEventConfig_ == null ? io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -169,6 +246,12 @@ private static final long serialVersionUID = 0L;
     if (retentionPolicy_ != null) {
       output.writeMessage(2, getRetentionPolicy());
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(3, getContentType());
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(4, getCorrelatedEventConfig());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -184,6 +267,14 @@ private static final long serialVersionUID = 0L;
     if (retentionPolicy_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getRetentionPolicy());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getContentType());
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getCorrelatedEventConfig());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -207,6 +298,16 @@ private static final long serialVersionUID = 0L;
       if (!getRetentionPolicy()
           .equals(other.getRetentionPolicy())) return false;
     }
+    if (hasContentType() != other.hasContentType()) return false;
+    if (hasContentType()) {
+      if (!getContentType()
+          .equals(other.getContentType())) return false;
+    }
+    if (hasCorrelatedEventConfig() != other.hasCorrelatedEventConfig()) return false;
+    if (hasCorrelatedEventConfig()) {
+      if (!getCorrelatedEventConfig()
+          .equals(other.getCorrelatedEventConfig())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -223,6 +324,14 @@ private static final long serialVersionUID = 0L;
     if (hasRetentionPolicy()) {
       hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
       hash = (53 * hash) + getRetentionPolicy().hashCode();
+    }
+    if (hasContentType()) {
+      hash = (37 * hash) + CONTENT_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getContentType().hashCode();
+    }
+    if (hasCorrelatedEventConfig()) {
+      hash = (37 * hash) + CORRELATED_EVENT_CONFIG_FIELD_NUMBER;
+      hash = (53 * hash) + getCorrelatedEventConfig().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -347,13 +456,21 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getRetentionPolicyFieldBuilder();
+        getContentTypeFieldBuilder();
+        getCorrelatedEventConfigFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -364,6 +481,16 @@ private static final long serialVersionUID = 0L;
       if (retentionPolicyBuilder_ != null) {
         retentionPolicyBuilder_.dispose();
         retentionPolicyBuilder_ = null;
+      }
+      contentType_ = null;
+      if (contentTypeBuilder_ != null) {
+        contentTypeBuilder_.dispose();
+        contentTypeBuilder_ = null;
+      }
+      correlatedEventConfig_ = null;
+      if (correlatedEventConfigBuilder_ != null) {
+        correlatedEventConfigBuilder_.dispose();
+        correlatedEventConfigBuilder_ = null;
       }
       return this;
     }
@@ -406,6 +533,20 @@ private static final long serialVersionUID = 0L;
             ? retentionPolicy_
             : retentionPolicyBuilder_.build();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.contentType_ = contentTypeBuilder_ == null
+            ? contentType_
+            : contentTypeBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.correlatedEventConfig_ = correlatedEventConfigBuilder_ == null
+            ? correlatedEventConfig_
+            : correlatedEventConfigBuilder_.build();
+        to_bitField0_ |= 0x00000002;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -460,6 +601,12 @@ private static final long serialVersionUID = 0L;
       if (other.hasRetentionPolicy()) {
         mergeRetentionPolicy(other.getRetentionPolicy());
       }
+      if (other.hasContentType()) {
+        mergeContentType(other.getContentType());
+      }
+      if (other.hasCorrelatedEventConfig()) {
+        mergeCorrelatedEventConfig(other.getCorrelatedEventConfig());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -498,6 +645,20 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  getContentTypeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
+            case 34: {
+              input.readMessage(
+                  getCorrelatedEventConfigFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -823,6 +984,316 @@ private static final long serialVersionUID = 0L;
         retentionPolicy_ = null;
       }
       return retentionPolicyBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.ReturnType contentType_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> contentTypeBuilder_;
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     * @return Whether the contentType field is set.
+     */
+    public boolean hasContentType() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     * @return The contentType.
+     */
+    public io.littlehorse.sdk.common.proto.ReturnType getContentType() {
+      if (contentTypeBuilder_ == null) {
+        return contentType_ == null ? io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : contentType_;
+      } else {
+        return contentTypeBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     */
+    public Builder setContentType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (contentTypeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        contentType_ = value;
+      } else {
+        contentTypeBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     */
+    public Builder setContentType(
+        io.littlehorse.sdk.common.proto.ReturnType.Builder builderForValue) {
+      if (contentTypeBuilder_ == null) {
+        contentType_ = builderForValue.build();
+      } else {
+        contentTypeBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     */
+    public Builder mergeContentType(io.littlehorse.sdk.common.proto.ReturnType value) {
+      if (contentTypeBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          contentType_ != null &&
+          contentType_ != io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance()) {
+          getContentTypeBuilder().mergeFrom(value);
+        } else {
+          contentType_ = value;
+        }
+      } else {
+        contentTypeBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     */
+    public Builder clearContentType() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      contentType_ = null;
+      if (contentTypeBuilder_ != null) {
+        contentTypeBuilder_.dispose();
+        contentTypeBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ReturnType.Builder getContentTypeBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getContentTypeFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder() {
+      if (contentTypeBuilder_ != null) {
+        return contentTypeBuilder_.getMessageOrBuilder();
+      } else {
+        return contentType_ == null ?
+            io.littlehorse.sdk.common.proto.ReturnType.getDefaultInstance() : contentType_;
+      }
+    }
+    /**
+     * <pre>
+     * Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ReturnType content_type = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder> 
+        getContentTypeFieldBuilder() {
+      if (contentTypeBuilder_ == null) {
+        contentTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ReturnType, io.littlehorse.sdk.common.proto.ReturnType.Builder, io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder>(
+                getContentType(),
+                getParentForChildren(),
+                isClean());
+        contentType_ = null;
+      }
+      return contentTypeBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.CorrelatedEventConfig correlatedEventConfig_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.CorrelatedEventConfig, io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder> correlatedEventConfigBuilder_;
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     * @return Whether the correlatedEventConfig field is set.
+     */
+    public boolean hasCorrelatedEventConfig() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     * @return The correlatedEventConfig.
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventConfig getCorrelatedEventConfig() {
+      if (correlatedEventConfigBuilder_ == null) {
+        return correlatedEventConfig_ == null ? io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+      } else {
+        return correlatedEventConfigBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     */
+    public Builder setCorrelatedEventConfig(io.littlehorse.sdk.common.proto.CorrelatedEventConfig value) {
+      if (correlatedEventConfigBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        correlatedEventConfig_ = value;
+      } else {
+        correlatedEventConfigBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     */
+    public Builder setCorrelatedEventConfig(
+        io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder builderForValue) {
+      if (correlatedEventConfigBuilder_ == null) {
+        correlatedEventConfig_ = builderForValue.build();
+      } else {
+        correlatedEventConfigBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     */
+    public Builder mergeCorrelatedEventConfig(io.littlehorse.sdk.common.proto.CorrelatedEventConfig value) {
+      if (correlatedEventConfigBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          correlatedEventConfig_ != null &&
+          correlatedEventConfig_ != io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance()) {
+          getCorrelatedEventConfigBuilder().mergeFrom(value);
+        } else {
+          correlatedEventConfig_ = value;
+        }
+      } else {
+        correlatedEventConfigBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     */
+    public Builder clearCorrelatedEventConfig() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      correlatedEventConfig_ = null;
+      if (correlatedEventConfigBuilder_ != null) {
+        correlatedEventConfigBuilder_.dispose();
+        correlatedEventConfigBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder getCorrelatedEventConfigBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getCorrelatedEventConfigFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder getCorrelatedEventConfigOrBuilder() {
+      if (correlatedEventConfigBuilder_ != null) {
+        return correlatedEventConfigBuilder_.getMessageOrBuilder();
+      } else {
+        return correlatedEventConfig_ == null ?
+            io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
+      }
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+     * </pre>
+     *
+     * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.CorrelatedEventConfig, io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder> 
+        getCorrelatedEventConfigFieldBuilder() {
+      if (correlatedEventConfigBuilder_ == null) {
+        correlatedEventConfigBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.CorrelatedEventConfig, io.littlehorse.sdk.common.proto.CorrelatedEventConfig.Builder, io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder>(
+                getCorrelatedEventConfig(),
+                getParentForChildren(),
+                isClean());
+        correlatedEventConfig_ = null;
+      }
+      return correlatedEventConfigBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

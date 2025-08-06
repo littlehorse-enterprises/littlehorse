@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -19,8 +19,8 @@ import io.littlehorse.sdk.common.proto.StartMultipleThreadsRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,12 +62,12 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) {
         return true;
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         StartMultipleThreadsNodeModel node = getNode().getStartMultipleThreadsNode();
         try {
             VariableValueModel iterable =
@@ -99,7 +99,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                         .startThread(threadSpecName, time, parentThreadNumber, inputs, ThreadType.CHILD);
                 childThreadIds.add(child.getNumber());
             }
-        } catch (LHVarSubError | LHSerdeException | LHValidationError e) {
+        } catch (LHVarSubError | LHSerdeException | LHValidationException e) {
             FailureModel failure = new FailureModel();
             failure.message = "Failed constructing input variables for thread: " + e.getMessage();
             failure.failureName = LHConstants.VAR_SUB_ERROR;
@@ -108,7 +108,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         VariableValue val = LHLibUtil.objToVarVal(childThreadIds);
         VariableValueModel valModel = VariableValueModel.fromProto(val, context);
         return Optional.of(valModel);

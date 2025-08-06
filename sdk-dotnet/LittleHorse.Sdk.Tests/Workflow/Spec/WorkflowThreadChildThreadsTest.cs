@@ -115,13 +115,21 @@ public class WorkflowThreadChildThreadsTest
 
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "parent-var", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "parent-var",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
-        
+
         var threadVarDef2 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-spawned-thread-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-spawned-thread-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
 
@@ -212,10 +220,14 @@ public class WorkflowThreadChildThreadsTest
         };
         
         var exit = new Node {Exit = new ExitNode()};
-        
+
         var threadVarDef = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-spawned-thread-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-spawned-thread-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
 
@@ -297,15 +309,29 @@ public class WorkflowThreadChildThreadsTest
         };
         
         var exit = new Node {Exit = new ExitNode()};
-        
+
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "options-available", Type = VariableType.JsonArr },
+            VarDef = new VariableDef
+            {
+                Name = "options-available",
+                TypeDef = new TypeDefinition
+                {
+                    Type = VariableType.JsonArr
+                }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         var threadVarDef2 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "1-spawn-threads-START_MULTIPLE_THREADS", Type = VariableType.JsonArr },
+            VarDef = new VariableDef
+            {
+                Name = "1-spawn-threads-START_MULTIPLE_THREADS",
+                TypeDef = new TypeDefinition
+                {
+                    Type = VariableType.JsonArr
+                }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         

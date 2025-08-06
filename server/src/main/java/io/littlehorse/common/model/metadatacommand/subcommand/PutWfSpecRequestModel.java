@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidWfSpecException;
 import io.littlehorse.common.model.getable.global.wfspec.ParentWfSpecReferenceModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
@@ -19,7 +20,7 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,12 +84,8 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         }
     }
 
-    public boolean hasResponse() {
-        return true;
-    }
-
     @Override
-    public WfSpec process(MetadataCommandExecution executionContext) {
+    public WfSpec process(MetadataProcessorContext executionContext) {
         MetadataManager metadataManager = executionContext.metadataManager();
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "WfSpecName must be a valid hostname");
@@ -111,7 +108,12 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null, null);
         Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
 
-        spec.validateAndMaybeBumpVersion(optWfSpec, executionContext);
+        try {
+            spec.validateAndMaybeBumpVersion(optWfSpec, executionContext);
+        } catch (InvalidWfSpecException exn) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
+        }
+
         if (optWfSpec.isPresent() && WfSpecUtil.equals(spec, oldVersion)) {
             return optWfSpec.get().toProto().build();
         }

@@ -11,10 +11,33 @@ import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.mockito.Mockito;
 
+/**
+ * The InMemoryMetadataManager class provides an in-memory implementation of the MetadataManager.
+ * This class is designed to manage and metadata objects in an internal, thread-safe memory buffer,
+ * rather than relying on Kafka Streams KeyValue stores. It is particularly useful for testing or scenarios
+ * where persistence is not required.
+ *
+ * Example Usage:
+ * <pre>{@code
+ *
+ * // Instantiate the InMemoryGetableManager
+ * InMemoryMetadataManager metadataManager = new InMemoryMetadataManager(executionContext);
+ *
+ * // Store a Getable object in the buffer
+ * metadataManager.put(myPrincipalInstance);
+ *
+ * // Retrieve the object later
+ * PrincipalModel result = metadataManager.get(new PrincipalIdModel(id));
+ * }</pre>
+ *
+ * `TestMetadataManager` is an alternative option for this class where a InMemory Kafka Streams store is configured.
+ */
 public class InMemoryMetadataManager extends MetadataManager {
     private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new HashMap<>();
+    private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new ConcurrentHashMap<>();
 
     public InMemoryMetadataManager() {
         super(Mockito.mock(), Mockito.mock(), new MetadataCache());

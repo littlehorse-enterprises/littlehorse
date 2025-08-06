@@ -49,9 +49,9 @@ public enum StoreableType
    */
   WFRUN_STORED_INVENTORY(9),
   /**
-   * <code>METRIC_PARTITION_INVENTORY = 10;</code>
+   * <code>CORRELATION_MARKER = 10;</code>
    */
-  METRIC_PARTITION_INVENTORY(10),
+  CORRELATION_MARKER(10),
   UNRECOGNIZED(-1),
   ;
 
@@ -96,9 +96,9 @@ public enum StoreableType
    */
   public static final int WFRUN_STORED_INVENTORY_VALUE = 9;
   /**
-   * <code>METRIC_PARTITION_INVENTORY = 10;</code>
+   * <code>CORRELATION_MARKER = 10;</code>
    */
-  public static final int METRIC_PARTITION_INVENTORY_VALUE = 10;
+  public static final int CORRELATION_MARKER_VALUE = 10;
 
 
   public final int getNumber() {
@@ -135,7 +135,7 @@ public enum StoreableType
       case 7: return METRIC_WINDOW;
       case 8: return INITIALIZATION_LOG;
       case 9: return WFRUN_STORED_INVENTORY;
-      case 10: return METRIC_PARTITION_INVENTORY;
+      case 10: return CORRELATION_MARKER;
       default: return null;
     }
   }

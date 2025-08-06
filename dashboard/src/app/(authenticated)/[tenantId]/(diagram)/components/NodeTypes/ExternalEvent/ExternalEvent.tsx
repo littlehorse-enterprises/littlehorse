@@ -1,5 +1,5 @@
-import { formatTime, getVariableValue } from '@/app/utils'
-import { Node as NodeProto } from 'littlehorse-client/proto'
+import { formatTime, getVariable } from '@/app/utils'
+import { ExternalEventNode as ExternalEventProto } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -12,11 +12,8 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 import PostEvent from './PostEvent'
 
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  if (!data.externalEvent) return null
-
-  const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
-  externalEventNode.externalEventDefId?.name
+const Node: FC<NodeProps<'externalEvent', ExternalEventProto>> = ({ data }) => {
+  const { fade, nodeNeedsToBeHighlighted, nodeRun, ...externalEventNode } = data
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -35,15 +32,15 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
               <div className="flex items-center justify-center">
                 Timeout:{' '}
                 {externalEventNode.timeoutSeconds
-                  ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
+                  ? formatTime(parseInt(getVariable(externalEventNode.timeoutSeconds)))
                   : 'N/A'}
               </div>
             </div>
-            {nodeRun && !nodeRun.externalEvent?.eventTime && <PostEvent nodeRun={nodeRun} />}
+            {nodeRun && !nodeRun.nodeType.value.eventTime && <PostEvent nodeRun={nodeRun} />}
           </div>
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
+      <Fade fade={fade} status={data.nodeRunsList[data.nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={
@@ -58,7 +55,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
           <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center">
-            <div className="block">{data.externalEvent?.externalEventDefId?.name}</div>
+            <div className="block">{externalEventNode.externalEventDefId?.name}</div>
           </div>
         </div>
       </Fade>

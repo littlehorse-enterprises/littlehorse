@@ -425,30 +425,30 @@ public interface NodeRunOrBuilder extends
 
   /**
    * <pre>
-   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
    * </pre>
    *
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
-   * @return Whether the waitThreads field is set.
+   * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
+   * @return Whether the waitForThreads field is set.
    */
-  boolean hasWaitThreads();
+  boolean hasWaitForThreads();
   /**
    * <pre>
-   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
    * </pre>
    *
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
-   * @return The waitThreads.
+   * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
+   * @return The waitForThreads.
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitThreads();
+  io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitForThreads();
   /**
    * <pre>
-   * A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
+   * A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
    * </pre>
    *
-   * <code>.littlehorse.WaitForThreadsRun wait_threads = 18;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_for_threads = 18;</code>
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitThreadsOrBuilder();
+  io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitForThreadsOrBuilder();
 
   /**
    * <pre>

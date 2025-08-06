@@ -76,8 +76,7 @@ enum MetricsWindowLength {
   DAYS_1 = 2;
 }
 
-// Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
-// VariableValue.
+// Specifies a primitive type in LittleHorse.
 enum VariableType {
   // An object represented as a json string. <br/>
   //
@@ -109,6 +108,11 @@ enum VariableType {
 
   // The `BYTES` variable type allows you to store an arbitrary byte string.
   BYTES = 6;
+
+  // The `WF_RUN_ID` variable type is used to store the ID of a WfRun. This allows for
+  // referencing specific workflow executions in various use cases, such as inter-workflow
+  // communication or tracking dependencies between workflows.
+  WF_RUN_ID = 7;
 }
 
 // This enum is all of the types of technical failure that can occur in a WfRun.

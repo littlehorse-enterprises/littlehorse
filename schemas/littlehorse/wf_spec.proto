@@ -274,6 +274,14 @@ message ExternalEventNode {
   // Determines the maximum amount of time that the NodeRun will wait for the
   // ExternalEvent to arrive.
   VariableAssignment timeout_seconds = 2;
+
+  // If set, it will be possible to complete this ExternalEventNode with a CorrelatedEvent
+  // using the correlation key provided here.
+  optional VariableAssignment correlation_key = 3;
+
+  // Specifies whether the correlation key is sensitive data which should be masked.
+  // Ignored if correlation_key is not set.
+  bool mask_correlation_key = 4;
 }
 
 // Defines the beginning of the ThreadRun execution.
@@ -393,8 +401,9 @@ message UserTaskNode {
   // a "reminder" TaskRun.
   repeated UTActionTrigger actions = 4;
 
-  // If set, then the UserTaskRun will always have this specific version of the
-  // UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
+  // This is not set in PutWfSpecRequest, and is automatically set by the Metadata
+  // processor to be the latest available version of the UserTaskDef. That way, the
+  // WfSpec always runs with the same version of the UserTaskDef.
   optional int32 user_task_def_version = 5;
 
   // Specifies the value to be displayed on the `notes` field of the UserTaskRun.

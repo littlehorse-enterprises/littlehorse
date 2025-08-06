@@ -40,7 +40,7 @@ message UserTaskField {
   // single-level JSON_OBJ. Each key is the name of the field. Must be unique.
   string name = 1;
 
-  // The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
+  // The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
   VariableType type = 2;
 
   // Optional description which can be displayed by the User Task UI application.
@@ -117,6 +117,7 @@ message UserTaskRun {
   // updated or re-assigned. Used internally to implement automated reassignment and reminder
   // tasks.
   int32 epoch = 12;
+
 }
 
 // Re-Assigns a UserTaskRun to a specific userId or userGroup.
@@ -189,8 +190,48 @@ message SaveUserTaskRunProgressRequest {
 
 // Cancels a UserTaskRun.
 message CancelUserTaskRunRequest {
-  // The id of the UserTaskRun to cancel.
+  // The id of the `UserTaskRun` to cancel.
   UserTaskRunId user_task_run_id = 1;
+}
+
+// Adds a comment to a UserTaskRun.
+message PutUserTaskRunCommentRequest {
+  // The id of `UserTaskRun` to save.
+  UserTaskRunId user_task_run_id = 1;
+
+  // The author of the comment being made on a `UserTaskRun`
+  string user_id = 2;
+
+  // The comment being made on a `UserTaskRun`
+  string comment = 3;
+}
+
+// Edits an existing comment on a UserTaskRun
+message EditUserTaskRunCommentRequest {
+  // This is the unique identifier for a comment
+  int32 user_comment_id = 1;
+
+  // The id of `UserTaskRun`
+  UserTaskRunId user_task_run_id = 2;
+
+  // The author of the comment being made on a `UserTaskRun`
+  string user_id = 3;
+
+  // The comment being made on a `UserTaskRun`
+  string comment = 4;
+}
+
+// Deletes a comment on a UserTaskRun
+message DeleteUserTaskRunCommentRequest {
+  
+  // The id of `UserTaskRun`
+  UserTaskRunId user_task_run_id = 1;
+
+  // The id of the comment you are deleting
+  int32 user_comment_id = 2;
+
+  // The id of the user who deleted the comment
+  string user_id = 3;
 }
 
 // All TaskRun's have a "trigger reference" which refers to the WfRun Element that
@@ -258,6 +299,29 @@ message UserTaskEvent {
     optional string new_user_group = 4;
   }
 
+  // Message to denote that a comment has been added or edited on a userTaskRun
+  message UTECommented {
+    // The id of the user comment
+    int32 user_comment_id = 1;
+    // This is the id of the user 
+    string user_id = 2;
+    // This is the specific note/comment that a user wants to make 
+    // on a `UserTask`
+    string comment = 3; 
+  }
+
+  // Message to denote that a userTaskRun has been deleted
+  message UTECommentDeleted {
+  // The id of the comment that will be deleted
+  int32 user_comment_id = 1;
+
+  // The id of the user who deleted the comment
+  string user_id = 2;
+  }
+
+  // Empty message denoting a `userTaskRunCompleted`
+  message UTECompleted {}
+
   // The event that occurred.
   oneof event {
     // Denotes that a TaskRun was scheduled via a trigger.
@@ -271,5 +335,17 @@ message UserTaskEvent {
 
     // Denotes that the `UserTaskRun` was saved.
     UTESaved saved = 5;
+
+    // Denotes that there was a comment on a `userTaskRun`
+    UTECommented comment_added = 6;
+
+    // Denotes that a comment on a `userTaskRun` has been edited
+    UTECommented comment_edited = 7;
+
+    // Denotes that a comment on a `userTaskRun` was deleted
+    UTECommentDeleted comment_deleted = 8;
+
+    // Denotes that a `userTaskRun` has been completed
+    UTECompleted completed = 9 ;
   }
 }

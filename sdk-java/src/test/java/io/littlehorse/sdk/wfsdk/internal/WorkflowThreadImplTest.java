@@ -133,7 +133,7 @@ public class WorkflowThreadImplTest {
 
         VariableDef objVar = varDefs.get(1).getVarDef();
         assertThat(objVar.getDefaultValue()).isNotEqualTo(null);
-        assertEquals(objVar.getType(), VariableType.JSON_OBJ);
+        assertEquals(objVar.getTypeDef().getType(), VariableType.JSON_OBJ);
     }
 
     @Test
@@ -362,6 +362,58 @@ public class WorkflowThreadImplTest {
         Node node = entrypoint.getNodesOrThrow("1-some-event-EXTERNAL_EVENT");
         assertThat(node.getExternalEvent().getTimeoutSeconds().getLiteralValue().getInt())
                 .isEqualTo(10);
+    }
+
+    @Test
+    void shouldAutomaticallyMaskCorrelationIdFromMaskedVar() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable ssn = wf.declareStr("ssn").masked();
+            wf.waitForEvent("identity-verified").withCorrelationId(ssn);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isTrue();
+    }
+
+    @Test
+    void shouldNotMaskNormalVariableAsCorrelationId() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable email = wf.declareStr("email");
+            wf.waitForEvent("identity-verified").withCorrelationId(email);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isFalse();
+    }
+
+    @Test
+    void shouldMaskCorrelationIdIfITellItTo() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable email = wf.declareStr("email");
+            wf.waitForEvent("identity-verified").withCorrelationId(email, true);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isTrue();
+    }
+
+    @Test
+    void shouldNotMaskCorrelationIdIfITellItNotTo() {
+        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
+            WfRunVariable ssn = wf.declareStr("ssn").masked();
+            wf.waitForEvent("identity-verified").withCorrelationId(ssn, false);
+        });
+
+        PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-identity-verified-EXTERNAL_EVENT");
+        assertThat(node.getExternalEvent().getMaskCorrelationKey()).isFalse();
     }
 
     @Test
@@ -654,5 +706,29 @@ public class WorkflowThreadImplTest {
                 assertThrows(NullPointerException.class, () -> new WorkflowThreadImpl("my-thread", null, null));
 
         assertEquals("Parent workflow can not be null.", e.getMessage());
+    }
+
+    @Test()
+    public void shouldValidateEmptyUserNameOnUserTaskDefinition() {
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            Workflow.newWorkflow("my-wf", thread -> {
+                        thread.assignUserTask("some-usertaskdef", "", null);
+                    })
+                    .compileWorkflow();
+        });
+        Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(throwable.getMessage()).isEqualTo("UserId can't be empty");
+    }
+
+    @Test()
+    public void shouldValidateEmptyGroupNameOnUserTaskDefinition() {
+        Throwable throwable = Assertions.catchThrowable(() -> {
+            Workflow.newWorkflow("my-wf", thread -> {
+                        thread.assignUserTask("some-usertaskdef", null, "");
+                    })
+                    .compileWorkflow();
+        });
+        Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(throwable.getMessage()).isEqualTo("UserGroup can't be empty");
     }
 }

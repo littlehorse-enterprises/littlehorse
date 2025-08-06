@@ -67,8 +67,8 @@ message NodeRun {
     // A START_THREAD node starts a child ThreadRun.
     StartThreadRun start_thread = 17;
 
-    // A WAIT_THREADS node waits for one or more child ThreadRun's to complete.
-    WaitForThreadsRun wait_threads = 18;
+    // A WAIT_FOR_THREADS node waits for one or more child ThreadRun's to complete.
+    WaitForThreadsRun wait_for_threads = 18;
 
     // A SLEEP node makes the ThreadRun block for a certain amount of time.
     SleepNodeRun sleep = 19;
@@ -204,6 +204,14 @@ message ExternalEventNodeRun {
 
   // Whether we had a timeout while waiting for the ExternalEvent to come.
   bool timed_out = 4;
+
+  // If set, then this `ExternalEventNodeRun` can be completed by a
+  // `CorrelatedEvent` with the matching correlation id.
+  optional string correlation_key = 5;
+
+  // Specifies whether the correlation key should be masked. Ignored if
+  // correlation_key is not set.
+  bool mask_correlation_key = 6;
 }
 
 // The sub-node structure for a SLEEP NodeRun.

@@ -32,9 +32,9 @@ public class WorkflowThread
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     private ThreadRetentionPolicy? _retentionPolicy;
+    private bool _isStartNopActive;
     
     internal bool IsActive { get; }
-    internal ThreadSpec Spec => _spec;
     
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
@@ -42,23 +42,22 @@ public class WorkflowThread
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
-
+        _lastNodeCondition = null;
+        _retentionPolicy = null;
+        _isStartNopActive = false;
+        IsActive = true;
         var entrypointNode = new Node { Entrypoint = new EntrypointNode() };
-
         var entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
-        IsActive = true;
         Parent.Threads.Push(this);
         action.Invoke(this);
-
-        var lastNode = FindLastNode();
+        var lastNode = FindNode(LastNodeName);
         if (lastNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
         IsActive = false;
-        
         _spec.RetentionPolicy = GetRetentionPolicy();
     }
 
@@ -80,16 +79,6 @@ public class WorkflowThread
         
         return _spec;
     }
-
-    private Node FindLastNode()
-    {
-        if (_spec.Nodes.Last().Key  != LastNodeName)
-        {
-            throw new ArgumentException("No node found.");
-        }
-
-        return _spec.Nodes[LastNodeName];
-    }
     
     internal Node FindNode(string nodeName)
     {
@@ -108,38 +97,36 @@ public class WorkflowThread
             throw new InvalidOperationException("Using an inactive thread");
         }
     }
-    
-    internal string AddNode(string name, Node.NodeOneofCase type, IMessage subNode, bool keepNodeName = false)
+
+    private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode)
     {
         CheckIfWorkflowThreadIsActive();
-        string nextNodeName = GetNodeName(name, type);
-        if (keepNodeName)
-        {
-            nextNodeName = name;
-        }
-        
+
         if (LastNodeName == null) 
         {
             throw new InvalidOperationException("Not possible to have null last node here");
         }
-
-        var feederNode = FindNode(LastNodeName);
-        var edge = new Edge { SinkNodeName = nextNodeName };
         
-        edge.VariableMutations.AddRange(CollectVariableMutations());
+        string nextNodeName = GetNodeName(name, type);
+        Node feederNode = FindNode(LastNodeName);
         
-        if (_lastNodeCondition != null) 
+        ValidateNodesAfterComplete(type, feederNode);
+        
+        if (feederNode.NodeCase != Node.NodeOneofCase.Exit)
         {
-            edge.Condition = _lastNodeCondition;
-            _lastNodeCondition = null;
+            AddEdgeToFeederNode(nextNodeName, feederNode);
         }
         
-        if (feederNode.NodeCase != Node.NodeOneofCase.Exit) 
-        {
-            feederNode.OutgoingEdges.Add(edge);
-            _spec.Nodes[LastNodeName] = feederNode;
-        }
+        Node node = BuildNode(type, subNode);
+    
+        _spec.Nodes.Add(nextNodeName, node);
+        LastNodeName = nextNodeName;
 
+        return nextNodeName;
+    }
+
+    private Node BuildNode(Node.NodeOneofCase type, IMessage subNode)
+    {
         Node node = new Node();
         switch (type) 
         {
@@ -183,10 +170,45 @@ public class WorkflowThread
                 throw new InvalidOperationException("Not possible");
         }
 
-        _spec.Nodes.Add(nextNodeName, node);
-        LastNodeName = nextNodeName;
+        return node;
+    }
 
-        return nextNodeName;
+    private void AddEdgeToFeederNode(string nextNodeName, Node feederNode)
+    {
+        var edge = new Edge { SinkNodeName = nextNodeName };
+    
+        edge.VariableMutations.AddRange(CollectVariableMutations());
+    
+        if (_lastNodeCondition != null) 
+        {
+            edge.Condition = _lastNodeCondition;
+            _lastNodeCondition = null;
+        }
+    
+        feederNode.OutgoingEdges.Add(edge);
+        _spec.Nodes[LastNodeName] = feederNode;
+    }
+
+    private void ValidateNodesAfterComplete(Node.NodeOneofCase type, Node feederNode)
+    {
+        if (feederNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            string errorMessage = "You cannot add a Node in a given thread after the thread has completed.";
+            if (_isStartNopActive)
+            {
+                // If the last node is an exit node, and we are in a StartNop block,
+                // we throw an exception
+                // because we cannot add a new node after the thread has completed.
+                throw new InvalidOperationException(errorMessage);
+            } 
+            if (type != Node.NodeOneofCase.Nop)
+            {
+                // If the last node is an exit node, and the node to be added is not a Nop node,
+                // we throw an exception
+                // because we cannot add a new node after the thread has completed.
+                throw new InvalidOperationException(errorMessage);
+            }
+        }
     }
     
     private string GetNodeName(string name, Node.NodeOneofCase type) 
@@ -211,6 +233,13 @@ public class WorkflowThread
     public WfRunVariable AddVariable(string name, object typeOrDefaultVal) 
     {
         CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot add a variable in a given thread after the thread has completed.");
+        }
+        
         var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
         _wfRunVariables.Add(wfRunVariable);
         
@@ -346,8 +375,8 @@ public class WorkflowThread
     /// <param name="externalEventDefName">
     /// It is the type of ExternalEvent to wait for.
     /// </param>
-    /// <returns>A NodeOutput for this event.</returns>
-    public NodeOutput WaitForEvent(string externalEventDefName) 
+    /// <returns>A ExternalEventNodeOutput for this event.</returns>
+    public ExternalEventNodeOutput WaitForEvent(string externalEventDefName) 
     {
         CheckIfWorkflowThreadIsActive();
         var waitNode = new ExternalEventNode
@@ -358,7 +387,7 @@ public class WorkflowThread
         Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
-        return new NodeOutput(nodeName, this);
+        return new ExternalEventNodeOutput(nodeName, externalEventDefName, this);
     }
     
     /// <summary>
@@ -445,7 +474,7 @@ public class WorkflowThread
         return AddVariable(name, VariableType.JsonObj);
     }
     
-    internal List<VariableMutation> CollectVariableMutations() 
+    private List<VariableMutation> CollectVariableMutations() 
     {
         var variablesFromIfBlock = new List<VariableMutation>();
         while (_variableMutations.Count > 0) 
@@ -471,6 +500,10 @@ public class WorkflowThread
     /// It is the block of ThreadSpec code to be executed if the provided
     /// WorkflowCondition is NOT satisfied.
     /// </param>
+    /// <remarks>
+    /// Use <see cref="WorkflowThread.DoIf(WorkflowCondition, System.Action{WorkflowThread})"/>
+    /// and <see cref="WorkflowIfStatement.DoElse(System.Action{WorkflowThread})"/> instead.
+    /// </remarks>
     public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
         WorkflowIfStatement ifResult = DoIf(condition, ifBody);
@@ -495,11 +528,13 @@ public class WorkflowThread
     public WorkflowIfStatement DoIf(WorkflowCondition condition, Action<WorkflowThread> body)
     {
         CheckIfWorkflowThreadIsActive();
+        _isStartNopActive = true;
         var firstNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         _lastNodeCondition = condition.Compile();
 
         body.Invoke(this);
 
+        _isStartNopActive = false;
         var lastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
 
         var firstNopeNode = FindNode(firstNodeName);
@@ -509,6 +544,82 @@ public class WorkflowThread
         });
         
         return new WorkflowIfStatement(this, firstNodeName, lastNodeName);
+    }
+    
+    internal void OrganizeEdgesForElseIfExecution(WorkflowIfStatement ifStatement, 
+        Action<WorkflowThread> body, WorkflowCondition? condition = null)
+    {
+        var firstNopNode = FindNode(ifStatement.FirstNopNodeName);
+        var elseEdge = GetLastRemovedEdgeFrom(firstNopNode);
+        var lastNodeNameOfParentThread = LastNodeName;
+    
+        body.Invoke(this);
+    
+        var lastNodeNameOfBody = LastNodeName;
+    
+        if (lastNodeNameOfParentThread == lastNodeNameOfBody)
+        {
+            var edge = GetNewEdge(ifStatement.LastNopNodeName, condition, CollectVariableMutations());
+            firstNopNode.OutgoingEdges.Add(edge);
+        }         
+        else
+        {
+            var lastNodeOfParentThread = FindNode(lastNodeNameOfParentThread);
+            var lastOutgoingEdge = GetLastRemovedEdgeFrom(lastNodeOfParentThread);
+            var firstNodeNameOfBody = lastOutgoingEdge.SinkNodeName;
+            var edge = GetNewEdge(firstNodeNameOfBody, condition, lastOutgoingEdge.VariableMutations);
+            firstNopNode.OutgoingEdges.Add(edge);
+            
+            var lastNodeOfBody = FindNode(lastNodeNameOfBody);
+            if (lastNodeOfBody.NodeCase != Node.NodeOneofCase.Exit)
+            {
+                var edgeFromLastNodeOfBody = GetNewEdge(ifStatement.LastNopNodeName, null,
+                    CollectVariableMutations());
+                lastNodeOfBody.OutgoingEdges.Add(edgeFromLastNodeOfBody);
+            }
+        }
+        
+        if (condition != null)
+        {
+            firstNopNode.OutgoingEdges.Add(elseEdge);
+        }
+        LastNodeName = lastNodeNameOfParentThread;
+    }
+    
+    private Edge GetLastRemovedEdgeFrom(Node node)
+    {
+        if (node.OutgoingEdges == null || node.OutgoingEdges.Count == 0)
+        {
+            throw new InvalidOperationException("No edges to remove.");
+        }
+
+        var index = node.OutgoingEdges.Count - 1;
+        var lastEdge = node.OutgoingEdges.ElementAt(index);
+        node.OutgoingEdges.Remove(lastEdge);
+        
+        return lastEdge;
+    }
+
+    private Edge GetNewEdge(string sinkNodeName, WorkflowCondition? condition, 
+        ICollection<VariableMutation> variableMutations)
+    {
+        if (condition != null)
+        {
+            var compiledCondition = condition.Compile();
+
+            return new Edge
+            {
+                SinkNodeName = sinkNodeName,
+                Condition = compiledCondition,
+                VariableMutations = { variableMutations }
+            };
+        }
+        
+        return new Edge
+        {
+            SinkNodeName = sinkNodeName,
+            VariableMutations = { variableMutations }
+        };
     }
 
     /// <summary>
@@ -525,15 +636,15 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
 
+        _isStartNopActive = true;
         AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         var treeRootNodeName = LastNodeName;
         _lastNodeCondition = condition.Compile();
         
         whileThread.Invoke(this);
         
-        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        
-        var treeLastNodeName = LastNodeName;
+        _isStartNopActive = false;
+        var treeLastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         
         var treeRoot = FindNode(treeRootNodeName);
         treeRoot.OutgoingEdges.Add(new Edge
@@ -585,6 +696,13 @@ public class WorkflowThread
     public void Mutate(WfRunVariable lhs, VariableMutationType type, object rhs)
     {
         CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot mutate a variable in a given thread after the thread has completed.");
+        }
+        
         var mutation = new VariableMutation
         {
             LhsName = lhs.Name,
@@ -658,7 +776,7 @@ public class WorkflowThread
         return variableAssignment;
     }
     
-    internal void AddTimeoutToExtEvt(NodeOutput node, int timeoutSeconds) 
+    internal void AddTimeoutToExtEvtNode(ExternalEventNodeOutput node, int timeoutSeconds) 
     {
         CheckIfWorkflowThreadIsActive();
         Node newNode = FindNode(node.NodeName);
@@ -667,19 +785,24 @@ public class WorkflowThread
         {
             LiteralValue = new VariableValue { Int = timeoutSeconds }
         };
+        
+        newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
+    }
 
-        if (newNode.NodeCase == Node.NodeOneofCase.Task)
-        {
-            newNode.Task.TimeoutSeconds = timeoutSeconds;
-        } 
-        else if (newNode.NodeCase == Node.NodeOneofCase.ExternalEvent) 
-        {
-            newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
-        } 
-        else 
-        {
-            throw new Exception("Timeouts are only supported on ExternalEvent and Task nodes.");
-        }
+    internal void SetCorrelationIdOnExternalEventNode(ExternalEventNodeOutput node, object correlationId, bool maskCorrelationKey)
+    {
+        CheckIfWorkflowThreadIsActive();
+        Node evtNode = FindNode(node.NodeName);
+        evtNode.ExternalEvent.CorrelationKey = AssignVariableHelper(correlationId);
+        evtNode.ExternalEvent.MaskCorrelationKey = maskCorrelationKey;
+    }
+
+    internal void AddTimeoutToTaskNode(TaskNodeOutput node, int timeoutSeconds)
+    {
+        CheckIfWorkflowThreadIsActive();
+        Node newNode = FindNode(node.NodeName);
+
+        newNode.Task.TimeoutSeconds = timeoutSeconds;
     }
     
     internal void OverrideTaskExponentialBackoffPolicy(TaskNodeOutput node, ExponentialBackoffRetryPolicy policy)
@@ -877,7 +1000,7 @@ public class WorkflowThread
     /// <param name="threadsToWaitFor">
     /// Set of SpawnedThread objects returned one or more calls to spawnThread.
     /// </param>
-    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    /// <returns>A WaitForThreadsNodeOutput that can be used for timeouts or exception handling. </returns>
     public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
     {
         CheckIfWorkflowThreadIsActive();
@@ -893,9 +1016,7 @@ public class WorkflowThread
     public void Complete() 
     {
         CheckIfWorkflowThreadIsActive();
-        var exitNode = new ExitNode();
-        
-        AddNode("complete", Node.NodeOneofCase.Exit, exitNode);
+        AddNode("complete", Node.NodeOneofCase.Exit, new ExitNode());
     }
     
     /// <summary>
@@ -1066,7 +1187,7 @@ public class WorkflowThread
     /// <param name="condition">
     /// It is the condition to wait for.
     /// </param>
-    /// <returns>A handle to the NodeOutput, which may only be used for error handling since 
+    /// <returns>A handle to the WaitForConditionNodeOutput, which may only be used for error handling since 
     /// the output of this node is empty.
     /// </returns>
     public WaitForConditionNodeOutput WaitForCondition(WorkflowCondition condition)
@@ -1092,7 +1213,7 @@ public class WorkflowThread
     /// <param name="content">
     /// It is the content of the WorkflowEvent that is thrown.
     /// </param>
-    public void ThrowEvent(string workflowEventDefName, object content)
+    public ThrowEventNodeOutput ThrowEvent(string workflowEventDefName, object content)
     {
         CheckIfWorkflowThreadIsActive();
         Parent.AddWorkflowEventDefName(workflowEventDefName);
@@ -1104,10 +1225,21 @@ public class WorkflowThread
             },
             Content = AssignVariable(content)
         };
-        
         AddNode("throw-" + workflowEventDefName, Node.NodeOneofCase.ThrowEvent, node);
+        return new ThrowEventNodeOutput(workflowEventDefName, this);
     }
-    
+
+ 
+    internal void RegisterWorkflowEventDef(ThrowEventNodeOutput nodeOutput)
+    {
+        Parent.AddWorkflowEventDefToRegister(nodeOutput);
+    }
+
+    internal void RegisterExternalEventDef(ExternalEventNodeOutput nodeOutput)
+    {
+        Parent.AddExternalEventDefToRegister(nodeOutput);
+    }
+       
     /// <summary>
     /// Adds a Reminder Task to a User Task Node.
     /// </summary>
@@ -1298,10 +1430,8 @@ public class WorkflowThread
     public UserTaskOutput AssignUserTask(string userTaskDefName, object? userId, object? userGroup)
     {
         CheckIfWorkflowThreadIsActive();
-        if (userId == null && userGroup == null)
-        {
-            throw new ArgumentException("userId or userGroup is required.");
-        }
+        
+        ValidateUserIdAndUserGroup(userId, userGroup);
         
         var utNode = new UserTaskNode
         {
@@ -1397,10 +1527,7 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         Node currentNode = FindNode(LastNodeName);
         
-        if (userId == null && userGroup == null)
-        {
-            throw new ArgumentException("userId or userGroup is required.");
-        }
+        ValidateUserIdAndUserGroup(userId, userGroup);
         
         if (!LastNodeName.Equals(userTask.NodeName)) 
         {
@@ -1447,5 +1574,23 @@ public class WorkflowThread
     public LHFormatString Format(string format, params WfRunVariable[] args)
     {
         return new LHFormatString(this, format, args);
+    }
+
+    private void ValidateUserIdAndUserGroup(object? userId, object? userGroup)
+    {
+        if (userId == null && userGroup == null)
+        {
+            throw new ArgumentException("userId or userGroup is required.");
+        }
+
+        if (userId is string userIdValue && string.IsNullOrWhiteSpace(userIdValue))
+        {
+            throw new ArgumentException("userId can't be empty.");
+        }
+        
+        if (userGroup is string userGroupValue && string.IsNullOrWhiteSpace(userGroupValue))
+        {
+            throw new ArgumentException("userGroup can't be empty.");
+        }
     }
 }

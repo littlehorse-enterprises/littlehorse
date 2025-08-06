@@ -20,8 +20,8 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.TaskNodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,13 +35,13 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
     private TaskRunIdModel taskRunId;
     private ExecutionContext executionContext;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public TaskNodeRunModel() {
         // used by lh deserializer
     }
 
-    public TaskNodeRunModel(ProcessorExecutionContext processorContext) {
+    public TaskNodeRunModel(CoreProcessorContext processorContext) {
         this.processorContext = processorContext;
     }
 
@@ -69,7 +69,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         TaskRunModel taskRun = processorContext.getableManager().get(taskRunId);
 
         if (taskRun.isStillRunning()) return false;
@@ -89,7 +89,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         // The TaskNode arrive() function should create a TaskRun. Note that
         // creating a TaskRun also causes the first TaskAttempt to be scheduled.
 
@@ -137,7 +137,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
+    public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         TaskRunModel taskRun = processorContext.getableManager().get(taskRunId);
         if (taskRun.getStatus() != TaskStatus.TASK_SUCCESS) {
             throw new IllegalStateException("somehow called getOutput() on taskRun that's not done yet");
@@ -146,7 +146,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
         // TODO as part of #606: a TaskRun should be interruptible between retries.
         // For now, we can't interrupt a TaskRun until it's fully done.
         return !processorContext.getableManager().get(getTaskRunId()).isStillRunning();

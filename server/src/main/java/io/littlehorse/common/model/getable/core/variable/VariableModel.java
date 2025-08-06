@@ -5,15 +5,23 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.CoreOutputTopicGetable;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.Variable;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -21,6 +29,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
@@ -31,7 +40,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class VariableModel extends CoreGetable<Variable> {
+public class VariableModel extends CoreGetable<Variable> implements CoreOutputTopicGetable<Variable> {
 
     private VariableValueModel value;
     private VariableIdModel id;
@@ -53,6 +62,7 @@ public class VariableModel extends CoreGetable<Variable> {
             boolean masked) {
 
         this.id = new VariableIdModel(wfRunId, threadRunNumber, name);
+        Objects.requireNonNull(value, "Empty or value expected for variable: " + name);
         this.value = value;
         this.wfSpec = wfSpec;
         this.wfSpecId = wfSpec.getObjectId();
@@ -63,11 +73,18 @@ public class VariableModel extends CoreGetable<Variable> {
         return Variable.class;
     }
 
+    public WfSpecModel getWfSpec(ReadOnlyMetadataManager metadataManager) {
+        if (wfSpec == null) {
+            wfSpec = metadataManager.get(
+                    new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
+        }
+        return wfSpec;
+    }
+
+    @Deprecated
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = executionContext
-                    .metadataManager()
-                    .get(new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
+            wfSpec = getWfSpec(executionContext.metadataManager());
         }
         return wfSpec;
     }
@@ -92,6 +109,9 @@ public class VariableModel extends CoreGetable<Variable> {
     }
 
     public Variable.Builder toProto() {
+        if (value == null) {
+            log.info("Variable id got null value: {}", id.toString());
+        }
         Variable.Builder out = Variable.newBuilder()
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
@@ -102,10 +122,12 @@ public class VariableModel extends CoreGetable<Variable> {
         return out;
     }
 
+    @Override
     public VariableIdModel getObjectId() {
         return id;
     }
 
+    @Override
     public Date getCreatedAt() {
         if (createdAt == null) {
             createdAt = new Date();
@@ -145,6 +167,28 @@ public class VariableModel extends CoreGetable<Variable> {
 
     private boolean isIndexable() {
         return !getName().equals(LHConstants.EXT_EVT_HANDLER_VAR) && !value.isNull();
+    }
+
+    @Override
+    public boolean shouldProduceToOutputTopic(
+            Variable previousValue,
+            ReadOnlyMetadataManager metadataManager,
+            ReadOnlyGetableManager getableManager,
+            OutputTopicConfigModel config) {
+        if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            return false;
+        }
+
+        // Only PUBLIC_VAR variables should be pushed out.
+        WfRunModel wfRun = getableManager.get(id.getWfRunId());
+        String threadSpecName = wfRun.getThreadRun(id.getThreadRunNumber()).getThreadSpecName();
+        ThreadSpecModel threadSpec =
+                metadataManager.get(wfRun.getWfSpecId()).getThreadSpecs().get(threadSpecName);
+        ThreadVarDefModel variableDef = threadSpec.getVarDef(id.getName());
+
+        WfRunVariableAccessLevel accessLevel = variableDef.getAccessLevel();
+        return accessLevel == WfRunVariableAccessLevel.PUBLIC_VAR
+                || accessLevel == WfRunVariableAccessLevel.INHERITED_VAR;
     }
 
     @Override

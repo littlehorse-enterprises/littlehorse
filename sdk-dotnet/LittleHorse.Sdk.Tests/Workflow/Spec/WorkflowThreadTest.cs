@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
@@ -85,24 +86,24 @@ public class WorkflowThreadTest
         {
             Exit = new ExitNode()
         };
-        
+
         var strVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "str-test-variable",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
-        
+
         var intVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "int-test-variable",
-                Type = VariableType.Int,
-                DefaultValue = new VariableValue {Int = 5}
+                TypeDef = new TypeDefinition { Type = VariableType.Int },
+                DefaultValue = new VariableValue { Int = 5 }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -202,13 +203,13 @@ public class WorkflowThreadTest
         {
             Exit = new ExitNode()
         };
-        
+
         var threadVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "str-test-variable",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -297,13 +298,13 @@ public class WorkflowThreadTest
         {
             Exit = new ExitNode()
         };
-        
+
         var threadVarDef = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "name",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -317,6 +318,74 @@ public class WorkflowThreadTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedSpec, compiledWfThread);
     }
+
+    [Fact]
+    public void WfThread_WithCorrelatedExternalEvent_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfExternalEvents = 1;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable name = wf.DeclareStr("name");
+            wf.WaitForEvent("name-event").WithCorrelationId(name);
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-name-event-EXTERNAL_EVENT" }
+            }
+        };
+
+        var externalEvent = new Node
+        {
+            ExternalEvent = new ExternalEventNode
+            {
+                ExternalEventDefId = new ExternalEventDefId { Name = "name-event" },
+                CorrelationKey = new VariableAssignment { VariableName = "name" }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-exit-EXIT",
+                }
+            }
+        };
+
+        var exitNode = new Node
+        {
+            Exit = new ExitNode()
+        };
+
+        var threadVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "name",
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-name-event-EXTERNAL_EVENT", externalEvent);
+        expectedSpec.Nodes.Add("2-exit-EXIT", exitNode);
+        expectedSpec.VariableDefs.Add(threadVarDef);
+
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfExternalEvents;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedSpec, compiledWfThread);
+    }
+
 
     [Fact]
     public void WorkflowThread_WaitingManyChildThreads_ShouldCompile()
@@ -465,19 +534,31 @@ public class WorkflowThreadTest
 
         var threadVarDef1 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "1-child-thread-1-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "1-child-thread-1-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
-        
+
         var threadVarDef2 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "2-child-thread-2-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "2-child-thread-2-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
-        
+
         var threadVarDef3 = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "3-child-thread-3-START_THREAD", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "3-child-thread-3-START_THREAD",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
 
@@ -679,7 +760,11 @@ public class WorkflowThreadTest
 
         var threadVarDef = new ThreadVarDef
         {
-            VarDef = new VariableDef { Name = "timeout", Type = VariableType.Int },
+            VarDef = new VariableDef
+            {
+                Name = "timeout",
+                TypeDef = new TypeDefinition { Type = VariableType.Int }
+            },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
         
@@ -750,7 +835,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "counter",
-                Type = VariableType.Int,
+                TypeDef = new TypeDefinition { Type = VariableType.Int },
                 DefaultValue = new VariableValue { Int = 2 }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
@@ -836,13 +921,13 @@ public class WorkflowThreadTest
         };
         
         var exit = new Node { Exit = new ExitNode() };
-        
+
         var threadVarDef1 = new ThreadVarDef
         {
             VarDef = new VariableDef
             {
                 Name = "input",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -850,7 +935,8 @@ public class WorkflowThreadTest
         {
             VarDef = new VariableDef
             {
-                Name = "complex-data"
+                Name = "complex-data",
+                TypeDef = new TypeDefinition { Type = VariableType.JsonObj }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -987,7 +1073,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "task-name",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -996,7 +1082,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "input",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1005,7 +1091,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "complex-data",
-                Type = VariableType.JsonObj
+                TypeDef = new TypeDefinition { Type = VariableType.JsonObj }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1090,7 +1176,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "task-name",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1099,7 +1185,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "input",
-                Type = VariableType.Str
+                TypeDef = new TypeDefinition { Type = VariableType.Str }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1108,7 +1194,7 @@ public class WorkflowThreadTest
             VarDef = new VariableDef
             {
                 Name = "complex-data",
-                Type = VariableType.JsonObj
+                TypeDef = new TypeDefinition { Type = VariableType.JsonObj }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -1184,5 +1270,302 @@ public class WorkflowThreadTest
             new WorkflowThread(null!, _action));
         
         Assert.Equal("Value cannot be null. (Parameter 'parent')", exception.Message);
+    }
+
+    [Fact]
+    public void WorkflowThread_UsingDoesContainAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var data = wf.DeclareJsonArr("data");
+            wf.DoIf(data.DoesContain("address"), body =>
+            {
+                body.Execute("add-address");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-add-address-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                Str = "address"
+                            }
+                        },
+                        Comparator = Comparator.In,
+                        Right = new VariableAssignment
+                        {
+                            VariableName = "data"
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+    
+    [Fact]
+    public void WorkflowThread_UsingDoesNotContainAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var data = wf.DeclareJsonArr("data");
+            wf.DoIf(data.DoesNotContain("address"), body =>
+            {
+                body.Execute("add-address");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-add-address-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                Str = "address"
+                            }
+                        },
+                        Comparator = Comparator.NotIn,
+                        Right = new VariableAssignment
+                        {
+                            VariableName = "data"
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+    
+    [Fact]
+    public void WorkflowThread_UsingInAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareStr("input");
+            wf.DoIf(input.IsIn(new List<string> {"A", "B", "C"}), body =>
+            {
+                body.Execute("task");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            VariableName = "input"
+                        },
+                        Comparator = Comparator.In,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                JsonArr = "[\"A\",\"B\",\"C\"]"
+                            }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+    
+    [Fact]
+    public void WorkflowThread_UsingNotInAsCondition_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareStr("input");
+            wf.DoIf(input.IsNotIn(new List<string> {"A", "B", "C"}), body =>
+            {
+                body.Execute("task");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            VariableName = "input"
+                        },
+                        Comparator = Comparator.NotIn,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                JsonArr = "[\"A\",\"B\",\"C\"]"
+                            }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+
+    [Theory]
+    [InlineData(Comparator.LessThan, 23)]
+    [InlineData(Comparator.LessThanEq, 26)]
+    [InlineData(Comparator.GreaterThanEq, 5)]
+    [InlineData(Comparator.GreaterThan, 7)]
+    [InlineData(Comparator.Equals, 9)]
+    [InlineData(Comparator.NotEquals, 10000)]
+    public void WorkflowThread_UsingDifferentConditionals_ShouldCompile(Comparator comparator, int value)
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareInt("input");
+            wf.DoIf(wf.Condition(input, comparator, value), body =>
+            {
+                body.Execute("task");
+            });
+        }
+        
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        var actualNode = compiledWfThread.Nodes["1-nop-NOP"];
+        
+        var expectedNode = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Left = new VariableAssignment
+                        {
+                            VariableName = "input"
+                        },
+                        Comparator = comparator,
+                        Right = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue
+                            {
+                                Int = value
+                            }
+                        }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+        
+        Assert.Equal(expectedNode, actualNode);
+    }
+
+    [Fact]
+    public void WorkFlowThread_WithCodeAfterComplete_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var input = wf.DeclareStr("input");
+            wf.Execute("any-task-def-name", input);
+            wf.Complete();
+            wf.Execute("another-task-def-name", input);
+        }
+        
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WorkflowThread(mockParentWorkflow.Object, EntryPointAction));
+
+        Assert.Equal("You cannot add a Node in a given thread after the thread has completed.",
+            exception.Message);
     }
 }

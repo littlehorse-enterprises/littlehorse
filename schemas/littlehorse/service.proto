@@ -15,6 +15,7 @@ import "task_run.proto";
 import "user_tasks.proto";
 import "wf_spec.proto";
 import "task_def.proto";
+import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
@@ -66,6 +67,24 @@ service LittleHorse {
    * As of 0.7.2, this feature is only partially implemented.
    */
   rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
+
+  /* EXPERIMENTAL: Creates a new `StructDef``.
+   *
+   * Note that this request is idempotent: if you
+   * make a request to create a `StructDef` identical to the currently-created
+   * one with the same `name`, no new `StructDef` will be created. This is the
+   * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
+   *
+   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
+   * enum within the `PutStructDefRequest`.
+   */
+  rpc PutStructDef(PutStructDefRequest) returns (StructDef) {}
+
+  // EXPERIMENTAL: Get a StructDef.
+  rpc GetStructDef(StructDefId) returns (StructDef) {}
+
+  // EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
+  rpc ValidateStructDefEvolution(ValidateStructDefEvolutionRequest) returns (ValidateStructDefEvolutionResponse) {}
 
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
@@ -131,6 +150,15 @@ service LittleHorse {
   // to model an entity.
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
+  // Adds userComment to a UserTaskRun
+  rpc PutUserTaskRunComment(PutUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
+  // Edits userComment with the correlated userCommentId
+  rpc EditUserTaskRunComment(EditUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
+  // Deletes a comment logically, this does not affect the userTaskEvent Log
+  rpc DeleteUserTaskRunComment(DeleteUserTaskRunCommentRequest) returns (UserTaskRun) {};
+
   // Gets a specific NodeRun.
   rpc GetNodeRun(NodeRunId) returns (NodeRun) {}
 
@@ -151,11 +179,17 @@ service LittleHorse {
   // List all Variables from a WfRun.
   rpc ListVariables(ListVariablesRequest) returns (VariableList) {}
 
-  // Post an ExternalEvent. This RPC is highly useful for
+  // Post an ExternalEvent.
   rpc PutExternalEvent(PutExternalEventRequest) returns (ExternalEvent) {}
+
+  // Post a `CorrelatedEvent`, which is a precursor to `ExternalEvent`s.
+  rpc PutCorrelatedEvent(PutCorrelatedEventRequest) returns (CorrelatedEvent) {}
 
   // Get a specific ExternalEvent.
   rpc GetExternalEvent(ExternalEventId) returns (ExternalEvent) {}
+
+  // Get a specific CorrelatedEvent
+  rpc GetCorrelatedEvent(CorrelatedEventId) returns (CorrelatedEvent) {}
 
   // Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
   // WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
@@ -179,6 +213,10 @@ service LittleHorse {
   // Search for WfRun's. This RPC is highly useful for applications that store data
   // in LittleHorse and need to find a specific WfRun based on certain indexed fields.
   rpc SearchWfRun(SearchWfRunRequest) returns (WfRunIdList) {}
+
+  // Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
+  // events that may be orphaned.
+  rpc SearchCorrelatedEvent(SearchCorrelatedEventRequest) returns (CorrelatedEventIdList) {}
 
   // Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
   // your workflows or Task Workers.
@@ -257,12 +295,16 @@ service LittleHorse {
   rpc DeleteWfRun(DeleteWfRunRequest) returns (google.protobuf.Empty) {}
   // Deletes a TaskDef.
   rpc DeleteTaskDef(DeleteTaskDefRequest) returns (google.protobuf.Empty) {}
+  // EXPERIMENTAL: Deletes a StructDef.
+  rpc DeleteStructDef(DeleteStructDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a WfSpec.
   rpc DeleteWfSpec(DeleteWfSpecRequest) returns (google.protobuf.Empty) {}
   // Deletes a UserTaskDef.
   rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
   // Deletes an ExternalEventDef.
   rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
+  // Deletes a CorrelatedEvent
+  rpc DeleteCorrelatedEvent(DeleteCorrelatedEventRequest) returns (google.protobuf.Empty) {}
 
   rpc DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
@@ -296,7 +338,7 @@ service LittleHorse {
   rpc Whoami(google.protobuf.Empty) returns (Principal) {}
 
   // Gets the version of the LH Server.
-  rpc GetServerVersion(google.protobuf.Empty) returns (ServerVersion) {}
+  rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
 
   rpc ListMetricSpecs(ListMetricSpecRequest) returns (MetricSpecList) {}
   // List the latest metrics for a given MetricSpecId
@@ -377,8 +419,58 @@ message PutTaskDefRequest {
   // Variables required to execute the TaskDef. Normally, these are automatically
   // generated by the Task Worker SDK.
   repeated VariableDef input_vars = 2;
-  // Schema that validates the TaskDef's output
-  optional TaskDefOutputSchema output_schema = 3;
+
+  // Specifies the return type of the TaskDef.
+  ReturnType return_type = 3;
+}
+
+// Creates a new StructDef.
+message PutStructDefRequest {
+  // The name of the StructDef.
+  string name = 1;
+
+  // The descripton of the StructDef.
+  optional string description = 2;
+
+  // The actual schema for the StructDef.
+  InlineStructDef struct_def = 3;
+
+  // If both of the following are true: <br/>
+  // - A `StructDef` with the specified `name` already exists, AND <br/>
+  // - The `InlineStructDef` is different <br/>
+  //
+  // Then the request will be accepted or rejected based on the value of the
+  // allowed_update_types.
+  StructDefCompatibilityType allowed_updates = 4;
+}
+
+// Request to validate the evolution of an existing StructDef to a new StructDef
+// based on a compatibility type.
+message ValidateStructDefEvolutionRequest {
+  // The ID of the StructDef you want to compare against that already exists on the server.
+  StructDefId struct_def_id = 1;
+
+  // The new StructDef schema.
+  InlineStructDef struct_def = 2;
+
+  // The server will validate the new StructDef schema against
+  // the existing StructDef schema based on this compatibility type.
+  StructDefCompatibilityType compatibility_type = 3;
+}
+
+// Response detailing the validity of a StructDef evolution.
+message ValidateStructDefEvolutionResponse {
+  // Whether or not the StructDef evolution specified in the request is valid.
+  bool is_valid = 1;
+}
+
+enum StructDefCompatibilityType {
+  // No updates are allowed.
+  NO_SCHEMA_UPDATES = 0;
+
+  // Allowed to make fully compatible (both backward-and-forward compatible)
+  // changes to the `struct_def` in this request.
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
 }
 
 // Creates a WorkflowEventDef
@@ -387,7 +479,7 @@ message PutWorkflowEventDefRequest {
   string name = 1;
 
   // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
-  VariableType type = 2;
+  ReturnType content_type = 2;
 }
 
 // Creates a UserTaskDef.
@@ -419,6 +511,12 @@ message PutExternalEventDefRequest {
   // A future version of LittleHorse will allow changing the retention_policy, which
   // will trigger a cleanup of old `ExternalEvent`s.
   ExternalEventRetentionPolicy retention_policy = 2;
+
+  // Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+  optional ReturnType content_type = 3;
+
+  // If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
+  optional CorrelatedEventConfig correlated_event_config = 4;
 }
 
 // Request used to create an ExternalEvent.
@@ -449,6 +547,22 @@ message PutExternalEventRequest {
   reserved 4, 8;
 }
 
+// Request used to record a `CorrelatedEvent`, which is a precursor to zero or more
+// `ExternalEvent`s.
+message PutCorrelatedEventRequest {
+  // The correlation key of the CorrelatedEvent.
+  string key = 1;
+
+  // The `ExternalEventDef` that is associated with this `CorrelatedEvent`. This is
+  // also the `ExternalEventDef` of any `ExternalEvent`s that are generated after
+  // this `CorrelatedEvent` is correlated to `WfRun`s.
+  ExternalEventDefId external_event_def_id = 2;
+
+  // The content of the CorrelatedEvent and any `ExternalEvent`s created after
+  // correlating this `CorrelatedEvent`.
+  VariableValue content = 3;
+}
+
 // Deletes an ExternalEvent.
 message DeleteExternalEventRequest {
   // The ID of the ExternalEvent to delete.
@@ -467,10 +581,22 @@ message DeleteWfRunRequest {
   WfRunId id = 1;
 }
 
+// Deletes a CorrelatedEvent
+message DeleteCorrelatedEventRequest {
+  // The ID of the CorrelatedEvent to delete.
+  CorrelatedEventId id = 1;
+}
+
 // Deletes a TaskDef.
 message DeleteTaskDefRequest {
   // The ID of the TaskDef to delete.
   TaskDefId id = 1;
+}
+
+// Deletes a StructDef.
+message DeleteStructDefRequest {
+  // The ID of the StructDef to delete.
+  StructDefId id = 1;
 }
 
 // Deletes a UserTaskDef.
@@ -622,6 +748,40 @@ message WfRunIdList {
   optional bytes bookmark = 2;
 }
 
+// Allows searching for CorrelatedEvents
+message SearchCorrelatedEventRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Specifies to return only WfRun's that started after this time
+  optional google.protobuf.Timestamp earliest_start = 3;
+
+  // Specifies to return only WfRun's that started before this time
+  optional google.protobuf.Timestamp latest_start = 4;
+
+  // ExternalEventDefId of the CorrelatedEvent
+  ExternalEventDefId external_event_def_id = 5;
+
+  // If set and true, only return CorrelatedEvents that have been correlated to a
+  // WfRun and created an ExternalEvent. If False, return only those that are pending
+  // and have not been correlated to a WfRun.
+  optional bool has_external_events = 6;
+}
+
+// List of CorrelatedEventId's
+message CorrelatedEventIdList {
+  // The resulting object id's.
+  repeated CorrelatedEventId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
 // Searches for TaskRuns by various criteria.
 message SearchTaskRunRequest {
     // Bookmark for cursor-based pagination; pass if applicable.
@@ -695,6 +855,11 @@ message SearchNodeRunRequest {
 
   // Specifies the status of NodeRun to search for.
   LHStatus status = 6;
+
+  // Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+  // Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+  optional ExternalEventDefId external_event_def = 7;
+
 }
 
 // List of NodeRun Id's.
@@ -1453,8 +1618,8 @@ message GetLatestWfSpecRequest {
 }
 
 
-// The version of the LH Server according to Semantic Versioning
-message ServerVersion {
+// The version of LittleHorse according to Semantic Versioning
+message LittleHorseVersion {
   // Server Major Version
   int32 major_version = 1;
 

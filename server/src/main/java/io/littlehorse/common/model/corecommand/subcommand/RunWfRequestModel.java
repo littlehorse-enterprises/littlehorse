@@ -6,7 +6,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -19,8 +19,8 @@ import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -87,17 +87,12 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         }
     }
 
-    @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
     private boolean isIdValid() {
         return (!id.equals("") && LHUtil.isValidLHName(id));
     }
 
     @Override
-    public WfRun process(ProcessorExecutionContext processorContext, LHServerConfig config) {
+    public WfRun process(CoreProcessorContext processorContext, LHServerConfig config) {
         if (Strings.isNullOrEmpty(wfSpecName)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
         }
@@ -114,7 +109,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
         // TODO: Add WfRun Start Metrics
 
-        WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id));
+        WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id, parentWfRunId));
         if (oldWfRun != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
         }
@@ -153,7 +148,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         ThreadSpecModel entrypointThread = spec.getEntrypointThread();
         try {
             entrypointThread.validateStartVariables(variables);
-        } catch (LHValidationError exn) {
+        } catch (LHValidationException exn) {
             throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
         }
 

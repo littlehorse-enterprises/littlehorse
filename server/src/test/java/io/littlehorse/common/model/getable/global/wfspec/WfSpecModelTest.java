@@ -4,14 +4,17 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.LHValidationException;
+import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
+import io.littlehorse.common.exceptions.validation.InvalidWfSpecException;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +35,7 @@ public class WfSpecModelTest {
 
     private final WfSpecModel wfSpec = TestUtil.wfSpec("my-wf");
     private final WfSpecModel parentWfSpec = TestUtil.wfSpec("my-parent-wf");
-    private final MetadataCommandExecution mockContext = mock(Answers.RETURNS_DEEP_STUBS);
+    private final MetadataProcessorContext mockContext = mock(Answers.RETURNS_DEEP_STUBS);
     private ThreadSpecModel childEntrypointThread;
     private VariableDefModel variableDef;
 
@@ -41,7 +44,7 @@ public class WfSpecModelTest {
         childEntrypointThread = spy(new ThreadSpecModel());
         VariableDef variableDefProto = VariableDef.newBuilder()
                 .setName("my-var")
-                .setType(VariableType.BOOL)
+                .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.BOOL))
                 .build();
         variableDef = LHSerializable.fromProto(variableDefProto, VariableDefModel.class, mockContext);
         ThreadVarDefModel inheritedVariable =
@@ -51,19 +54,19 @@ public class WfSpecModelTest {
     }
 
     @Test
-    public void shouldPreventInheritedVariablesFromParentWfSpec() {
+    public void shouldPreventInheritedVariablesFromParentWfSpec() throws InvalidThreadSpecException {
         wfSpec.setParentWfSpec(null);
         verify(childEntrypointThread, never()).validate(Mockito.any());
         Throwable caughtException =
                 Assertions.catchThrowable(() -> wfSpec.validateAndMaybeBumpVersion(Optional.empty(), mockContext));
         Assertions.assertThat(caughtException)
                 .isNotNull()
-                .isInstanceOf(LHApiException.class)
-                .hasMessageContaining("Only child workflows are allowed to access inherited variables");
+                .isInstanceOf(InvalidWfSpecException.class)
+                .hasMessageContaining("Only child workflows are allowed to access INHERITED variables");
     }
 
     @Test
-    public void shouldValidateInheritedVariableExists() {
+    public void shouldValidateInheritedVariableExists() throws InvalidThreadSpecException {
         when(mockContext.service().getWfSpec("my-parent-wf", 1, 0)).thenReturn(parentWfSpec);
         wfSpec.setParentWfSpec(new ParentWfSpecReferenceModel("my-parent-wf", 1));
         verify(childEntrypointThread, never()).validate(Mockito.any());
@@ -71,12 +74,12 @@ public class WfSpecModelTest {
                 Assertions.catchThrowable(() -> wfSpec.validateAndMaybeBumpVersion(Optional.empty(), mockContext));
         Assertions.assertThat(caughtException)
                 .isNotNull()
-                .isInstanceOf(LHApiException.class)
-                .hasMessageContaining("Inherited variable my-var does not exist in parent WfSpec");
+                .isInstanceOf(InvalidWfSpecException.class)
+                .hasMessageContaining("INHERITED variable my-var does not exist in parent WfSpec");
     }
 
     @Test
-    public void shouldValidateInheritedIsAccessible() {
+    public void shouldValidateInheritedIsAccessible() throws InvalidThreadSpecException {
         ThreadVarDefModel parentVariable =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PRIVATE_VAR);
         ThreadSpecModel parentEntrypoint = parentWfSpec.getThreadSpecs().get(parentWfSpec.getEntrypointThreadName());
@@ -88,12 +91,13 @@ public class WfSpecModelTest {
                 Assertions.catchThrowable(() -> wfSpec.validateAndMaybeBumpVersion(Optional.empty(), mockContext));
         Assertions.assertThat(caughtException)
                 .isNotNull()
-                .isInstanceOf(LHApiException.class)
+                .isInstanceOf(InvalidWfSpecException.class)
                 .hasMessageContaining("Inherited variable my-var is defined as PRIVATE in parent WfSpec");
     }
 
     @Test
-    public void shouldIncreaseTheMajorVersionWhenAPublicVariableChangesItsAccessLevelToPrivate() {
+    public void shouldIncreaseTheMajorVersionWhenAPublicVariableChangesItsAccessLevelToPrivate()
+            throws InvalidThreadSpecException, InvalidWfSpecException {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-wf");
         ThreadVarDefModel publicVariable =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PUBLIC_VAR);
@@ -110,7 +114,8 @@ public class WfSpecModelTest {
     }
 
     @Test
-    public void shouldNotIncreaseTheMajorVersionWhenAInheritedVariableChangesItsAccessLevelToPrivate() {
+    public void shouldNotIncreaseTheMajorVersionWhenAInheritedVariableChangesItsAccessLevelToPrivate()
+            throws LHValidationException {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-parent-wf");
         ThreadVarDefModel inheritedVar =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.INHERITED_VAR);
@@ -134,7 +139,7 @@ public class WfSpecModelTest {
     @ParameterizedTest
     @MethodSource("provideBreakingChangeArguments")
     public void shouldNotIncreaseTheMajorVersionWhenVariablesAreStillAccessibleFromChildWorkflows(
-            WfRunVariableAccessLevel from, WfRunVariableAccessLevel to) {
+            WfRunVariableAccessLevel from, WfRunVariableAccessLevel to) throws LHValidationException {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-parent-wf");
         ThreadVarDefModel fromVar = new ThreadVarDefModel(variableDef, false, false, from);
         ThreadVarDefModel toVar = new ThreadVarDefModel(variableDef, false, false, to);

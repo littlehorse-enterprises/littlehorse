@@ -48,7 +48,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object name_ = "";
   /**
    * <pre>
-   * ExternalEventDef's are uniquedly identified by their name.
+   * ExternalEventDef's are uniquedly identified by their name and version.
    * </pre>
    *
    * <code>string name = 1;</code>
@@ -69,7 +69,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * ExternalEventDef's are uniquedly identified by their name.
+   * ExternalEventDef's are uniquedly identified by their name and version.
    * </pre>
    *
    * <code>string name = 1;</code>
@@ -423,7 +423,7 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object name_ = "";
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -443,7 +443,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -464,7 +464,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -481,7 +481,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>
@@ -495,7 +495,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * ExternalEventDef's are uniquedly identified by their name.
+     * ExternalEventDef's are uniquedly identified by their name and version.
      * </pre>
      *
      * <code>string name = 1;</code>

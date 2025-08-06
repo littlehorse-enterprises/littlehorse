@@ -1,4 +1,4 @@
-import { VARIABLE_TYPES } from '@/app/constants'
+import { getVariableDefType } from '@/app/utils/variables'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/components/utils'
 import { FormFieldProp } from '@/types'
@@ -20,12 +20,14 @@ export const FormTextarea: FC<FormFieldProp> = props => {
   if (!props.variables?.varDef?.name) return null
   const {
     variables: {
-      varDef: { type, name },
+      varDef: { name },
       required,
     },
     register,
     formState: { errors },
   } = props
+
+  const type = getVariableDefType(props.variables.varDef)
 
   return (
     <BaseFormField {...props} isDisabled={isDisabled} setIsDisabled={setIsDisabled}>
@@ -33,7 +35,7 @@ export const FormTextarea: FC<FormFieldProp> = props => {
         className={cn(errors[name] && 'border-destructive')}
         id={name}
         disabled={isDisabled}
-        placeholder={`Enter ${VARIABLE_TYPES[type]?.toLowerCase()} value`}
+        placeholder={`Enter ${type.toLowerCase()} value`}
         {...register(name, {
           required: required ? `${name} is required` : false,
           validate: getValidation(type),

@@ -11,6 +11,8 @@ import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -42,6 +44,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private String strVal;
     private Long intVal;
     private byte[] bytesVal;
+    private WfRunIdModel wfRunId;
 
     private ExecutionContext context;
 
@@ -104,12 +107,21 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case BYTES:
                 bytesVal = p.getBytes().toByteArray();
                 break;
+            case WF_RUN_ID:
+                wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
+                break;
             case VALUE_NOT_SET:
                 // it's a null variable! Nothing to do.
                 break;
         }
     }
 
+    public TypeDefinitionModel getTypeDefinition() {
+        // TODO: support `StructDef` here
+        return new TypeDefinitionModel(getType());
+    }
+
+    @Deprecated
     public VariableType getType() {
         return fromValueCase(type);
     }
@@ -141,6 +153,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return VariableType.JSON_OBJ;
             case BOOL:
                 return VariableType.BOOL;
+            case WF_RUN_ID:
+                return VariableType.WF_RUN_ID;
             case VALUE_NOT_SET:
             default:
                 return null;
@@ -203,6 +217,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     out.setBytes(ByteString.copyFrom(bytesVal));
                 }
                 break;
+            case WF_RUN_ID:
+                if (wfRunId != null) {
+                    out.setWfRunId(wfRunId.toProto());
+                }
+                break;
             case VALUE_NOT_SET:
                 // nothing to do
                 break;
@@ -215,6 +234,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         VariableValueModel out = new VariableValueModel();
         out.initFrom(toProto().build(), context);
         return out;
+    }
+
+    /**
+     * Returns true if the value is empty, which is the LittleHorse equivalent of `null`.
+     */
+    public boolean isEmpty() {
+        return type == ValueCase.VALUE_NOT_SET;
     }
 
     public VariableValueModel operate(
@@ -447,6 +473,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return this.jsonObjVal;
             case BYTES:
                 return this.bytesVal;
+            case WF_RUN_ID:
+                return this.wfRunId;
             case VALUE_NOT_SET:
         }
         return null;
@@ -471,6 +499,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return asObj();
         } else if (otherType == VariableType.BYTES) {
             return asBytes();
+        } else if (otherType == VariableType.WF_RUN_ID) {
+            return asWfRunId();
         } else {
             throw new LHVarSubError(null, "Unsupported type for coersion: " + otherType);
         }
@@ -509,12 +539,26 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel(doubleVal);
         } else if (getType() == VariableType.STR) {
             try {
-                return new VariableValueModel(Double.valueOf(strVal));
+                return new VariableValueModel(Double.parseDouble(strVal));
             } catch (Exception exn) {
                 throw new LHVarSubError(exn, "Couldn't convert STR to DOUBLE");
             }
         } else {
             throw new LHVarSubError(null, "Cant convert " + type + " to DOUBLE");
+        }
+    }
+
+    public VariableValueModel asWfRunId() throws LHVarSubError {
+        if (getType() == VariableType.WF_RUN_ID) {
+            return new VariableValueModel(wfRunId);
+        } else if (getType() == VariableType.DOUBLE) {
+            return new VariableValueModel(new WfRunIdModel(String.valueOf(doubleVal)));
+        } else if (getType() == VariableType.INT) {
+            return new VariableValueModel(new WfRunIdModel(String.valueOf(intVal)));
+        } else if (getType() == VariableType.STR) {
+            return new VariableValueModel((WfRunIdModel) WfRunIdModel.fromString(strVal, WfRunIdModel.class));
+        } else {
+            throw new LHVarSubError(null, "Cant convert " + type + " to WF_RUN_ID");
         }
     }
 
@@ -594,6 +638,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         boolVal = val;
     }
 
+    public VariableValueModel(WfRunIdModel wfRunId) {
+        type = ValueCase.WF_RUN_ID;
+        this.wfRunId = wfRunId;
+    }
+
     /*
      * Returns a pair of String, String that can be used to find the Variable via
      * a Tag Search. If not supported, returns null.
@@ -625,6 +674,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case BYTES:
             case JSON_ARR:
+            case WF_RUN_ID:
             case VALUE_NOT_SET:
                 valuePair = null;
         }

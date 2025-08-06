@@ -1,6 +1,5 @@
 package io.littlehorse.server.monitoring.metrics;
 
-import io.javalin.http.Handler;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.StandbyMetrics;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -12,8 +11,8 @@ import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.kafka.KafkaStreamsMetrics;
 import io.micrometer.core.instrument.binder.system.DiskSpaceMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusConfig;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import java.io.Closeable;
 import java.io.File;
 import java.util.List;
@@ -78,11 +77,8 @@ public class PrometheusMetricExporter implements Closeable {
         processorMetrics.bindTo(prometheusRegistry);
     }
 
-    public Handler handleRequest() {
-        return ctx -> {
-            log.trace("Processing metrics request");
-            ctx.result(prometheusRegistry.scrape());
-        };
+    public String handleRequest() {
+        return prometheusRegistry.scrape();
     }
 
     @Override

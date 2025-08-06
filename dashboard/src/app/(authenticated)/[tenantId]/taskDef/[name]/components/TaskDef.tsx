@@ -2,24 +2,24 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
+import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { TaskDef as TaskDefProto, TaskStatus, WfSpecIdList } from 'littlehorse-client/proto'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { Details } from './Details'
 import { InputVars } from './InputVars'
-import { searchWfSpecs, PaginatedWfSpecList } from '@/app/actions/getWfSpecsByTaskDef'
-import { WfSpecData } from '@/types'
-import { TagIcon } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
+
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
+import { Separator } from '@/components/ui/separator'
+import { TagIcon } from 'lucide-react'
 
 type Props = {
   spec: TaskDefProto
@@ -35,7 +35,6 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const taskDefName = spec.id?.name || ''
 
   const {
-    isPending: wfSpecsIsPending,
     data: wfSpecsData,
     hasNextPage: wfSpecsHasNextPage,
     fetchNextPage: wfSpecsFetchNextPage,
@@ -44,7 +43,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
-      return await searchWfSpecs({ tenantId, bookmarkAsString: pageParam, limit: wfSpecLimit, taskDefName })
+      return await searchWfSpecs({
+        tenantId,
+        bookmarkAsString: pageParam,
+        limit: wfSpecLimit,
+        wfSpecCriteria: { $case: 'taskDefName', value: taskDefName },
+      })
     },
   })
 
@@ -162,15 +166,16 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                       <Fragment key={i}>
                         {page.resultsWithDetails.length > 0 ? (
                           page.resultsWithDetails.map(({ taskRun }) => {
+                            if (!taskRun.id?.wfRunId) return
                             return (
                               <TableRow key={taskRun.id?.taskGuid}>
                                 <TableCell>
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
+                                    href={`/wfRun/${wfRunIdToPath(taskRun.id.wfRunId)}?threadRunNumber=${taskRun.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
                                   >
-                                    {concatWfRunIds(taskRun.id?.wfRunId!)}
+                                    {wfRunIdToPath(taskRun.id.wfRunId)}
                                   </LinkWithTenant>
                                 </TableCell>
                                 <TableCell>{taskRun.id?.taskGuid}</TableCell>

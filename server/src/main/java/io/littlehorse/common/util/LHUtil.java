@@ -17,7 +17,6 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
-import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -200,23 +199,6 @@ public class LHUtil {
         }
         return str;
     }
-
-    public static boolean isPrimitive(VariableType variableType) {
-        switch (variableType) {
-            case INT:
-            case BOOL:
-            case DOUBLE:
-            case STR:
-                return true;
-            case JSON_OBJ:
-            case JSON_ARR:
-            case BYTES:
-            case UNRECOGNIZED:
-                return false;
-        }
-        return false;
-    }
-
     /**
      * TODO: THis needs more thought. We want the double to be searchable both
      * positive and

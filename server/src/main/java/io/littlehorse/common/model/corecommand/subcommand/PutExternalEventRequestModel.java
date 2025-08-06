@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -19,20 +20,22 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Date;
 import java.util.Optional;
+import lombok.Setter;
 
+@Setter
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
 
-    public WfRunIdModel wfRunId;
-    public ExternalEventDefIdModel externalEventDefId;
-    public String guid;
-    public VariableValueModel content;
-    public Integer threadRunNumber;
-    public Integer nodeRunPosition;
+    private WfRunIdModel wfRunId;
+    private ExternalEventDefIdModel externalEventDefId;
+    private String guid;
+    private VariableValueModel content;
+    private Integer threadRunNumber;
+    private Integer nodeRunPosition;
 
     @Override
     public String getPartitionKey() {
@@ -59,12 +62,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
     }
 
     @Override
-    public boolean hasResponse() {
-        return true;
-    }
-
-    @Override
-    public ExternalEvent process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public ExternalEvent process(CoreProcessorContext executionContext, LHServerConfig config) {
         WfService service = executionContext.service();
         ExternalEventDefModel eed = service.getExternalEventDef(externalEventDefId.getName());
         Date eventTime = executionContext.currentCommand().getTime();
@@ -78,6 +76,19 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
 
         if (getableManager.get(externalEventId) != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "ExternalEvent already exists");
+        }
+
+        // Reject ExternalEvent's with the wrong content type. Note that if the ExternalEventDef was created prior
+        // to 0.13.2 or the user did not provide content_type information, we don't have typing information and
+        // just use the Chulla Vida strategy.
+        if (eed.getReturnType().isPresent()) {
+            ReturnTypeModel type = eed.getReturnType().get();
+            if (!type.isCompatibleWith(content)) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Invalid type of content for event. Check the return type of ExternalEventDef "
+                                + eed.getName());
+            }
         }
 
         ExternalEventModel evt =

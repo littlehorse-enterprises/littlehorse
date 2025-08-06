@@ -1,19 +1,21 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 public class SleepNodeModel extends SubNode<SleepNode> {
 
@@ -21,7 +23,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     public VariableAssignmentModel rawSeconds;
     public VariableAssignmentModel timestamp;
     public VariableAssignmentModel isoDate;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
 
     public Class<SleepNode> getProtoBaseClass() {
         return SleepNode.class;
@@ -64,18 +66,16 @@ public class SleepNodeModel extends SubNode<SleepNode> {
             case SLEEPLENGTH_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
-        // TODO: once we have schemas, we need to validate that the
-        // variable assignments are types that make sense (unsigned int, long,
-        // or date string).
+    public void validate(MetadataProcessorContext ctx) {
+        // TODO (#1759)
     }
 
     @Override
-    public SleepNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public SleepNodeRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new SleepNodeRunModel(processorContext);
     }
 
@@ -97,5 +97,10 @@ public class SleepNodeModel extends SubNode<SleepNode> {
             case SLEEPLENGTH_NOT_SET:
         }
         throw new RuntimeException("Not possible");
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        return Optional.of(new ReturnTypeModel());
     }
 }

@@ -2,7 +2,7 @@
 import { SEARCH_ENTITIES, SearchType } from '@/app/constants'
 import { SearchIcon } from 'lucide-react'
 import LinkWithTenant from './LinkWithTenant'
-import { useParams } from 'next/navigation'
+
 import { FC } from 'react'
 
 type Props = {
@@ -33,7 +33,7 @@ export const SearchHeader: FC<Props> = ({ currentType, setPrefix }) => {
           type="text"
           onChange={e => {
             const { value } = e.target
-            if (!!value) {
+            if (value) {
               setPrefix(value)
             } else {
               setPrefix(undefined)

@@ -1,30 +1,24 @@
 import { cn } from '@/components/utils'
 import { useQuery } from '@tanstack/react-query'
-import { TaskAttempt } from 'littlehorse-client/proto'
+import { NodeRun, TaskAttempt } from 'littlehorse-client/proto'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { FC, Fragment } from 'react'
 
-import { formatJsonOrReturnOriginalValue, getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { AccordionNode } from './AccordionContent'
 
-export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
-  const taskId = nodeRun.task?.taskRunId?.taskGuid
-  const wfRunId = nodeRun.task?.taskRunId?.wfRunId?.id
+export const TaskDefDetail: FC<AccordionNode<'task'>> = ({ nodeRun }) => {
+  const { taskRunId } = nodeRun.nodeType.value
+  const { tenantId } = useWhoAmI()
 
   const { data, isLoading } = useQuery({
-    queryKey: ['taskRun', wfRunId, taskId],
+    queryKey: ['taskRun', taskRunId],
     queryFn: async () => {
-      if (!wfRunId) return
-      if (!taskId) return
-      const taskRun = await getTaskRun({
-        wfRunId: {
-          id: wfRunId,
-          parentWfRunId: undefined,
-        },
-        taskGuid: taskId,
-      })
+      if (!taskRunId) return
+      const taskRun = await getTaskRun({ tenantId, ...taskRunId })
 
       return taskRun
     },
@@ -47,11 +41,10 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
           <div>
             <h2 className="mb-2 text-sm font-bold">Input Variables</h2>
             {data.inputVariables?.map(({ varName, value }) => {
-              const type = Object.keys(value || {})?.[0]
               return (
                 <div key={varName} className="mb-1 flex items-center gap-1">
                   <div className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{varName}</div>
-                  <div className="">= {getVariableValue(value)}</div>
+                  {value && <div className="">= {getVariableValue(value)}</div>}
                 </div>
               )
             })}
@@ -59,12 +52,12 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
         )}
         <div className="mb-2 mt-1 flex ">
           <span className="font-bold">Task GUID :</span>
-          <span> {taskId}</span>
+          <span> {taskRunId?.taskGuid}</span>
           <span className="ml-2 mt-1">
             <ClipboardIcon
               className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
               onClick={() => {
-                navigator.clipboard.writeText(taskId ?? '')
+                navigator.clipboard.writeText(taskRunId?.taskGuid ?? '')
               }}
             />
           </span>
@@ -103,7 +96,9 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
                       <div
                         className={cn(
                           'flex items-center justify-between p-2',
-                          attempt.exception || attempt.error ? 'bg-red-200' : 'bg-green-200'
+                          attempt.result?.$case === 'error' || attempt.result?.$case === 'exception'
+                            ? 'bg-red-200'
+                            : 'bg-green-200'
                         )}
                       >
                         {attempt?.status}
@@ -127,27 +122,20 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
 }
 
 export function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
-  if (!attempt.output && !attempt.error && !attempt.exception) return
+  if (!attempt.result) return
+
+  const message =
+    attempt.result.$case === 'output' ? getVariableValue(attempt.result.value) : attempt.result.value.message
 
   return (
     <div
       className={cn(
         'flex w-full flex-col overflow-auto rounded p-1',
-        attempt.output ? 'bg-zinc-500 text-white' : 'bg-red-200'
+        attempt.result.$case === 'output' ? 'bg-zinc-500 text-white' : 'bg-red-200'
       )}
     >
-      <h3 className="font-bold">
-        {attempt.error && 'Error'}
-        {attempt.exception && 'Exception'}
-        {attempt.output && 'Output'}
-      </h3>
-      <pre className="overflow-auto">
-        {attempt.error && attempt.error.message}
-        {attempt.exception && attempt.exception.message}
-        {attempt.output && typeof getVariableValue(attempt.output) === 'string'
-          ? formatJsonOrReturnOriginalValue(getVariableValue(attempt.output) as string)
-          : String(getVariableValue(attempt.output))}
-      </pre>
+      <h3 className="font-bold">{attempt.result.$case}</h3>
+      <pre className="overflow-auto">{message}</pre>
     </div>
   )
 }

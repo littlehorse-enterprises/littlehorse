@@ -37,7 +37,7 @@ public class ConditionalsExample {
 
                 wf.execute("task-a");
 
-                wf.doIfElse(
+                wf.doIf(
                     wf.condition(
                         foo.jsonPath("$.bar"),
                         Comparator.GREATER_THAN,
@@ -45,7 +45,8 @@ public class ConditionalsExample {
                     ),
                     ifHandler -> {
                         ifHandler.execute("task-b");
-                    },
+                    }
+                ).doElse(
                     elseHandler -> {
                         elseHandler.execute("task-c");
                     }

@@ -4,7 +4,10 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEventNodeModel;
@@ -25,8 +28,9 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -205,31 +209,15 @@ public class NodeModel extends LHSerializable<Node> {
         return Optional.empty();
     }
 
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         for (EdgeModel e : outgoingEdges) {
-            if (e.getSinkNodeName().equals(name)) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
-            }
-
-            NodeModel sink = threadSpec.nodes.get(e.getSinkNodeName());
-            if (sink == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        String.format("Outgoing edge referring to missing node %s!", e.getSinkNodeName()));
-            }
-
-            if (sink.type == NodeCase.ENTRYPOINT) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, name));
-            }
-            if (e.getCondition() != null) {
-                e.getCondition().validate();
+            try {
+                e.validate(this, ctx.metadataManager(), threadSpec);
+            } catch (InvalidEdgeException exn) {
+                throw new InvalidNodeException(exn.getMessage(), this);
             }
         }
-
         validateFailureHandlers();
-
         getSubNode().validate(ctx);
     }
 
@@ -293,5 +281,9 @@ public class NodeModel extends LHSerializable<Node> {
         out.addAll(getSubNode().getNeededVariableNames());
 
         return out;
+    }
+
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        return getSubNode().getOutputType(manager);
     }
 }

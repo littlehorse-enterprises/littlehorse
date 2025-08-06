@@ -9,18 +9,22 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -38,7 +42,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,7 +88,7 @@ public class GetableManagerTest {
     private final GetableUpdates getableUpdates = mock();
 
     @Mock
-    private ProcessorExecutionContext executionContext;
+    private CoreProcessorContext executionContext;
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
             new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);
@@ -93,7 +97,7 @@ public class GetableManagerTest {
     void setup() {
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
-                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
+                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
         store.init(mockProcessorContext.getStateStoreContext(), store);
         when(executionContext.getableUpdates()).thenReturn(getableUpdates);
     }
@@ -168,7 +172,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.BOOL);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.BOOL));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
@@ -196,10 +200,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.STR);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -228,10 +232,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.INT);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.INT));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -260,10 +264,10 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.DOUBLE);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.DOUBLE));
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -303,7 +307,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.JSON_OBJ);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.JSON_OBJ));
             List<JsonIndexModel> indices = List.of(
                     new JsonIndexModel("$.name", VariableType.STR),
                     new JsonIndexModel("$.age", VariableType.INT),
@@ -312,7 +316,7 @@ public class GetableManagerTest {
 
             VariableDefModel variableDef2 = new VariableDefModel();
             variableDef2.setName("variableName2");
-            variableDef2.setType(VariableType.STR);
+            variableDef2.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(List.of(
                     new ThreadVarDefModel(variableDef1, indices, false, WfRunVariableAccessLevel.PRIVATE_VAR),
                     new ThreadVarDefModel(variableDef2, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
@@ -368,6 +372,7 @@ public class GetableManagerTest {
     void findUnclaimedEvents(boolean useInMemoryBuffer) {
         WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
         VariableValueModel content = new VariableValueModel();
+        NodeRunIdModel nodeRunId = new NodeRunIdModel(wfRunId, 1, 2);
         ExternalEventDefIdModel externalEventDefId =
                 new ExternalEventDefIdModel(UUID.randomUUID().toString());
         String guid = LHUtil.generateGuid();
@@ -383,7 +388,7 @@ public class GetableManagerTest {
         if (!useInMemoryBuffer) {
             getableManager.commit();
         }
-        ExternalEventModel unclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
+        ExternalEventModel unclaimedEvent = getableManager.getUnclaimedEvent(nodeRunId, externalEventDefId);
         assertThat(unclaimedEvent).isNotNull();
         assertThat(unclaimedEvent.getId().getExternalEventDefId()).isEqualTo(externalEventDefId);
         assertThat(unclaimedEvent.getId().getWfRunId()).isEqualTo(wfRunId);
@@ -396,6 +401,7 @@ public class GetableManagerTest {
         VariableValueModel content = new VariableValueModel();
         ExternalEventDefIdModel externalEventDefId =
                 new ExternalEventDefIdModel(UUID.randomUUID().toString());
+        NodeRunIdModel nodeRunId = new NodeRunIdModel(wfRunId, 1, 2);
         int threadRunNumber = 1;
         int nodeRunPosition = 2;
         ExternalEventModel expectedEvent = new ExternalEventModel(
@@ -413,10 +419,41 @@ public class GetableManagerTest {
         getableManager.put(expectedEvent);
         getableManager.put(olderEvent);
         getableManager.commit();
-        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
+        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(nodeRunId, externalEventDefId);
         assertThat(firstUnclaimedEvent).isNotNull();
         assertThat(firstUnclaimedEvent.getId().getGuid())
                 .isEqualTo(expectedEvent.getId().getGuid());
+    }
+
+    @Test
+    void respectTheNodeRunNumberOnExternalEvent() {
+        WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
+        VariableValueModel content = new VariableValueModel();
+        ExternalEventDefIdModel externalEventDefId =
+                new ExternalEventDefIdModel(UUID.randomUUID().toString());
+        NodeRunIdModel nodeRunId = new NodeRunIdModel(wfRunId, 0, 1);
+        int threadRunNumber = 1;
+        int nodeRunPosition = 2;
+        ExternalEventModel fooEvent = new ExternalEventModel(
+                content,
+                new ExternalEventIdModel(wfRunId, externalEventDefId, "expectedEvent"),
+                threadRunNumber,
+                nodeRunPosition,
+                new Date(1));
+        getableManager.put(fooEvent);
+        getableManager.commit();
+        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(nodeRunId, externalEventDefId);
+        assertThat(firstUnclaimedEvent).isNull();
+    }
+
+    @Test
+    public void findScheduledTask() {
+        ScheduledTaskModel task1 = TestUtil.scheduledTaskModel("wf-1");
+        task1.setCreatedAt(new Date(new Date().getTime() + 2000L));
+        TaskRunModel taskRun1 = TestUtil.taskRun(task1.getTaskRunId(), task1.getTaskDefId());
+        localStoreWrapper.put(task1);
+        ScheduledTaskModel result = getableManager.getScheduledTask(taskRun1.getObjectId());
+        assertThat(result).isNotNull();
     }
 
     private static Stream<Arguments> provideNodeRunObjects() {
@@ -437,7 +474,7 @@ public class GetableManagerTest {
         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
-            variableDef1.setType(VariableType.STR);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, false, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
@@ -469,7 +506,7 @@ public class GetableManagerTest {
         actualVariable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName(varName);
-            variableDef1.setType(VariableType.STR);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
@@ -521,7 +558,7 @@ public class GetableManagerTest {
         actualVariable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName(varName);
-            variableDef1.setType(VariableType.STR);
+            variableDef1.setTypeDef(new TypeDefinitionModel(VariableType.STR));
             threadSpec.setVariableDefs(
                     List.of(new ThreadVarDefModel(variableDef1, true, false, WfRunVariableAccessLevel.PRIVATE_VAR)));
         });
@@ -560,5 +597,26 @@ public class GetableManagerTest {
                         .getValue()
                         .getStrVal())
                 .isEqualTo(valueAfterModify);
+    }
+
+    @Test
+    void storeNodeRunWithExternalEventDefNameTag() {
+        String eventName = "test-name";
+        NodeRunModel nodeRunModel = TestUtil.nodeRun();
+        nodeRunModel.setType(NodeRun.NodeTypeCase.EXTERNAL_EVENT);
+        ExternalEventNodeRunModel extEvtRun =
+                new ExternalEventNodeRunModel(new ExternalEventDefIdModel(eventName), executionContext);
+        nodeRunModel.setExternalEventRun(extEvtRun);
+
+        getableManager.put(nodeRunModel);
+        getableManager.commit();
+
+        List<String> storedKeys = getAllKeys(store);
+        assertThat(storedKeys).hasSize(3);
+        assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/4/0000000/1/0"));
+        assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/5/4/__status_RUNNING__type_EXTERNAL\\_EVENT"));
+        assertThat(storedKeys)
+                .anyMatch(key -> key.contains(
+                        "myTenant/5/4/__status_RUNNING__type_EXTERNAL\\_EVENT__extEvtDefName_" + eventName));
     }
 }

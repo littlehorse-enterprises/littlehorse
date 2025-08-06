@@ -24,9 +24,9 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.ExpressionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
@@ -47,8 +47,8 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.metrics.GetableStatusUpdate;
 import io.littlehorse.server.metrics.Sensor;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,12 +90,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
     private Sensor sensor;
 
     public ThreadRunModel() {}
 
-    public ThreadRunModel(ProcessorExecutionContext processorContext) {
+    public ThreadRunModel(CoreProcessorContext processorContext) {
         this.executionContext = processorContext;
         this.processorContext = processorContext;
     }
@@ -139,7 +139,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             handledFailedChildren.add(handledFailedChildId);
         }
         executionContext = context;
-        processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        processorContext = context.castOnSupport(CoreProcessorContext.class);
         type = proto.getType();
     }
 
@@ -257,7 +257,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
             VariableDefModel varDef = threadVarDef.getVarDef();
             String varName = varDef.getName();
-            VariableValueModel val;
+            VariableValueModel val = null;
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 // We do NOT create a variable since we want to use the one from the parent.
@@ -266,10 +266,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);
+                if (val.isNull()) {
+                    val = varDef.getDefaultValue();
+                }
             } else if (varDef.getDefaultValue() != null) {
                 val = varDef.getDefaultValue();
-            } else {
-                // TODO: Will need to update this when we add the required variable feature.
+            }
+
+            if (val == null) {
                 val = new VariableValueModel();
             }
             VariableModel variable = new VariableModel(
@@ -291,6 +295,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * 3. If it's an Interrupt trigger, then we need to trigger the interrupt here.
      */
     public void processExternalEvent(ExternalEventModel e) {
+        if (e.getThreadRunNumber() != null && e.getThreadRunNumber() != number) {
+            return;
+        }
         ExternalEventDefIdModel extEvtId = e.getId().getExternalEventDefId();
         InterruptDefModel idef = getThreadSpec().getInterruptDefFor(extEvtId.getName());
         if (idef != null) {
@@ -370,11 +377,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * be thrown to the client explaining why the ThreadRun could not be rescued.
      * @param skipCurrentNode whether to skip past the current node. If set to `false`, then
      * we attempt to execute the same Node again; else, we move to the next outgoing edge.
-     * @param ctx is a ProcessorExecutionContext.
+     * @param ctx is a CoreProcessorContext.
      * @return Optional.empty() if we can successfully rescue the ThreadRun; else, a Status
      * explaining why not.
      */
-    public void rescue(boolean skipCurrentNode, ProcessorExecutionContext ctx) throws ThreadRunRescueFailedException {
+    public void rescue(boolean skipCurrentNode, CoreProcessorContext ctx) throws ThreadRunRescueFailedException {
         // First, Optional<Status> refers to the grpc status which can be thrown as an error
         // to the client.
 
@@ -409,7 +416,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             ThreadRunModel parent = getParent();
             if (parent.getStatus() == LHStatus.ERROR) {
                 NodeRunModel parentCurrentNR = parent.getCurrentNodeRun();
-                if (parentCurrentNR.getType() == NodeTypeCase.WAIT_THREADS
+                if (parentCurrentNR.getType() == NodeTypeCase.WAIT_FOR_THREADS
                         || parentCurrentNR.getType() == NodeTypeCase.EXIT) {
 
                     FailureModel parentFailure =

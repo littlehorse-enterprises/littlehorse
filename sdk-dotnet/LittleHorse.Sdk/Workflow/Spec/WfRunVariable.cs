@@ -31,6 +31,12 @@ public class WfRunVariable
     private bool _required;
     private bool _searchable;
     private bool _masked;
+
+    internal bool IsMasked
+    {
+        get => _masked;
+    }
+
     private readonly List<JsonIndex> _jsonIndexes;
     
     /// <summary>
@@ -90,9 +96,12 @@ public class WfRunVariable
     {
         VariableDef varDef = new VariableDef
         {
-            Type = Type,
-            Name = Name,
-            MaskedValue = _masked
+            TypeDef = new TypeDefinition
+            {
+                Type = Type,
+                Masked = _masked
+            },
+            Name = Name
         };
 
         if (_defaultValue != null) 
@@ -126,6 +135,85 @@ public class WfRunVariable
     }
     
     /// <summary>
+    /// Marks the JSON_OBJ or JSON_ARR Variable as "Searchable", and creates an
+    /// index on the specified field.
+    /// </summary>
+    /// <param name="fieldPath">
+    /// It is the JSON Path to the field that we are indexing.
+    /// </param>
+    /// <param name="fieldType">
+    /// It is the type of the field we are indexing.
+    /// </param>
+    /// <returns>
+    /// Same WfRunVariable instance
+    /// </returns>
+    public WfRunVariable SearchableOn(String fieldPath, VariableType fieldType)
+    {
+        if (!fieldPath.StartsWith("$.")) {
+            throw new LHMisconfigurationException($"Invalid JsonPath: {fieldPath}");
+        }
+        if (!Type.Equals(VariableType.JsonObj) && !Type.Equals(VariableType.JsonArr)) {
+            throw new LHMisconfigurationException($"Non-Json {Name} variable contains jsonIndex.");
+        }
+        _jsonIndexes.Add(new JsonIndex
+        {
+            FieldPath = fieldPath,
+            FieldType = fieldType
+        });
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Sets the access level of a WfRunVariable.
+    /// </summary>
+    /// <param name="accessLevel">
+    /// It is the access level to set.
+    /// </param>
+    /// <returns>
+    /// This WfRunVariable.
+    /// </returns>
+    public WfRunVariable WithAccessLevel(WfRunVariableAccessLevel accessLevel)
+    {
+        _accessLevel = accessLevel;
+        return this;
+    }
+    
+    /// <summary>
+    /// Marks the Variable as a `PUBLIC_VAR`, which does three things:
+    /// 1. Considers this variable in determining whether a new version of this WfSpec
+    ///    should be a major version or minor revision.
+    /// 2. Freezes the type of this variable so that you cannot create future WfSpec
+    ///    versions with a variable of the same name and different type.
+    /// 3. Allows defining child WfSpec's that use this variable.
+    /// 
+    /// This is an advanced feature that you should use in any of the following cases:
+    /// - You are treating a WfSpec as a data model and a WfRun as an instance of data.
+    /// - You need child workflows to access this variable.
+    /// </summary>
+    /// <returns>
+    /// This WfRunVariable.
+    /// </returns>
+    public WfRunVariable AsPublic()
+    {
+        return WithAccessLevel(WfRunVariableAccessLevel.PublicVar);
+    }
+    
+    /// <summary>
+    /// Marks the Variable as a `INHERITED_VAR`, which means that it comes from the
+    /// parent `WfRun`. This means that:
+    /// - There must be a parent WfSpec reference.
+    /// - The parent must have a PUBLIC_VAR variable of the same name and type.
+    /// </summary>
+    /// <returns>
+    /// This WfRunVariable.
+    /// </returns>
+    public WfRunVariable AsInherited()
+    {
+        return WithAccessLevel(WfRunVariableAccessLevel.InheritedVar);
+    }
+    
+    /// <summary>
     /// Marks a WfRunVariable to show masked values
     /// </summary>
     /// <returns>
@@ -136,7 +224,7 @@ public class WfRunVariable
         _masked = true;
         return this;
     }
-    
+
     /// <summary>
     /// Marks the variable as "Required", meaning that the ThreadSpec cannot be
     /// started without this variable being provided as input. For Entrypoint
@@ -146,7 +234,7 @@ public class WfRunVariable
     /// <returns>
     /// A WfRunVariable.
     /// </returns>
-    public WfRunVariable Required() 
+    public WfRunVariable Required()
     {
         _required = true;
         return this;
@@ -353,5 +441,185 @@ public class WfRunVariable
     public LHExpression RemoveKey(object key) 
     {
         return new LHExpression(this, VariableMutationType.RemoveKey, key);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if this WfRunVariable is LESS_THAN the provided rhs.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.LessThan, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is LESS_THAN the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsLessThan(object rhs)
+    {
+        return _parent.Condition(this, Comparator.LessThan, rhs);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if this WfRunVariable is LESS_THAN_EQU the provided rhs.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.LessThanEq, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is LESS_THAN_EQ the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsLessThanEq(object rhs)
+    {
+        return _parent.Condition(this, Comparator.LessThanEq, rhs);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.GreaterThanEq, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsGreaterThanEq(object rhs)
+    {
+        return _parent.Condition(this, Comparator.GreaterThanEq, rhs);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if this WfRunVariable is GREATER_THAN the provided rhs.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.GreaterThan, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is GREATER_THAN the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsGreaterThan(object rhs)
+    {
+        return _parent.Condition(this, Comparator.GreaterThan, rhs);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if this WfRunVariable is EQUALS the provided rhs.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.Equals, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is EQUALS the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsEqualTo(object rhs)
+    {
+        return _parent.Condition(this, Comparator.Equals, rhs);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if this WfRunVariable is NOT_EQUALS the provided rhs.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.NotEquals, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is NOT_EQUALS the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsNotEqualTo(object rhs)
+    {
+        return _parent.Condition(this, Comparator.NotEquals, rhs);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if the RHS is contained inside this variable. For JSON_OBJ, returns
+    /// true if the RHS is a key. For JSON_ARR, returns true if the RHS is equal to one of the
+    /// elements in the array.
+    ///
+    /// Equivalent to WorkflowThread#condition(rhs, Comparator.In, this);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if the provided rhs is INSIDE this WfRunVariable.
+    /// </returns>
+    public WorkflowCondition DoesContain(object rhs)
+    {
+        return _parent.Condition(rhs, Comparator.In, this);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if the RHS is not contained inside this variable. For JSON_OBJ, returns
+    /// true if the RHS is a key. For JSON_ARR, returns true if the RHS is not equal to one of the
+    /// elements in the array.
+    ///
+    /// Equivalent to WorkflowThread#condition(rhs, Comparator.NotIn, this);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if the provided rhs is NOT INSIDE this WfRunVariable.
+    /// </returns>
+    public WorkflowCondition DoesNotContain(object rhs)
+    {
+        return _parent.Condition(rhs, Comparator.NotIn, this);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if the value of this WfRunVariable is contained in the provided RHS.
+    /// For an RHS of type JSON_OBJ, returns true if the RHS contains a key that is equal to the
+    /// value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS contains
+    /// an element that is equal to the value of this WfRunVariable.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.In, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is INSIDE the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsIn(object rhs)
+    {
+        return _parent.Condition(this, Comparator.In, rhs);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// evaluates to true if the value of this WfRunVariable is not contained in the provided RHS.
+    /// For an RHS of type JSON_OBJ, returns true if the RHS does not contain a key that is equal
+    /// to the value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS does
+    /// not contain an element that is equal to the value of this WfRunVariable.
+    ///
+    /// Equivalent to WorkflowThread#condition(this, Comparator.NotIn, rhs);
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the RHS to compare this WfRunVariable to.
+    /// </param>
+    /// <returns>
+    /// true if this WfRunVariable is NOT INSIDE the provided rhs.
+    /// </returns>
+    public WorkflowCondition IsNotIn(object rhs)
+    {
+        return _parent.Condition(this, Comparator.NotIn, rhs);
     }
 }

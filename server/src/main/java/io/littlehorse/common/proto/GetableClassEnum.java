@@ -81,17 +81,13 @@ public enum GetableClassEnum
    */
   SCHEDULED_WF_RUN(17),
   /**
-   * <code>METRIC = 18;</code>
+   * <code>STRUCT_DEF = 18;</code>
    */
-  METRIC(18),
+  STRUCT_DEF(18),
   /**
-   * <code>PARTITION_METRIC = 19;</code>
+   * <code>CORRELATED_EVENT = 19;</code>
    */
-  PARTITION_METRIC(19),
-  /**
-   * <code>METRIC_SPEC = 20;</code>
-   */
-  METRIC_SPEC(20),
+  CORRELATED_EVENT(19),
   UNRECOGNIZED(-1),
   ;
 
@@ -168,17 +164,13 @@ public enum GetableClassEnum
    */
   public static final int SCHEDULED_WF_RUN_VALUE = 17;
   /**
-   * <code>METRIC = 18;</code>
+   * <code>STRUCT_DEF = 18;</code>
    */
-  public static final int METRIC_VALUE = 18;
+  public static final int STRUCT_DEF_VALUE = 18;
   /**
-   * <code>PARTITION_METRIC = 19;</code>
+   * <code>CORRELATED_EVENT = 19;</code>
    */
-  public static final int PARTITION_METRIC_VALUE = 19;
-  /**
-   * <code>METRIC_SPEC = 20;</code>
-   */
-  public static final int METRIC_SPEC_VALUE = 20;
+  public static final int CORRELATED_EVENT_VALUE = 19;
 
 
   public final int getNumber() {
@@ -223,9 +215,8 @@ public enum GetableClassEnum
       case 15: return WORKFLOW_EVENT_DEF;
       case 16: return WORKFLOW_EVENT;
       case 17: return SCHEDULED_WF_RUN;
-      case 18: return METRIC;
-      case 19: return PARTITION_METRIC;
-      case 20: return METRIC_SPEC;
+      case 18: return STRUCT_DEF;
+      case 19: return CORRELATED_EVENT;
       default: return null;
     }
   }

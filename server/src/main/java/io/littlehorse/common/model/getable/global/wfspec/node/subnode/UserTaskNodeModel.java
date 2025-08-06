@@ -7,8 +7,10 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -17,13 +19,15 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +44,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private Integer userTaskDefVersion;
     private VariableAssignmentModel notes;
     private ReadOnlyMetadataManager metadataManager;
-    private ProcessorExecutionContext processorContext;
+    private CoreProcessorContext processorContext;
     private VariableAssignmentModel onCancellationException;
 
     public UserTaskNodeModel() {
@@ -54,8 +58,12 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     public UserTaskNode.Builder toProto() {
         UserTaskNode.Builder out = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
-        if (userId != null) out.setUserId(userId.toProto());
-        if (userGroup != null) out.setUserGroup(userGroup.toProto());
+        if (userId != null) {
+            out.setUserId(userId.toProto());
+        }
+        if (userGroup != null) {
+            out.setUserGroup(userGroup.toProto());
+        }
 
         for (UTActionTriggerModel action : actions) {
             out.addActions(action.toProto());
@@ -99,7 +107,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
                     p.getOnCancellationExceptionName(), VariableAssignmentModel.class, context);
         }
         this.metadataManager = context.metadataManager();
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
+        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     public List<UTActionTriggerModel> getActions(UTHook requestedHook) {
@@ -113,12 +121,12 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     }
 
     @Override
-    public UserTaskNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+    public UserTaskNodeRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new UserTaskNodeRunModel(processorContext);
     }
 
     @Override
-    public void validate(MetadataCommandExecution ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         UserTaskDefModel utd;
         if (userTaskDefVersion == null) {
             utd = metadataManager.getLastFromPrefix(
@@ -128,16 +136,27 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         }
 
         if (utd == null) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    "Specified UserTaskDef " + userTaskDefName + "/" + userTaskDefVersion + " not found");
+            throw new InvalidNodeException(
+                    "Specified UserTaskDef " + userTaskDefName + "/" + userTaskDefVersion + " not found", node);
         }
 
         // Now pin the version
         userTaskDefVersion = utd.version;
 
         if (userId == null && userGroup == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify userGroup or userId");
+            throw new InvalidNodeException("Must specify userGroup or userId", node);
+        }
+
+        if (userId != null
+                && userId.getRhsLiteralValue() != null
+                && userId.getRhsLiteralValue().getStrVal().trim().isEmpty()) {
+            throw new InvalidNodeException("UserId can't be empty", node);
+        }
+
+        if (userGroup != null
+                && userGroup.getRhsLiteralValue() != null
+                && userGroup.getRhsLiteralValue().getStrVal().trim().isEmpty()) {
+            throw new InvalidNodeException("UserGroup can't be empty", node);
         }
     }
 
@@ -159,5 +178,11 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         } catch (LHVarSubError e) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify a valid on cancel exception name");
         }
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        // TODO (#1575): create a strong structure for user task outputs
+        return Optional.of(new ReturnTypeModel(VariableType.JSON_OBJ));
     }
 }

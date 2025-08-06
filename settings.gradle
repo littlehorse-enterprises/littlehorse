@@ -16,6 +16,7 @@ include(
         'child-thread',
         'child-workflow',
         'conditionals',
+        'correlated-event',
         'wf-versions',
         'worker-context',
         'run-wf',
@@ -29,6 +30,7 @@ include(
         'mutation',
         'user-tasks',
         'hundred-tasks',
+        'output-topic',
         'spawn-thread-foreach',
         'shared-variables',
         'workflow-events'

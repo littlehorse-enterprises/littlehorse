@@ -1,26 +1,17 @@
 import { Toaster } from '@/components/ui/sonner'
 import { WhoAmIContext } from '@/contexts/WhoAmIContext'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { SWRConfig } from 'swr'
 import getWhoAmI from '../getWhoami'
 import '../globals.css'
 import { Header } from './[tenantId]/components/Header'
 import { QueryProvider } from './[tenantId]/components/QueryProvider'
-
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'LittleHorse | Dashboard',
-}
+import { PropsWithChildren } from 'react'
+import { WithTenant } from '@/types'
 
 export default async function RootLayout({
   children,
-  params,
-}: Readonly<{
-  children: React.ReactNode
-  params?: { tenantId?: string }
-}>) {
+  params: { tenantId },
+}: PropsWithChildren<{ params: WithTenant }>) {
   const { tenants, user } = await getWhoAmI()
 
   return (
@@ -33,7 +24,7 @@ export default async function RootLayout({
         revalidateIfStale: true,
       }}
     >
-      <WhoAmIContext user={user} tenants={tenants} tenantId={params?.tenantId}>
+      <WhoAmIContext user={user} tenants={tenants} tenantId={tenantId}>
         <Header />
         <QueryProvider>
           <div className="mx-auto max-w-screen-xl px-8">{children}</div>

@@ -33,7 +33,7 @@ jobs:
           java-version: 21
 
       - name: Tests and Build
-        run: ./gradlew server:build
+        run: ./gradlew server:build server:installDist
 
       - uses: actions/upload-artifact@v4
         with:
@@ -87,6 +87,13 @@ jobs:
         with:
           node-version: 20
 
+      # - name: Update Dashboard Version
+      #   working-directory: ./dashboard
+      #   run: |
+      #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+      #     VERSION="${{ github.ref_name }}-$SHORT_SHA"
+      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
@@ -113,6 +120,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      # - name: Update Dashboard Version
+      #   working-directory: ./dashboard
+      #   run: |
+      #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+      #     VERSION="${{ github.ref_name }}-$SHORT_SHA"
+      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard

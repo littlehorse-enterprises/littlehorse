@@ -20,6 +20,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ExternalEventNodeRun() {
+    correlationKey_ = "";
   }
 
   @java.lang.Override
@@ -172,6 +173,84 @@ private static final long serialVersionUID = 0L;
     return timedOut_;
   }
 
+  public static final int CORRELATION_KEY_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object correlationKey_ = "";
+  /**
+   * <pre>
+   * If set, then this `ExternalEventNodeRun` can be completed by a
+   * `CorrelatedEvent` with the matching correlation id.
+   * </pre>
+   *
+   * <code>optional string correlation_key = 5;</code>
+   * @return Whether the correlationKey field is set.
+   */
+  @java.lang.Override
+  public boolean hasCorrelationKey() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <pre>
+   * If set, then this `ExternalEventNodeRun` can be completed by a
+   * `CorrelatedEvent` with the matching correlation id.
+   * </pre>
+   *
+   * <code>optional string correlation_key = 5;</code>
+   * @return The correlationKey.
+   */
+  @java.lang.Override
+  public java.lang.String getCorrelationKey() {
+    java.lang.Object ref = correlationKey_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      correlationKey_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * If set, then this `ExternalEventNodeRun` can be completed by a
+   * `CorrelatedEvent` with the matching correlation id.
+   * </pre>
+   *
+   * <code>optional string correlation_key = 5;</code>
+   * @return The bytes for correlationKey.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getCorrelationKeyBytes() {
+    java.lang.Object ref = correlationKey_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      correlationKey_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int MASK_CORRELATION_KEY_FIELD_NUMBER = 6;
+  private boolean maskCorrelationKey_ = false;
+  /**
+   * <pre>
+   * Specifies whether the correlation key should be masked. Ignored if
+   * correlation_key is not set.
+   * </pre>
+   *
+   * <code>bool mask_correlation_key = 6;</code>
+   * @return The maskCorrelationKey.
+   */
+  @java.lang.Override
+  public boolean getMaskCorrelationKey() {
+    return maskCorrelationKey_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -198,6 +277,12 @@ private static final long serialVersionUID = 0L;
     if (timedOut_ != false) {
       output.writeBool(4, timedOut_);
     }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, correlationKey_);
+    }
+    if (maskCorrelationKey_ != false) {
+      output.writeBool(6, maskCorrelationKey_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -222,6 +307,13 @@ private static final long serialVersionUID = 0L;
     if (timedOut_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(4, timedOut_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, correlationKey_);
+    }
+    if (maskCorrelationKey_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(6, maskCorrelationKey_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -255,6 +347,13 @@ private static final long serialVersionUID = 0L;
     }
     if (getTimedOut()
         != other.getTimedOut()) return false;
+    if (hasCorrelationKey() != other.hasCorrelationKey()) return false;
+    if (hasCorrelationKey()) {
+      if (!getCorrelationKey()
+          .equals(other.getCorrelationKey())) return false;
+    }
+    if (getMaskCorrelationKey()
+        != other.getMaskCorrelationKey()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -281,6 +380,13 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + TIMED_OUT_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getTimedOut());
+    if (hasCorrelationKey()) {
+      hash = (37 * hash) + CORRELATION_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getCorrelationKey().hashCode();
+    }
+    hash = (37 * hash) + MASK_CORRELATION_KEY_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getMaskCorrelationKey());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -440,6 +546,8 @@ private static final long serialVersionUID = 0L;
         externalEventIdBuilder_ = null;
       }
       timedOut_ = false;
+      correlationKey_ = "";
+      maskCorrelationKey_ = false;
       return this;
     }
 
@@ -493,6 +601,13 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.timedOut_ = timedOut_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.correlationKey_ = correlationKey_;
+        to_bitField0_ |= 0x00000004;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.maskCorrelationKey_ = maskCorrelationKey_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -553,6 +668,14 @@ private static final long serialVersionUID = 0L;
       if (other.getTimedOut() != false) {
         setTimedOut(other.getTimedOut());
       }
+      if (other.hasCorrelationKey()) {
+        correlationKey_ = other.correlationKey_;
+        bitField0_ |= 0x00000010;
+        onChanged();
+      }
+      if (other.getMaskCorrelationKey() != false) {
+        setMaskCorrelationKey(other.getMaskCorrelationKey());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -605,6 +728,16 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 42: {
+              correlationKey_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
+            case 48: {
+              maskCorrelationKey_ = input.readBool();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1127,6 +1260,162 @@ private static final long serialVersionUID = 0L;
     public Builder clearTimedOut() {
       bitField0_ = (bitField0_ & ~0x00000008);
       timedOut_ = false;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object correlationKey_ = "";
+    /**
+     * <pre>
+     * If set, then this `ExternalEventNodeRun` can be completed by a
+     * `CorrelatedEvent` with the matching correlation id.
+     * </pre>
+     *
+     * <code>optional string correlation_key = 5;</code>
+     * @return Whether the correlationKey field is set.
+     */
+    public boolean hasCorrelationKey() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventNodeRun` can be completed by a
+     * `CorrelatedEvent` with the matching correlation id.
+     * </pre>
+     *
+     * <code>optional string correlation_key = 5;</code>
+     * @return The correlationKey.
+     */
+    public java.lang.String getCorrelationKey() {
+      java.lang.Object ref = correlationKey_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        correlationKey_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventNodeRun` can be completed by a
+     * `CorrelatedEvent` with the matching correlation id.
+     * </pre>
+     *
+     * <code>optional string correlation_key = 5;</code>
+     * @return The bytes for correlationKey.
+     */
+    public com.google.protobuf.ByteString
+        getCorrelationKeyBytes() {
+      java.lang.Object ref = correlationKey_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        correlationKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventNodeRun` can be completed by a
+     * `CorrelatedEvent` with the matching correlation id.
+     * </pre>
+     *
+     * <code>optional string correlation_key = 5;</code>
+     * @param value The correlationKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCorrelationKey(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      correlationKey_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventNodeRun` can be completed by a
+     * `CorrelatedEvent` with the matching correlation id.
+     * </pre>
+     *
+     * <code>optional string correlation_key = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearCorrelationKey() {
+      correlationKey_ = getDefaultInstance().getCorrelationKey();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, then this `ExternalEventNodeRun` can be completed by a
+     * `CorrelatedEvent` with the matching correlation id.
+     * </pre>
+     *
+     * <code>optional string correlation_key = 5;</code>
+     * @param value The bytes for correlationKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCorrelationKeyBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      correlationKey_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+
+    private boolean maskCorrelationKey_ ;
+    /**
+     * <pre>
+     * Specifies whether the correlation key should be masked. Ignored if
+     * correlation_key is not set.
+     * </pre>
+     *
+     * <code>bool mask_correlation_key = 6;</code>
+     * @return The maskCorrelationKey.
+     */
+    @java.lang.Override
+    public boolean getMaskCorrelationKey() {
+      return maskCorrelationKey_;
+    }
+    /**
+     * <pre>
+     * Specifies whether the correlation key should be masked. Ignored if
+     * correlation_key is not set.
+     * </pre>
+     *
+     * <code>bool mask_correlation_key = 6;</code>
+     * @param value The maskCorrelationKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMaskCorrelationKey(boolean value) {
+
+      maskCorrelationKey_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Specifies whether the correlation key should be masked. Ignored if
+     * correlation_key is not set.
+     * </pre>
+     *
+     * <code>bool mask_correlation_key = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMaskCorrelationKey() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      maskCorrelationKey_ = false;
       onChanged();
       return this;
     }

@@ -1,14 +1,16 @@
-﻿using ExternalEventExample;
-using LittleHorse.Sdk;
+﻿using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+namespace ExternalEventExample;
+
 public abstract class Program
 {
     private static ServiceProvider? _serviceProvider;
+
     private static void SetupApplication()
     {
         _serviceProvider = new ServiceCollection()
@@ -20,76 +22,71 @@ public abstract class Program
             .BuildServiceProvider();
     }
 
-    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    private static LHConfig GetLHConfig(ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
         
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
 
         return config;
     }
-    
+
     private static List<LHTaskWorker<WaitForExternalEventWorker>> GetTaskWorkers(LHConfig config)
     {
         var executable = new WaitForExternalEventWorker();
         var workers = new List<LHTaskWorker<WaitForExternalEventWorker>>
         {
-            new(executable, "ask-for-name", config),
-            new(executable, "greet", config)
+            new(executable, "greet", config),
+            new(executable, "summary", config)
         };
-        
+
         return workers;
     }
-    
+
     private static Workflow GetWorkflow()
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            WfRunVariable name = wf.DeclareStr("name").Searchable();
-            wf.Execute("ask-for-name");
-            name.Assign(wf.WaitForEvent("name-event"));
-            wf.Execute("greet", name);
+            var name = wf.WaitForEvent("what-is-your-name");
+            var id = wf.Execute("greet", name);
+            var age = wf.WaitForEvent("how-old-are-you")
+                .WithCorrelationId(id, true)
+                .WithCorrelatedEventConfig(new CorrelatedEventConfig
+                {
+                    DeleteAfterFirstCorrelation = false
+                })
+                .RegisteredAs(typeof(int));
+            wf.WaitForEvent("allow-show-summary").RegisteredAs(null);
+            wf.Execute("summary", name, age);
         }
-        
+
         return new Workflow("example-external-event", MyEntryPoint);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = GetLHConfig(args, loggerFactory);
+            var config = GetLHConfig(loggerFactory);
             var client = config.GetGrpcClientInstance();
-            var taskWorkers = GetTaskWorkers(config);
-            foreach (var worker in taskWorkers)
-            {
-                worker.RegisterTaskDef();
-            }
-            
-            var workflow = GetWorkflow();
-            
-            // Register external event if it does not exist
-            HashSet<string> externalEventNames = workflow.GetRequiredExternalEventDefNames();
+            var workers = GetTaskWorkers(config);
 
-            foreach (var externalEventName in externalEventNames)
-            {
-                Console.WriteLine($"Registering external event {externalEventName}");
-            
-                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName });
-            }
-            
-            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
-            
-            Thread.Sleep(300);
-            
-            foreach (var worker in taskWorkers)
-            {
-                worker.Start();
-            }
+            await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
+
+            var workflow = GetWorkflow();
+         
+            client.PutExternalEventDef(new PutExternalEventDefRequest { Name = "what-is-your-name" });
+
+            await workflow.RegisterWfSpec(config.GetGrpcClientInstance());
+
+            await Task.Delay(300);
+
+            await Task.WhenAll(workers.Select(worker => worker.Start()));
         }
     }
 }

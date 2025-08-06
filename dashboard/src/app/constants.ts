@@ -1,27 +1,23 @@
-import { LHStatus, VariableType } from 'littlehorse-client/proto'
+import { LHStatus, VariableValue } from 'littlehorse-client/proto'
 
 export const SEARCH_LIMITS = [10, 20, 30, 60, 100] as const
 export type SearchLimit = (typeof SEARCH_LIMITS)[number]
 export const SEARCH_DEFAULT_LIMIT: SearchLimit = 10
 
-export const VARIABLE_TYPES: { [key in VariableType]: string } = {
-  JSON_OBJ: 'JSON Object',
-  JSON_ARR: 'JSON Array',
-  DOUBLE: 'Double',
-  BOOL: 'Boolean',
-  STR: 'String',
-  INT: 'Integer',
-  BYTES: 'Bytes',
-  UNRECOGNIZED: 'Unrecognized',
+export const VARIABLE_TYPES: { [key in NonNullable<VariableValue['value']>['$case']]: string } = {
+  jsonObj: 'JSON Object',
+  jsonArr: 'JSON Array',
+  double: 'Double',
+  bool: 'Boolean',
+  str: 'String',
+  int: 'Integer',
+  bytes: 'Bytes',
+  wfRunId: 'WfRunId',
 }
 
 export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
 export const WF_RUN_STATUSES = Object.values(LHStatus).filter(status => status !== 'UNRECOGNIZED')
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
-
-const toTime = (minutes: number) => {
-  return minutes * 60
-}
 
 export const TIME_RANGES = [-1, 5, 15, 30, 60, 180, 360, 720, 1440, 4320] as const
 export type TimeRange = (typeof TIME_RANGES)[number]

@@ -19,8 +19,8 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -29,7 +29,7 @@ public class TaskRunModelTest {
 
     private final String tenantId = "myTenantId";
     private final ExecutionContext executionContext = mock();
-    private final ProcessorExecutionContext processorContext = mock(Answers.RETURNS_DEEP_STUBS);
+    private final CoreProcessorContext processorContext = mock(Answers.RETURNS_DEEP_STUBS);
 
     @Test
     void setTaskWorkerVersionAndIdToTaskRun() {
@@ -43,7 +43,7 @@ public class TaskRunModelTest {
                 .setSource(TaskRunSource.newBuilder()
                         .setTaskNode(TaskNodeReference.newBuilder().setNodeRunId(nodeRunId)))
                 .build();
-        when(executionContext.castOnSupport(ProcessorExecutionContext.class)).thenReturn(processorContext);
+        when(executionContext.castOnSupport(CoreProcessorContext.class)).thenReturn(processorContext);
 
         TaskRunModel taskRun = TaskRunModel.fromProto(taskRunProto, executionContext);
         ExecutionContext executionContext = mock(ExecutionContext.class);

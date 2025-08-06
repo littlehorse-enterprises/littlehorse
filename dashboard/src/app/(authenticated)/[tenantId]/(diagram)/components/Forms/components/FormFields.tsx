@@ -1,7 +1,8 @@
-import React, { FC } from 'react'
+import { getVariableDefType } from '@/app/utils'
+import { ThreadVarDef } from 'littlehorse-client/proto'
+import { FC } from 'react'
+import { FieldValues, FormState, UseFormRegister } from 'react-hook-form'
 import { FormComponent } from './formType'
-import { VariableType, ThreadVarDef } from 'littlehorse-client/proto'
-import { FieldValues, UseFormRegister, FormState } from 'react-hook-form'
 
 type Prop = {
   variables: ThreadVarDef
@@ -9,7 +10,8 @@ type Prop = {
   formState: FormState<FieldValues>
 }
 export const FormFields: FC<Prop> = props => {
-  const type = props.variables?.varDef?.type as VariableType
+  if (!props.variables?.varDef) return
+  const type = getVariableDefType(props.variables.varDef)
   if (!type) return
   const Component = FormComponent[type]
   return <Component {...props} />

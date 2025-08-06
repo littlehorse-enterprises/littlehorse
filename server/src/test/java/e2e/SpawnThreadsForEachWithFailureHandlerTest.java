@@ -217,9 +217,9 @@ public class SpawnThreadsForEachWithFailureHandlerTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyNodeRun(0, 2, nr -> {
                     // Make sure the second thread still executed the task
-                    assertThat(nr.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
+                    assertThat(nr.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_THREADS);
 
-                    WaitForThreadsRun wftr = nr.getWaitThreads();
+                    WaitForThreadsRun wftr = nr.getWaitForThreads();
                     WaitForThread oneThatFailed = wftr.getThreads(0);
                     assertThat(oneThatFailed.getThreadStatus()).isEqualTo(LHStatus.EXCEPTION);
                     assertThat(oneThatFailed.getWaitingStatus())

@@ -53,7 +53,7 @@ And the optional flag:
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
-	Args: cobra.MaximumNArgs(3),
+	Args: cobra.RangeArgs(1, 3),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName := args[0]
 		statusRaw, _ := cmd.Flags().GetString("status")
@@ -269,7 +269,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				}
 
 				scheduleWfReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, varDef.Type,
+					varValStr, varDef.TypeDef.Type,
 				)
 
 				if err != nil {
