@@ -4,7 +4,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'signing'
-    id 'com.diffplug.spotless' version '6.25.0'
+    id 'com.diffplug.spotless'
 }
 
 java {

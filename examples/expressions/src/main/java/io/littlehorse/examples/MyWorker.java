@@ -13,5 +13,4 @@ public class MyWorker {
         log.debug("Executing place order with total: {}", total);
         return "total paid: " + total;
     }
-
 }
