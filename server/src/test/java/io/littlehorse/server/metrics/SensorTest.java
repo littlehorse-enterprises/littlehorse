@@ -16,7 +16,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.storeinternals.InMemoryGetableManager;
 import io.littlehorse.storeinternals.InMemoryMetadataManager;
 import java.time.Duration;
@@ -31,7 +31,7 @@ import org.mockito.ArgumentCaptor;
 
 class SensorTest {
 
-    private final ProcessorExecutionContext executionContext = mock(ProcessorExecutionContext.class);
+    private final CoreProcessorContext executionContext = mock(CoreProcessorContext.class);
     private final PartitionMetricInventoryModel inventory = mock(PartitionMetricInventoryModel.class);
     private final InMemoryGetableManager inMemoryGetableManager = new InMemoryGetableManager(executionContext);
     private final InMemoryMetadataManager inMemoryMetadataManager = new InMemoryMetadataManager();

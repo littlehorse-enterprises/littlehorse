@@ -9,7 +9,7 @@ import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.MetricSpec;
 import io.littlehorse.sdk.common.proto.PutMetricSpecRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.time.Duration;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class PutMetricSpecRequestModel extends MetadataSubCommand<PutMetricSpecR
     }
 
     @Override
-    public MetricSpec process(MetadataCommandExecution executionContext) {
+    public MetricSpec process(MetadataProcessorContext executionContext) {
         MetricSpecModel storedMetricSpec = executionContext.metadataManager().get(new MetricSpecIdModel(measurable));
         if (storedMetricSpec == null) {
             MetricSpecModel metricModel =
@@ -57,10 +57,5 @@ public class PutMetricSpecRequestModel extends MetadataSubCommand<PutMetricSpecR
     @Override
     public Class<PutMetricSpecRequest> getProtoBaseClass() {
         return PutMetricSpecRequest.class;
-    }
-
-    @Override
-    public boolean hasResponse() {
-        return true;
     }
 }

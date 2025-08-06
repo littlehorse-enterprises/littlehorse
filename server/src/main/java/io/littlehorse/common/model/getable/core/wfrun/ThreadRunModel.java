@@ -957,7 +957,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return null;
     }
 
-    public void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
+    public void recordMetrics(CoreProcessorContext processorExecutionContext) {
         GetableStatusUpdate update;
         while ((update = processorExecutionContext
                         .getableUpdates()
@@ -972,7 +972,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private Sensor sensor() {
         if (sensor == null) {
             MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new ThreadSpecReferenceModel(wfSpecId, number));
-            return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(ProcessorExecutionContext.class));
+            return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(CoreProcessorContext.class));
         }
         return sensor;
     }

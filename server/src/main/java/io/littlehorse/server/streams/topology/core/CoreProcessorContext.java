@@ -10,9 +10,9 @@ import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventReques
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -254,16 +254,14 @@ public class CoreProcessorContext implements ExecutionContext {
             currentTaskManager.forwardPendingTasks();
         }
 
-        for (WorkflowEventModel event : eventsToThrow) {
-            server.onEventThrown(event, authContext.tenantId());
-        }
+        server.onEventThrown(eventsToThrow, authContext.tenantId());
 
         if (metricsInventory.metricAdded()) {
             clusterScopedStore.put(metricsInventory);
         }
-        if (metricsAggregator != null) {
-            metricsAggregator.maybePersistState();
-        }
+        //        if (metricsAggregator != null) {
+        //            metricsAggregator.maybePersistState();
+        //        }
         server.onEventThrown(eventsToThrow, authContext.tenantId());
     }
 

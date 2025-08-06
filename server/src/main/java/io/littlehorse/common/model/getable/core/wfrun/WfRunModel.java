@@ -53,8 +53,6 @@ import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -441,8 +439,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         // for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
         //     threadRunsUseMeCarefully.get(i).advance(time);
         // }
-        ProcessorExecutionContext processorExecutionContext =
-                executionContext.castOnSupport(ProcessorExecutionContext.class);
+        CoreProcessorContext processorExecutionContext = executionContext.castOnSupport(CoreProcessorContext.class);
         if (processorExecutionContext == null) {
             throw new IllegalStateException("Invalid operation from this context");
         }
@@ -475,7 +472,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
     }
 
-    private void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
+    private void recordMetrics(CoreProcessorContext processorExecutionContext) {
         GetableStatusUpdate update;
         while ((update = processorExecutionContext
                         .getableUpdates()
@@ -692,6 +689,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     private Sensor sensor() {
         MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(wfSpecId);
-        return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(ProcessorExecutionContext.class));
+        return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(CoreProcessorContext.class));
     }
 }

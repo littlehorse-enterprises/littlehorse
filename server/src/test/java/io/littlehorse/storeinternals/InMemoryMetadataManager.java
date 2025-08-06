@@ -9,7 +9,6 @@ import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.mockito.Mockito;
@@ -36,7 +35,6 @@ import org.mockito.Mockito;
  * `TestMetadataManager` is an alternative option for this class where a InMemory Kafka Streams store is configured.
  */
 public class InMemoryMetadataManager extends MetadataManager {
-    private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new HashMap<>();
     private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new ConcurrentHashMap<>();
 
     public InMemoryMetadataManager() {

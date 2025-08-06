@@ -7,7 +7,7 @@ import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -20,11 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 public class Sensor {
 
     private final Set<MetricSpecModel> metrics;
-    private final ProcessorExecutionContext processorContext;
+    private final CoreProcessorContext processorContext;
     private final GetableManager getableManager;
     private final TenantIdModel tenantId;
 
-    public Sensor(final Set<MetricSpecIdModel> metricIds, final ProcessorExecutionContext processorContext) {
+    public Sensor(final Set<MetricSpecIdModel> metricIds, final CoreProcessorContext processorContext) {
         this.processorContext = processorContext;
         metrics = metricIds.stream()
                 .map(this::getMetricSpec)

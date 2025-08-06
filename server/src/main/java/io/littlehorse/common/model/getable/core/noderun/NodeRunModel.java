@@ -44,7 +44,6 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -669,7 +668,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         throw new NodeFailureException(invalidWfSpecFailure);
     }
 
-    public void recordMetrics(ProcessorExecutionContext processorContext, ThreadRunModel threadRun) {
+    public void recordMetrics(CoreProcessorContext processorContext, ThreadRunModel threadRun) {
         GetableStatusUpdate update;
         while ((update = processorContext
                         .getableUpdates()
@@ -686,7 +685,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new NodeReferenceModel("TASK"));
             return new Sensor(
                     Set.of(wfSpecMetricId, new MetricSpecIdModel(MeasurableObject.TASK)),
-                    executionContext.castOnSupport(ProcessorExecutionContext.class));
+                    executionContext.castOnSupport(CoreProcessorContext.class));
         }
         return sensor;
     }

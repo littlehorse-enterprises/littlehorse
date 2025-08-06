@@ -157,7 +157,6 @@ import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchWorkflowEventRequest;
-import io.littlehorse.sdk.common.proto.ServerVersion;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -669,7 +668,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putMetricSpec(PutMetricSpecRequest req, StreamObserver<MetricSpec> ctx) {
         PutMetricSpecRequestModel reqModel =
                 LHSerializable.fromProto(req, PutMetricSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, MetricSpec.class, true);
+        processCommand(new MetadataCommandModel(reqModel), ctx, MetricSpec.class);
     }
 
     @Override

@@ -99,12 +99,12 @@ public class GetableManagerTest {
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
         store.init(mockProcessorContext.getStateStoreContext(), store);
-        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
     }
 
     @ParameterizedTest
     @MethodSource("provideGetableObjectsAndIds")
     void storeNewGetableWithTags(CoreGetable<?> getable, int expectedTagsCount) {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         getableManager.put(getable);
         getableManager.commit();
 
@@ -116,6 +116,7 @@ public class GetableManagerTest {
 
     @Test
     void deleteGetableAndTags() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         WfRunModel wfRunModel = TestUtil.wfRun("0000000");
         wfRunModel.status = LHStatus.RUNNING;
         getableManager.put(wfRunModel);
@@ -142,6 +143,7 @@ public class GetableManagerTest {
 
     @Test
     void deleteAllByPrefix() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         WfRunModel wfRunModel = TestUtil.wfRun("1234");
         TaskRunModel taskRunModel = TestUtil.taskRun();
 
@@ -166,6 +168,7 @@ public class GetableManagerTest {
 
     @Test
     void storeBooleanVariableWithUserDefinedStorageType() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
         variable.setValue(new VariableValueModel(true));
@@ -194,6 +197,7 @@ public class GetableManagerTest {
 
     @Test
     void storeLocalStringVariableWithUserDefinedStorageType() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
         variable.setValue(new VariableValueModel("ThisShouldBeLocal"));
@@ -226,6 +230,7 @@ public class GetableManagerTest {
 
     @Test
     void storeLocalIntVariableWithUserDefinedStorageType() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
         variable.setValue(new VariableValueModel(20L));
@@ -258,6 +263,7 @@ public class GetableManagerTest {
 
     @Test
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
         variable.setValue(new VariableValueModel(21.0));
@@ -300,6 +306,7 @@ public class GetableManagerTest {
 
     @Test
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         VariableModel variable = TestUtil.variable("test-id");
         variable.getId().setName("variableName");
         variable.setValue(new VariableValueModel(
@@ -344,6 +351,7 @@ public class GetableManagerTest {
     @MethodSource("provideNodeRunObjects")
     void storeNodeRun(
             NodeRunModel nodeRunModel, List<Pair<String, TagStorageType>> expectedTagKeys, String expectedStoreKey) {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
 
         List<String> expectedLocalTagKeys = expectedTagKeys.stream()
                 .filter(stringTagStorageTypePbPair -> stringTagStorageTypePbPair.getValue() == TagStorageType.LOCAL)
@@ -370,6 +378,7 @@ public class GetableManagerTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void findUnclaimedEvents(boolean useInMemoryBuffer) {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
         VariableValueModel content = new VariableValueModel();
         NodeRunIdModel nodeRunId = new NodeRunIdModel(wfRunId, 1, 2);
@@ -397,6 +406,7 @@ public class GetableManagerTest {
 
     @Test
     void findFirstUnclaimedEvents() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
         VariableValueModel content = new VariableValueModel();
         ExternalEventDefIdModel externalEventDefId =
@@ -427,6 +437,7 @@ public class GetableManagerTest {
 
     @Test
     void respectTheNodeRunNumberOnExternalEvent() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
         VariableValueModel content = new VariableValueModel();
         ExternalEventDefIdModel externalEventDefId =
@@ -496,6 +507,7 @@ public class GetableManagerTest {
 
     @Test
     void dontStoreGetableWhenNotModified() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         String varName = "my-str";
         String wfRunId = "my-wf-run-id";
         String valueBefore = "valueBefore";
@@ -547,6 +559,7 @@ public class GetableManagerTest {
 
     @Test
     void doStoreGetableWhenModified() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         String varName = "my-str";
         String wfRunId = "my-wf-run-id";
         String valueBefore = "valueBefore";
@@ -601,6 +614,7 @@ public class GetableManagerTest {
 
     @Test
     void storeNodeRunWithExternalEventDefNameTag() {
+        when(executionContext.getableUpdates()).thenReturn(getableUpdates);
         String eventName = "test-name";
         NodeRunModel nodeRunModel = TestUtil.nodeRun();
         nodeRunModel.setType(NodeRun.NodeTypeCase.EXTERNAL_EVENT);

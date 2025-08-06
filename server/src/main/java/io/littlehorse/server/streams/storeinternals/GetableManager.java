@@ -18,7 +18,6 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -29,7 +28,6 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
-    private final ProcessorExecutionContext executionContext;
     private final CoreProcessorContext ctx;
     private final OutputTopicConfigModel outputTopicConfig;
 
@@ -38,7 +36,6 @@ public class GetableManager extends ReadOnlyGetableManager {
             final ProcessorContext<String, CommandProcessorOutput> streamsContext,
             final LHServerConfig config,
             final CommandModel command,
-            final ProcessorExecutionContext executionContext) {
             final CoreProcessorContext executionContext,
             final OutputTopicConfigModel outputTopicConfig) {
         super(store);
@@ -47,7 +44,6 @@ public class GetableManager extends ReadOnlyGetableManager {
         this.tagStorageManager = new TagStorageManager(this.store, streamsContext, config, executionContext);
         this.ctx = executionContext;
         this.outputTopicConfig = outputTopicConfig;
-        this.executionContext = executionContext;
     }
 
     /**
@@ -105,7 +101,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         StoredGetable<U, T> previousValue =
                 (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
 
-        executionContext.getableUpdates().add(getable.updates());
+        ctx.getableUpdates().add(getable.updates());
 
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());

@@ -152,7 +152,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         return !processorContext.getableManager().get(getTaskRunId()).isStillRunning();
     }
 
-    @Override
+    //    @Override
     public Set<MetricSpecIdModel> metricsToCollect() {
         return Set.of(new MetricSpecIdModel());
     }

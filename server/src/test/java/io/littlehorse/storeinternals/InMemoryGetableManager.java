@@ -8,8 +8,6 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,12 +39,9 @@ import org.apache.kafka.streams.processor.TaskId;
  */
 public class InMemoryGetableManager extends GetableManager {
 
-    private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new HashMap<>();
     private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new ConcurrentHashMap<>();
     private final Map<String, ScheduledTaskModel> scheduledTasks = new ConcurrentHashMap<>();
 
-    public InMemoryGetableManager(ProcessorExecutionContext executionContext) {
-        super(null, null, null, null, executionContext);
     public InMemoryGetableManager(CoreProcessorContext executionContext) {
         super(null, null, null, null, executionContext, null);
     }
