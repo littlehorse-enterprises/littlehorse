@@ -161,10 +161,72 @@ public static Workflow getWorkflow() {
 }
 
 // Conversions that should fail (no clear conversion rule)
-// wf.execute("boolean-method", intVar.cast(VariableType.BOOL)); // ❌ Not allowed
+// wf.execute("boolean-method", intVar.cast(VariableType.BOOL)); // Not allowed
 ```
 
 ## Implementation
+
+### Protocol Buffer Changes
+
+The casting functionality leverages the existing `Expression` structure in `VariableAssignment` by adding a new `CAST` operation to the `VariableMutationType` enum.
+
+#### Extended VariableMutationType Enum
+
+```protobuf
+// Enumerates the available operations to mutate a variable in a WfRun.
+enum VariableMutationType {
+// Existing Codee
+  CAST = 9;
+}
+```
+
+#### How CAST Works in Expressions
+
+For casting operations, we use the existing `Expression` structure where:
+- **LHS**: The value to be cast (any `VariableAssignment`)
+- **Operation**: `CAST` (the new operation)
+- **RHS**: A `literal_value` containing the target `VariableType` as an `INT`
+
+```protobuf
+// Existing Expression structure (no changes needed)
+message Expression {
+  // The left-hand-side of the expression (value to cast)
+  VariableAssignment lhs = 1;
+  // The operator in the expression (CAST for type casting)
+  VariableMutationType operation = 2;
+  // The right-hand-side (target type as INT literal)
+  VariableAssignment rhs = 3;
+}
+```
+
+### Casting in Variable Mutations
+
+Casting operations will occur in the `variableMutations` section of the edges. This is where data transformations happen during workflow execution.
+
+
+#### Variable Casting Examples
+
+**Java SDK Code:**
+```java
+public static Workflow getWorkflow() {
+    return new WorkflowImpl("casting-examples", wf -> {
+        WfRunVariable stringVar = wf.addVariable("input-name", VariableType.STR);
+        WfRunVariable intVar = wf.addVariable("age", VariableType.INT);
+
+        // 1. VARIABLE CASTING - Direct casting in task parameters
+        wf.execute("int-method", stringVar.cast(VariableType.INT));    // STR → INT
+
+        // 2. NODE OUTPUT CASTING - Casting task results
+        var result = wf.execute("get-string", stringVar);              // Returns STR
+        wf.execute("int-method", result.cast(VariableType.INT));       // Cast output → INT
+
+        // 3. VARIABLE ASSIGNMENT FROM NODE CASTING - Assign casted output to variable
+        intVar.assign(result.cast(VariableType.INT));                  // STR output → INT variable
+        wf.execute("process-age", intVar);
+    });
+}
+```
+
 
 ### SDK Changes (Backwards Compatible)
 ```java
@@ -183,7 +245,7 @@ public interface NodeOutput {
 **Important**: Casting operations are **immutable** - they create new values without modifying the original variable or output. This ensures data integrity and prevents unexpected side effects.
 
 ### Server-Side Changes
-- **Automatic conversions**: Server performs safe conversions during task execution
+- **Automatic conversions**: Server performs safe conversions during wf execution
 - **Enhanced validation**: Better error messages for type mismatches
 - **Backwards compatible**: All existing workflows continue to work unchanged
 
