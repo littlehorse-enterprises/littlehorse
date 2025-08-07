@@ -1,3 +1,4 @@
+import { VARIABLE_TYPE_ENTRIES } from '@/app/constants'
 import { getTypedVariableValue } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
@@ -104,14 +105,11 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRunCase<'externalE
                 <SelectValue placeholder="Select content type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="str">String</SelectItem>
-                <SelectItem value="int">Integer</SelectItem>
-                <SelectItem value="double">Double</SelectItem>
-                <SelectItem value="bool">Boolean</SelectItem>
-                <SelectItem value="jsonObj">JSON Object</SelectItem>
-                <SelectItem value="jsonArr">JSON Array</SelectItem>
-                <SelectItem value="bytes">Bytes</SelectItem>
-                <SelectItem value="wfRunId">WfRunId</SelectItem>
+                {VARIABLE_TYPE_ENTRIES.map(([type, label]) => (
+                  <SelectItem key={type} value={type}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

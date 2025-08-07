@@ -38,7 +38,7 @@ const Node: FC<NodeProps<'externalEvent', ExternalEventNode>> = ({ data }) => {
                   ? getVariable(correlationKey)
                   : undefined}
             </Entry>
-            {nodeRun && !nodeRun.nodeType.value.eventTime && <PostEvent nodeRun={nodeRun} />}
+            {nodeRun && nodeRun.nodeType?.value && !nodeRun.nodeType.value.eventTime && <PostEvent nodeRun={nodeRun} />}
           </div>
         </DiagramDataGroup>
       </NodeDetails>
