@@ -3,6 +3,7 @@ package internal
 import (
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -36,26 +37,107 @@ var getScheduledWfRun = &cobra.Command{
 	},
 }
 
-var searchWfRunCmd = &cobra.Command{
-	Use:   "wfRun <wfSpecName> [<majorVersion>] [<revision>]",
-	Short: "Search for WfRuns",
+var searchWfRunByParentCmd = &cobra.Command{
+	Use:   "byParent <parentWfRunId>",
+	Short: "Search for child WfRuns by parent WfRun ID",
 	Long: `
-Search for WfRuns. You may provide the optional arguments:
-- [<majorVersion>]
-- [<revision>]
+Search for child WfRuns using a parent WfRun ID.
 
-And the optional flag:
-- [--status]
+Required arguments:
+- <parentWfRunId> - Parent WfRun ID to search for children
 
-  * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-          flags to put a time bound on WfRun's which are returned.
-          The time bound applies to the time that the WfRun was created.
+Optional flags:
+- [--wfSpecName] - Filter children by workflow spec name
+- [--show-full-tree] - Use full object scan for complete tree discovery (cannot be used with --status)
+- [--levels] - Limit search depth (only with --show-full-tree)
+- [--status] - Status of child WfRuns to search for (cannot be used with --show-full-tree)
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
-	Args: cobra.RangeArgs(1, 3),
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		parentId := args[0]
+		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+
+		statusRaw, _ := cmd.Flags().GetString("status")
+		var status *lhproto.LHStatus
+
+		if statusRaw != "" {
+			statusTmp := lhproto.LHStatus(lhproto.LHStatus_value[statusRaw])
+			status = &statusTmp
+		}
+
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+
+		showFullTree, _ := cmd.Flags().GetBool("show-full-tree")
+		levels, _ := cmd.Flags().GetInt("levels")
+
+		if levels != -1 {
+			if !showFullTree {
+				log.Fatal("--levels flag can only be used with --show-full-tree")
+			}
+			if levels <= 0 {
+				log.Fatal("--levels flag must be positive")
+			}
+		}
+
+		if showFullTree && status != nil {
+			log.Fatal("--status flag cannot be used with --show-full-tree")
+		}
+
+		search := &lhproto.SearchWfRunRequest{
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			Status:        status,
+			ParentWfRunId: littlehorse.StrToWfRunId(parentId),
+		}
+
+		if wfSpecName != "" {
+			search.WfSpecName = wfSpecName
+		}
+
+		if showFullTree {
+			search.ShowFullTree = &showFullTree
+		}
+
+		resp, err := getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search)
+		if err != nil {
+			log.Fatal("Failed to search WfRuns:", err)
+		}
+
+		if showFullTree && levels != -1 {
+			resp = filterWfRunsByLevels(resp, parentId, levels)
+		}
+
+		littlehorse.PrintResp(resp, err)
+	},
+}
+
+var searchWfRunCmd = &cobra.Command{
+	Use:   "wfRun <wfSpecName> [<majorVersion>] [<revision>]",
+	Short: "Search for WfRuns by workflow specification",
+	Long: `
+Search for WfRuns by workflow specification. You must provide the required argument and may provide optional arguments:
+- <wfSpecName> - Name of the workflow specification (required)
+- [<majorVersion>] - Major version of the workflow specification (optional)
+- [<revision>] - Revision of the workflow specification (optional)
+
+Optional flags:
+- [--status] - Status of WfRuns to search for
+
+  * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
+		  flags to put a time bound on WfRun's which are returned.
+		  The time bound applies to the time that the WfRun was created.
+
+For searching child workflows by parent ID, use: lhctl search wfRun byParent <parentWfRunId>
+
+Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
+	`,
+	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName := args[0]
+
 		statusRaw, _ := cmd.Flags().GetString("status")
 		var status *lhproto.LHStatus
 		var majorVersion *int32 = nil
@@ -89,25 +171,23 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		if wfSpecName == "" {
-			log.Fatal("Must specify wfSpecName!")
-		}
-
 		search := &lhproto.SearchWfRunRequest{
-			Bookmark:      bookmark,
-			Limit:         &limit,
-			EarliestStart: earliest,
-			LatestStart:   latest,
-			WfSpecName:    wfSpecName,
-			Status:        status,
-
+			Bookmark:           bookmark,
+			Limit:              &limit,
+			EarliestStart:      earliest,
+			LatestStart:        latest,
+			Status:             status,
+			WfSpecName:         wfSpecName,
 			WfSpecMajorVersion: majorVersion,
 			WfSpecRevision:     revision,
 		}
 
-		littlehorse.PrintResp(
-			getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
-		)
+		resp, err := getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search)
+		if err != nil {
+			log.Fatal("Failed to search WfRuns:", err)
+		}
+
+		littlehorse.PrintResp(resp, err)
 	},
 }
 
@@ -320,6 +400,7 @@ func init() {
 	getCmd.AddCommand(getWfRunCmd)
 	getCmd.AddCommand(getScheduledWfRun)
 	searchCmd.AddCommand(searchWfRunCmd)
+	searchWfRunCmd.AddCommand(searchWfRunByParentCmd)
 	stopCmd.AddCommand(stopWfRunCmd)
 	resumeCmd.AddCommand(resumeWfRunCmd)
 	deleteCmd.AddCommand(deleteWfRunCmd)
@@ -331,10 +412,56 @@ func init() {
 	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
 
+	searchWfRunByParentCmd.Flags().String("wfSpecName", "", "Filter children by workflow spec name")
+	searchWfRunByParentCmd.Flags().String("status", "", "Status of child WfRuns to search for")
+	searchWfRunByParentCmd.Flags().Bool("show-full-tree", false, "Use full object scan for complete tree discovery")
+	searchWfRunByParentCmd.Flags().Int("levels", -1, "Limit search depth when using --show-full-tree (only applicable with --show-full-tree)")
+
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
 	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 	scheduleWfCmd.Flags().String("id", "", "")
 
 	stopWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
 	resumeWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
+}
+
+func filterWfRunsByLevels(resp *lhproto.WfRunIdList, rootParentId string, maxLevels int) *lhproto.WfRunIdList {
+	if maxLevels <= 0 {
+		return &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
+	}
+
+	filteredTree := &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
+
+	for _, wfRun := range resp.Results {
+		depth := calculateDepthFromRoot(wfRun, rootParentId)
+		if depth > 0 && depth <= maxLevels {
+			filteredTree.Results = append(filteredTree.Results, wfRun)
+		}
+	}
+
+	return filteredTree
+}
+
+func calculateDepthFromRoot(wfRun *lhproto.WfRunId, rootParentId string) int {
+	if wfRun.ParentWfRunId == nil {
+		return 0
+	}
+
+	currentParentId := rootParentId
+	if separatorIndex := strings.LastIndex(rootParentId, "_"); separatorIndex != -1 {
+		currentParentId = rootParentId[separatorIndex+1:]
+	}
+
+	depth := 1
+	current := wfRun.ParentWfRunId
+
+	for current != nil {
+		if current.Id == currentParentId {
+			return depth
+		}
+		depth++
+		current = current.ParentWfRunId
+	}
+
+	return 0
 }
