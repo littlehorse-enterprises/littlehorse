@@ -1,6 +1,13 @@
 import { WfRunId } from 'littlehorse-client/proto'
 
-export const concatWfRunIds = (wfRunId: WfRunId) => {
+/**
+ * Converts a WfRunId to a path string by concatenating its IDs.
+ * The path is constructed from the root WfRunId to the current one.
+ *
+ * @param wfRunId - The WfRunId to convert to a path.
+ * @returns A string representing the path of WfRunIds.
+ */
+export const wfRunIdToPath = (wfRunId: WfRunId) => {
   const ids = []
   let current: WfRunId | undefined = wfRunId
   while (current) {
@@ -8,4 +15,35 @@ export const concatWfRunIds = (wfRunId: WfRunId) => {
     current = current.parentWfRunId
   }
   return ids.reverse().join('/')
+}
+
+/**
+ * Flattens a WfRunId into a string by concatenating its IDs with underscores.
+ * This is useful for creating unique identifiers for WfRunIds in a flat structure.
+ *
+ * @param wfRunId - The WfRunId to flatten.
+ * @returns A string representing the flattened WfRunId.
+ */
+export const flattenWfRunId = (wfRunId: WfRunId): string => {
+  if (!wfRunId.parentWfRunId) return wfRunId.id
+  return flattenWfRunId(wfRunId.parentWfRunId) + '_' + wfRunId.id
+}
+
+/**
+ * Converts a flattened WfRunId string back to a WfRunId object.
+ * This is the reverse operation of flattenWfRunId.
+ *
+ * @param flattenedId - The flattened WfRunId string to convert.
+ * @returns A WfRunId object reconstructed from the flattened string.
+ */
+export const wfRunIdFromFlattenedId = (flattenedId: string): WfRunId => {
+  const ids = flattenedId.split('_')
+
+  return ids.reduce<WfRunId | undefined>(
+    (parentWfRunId, currentId) => ({
+      id: currentId,
+      parentWfRunId,
+    }),
+    undefined
+  )!
 }

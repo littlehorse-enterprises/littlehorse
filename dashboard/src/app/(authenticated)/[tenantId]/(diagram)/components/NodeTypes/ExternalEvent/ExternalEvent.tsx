@@ -43,7 +43,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           </div>
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
+      <Fade fade={fade} status={data.nodeRunsList[data.nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={
@@ -58,7 +58,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
           <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center">
-            <div className="block">{data.externalEvent?.externalEventDefId?.name}</div>
+            <div className="block">{externalEventNode.externalEventDefId?.name}</div>
           </div>
         </div>
       </Fade>

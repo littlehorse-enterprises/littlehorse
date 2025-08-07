@@ -117,6 +117,7 @@ type NodeRun struct {
 	// of NodeRun. Each NodeRun can only be one.
 	//
 	// Types that are assignable to NodeType:
+	//
 	//	*NodeRun_Task
 	//	*NodeRun_ExternalEvent
 	//	*NodeRun_Entrypoint

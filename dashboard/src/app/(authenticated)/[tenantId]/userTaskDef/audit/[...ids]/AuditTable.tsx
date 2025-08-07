@@ -10,6 +10,8 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { UserTaskEvent } from 'littlehorse-client/proto'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { hasEventCase } from '@/app/utils'
 
 type AuditTableProps = {
   events: UserTaskEvent[]
@@ -17,9 +19,9 @@ type AuditTableProps = {
 
 export function AuditTable({ events }: AuditTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
+  const itemsPerPage = SEARCH_DEFAULT_LIMIT
 
-  const allEvents = events.filter(event => event.saved !== undefined).reverse()
+  const allEvents = events.filter(hasEventCase('saved')).reverse()
 
   const totalPages = Math.ceil(allEvents.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -39,7 +41,7 @@ export function AuditTable({ events }: AuditTableProps) {
           {paginatedEvents.map(event => (
             <TableRow key={`${event.time}`}>
               <TableCell>{new Date(event.time ?? 'N/A').toLocaleString()}</TableCell>
-              <TableCell> {event.saved?.userId}</TableCell>
+              <TableCell> {event.event?.value.userId}</TableCell>
             </TableRow>
           ))}
         </TableBody>
