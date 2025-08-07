@@ -1,6 +1,5 @@
 'use client'
-import { VARIABLE_TYPES } from '@/app/constants'
-import { getTypedContent } from '@/app/utils/variables'
+import { getTypedVariableValue, getVariableCaseFromType, VARIABLE_CASE_LABELS } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ExternalEventDef } from 'littlehorse-client/proto'
+import { ExternalEventDef, VariableValue } from 'littlehorse-client/proto'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -38,8 +37,10 @@ export default function CreateCorrelatedEventDialog({
   const [key, setKey] = useState('')
 
   // Get the expected content type from ExternalEventDef typeInformation
-  const expectedType = spec.typeInformation?.returnType?.type || 'STR'
-  const [contentType, setContentType] = useState<string>(expectedType)
+  const expectedType = spec.typeInformation?.returnType?.type
+    ? getVariableCaseFromType(spec.typeInformation.returnType.type)
+    : 'str'
+  const [contentType, setContentType] = useState<NonNullable<VariableValue['value']>['$case']>(expectedType)
   const [contentValue, setContentValue] = useState('')
   const [jsonError, setJsonError] = useState<string | null>(null)
 
@@ -52,9 +53,9 @@ export default function CreateCorrelatedEventDialog({
     try {
       const parsed = JSON.parse(value)
 
-      if (type === 'JSON_OBJ' && Array.isArray(parsed)) {
+      if (type === 'jsonObj' && Array.isArray(parsed)) {
         setJsonError('Expected a JSON object, but got an array')
-      } else if (type === 'JSON_ARR' && !Array.isArray(parsed)) {
+      } else if (type === 'jsonArr' && !Array.isArray(parsed)) {
         setJsonError('Expected a JSON array, but got an object')
       } else {
         setJsonError(null)
@@ -77,7 +78,7 @@ export default function CreateCorrelatedEventDialog({
 
     try {
       // Validate JSON if applicable
-      if (contentType === 'JSON_OBJ' || contentType === 'JSON_ARR') {
+      if (contentType === 'jsonObj' || contentType === 'jsonArr') {
         const validator = getValidation(contentType)
         if (validator) {
           const validationResult = validator(contentValue)
@@ -94,7 +95,7 @@ export default function CreateCorrelatedEventDialog({
         tenantId,
         key,
         externalEventDefName: spec.id?.name ?? '',
-        content: getTypedContent(contentType, contentValue),
+        content: getTypedVariableValue(contentType, contentValue),
       })
 
       toast.success('Correlated event created successfully')
@@ -140,7 +141,7 @@ export default function CreateCorrelatedEventDialog({
               <Label htmlFor="content-type">Content Type</Label>
               <Select
                 value={contentType}
-                onValueChange={value => {
+                onValueChange={(value: NonNullable<VariableValue['value']>['$case']) => {
                   setContentType(value)
                   setContentValue('') // Reset value when type changes
                   setJsonError(null)
@@ -150,13 +151,13 @@ export default function CreateCorrelatedEventDialog({
                   <SelectValue placeholder="Select content type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(VARIABLE_TYPES)
-                    .filter(([type]) => type !== 'UNRECOGNIZED' && type !== 'WF_RUN_ID')
-                    .map(([type, label]) => (
-                      <SelectItem key={type} value={type}>
-                        {label}
-                      </SelectItem>
-                    ))}
+                  <SelectItem value="str">String</SelectItem>
+                  <SelectItem value="int">Integer</SelectItem>
+                  <SelectItem value="double">Double</SelectItem>
+                  <SelectItem value="bool">Boolean</SelectItem>
+                  <SelectItem value="jsonObj">JSON Object</SelectItem>
+                  <SelectItem value="jsonArr">JSON Array</SelectItem>
+                  <SelectItem value="bytes">Bytes</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -167,7 +168,7 @@ export default function CreateCorrelatedEventDialog({
               <Label htmlFor="content-type">Content Type</Label>
               <div className="flex items-center px-1 py-2 text-sm font-medium text-foreground">
                 <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                  {VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES] || contentType}
+                  {VARIABLE_CASE_LABELS[contentType] || contentType}
                 </span>
               </div>
             </div>

@@ -1,11 +1,11 @@
 'use client'
-import { VARIABLE_TYPES } from '@/app/constants'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { VariableValue } from 'littlehorse-client/proto'
 
 interface VariableInputFieldProps {
-  contentType: string
+  contentType: NonNullable<VariableValue['value']>['$case']
   contentValue: string
   setContentValue: (value: string) => void
   validateJson?: (value: string, type: string) => void
@@ -20,7 +20,7 @@ export default function VariableInputField({
   jsonError,
 }: VariableInputFieldProps) {
   switch (contentType) {
-    case 'BOOL':
+    case 'bool':
       return (
         <Select value={contentValue} onValueChange={setContentValue}>
           <SelectTrigger>
@@ -32,8 +32,8 @@ export default function VariableInputField({
           </SelectContent>
         </Select>
       )
-    case 'JSON_OBJ':
-    case 'JSON_ARR':
+    case 'jsonObj':
+    case 'jsonArr':
       return (
         <div>
           <Textarea
@@ -43,18 +43,18 @@ export default function VariableInputField({
               setContentValue(newValue)
               validateJson?.(newValue, contentType)
             }}
-            placeholder={`Enter ${VARIABLE_TYPES[contentType]?.toLowerCase()} value`}
+            placeholder={`Enter ${contentType === 'jsonObj' ? 'json object' : 'json array'} value`}
             className={`min-h-[120px] ${jsonError ? 'border-red-500' : contentValue.trim() ? 'border-green-500' : ''}`}
           />
           {jsonError && <div className="mt-1 text-xs text-red-500">{jsonError}</div>}
           {!jsonError && contentValue.trim() && (
             <div className="mt-1 text-xs text-green-500">
-              Valid JSON {contentType === 'JSON_OBJ' ? 'object' : 'array'}
+              Valid JSON {contentType === 'jsonObj' ? 'object' : 'array'}
             </div>
           )}
         </div>
       )
-    case 'INT':
+    case 'int':
       return (
         <Input
           type="number"
@@ -67,21 +67,21 @@ export default function VariableInputField({
           }}
           value={contentValue}
           onChange={e => setContentValue(e.target.value)}
-          placeholder={`Enter ${VARIABLE_TYPES[contentType]?.toLowerCase()} value`}
+          placeholder="Enter integer value"
           step="1"
         />
       )
-    case 'DOUBLE':
+    case 'double':
       return (
         <Input
           type="number"
           value={contentValue}
           onChange={e => setContentValue(e.target.value)}
-          placeholder={`Enter ${VARIABLE_TYPES[contentType]?.toLowerCase()} value`}
+          placeholder="Enter decimal value"
           step="0.01"
         />
       )
-    case 'BYTES':
+    case 'bytes':
       return (
         <div>
           <Input
@@ -101,7 +101,7 @@ export default function VariableInputField({
           type="text"
           value={contentValue}
           onChange={e => setContentValue(e.target.value)}
-          placeholder={`Enter ${VARIABLE_TYPES[contentType as keyof typeof VARIABLE_TYPES]?.toLowerCase() || 'string'} value`}
+          placeholder="Enter string value"
         />
       )
   }

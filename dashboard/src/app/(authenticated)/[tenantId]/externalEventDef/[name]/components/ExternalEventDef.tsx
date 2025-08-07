@@ -3,7 +3,7 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, getVariableValue, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
+import { wfRunIdToPath, getVariableValue, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +24,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
+import { CorrelatedEventId, ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
 import { RefreshCwIcon, Trash2 } from 'lucide-react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -68,7 +68,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
     router.push(`?${params.toString()}`)
   }
 
-  const handleDeleteCorrelatedEvent = async (correlatedEventId: any) => {
+  const handleDeleteCorrelatedEvent = async (correlatedEventId: CorrelatedEventId) => {
     setIsDeleting(true)
     try {
       await deleteCorrelatedEvent({
@@ -206,9 +206,9 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${concatWfRunIds(externalEvent.id.wfRunId)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
+                                    href={`/wfRun/${wfRunIdToPath(externalEvent.id.wfRunId)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
                                   >
-                                    {concatWfRunIds(externalEvent.id.wfRunId)}
+                                    {wfRunIdToPath(externalEvent.id.wfRunId)}
                                   </LinkWithTenant>
                                 </TableCell>
                                 <TableCell>{externalEvent.id?.guid}</TableCell>

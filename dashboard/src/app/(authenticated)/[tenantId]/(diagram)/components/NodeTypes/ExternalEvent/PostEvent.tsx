@@ -1,5 +1,4 @@
-import { VARIABLE_TYPES } from '@/app/constants'
-import { getTypedContent } from '@/app/utils/variables'
+import { getTypedVariableValue } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -12,18 +11,21 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { NodeRun } from 'littlehorse-client/proto'
+import { VariableValue } from 'littlehorse-client/proto'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { getValidation } from '../../Forms/components/validation'
 import VariableInputField from '../../Forms/components/VariableInputField'
+import { NodeRunCase } from '../../Modals/NodeRun/AccordionContent'
 import { putExternalEvent } from './actions'
 
-export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
+export default function PostEvent({ nodeRun }: { nodeRun: NodeRunCase<'externalEvent'> }) {
   const [open, setOpen] = useState(false)
-  const [contentType, setContentType] = useState<string>('STR')
+  const [contentType, setContentType] = useState<NonNullable<VariableValue['value']>['$case']>('str')
   const [contentValue, setContentValue] = useState<string>('')
   const [jsonError, setJsonError] = useState<string | null>(null)
+  const tenantId = useParams().tenantId as string
 
   const validateJson = (value: string, type: string) => {
     if (!value.trim()) {
@@ -47,7 +49,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
   }
 
   const handleSubmit = async () => {
-    const externalEventDefId = nodeRun.externalEvent?.externalEventDefId
+    const externalEventDefId = nodeRun.nodeType?.value?.externalEventDefId
     const wfRunId = nodeRun.id?.wfRunId
 
     if (!externalEventDefId || !wfRunId) return toast.error('No externalEventDefId or wfRunId')
@@ -55,7 +57,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
 
     try {
       // Validate JSON if applicable
-      if (contentType === 'JSON_OBJ' || contentType === 'JSON_ARR') {
+      if (contentType === 'jsonObj' || contentType === 'jsonArr') {
         const validator = getValidation(contentType)
         if (validator) {
           const validationResult = validator(contentValue)
@@ -66,9 +68,10 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
       }
 
       await putExternalEvent({
+        tenantId,
         externalEventDefId,
         wfRunId,
-        content: getTypedContent(contentType, contentValue),
+        content: getTypedVariableValue(contentType, contentValue),
       })
       toast.success('Event posted successfully')
       setOpen(false)
@@ -92,7 +95,7 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
             <Label htmlFor="content-type">Content Type</Label>
             <Select
               value={contentType}
-              onValueChange={value => {
+              onValueChange={(value: NonNullable<VariableValue['value']>['$case']) => {
                 setContentType(value)
                 setContentValue('') // Reset value when type changes
               }}
@@ -101,13 +104,14 @@ export default function PostEvent({ nodeRun }: { nodeRun: NodeRun }) {
                 <SelectValue placeholder="Select content type" />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(VARIABLE_TYPES)
-                  .filter(([type]) => type !== 'UNRECOGNIZED')
-                  .map(([type, label]) => (
-                    <SelectItem key={type} value={type}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                <SelectItem value="str">String</SelectItem>
+                <SelectItem value="int">Integer</SelectItem>
+                <SelectItem value="double">Double</SelectItem>
+                <SelectItem value="bool">Boolean</SelectItem>
+                <SelectItem value="jsonObj">JSON Object</SelectItem>
+                <SelectItem value="jsonArr">JSON Array</SelectItem>
+                <SelectItem value="bytes">Bytes</SelectItem>
+                <SelectItem value="wfRunId">WfRunId</SelectItem>
               </SelectContent>
             </Select>
           </div>

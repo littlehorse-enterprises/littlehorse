@@ -141,9 +141,7 @@ export const putCorrelatedEvent = async ({
   const request: PutCorrelatedEventRequest = {
     key,
     externalEventDefId: { name: externalEventDefName },
-    content: content || {
-      str: '', // Default to empty string if no content provided
-    },
+    content,
   }
   return await client.putCorrelatedEvent(request)
 }

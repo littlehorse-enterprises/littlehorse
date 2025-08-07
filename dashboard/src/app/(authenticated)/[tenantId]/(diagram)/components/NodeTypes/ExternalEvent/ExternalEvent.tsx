@@ -1,5 +1,5 @@
-import { formatTime, getVariable, getVariableValue } from '@/app/utils'
-import { Node as NodeProto } from 'littlehorse-client/proto'
+import { formatTime, getVariable } from '@/app/utils'
+import { ExternalEventNode } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -13,9 +13,8 @@ import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 import { Entry } from '../DataGroupComponents/Entry'
 import PostEvent from './PostEvent'
 
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  if (!data.externalEvent) return null
-  const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
+const Node: FC<NodeProps<'externalEvent', ExternalEventNode>> = ({ data }) => {
+  const { fade, nodeNeedsToBeHighlighted, nodeRun, externalEventDefId, timeoutSeconds, correlationKey } = data
 
   return (
     <>
@@ -26,24 +25,24 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
               <LinkWithTenant
                 className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
                 target="_blank"
-                href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
+                href={`/externalEventDef/${externalEventDefId?.name}`}
               >
-                {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
+                {externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
               </LinkWithTenant>
             </div>
-            <Entry label="Timeout">
-              {externalEventNode.timeoutSeconds
-                ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
-                : 'N/A'}
-            </Entry>
+            <Entry label="Timeout">{timeoutSeconds ? formatTime(Number(getVariable(timeoutSeconds))) : 'N/A'}</Entry>
             <Entry label="Correlation Key">
-              {nodeRun ? nodeRun?.externalEvent?.correlationKey : getVariable(externalEventNode.correlationKey)}
+              {nodeRun
+                ? nodeRun.nodeType.value.correlationKey
+                : correlationKey
+                  ? getVariable(correlationKey)
+                  : undefined}
             </Entry>
-            {nodeRun && !nodeRun.externalEvent?.eventTime && <PostEvent nodeRun={nodeRun} />}
+            {nodeRun && !nodeRun.nodeType.value.eventTime && <PostEvent nodeRun={nodeRun} />}
           </div>
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRunsList[data.nodeRunsList.length - 1]?.status}>
+      <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={
@@ -58,7 +57,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
           <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center">
-            <div className="block">{externalEventNode.externalEventDefId?.name}</div>
+            <div className="block">{externalEventDefId?.name}</div>
           </div>
         </div>
       </Fade>
