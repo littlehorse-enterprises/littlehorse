@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import io.littlehorse.common.exceptions.LHValidationException;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -63,5 +64,26 @@ public class VariableAssignmentModelTest {
 
         Optional<TypeDefinitionModel> resolvedType = varAssn.resolveType(null, wfSpec, "entrypoint");
         Assertions.assertThat(resolvedType).isEmpty();
+    }
+
+    @Test
+    void ifNodeIsNotInTheScopeThrowException() throws LHValidationException {
+        ThreadSpecModel threadSpec = new ThreadSpecModel();
+        ThreadSpecModel exnSpec = new ThreadSpecModel();
+        WfSpecModel wfSpec = new WfSpecModel();
+
+        exnSpec.setWfSpec(wfSpec);
+        exnSpec.setName("exn-handler");
+        threadSpec.setName("entrypoint");
+        threadSpec.setWfSpec(wfSpec);
+        wfSpec.setThreadSpecs(Map.of("entrypoint", threadSpec));
+        wfSpec.setThreadSpecs(Map.of("exn-handler", exnSpec));
+
+        VariableAssignmentModel varAssn = new VariableAssignmentModel();
+        varAssn.setVariableName("my-json-var");
+        varAssn.setRhsSourceType(SourceCase.NODE_OUTPUT);
+        varAssn.setNodeOutputReference(new NodeOutputReferenceModel("not-in-the-scope"));
+        Assertions.assertThatThrownBy(() -> varAssn.resolveType(null, wfSpec, "exn-handler"))
+                .isInstanceOf(InvalidExpressionException.class);
     }
 }

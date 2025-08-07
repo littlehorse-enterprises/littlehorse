@@ -11,6 +11,12 @@ public class NodeOutputReferenceModel extends LHSerializable<NodeOutputReference
 
     private String nodeName;
 
+    public NodeOutputReferenceModel() {}
+
+    public NodeOutputReferenceModel(String nodeName) {
+        this.nodeName = nodeName;
+    }
+
     @Override
     public Class<NodeOutputReference> getProtoBaseClass() {
         return NodeOutputReference.class;
