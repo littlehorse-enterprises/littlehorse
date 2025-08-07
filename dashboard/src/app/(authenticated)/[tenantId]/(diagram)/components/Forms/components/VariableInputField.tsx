@@ -1,4 +1,5 @@
 'use client'
+import { VARIABLE_CASE_LABELS } from '@/app/utils/variables'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
@@ -43,7 +44,7 @@ export default function VariableInputField({
               setContentValue(newValue)
               validateJson?.(newValue, contentType)
             }}
-            placeholder={`Enter ${contentType === 'jsonObj' ? 'json object' : 'json array'} value`}
+            placeholder={`Enter ${VARIABLE_CASE_LABELS[contentType].toLowerCase()} value`}
             className={`min-h-[120px] ${jsonError ? 'border-red-500' : contentValue.trim() ? 'border-green-500' : ''}`}
           />
           {jsonError && <div className="mt-1 text-xs text-red-500">{jsonError}</div>}
@@ -67,7 +68,7 @@ export default function VariableInputField({
           }}
           value={contentValue}
           onChange={e => setContentValue(e.target.value)}
-          placeholder="Enter integer value"
+          placeholder={`Enter ${VARIABLE_CASE_LABELS[contentType].toLowerCase()} value`}
           step="1"
         />
       )
@@ -77,7 +78,7 @@ export default function VariableInputField({
           type="number"
           value={contentValue}
           onChange={e => setContentValue(e.target.value)}
-          placeholder="Enter decimal value"
+          placeholder={`Enter ${VARIABLE_CASE_LABELS[contentType].toLowerCase()} value`}
           step="0.01"
         />
       )
@@ -101,7 +102,7 @@ export default function VariableInputField({
           type="text"
           value={contentValue}
           onChange={e => setContentValue(e.target.value)}
-          placeholder="Enter string value"
+          placeholder={`Enter ${VARIABLE_CASE_LABELS[contentType].toLowerCase()} value`}
         />
       )
   }

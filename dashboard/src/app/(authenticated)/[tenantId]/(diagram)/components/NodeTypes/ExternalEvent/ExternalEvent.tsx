@@ -16,6 +16,8 @@ import PostEvent from './PostEvent'
 const Node: FC<NodeProps<'externalEvent', ExternalEventNode>> = ({ data }) => {
   const { fade, nodeNeedsToBeHighlighted, nodeRun, externalEventDefId, timeoutSeconds, correlationKey } = data
 
+  const hasCorrelationKey = nodeRun?.nodeType.value.correlationKey || correlationKey
+
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -31,13 +33,13 @@ const Node: FC<NodeProps<'externalEvent', ExternalEventNode>> = ({ data }) => {
               </LinkWithTenant>
             </div>
             <Entry label="Timeout">{timeoutSeconds ? formatTime(Number(getVariable(timeoutSeconds))) : 'N/A'}</Entry>
-            <Entry label="Correlation Key">
-              {nodeRun
-                ? nodeRun.nodeType.value.correlationKey
-                : correlationKey
-                  ? getVariable(correlationKey)
-                  : undefined}
-            </Entry>
+            {hasCorrelationKey && (
+              <Entry label="Correlation Key">
+                {nodeRun
+                  ? nodeRun.nodeType.value.correlationKey
+                  : correlationKey && getVariable(correlationKey)}
+              </Entry>
+            )}
             {nodeRun && nodeRun.nodeType?.value && !nodeRun.nodeType.value.eventTime && <PostEvent nodeRun={nodeRun} />}
           </div>
         </DiagramDataGroup>

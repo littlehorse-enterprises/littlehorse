@@ -20,13 +20,14 @@ import { getValidation } from '../../Forms/components/validation'
 import VariableInputField from '../../Forms/components/VariableInputField'
 import { NodeRunCase } from '../../Modals/NodeRun/AccordionContent'
 import { putExternalEvent } from './actions'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 
 export default function PostEvent({ nodeRun }: { nodeRun: NodeRunCase<'externalEvent'> }) {
   const [open, setOpen] = useState(false)
   const [contentType, setContentType] = useState<NonNullable<VariableValue['value']>['$case']>('str')
   const [contentValue, setContentValue] = useState<string>('')
   const [jsonError, setJsonError] = useState<string | null>(null)
-  const tenantId = useParams().tenantId as string
+  const { tenantId } = useWhoAmI()
 
   const validateJson = (value: string, type: string) => {
     if (!value.trim()) {
