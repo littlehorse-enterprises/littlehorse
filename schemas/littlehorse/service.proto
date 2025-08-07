@@ -19,6 +19,8 @@ import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -47,6 +49,9 @@ service LittleHorse {
   // Creates a WfSpec.
   rpc PutWfSpec(PutWfSpecRequest) returns (WfSpec) {}
 
+  // Creates a new metric spec
+  rpc PutMetricSpec(PutMetricSpecRequest) returns (MetricSpec) {}
+
   // Gets a WfSpec.
   rpc GetWfSpec(WfSpecId) returns (WfSpec) {}
 
@@ -74,7 +79,7 @@ service LittleHorse {
    * enum within the `PutStructDefRequest`.
    */
   rpc PutStructDef(PutStructDefRequest) returns (StructDef) {}
-  
+
   // EXPERIMENTAL: Get a StructDef.
   rpc GetStructDef(StructDefId) returns (StructDef) {}
 
@@ -148,7 +153,7 @@ service LittleHorse {
   // Adds userComment to a UserTaskRun
   rpc PutUserTaskRunComment(PutUserTaskRunCommentRequest) returns (UserTaskRun) {};
 
-  // Edits userComment with the correlated userCommentId 
+  // Edits userComment with the correlated userCommentId
   rpc EditUserTaskRunComment(EditUserTaskRunCommentRequest) returns (UserTaskRun) {};
 
   // Deletes a comment logically, this does not affect the userTaskEvent Log
@@ -334,6 +339,10 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
+
+  rpc ListMetricSpecs(ListMetricSpecRequest) returns (MetricSpecList) {}
+  // List the latest metrics for a given MetricSpecId
+  rpc ListMetrics(ListMetricsRequest) returns (MetricList) {}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -367,6 +376,24 @@ message PutWfSpecRequest {
   // breaking changes to the WfSpec, prevent any changes to the WfSpec, or allow
   // all changes to the WfSpec.
   AllowedUpdateType allowed_updates = 10;
+}
+// Creates a MetricSpec. This configuration specifies how the server will collect and measure metrics.
+message PutMetricSpecRequest {
+  // Defines how the metric will be computed and collected
+  AggregationType aggregation_type = 1;
+  // Determines the entity or object for which the metric is being collected.
+  oneof reference {
+    // Refers to a specific LittleHorse object
+    MeasurableObject object = 2;
+    // Refers to a specific node
+    NodeReference node = 3;
+    // Refers to a specific WfSpec
+    WfSpecId wf_spec_id = 4;
+    // Refers to a specific ThreadSpec within  a WfSpec
+    ThreadSpecReference thread_spec = 5;
+  }
+  // Defines a length for every window recorded for this MetricSpec
+  google.protobuf.Duration window_length = 6;
 }
 
 // This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same
@@ -1605,4 +1632,34 @@ message LittleHorseVersion {
   // Prerelease Identifier. If this is set, then the server is NOT a production release
   // but rather a release candidate or experimental pre-release.
   optional string pre_release_identifier = 4;
+}
+
+// List MetricSpecs based on specified filter criteria.
+// If no filters are applied, all MetricSpecs are returned
+message ListMetricSpecRequest {
+  // Filters the results based on the provided WfSpecId
+  optional WfSpecId wf_spec_id = 1;
+  // Filters the results based on the provided ThreadSpec
+  optional ThreadSpecReference thread_spec_reference = 2;
+}
+
+// A list of MetricSpecs
+message MetricSpecList {
+  // Query result
+  repeated MetricSpec results = 1;
+}
+
+message MetricList {
+  repeated Metric results = 1;
+}
+
+// List the latest metrics for a given MetricSpecId
+message ListMetricsRequest {
+  // Filters by metric id
+  MetricSpecId metric_spec_id = 1;
+  // Filters by window length
+  google.protobuf.Duration window_length = 2;
+  // Filters by aggregation type
+  AggregationType aggregation_type = 3;
+
 }

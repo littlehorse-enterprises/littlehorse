@@ -10,17 +10,6 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class UserTaskRunStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    UNASSIGNED: _ClassVar[UserTaskRunStatus]
-    ASSIGNED: _ClassVar[UserTaskRunStatus]
-    DONE: _ClassVar[UserTaskRunStatus]
-    CANCELLED: _ClassVar[UserTaskRunStatus]
-UNASSIGNED: UserTaskRunStatus
-ASSIGNED: UserTaskRunStatus
-DONE: UserTaskRunStatus
-CANCELLED: UserTaskRunStatus
-
 class UserTaskDef(_message.Message):
     __slots__ = ["name", "version", "description", "fields", "created_at"]
     NAME_FIELD_NUMBER: _ClassVar[int]
@@ -74,13 +63,13 @@ class UserTaskRun(_message.Message):
     user_group: str
     user_id: str
     results: _containers.MessageMap[str, _variable_pb2.VariableValue]
-    status: UserTaskRunStatus
+    status: _common_enums_pb2.UserTaskRunStatus
     events: _containers.RepeatedCompositeFieldContainer[UserTaskEvent]
     notes: str
     scheduled_time: _timestamp_pb2.Timestamp
     node_run_id: _object_id_pb2.NodeRunId
     epoch: int
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., user_group: _Optional[str] = ..., user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., status: _Optional[_Union[UserTaskRunStatus, str]] = ..., events: _Optional[_Iterable[_Union[UserTaskEvent, _Mapping]]] = ..., notes: _Optional[str] = ..., scheduled_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., epoch: _Optional[int] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., user_group: _Optional[str] = ..., user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., status: _Optional[_Union[_common_enums_pb2.UserTaskRunStatus, str]] = ..., events: _Optional[_Iterable[_Union[UserTaskEvent, _Mapping]]] = ..., notes: _Optional[str] = ..., scheduled_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., epoch: _Optional[int] = ...) -> None: ...
 
 class AssignUserTaskRunRequest(_message.Message):
     __slots__ = ["user_task_run_id", "override_claim", "user_group", "user_id"]

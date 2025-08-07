@@ -11,6 +11,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefR
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutMetricSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
@@ -51,6 +52,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeletePrincipalRequestModel deletePrincipal;
     private PutTenantRequestModel putTenant;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
+    private PutMetricSpecRequestModel putMetric;
 
     public MetadataCommandModel() {
         super();
@@ -120,6 +122,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case WORKFLOW_EVENT_DEF:
                 out.setWorkflowEventDef(putWorkflowEventDef.toProto());
                 break;
+            case PUT_METRIC:
+                out.setPutMetric(putMetric.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -186,6 +191,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 putWorkflowEventDef = LHSerializable.fromProto(
                         p.getWorkflowEventDef(), PutWorkflowEventDefRequestModel.class, context);
                 break;
+            case PUT_METRIC:
+                putMetric = LHSerializable.fromProto(p.getPutMetric(), PutMetricSpecRequestModel.class, context);
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -221,6 +229,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putTenant;
             case WORKFLOW_EVENT_DEF:
                 return putWorkflowEventDef;
+            case PUT_METRIC:
+                return putMetric;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -270,6 +280,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(PutWorkflowEventDefRequestModel.class)) {
             type = MetadataCommandCase.WORKFLOW_EVENT_DEF;
             putWorkflowEventDef = (PutWorkflowEventDefRequestModel) cmd;
+        } else if (cls.equals(PutMetricSpecRequestModel.class)) {
+            type = MetadataCommandCase.PUT_METRIC;
+            putMetric = (PutMetricSpecRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

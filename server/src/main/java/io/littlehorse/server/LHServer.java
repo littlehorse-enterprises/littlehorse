@@ -139,7 +139,9 @@ public class LHServer {
      * the GRPC Context.
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        commandSender.doSend(scheduledTask, client);
+        networkThreadpool.execute(() -> {
+            commandSender.doSend(scheduledTask, client);
+        });
     }
 
     public void onTaskScheduled(

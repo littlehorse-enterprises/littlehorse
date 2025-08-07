@@ -21,63 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// The status that a UserTaskRun can be in.
-type UserTaskRunStatus int32
-
-const (
-	// Not assigned to a specific user yet.
-	UserTaskRunStatus_UNASSIGNED UserTaskRunStatus = 0
-	// Assigned to a specific user, but not completed or cancelled yet.
-	UserTaskRunStatus_ASSIGNED UserTaskRunStatus = 1
-	// Done.
-	UserTaskRunStatus_DONE UserTaskRunStatus = 3
-	// Cancelled.
-	UserTaskRunStatus_CANCELLED UserTaskRunStatus = 4
-)
-
-// Enum value maps for UserTaskRunStatus.
-var (
-	UserTaskRunStatus_name = map[int32]string{
-		0: "UNASSIGNED",
-		1: "ASSIGNED",
-		3: "DONE",
-		4: "CANCELLED",
-	}
-	UserTaskRunStatus_value = map[string]int32{
-		"UNASSIGNED": 0,
-		"ASSIGNED":   1,
-		"DONE":       3,
-		"CANCELLED":  4,
-	}
-)
-
-func (x UserTaskRunStatus) Enum() *UserTaskRunStatus {
-	p := new(UserTaskRunStatus)
-	*p = x
-	return p
-}
-
-func (x UserTaskRunStatus) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (UserTaskRunStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_tasks_proto_enumTypes[0].Descriptor()
-}
-
-func (UserTaskRunStatus) Type() protoreflect.EnumType {
-	return &file_user_tasks_proto_enumTypes[0]
-}
-
-func (x UserTaskRunStatus) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use UserTaskRunStatus.Descriptor instead.
-func (UserTaskRunStatus) EnumDescriptor() ([]byte, []int) {
-	return file_user_tasks_proto_rawDescGZIP(), []int{0}
-}
-
 // Configures how to handle `UserTaskRun` ownership when saving it.
 type SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy int32
 
@@ -114,11 +57,11 @@ func (x SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy) String()
 }
 
 func (SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_tasks_proto_enumTypes[1].Descriptor()
+	return file_user_tasks_proto_enumTypes[0].Descriptor()
 }
 
 func (SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy) Type() protoreflect.EnumType {
-	return &file_user_tasks_proto_enumTypes[1]
+	return &file_user_tasks_proto_enumTypes[0]
 }
 
 func (x SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy) Number() protoreflect.EnumNumber {
@@ -1912,17 +1855,12 @@ var file_user_tasks_proto_rawDesc = []byte{
 	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f,
 	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64,
 	0x1a, 0x0e, 0x0a, 0x0c, 0x55, 0x54, 0x45, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x64,
-	0x42, 0x07, 0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x2a, 0x4a, 0x0a, 0x11, 0x55, 0x73, 0x65,
-	0x72, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x75, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0e,
-	0x0a, 0x0a, 0x55, 0x4e, 0x41, 0x53, 0x53, 0x49, 0x47, 0x4e, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0c,
-	0x0a, 0x08, 0x41, 0x53, 0x53, 0x49, 0x47, 0x4e, 0x45, 0x44, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04,
-	0x44, 0x4f, 0x4e, 0x45, 0x10, 0x03, 0x12, 0x0d, 0x0a, 0x09, 0x43, 0x41, 0x4e, 0x43, 0x45, 0x4c,
-	0x4c, 0x45, 0x44, 0x10, 0x04, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74,
-	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
-	0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f,
-	0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x42, 0x07, 0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e,
+	0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e,
+	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09,
+	0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74,
+	0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1937,78 +1875,78 @@ func file_user_tasks_proto_rawDescGZIP() []byte {
 	return file_user_tasks_proto_rawDescData
 }
 
-var file_user_tasks_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_user_tasks_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_user_tasks_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_user_tasks_proto_goTypes = []interface{}{
-	(UserTaskRunStatus)(0), // 0: littlehorse.UserTaskRunStatus
-	(SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy)(0), // 1: littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy
-	(*UserTaskDef)(nil),                     // 2: littlehorse.UserTaskDef
-	(*UserTaskField)(nil),                   // 3: littlehorse.UserTaskField
-	(*UserTaskRun)(nil),                     // 4: littlehorse.UserTaskRun
-	(*AssignUserTaskRunRequest)(nil),        // 5: littlehorse.AssignUserTaskRunRequest
-	(*CompleteUserTaskRunRequest)(nil),      // 6: littlehorse.CompleteUserTaskRunRequest
-	(*SaveUserTaskRunProgressRequest)(nil),  // 7: littlehorse.SaveUserTaskRunProgressRequest
-	(*CancelUserTaskRunRequest)(nil),        // 8: littlehorse.CancelUserTaskRunRequest
-	(*PutUserTaskRunCommentRequest)(nil),    // 9: littlehorse.PutUserTaskRunCommentRequest
-	(*EditUserTaskRunCommentRequest)(nil),   // 10: littlehorse.EditUserTaskRunCommentRequest
-	(*DeleteUserTaskRunCommentRequest)(nil), // 11: littlehorse.DeleteUserTaskRunCommentRequest
-	(*UserTaskTriggerReference)(nil),        // 12: littlehorse.UserTaskTriggerReference
-	(*UserTaskEvent)(nil),                   // 13: littlehorse.UserTaskEvent
-	nil,                                     // 14: littlehorse.UserTaskRun.ResultsEntry
-	nil,                                     // 15: littlehorse.CompleteUserTaskRunRequest.ResultsEntry
-	nil,                                     // 16: littlehorse.SaveUserTaskRunProgressRequest.ResultsEntry
-	(*UserTaskEvent_UTECancelled)(nil),      // 17: littlehorse.UserTaskEvent.UTECancelled
-	(*UserTaskEvent_UTETaskExecuted)(nil),   // 18: littlehorse.UserTaskEvent.UTETaskExecuted
-	(*UserTaskEvent_UTESaved)(nil),          // 19: littlehorse.UserTaskEvent.UTESaved
-	(*UserTaskEvent_UTEAssigned)(nil),       // 20: littlehorse.UserTaskEvent.UTEAssigned
-	(*UserTaskEvent_UTECommented)(nil),      // 21: littlehorse.UserTaskEvent.UTECommented
-	(*UserTaskEvent_UTECommentDeleted)(nil), // 22: littlehorse.UserTaskEvent.UTECommentDeleted
-	(*UserTaskEvent_UTECompleted)(nil),      // 23: littlehorse.UserTaskEvent.UTECompleted
-	nil,                                     // 24: littlehorse.UserTaskEvent.UTESaved.ResultsEntry
-	(*timestamppb.Timestamp)(nil),           // 25: google.protobuf.Timestamp
-	(VariableType)(0),                       // 26: littlehorse.VariableType
-	(*UserTaskRunId)(nil),                   // 27: littlehorse.UserTaskRunId
-	(*UserTaskDefId)(nil),                   // 28: littlehorse.UserTaskDefId
+	(SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy)(0), // 0: littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy
+	(*UserTaskDef)(nil),                     // 1: littlehorse.UserTaskDef
+	(*UserTaskField)(nil),                   // 2: littlehorse.UserTaskField
+	(*UserTaskRun)(nil),                     // 3: littlehorse.UserTaskRun
+	(*AssignUserTaskRunRequest)(nil),        // 4: littlehorse.AssignUserTaskRunRequest
+	(*CompleteUserTaskRunRequest)(nil),      // 5: littlehorse.CompleteUserTaskRunRequest
+	(*SaveUserTaskRunProgressRequest)(nil),  // 6: littlehorse.SaveUserTaskRunProgressRequest
+	(*CancelUserTaskRunRequest)(nil),        // 7: littlehorse.CancelUserTaskRunRequest
+	(*PutUserTaskRunCommentRequest)(nil),    // 8: littlehorse.PutUserTaskRunCommentRequest
+	(*EditUserTaskRunCommentRequest)(nil),   // 9: littlehorse.EditUserTaskRunCommentRequest
+	(*DeleteUserTaskRunCommentRequest)(nil), // 10: littlehorse.DeleteUserTaskRunCommentRequest
+	(*UserTaskTriggerReference)(nil),        // 11: littlehorse.UserTaskTriggerReference
+	(*UserTaskEvent)(nil),                   // 12: littlehorse.UserTaskEvent
+	nil,                                     // 13: littlehorse.UserTaskRun.ResultsEntry
+	nil,                                     // 14: littlehorse.CompleteUserTaskRunRequest.ResultsEntry
+	nil,                                     // 15: littlehorse.SaveUserTaskRunProgressRequest.ResultsEntry
+	(*UserTaskEvent_UTECancelled)(nil),      // 16: littlehorse.UserTaskEvent.UTECancelled
+	(*UserTaskEvent_UTETaskExecuted)(nil),   // 17: littlehorse.UserTaskEvent.UTETaskExecuted
+	(*UserTaskEvent_UTESaved)(nil),          // 18: littlehorse.UserTaskEvent.UTESaved
+	(*UserTaskEvent_UTEAssigned)(nil),       // 19: littlehorse.UserTaskEvent.UTEAssigned
+	(*UserTaskEvent_UTECommented)(nil),      // 20: littlehorse.UserTaskEvent.UTECommented
+	(*UserTaskEvent_UTECommentDeleted)(nil), // 21: littlehorse.UserTaskEvent.UTECommentDeleted
+	(*UserTaskEvent_UTECompleted)(nil),      // 22: littlehorse.UserTaskEvent.UTECompleted
+	nil,                                     // 23: littlehorse.UserTaskEvent.UTESaved.ResultsEntry
+	(*timestamppb.Timestamp)(nil),           // 24: google.protobuf.Timestamp
+	(VariableType)(0),                       // 25: littlehorse.VariableType
+	(*UserTaskRunId)(nil),                   // 26: littlehorse.UserTaskRunId
+	(*UserTaskDefId)(nil),                   // 27: littlehorse.UserTaskDefId
+	(UserTaskRunStatus)(0),                  // 28: littlehorse.UserTaskRunStatus
 	(*NodeRunId)(nil),                       // 29: littlehorse.NodeRunId
 	(*VariableValue)(nil),                   // 30: littlehorse.VariableValue
 	(*TaskRunId)(nil),                       // 31: littlehorse.TaskRunId
 }
 var file_user_tasks_proto_depIdxs = []int32{
-	3,  // 0: littlehorse.UserTaskDef.fields:type_name -> littlehorse.UserTaskField
-	25, // 1: littlehorse.UserTaskDef.created_at:type_name -> google.protobuf.Timestamp
-	26, // 2: littlehorse.UserTaskField.type:type_name -> littlehorse.VariableType
-	27, // 3: littlehorse.UserTaskRun.id:type_name -> littlehorse.UserTaskRunId
-	28, // 4: littlehorse.UserTaskRun.user_task_def_id:type_name -> littlehorse.UserTaskDefId
-	14, // 5: littlehorse.UserTaskRun.results:type_name -> littlehorse.UserTaskRun.ResultsEntry
-	0,  // 6: littlehorse.UserTaskRun.status:type_name -> littlehorse.UserTaskRunStatus
-	13, // 7: littlehorse.UserTaskRun.events:type_name -> littlehorse.UserTaskEvent
-	25, // 8: littlehorse.UserTaskRun.scheduled_time:type_name -> google.protobuf.Timestamp
+	2,  // 0: littlehorse.UserTaskDef.fields:type_name -> littlehorse.UserTaskField
+	24, // 1: littlehorse.UserTaskDef.created_at:type_name -> google.protobuf.Timestamp
+	25, // 2: littlehorse.UserTaskField.type:type_name -> littlehorse.VariableType
+	26, // 3: littlehorse.UserTaskRun.id:type_name -> littlehorse.UserTaskRunId
+	27, // 4: littlehorse.UserTaskRun.user_task_def_id:type_name -> littlehorse.UserTaskDefId
+	13, // 5: littlehorse.UserTaskRun.results:type_name -> littlehorse.UserTaskRun.ResultsEntry
+	28, // 6: littlehorse.UserTaskRun.status:type_name -> littlehorse.UserTaskRunStatus
+	12, // 7: littlehorse.UserTaskRun.events:type_name -> littlehorse.UserTaskEvent
+	24, // 8: littlehorse.UserTaskRun.scheduled_time:type_name -> google.protobuf.Timestamp
 	29, // 9: littlehorse.UserTaskRun.node_run_id:type_name -> littlehorse.NodeRunId
-	27, // 10: littlehorse.AssignUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	27, // 11: littlehorse.CompleteUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	15, // 12: littlehorse.CompleteUserTaskRunRequest.results:type_name -> littlehorse.CompleteUserTaskRunRequest.ResultsEntry
-	27, // 13: littlehorse.SaveUserTaskRunProgressRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	16, // 14: littlehorse.SaveUserTaskRunProgressRequest.results:type_name -> littlehorse.SaveUserTaskRunProgressRequest.ResultsEntry
-	1,  // 15: littlehorse.SaveUserTaskRunProgressRequest.policy:type_name -> littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy
-	27, // 16: littlehorse.CancelUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	27, // 17: littlehorse.PutUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	27, // 18: littlehorse.EditUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
-	27, // 19: littlehorse.DeleteUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 10: littlehorse.AssignUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 11: littlehorse.CompleteUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	14, // 12: littlehorse.CompleteUserTaskRunRequest.results:type_name -> littlehorse.CompleteUserTaskRunRequest.ResultsEntry
+	26, // 13: littlehorse.SaveUserTaskRunProgressRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	15, // 14: littlehorse.SaveUserTaskRunProgressRequest.results:type_name -> littlehorse.SaveUserTaskRunProgressRequest.ResultsEntry
+	0,  // 15: littlehorse.SaveUserTaskRunProgressRequest.policy:type_name -> littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy
+	26, // 16: littlehorse.CancelUserTaskRunRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 17: littlehorse.PutUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 18: littlehorse.EditUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
+	26, // 19: littlehorse.DeleteUserTaskRunCommentRequest.user_task_run_id:type_name -> littlehorse.UserTaskRunId
 	29, // 20: littlehorse.UserTaskTriggerReference.node_run_id:type_name -> littlehorse.NodeRunId
-	25, // 21: littlehorse.UserTaskEvent.time:type_name -> google.protobuf.Timestamp
-	18, // 22: littlehorse.UserTaskEvent.task_executed:type_name -> littlehorse.UserTaskEvent.UTETaskExecuted
-	20, // 23: littlehorse.UserTaskEvent.assigned:type_name -> littlehorse.UserTaskEvent.UTEAssigned
-	17, // 24: littlehorse.UserTaskEvent.cancelled:type_name -> littlehorse.UserTaskEvent.UTECancelled
-	19, // 25: littlehorse.UserTaskEvent.saved:type_name -> littlehorse.UserTaskEvent.UTESaved
-	21, // 26: littlehorse.UserTaskEvent.comment_added:type_name -> littlehorse.UserTaskEvent.UTECommented
-	21, // 27: littlehorse.UserTaskEvent.comment_edited:type_name -> littlehorse.UserTaskEvent.UTECommented
-	22, // 28: littlehorse.UserTaskEvent.comment_deleted:type_name -> littlehorse.UserTaskEvent.UTECommentDeleted
-	23, // 29: littlehorse.UserTaskEvent.completed:type_name -> littlehorse.UserTaskEvent.UTECompleted
+	24, // 21: littlehorse.UserTaskEvent.time:type_name -> google.protobuf.Timestamp
+	17, // 22: littlehorse.UserTaskEvent.task_executed:type_name -> littlehorse.UserTaskEvent.UTETaskExecuted
+	19, // 23: littlehorse.UserTaskEvent.assigned:type_name -> littlehorse.UserTaskEvent.UTEAssigned
+	16, // 24: littlehorse.UserTaskEvent.cancelled:type_name -> littlehorse.UserTaskEvent.UTECancelled
+	18, // 25: littlehorse.UserTaskEvent.saved:type_name -> littlehorse.UserTaskEvent.UTESaved
+	20, // 26: littlehorse.UserTaskEvent.comment_added:type_name -> littlehorse.UserTaskEvent.UTECommented
+	20, // 27: littlehorse.UserTaskEvent.comment_edited:type_name -> littlehorse.UserTaskEvent.UTECommented
+	21, // 28: littlehorse.UserTaskEvent.comment_deleted:type_name -> littlehorse.UserTaskEvent.UTECommentDeleted
+	22, // 29: littlehorse.UserTaskEvent.completed:type_name -> littlehorse.UserTaskEvent.UTECompleted
 	30, // 30: littlehorse.UserTaskRun.ResultsEntry.value:type_name -> littlehorse.VariableValue
 	30, // 31: littlehorse.CompleteUserTaskRunRequest.ResultsEntry.value:type_name -> littlehorse.VariableValue
 	30, // 32: littlehorse.SaveUserTaskRunProgressRequest.ResultsEntry.value:type_name -> littlehorse.VariableValue
 	31, // 33: littlehorse.UserTaskEvent.UTETaskExecuted.task_run:type_name -> littlehorse.TaskRunId
-	24, // 34: littlehorse.UserTaskEvent.UTESaved.results:type_name -> littlehorse.UserTaskEvent.UTESaved.ResultsEntry
+	23, // 34: littlehorse.UserTaskEvent.UTESaved.results:type_name -> littlehorse.UserTaskEvent.UTESaved.ResultsEntry
 	30, // 35: littlehorse.UserTaskEvent.UTESaved.ResultsEntry.value:type_name -> littlehorse.VariableValue
 	36, // [36:36] is the sub-list for method output_type
 	36, // [36:36] is the sub-list for method input_type
@@ -2276,7 +2214,7 @@ func file_user_tasks_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_tasks_proto_rawDesc,
-			NumEnums:      2,
+			NumEnums:      1,
 			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   0,
