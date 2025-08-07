@@ -1,11 +1,10 @@
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
-import { getVariableValue } from '@/app/utils/variables'
+import { getVariable, getVariableValue } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { VariableAssignment, VarNameAndVal } from 'littlehorse-client/proto'
-import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog'
 import { EyeIcon } from 'lucide-react'
-import { VARIABLE_TYPES } from '@/app/constants'
 
 export function ViewVariables({ variables }: { variables: VarNameAndVal[] }) {
   return (
@@ -20,22 +19,22 @@ export function ViewVariables({ variables }: { variables: VarNameAndVal[] }) {
       </DialogTrigger>
       <DialogContent>
         <div className="flex max-h-[300px] w-fit flex-col gap-3 overflow-y-auto">
-          {variables.map(variable => {
-            const variableType =
-              VARIABLE_TYPES[Object.keys(variable.value!)[0]?.toUpperCase() as keyof typeof VARIABLE_TYPES]
+          {variables.map(({ value: variableValue, varName }) => {
+            if (!variableValue) return null
+            const variableType = variableValue.value?.$case
             return (
-              <div key={variable.varName} className="flex w-full items-center gap-1">
+              <div key={varName} className="flex w-full items-center gap-1">
                 {variableType && (
                   <div className="flex h-full items-center justify-center rounded-lg border border-black bg-yellow-100 p-1 text-xs font-semibold">
                     {variableType}
                   </div>
                 )}
                 <p className="rounded-lg border border-purple-500 p-2 text-center text-xs font-bold text-purple-500">
-                  {variable.varName}
+                  {varName}
                 </p>
                 <p> = </p>
                 <div className={'h-8 min-h-5 max-w-96 text-nowrap rounded-lg border px-2 text-center'}>
-                  <OverflowText text={String(getVariableValue(variable.value))} className="text-xs" />
+                  <OverflowText text={String(getVariableValue(variableValue))} className="text-xs" />
                 </div>
               </div>
             )
@@ -61,7 +60,7 @@ export function ViewVariableAssignments({ variables }: { variables: VariableAssi
         <div className="flex max-h-[300px] w-fit flex-col gap-3 overflow-y-auto">
           {variables.map((variable, i) => {
             return (
-              <div key={variable.variableName} className="flex w-full items-center gap-1">
+              <div key={JSON.stringify(variable)} className="flex w-full items-center gap-1">
                 <p className="rounded-lg border border-purple-500 p-2 text-center text-xs font-bold text-purple-500">
                   arg{i}
                 </p>
@@ -71,7 +70,7 @@ export function ViewVariableAssignments({ variables }: { variables: VariableAssi
                     'flex h-8 min-h-5 max-w-96 items-center justify-center text-nowrap rounded-lg border px-2 text-center'
                   }
                 >
-                  {`{${variable.variableName}}`}
+                  {getVariable(variable)}
                 </div>
               </div>
             )

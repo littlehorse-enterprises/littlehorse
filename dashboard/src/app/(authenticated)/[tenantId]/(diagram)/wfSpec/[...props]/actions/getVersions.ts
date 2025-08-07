@@ -16,7 +16,11 @@ export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionL
   const bookmark = props.bookmark ? Buffer.from(props.bookmark) : undefined
   const client = getClient({ tenantId, accessToken: session?.accessToken })
 
-  const specs = await client.searchWfSpec({ name, bookmark, limit: SEARCH_DEFAULT_LIMIT })
+  const specs = await client.searchWfSpec({
+    wfSpecCriteria: { $case: 'name', value: name },
+    bookmark,
+    limit: SEARCH_DEFAULT_LIMIT,
+  })
 
   const versions = specs.results.map(({ majorVersion, revision }) => {
     return `${majorVersion}.${revision}`
