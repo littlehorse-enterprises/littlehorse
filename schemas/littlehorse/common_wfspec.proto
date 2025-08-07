@@ -172,7 +172,11 @@ message TypeDefinition {
 
     StructDefId struct_def_id = 5;
     
+    // Object Def
     InlineStructDef inline_struct_def = 6;
+
+    // Array Def
+    InlineArrayDef array = 7;
   }
 
   // For compatibility purposes.
@@ -345,6 +349,10 @@ message TaskNode {
 message InlineStructDef {
   // The fields in this schema.
   map<string, StructFieldDef> fields = 1;
+}
+
+message InlineArrayDef {
+  TypeDefinition element_type = 1;
 }
 
 // A `SchemaFieldDef` defines a field inside a `StructDef`.

@@ -39,19 +39,58 @@ public interface TypeDefinitionOrBuilder extends
   io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();
 
   /**
+   * <pre>
+   * Object Def
+   * </pre>
+   *
    * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
    * @return Whether the inlineStructDef field is set.
    */
   boolean hasInlineStructDef();
   /**
+   * <pre>
+   * Object Def
+   * </pre>
+   *
    * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
    * @return The inlineStructDef.
    */
   io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef();
   /**
+   * <pre>
+   * Object Def
+   * </pre>
+   *
    * <code>.littlehorse.InlineStructDef inline_struct_def = 6;</code>
    */
   io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder();
+
+  /**
+   * <pre>
+   * Array Def
+   * </pre>
+   *
+   * <code>.littlehorse.InlineArrayDef array = 7;</code>
+   * @return Whether the array field is set.
+   */
+  boolean hasArray();
+  /**
+   * <pre>
+   * Array Def
+   * </pre>
+   *
+   * <code>.littlehorse.InlineArrayDef array = 7;</code>
+   * @return The array.
+   */
+  io.littlehorse.sdk.common.proto.InlineArrayDef getArray();
+  /**
+   * <pre>
+   * Array Def
+   * </pre>
+   *
+   * <code>.littlehorse.InlineArrayDef array = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getArrayOrBuilder();
 
   /**
    * <pre>

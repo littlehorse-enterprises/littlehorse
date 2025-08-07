@@ -122,16 +122,18 @@ class VariableDef(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
-    __slots__ = ["primitive_type", "struct_def_id", "inline_struct_def", "masked"]
+    __slots__ = ["primitive_type", "struct_def_id", "inline_struct_def", "array", "masked"]
     PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     INLINE_STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
+    ARRAY_FIELD_NUMBER: _ClassVar[int]
     MASKED_FIELD_NUMBER: _ClassVar[int]
     primitive_type: _common_enums_pb2.VariableType
     struct_def_id: _object_id_pb2.StructDefId
     inline_struct_def: InlineStructDef
+    array: InlineArrayDef
     masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_struct_def: _Optional[_Union[InlineStructDef, _Mapping]] = ..., masked: bool = ...) -> None: ...
+    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_struct_def: _Optional[_Union[InlineStructDef, _Mapping]] = ..., array: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: bool = ...) -> None: ...
 
 class ReturnType(_message.Message):
     __slots__ = ["return_type"]
@@ -214,6 +216,12 @@ class InlineStructDef(_message.Message):
     FIELDS_FIELD_NUMBER: _ClassVar[int]
     fields: _containers.MessageMap[str, StructFieldDef]
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
+
+class InlineArrayDef(_message.Message):
+    __slots__ = ["element_type"]
+    ELEMENT_TYPE_FIELD_NUMBER: _ClassVar[int]
+    element_type: TypeDefinition
+    def __init__(self, element_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
     __slots__ = ["field_type", "default_value"]
