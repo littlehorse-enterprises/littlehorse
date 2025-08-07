@@ -25,6 +25,4 @@ public @interface LHType {
     boolean masked();
 
     String name() default "";
-
-    String structDefName() default "";
 }

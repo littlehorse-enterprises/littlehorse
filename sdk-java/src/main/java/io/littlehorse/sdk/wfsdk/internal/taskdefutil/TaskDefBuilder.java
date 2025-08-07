@@ -36,23 +36,8 @@ public class TaskDefBuilder {
         return out.build();
     }
 
-    public List<StructDef> buildStructDefsFromTaskSignature() {
-        if (signature.getStructDefDependencies().isEmpty()) return List.of();
-
-        List<StructDef> structDefs = new ArrayList<>();
-
-        for (Class<?> structDefClass : signature.getStructDefDependencies()) {
-            LHStructDef lhStructDef = structDefClass.getAnnotation(LHStructDef.class);
-
-            StructDef.Builder structDef = StructDef.newBuilder();
-            structDef.setId(StructDefId.newBuilder().setName(lhStructDef.name()));
-            structDef.setDescription(lhStructDef.description());
-            structDef.setStructDef(StructDefUtil.buildInlineStructDef(structDefClass));
-
-            structDefs.add(structDef.build());
-        }
-
-        return Collections.unmodifiableList(structDefs);
+    public List<StructDef> getStructDefDependencies() {
+        return this.signature.getStructDefDependencies();
     }
 
     @Override
