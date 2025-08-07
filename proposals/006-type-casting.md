@@ -85,6 +85,34 @@ This proposal **only covers primitive types**: `INT`, `DOUBLE`, `STR`, `BOOL`, `
 ### 2. Manual Conversions (Explicit Casting)
 - All other primitive conversions require explicit `.cast()` calls
 - Provides safety for potentially unsafe conversions
+- **Important: Casting is non-mutating** - creates a converted copy without modifying the original value
+
+## Design Principles
+
+### Non-Mutating Operations
+**Casting never modifies the original variable or value.** Instead, it produces a new value with the target type that can be assigned to variables or passed to task inputs. The original value remains unchanged in its original location.
+
+### Value Resolution Context  
+Casting operations are resolved at the point where the value is consumed (variable assignment, task input, etc.), not when the casting expression is evaluated. This ensures type safety and allows the same source value to be cast to different types in different contexts without affecting the original.
+
+**Important**: Calling `stringVar.cast(VariableType.INT)` alone creates a casting expression but does not immediately perform the conversion. The actual type conversion happens when the expression is consumed:
+
+```java
+// This creates a casting expression (lazy evaluation)
+var castExpression = stringVar.cast(VariableType.INT);
+
+// The actual conversion happens here when consumed:
+wf.execute("process-age", castExpression);        // Cast resolved here
+intVar.assign(castExpression);                    // Cast resolved here again
+```
+
+### Output Assignment
+Cast operations produce outputs that can be:
+- Assigned to variables: `myVar = sourceVar.cast(INT)`
+- Used as task inputs: `wf.execute("task", sourceVar.cast(DOUBLE))`
+- Used in any context where a value is consumed
+
+The casting operation creates a new typed value without mutating the source.
 
 ## Conversion Rules
 
@@ -155,116 +183,154 @@ public static Workflow getWorkflow() {
         NodeOutput doubleOutput = wf.execute("double-method", doubleVar); // Returns 3.15
         NodeOutput intOutput = wf.execute("int-method", doubleOutput.cast(VariableType.INT)); // Cast to 3
         
-        // Important: Casting creates new values, doesn't modify originals
-        wf.execute("double-method", doubleOutput); // Original value still 3.15
+        // IMPORTANT: Casting creates new values, doesn't modify originals
+        wf.execute("double-method", doubleOutput); // Original value still 3.15 (unchanged)
+        
+        // Example: Same source value can be cast to different types
+        wf.execute("process-as-int", stringVar.cast(VariableType.INT));      // stringVar → INT
+        wf.execute("process-as-double", stringVar.cast(VariableType.DOUBLE)); // stringVar → DOUBLE  
+        wf.execute("process-as-string", stringVar);                          // stringVar unchanged (STR)
     });
 }
-
-// Conversions that should fail (no clear conversion rule)
-// wf.execute("boolean-method", intVar.cast(VariableType.BOOL)); // Not allowed
 ```
+
+
+**SDK Usage Examples:**
+```java
+public static Workflow getCastingWorkflow() {
+    return new WorkflowImpl("casting-example", wf -> {
+        WfRunVariable stringVar = wf.addVariable("user-id", VariableType.STR);
+        
+        // Cast STR to INT when passing to task (manual casting required)
+        wf.execute("process-age", stringVar.cast(VariableType.INT));
+    });
+}
+```
+
+```
+
+### JSON Example with Casting
+
+```json
+{
+  "nodes": {
+    "1-greet-TASK": {
+      "task": {
+        "taskDefId": {"name": "greet"},
+        "variables": [
+          {
+            "variableName": "input-name",
+            "castTo": "INT"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+This shows casting in task inputs: `"castTo": "INT"` when passing variable to task.
 
 ## Implementation
 
 ### Protocol Buffer Changes
 
-The casting functionality leverages the existing `Expression` structure in `VariableAssignment` by adding a new `CAST` operation to the `VariableMutationType` enum.
+The casting functionality extends the `VariableAssignment` message with an optional casting field that allows type conversion at the point of value resolution.
 
-#### Extended VariableMutationType Enum
+#### Extended VariableAssignment with Casting Support
 
 ```protobuf
-// Enumerates the available operations to mutate a variable in a WfRun.
-enum VariableMutationType {
-// Existing Codee
-  CAST = 9;
+message VariableAssignment {
+  // Existing nested messages...
+  message FormatString { ... }
+  message NodeOutputReference { ... }
+  message Expression { ... }
+
+  optional string json_path = 1;
+
+  // The oneof determines where the value is resolved from
+  oneof source {
+    string variable_name = 2;
+    VariableValue literal_value = 3;
+    FormatString format_string = 4;
+    NodeOutputReference node_output = 5;
+    Expression expression = 6;
+  }
+
+  // NEW: Optional casting at point of value resolution
+  // If specified, the resolved value will be cast to this type before being used.
+  // This allows non-mutating type conversions anywhere VariableAssignment is used.
+  // IMPORTANT: Original values remain unchanged; casting creates new typed values.
+  optional VariableType cast_to = 7;
 }
 ```
 
-#### How CAST Works in Expressions
+#### How Casting Works
 
-For casting operations, we use the existing `Expression` structure where:
-- **LHS**: The value to be cast (any `VariableAssignment`)
-- **Operation**: `CAST` (the new operation)
-- **RHS**: A `literal_value` containing the target `VariableType` as an `INT`
+**Non-Mutating Type Conversion**: Casting happens at the point of value resolution, making sure that original values are never modified.
 
 ```protobuf
-// Existing Expression structure (no changes needed)
-message Expression {
-  // The left-hand-side of the expression (value to cast)
-  VariableAssignment lhs = 1;
-  // The operator in the expression (CAST for type casting)
-  VariableMutationType operation = 2;
-  // The right-hand-side (target type as INT literal)
-  VariableAssignment rhs = 3;
+// Cast variable to INT when passing to task
+TaskNode {
+  variables: [
+    {
+      variable_name: "string-age"
+      cast_to: INT
+    }
+  ]
+}
+
+// Cast node output to INT in variable mutation  
+VariableMutation {
+  lhs_name: "age-value"
+  operation: ASSIGN
+  rhs_assignment: {
+    node_output: { node_name: "get-string-age" }
+    cast_to: INT
+  }
 }
 ```
 
 ### Casting in Variable Mutations
 
-Casting operations will occur in the `variableMutations` section of the edges. This is where data transformations happen during workflow execution.
-
-
-#### Variable Casting Examples
-
-**Java SDK Code:**
+**Java SDK Examples:**
 ```java
 public static Workflow getWorkflow() {
-    return new WorkflowImpl("casting-examples", wf -> {
+    return new WorkflowImpl("casting-mutations", wf -> {
         WfRunVariable stringVar = wf.addVariable("input-name", VariableType.STR);
         WfRunVariable intVar = wf.addVariable("age", VariableType.INT);
+        WfRunVariable doubleVar = wf.addVariable("score", VariableType.DOUBLE);
 
-        // 1. VARIABLE CASTING - Direct casting in task parameters
-        wf.execute("int-method", stringVar.cast(VariableType.INT));    // STR → INT
-
-        // 2. NODE OUTPUT CASTING - Casting task results
-        var result = wf.execute("get-string", stringVar);              // Returns STR
-        wf.execute("int-method", result.cast(VariableType.INT));       // Cast output → INT
-
-        // 3. VARIABLE ASSIGNMENT FROM NODE CASTING - Assign casted output to variable
-        intVar.assign(result.cast(VariableType.INT));                  // STR output → INT variable
-        wf.execute("process-age", intVar);
+        // Execute task that returns a string number
+        var result = wf.execute("get-age-string", stringVar);  // Returns STR like "25"
+        
+        // Cast and assign in variable mutations (manual casting required)
+        intVar.assign(result.cast(VariableType.INT));          // Cast STR → INT (result unchanged)
+        doubleVar.assign(result.cast(VariableType.DOUBLE));    // Cast STR → DOUBLE (result unchanged)
+        
+        // The original result value remains STR "25" - casting created new typed copies
+        wf.execute("process-data", intVar, doubleVar);
     });
 }
 ```
 
-
-### SDK Changes (Backwards Compatible)
 ```java
-// Add cast() methods to existing interfaces
-public interface WfRunVariable {
-    // Existing methods unchanged...
-    WfRunVariable cast(VariableType targetType);  // NEW - Returns new variable, doesn't modify original
-}
-
-public interface NodeOutput {
-    // Existing methods unchanged...
-    NodeOutput cast(VariableType targetType);     // NEW - Returns new output, doesn't modify original
+public static Workflow getTaskInputCasting() {
+    return new WorkflowImpl("task-input-casting", wf -> {
+        WfRunVariable stringVar = wf.addVariable("age-string", VariableType.STR);
+        
+        // Cast STR to INT when passing to task (manual casting required)
+        wf.execute("process-age", stringVar.cast(VariableType.INT));
+    });
 }
 ```
 
-**Important**: Casting operations are **immutable** - they create new values without modifying the original variable or output. This ensures data integrity and prevents unexpected side effects.
-
-### Server-Side Changes
-- **Automatic conversions**: Server performs safe conversions during wf execution
-- **Enhanced validation**: Better error messages for type mismatches
-- **Backwards compatible**: All existing workflows continue to work unchanged
-
-### Error Messages (Improved)
 ```java
-// Before: "Task input variable with name arg1 at position 1 expects type STR but is type INT"
-// An error should't happen here because of automatic casting to STR
-
-// For manual casts:
-// "Task 'process-age' parameter 'age' expects INT but received STR 'abc'. Use .cast(INT) or fix the input."
+// JSON path with casting
+var jsonResult = wf.execute("get-user-data", stringVar);  // Returns JSON
+intVar.assign(jsonResult.jsonPath("$.age").cast(VariableType.INT));
+doubleVar.assign(jsonResult.jsonPath("$.score").cast(VariableType.DOUBLE));
 ```
-
-## Benefits
-
-1. **Immediate Relief**: Existing code with INT→STR and INT→DOUBLE issues works automatically
-2. **Type Safety**: Potentially unsafe conversions require explicit intent
-3. **Backwards Compatible**: Zero breaking changes, existing workflows continue working
-4. **Better UX**: Clear error messages guide users to solutions
-5. **Performance**: Automatic conversions are fast, explicit casts only when needed
 
 ## Future Considerations
 
