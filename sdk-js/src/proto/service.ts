@@ -30,6 +30,10 @@ import {
   ExternalEvent,
   ExternalEventDef,
   ExternalEventRetentionPolicy,
+  ExternalEventValidationPolicy,
+  externalEventValidationPolicyFromJSON,
+  externalEventValidationPolicyToJSON,
+  externalEventValidationPolicyToNumber,
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -354,7 +358,14 @@ export interface PutExternalEventDefRequest {
     | ReturnType
     | undefined;
   /** If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature. */
-  correlatedEventConfig?: CorrelatedEventConfig | undefined;
+  correlatedEventConfig?:
+    | CorrelatedEventConfig
+    | undefined;
+  /**
+   * Policys that represent when an external even post is valid for instance
+   * require wfRun to exist at time of post
+   */
+  validationPolicy?: ExternalEventValidationPolicy | undefined;
 }
 
 /** Request used to create an ExternalEvent. */
@@ -2573,7 +2584,13 @@ export const PutUserTaskDefRequest = {
 };
 
 function createBasePutExternalEventDefRequest(): PutExternalEventDefRequest {
-  return { name: "", retentionPolicy: undefined, contentType: undefined, correlatedEventConfig: undefined };
+  return {
+    name: "",
+    retentionPolicy: undefined,
+    contentType: undefined,
+    correlatedEventConfig: undefined,
+    validationPolicy: undefined,
+  };
 }
 
 export const PutExternalEventDefRequest = {
@@ -2589,6 +2606,9 @@ export const PutExternalEventDefRequest = {
     }
     if (message.correlatedEventConfig !== undefined) {
       CorrelatedEventConfig.encode(message.correlatedEventConfig, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.validationPolicy !== undefined) {
+      writer.uint32(40).int32(externalEventValidationPolicyToNumber(message.validationPolicy));
     }
     return writer;
   },
@@ -2628,6 +2648,13 @@ export const PutExternalEventDefRequest = {
 
           message.correlatedEventConfig = CorrelatedEventConfig.decode(reader, reader.uint32());
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.validationPolicy = externalEventValidationPolicyFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2647,6 +2674,9 @@ export const PutExternalEventDefRequest = {
       correlatedEventConfig: isSet(object.correlatedEventConfig)
         ? CorrelatedEventConfig.fromJSON(object.correlatedEventConfig)
         : undefined,
+      validationPolicy: isSet(object.validationPolicy)
+        ? externalEventValidationPolicyFromJSON(object.validationPolicy)
+        : undefined,
     };
   },
 
@@ -2663,6 +2693,9 @@ export const PutExternalEventDefRequest = {
     }
     if (message.correlatedEventConfig !== undefined) {
       obj.correlatedEventConfig = CorrelatedEventConfig.toJSON(message.correlatedEventConfig);
+    }
+    if (message.validationPolicy !== undefined) {
+      obj.validationPolicy = externalEventValidationPolicyToJSON(message.validationPolicy);
     }
     return obj;
   },
@@ -2683,6 +2716,7 @@ export const PutExternalEventDefRequest = {
       (object.correlatedEventConfig !== undefined && object.correlatedEventConfig !== null)
         ? CorrelatedEventConfig.fromPartial(object.correlatedEventConfig)
         : undefined;
+    message.validationPolicy = object.validationPolicy ?? undefined;
     return message;
   },
 };

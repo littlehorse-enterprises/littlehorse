@@ -162,4 +162,32 @@ public interface ExternalEventDefOrBuilder extends
    * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 5;</code>
    */
   io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder getCorrelatedEventConfigOrBuilder();
+
+  /**
+   * <pre>
+   * Extra validation surrounding when an external event can be posted to a wfRun
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
+   * @return Whether the validationPolicy field is set.
+   */
+  boolean hasValidationPolicy();
+  /**
+   * <pre>
+   * Extra validation surrounding when an external event can be posted to a wfRun
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
+   * @return The enum numeric value on the wire for validationPolicy.
+   */
+  int getValidationPolicyValue();
+  /**
+   * <pre>
+   * Extra validation surrounding when an external event can be posted to a wfRun
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
+   * @return The validationPolicy.
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy getValidationPolicy();
 }

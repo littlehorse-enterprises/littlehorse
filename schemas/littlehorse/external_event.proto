@@ -68,6 +68,9 @@ message ExternalEventDef {
   // If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
   // type.
   optional CorrelatedEventConfig correlated_event_config = 5;
+
+  // Extra validation surrounding when an external event can be posted
+  optional ExternalEventValidationPolicy validation_policy = 6;
 }
 
 // Configures behavior of `CorrelatedEvent`s created for a specific `ExternalEventDef`.
@@ -118,4 +121,16 @@ message ExternalEventRetentionPolicy {
     // has not yet been claimed by a WfRun.
     int64 seconds_after_put = 1;
   }
+}
+// Policies to provide extra validations on when an external 
+// event can be posted to a wfRun
+enum ExternalEventValidationPolicy{
+  // Default no extra validations
+  NONE = 0;
+  // Requires the wfRun to exist prior to an
+  // event being posted 
+  REQUIRE_WF_RUN = 1;
+  // Requires not only the wfRun to exist but also
+  // the corresponding wfSpec to hold a reference to the external event
+  REQUIRE_WF_SPEC_REF = 2;
 }

@@ -490,6 +490,11 @@ message PutExternalEventDefRequest {
 
   // If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
   optional CorrelatedEventConfig correlated_event_config = 4;
+
+  // Policys that represent when an external even post is valid for instance
+  // require wfRun to exist at time of post
+  optional ExternalEventValidationPolicy validation_policy = 5;
+
 }
 
 // Request used to create an ExternalEvent.

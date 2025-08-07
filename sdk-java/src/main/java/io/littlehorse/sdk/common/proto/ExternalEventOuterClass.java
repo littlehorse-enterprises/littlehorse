@@ -58,28 +58,32 @@ public final class ExternalEventOuterClass {
       "hread_run_number\030\004 \001(\005H\000\210\001\001\022\036\n\021node_run_" +
       "position\030\005 \001(\005H\001\210\001\001\022\017\n\007claimed\030\006 \001(\010B\024\n\022" +
       "_thread_run_numberB\024\n\022_node_run_position" +
-      "\"\347\002\n\020ExternalEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
+      "\"\311\003\n\020ExternalEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
       "lehorse.ExternalEventDefId\022.\n\ncreated_at" +
       "\030\002 \001(\0132\032.google.protobuf.Timestamp\022C\n\020re" +
       "tention_policy\030\003 \001(\0132).littlehorse.Exter" +
       "nalEventRetentionPolicy\0226\n\020type_informat" +
       "ion\030\004 \001(\0132\027.littlehorse.ReturnTypeH\000\210\001\001\022" +
       "H\n\027correlated_event_config\030\005 \001(\0132\".littl" +
-      "ehorse.CorrelatedEventConfigH\001\210\001\001B\023\n\021_ty" +
-      "pe_informationB\032\n\030_correlated_event_conf" +
-      "ig\"i\n\025CorrelatedEventConfig\022\030\n\013ttl_secon" +
-      "ds\030\001 \001(\003H\000\210\001\001\022&\n\036delete_after_first_corr" +
-      "elation\030\002 \001(\010B\016\n\014_ttl_seconds\"\321\001\n\017Correl" +
-      "atedEvent\022*\n\002id\030\001 \001(\0132\036.littlehorse.Corr" +
-      "elatedEventId\022.\n\ncreated_at\030\002 \001(\0132\032.goog" +
-      "le.protobuf.Timestamp\022+\n\007content\030\003 \001(\0132\032" +
-      ".littlehorse.VariableValue\0225\n\017external_e" +
-      "vents\030\004 \003(\0132\034.littlehorse.ExternalEventI" +
-      "d\"P\n\034ExternalEventRetentionPolicy\022\033\n\021sec" +
-      "onds_after_put\030\001 \001(\003H\000B\023\n\021ext_evt_gc_pol" +
-      "icyBM\n\037io.littlehorse.sdk.common.protoP\001" +
-      "Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Pro" +
-      "tob\006proto3"
+      "ehorse.CorrelatedEventConfigH\001\210\001\001\022J\n\021val" +
+      "idation_policy\030\006 \001(\0162*.littlehorse.Exter" +
+      "nalEventValidationPolicyH\002\210\001\001B\023\n\021_type_i" +
+      "nformationB\032\n\030_correlated_event_configB\024" +
+      "\n\022_validation_policy\"i\n\025CorrelatedEventC" +
+      "onfig\022\030\n\013ttl_seconds\030\001 \001(\003H\000\210\001\001\022&\n\036delet" +
+      "e_after_first_correlation\030\002 \001(\010B\016\n\014_ttl_" +
+      "seconds\"\321\001\n\017CorrelatedEvent\022*\n\002id\030\001 \001(\0132" +
+      "\036.littlehorse.CorrelatedEventId\022.\n\ncreat" +
+      "ed_at\030\002 \001(\0132\032.google.protobuf.Timestamp\022" +
+      "+\n\007content\030\003 \001(\0132\032.littlehorse.VariableV" +
+      "alue\0225\n\017external_events\030\004 \003(\0132\034.littleho" +
+      "rse.ExternalEventId\"P\n\034ExternalEventRete" +
+      "ntionPolicy\022\033\n\021seconds_after_put\030\001 \001(\003H\000" +
+      "B\023\n\021ext_evt_gc_policy*V\n\035ExternalEventVa" +
+      "lidationPolicy\022\010\n\004NONE\020\000\022\022\n\016REQUIRE_WF_R" +
+      "UN\020\001\022\027\n\023REQUIRE_WF_SPEC_REF\020\002BM\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034" +
+      "LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -100,7 +104,7 @@ public final class ExternalEventOuterClass {
     internal_static_littlehorse_ExternalEventDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventDef_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "RetentionPolicy", "TypeInformation", "CorrelatedEventConfig", "TypeInformation", "CorrelatedEventConfig", });
+        new java.lang.String[] { "Id", "CreatedAt", "RetentionPolicy", "TypeInformation", "CorrelatedEventConfig", "ValidationPolicy", "TypeInformation", "CorrelatedEventConfig", "ValidationPolicy", });
     internal_static_littlehorse_CorrelatedEventConfig_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_CorrelatedEventConfig_fieldAccessorTable = new
