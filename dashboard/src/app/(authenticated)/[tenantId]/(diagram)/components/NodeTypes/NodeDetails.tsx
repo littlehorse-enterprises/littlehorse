@@ -108,7 +108,6 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
           </Entry>
         </DiagramDataGroup>
       )}
-      <div></div>
       {diagramDataGroups.map((element, i) => {
         if (React.isValidElement(element) && element.type === DiagramDataGroup) {
           const currentIndex = (hasNodeRun ? 1 : 0) + i
