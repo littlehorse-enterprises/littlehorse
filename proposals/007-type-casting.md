@@ -261,7 +261,7 @@ message VariableAssignment {
   // If specified, the resolved value will be cast to this type before being used.
   // This allows non-mutating type conversions anywhere VariableAssignment is used.
   // IMPORTANT: Original values remain unchanged; casting creates new typed values.
-  optional VariableType cast_to = 7;
+  optional TypeDefinition cast_to = 7;
 }
 ```
 
