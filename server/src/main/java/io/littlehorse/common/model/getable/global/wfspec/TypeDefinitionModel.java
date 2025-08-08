@@ -114,6 +114,23 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         return false;
     }
 
+    private static boolean isPrimitive(VariableType type) {
+        switch (type) {
+            case INT:
+            case DOUBLE:
+            case STR:
+            case BOOL:
+            case WF_RUN_ID:
+            case BYTES:
+                return true;
+            case JSON_OBJ:
+            case JSON_ARR:
+            case UNRECOGNIZED:
+            default:
+                return false;
+        }
+    }
+
     public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {
         TypeDefinitionModel out = new TypeDefinitionModel();
         out.initFrom(proto, context);
@@ -125,22 +142,40 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the VariableValueModel matches this type.
+     * Returns true if the VariableValueModel matches this type or can be casted to it (autocast).
+     * Supports automatic casting for primitive types:
+     * - Any primitive type → STR
+     * - INT → DOUBLE
      */
     public boolean isCompatibleWith(VariableValueModel value) {
-        // TODO: Extend this when we add StructDef's and Structs.
-        return value.getType() == type;
+        return canCastTo(value.getTypeDefinition().getType(), this.type);
     }
 
     /**
-     * Returns true if the other type is compatible with this type. Note that it requires
-     * exact match for now. In the future we'll support casting.
+     * Returns true if this type is compatible with the other type.
+     * This method answers: "Can this type be used where the other type is expected?"
+     * Supports automatic casting for primitive types:
+     * - Any primitive type → STR
+     * - INT → DOUBLE
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
-        if (type == VariableType.INT || type == VariableType.DOUBLE) {
-            return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
+        return canCastTo(this.getType(), other.getType());
+    }
+
+    /**
+     * Checks if the source type can be cast to the target type.
+     * Implements automatic casting rules:
+     * - Any primitive type → STR (automatic)
+     * - INT → DOUBLE (automatic)
+     */
+    public static boolean canCastTo(VariableType sourceType, VariableType targetType) {
+        if (sourceType == targetType) {
+            return true;
         }
-        return this.getType().equals(other.getType());
+        if (targetType == VariableType.STR && isPrimitive(sourceType)) {
+            return true;
+        }
+        return sourceType == VariableType.INT && targetType == VariableType.DOUBLE;
     }
 
     @Override
@@ -149,5 +184,42 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         String result = type.toString();
         if (masked) result += " MASKED";
         return result;
+    }
+
+    /**
+     * Performs casting of a VariableValueModel to this type.
+     * Only handles automatic casting rules:
+     * - Any primitive type → STR (automatic)
+     * - INT → DOUBLE (automatic)
+     *
+     * @param sourceValue The value to cast
+     * @return A new VariableValueModel with the target type, or the original if no casting is needed
+     * @throws IllegalArgumentException if automatic casting is not supported for this type combination
+     */
+    public VariableValueModel castTo(VariableValueModel sourceValue) {
+        VariableType sourceType = sourceValue.getTypeDefinition().getType();
+        VariableType targetType = this.type;
+
+        if (sourceType == targetType) {
+            return sourceValue;
+        }
+
+        if (!canCastTo(sourceType, targetType)) {
+            throw new IllegalArgumentException(
+                    "Casting from " + sourceType + " to " + targetType + " is not supported");
+        }
+
+        try {
+            if (targetType == VariableType.STR) {
+                return sourceValue.asStr();
+            } else if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
+                return sourceValue.asDouble();
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Failed to cast " + sourceType + " to " + targetType + ": " + e.getMessage(), e);
+        }
+
+        throw new IllegalArgumentException("Unsupported casting from " + sourceType + " to " + targetType);
     }
 }

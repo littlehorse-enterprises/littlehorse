@@ -202,6 +202,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
-        return baseType == type;
+        return TypeDefinitionModel.canCastTo(baseType, type);
     }
 }
