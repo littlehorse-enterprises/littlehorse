@@ -74,7 +74,7 @@ public class SearchStructDefRequestModel
                 out.setPrefix(prefix);
                 break;
             case STRUCTDEFCRITERIA_NOT_SET:
-                // nothing to do, we just return all the StuctDef's
+                // nothing to do, we just return all the StructDef's
         }
 
         return out;
