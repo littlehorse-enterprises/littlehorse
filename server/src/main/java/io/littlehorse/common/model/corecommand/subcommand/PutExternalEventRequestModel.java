@@ -125,7 +125,9 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
                     }
                     for (NodeModel node : thread.nodes.values()) {
                         if (node.getType() == NodeCase.EXTERNAL_EVENT) {
-                            ExternalEventDefModel nodeEED = service.getExternalEventDef(node.getExternalEventNode().getExternalEventDefId().getName());
+                            ExternalEventDefModel nodeEED = service.getExternalEventDef(node.getExternalEventNode()
+                                    .getExternalEventDefId()
+                                    .getName());
                             if (eed.equals(nodeEED)) {
                                 wfSpecHoldsRef = true;
                                 break outer;
