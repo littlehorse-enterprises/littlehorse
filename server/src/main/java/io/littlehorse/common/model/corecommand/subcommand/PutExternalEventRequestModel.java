@@ -125,14 +125,14 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
                     }
                     for (NodeModel node : thread.nodes.values()) {
                         if (node.getType() == NodeCase.EXTERNAL_EVENT) {
-                            if (eed.equals(node.getExternalEventNode().getExternalEventDef())) {
+                            ExternalEventDefModel nodeEED = service.getExternalEventDef(node.getExternalEventNode().getExternalEventDefId().getName());
+                            if (eed.equals(nodeEED)) {
                                 wfSpecHoldsRef = true;
                                 break outer;
                             }
                         }
                     }
                 }
-
                 if (!wfSpecHoldsRef) {
                     throw new LHApiException(
                             Status.NOT_FOUND,
