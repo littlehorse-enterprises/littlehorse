@@ -11,21 +11,24 @@ public class CastingWorker {
 
     @LHTaskMethod("string-method")
     public String stringMethod(String value, WorkerContext context) {
-        context.log("Executing string-method with value:"+ value);
+        context.log("Executing string-method with value:" + value);
         return "String: " + value;
     }
+
     @LHTaskMethod("int-method")
-    public int intMethod(int value, WorkerContext context ) {
+    public int intMethod(int value, WorkerContext context) {
         int result = value * 2;
         context.log("Executing int-method with value: " + value + ", and doubling its value to: " + result);
         return result;
     }
+
     @LHTaskMethod("double-method")
     public double doubleMethod(double value, WorkerContext context) {
         double result = value * 0.9;
         context.log("Executing double-method with value: " + value + ", and reducing its value to: " + result);
         return result;
     }
+
     @LHTaskMethod("bool-method")
     public boolean boolMethod(boolean value, WorkerContext context) {
         boolean result = !value;

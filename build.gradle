@@ -1,9 +1,23 @@
 plugins {
     id "io.github.gradle-nexus.publish-plugin" version "2.0.0"
+    id 'com.diffplug.spotless' version '6.25.0'
 }
+
 allprojects {
     group "${group}"
     version "${version}"
+}
+
+// Configure Spotless for all example projects
+configure(subprojects.findAll { it.name.startsWith('example-') }) {
+    apply plugin: 'com.diffplug.spotless'
+    
+    spotless {
+        java {
+            target('**/*.java')
+            palantirJavaFormat()
+        }
+    }
 }
 
 nexusPublishing {
