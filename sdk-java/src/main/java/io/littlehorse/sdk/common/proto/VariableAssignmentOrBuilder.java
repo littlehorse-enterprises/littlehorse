@@ -179,5 +179,41 @@ public interface VariableAssignmentOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder getExpressionOrBuilder();
 
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   * @return Whether the castTo field is set.
+   */
+  boolean hasCastTo();
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   * @return The castTo.
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinition getCastTo();
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getCastToOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }

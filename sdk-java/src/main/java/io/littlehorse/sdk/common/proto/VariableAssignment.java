@@ -3239,6 +3239,53 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
   }
 
+  public static final int CAST_TO_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.TypeDefinition castTo_;
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   * @return Whether the castTo field is set.
+   */
+  @java.lang.Override
+  public boolean hasCastTo() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   * @return The castTo.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinition getCastTo() {
+    return castTo_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+  }
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getCastToOrBuilder() {
+    return castTo_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -3271,6 +3318,9 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(7, getCastTo());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -3302,6 +3352,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getCastTo());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -3321,6 +3375,11 @@ private static final long serialVersionUID = 0L;
     if (hasJsonPath()) {
       if (!getJsonPath()
           .equals(other.getJsonPath())) return false;
+    }
+    if (hasCastTo() != other.hasCastTo()) return false;
+    if (hasCastTo()) {
+      if (!getCastTo()
+          .equals(other.getCastTo())) return false;
     }
     if (!getSourceCase().equals(other.getSourceCase())) return false;
     switch (sourceCase_) {
@@ -3361,6 +3420,10 @@ private static final long serialVersionUID = 0L;
     if (hasJsonPath()) {
       hash = (37 * hash) + JSON_PATH_FIELD_NUMBER;
       hash = (53 * hash) + getJsonPath().hashCode();
+    }
+    if (hasCastTo()) {
+      hash = (37 * hash) + CAST_TO_FIELD_NUMBER;
+      hash = (53 * hash) + getCastTo().hashCode();
     }
     switch (sourceCase_) {
       case 2:
@@ -3515,13 +3578,19 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getCastToFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -3539,6 +3608,11 @@ private static final long serialVersionUID = 0L;
       }
       if (expressionBuilder_ != null) {
         expressionBuilder_.clear();
+      }
+      castTo_ = null;
+      if (castToBuilder_ != null) {
+        castToBuilder_.dispose();
+        castToBuilder_ = null;
       }
       sourceCase_ = 0;
       source_ = null;
@@ -3580,6 +3654,12 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.jsonPath_ = jsonPath_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.castTo_ = castToBuilder_ == null
+            ? castTo_
+            : castToBuilder_.build();
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -3653,6 +3733,9 @@ private static final long serialVersionUID = 0L;
         jsonPath_ = other.jsonPath_;
         bitField0_ |= 0x00000001;
         onChanged();
+      }
+      if (other.hasCastTo()) {
+        mergeCastTo(other.getCastTo());
       }
       switch (other.getSourceCase()) {
         case VARIABLE_NAME: {
@@ -3746,6 +3829,13 @@ private static final long serialVersionUID = 0L;
               sourceCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  getCastToFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4720,6 +4810,188 @@ private static final long serialVersionUID = 0L;
       sourceCase_ = 6;
       onChanged();
       return expressionBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.TypeDefinition castTo_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> castToBuilder_;
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * @return Whether the castTo field is set.
+     */
+    public boolean hasCastTo() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * @return The castTo.
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition getCastTo() {
+      if (castToBuilder_ == null) {
+        return castTo_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+      } else {
+        return castToBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     */
+    public Builder setCastTo(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (castToBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        castTo_ = value;
+      } else {
+        castToBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     */
+    public Builder setCastTo(
+        io.littlehorse.sdk.common.proto.TypeDefinition.Builder builderForValue) {
+      if (castToBuilder_ == null) {
+        castTo_ = builderForValue.build();
+      } else {
+        castToBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     */
+    public Builder mergeCastTo(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (castToBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          castTo_ != null &&
+          castTo_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
+          getCastToBuilder().mergeFrom(value);
+        } else {
+          castTo_ = value;
+        }
+      } else {
+        castToBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     */
+    public Builder clearCastTo() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      castTo_ = null;
+      if (castToBuilder_ != null) {
+        castToBuilder_.dispose();
+        castToBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getCastToBuilder() {
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return getCastToFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getCastToOrBuilder() {
+      if (castToBuilder_ != null) {
+        return castToBuilder_.getMessageOrBuilder();
+      } else {
+        return castTo_ == null ?
+            io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+      }
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> 
+        getCastToFieldBuilder() {
+      if (castToBuilder_ == null) {
+        castToBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder>(
+                getCastTo(),
+                getParentForChildren(),
+                isClean());
+        castTo_ = null;
+      }
+      return castToBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
