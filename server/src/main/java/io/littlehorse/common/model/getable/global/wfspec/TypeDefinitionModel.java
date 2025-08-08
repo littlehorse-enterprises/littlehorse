@@ -115,20 +115,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     private static boolean isPrimitive(VariableType type) {
-        switch (type) {
-            case INT:
-            case DOUBLE:
-            case STR:
-            case BOOL:
-            case WF_RUN_ID:
-            case BYTES:
-                return true;
-            case JSON_OBJ:
-            case JSON_ARR:
-            case UNRECOGNIZED:
-            default:
-                return false;
-        }
+        return switch (type) {
+            case INT, DOUBLE, STR, BOOL, WF_RUN_ID, BYTES -> true;
+            default -> false;
+        };
     }
 
     public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {

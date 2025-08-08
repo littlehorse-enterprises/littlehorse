@@ -33,7 +33,8 @@ include(
         'output-topic',
         'spawn-thread-foreach',
         'shared-variables',
-        'workflow-events'
+        'workflow-events',
+        'casting'
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")
