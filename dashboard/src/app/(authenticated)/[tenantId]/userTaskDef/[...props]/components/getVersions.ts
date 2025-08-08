@@ -13,7 +13,11 @@ export const getVersions = async (props: Props): Promise<VersionList> => {
   const bookmark = props.bookmark ? Buffer.from(props.bookmark) : undefined
   const client = await lhClient({ tenantId })
 
-  const specs = await client.searchUserTaskDef({ name, bookmark, limit: SEARCH_DEFAULT_LIMIT })
+  const specs = await client.searchUserTaskDef({
+    userTaskDefCriteria: { $case: 'name', value: name },
+    bookmark,
+    limit: SEARCH_DEFAULT_LIMIT,
+  })
 
   const versions = specs.results.map(({ version }) => {
     return version.toString()

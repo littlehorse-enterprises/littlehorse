@@ -31,6 +31,7 @@ type OutputTopicRecord struct {
 	// The time at which the event occurred.
 	Timestamp *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	// Types that are assignable to Payload:
+	//
 	//	*OutputTopicRecord_TaskRun
 	//	*OutputTopicRecord_WorkflowEvent
 	//	*OutputTopicRecord_WfRun
@@ -199,6 +200,7 @@ type MetadataOutputTopicRecord struct {
 	// The data that was sent
 	//
 	// Types that are assignable to MetadataRecord:
+	//
 	//	*MetadataOutputTopicRecord_WfSpec
 	//	*MetadataOutputTopicRecord_TaskDef
 	//	*MetadataOutputTopicRecord_ExternalEventDef

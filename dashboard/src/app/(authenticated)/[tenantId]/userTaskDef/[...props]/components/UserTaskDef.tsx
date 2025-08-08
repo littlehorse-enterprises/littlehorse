@@ -9,7 +9,7 @@ import {
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
+import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -166,9 +166,9 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                             <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(userTaskRun.id.wfRunId)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
+                              href={`/wfRun/${wfRunIdToPath(userTaskRun.id.wfRunId)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
                             >
-                              {concatWfRunIds(userTaskRun.id.wfRunId)}
+                              {wfRunIdToPath(userTaskRun.id.wfRunId)}
                             </LinkWithTenant>
                           </TableCell>
                           <TableCell>{userTaskRun.id?.userTaskGuid}</TableCell>

@@ -1,9 +1,9 @@
 import { FC } from 'react'
 
 import { utcToLocalDateTime } from '@/app/utils'
-import { NodeRun } from 'littlehorse-client/proto'
+import { AccordionNode } from './AccordionContent'
 
-export const WaitForThreadDefDetail: FC<{ nodeRun: NodeRun }> = ({ nodeRun }) => {
+export const WaitForThreadDefDetail: FC<AccordionNode<'waitForThreads'>> = ({ nodeRun }) => {
   return (
     <div className="mb-2 items-center gap-2">
       {nodeRun?.arrivalTime && (

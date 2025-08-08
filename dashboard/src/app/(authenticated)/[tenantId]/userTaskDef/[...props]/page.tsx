@@ -1,3 +1,4 @@
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
@@ -9,8 +10,9 @@ type Props = { params: { props: string[] } }
 export default async function Page({ params: { props } }: Props) {
   const name = props[0]
   const version = props[1]
+  const { tenantId } = useWhoAmI()
   try {
-    const spec = await getUserTaskDef({ name, version })
+    const spec = await getUserTaskDef({ name, version, tenantId })
     return <UserTaskDef spec={spec} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()
