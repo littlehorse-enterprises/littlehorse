@@ -496,6 +496,26 @@ class SearchUserTaskDefRequest(_message.Message):
     name: str
     def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
 
+class SearchStructDefRequest(_message.Message):
+    __slots__ = ["bookmark", "limit", "prefix", "name"]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    PREFIX_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    prefix: str
+    name: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
+
+class StructDefIdList(_message.Message):
+    __slots__ = ["results", "bookmark"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.StructDefId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.StructDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class UserTaskDefIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
     RESULTS_FIELD_NUMBER: _ClassVar[int]
