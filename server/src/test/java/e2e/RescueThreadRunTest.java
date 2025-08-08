@@ -167,7 +167,7 @@ public class RescueThreadRunTest {
                 })
                 // We should be on a WAIT_FOR_THREADS node right now
                 .thenVerifyNodeRun(0, 4, nodeRun -> {
-                    assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
+                    assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_THREADS);
                     assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR);
                 })
                 .thenRescueThreadRun(1, false)
@@ -177,7 +177,7 @@ public class RescueThreadRunTest {
                 // What we want to do is verify that there was a *SECOND* attempt at waiting
                 // for threads.
                 .thenVerifyNodeRun(0, 5, nodeRun -> {
-                    assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
+                    assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_THREADS);
                 })
                 .start();
     }

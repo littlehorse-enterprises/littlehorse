@@ -266,6 +266,7 @@ type WorkflowRetentionPolicy struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to WfGcPolicy:
+	//
 	//	*WorkflowRetentionPolicy_SecondsAfterWfTermination
 	WfGcPolicy isWorkflowRetentionPolicy_WfGcPolicy `protobuf_oneof:"wf_gc_policy"`
 }
@@ -561,6 +562,7 @@ type ThreadRetentionPolicy struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to ThreadGcPolicy:
+	//
 	//	*ThreadRetentionPolicy_SecondsAfterThreadTermination
 	ThreadGcPolicy isThreadRetentionPolicy_ThreadGcPolicy `protobuf_oneof:"thread_gc_policy"`
 }
@@ -829,6 +831,7 @@ type FailureHandlerDef struct {
 	// The name of the ThreadSpec to run as a
 	HandlerSpecName string `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
 	// Types that are assignable to FailureToCatch:
+	//
 	//	*FailureHandlerDef_SpecificFailure
 	//	*FailureHandlerDef_AnyFailureOfType
 	FailureToCatch isFailureHandlerDef_FailureToCatch `protobuf_oneof:"failure_to_catch"`
@@ -909,8 +912,6 @@ type FailureHandlerDef_SpecificFailure struct {
 type FailureHandlerDef_AnyFailureOfType struct {
 	// Specifies that this FailureHandlerDef will be triggered for any failure matching
 	// this type (ERROR or EXCEPTION).
-	//
-	//
 	AnyFailureOfType FailureHandlerDef_LHFailureType `protobuf:"varint,3,opt,name=any_failure_of_type,json=anyFailureOfType,proto3,enum=littlehorse.FailureHandlerDef_LHFailureType,oneof"`
 }
 
@@ -930,6 +931,7 @@ type WaitForThreadsNode struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to ThreadsToWaitFor:
+	//
 	//	*WaitForThreadsNode_Threads
 	//	*WaitForThreadsNode_ThreadList
 	ThreadsToWaitFor isWaitForThreadsNode_ThreadsToWaitFor `protobuf_oneof:"threads_to_wait_for"`
@@ -1322,6 +1324,7 @@ type Node struct {
 	// fails.
 	FailureHandlers []*FailureHandlerDef `protobuf:"bytes,4,rep,name=failure_handlers,json=failureHandlers,proto3" json:"failure_handlers,omitempty"`
 	// Types that are assignable to Node:
+	//
 	//	*Node_Entrypoint
 	//	*Node_Exit
 	//	*Node_Task
@@ -1484,7 +1487,7 @@ type Node_Entrypoint struct {
 }
 
 type Node_Exit struct {
-	// Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+	// Creates an `ExitRun“. Every ThreadSpec has at least one Exit Node.
 	Exit *ExitNode `protobuf:"bytes,6,opt,name=exit,proto3,oneof"`
 }
 
@@ -1967,6 +1970,7 @@ type SleepNode struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to SleepLength:
+	//
 	//	*SleepNode_RawSeconds
 	//	*SleepNode_Timestamp
 	//	*SleepNode_IsoDate

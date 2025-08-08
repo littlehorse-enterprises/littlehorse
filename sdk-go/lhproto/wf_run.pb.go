@@ -919,6 +919,7 @@ type ThreadHaltReason struct {
 	// The reason for the halt.
 	//
 	// Types that are assignable to Reason:
+	//
 	//	*ThreadHaltReason_ParentHalted
 	//	*ThreadHaltReason_Interrupted
 	//	*ThreadHaltReason_PendingInterrupt

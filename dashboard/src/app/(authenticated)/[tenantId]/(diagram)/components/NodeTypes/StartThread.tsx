@@ -7,12 +7,13 @@ import { useThread } from '../../hooks/useThread'
 import { NodeRunsList } from '../NodeRunsList'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
+import { StartThreadNode } from 'littlehorse-client/proto'
 
-const Node: FC<NodeProps> = ({ data }) => {
+const Node: FC<NodeProps<'startThread', StartThreadNode>> = ({ data }) => {
   const { fade, nodeRunsList } = data
   const { setThread } = useThread()
-  if (data.startThread === undefined) return
-  const variables = Object.entries(data.startThread.variables)
+
+  const variables = Object.entries(data.variables)
   return (
     <>
       <NodeDetails nodeRunList={nodeRunsList}>
@@ -20,9 +21,9 @@ const Node: FC<NodeProps> = ({ data }) => {
           <h3 className="font-bold">StartThread</h3>
           <button
             className="whitespace-nowrap text-blue-500 hover:underline"
-            onClick={() => setThread({ name: data.startThread?.threadSpecName || '', number: 0 })}
+            onClick={() => setThread({ name: data.threadSpecName || '', number: 0 })}
           >
-            {data.startThread?.threadSpecName}
+            {data.threadSpecName}
           </button>
         </div>
         {variables.length > 0 && (
@@ -46,9 +47,8 @@ const Node: FC<NodeProps> = ({ data }) => {
             <PlusIcon className="h-5 w-5 rotate-45 fill-gray-500" />
           </div>
         </div>
-        <Handle type="source" position={Position.Right} className="bg-transparent" id="source-0" />
-        <Handle type="source" position={Position.Bottom} className="bg-transparent" id="bottom-0" />
-        <Handle type="target" position={Position.Left} className="bg-transparent" id="target-0" />
+        <Handle type="source" position={Position.Right} className="bg-transparent" />
+        <Handle type="target" position={Position.Left} className="bg-transparent" />
       </Fade>
     </>
   )

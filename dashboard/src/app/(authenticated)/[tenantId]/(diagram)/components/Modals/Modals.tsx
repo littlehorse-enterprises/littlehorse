@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { ModalComponents } from '.'
 import { useModal } from '../../hooks/useModal'
+import { NodeRun } from 'littlehorse-client/proto'
 
 export const Modals: FC = () => {
   const { modal } = useModal()

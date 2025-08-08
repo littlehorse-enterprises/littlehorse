@@ -8,7 +8,7 @@ export type WhoAmI = {
 }
 
 export type WithTenant = {
-  tenantId?: string
+  tenantId: string
 }
 
 export type WithBookmark = {
