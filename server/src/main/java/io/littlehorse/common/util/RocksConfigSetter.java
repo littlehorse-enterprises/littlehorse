@@ -8,8 +8,10 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
+import org.rocksdb.Env;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
+import org.rocksdb.Priority;
 import org.rocksdb.RateLimiter;
 
 @Slf4j
@@ -50,6 +52,11 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
 
+        Env rocksEnv = Env.getDefault();
+        rocksEnv.setBackgroundThreads(serverConfig.getRocksDBCompactionThreads(), Priority.LOW);
+        rocksEnv.setBackgroundThreads(serverConfig.getRocksDBFlushThreads(), Priority.HIGH);
+        options.setEnv(rocksEnv);
+
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
@@ -80,8 +87,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         if (rocksDBLogLevel.isPresent()) {
             options.setInfoLogLevel(rocksDBLogLevel.get());
         }
-
-        options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
 
         // Memtable size
         options.setWriteBufferSize(
