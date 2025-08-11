@@ -44,7 +44,6 @@ public class BasicTest {
     }
 
     @Test
-    @WithWorkers(value = "basicWorker3")
     public void runWfShouldFailWithInvalidId() {
         StatusRuntimeException caught = assertThrows(StatusRuntimeException.class, () -> {
             verifier.prepareRun(basicWf)
