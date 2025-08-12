@@ -17,6 +17,17 @@ import java.util.Properties;
 
 public class ChildWorkflowExample {
 
+    public static Workflow getGrandChild() {
+        WorkflowImpl out = new WorkflowImpl(
+            "grand-child",
+            wf -> {
+               wf.waitForEvent("some-event").registeredAs(String.class);
+            }
+        );
+        out.setParent("child");
+
+        return out;
+    }
     public static Workflow getChild() {
         WorkflowImpl out = new WorkflowImpl(
             "child",
@@ -84,6 +95,7 @@ public class ChildWorkflowExample {
         // Register a workflow
         getParent().registerWfSpec(config.getBlockingStub());
         getChild().registerWfSpec(config.getBlockingStub());
+        getGrandChild().registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();

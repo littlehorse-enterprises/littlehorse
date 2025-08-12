@@ -631,6 +631,15 @@ export interface SearchWfRunRequest {
    * where the threadRunNumber == 0).
    */
   variableFilters: VariableMatch[];
+  /** If set, only return WfRuns that are direct children of the given parent WfRun */
+  parentWfRunId?:
+    | WfRunId
+    | undefined;
+  /**
+   * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+   * using Object ID scan. If false or not set, uses index-based search for direct children only.
+   */
+  showFullTree?: boolean | undefined;
 }
 
 /** List of WfRun Id's */
@@ -4206,6 +4215,8 @@ function createBaseSearchWfRunRequest(): SearchWfRunRequest {
     earliestStart: undefined,
     latestStart: undefined,
     variableFilters: [],
+    parentWfRunId: undefined,
+    showFullTree: undefined,
   };
 }
 
@@ -4237,6 +4248,12 @@ export const SearchWfRunRequest = {
     }
     for (const v of message.variableFilters) {
       VariableMatch.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.showFullTree !== undefined) {
+      writer.uint32(88).bool(message.showFullTree);
     }
     return writer;
   },
@@ -4311,6 +4328,20 @@ export const SearchWfRunRequest = {
 
           message.variableFilters.push(VariableMatch.decode(reader, reader.uint32()));
           continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.showFullTree = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -4333,6 +4364,8 @@ export const SearchWfRunRequest = {
       variableFilters: globalThis.Array.isArray(object?.variableFilters)
         ? object.variableFilters.map((e: any) => VariableMatch.fromJSON(e))
         : [],
+      parentWfRunId: isSet(object.parentWfRunId) ? WfRunId.fromJSON(object.parentWfRunId) : undefined,
+      showFullTree: isSet(object.showFullTree) ? globalThis.Boolean(object.showFullTree) : undefined,
     };
   },
 
@@ -4365,6 +4398,12 @@ export const SearchWfRunRequest = {
     if (message.variableFilters?.length) {
       obj.variableFilters = message.variableFilters.map((e) => VariableMatch.toJSON(e));
     }
+    if (message.parentWfRunId !== undefined) {
+      obj.parentWfRunId = WfRunId.toJSON(message.parentWfRunId);
+    }
+    if (message.showFullTree !== undefined) {
+      obj.showFullTree = message.showFullTree;
+    }
     return obj;
   },
 
@@ -4382,6 +4421,10 @@ export const SearchWfRunRequest = {
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
     message.variableFilters = object.variableFilters?.map((e) => VariableMatch.fromPartial(e)) || [];
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
+    message.showFullTree = object.showFullTree ?? undefined;
     return message;
   },
 };
