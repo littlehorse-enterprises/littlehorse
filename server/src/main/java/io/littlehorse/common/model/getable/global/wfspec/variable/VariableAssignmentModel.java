@@ -4,11 +4,13 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
@@ -34,8 +36,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private VariableValueModel rhsLiteralValue;
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
-
     private ExpressionModel expression;
+    private TypeDefinitionModel castTo;
 
     public Class<VariableAssignment> getProtoBaseClass() {
         return VariableAssignment.class;
@@ -45,6 +47,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
         if (p.hasJsonPath()) jsonPath = p.getJsonPath();
+        if (p.hasCastTo()) castTo = TypeDefinitionModel.fromProto(p.getCastTo(), context);
 
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
@@ -73,6 +76,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
 
         if (jsonPath != null) out.setJsonPath(jsonPath);
+        if (castTo != null) out.setCastTo(castTo.toProto());
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
@@ -125,6 +129,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public Optional<TypeDefinitionModel> resolveType(
             ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
+        // If there's an explicit cast, return the cast target type
+        if (castTo != null) {
+            return Optional.of(castTo);
+        }
+
         if (jsonPath != null) {
             // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
             // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
@@ -169,6 +178,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
+        // If there's an explicit cast, check if the cast target can be the required type
+        if (castTo != null) {
+            return TypeDefinitionModel.canCastTo(castTo.getType(), type);
+        }
+
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
 
@@ -182,15 +196,25 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 baseType = varDef.getTypeDef().getType();
                 break;
             case LITERAL_VALUE:
-                baseType = rhsLiteralValue.getType();
+                baseType = rhsLiteralValue.getTypeDefinition().getType();
                 break;
             case FORMAT_STRING:
                 baseType = VariableType.STR;
                 break;
             case NODE_OUTPUT:
             case EXPRESSION:
-                // TODO (#1124): look at the node to determine if the output of the node
-                // can be a given type.
+                // For node outputs and expressions, we can't easily determine the type without metadata manager
+                // If there's an explicit cast, we already handled it at the top of this method, so we trust it
+                // If no explicit cast, be conservative for types that typically require manual casting
+                
+                // If we're targeting a type that typically requires manual casting from common sources (like STR),
+                // we should be more restrictive
+                if (type == VariableType.DOUBLE || type == VariableType.INT || type == VariableType.BOOL) {
+                    // These types often require manual casting from STR, so require explicit cast for safety
+                    return false;
+                }
+                
+                // For other target types (like STR), be more permissive since most types can auto-cast to STR
                 return true;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
@@ -202,6 +226,32 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
+        
+        // Without explicit cast, only allow automatic casting, not manual casting
+        if (TypeDefinitionModel.requiresManualCast(baseType, type)) {
+            return false;
+        }
+        
         return TypeDefinitionModel.canCastTo(baseType, type);
+    }
+
+    /**
+     * Resolves the value of this VariableAssignment and applies casting if specified.
+     * This method should be called during workflow execution to get the final typed value.
+     *
+     * @param sourceValue The resolved value before casting
+     * @return The value after applying any specified casting
+     * @throws LHVarSubError if casting fails
+     */
+    public VariableValueModel applyCastTo(VariableValueModel sourceValue) throws LHVarSubError {
+        if (castTo == null) {
+            return sourceValue; // No casting needed
+        }
+
+        try {
+            return castTo.castTo(sourceValue);
+        } catch (IllegalArgumentException e) {
+            throw new LHVarSubError(e, "Failed to cast value to " + castTo.getType() + ": " + e.getMessage());
+        }
     }
 }

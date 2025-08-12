@@ -154,18 +154,59 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     /**
      * Checks if the source type can be cast to the target type.
-     * Implements automatic casting rules:
+     * Implements both automatic and manual casting rules:
      * - Any primitive type → STR (automatic)
      * - INT → DOUBLE (automatic)
+     * - DOUBLE → INT, STR → INT/DOUBLE/BOOL/BYTES/WF_RUN_ID (manual)
      */
     public static boolean canCastTo(VariableType sourceType, VariableType targetType) {
         if (sourceType == targetType) {
             return true;
         }
+
+        // Automatic casting rules
         if (targetType == VariableType.STR && isPrimitive(sourceType)) {
             return true;
         }
-        return sourceType == VariableType.INT && targetType == VariableType.DOUBLE;
+        if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
+            return true;
+        }
+
+        // Manual casting rules - all require explicit cast() calls
+        if (!isPrimitive(sourceType) || !isPrimitive(targetType)) {
+            return false;
+        }
+
+        return switch (sourceType) {
+            case DOUBLE -> targetType == VariableType.INT;
+            case STR -> targetType == VariableType.INT
+                    || targetType == VariableType.DOUBLE
+                    || targetType == VariableType.BOOL
+                    || targetType == VariableType.BYTES
+                    || targetType == VariableType.WF_RUN_ID;
+            default -> false;
+        };
+    }
+
+    /**
+     * Checks if manual casting is required between source and target types.
+     * Returns true for conversions that need explicit .cast() calls.
+     */
+    public static boolean requiresManualCast(VariableType sourceType, VariableType targetType) {
+        if (sourceType == targetType) {
+            return false;
+        }
+
+        // Check if it's an automatic cast
+        if (targetType == VariableType.STR && isPrimitive(sourceType)) {
+            return false; // Automatic
+        }
+        if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
+            return false; // Automatic
+        }
+
+        // If canCastTo returns true but it's not automatic, then it's manual
+        return canCastTo(sourceType, targetType);
     }
 
     @Override
@@ -178,13 +219,14 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     /**
      * Performs casting of a VariableValueModel to this type.
-     * Only handles automatic casting rules:
+     * Handles both automatic and manual casting rules:
      * - Any primitive type → STR (automatic)
      * - INT → DOUBLE (automatic)
+     * - DOUBLE → INT, STR → INT/DOUBLE/BOOL/BYTES/WF_RUN_ID (manual)
      *
      * @param sourceValue The value to cast
      * @return A new VariableValueModel with the target type, or the original if no casting is needed
-     * @throws IllegalArgumentException if automatic casting is not supported for this type combination
+     * @throws IllegalArgumentException if casting is not supported for this type combination
      */
     public VariableValueModel castTo(VariableValueModel sourceValue) {
         VariableType sourceType = sourceValue.getTypeDefinition().getType();
@@ -200,14 +242,44 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         }
 
         try {
+            // Automatic casting rules
             if (targetType == VariableType.STR) {
                 return sourceValue.asStr();
-            } else if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
+            }
+            if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
                 return sourceValue.asDouble();
             }
+
+            // Manual casting rules
+            if (sourceType == VariableType.DOUBLE && targetType == VariableType.INT) {
+                return sourceValue.asInt();
+            }
+
+            if (sourceType == VariableType.STR) {
+                return switch (targetType) {
+                    case INT -> sourceValue.asInt();
+                    case DOUBLE -> sourceValue.asDouble();
+                    case BOOL -> sourceValue.asBool();
+                    case BYTES -> sourceValue.asBytes();
+                    case WF_RUN_ID -> sourceValue.asWfRunId();
+                    default -> throw new IllegalArgumentException("Unsupported STR cast to " + targetType);
+                };
+            }
         } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "Failed to cast " + sourceType + " to " + targetType + ": " + e.getMessage(), e);
+            // Provide user-friendly error messages for manual casting failures
+            String errorMessage =
+                    switch (sourceType) {
+                        case STR -> switch (targetType) {
+                            case INT -> "Cannot parse '" + sourceValue.getStrVal() + "' as INT";
+                            case DOUBLE -> "Cannot parse '" + sourceValue.getStrVal() + "' as DOUBLE";
+                            case BOOL -> "Cannot parse '" + sourceValue.getStrVal() + "' as BOOL (use 'true'/'false')";
+                            case BYTES -> "Invalid Base64 string: '" + sourceValue.getStrVal() + "'";
+                            case WF_RUN_ID -> "Invalid UUID format: '" + sourceValue.getStrVal() + "'";
+                            default -> "Failed to cast STR to " + targetType;
+                        };
+                        default -> "Failed to cast " + sourceType + " to " + targetType + ": " + e.getMessage();
+                    };
+            throw new IllegalArgumentException(errorMessage, e);
         }
 
         throw new IllegalArgumentException("Unsupported casting from " + sourceType + " to " + targetType);

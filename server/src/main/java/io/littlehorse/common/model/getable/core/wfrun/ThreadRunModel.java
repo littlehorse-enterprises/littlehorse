@@ -838,6 +838,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             val = val.jsonPath(assn.getJsonPath());
         }
 
+        val = assn.applyCastTo(val);
         return val;
     }
 

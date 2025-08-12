@@ -138,27 +138,17 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     private static VariableType fromValueCase(ValueCase valueCase) {
-        switch (valueCase) {
-            case STR:
-                return VariableType.STR;
-            case BYTES:
-                return VariableType.BYTES;
-            case INT:
-                return VariableType.INT;
-            case DOUBLE:
-                return VariableType.DOUBLE;
-            case JSON_ARR:
-                return VariableType.JSON_ARR;
-            case JSON_OBJ:
-                return VariableType.JSON_OBJ;
-            case BOOL:
-                return VariableType.BOOL;
-            case WF_RUN_ID:
-                return VariableType.WF_RUN_ID;
-            case VALUE_NOT_SET:
-            default:
-                return null;
-        }
+        return switch (valueCase) {
+            case STR -> VariableType.STR;
+            case BYTES -> VariableType.BYTES;
+            case INT -> VariableType.INT;
+            case DOUBLE -> VariableType.DOUBLE;
+            case JSON_ARR -> VariableType.JSON_ARR;
+            case JSON_OBJ -> VariableType.JSON_OBJ;
+            case BOOL -> VariableType.BOOL;
+            case WF_RUN_ID -> VariableType.WF_RUN_ID;
+            default -> null;
+        };
     }
 
     public void updateJsonViaJsonPath(String jsonPath, Object toPut) throws LHVarSubError {
@@ -308,7 +298,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         if (Long.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((long) val);
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
-            return new VariableValueModel(Long.valueOf((long) ((Integer) val)));
+            return new VariableValueModel((long) ((Integer) val));
         } else if (String.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((String) val);
         } else if (Boolean.class.isAssignableFrom(val.getClass())) {
@@ -515,9 +505,15 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             out = doubleVal == null ? null : doubleVal.longValue();
         } else if (getType() == VariableType.STR) {
             try {
-                out = strVal == null ? null : Long.valueOf(strVal);
+                if (strVal != null) {
+                    try {
+                        out = Long.valueOf(strVal);
+                    } catch (NumberFormatException e) {
+                        out = Double.valueOf(strVal).longValue();
+                    }
+                }
             } catch (Exception exn) {
-                throw new LHVarSubError(exn, "Couldn't convert strVal to INT");
+                throw new LHVarSubError(exn, "Couldn't convert strVal '" + strVal + "' to INT");
             }
         } else {
             String typeDescription = type == ValueCase.VALUE_NOT_SET ? "NULL" : type.toString();
@@ -563,10 +559,25 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel asBool() throws LHVarSubError {
-        if (getType() != VariableType.BOOL) {
-            throw new LHVarSubError(null, "Unsupported converting to bool");
+        if (getType() == VariableType.BOOL) {
+            return getCopy();
+        } else if (getType() == VariableType.STR) {
+            if (strVal == null) {
+                throw new LHVarSubError(null, "Cannot convert null string to BOOL");
+            }
+
+            String lowerStr = strVal.toLowerCase().trim();
+            if ("true".equals(lowerStr)) {
+                return new VariableValueModel(true);
+            } else if ("false".equals(lowerStr)) {
+                return new VariableValueModel(false);
+            } else {
+                throw new LHVarSubError(null, "Cannot parse '" + strVal + "' as BOOL (use 'true'/'false')");
+            }
+        } else {
+            String typeDescription = type == ValueCase.VALUE_NOT_SET ? "NULL" : type.toString();
+            throw new LHVarSubError(null, "Cannot convert " + typeDescription + " to BOOL");
         }
-        return getCopy();
     }
 
     public VariableValueModel asStr() throws LHVarSubError {
