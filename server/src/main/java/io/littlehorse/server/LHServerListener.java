@@ -214,6 +214,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExterna
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchScheduledWfRunRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchStructDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantRequestModel;
@@ -239,6 +240,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchEx
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchPrincipalRequestReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchScheduledWfRunReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchStructDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
@@ -923,6 +925,16 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 SearchExternalEventDefRequestModel.fromProto(req, requestContext()),
                 ctx,
                 SearchExternalEventDefReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
+    public void searchStructDef(SearchStructDefRequest req, StreamObserver<StructDefIdList> ctx) {
+        if (serverConfig.areStructDefsEnabled() == false) {
+            throw new StatusRuntimeException(Status.UNIMPLEMENTED);
+        }
+
+        handleScan(SearchStructDefRequestModel.fromProto(req, requestContext()), ctx, SearchStructDefReply.class);
     }
 
     @Override

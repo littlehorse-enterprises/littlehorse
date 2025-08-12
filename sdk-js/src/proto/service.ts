@@ -658,6 +658,15 @@ export interface SearchWfRunRequest {
    * where the threadRunNumber == 0).
    */
   variableFilters: VariableMatch[];
+  /** If set, only return WfRuns that are direct children of the given parent WfRun */
+  parentWfRunId?:
+    | WfRunId
+    | undefined;
+  /**
+   * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+   * using Object ID scan. If false or not set, uses index-based search for direct children only.
+   */
+  showFullTree?: boolean | undefined;
 }
 
 /** List of WfRun Id's */
@@ -1038,6 +1047,27 @@ export interface SearchUserTaskDefRequest {
   /** Maximum results to return in one request. */
   limit?: number | undefined;
   userTaskDefCriteria?: { $case: "prefix"; value: string } | { $case: "name"; value: string } | undefined;
+}
+
+export interface SearchStructDefRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
+  structDefCriteria?: { $case: "prefix"; value: string } | { $case: "name"; value: string } | undefined;
+}
+
+export interface StructDefIdList {
+  /** The result object Id's */
+  results: StructDefId[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /** List of UserTaskDef Id's. */
@@ -4414,6 +4444,8 @@ function createBaseSearchWfRunRequest(): SearchWfRunRequest {
     earliestStart: undefined,
     latestStart: undefined,
     variableFilters: [],
+    parentWfRunId: undefined,
+    showFullTree: undefined,
   };
 }
 
@@ -4445,6 +4477,12 @@ export const SearchWfRunRequest = {
     }
     for (const v of message.variableFilters) {
       VariableMatch.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.showFullTree !== undefined) {
+      writer.uint32(88).bool(message.showFullTree);
     }
     return writer;
   },
@@ -4519,6 +4557,20 @@ export const SearchWfRunRequest = {
 
           message.variableFilters.push(VariableMatch.decode(reader, reader.uint32()));
           continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.showFullTree = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -4541,6 +4593,8 @@ export const SearchWfRunRequest = {
       variableFilters: globalThis.Array.isArray(object?.variableFilters)
         ? object.variableFilters.map((e: any) => VariableMatch.fromJSON(e))
         : [],
+      parentWfRunId: isSet(object.parentWfRunId) ? WfRunId.fromJSON(object.parentWfRunId) : undefined,
+      showFullTree: isSet(object.showFullTree) ? globalThis.Boolean(object.showFullTree) : undefined,
     };
   },
 
@@ -4573,6 +4627,12 @@ export const SearchWfRunRequest = {
     if (message.variableFilters?.length) {
       obj.variableFilters = message.variableFilters.map((e) => VariableMatch.toJSON(e));
     }
+    if (message.parentWfRunId !== undefined) {
+      obj.parentWfRunId = WfRunId.toJSON(message.parentWfRunId);
+    }
+    if (message.showFullTree !== undefined) {
+      obj.showFullTree = message.showFullTree;
+    }
     return obj;
   },
 
@@ -4590,6 +4650,10 @@ export const SearchWfRunRequest = {
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
     message.variableFilters = object.variableFilters?.map((e) => VariableMatch.fromPartial(e)) || [];
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
+    message.showFullTree = object.showFullTree ?? undefined;
     return message;
   },
 };
@@ -6103,6 +6167,201 @@ export const SearchUserTaskDefRequest = {
     ) {
       message.userTaskDefCriteria = { $case: "name", value: object.userTaskDefCriteria.value };
     }
+    return message;
+  },
+};
+
+function createBaseSearchStructDefRequest(): SearchStructDefRequest {
+  return { bookmark: undefined, limit: undefined, structDefCriteria: undefined };
+}
+
+export const SearchStructDefRequest = {
+  encode(message: SearchStructDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    switch (message.structDefCriteria?.$case) {
+      case "prefix":
+        writer.uint32(26).string(message.structDefCriteria.value);
+        break;
+      case "name":
+        writer.uint32(34).string(message.structDefCriteria.value);
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchStructDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchStructDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.structDefCriteria = { $case: "prefix", value: reader.string() };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.structDefCriteria = { $case: "name", value: reader.string() };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchStructDefRequest {
+    return {
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      structDefCriteria: isSet(object.prefix)
+        ? { $case: "prefix", value: globalThis.String(object.prefix) }
+        : isSet(object.name)
+        ? { $case: "name", value: globalThis.String(object.name) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: SearchStructDefRequest): unknown {
+    const obj: any = {};
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.structDefCriteria?.$case === "prefix") {
+      obj.prefix = message.structDefCriteria.value;
+    }
+    if (message.structDefCriteria?.$case === "name") {
+      obj.name = message.structDefCriteria.value;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SearchStructDefRequest>): SearchStructDefRequest {
+    return SearchStructDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchStructDefRequest>): SearchStructDefRequest {
+    const message = createBaseSearchStructDefRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    if (
+      object.structDefCriteria?.$case === "prefix" &&
+      object.structDefCriteria?.value !== undefined &&
+      object.structDefCriteria?.value !== null
+    ) {
+      message.structDefCriteria = { $case: "prefix", value: object.structDefCriteria.value };
+    }
+    if (
+      object.structDefCriteria?.$case === "name" &&
+      object.structDefCriteria?.value !== undefined &&
+      object.structDefCriteria?.value !== null
+    ) {
+      message.structDefCriteria = { $case: "name", value: object.structDefCriteria.value };
+    }
+    return message;
+  },
+};
+
+function createBaseStructDefIdList(): StructDefIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const StructDefIdList = {
+  encode(message: StructDefIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      StructDefId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StructDefIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStructDefIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(StructDefId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StructDefIdList {
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => StructDefId.fromJSON(e)) : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+    };
+  },
+
+  toJSON(message: StructDefIdList): unknown {
+    const obj: any = {};
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => StructDefId.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<StructDefIdList>): StructDefIdList {
+    return StructDefIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StructDefIdList>): StructDefIdList {
+    const message = createBaseStructDefIdList();
+    message.results = object.results?.map((e) => StructDefId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
@@ -11894,6 +12153,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Search for StructDef's */
+    searchStructDef: {
+      name: "SearchStructDef",
+      requestType: SearchStructDefRequest,
+      requestStream: false,
+      responseType: StructDefIdList,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12489,6 +12757,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchPrincipalRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<PrincipalIdList>>;
+  /** Search for StructDef's */
+  searchStructDef(
+    request: SearchStructDefRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<StructDefIdList>>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12935,6 +13208,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchPrincipalRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<PrincipalIdList>;
+  /** Search for StructDef's */
+  searchStructDef(
+    request: DeepPartial<SearchStructDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<StructDefIdList>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.

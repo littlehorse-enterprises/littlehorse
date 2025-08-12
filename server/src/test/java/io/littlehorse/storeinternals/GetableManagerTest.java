@@ -633,4 +633,44 @@ public class GetableManagerTest {
                 .anyMatch(key -> key.contains(
                         "myTenant/5/4/__status_RUNNING__type_EXTERNAL\\_EVENT__extEvtDefName_" + eventName));
     }
+
+    @Test
+    void storeWfRunWithParentWfRunIdTag() {
+        String parentWfRunId = "parent-wf-run-id";
+        WfRunModel wfRunModel = TestUtil.wfRun("child-wf-run");
+        wfRunModel.getId().setParentWfRunId(new WfRunIdModel(parentWfRunId));
+
+        getableManager.put(wfRunModel);
+        getableManager.commit();
+
+        List<String> storedKeys = getAllKeys(store);
+        assertThat(storedKeys).hasSize(11);
+        assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/3/parent-wf-run-id_child-wf-run"));
+        assertThat(storedKeys)
+                .anyMatch(key ->
+                        key.contains("myTenant/5/3/__wfSpecName_test-spec-name__parentWfRunId_" + parentWfRunId));
+    }
+
+    @Test
+    void storeWfRunWithParentWfRunIdAndStatusTag() {
+        String parentWfRunId = "parent-wf-run-id-2";
+        WfRunModel wfRunModel = TestUtil.wfRun("child-wf-run-2");
+        wfRunModel.getId().setParentWfRunId(new WfRunIdModel(parentWfRunId));
+        wfRunModel.status = LHStatus.COMPLETED;
+
+        getableManager.put(wfRunModel);
+        getableManager.commit();
+
+        List<String> storedKeys = getAllKeys(store);
+        assertThat(storedKeys).hasSize(11);
+        assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/3/parent-wf-run-id-2_child-wf-run-2"));
+        assertThat(storedKeys)
+                .anyMatch(key ->
+                        key.contains("myTenant/5/3/__wfSpecName_test-spec-name__parentWfRunId_" + parentWfRunId));
+        assertThat(storedKeys)
+                .anyMatch(key -> key.contains("myTenant/5/3/__wfSpecName_test-spec-name__status_COMPLETED"));
+        assertThat(storedKeys)
+                .anyMatch(key -> key.contains(
+                        "myTenant/5/3/__wfSpecName_test-spec-name__status_COMPLETED__parentWfRunId_" + parentWfRunId));
+    }
 }

@@ -5,6 +5,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.Node;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.TaskNode;
+import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -111,6 +116,44 @@ public class TypeValidationsTest {
                             && sre.getMessage()
                                     .toLowerCase()
                                     .contains("mutation of variable my-int invalid: cannot use a str as a int");
+                });
+    }
+
+    @Test
+    void shouldThrowInvalidArgumentWhenReferringToMissingNode() {
+        // Currently, it is not possible to refer to a node in a different threadSpec; however, we want to
+        // enable that capability in the future. Therefore I'm constructing a WfSpec that refers to a nonexistent
+        // node so that the end-to-end test continues to pass after that new feature is allowed.
+        Workflow wfGenerator = Workflow.newWorkflow("test-invalid-node-output-reference", wf -> {
+            NodeOutput firstNode = wf.execute("validations-return-int", "asdf");
+            wf.execute("validations-accept-int", firstNode);
+        });
+
+        PutWfSpecRequest.Builder reqBuilder = wfGenerator.compileWorkflow().toBuilder();
+
+        ThreadSpec.Builder entrypoint =
+                reqBuilder.getThreadSpecsOrThrow(reqBuilder.getEntrypointThreadName()).toBuilder();
+
+        String nodeName = "2-validations-accept-int-TASK";
+        Node.Builder nodeToEdit = entrypoint.getNodesOrThrow(nodeName).toBuilder();
+        TaskNode.Builder taskNode = nodeToEdit.getTaskBuilder();
+        NodeOutputReference badNodeOutput =
+                NodeOutputReference.newBuilder().setNodeName("not-a-real-node").build();
+        taskNode.getVariablesBuilder(0).setNodeOutput(badNodeOutput);
+        nodeToEdit.setTask(taskNode);
+        entrypoint.putNodes(nodeName, nodeToEdit.build());
+        reqBuilder.putThreadSpecs(reqBuilder.getEntrypointThreadName(), entrypoint.build());
+
+        assertThatThrownBy(() -> {
+                    client.putWfSpec(reqBuilder.build());
+                })
+                .matches(exn -> {
+                    if (!(exn instanceof StatusRuntimeException)) {
+                        return false;
+                    }
+                    StatusRuntimeException sre = (StatusRuntimeException) exn;
+                    return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
+                            && sre.getStatus().getDescription().toLowerCase().contains("not-a-real-node");
                 });
     }
 

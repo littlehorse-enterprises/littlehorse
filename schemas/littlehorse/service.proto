@@ -261,6 +261,9 @@ service LittleHorse {
   //
   rpc SearchPrincipal(SearchPrincipalRequest) returns (PrincipalIdList) {}
 
+  // Search for StructDef's
+  rpc SearchStructDef(SearchStructDefRequest) returns (StructDefIdList) {}
+
   // Used by the Task Worker to:
   // 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
   // 2. Receive the assignemnt of LH Server's to poll from.
@@ -735,6 +738,13 @@ message SearchWfRunRequest {
     // works for the Variables in the entrypiont threadrun (that is, variables
     // where the threadRunNumber == 0).
     repeated VariableMatch variable_filters = 9;
+    
+    // If set, only return WfRuns that are direct children of the given parent WfRun
+    optional WfRunId parent_wf_run_id = 10;
+    
+    // If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+    // using Object ID scan. If false or not set, uses index-based search for direct children only.
+    optional bool show_full_tree = 11;
 }
 
 // List of WfRun Id's
@@ -989,6 +999,34 @@ message SearchUserTaskDefRequest {
     // Return all UserTaskDef's with a specific name.
     string name = 4;
   }
+}
+
+message SearchStructDefRequest {
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Optionally specify filters. If no filters are specified, all StructDef's are
+  // returned.
+  oneof struct_def_criteria{
+    // Return all StructDef's with a specific prefix.
+    string prefix = 3;
+    // Return all StructDef's with a specific name.
+    string name = 4;
+  }
+}
+
+message StructDefIdList {
+  // The result object Id's
+  repeated StructDefId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // List of UserTaskDef Id's.
