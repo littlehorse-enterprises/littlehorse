@@ -23,6 +23,7 @@ public class BasicExample {
         return new WorkflowImpl(
             "example-basic",
             wf -> {
+                wf.sleepSeconds(120);
                 WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
                 wf.execute("greet", theName);
             }

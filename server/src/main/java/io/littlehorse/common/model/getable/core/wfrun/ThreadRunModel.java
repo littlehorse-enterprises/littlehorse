@@ -362,7 +362,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         pi.externalEventId = trigger.getObjectId();
         pi.interruptedThreadId = number;
         pi.handlerSpecName = idef.handlerSpecName;
-
         wfRun.pendingInterrupts.add(pi);
     }
 
@@ -457,7 +456,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         getCurrentNodeRun().maybeHalt(processorContext);
-        maybeFinishHaltingProcess();
+        boolean halted = maybeFinishHaltingProcess();
+        if (number == 0 && halted && !reason.isTransitioningHaltState()) {
+            wfRun.transitionTo(LHStatus.HALTED);
+        }
     }
 
     public void setStatus(LHStatus status) {
