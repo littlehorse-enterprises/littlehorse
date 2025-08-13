@@ -10,9 +10,9 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -180,7 +180,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
         // If there's an explicit cast, check if the cast target can be the required type
         if (castTo != null) {
-            return TypeDefinitionModel.canCastTo(castTo.getType(), type);
+            return TypeCastingUtils.canCastTo(castTo.getType(), type);
         }
 
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
@@ -203,19 +203,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case NODE_OUTPUT:
             case EXPRESSION:
-                // For node outputs and expressions, we can't easily determine the type without metadata manager
-                // If there's an explicit cast, we already handled it at the top of this method, so we trust it
-                // If no explicit cast, be conservative for types that typically require manual casting
-                
-                // If we're targeting a type that typically requires manual casting from common sources (like STR),
-                // we should be more restrictive
-                if (type == VariableType.DOUBLE || type == VariableType.INT || type == VariableType.BOOL) {
-                    // These types often require manual casting from STR, so require explicit cast for safety
-                    return false;
-                }
-                
-                // For other target types (like STR), be more permissive since most types can auto-cast to STR
-                return true;
+                // For node outputs and expressions, use the utility's conservative approach
+                return TypeCastingUtils.canBeTypeWithoutCast(type, true);
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException
@@ -226,13 +215,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
-        
-        // Without explicit cast, only allow automatic casting, not manual casting
-        if (TypeDefinitionModel.requiresManualCast(baseType, type)) {
-            return false;
-        }
-        
-        return TypeDefinitionModel.canCastTo(baseType, type);
+
+        // Use utility to check if assignment is valid without explicit cast
+        return TypeCastingUtils.canAssignWithoutCast(baseType, type);
     }
 
     /**
@@ -253,5 +238,12 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         } catch (IllegalArgumentException e) {
             throw new LHVarSubError(e, "Failed to cast value to " + castTo.getType() + ": " + e.getMessage());
         }
+    }
+
+    /**
+     * Returns true if this VariableAssignment has an explicit cast specified.
+     */
+    public boolean hasCast() {
+        return castTo != null;
     }
 }

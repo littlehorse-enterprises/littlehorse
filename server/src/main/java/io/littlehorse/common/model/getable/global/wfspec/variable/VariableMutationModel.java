@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -200,6 +201,13 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                     rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             if (rhsType.isEmpty()) {
                 return;
+            }
+
+            // For ASSIGN operations, validate manual casting requirements
+            if (operation == VariableMutationType.ASSIGN) {
+                boolean hasCast = (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) && rhsRhsAssignment.hasCast();
+                String context = "Variable mutation: " + lhsName + " = " + rhsType.get();
+                TypeCastingUtils.validateAssignment(rhsType.get().getType(), lhsType.getType(), hasCast, context);
             }
 
             Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy()
