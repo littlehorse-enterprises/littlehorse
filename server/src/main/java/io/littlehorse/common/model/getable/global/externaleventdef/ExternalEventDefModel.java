@@ -10,6 +10,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -34,6 +35,9 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
     @Setter
     private CorrelatedEventConfigModel correlatedEventConfig;
 
+    @Getter
+    private ExternalEventValidationPolicy validationPolicy;
+
     // Do not use lombok for this
     private Date createdAt;
     private ReturnTypeModel returnType;
@@ -46,11 +50,15 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
      * Note that returnType can be null.
      */
     public ExternalEventDefModel(
-            String name, ExternalEventRetentionPolicyModel retentionPolicy, ReturnTypeModel returnType) {
+            String name,
+            ExternalEventRetentionPolicyModel retentionPolicy,
+            ReturnTypeModel returnType,
+            ExternalEventValidationPolicy validationPolicy) {
         this();
         this.id = new ExternalEventDefIdModel(name);
         this.retentionPolicy = retentionPolicy;
         this.returnType = returnType;
+        this.validationPolicy = validationPolicy;
     }
 
     @Override
@@ -68,7 +76,8 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
         ExternalEventDef.Builder b = ExternalEventDef.newBuilder()
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-                .setRetentionPolicy(retentionPolicy.toProto());
+                .setRetentionPolicy(retentionPolicy.toProto())
+                .setValidationPolicy(validationPolicy);
 
         // For compatibility purposes, we support ExternalEventDef's that don't have the ReturnType set.
         if (returnType != null) {
@@ -98,6 +107,8 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
 
         retentionPolicy =
                 LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
+
+        validationPolicy = proto.getValidationPolicy();
     }
 
     @Override

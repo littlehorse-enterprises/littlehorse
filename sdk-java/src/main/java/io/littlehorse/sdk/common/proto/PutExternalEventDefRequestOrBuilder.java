@@ -128,4 +128,32 @@ public interface PutExternalEventDefRequestOrBuilder extends
    * <code>optional .littlehorse.CorrelatedEventConfig correlated_event_config = 4;</code>
    */
   io.littlehorse.sdk.common.proto.CorrelatedEventConfigOrBuilder getCorrelatedEventConfigOrBuilder();
+
+  /**
+   * <pre>
+   * Policy that represents when an external event can be posted
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+   * @return Whether the validationPolicy field is set.
+   */
+  boolean hasValidationPolicy();
+  /**
+   * <pre>
+   * Policy that represents when an external event can be posted
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+   * @return The enum numeric value on the wire for validationPolicy.
+   */
+  int getValidationPolicyValue();
+  /**
+   * <pre>
+   * Policy that represents when an external event can be posted
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+   * @return The validationPolicy.
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy getValidationPolicy();
 }

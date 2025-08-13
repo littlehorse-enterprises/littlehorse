@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
   }
   private PutExternalEventDefRequest() {
     name_ = "";
+    validationPolicy_ = 0;
   }
 
   @java.lang.Override
@@ -226,6 +227,43 @@ private static final long serialVersionUID = 0L;
     return correlatedEventConfig_ == null ? io.littlehorse.sdk.common.proto.CorrelatedEventConfig.getDefaultInstance() : correlatedEventConfig_;
   }
 
+  public static final int VALIDATION_POLICY_FIELD_NUMBER = 5;
+  private int validationPolicy_ = 0;
+  /**
+   * <pre>
+   * Policy that represents when an external event can be posted
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+   * @return Whether the validationPolicy field is set.
+   */
+  @java.lang.Override public boolean hasValidationPolicy() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <pre>
+   * Policy that represents when an external event can be posted
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+   * @return The enum numeric value on the wire for validationPolicy.
+   */
+  @java.lang.Override public int getValidationPolicyValue() {
+    return validationPolicy_;
+  }
+  /**
+   * <pre>
+   * Policy that represents when an external event can be posted
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+   * @return The validationPolicy.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy getValidationPolicy() {
+    io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy result = io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy.forNumber(validationPolicy_);
+    return result == null ? io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -252,6 +290,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(4, getCorrelatedEventConfig());
     }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeEnum(5, validationPolicy_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -275,6 +316,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getCorrelatedEventConfig());
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(5, validationPolicy_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -308,6 +353,10 @@ private static final long serialVersionUID = 0L;
       if (!getCorrelatedEventConfig()
           .equals(other.getCorrelatedEventConfig())) return false;
     }
+    if (hasValidationPolicy() != other.hasValidationPolicy()) return false;
+    if (hasValidationPolicy()) {
+      if (validationPolicy_ != other.validationPolicy_) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -332,6 +381,10 @@ private static final long serialVersionUID = 0L;
     if (hasCorrelatedEventConfig()) {
       hash = (37 * hash) + CORRELATED_EVENT_CONFIG_FIELD_NUMBER;
       hash = (53 * hash) + getCorrelatedEventConfig().hashCode();
+    }
+    if (hasValidationPolicy()) {
+      hash = (37 * hash) + VALIDATION_POLICY_FIELD_NUMBER;
+      hash = (53 * hash) + validationPolicy_;
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -492,6 +545,7 @@ private static final long serialVersionUID = 0L;
         correlatedEventConfigBuilder_.dispose();
         correlatedEventConfigBuilder_ = null;
       }
+      validationPolicy_ = 0;
       return this;
     }
 
@@ -545,6 +599,10 @@ private static final long serialVersionUID = 0L;
             ? correlatedEventConfig_
             : correlatedEventConfigBuilder_.build();
         to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.validationPolicy_ = validationPolicy_;
+        to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -607,6 +665,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasCorrelatedEventConfig()) {
         mergeCorrelatedEventConfig(other.getCorrelatedEventConfig());
       }
+      if (other.hasValidationPolicy()) {
+        setValidationPolicy(other.getValidationPolicy());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -659,6 +720,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 40: {
+              validationPolicy_ = input.readEnum();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1294,6 +1360,90 @@ private static final long serialVersionUID = 0L;
         correlatedEventConfig_ = null;
       }
       return correlatedEventConfigBuilder_;
+    }
+
+    private int validationPolicy_ = 0;
+    /**
+     * <pre>
+     * Policy that represents when an external event can be posted
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+     * @return Whether the validationPolicy field is set.
+     */
+    @java.lang.Override public boolean hasValidationPolicy() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * Policy that represents when an external event can be posted
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+     * @return The enum numeric value on the wire for validationPolicy.
+     */
+    @java.lang.Override public int getValidationPolicyValue() {
+      return validationPolicy_;
+    }
+    /**
+     * <pre>
+     * Policy that represents when an external event can be posted
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+     * @param value The enum numeric value on the wire for validationPolicy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setValidationPolicyValue(int value) {
+      validationPolicy_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Policy that represents when an external event can be posted
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+     * @return The validationPolicy.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy getValidationPolicy() {
+      io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy result = io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy.forNumber(validationPolicy_);
+      return result == null ? io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * Policy that represents when an external event can be posted
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+     * @param value The validationPolicy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setValidationPolicy(io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000010;
+      validationPolicy_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Policy that represents when an external event can be posted
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearValidationPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      validationPolicy_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

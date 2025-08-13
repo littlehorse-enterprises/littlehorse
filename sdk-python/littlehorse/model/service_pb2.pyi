@@ -125,16 +125,18 @@ class PutUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
-    __slots__ = ["name", "retention_policy", "content_type", "correlated_event_config"]
+    __slots__ = ["name", "retention_policy", "content_type", "correlated_event_config", "validation_policy"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     CORRELATED_EVENT_CONFIG_FIELD_NUMBER: _ClassVar[int]
+    VALIDATION_POLICY_FIELD_NUMBER: _ClassVar[int]
     name: str
     retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
     content_type: _common_wfspec_pb2.ReturnType
     correlated_event_config: _external_event_pb2.CorrelatedEventConfig
-    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[_external_event_pb2.CorrelatedEventConfig, _Mapping]] = ...) -> None: ...
+    validation_policy: _external_event_pb2.ExternalEventValidationPolicy
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[_external_event_pb2.CorrelatedEventConfig, _Mapping]] = ..., validation_policy: _Optional[_Union[_external_event_pb2.ExternalEventValidationPolicy, str]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ["wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position"]
