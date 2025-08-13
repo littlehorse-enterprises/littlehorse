@@ -22,7 +22,7 @@ public class RocksConfigSetterV2 implements RocksDBConfigSetter {
 
         options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
         options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
-        options.setCompactionStyle(CompactionStyle.UNIVERSAL);
+        options.setCompactionStyle(CompactionStyle.LEVEL);
     }
 
     @Override
