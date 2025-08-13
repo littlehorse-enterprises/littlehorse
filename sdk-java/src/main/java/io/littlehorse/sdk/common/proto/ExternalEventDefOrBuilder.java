@@ -165,7 +165,7 @@ public interface ExternalEventDefOrBuilder extends
 
   /**
    * <pre>
-   * Extra validation surrounding when an external event can be posted to a wfRun
+   * Extra validation surrounding when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -174,7 +174,7 @@ public interface ExternalEventDefOrBuilder extends
   boolean hasValidationPolicy();
   /**
    * <pre>
-   * Extra validation surrounding when an external event can be posted to a wfRun
+   * Extra validation surrounding when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -183,7 +183,7 @@ public interface ExternalEventDefOrBuilder extends
   int getValidationPolicyValue();
   /**
    * <pre>
-   * Extra validation surrounding when an external event can be posted to a wfRun
+   * Extra validation surrounding when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>

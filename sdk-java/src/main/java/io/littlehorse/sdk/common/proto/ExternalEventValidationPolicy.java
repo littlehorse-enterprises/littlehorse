@@ -5,8 +5,8 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Policy to give external events extra validations for instance
- * require WfRun to exist 
+ * Policies to provide extra validations on when an external 
+ * event can be posted to a wfRun
  * </pre>
  *
  * Protobuf enum {@code littlehorse.ExternalEventValidationPolicy}
@@ -14,14 +14,28 @@ package io.littlehorse.sdk.common.proto;
 public enum ExternalEventValidationPolicy
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Default no extra validations
+   * </pre>
+   *
    * <code>NONE = 0;</code>
    */
   NONE(0),
   /**
+   * <pre>
+   * Requires the wfRun to exist prior to an
+   * event being posted 
+   * </pre>
+   *
    * <code>REQUIRE_WF_RUN = 1;</code>
    */
   REQUIRE_WF_RUN(1),
   /**
+   * <pre>
+   * Requires not only the wfRun to exist but also
+   * the corresponding wfSpec to hold a reference to the external event
+   * </pre>
+   *
    * <code>REQUIRE_WF_SPEC_REF = 2;</code>
    */
   REQUIRE_WF_SPEC_REF(2),
@@ -29,14 +43,28 @@ public enum ExternalEventValidationPolicy
   ;
 
   /**
+   * <pre>
+   * Default no extra validations
+   * </pre>
+   *
    * <code>NONE = 0;</code>
    */
   public static final int NONE_VALUE = 0;
   /**
+   * <pre>
+   * Requires the wfRun to exist prior to an
+   * event being posted 
+   * </pre>
+   *
    * <code>REQUIRE_WF_RUN = 1;</code>
    */
   public static final int REQUIRE_WF_RUN_VALUE = 1;
   /**
+   * <pre>
+   * Requires not only the wfRun to exist but also
+   * the corresponding wfSpec to hold a reference to the external event
+   * </pre>
+   *
    * <code>REQUIRE_WF_SPEC_REF = 2;</code>
    */
   public static final int REQUIRE_WF_SPEC_REF_VALUE = 2;

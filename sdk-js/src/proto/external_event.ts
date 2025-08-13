@@ -13,12 +13,21 @@ import { CorrelatedEventId, ExternalEventDefId, ExternalEventId } from "./object
 import { VariableValue } from "./variable";
 
 /**
- * Policy to give external events extra validations for instance
- * require WfRun to exist
+ * Policies to provide extra validations on when an external
+ * event can be posted to a wfRun
  */
 export enum ExternalEventValidationPolicy {
+  /** NONE - Default no extra validations */
   NONE = "NONE",
+  /**
+   * REQUIRE_WF_RUN - Requires the wfRun to exist prior to an
+   * event being posted
+   */
   REQUIRE_WF_RUN = "REQUIRE_WF_RUN",
+  /**
+   * REQUIRE_WF_SPEC_REF - Requires not only the wfRun to exist but also
+   * the corresponding wfSpec to hold a reference to the external event
+   */
   REQUIRE_WF_SPEC_REF = "REQUIRE_WF_SPEC_REF",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -150,7 +159,7 @@ export interface ExternalEventDef {
   correlatedEventConfig?:
     | CorrelatedEventConfig
     | undefined;
-  /** Extra validation surrounding when an external event can be posted to a wfRun */
+  /** Extra validation surrounding when an external event can be posted */
   validationPolicy?: ExternalEventValidationPolicy | undefined;
 }
 

@@ -259,7 +259,7 @@ private static final long serialVersionUID = 0L;
   private int validationPolicy_ = 0;
   /**
    * <pre>
-   * Extra validation surrounding when an external event can be posted to a wfRun
+   * Extra validation surrounding when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -270,7 +270,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Extra validation surrounding when an external event can be posted to a wfRun
+   * Extra validation surrounding when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -281,7 +281,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Extra validation surrounding when an external event can be posted to a wfRun
+   * Extra validation surrounding when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -1661,7 +1661,7 @@ private static final long serialVersionUID = 0L;
     private int validationPolicy_ = 0;
     /**
      * <pre>
-     * Extra validation surrounding when an external event can be posted to a wfRun
+     * Extra validation surrounding when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -1672,7 +1672,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Extra validation surrounding when an external event can be posted to a wfRun
+     * Extra validation surrounding when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -1683,7 +1683,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Extra validation surrounding when an external event can be posted to a wfRun
+     * Extra validation surrounding when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -1698,7 +1698,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Extra validation surrounding when an external event can be posted to a wfRun
+     * Extra validation surrounding when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -1711,7 +1711,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Extra validation surrounding when an external event can be posted to a wfRun
+     * Extra validation surrounding when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>
@@ -1729,7 +1729,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Extra validation surrounding when an external event can be posted to a wfRun
+     * Extra validation surrounding when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 6;</code>

@@ -21,13 +21,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Policy to give external events extra validations for instance
-// require WfRun to exist
+// Policies to provide extra validations on when an external
+// event can be posted to a wfRun
 type ExternalEventValidationPolicy int32
 
 const (
-	ExternalEventValidationPolicy_NONE                ExternalEventValidationPolicy = 0
-	ExternalEventValidationPolicy_REQUIRE_WF_RUN      ExternalEventValidationPolicy = 1
+	// Default no extra validations
+	ExternalEventValidationPolicy_NONE ExternalEventValidationPolicy = 0
+	// Requires the wfRun to exist prior to an
+	// event being posted
+	ExternalEventValidationPolicy_REQUIRE_WF_RUN ExternalEventValidationPolicy = 1
+	// Requires not only the wfRun to exist but also
+	// the corresponding wfSpec to hold a reference to the external event
 	ExternalEventValidationPolicy_REQUIRE_WF_SPEC_REF ExternalEventValidationPolicy = 2
 )
 
@@ -201,7 +206,7 @@ type ExternalEventDef struct {
 	// If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
 	// type.
 	CorrelatedEventConfig *CorrelatedEventConfig `protobuf:"bytes,5,opt,name=correlated_event_config,json=correlatedEventConfig,proto3,oneof" json:"correlated_event_config,omitempty"`
-	// Extra validation surrounding when an external event can be posted to a wfRun
+	// Extra validation surrounding when an external event can be posted
 	ValidationPolicy *ExternalEventValidationPolicy `protobuf:"varint,6,opt,name=validation_policy,json=validationPolicy,proto3,enum=littlehorse.ExternalEventValidationPolicy,oneof" json:"validation_policy,omitempty"`
 }
 

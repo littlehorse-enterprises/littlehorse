@@ -361,10 +361,7 @@ export interface PutExternalEventDefRequest {
   correlatedEventConfig?:
     | CorrelatedEventConfig
     | undefined;
-  /**
-   * Policys that represent when an external even post is valid for instance
-   * require wfRun to exist at time of post
-   */
+  /** Policies that represent when an external event can be posted */
   validationPolicy?: ExternalEventValidationPolicy | undefined;
 }
 

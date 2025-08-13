@@ -131,8 +131,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
 
   /**
    * <pre>
-   * Policys that represent when an external even post is valid for instance
-   * require wfRun to exist at time of post
+   * Policies that represent when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -141,8 +140,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
   boolean hasValidationPolicy();
   /**
    * <pre>
-   * Policys that represent when an external even post is valid for instance
-   * require wfRun to exist at time of post
+   * Policies that represent when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -151,8 +149,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
   int getValidationPolicyValue();
   /**
    * <pre>
-   * Policys that represent when an external even post is valid for instance
-   * require wfRun to exist at time of post
+   * Policies that represent when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>

@@ -491,7 +491,7 @@ message PutExternalEventDefRequest {
   // If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
   optional CorrelatedEventConfig correlated_event_config = 4;
 
-  // Policies that represent when an external event can be posted
+  // Policy that represents when an external event can be posted
   optional ExternalEventValidationPolicy validation_policy = 5;
 
 }

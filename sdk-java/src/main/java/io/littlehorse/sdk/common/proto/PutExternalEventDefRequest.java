@@ -231,8 +231,7 @@ private static final long serialVersionUID = 0L;
   private int validationPolicy_ = 0;
   /**
    * <pre>
-   * Policys that represent when an external even post is valid for instance
-   * require wfRun to exist at time of post
+   * Policies that represent when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -243,8 +242,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Policys that represent when an external even post is valid for instance
-   * require wfRun to exist at time of post
+   * Policies that represent when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -255,8 +253,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Policys that represent when an external even post is valid for instance
-   * require wfRun to exist at time of post
+   * Policies that represent when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1368,8 +1365,7 @@ private static final long serialVersionUID = 0L;
     private int validationPolicy_ = 0;
     /**
      * <pre>
-     * Policys that represent when an external even post is valid for instance
-     * require wfRun to exist at time of post
+     * Policies that represent when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1380,8 +1376,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policys that represent when an external even post is valid for instance
-     * require wfRun to exist at time of post
+     * Policies that represent when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1392,8 +1387,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policys that represent when an external even post is valid for instance
-     * require wfRun to exist at time of post
+     * Policies that represent when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1408,8 +1402,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policys that represent when an external even post is valid for instance
-     * require wfRun to exist at time of post
+     * Policies that represent when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1422,8 +1415,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policys that represent when an external even post is valid for instance
-     * require wfRun to exist at time of post
+     * Policies that represent when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1441,8 +1433,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policys that represent when an external even post is valid for instance
-     * require wfRun to exist at time of post
+     * Policies that represent when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>

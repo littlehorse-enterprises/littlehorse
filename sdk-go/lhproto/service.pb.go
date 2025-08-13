@@ -768,8 +768,7 @@ type PutExternalEventDefRequest struct {
 	ContentType *ReturnType `protobuf:"bytes,3,opt,name=content_type,json=contentType,proto3,oneof" json:"content_type,omitempty"`
 	// If set, then this `ExternalEventDef` will allow the `CorrelatedEvent` feature.
 	CorrelatedEventConfig *CorrelatedEventConfig `protobuf:"bytes,4,opt,name=correlated_event_config,json=correlatedEventConfig,proto3,oneof" json:"correlated_event_config,omitempty"`
-	// Policys that represent when an external even post is valid for instance
-	// require wfRun to exist at time of post
+	// Policies that represent when an external event can be posted
 	ValidationPolicy *ExternalEventValidationPolicy `protobuf:"varint,5,opt,name=validation_policy,json=validationPolicy,proto3,enum=littlehorse.ExternalEventValidationPolicy,oneof" json:"validation_policy,omitempty"`
 }
 
