@@ -8,7 +8,7 @@ import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.RocksConfigSetter;
+import io.littlehorse.common.util.RocksConfigSetterV2;
 import io.littlehorse.sdk.common.config.ConfigBase;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
@@ -1060,8 +1060,8 @@ public class LHServerConfig extends ConfigBase {
 
         // Set the RocksDB Config Setter, and inject this LHServerConfig into the options set
         // into it.
-        props.put(RocksConfigSetter.LH_SERVER_CONFIG_KEY, this);
-        props.put("rocksdb.config.setter", RocksConfigSetter.class);
+        props.put(RocksConfigSetterV2.LH_SERVER_CONFIG_KEY, this);
+        props.put("rocksdb.config.setter", RocksConfigSetterV2.class);
 
         // Until KIP-924 is implemented, for cluster stability it is best to avoid rebalances.
         // 30 seconds of startup is enough time for LH to shut down and be re-spawned during a
