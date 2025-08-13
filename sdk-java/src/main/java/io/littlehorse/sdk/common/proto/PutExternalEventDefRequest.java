@@ -231,7 +231,7 @@ private static final long serialVersionUID = 0L;
   private int validationPolicy_ = 0;
   /**
    * <pre>
-   * Policies that represent when an external event can be posted
+   * Policy that represents when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -242,7 +242,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Policies that represent when an external event can be posted
+   * Policy that represents when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -253,7 +253,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Policies that represent when an external event can be posted
+   * Policy that represents when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1365,7 +1365,7 @@ private static final long serialVersionUID = 0L;
     private int validationPolicy_ = 0;
     /**
      * <pre>
-     * Policies that represent when an external event can be posted
+     * Policy that represents when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1376,7 +1376,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policies that represent when an external event can be posted
+     * Policy that represents when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1387,7 +1387,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policies that represent when an external event can be posted
+     * Policy that represents when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1402,7 +1402,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policies that represent when an external event can be posted
+     * Policy that represents when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1415,7 +1415,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policies that represent when an external event can be posted
+     * Policy that represents when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -1433,7 +1433,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Policies that represent when an external event can be posted
+     * Policy that represents when an external event can be posted
      * </pre>
      *
      * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>

@@ -361,7 +361,7 @@ export interface PutExternalEventDefRequest {
   correlatedEventConfig?:
     | CorrelatedEventConfig
     | undefined;
-  /** Policies that represent when an external event can be posted */
+  /** Policy that represents when an external event can be posted */
   validationPolicy?: ExternalEventValidationPolicy | undefined;
 }
 

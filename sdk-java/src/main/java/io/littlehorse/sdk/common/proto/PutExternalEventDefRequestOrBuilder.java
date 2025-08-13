@@ -131,7 +131,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
 
   /**
    * <pre>
-   * Policies that represent when an external event can be posted
+   * Policy that represents when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -140,7 +140,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
   boolean hasValidationPolicy();
   /**
    * <pre>
-   * Policies that represent when an external event can be posted
+   * Policy that represents when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
@@ -149,7 +149,7 @@ public interface PutExternalEventDefRequestOrBuilder extends
   int getValidationPolicyValue();
   /**
    * <pre>
-   * Policies that represent when an external event can be posted
+   * Policy that represents when an external event can be posted
    * </pre>
    *
    * <code>optional .littlehorse.ExternalEventValidationPolicy validation_policy = 5;</code>
