@@ -2,6 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -13,56 +14,29 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 
-/*
- * This example demonstrates automatic type casting in LittleHorse.
- * It shows how primitive types are automatically converted when passed
- * to tasks expecting different types:
- * - INT → STR (automatic)
- * - INT → DOUBLE (automatic)
- * - DOUBLE → STR (automatic)
- * - BOOL → STR (automatic)
- */
 public class CastingExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl("auto-casting-workflow", wf -> {
-            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT).withDefault(3);
-            WfRunVariable doubleVar =
-                    wf.addVariable("double-var", VariableType.DOUBLE).withDefault(3.14);
-            WfRunVariable stringVar =
-                    wf.addVariable("string-var", VariableType.STR).withDefault("some string");
-            WfRunVariable boolVar =
-                    wf.addVariable("bool-var", VariableType.BOOL).withDefault(true);
+        return new WorkflowImpl("casting-workflow", wf -> {
+            WfRunVariable stringBool = wf.addVariable("string-var", VariableType.STR).withDefault("true");
+            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
 
-            var intResult = wf.execute("int-method", intVar);
-            var doubleResult = wf.execute("double-method", doubleVar);
-            var stringResult = wf.execute("string-method", stringVar);
-            var boolResult = wf.execute("bool-method", boolVar);
+            var intResult = wf.execute("int-method", intVar); // Returns an INT
+            var doubleResult = wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
+            var strResult= wf.execute("string-method", doubleResult); // Auto cast from DOUBLE to STR
 
-            wf.execute("string-method", 3); // INT → STR
-            wf.execute("string-method", 3.14); // INT → DOUBLE
-            wf.execute("string-method", "some-string"); // DOUBLE → STR
-            wf.execute("string-method", true);
-            wf.execute("double-method", 1);
+            wf.execute("int-method", doubleResult.cast(VariableType.INT)); // Manual cast from DOUBLE to INT
+            wf.execute("bool-method", stringBool.cast(VariableType.BOOL)); // Manual cast from STR to BOOL
 
-            wf.execute("string-method", intVar); // INT → STR
-            wf.execute("string-method", doubleVar); // INT → DOUBLE
-            wf.execute("string-method", stringVar); // DOUBLE → STR
-            wf.execute("string-method", boolVar);
-            wf.execute("double-method", intVar);
-
-            wf.execute("string-method", intResult); // INT → STR
-            wf.execute("string-method", doubleResult); // INT → DOUBLE
-            wf.execute("string-method", stringResult); // DOUBLE → STR
-            wf.execute("string-method", boolResult);
-            wf.execute("double-method", intResult); // BOOL → STR
+            stringBool.assign(strResult);
+            wf.execute("double-method", stringBool.cast(VariableType.DOUBLE)); // Manual cast from STR to DOUBLE
         });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
-                .toFile();
+        File configPath =
+                Path.of(System.getProperty("user.home"), ".config/littlehorse.config").toFile();
         if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
@@ -88,23 +62,39 @@ public class CastingExample {
         LHConfig config = new LHConfig(props);
 
         Workflow workflow = getWorkflow();
-
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
         for (LHTaskWorker worker : workers) {
             worker.registerTaskDef();
         }
 
+        // Register the workflow
         workflow.registerWfSpec(config.getBlockingStub());
 
         for (LHTaskWorker worker : workers) {
             worker.start();
         }
 
-        System.out.println("Casting example workers started. The workflow demonstrates automatic type casting:");
-        System.out.println("- INT → STR (automatic)");
-        System.out.println("- INT → DOUBLE (automatic)");
-        System.out.println("- DOUBLE → STR (automatic)");
-        System.out.println("- BOOL → STR (automatic)");
+        System.out.println("Casting example workers started!");
+        System.out.println();
+        System.out.println("=== CASTING WORKFLOW ===");
+        System.out.println("Demonstrates both automatic and manual type casting:");
+        System.out.println();
+        System.out.println("✅ Automatic Casting (no .cast() needed):");
+        System.out.println("   - INT → STR (automatic)");
+        System.out.println("   - INT → DOUBLE (automatic)");
+        System.out.println("   - DOUBLE → STR (automatic)");
+        System.out.println("   - BOOL → STR (automatic)");
+        System.out.println();
+        System.out.println("✅ Manual Casting (requires .cast() calls):");
+        System.out.println("   - STR → INT/DOUBLE/BOOL (manual)");
+        System.out.println("   - DOUBLE → INT (manual)");
+        System.out.println();
+        System.out.println("✅ Variable Assignment Validation:");
+        System.out.println("   - Automatic assignments work without .cast()");
+        System.out.println("   - Manual assignments require .cast() calls");
+        System.out.println();
+        System.out.println("Run with: lhctl run casting-workflow");
+        System.out.println("Inspect with: lhctl get wfSpec casting-workflow");
     }
 }

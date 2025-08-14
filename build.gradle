@@ -12,6 +12,11 @@ allprojects {
 configure(subprojects.findAll { it.name.startsWith('example-') }) {
     apply plugin: 'com.diffplug.spotless'
     
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    
     spotless {
         java {
             target('**/*.java')

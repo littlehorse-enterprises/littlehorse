@@ -1,18 +1,22 @@
 ## Running CastingExample
 
-This example demonstrates automatic type casting in LittleHorse. The workflow shows how primitive types are automatically converted when passed to tasks expecting different types.
+This example demonstrates both automatic and manual type casting in LittleHorse workflows.
 
-**Automatic Casting Rules Demonstrated:**
-- `INT` → `STR` (automatic)
-- `INT` → `DOUBLE` (automatic)  
+### Overview
+
+The casting example shows how LittleHorse handles type conversions between different variable types:
+
+**Automatic Casting (No .cast() needed):**
+- `INT` → `DOUBLE` (automatic)
 - `DOUBLE` → `STR` (automatic)
 - `BOOL` → `STR` (automatic)
+- All primitive types → `STR` (automatic)
 
-The example includes both literal values and variables being automatically cast to the expected task parameter types. The workflow creates variables of different types and demonstrates casting through:
+**Manual Casting (Requires .cast() calls):**
+- `STR` → `INT`/`DOUBLE`/`BOOL` (manual)
+- `DOUBLE` → `INT` (manual)
 
-1. **Literal casting**: Direct values passed to tasks (e.g., `42` → string-method)
-2. **Variable casting**: Variables of one type passed to tasks expecting another type
-3. **Result casting**: Task results being cast when passed to subsequent tasks
+The workflow demonstrates these casting behaviors through task chaining, variable assignments, and different scenarios where casting occurs.
 
 ### Running the Example
 
@@ -23,26 +27,29 @@ The example includes both literal values and variables being automatically cast 
 In another terminal, use `lhctl` to run the workflow:
 
 ```bash
-# Run the casting workflow with automatic conversions
-lhctl run auto-casting-workflow
+# Run the casting workflow with default values
+lhctl run casting-workflow
 
-# You can also provide values for the variables (these will be cast automatically)
-lhctl run auto-casting-workflow int-var 42 double-var 3.14 bool-var true string-var "hello"
+# Run with custom input values
+lhctl run casting-workflow string-var "false" int-var 50
 ```
 
-### Checking Results
+### Inspecting the Results
 
-You can inspect the results to see the automatic casting in action:
+You can inspect how casting works by examining the workflow specification and execution results:
 
 ```bash
-# This call shows the result
+# Get the WfSpec to see casting information
+lhctl get wfSpec casting-workflow
+
+# Look for "cast_to" fields in variable assignments
+lhctl get wfSpec casting-workflow | jq '.threadSpecs.entrypoint.nodes[] | select(.task) | .task.variables[]'
+
+# Get workflow run details to see casting in action
 lhctl get wfRun <wf_run_id>
 
-# This will show you all nodes in the run
+# List task runs to see input/output values with casting
 lhctl list nodeRun <wf_run_id>
-
-# This shows the task run information and the automatically cast values
-lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```
 
 ### Code Formatting
