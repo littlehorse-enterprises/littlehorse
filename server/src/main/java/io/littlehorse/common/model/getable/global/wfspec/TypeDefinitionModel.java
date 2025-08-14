@@ -154,14 +154,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public static boolean canCastTo(VariableType sourceType, VariableType targetType) {
         return TypeCastingUtils.canCastTo(sourceType, targetType);
     }
-    /**
-     * Checks if manual casting is required between source and target types.
-     * Returns true for conversions that need explicit .cast() calls.
-     * Delegated to TypeCastingUtils for centralized casting logic.
-     */
-    public static boolean requiresManualCast(VariableType sourceType, VariableType targetType) {
-        return TypeCastingUtils.requiresManualCast(sourceType, targetType);
-    }
 
     @Override
     public String toString() {

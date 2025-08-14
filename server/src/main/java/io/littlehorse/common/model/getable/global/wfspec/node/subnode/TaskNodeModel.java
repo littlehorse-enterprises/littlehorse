@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -19,9 +20,11 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -177,6 +180,17 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             "Input variable " + i + " needs to be " + taskDefVar.getTypeDef() + " but cannot be!",
                             node);
                 }
+                
+                if (assn.hasCast()) {
+                    try {
+                        validateTaskInputCasting(assn, taskDefVar, ctx);
+                    } catch (InvalidExpressionException exn) {
+                        throw new InvalidNodeException(
+                                "Task input variable with name " + taskDefVar.getName() + " at position " + i
+                                        + " has invalid cast operation: " + exn.getMessage(),
+                                node);
+                    }
+                }
             }
         }
 
@@ -185,6 +199,34 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         }
 
         validateRetryPolicy();
+    }
+
+    /**
+     * Validates that casting operations in task input assignments are supported.
+     */
+    private void validateTaskInputCasting(VariableAssignmentModel assignment, VariableDefModel taskDefVar, MetadataProcessorContext ctx) 
+            throws InvalidExpressionException {
+        try {
+            Optional<TypeDefinitionModel> sourceTypeOpt = assignment.getSourceType(
+                ctx.metadataManager(), 
+                node.getThreadSpec().getWfSpec(), 
+                node.getThreadSpec().getName()
+            );
+            
+            if (sourceTypeOpt.isEmpty()) {
+                return;
+            }
+            VariableType sourceVariableType = sourceTypeOpt.get().getType();
+            VariableType targetVariableType = assignment.getCastTo().getType();
+            TypeCastingUtils.validateAssignment(
+                sourceVariableType, 
+                targetVariableType, 
+                true,
+                "task input parameter for " + taskDefVar.getName()
+            );
+        } catch (InvalidMutationException e) {
+            throw new InvalidExpressionException(e.getMessage());
+        }
     }
 
     private void validateRetryPolicy() throws InvalidNodeException {

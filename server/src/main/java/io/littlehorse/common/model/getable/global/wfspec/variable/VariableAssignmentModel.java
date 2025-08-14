@@ -134,47 +134,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             return Optional.of(castTo);
         }
 
-        if (jsonPath != null) {
-            // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
-            // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
-            return Optional.empty();
-        }
-
-        switch (rhsSourceType) {
-            case VARIABLE_NAME:
-                return Optional.of(wfSpec.fetchThreadSpec(threadSpecName)
-                        .getVarDef(variableName)
-                        .getVarDef()
-                        .getTypeDef());
-            case LITERAL_VALUE:
-                return Optional.of(rhsLiteralValue.getTypeDefinition());
-            case FORMAT_STRING:
-                return Optional.of(new TypeDefinitionModel(VariableType.STR));
-            case NODE_OUTPUT:
-                // TODO: handle here if nodeOutputType is a STRUCT and we access a field on it.
-                Optional<ReturnTypeModel> returnTypeOption = wfSpec.fetchThreadSpec(threadSpecName)
-                        .getNode(nodeOutputReference.getNodeName())
-                        .getOutputType(manager);
-                if (returnTypeOption.isPresent()) {
-                    return returnTypeOption.get().getOutputType();
-                } else {
-                    return Optional.empty();
-                }
-            case EXPRESSION:
-                // can be a given type.
-                return expression.resolveTypeDefinition(manager, wfSpec, threadSpecName);
-            case SOURCE_NOT_SET:
-                // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
-                // protobuf that does not set the source type. Instead of throwing an IllegalStateException
-                // we should throw an error that will get propagated back to the client.
-                //
-                // The problem with this is that in this scope we lack context about which node has the
-                // invalid VariableAssignment, so the client may have trouble determining the source. Still
-                // it is better to return INVALID_ARGUMENT than INTERNAL.
-                throw new InvalidExpressionException("VariableAssignment passed with missing source");
-        }
-
-        return Optional.empty();
+        return getSourceType(manager, wfSpec, threadSpecName);
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
@@ -245,5 +205,67 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
      */
     public boolean hasCast() {
         return castTo != null;
+    }
+
+    /**
+     * Gets the cast target type, or null if no cast is specified.
+     * This is used for validation purposes.
+     */
+    public TypeDefinitionModel getCastTo() {
+        return castTo;
+    }
+
+    /**
+     * Gets the source type of this VariableAssignment without considering any casting.
+     * This method resolves the actual type of the source value before any casting is applied.
+     * 
+     * @param manager The metadata manager for resolving types
+     * @param wfSpec The workflow specification 
+     * @param threadSpecName The thread specification name
+     * @return The source type before any casting, or empty if it cannot be determined
+     */
+    public Optional<TypeDefinitionModel> getSourceType(ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName) 
+            throws InvalidExpressionException {
+        if (jsonPath != null) {
+            // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
+            // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
+            return Optional.empty();
+        }
+
+        switch (rhsSourceType) {
+            case VARIABLE_NAME:
+                return Optional.of(wfSpec.fetchThreadSpec(threadSpecName)
+                        .getVarDef(variableName)
+                        .getVarDef()
+                        .getTypeDef());
+            case LITERAL_VALUE:
+                return Optional.of(rhsLiteralValue.getTypeDefinition());
+            case FORMAT_STRING:
+                return Optional.of(new TypeDefinitionModel(VariableType.STR));
+            case NODE_OUTPUT:
+                // TODO: handle here if nodeOutputType is a STRUCT and we access a field on it.
+                Optional<ReturnTypeModel> returnTypeOption = wfSpec.fetchThreadSpec(threadSpecName)
+                        .getNode(nodeOutputReference.getNodeName())
+                        .getOutputType(manager);
+                if (returnTypeOption.isPresent()) {
+                    return returnTypeOption.get().getOutputType();
+                } else {
+                    return Optional.empty();
+                }
+            case EXPRESSION:
+                // can be a given type.
+                return expression.resolveTypeDefinition(manager, wfSpec, threadSpecName);
+            case SOURCE_NOT_SET:
+                // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
+                // protobuf that does not set the source type. Instead of throwing an IllegalStateException
+                // we should throw an error that will get propagated back to the client.
+                //
+                // The problem with this is that in this scope we lack context about which node has the
+                // invalid VariableAssignment, so the client may have trouble determining the source. Still
+                // it is better to return INVALID_ARGUMENT than INTERNAL.
+                throw new InvalidExpressionException("VariableAssignment passed with missing source");
+        }
+
+        return Optional.empty();
     }
 }
