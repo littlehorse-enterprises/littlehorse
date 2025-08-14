@@ -101,7 +101,7 @@ export const WfRuns: FC<WfSpec> = spec => {
             <Fragment key={i}>
               {page.results.map(wfRunId => (
                 <SelectionLink key={wfRunId.id} href={`/wfRun/${wfRunIdToPath(wfRunId)}`}>
-                  <p>{wfRunId.id}</p>
+                  <p className="font-code">{wfRunId.id}</p>
                   <span className={cn('ml-2 rounded px-2', statusColors[resolvedWfRuns[wfRunId.id]?.wfRun.status])}>
                     {`${resolvedWfRuns[wfRunId.id]?.wfRun.status}`}
                   </span>
