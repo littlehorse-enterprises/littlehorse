@@ -42,6 +42,16 @@ class BuilderUtil {
                     .setFormat(assignVariable(format.getFormat()))
                     .addAllArgs(format.getArgs()));
 
+        } else if (variable instanceof CastExpressionImpl) {
+            CastExpressionImpl castExpr = (CastExpressionImpl) variable;
+            VariableAssignment sourceAssignment = assignVariable(castExpr.getSource());
+            builder = sourceAssignment.toBuilder();
+            
+            // Set the cast_to field
+            builder.setCastTo(io.littlehorse.sdk.common.proto.TypeDefinition.newBuilder()
+                    .setType(castExpr.getTargetType())
+                    .setMasked(false)
+                    .build());
         } else if (variable instanceof LHExpressionImpl) {
             LHExpressionImpl expr = (LHExpressionImpl) variable;
             builder.setExpression(Expression.newBuilder()

@@ -215,4 +215,17 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the value to set this WfRunVariable to.
      */
     void assign(Serializable rhs);
+
+    /**
+     * Returns a new LHExpression that represents this variable cast to the specified type.
+     * This enables manual type conversions that are not automatic, such as:
+     * - STR → INT/DOUBLE/BOOL (manual casting required)
+     * - DOUBLE → INT (manual casting required)
+     *
+     * The cast operation is non-mutating: the original variable remains unchanged.
+     *
+     * @param targetType the type to cast this variable to
+     * @return a new LHExpression representing the cast value
+     */
+    LHExpression cast(VariableType targetType);
 }
