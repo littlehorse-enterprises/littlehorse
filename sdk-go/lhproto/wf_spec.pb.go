@@ -1160,6 +1160,7 @@ type ExitNode struct {
 	// at this ExitNode completes successfully with no output.
 	//
 	// Types that are assignable to Result:
+	//
 	//	*ExitNode_FailureDef
 	//	*ExitNode_ReturnContent
 	Result isExitNode_Result `protobuf_oneof:"result"`

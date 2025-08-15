@@ -1408,10 +1408,12 @@ func (t *WorkflowThread) fail(content interface{}, failureName string, msg *stri
 
 	node.Node = &lhproto.Node_Exit{
 		Exit: &lhproto.ExitNode{
-			FailureDef: &lhproto.FailureDef{
-				FailureName: failureName,
-				Content:     contentVarVal,
-				Message:     message,
+			Result: &lhproto.ExitNode_FailureDef{
+				FailureDef: &lhproto.FailureDef{
+					FailureName: failureName,
+					Content:     contentVarVal,
+					Message:     message,
+				},
 			},
 		},
 	}

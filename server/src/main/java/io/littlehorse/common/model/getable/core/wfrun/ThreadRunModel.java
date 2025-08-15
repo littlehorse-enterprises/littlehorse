@@ -175,6 +175,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (Integer handledFailedChildId : handledFailedChildren) {
             out.addHandledFailedChildren(handledFailedChildId);
         }
+        if (output != null) {
+            out.setOutput(output.toProto());
+        }
         return out;
     }
 

@@ -775,6 +775,7 @@ export const ThreadRun = {
         ? object.handledFailedChildren.map((e: any) => globalThis.Number(e))
         : [],
       type: isSet(object.type) ? threadTypeFromJSON(object.type) : ThreadType.ENTRYPOINT,
+      output: isSet(object.output) ? VariableValue.fromJSON(object.output) : undefined,
     };
   },
 
@@ -824,6 +825,9 @@ export const ThreadRun = {
     }
     if (message.type !== ThreadType.ENTRYPOINT) {
       obj.type = threadTypeToJSON(message.type);
+    }
+    if (message.output !== undefined) {
+      obj.output = VariableValue.toJSON(message.output);
     }
     return obj;
   },
