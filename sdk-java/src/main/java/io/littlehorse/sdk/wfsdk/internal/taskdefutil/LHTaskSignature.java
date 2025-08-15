@@ -84,6 +84,8 @@ public class LHTaskSignature {
     private VariableDef buildVariableDef(Parameter param) {
         VariableDef.Builder varDef = VariableDef.newBuilder();
         LHClassType lhClassType = new LHClassType(param.getType());
+        structDefClasses.addAll(lhClassType.getDependencyClasses());
+
         TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
 
         // If param has `LHType` annotation...
@@ -106,6 +108,8 @@ public class LHTaskSignature {
             return ReturnType.newBuilder().build();
         } else {
             LHClassType lhClassType = new LHClassType(classReturnType);
+            structDefClasses.addAll(lhClassType.getDependencyClasses());
+
             TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
 
             if (taskMethod.isAnnotationPresent(LHType.class)) {

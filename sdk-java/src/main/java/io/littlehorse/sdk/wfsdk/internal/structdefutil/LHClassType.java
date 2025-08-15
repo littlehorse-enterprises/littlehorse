@@ -271,6 +271,11 @@ public class LHClassType {
     }
 
     @Override
+    public String toString() {
+        return this.getClassType().getCanonicalName();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

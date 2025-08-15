@@ -12,6 +12,8 @@ import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import lombok.Getter;
+
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +42,7 @@ public class LHTaskSignatureTest {
     }
 
     @LHStructDef(name = "car")
+    @Getter
     class Car {
         String model;
         int year;
@@ -49,12 +52,14 @@ public class LHTaskSignatureTest {
     }
 
     @LHStructDef(name = "person")
+    @Getter
     class Person {
         String name;
         int age = 10;
     }
 
     @LHStructDef(name = "garage")
+    @Getter
     class Garage {
         String address;
         int size;
