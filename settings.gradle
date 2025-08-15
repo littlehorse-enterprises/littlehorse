@@ -1,3 +1,9 @@
+pluginManagement{
+        plugins {
+                id('com.diffplug.spotless') version spotlessVersion
+        }
+}
+
 rootProject.name = 'littlehorse'
 
 include(
@@ -10,31 +16,33 @@ include(
 )
 
 [
-        'basic',
         'await-workflow-event',
-        'variables',
+        'basic',
         'child-thread',
         'child-workflow',
+        'conditionals-while',
         'conditionals',
         'correlated-event',
-        'wf-versions',
-        'worker-context',
-        'run-wf',
-        'conditionals-while',
         'exception-handler',
+        'expressions',
         'external-event',
+        'hundred-tasks',
         'interrupt-handler',
         'json',
-        'saga',
-        'parallel-approval',
         'mutation',
-        'user-tasks',
-        'hundred-tasks',
         'output-topic',
-        'spawn-thread-foreach',
+        'parallel-approval',
+        'run-wf',
+        'saga',
         'shared-variables',
         'workflow-events',
-        'casting'
+        'casting',
+        'spawn-thread-foreach',
+        'user-tasks',
+        'variables',
+        'wf-versions',
+        'worker-context',
+        'workflow-events'
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")

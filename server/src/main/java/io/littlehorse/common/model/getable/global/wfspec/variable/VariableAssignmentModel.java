@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
@@ -244,9 +245,12 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 return Optional.of(new TypeDefinitionModel(VariableType.STR));
             case NODE_OUTPUT:
                 // TODO: handle here if nodeOutputType is a STRUCT and we access a field on it.
-                Optional<ReturnTypeModel> returnTypeOption = wfSpec.fetchThreadSpec(threadSpecName)
-                        .getNode(nodeOutputReference.getNodeName())
-                        .getOutputType(manager);
+                NodeModel node = wfSpec.fetchThreadSpec(threadSpecName).getNode(nodeOutputReference.getNodeName());
+                if (node == null) {
+                    throw new InvalidExpressionException("Node " + nodeOutputReference.getNodeName()
+                            + " not present in threadspec " + threadSpecName);
+                }
+                Optional<ReturnTypeModel> returnTypeOption = node.getOutputType(manager);
                 if (returnTypeOption.isPresent()) {
                     return returnTypeOption.get().getOutputType();
                 } else {
