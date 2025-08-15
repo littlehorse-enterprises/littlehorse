@@ -176,7 +176,7 @@ message TypeDefinition {
     InlineStructDef inline_struct_def = 6;
 
     // Array Def
-    InlineArrayDef array = 7;
+    InlineArrayDef inline_array_def = 7;
   }
 
   // For compatibility purposes.

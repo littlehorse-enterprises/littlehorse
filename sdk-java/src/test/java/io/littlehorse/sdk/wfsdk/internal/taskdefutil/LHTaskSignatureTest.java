@@ -7,11 +7,11 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -159,8 +159,9 @@ public class LHTaskSignatureTest {
     @Test
     void shouldReturnSortedListOfParamAndReturnTypeStructDefDependencies() {
         LHTaskSignature taskSignature = new LHTaskSignature("struct-task", new MyWorker(), "struct-task");
-        List<Class<?>> actualClassList = new ArrayList<>(taskSignature.getStructDefDependencies());
-        List<Class<?>> expectedClassList = List.of(Person.class, Garage.class, Car.class);
+        List<LHClassType> actualClassList = taskSignature.getStructDefDependencies();
+        List<LHClassType> expectedClassList =
+                List.of(new LHClassType(Person.class), new LHClassType(Garage.class), new LHClassType(Car.class));
 
         assertThat(actualClassList).isEqualTo(expectedClassList);
     }

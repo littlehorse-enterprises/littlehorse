@@ -359,7 +359,7 @@ export interface TypeDefinition {
     | InlineStructDef
     | undefined;
   /** Array Def */
-  array?:
+  inlineArrayDef?:
     | InlineArrayDef
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
@@ -1114,7 +1114,7 @@ function createBaseTypeDefinition(): TypeDefinition {
     primitiveType: undefined,
     structDefId: undefined,
     inlineStructDef: undefined,
-    array: undefined,
+    inlineArrayDef: undefined,
     masked: false,
   };
 }
@@ -1130,8 +1130,8 @@ export const TypeDefinition = {
     if (message.inlineStructDef !== undefined) {
       InlineStructDef.encode(message.inlineStructDef, writer.uint32(50).fork()).ldelim();
     }
-    if (message.array !== undefined) {
-      InlineArrayDef.encode(message.array, writer.uint32(58).fork()).ldelim();
+    if (message.inlineArrayDef !== undefined) {
+      InlineArrayDef.encode(message.inlineArrayDef, writer.uint32(58).fork()).ldelim();
     }
     if (message.masked !== false) {
       writer.uint32(32).bool(message.masked);
@@ -1172,7 +1172,7 @@ export const TypeDefinition = {
             break;
           }
 
-          message.array = InlineArrayDef.decode(reader, reader.uint32());
+          message.inlineArrayDef = InlineArrayDef.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 32) {
@@ -1202,8 +1202,8 @@ export const TypeDefinition = {
     message.inlineStructDef = (object.inlineStructDef !== undefined && object.inlineStructDef !== null)
       ? InlineStructDef.fromPartial(object.inlineStructDef)
       : undefined;
-    message.array = (object.array !== undefined && object.array !== null)
-      ? InlineArrayDef.fromPartial(object.array)
+    message.inlineArrayDef = (object.inlineArrayDef !== undefined && object.inlineArrayDef !== null)
+      ? InlineArrayDef.fromPartial(object.inlineArrayDef)
       : undefined;
     message.masked = object.masked ?? false;
     return message;

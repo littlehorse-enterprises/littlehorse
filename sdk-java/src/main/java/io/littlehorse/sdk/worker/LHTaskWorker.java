@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
@@ -179,8 +180,11 @@ public class LHTaskWorker implements Closeable {
         if (tdb.getStructDefDependencies().isEmpty()) return;
 
         List<String> invalidStructDefs = new ArrayList<>();
+        List<StructDef> structDefDependencies = tdb.getStructDefDependencies().stream()
+                .map(classType -> classType.toStructDef())
+                .toList();
 
-        for (StructDef structDef : tdb.getStructDefDependencies()) {
+        for (StructDef structDef : structDefDependencies) {
             ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
                     ValidateStructDefEvolutionRequest.newBuilder();
             validateStructDefRequest.setStructDefId(structDef.getId());
@@ -201,11 +205,12 @@ public class LHTaskWorker implements Closeable {
     }
 
     public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
-        List<StructDef> structDefs = tdb.getStructDefDependencies();
+        List<LHClassType> lhClassTypes = tdb.getStructDefDependencies();
 
-        if (structDefs.isEmpty()) return;
+        if (lhClassTypes.isEmpty()) return;
 
-        for (StructDef structDef : structDefs) {
+        for (LHClassType lhClassType : lhClassTypes) {
+            StructDef structDef = lhClassType.toStructDef();
             PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
             putStructDefRequest.setName(structDef.getId().getName());
             putStructDefRequest.setDescription(structDef.getDescription());

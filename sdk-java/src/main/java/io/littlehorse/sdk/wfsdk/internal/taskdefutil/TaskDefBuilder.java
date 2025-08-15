@@ -2,12 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
-import io.littlehorse.sdk.common.proto.StructDef;
-import io.littlehorse.sdk.common.proto.StructDefId;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.StructDefUtil;
-import io.littlehorse.sdk.worker.LHStructDef;
-import java.util.ArrayList;
-import java.util.Collections;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,11 +12,13 @@ public class TaskDefBuilder {
     public Object executable;
     public LHTaskSignature signature;
     public boolean shouldPutStructDefs;
+    public List<LHClassType> structDefDependencies;
 
     public TaskDefBuilder(Object executable, String taskDefName, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
         signature = new LHTaskSignature(taskDefName, executable, lhTaskMethodAnnotationValue);
         this.executable = executable;
+        this.structDefDependencies = signature.getStructDefDependencies();
     }
 
     public PutTaskDefRequest toPutTaskDefRequest() {
@@ -36,8 +33,8 @@ public class TaskDefBuilder {
         return out.build();
     }
 
-    public List<StructDef> getStructDefDependencies() {
-        return this.signature.getStructDefDependencies();
+    public List<LHClassType> getStructDefDependencies() {
+        return this.structDefDependencies;
     }
 
     @Override

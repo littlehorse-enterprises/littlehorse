@@ -70,27 +70,27 @@ public interface TypeDefinitionOrBuilder extends
    * Array Def
    * </pre>
    *
-   * <code>.littlehorse.InlineArrayDef array = 7;</code>
-   * @return Whether the array field is set.
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 7;</code>
+   * @return Whether the inlineArrayDef field is set.
    */
-  boolean hasArray();
+  boolean hasInlineArrayDef();
   /**
    * <pre>
    * Array Def
    * </pre>
    *
-   * <code>.littlehorse.InlineArrayDef array = 7;</code>
-   * @return The array.
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 7;</code>
+   * @return The inlineArrayDef.
    */
-  io.littlehorse.sdk.common.proto.InlineArrayDef getArray();
+  io.littlehorse.sdk.common.proto.InlineArrayDef getInlineArrayDef();
   /**
    * <pre>
    * Array Def
    * </pre>
    *
-   * <code>.littlehorse.InlineArrayDef array = 7;</code>
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 7;</code>
    */
-  io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getArrayOrBuilder();
+  io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getInlineArrayDefOrBuilder();
 
   /**
    * <pre>

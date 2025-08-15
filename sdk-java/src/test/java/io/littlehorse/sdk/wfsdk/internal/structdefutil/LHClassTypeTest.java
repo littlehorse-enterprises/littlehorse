@@ -1,43 +1,52 @@
-package io.littlehorse.sdk.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import io.littlehorse.sdk.common.exception.StructDefCircularDependencyException;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.StructDefUtil;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
-import java.util.List;
-import org.junit.jupiter.api.Nested;
+import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
-public class StructDefUtilTest {
-
+public class LHClassTypeTest {
     @LHStructDef(name = "book")
+    @Getter
     class Book {
         public String title;
         public int numPages;
         public Author author;
     }
 
+    @LHStructDef(name = "authorFieldsOnly")
+    class AuthorFieldsOnly {
+        public String name;
+        public int age;
+        public boolean isAlive;
+        public double heightCm;
+        public byte[] bytes;
+        public WfRunId wfRunId;
+    }
+
     @LHStructDef(name = "author")
+    @Getter
     class Author {
         public String name;
         public int age;
         public boolean isAlive;
-        public double height;
+        public double heightCm;
         public byte[] bytes;
         public WfRunId wfRunId;
     }
 
     @LHStructDef(name = "library")
+    @Getter
     class Library {
         public String name;
 
@@ -45,19 +54,38 @@ public class StructDefUtilTest {
         public Book[] books;
     }
 
+    @Getter
+    @LHStructDef(name = "maskedValueDemo")
     class MaskedValueDemo {
-        @LHStructField(masked = true)
         public String maskedValue;
+
+        @LHStructField(masked = true)
+        public String getMaskedValue() {
+            return this.maskedValue;
+        }
     }
 
     class NamedFieldDemo {
-        @LHStructField(name = "setFieldName")
         public int inferredFieldName;
+
+        @LHStructField(name = "customFieldName")
+        public int getInferredFieldName() {
+            return this.inferredFieldName;
+        }
+    }
+
+    @Test
+    public void buildEmptyInlineStructDefWhenClassDoesNotHaveGettersOrSetters() {
+        LHClassType authorClassType = new LHClassType(AuthorFieldsOnly.class);
+        InlineStructDef actualInlineStructDef = authorClassType.getInlineStructDef();
+
+        assertThat(actualInlineStructDef.toString()).isBlank();
     }
 
     @Test
     public void buildInlineStructDefWithPrimitiveFields() {
-        InlineStructDef actualInlineStructDef = StructDefUtil.buildInlineStructDef(Author.class);
+        LHClassType authorClassType = new LHClassType(Author.class);
+        InlineStructDef actualInlineStructDef = authorClassType.getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "name",
@@ -70,12 +98,12 @@ public class StructDefUtilTest {
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                 .build())
                 .putFields(
-                        "isAlive",
+                        "alive",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
                                 .build())
                 .putFields(
-                        "height",
+                        "heightCm",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.DOUBLE))
                                 .build())
@@ -96,7 +124,7 @@ public class StructDefUtilTest {
 
     @Test
     public void buildInlineStructDefWithFieldReferenceToAnotherStructDef() {
-        InlineStructDef actualInlineStructDef = StructDefUtil.buildInlineStructDef(Book.class);
+        InlineStructDef actualInlineStructDef = new LHClassType(Book.class).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "title",
@@ -121,12 +149,21 @@ public class StructDefUtilTest {
 
     @Test
     public void buildInlineStructDefIgnoresFieldsWithLHStructIgnore() {
-        InlineStructDef actualInlineStructDef = StructDefUtil.buildInlineStructDef(Library.class);
+        InlineStructDef actualInlineStructDef = new LHClassType(Library.class).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "name",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .putFields(
+                        "books",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder()
+                                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                                .setElementType(TypeDefinition.newBuilder()
+                                                        .setStructDefId(StructDefId.newBuilder()
+                                                                .setName("book")))))
                                 .build())
                 .build();
 
@@ -135,7 +172,7 @@ public class StructDefUtilTest {
 
     @Test
     public void buildInlineStructDefMarksFieldsAsMasked() {
-        InlineStructDef actualInlineStructDef = StructDefUtil.buildInlineStructDef(MaskedValueDemo.class);
+        InlineStructDef actualInlineStructDef = new LHClassType(MaskedValueDemo.class).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "maskedValue",
@@ -151,10 +188,10 @@ public class StructDefUtilTest {
 
     @Test
     public void buildInlineStructDefUsesAnnotatedFieldName() {
-        InlineStructDef actualInlineStructDef = StructDefUtil.buildInlineStructDef(NamedFieldDemo.class);
+        InlineStructDef actualInlineStructDef = new LHClassType(NamedFieldDemo.class).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
-                        "setFieldName",
+                        "customFieldName",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                 .build())
@@ -163,92 +200,55 @@ public class StructDefUtilTest {
         assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
     }
 
-    // TODO: Support Arrays again
-    // public void buildInlineStructDefWithFieldArrayOfStructDefs() {
-    //     InlineStructDef actualInlineStructDef = StructDefUtil.buildInlineStructDef(Library.class);
-    //     InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
-    //             .putFields(
-    //                     "books",
-    //                     StructFieldDef.newBuilder()
-    //                             .setFieldType(TypeDefinition.newBuilder().setInlineStructDef())
-    //                             .build())
-    //             .build();
-    // }
+    @Test
+    public void getLHPrimitiveTypeDefinition() {
+        LHClassType intType = new LHClassType(Integer.class);
 
-    @Nested
-    class NoCycleTest {
-        @Test
-        public void getStructDefDependenciesCompletesWithoutExceptionWhenNoCircularDependencies() {
-            StructDefUtil.getStructDefDependencies(Car.class);
-        }
+        TypeDefinition actualTypeDefinition = intType.getTypeDefinition();
+        TypeDefinition expectedTypeDefinition =
+                TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT).build();
 
-        @Test
-        public void getStructDefDependenciesReturnsTopologicallySortedListOfDependencies() {
-            List<Class<?>> classList = StructDefUtil.getStructDefDependencies(Car.class);
-            List<Class<?>> expectedClassList = List.of(CarID.class, Garage.class, Person.class, Car.class);
-
-            assertThat(expectedClassList).isEqualTo(classList);
-        }
-
-        @Test
-        public void getStructDefDependenciesSkipsIgnoredFields() {
-            List<Class<?>> actualDependencies = StructDefUtil.getStructDefDependencies(CarID.class);
-            List<Class<?>> expectedDependencies = List.of(CarID.class);
-
-            assertThat(actualDependencies).isEqualTo(expectedDependencies);
-        }
-
-        @LHStructDef(name = "car")
-        class Car {
-            public Garage garage;
-            public CarID id;
-            public Person owner;
-            public Person passenger;
-        }
-
-        @LHStructDef(name = "person")
-        class Person {
-            public Garage garage;
-        }
-
-        @LHStructDef(name = "garage")
-        class Garage {
-            public CarID[] carIDs;
-        }
-
-        @LHStructDef(name = "carId")
-        class CarID {
-            public String uuid;
-
-            @LHStructIgnore
-            public Garage ignoredField;
-        }
+        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
     }
 
-    @Nested
-    class CycleTest {
-        @Test
-        public void getStructDefDependenciesThrowsExceptionWhenCircularDependencies() {
-            assertThatThrownBy(() -> {
-                        StructDefUtil.getStructDefDependencies(Car.class);
-                    })
-                    .isInstanceOf(StructDefCircularDependencyException.class);
-        }
+    @Test
+    public void getStructDefTypeDefinition() {
+        LHClassType structDefType = new LHClassType(Author.class);
 
-        @LHStructDef(name = "car")
-        class Car {
-            public Person owner;
-            public Person passenger;
-        }
+        TypeDefinition actualTypeDefinition = structDefType.getTypeDefinition();
+        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("author"))
+                .build();
 
-        @LHStructDef(name = "person")
-        class Person {
-            public Garage garage;
-        }
+        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
+    }
 
-        @LHStructDef(name = "garage")
-        class Garage {
-            public Car[] cars;
-        }
+    @Test
+    public void getArrayOfPrimitiveTypeDefinition() {
+        LHClassType intArrayTypeDef = new LHClassType(Integer[].class);
+
+        TypeDefinition actualTypeDefinition = intArrayTypeDef.getTypeDefinition();
+        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
+                .setInlineArrayDef(InlineArrayDef.newBuilder()
+                        .setElementType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))
+                .build();
+
+        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
+    }
+
+    @Test
+    public void get2DArrayOfPrimitiveTypeDefinition() {
+        LHClassType intArrayTypeDef = new LHClassType(Integer[][].class);
+
+        TypeDefinition actualTypeDefinition = intArrayTypeDef.getTypeDefinition();
+        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
+                .setInlineArrayDef(InlineArrayDef.newBuilder()
+                        .setElementType(TypeDefinition.newBuilder()
+                                .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                        .setElementType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))))
+                .build();
+
+        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
     }
 }
