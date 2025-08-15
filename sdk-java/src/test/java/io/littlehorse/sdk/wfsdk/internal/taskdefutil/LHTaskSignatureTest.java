@@ -12,9 +12,8 @@ import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
-import lombok.Getter;
-
 import java.util.List;
+import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskSignatureTest {
