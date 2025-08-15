@@ -2304,17 +2304,17 @@ def python_type_to_return_type(py_type: type | None) -> ReturnType:
         raise ValueError("Payload type must be set before generating the request.")
     type_def = TypeDefinition()
     if py_type is str:
-        type_def.type = VariableType.STR
+        type_def.primitive_type = VariableType.STR
     elif py_type is int:
-        type_def.type = VariableType.INT
+        type_def.primitive_type = VariableType.INT
     elif py_type is float:
-        type_def.type = VariableType.DOUBLE
+        type_def.primitive_type = VariableType.DOUBLE
     elif py_type is bool:
-        type_def.type = VariableType.BOOL
+        type_def.primitive_type = VariableType.BOOL
     elif issubclass(py_type, dict):
-        type_def.type = VariableType.JSON_OBJ
+        type_def.primitive_type = VariableType.JSON_OBJ
     elif issubclass(py_type, list):
-        type_def.type = VariableType.JSON_ARR
+        type_def.primitive_type = VariableType.JSON_ARR
     else:
         raise ValueError("Unsupported payload type.")
     return ReturnType(return_type=type_def)

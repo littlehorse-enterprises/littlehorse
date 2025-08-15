@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -182,7 +183,7 @@ public class LHTaskWorker implements Closeable {
         List<String> invalidStructDefs = new ArrayList<>();
         List<StructDef> structDefDependencies = tdb.getStructDefDependencies().stream()
                 .map(classType -> classType.toStructDef())
-                .toList();
+                .collect(Collectors.toList());
 
         for (StructDef structDef : structDefDependencies) {
             ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =

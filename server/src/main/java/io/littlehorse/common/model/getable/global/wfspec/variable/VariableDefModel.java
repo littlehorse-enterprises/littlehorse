@@ -81,7 +81,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     }
 
     public void validateValue(VariableValueModel value) throws InvalidVariableDefException {
-        if (value.getType() == null || value.getType() == typeDef.getType()) {
+        if (value.getType() == null || value.getType() == typeDef.getPrimitiveType()) {
             return;
         }
         throw new InvalidVariableDefException(this, "should be " + typeDef + " but is of type " + value.getType());
