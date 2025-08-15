@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -18,18 +17,18 @@ public class CastingExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("casting-workflow", wf -> {
-            WfRunVariable stringBool = wf.addVariable("string-var", VariableType.STR).withDefault("true");
-            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
+            WfRunVariable stringInput = wf.declareStr("string-input").withDefault("true");
+            WfRunVariable intVar = wf.declareInt("int-var");
 
             var intResult = wf.execute("int-method", intVar); // Returns an INT
             var doubleResult = wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
             var strResult= wf.execute("string-method", doubleResult); // Auto cast from DOUBLE to STR
 
-            wf.execute("int-method", doubleResult.cast(VariableType.INT)); // Manual cast from DOUBLE to INT
-            wf.execute("bool-method", stringBool.cast(VariableType.BOOL)); // Manual cast from STR to BOOL
+            wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to INT
+            wf.execute("bool-method", stringInput.cast(VariableType.BOOL)); // Manual cast from STR to BOOL
 
-            stringBool.assign(strResult);
-            wf.execute("double-method", stringBool.cast(VariableType.DOUBLE)); // Manual cast from STR to DOUBLE
+            stringInput.assign(strResult);
+            wf.execute("double-method", stringInput.castToDouble()); // Manual cast from STR to DOUBLE
         });
     }
 
@@ -89,6 +88,7 @@ public class CastingExample {
         System.out.println("✅ Manual Casting (requires .cast() calls):");
         System.out.println("   - STR → INT/DOUBLE/BOOL (manual)");
         System.out.println("   - DOUBLE → INT (manual)");
+        System.out.println("   - Convenience methods: .castToInt(), .castToDouble(), .castToBool(), etc.");
         System.out.println();
         System.out.println("✅ Variable Assignment Validation:");
         System.out.println("   - Automatic assignments work without .cast()");

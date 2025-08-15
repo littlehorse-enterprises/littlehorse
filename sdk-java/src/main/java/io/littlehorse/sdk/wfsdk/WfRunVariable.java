@@ -228,4 +228,58 @@ public interface WfRunVariable extends LHExpression {
      * @return a new LHExpression representing the cast value
      */
     LHExpression cast(VariableType targetType);
+
+    /**
+     * Equivalent to cast(VariableType.INT).
+     *
+     * @return a new LHExpression representing the value cast to INT
+     */
+    default LHExpression castToInt() {
+        return cast(VariableType.INT);
+    }
+
+    /**
+     * Equivalent to cast(VariableType.DOUBLE).
+     *
+     * @return a new LHExpression representing the value cast to DOUBLE
+     */
+    default LHExpression castToDouble() {
+        return cast(VariableType.DOUBLE);
+    }
+
+    /**
+     * Equivalent to cast(VariableType.STR).
+     *
+     * @return a new LHExpression representing the value cast to STR
+     */
+    default LHExpression castToStr() {
+        return cast(VariableType.STR);
+    }
+
+    /**
+     * Equivalent to cast(VariableType.BOOL).
+     *
+     * @return a new LHExpression representing the value cast to BOOL
+     */
+    default LHExpression castToBool() {
+        return cast(VariableType.BOOL);
+    }
+
+    /**
+     * Equivalent to cast(VariableType.BYTES).
+     *
+     * @return a new LHExpression representing the value cast to BYTES
+     */
+    default LHExpression castToBytes() {
+        return cast(VariableType.BYTES);
+    }
+
+    /**
+     * Equivalent to cast(VariableType.WF_RUN_ID).
+     *
+     * @return a new LHExpression representing the value cast to WF_RUN_ID
+     */
+    default LHExpression castToWfRunId() {
+        return cast(VariableType.WF_RUN_ID);
+    }
 }

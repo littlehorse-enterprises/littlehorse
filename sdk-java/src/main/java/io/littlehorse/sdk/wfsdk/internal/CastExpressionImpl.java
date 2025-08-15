@@ -46,7 +46,8 @@ class CastExpressionImpl implements LHExpression {
 
     @Override
     public LHExpression removeIfPresent(java.io.Serializable other) {
-        return new LHExpressionImpl(this, io.littlehorse.sdk.common.proto.VariableMutationType.REMOVE_IF_PRESENT, other);
+        return new LHExpressionImpl(
+                this, io.littlehorse.sdk.common.proto.VariableMutationType.REMOVE_IF_PRESENT, other);
     }
 
     @Override
