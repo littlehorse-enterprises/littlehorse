@@ -89,6 +89,26 @@ public final class CommonWfspec {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_TaskNode_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InlineStructDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_InlineStructDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_InlineStructDef_FieldsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InlineArrayDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_InlineArrayDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_StructFieldDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_StructFieldDef_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -133,47 +153,61 @@ public final class CommonWfspec {
       "ueH\001\210\001\001\022\031\n\014masked_value\030\004 \001(\010H\002\210\001\001\0222\n\010ty" +
       "pe_def\030\005 \001(\0132\033.littlehorse.TypeDefinitio" +
       "nH\003\210\001\001B\007\n\005_typeB\020\n\016_default_valueB\017\n\r_ma" +
-      "sked_valueB\013\n\t_type_def\"U\n\016TypeDefinitio" +
-      "n\022\'\n\004type\030\001 \001(\0162\031.littlehorse.VariableTy" +
-      "pe\022\016\n\006masked\030\004 \001(\010J\004\010\002\020\003J\004\010\003\020\004\"S\n\nReturn" +
-      "Type\0225\n\013return_type\030\001 \001(\0132\033.littlehorse." +
-      "TypeDefinitionH\000\210\001\001B\016\n\014_return_type\"\357\004\n\017" +
-      "UTActionTrigger\0224\n\004task\030\001 \001(\0132$.littleho" +
-      "rse.UTActionTrigger.UTATaskH\000\0228\n\006cancel\030" +
-      "\002 \001(\0132&.littlehorse.UTActionTrigger.UTAC" +
-      "ancelH\000\022<\n\010reassign\030\003 \001(\0132(.littlehorse." +
-      "UTActionTrigger.UTAReassignH\000\0226\n\rdelay_s" +
-      "econds\030\005 \001(\0132\037.littlehorse.VariableAssig" +
-      "nment\0221\n\004hook\030\006 \001(\0162#.littlehorse.UTActi" +
-      "onTrigger.UTHook\032\013\n\tUTACancel\032`\n\007UTATask" +
-      "\022#\n\004task\030\001 \001(\0132\025.littlehorse.TaskNode\0220\n" +
-      "\tmutations\030\002 \003(\0132\035.littlehorse.VariableM" +
-      "utation\032\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(\013" +
-      "2\037.littlehorse.VariableAssignmentH\000\210\001\001\0228" +
-      "\n\nuser_group\030\002 \001(\0132\037.littlehorse.Variabl" +
-      "eAssignmentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_gr" +
-      "oup\".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TASK" +
-      "_ASSIGNED\020\001B\010\n\006action\"c\n\035ExponentialBack" +
-      "offRetryPolicy\022\030\n\020base_interval_ms\030\001 \001(\005" +
-      "\022\024\n\014max_delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 \001" +
-      "(\002\"\311\002\n\010TaskNode\022-\n\013task_def_id\030\001 \001(\0132\026.l" +
-      "ittlehorse.TaskDefIdH\000\0227\n\014dynamic_task\030\006" +
-      " \001(\0132\037.littlehorse.VariableAssignmentH\000\022" +
-      "\027\n\017timeout_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(" +
-      "\005\022L\n\023exponential_backoff\030\005 \001(\0132*.littleh" +
-      "orse.ExponentialBackoffRetryPolicyH\001\210\001\001\022" +
-      "2\n\tvariables\030\004 \003(\0132\037.littlehorse.Variabl" +
-      "eAssignmentB\021\n\017task_to_executeB\026\n\024_expon" +
-      "ential_backoff*\230\001\n\024VariableMutationType\022" +
-      "\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBT" +
-      "RACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMO" +
-      "VE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREM" +
-      "OVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_THAN\020\000\022" +
-      "\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017G" +
-      "REATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUA" +
-      "LS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.littlehor" +
-      "se.sdk.common.protoP\001Z\t.;lhproto\252\002\034Littl" +
-      "eHorse.Sdk.Common.Protob\006proto3"
+      "sked_valueB\013\n\t_type_def\"\230\002\n\016TypeDefiniti" +
+      "on\0223\n\016primitive_type\030\001 \001(\0162\031.littlehorse" +
+      ".VariableTypeH\000\0221\n\rstruct_def_id\030\005 \001(\0132\030" +
+      ".littlehorse.StructDefIdH\000\0229\n\021inline_str" +
+      "uct_def\030\006 \001(\0132\034.littlehorse.InlineStruct" +
+      "DefH\000\0227\n\020inline_array_def\030\007 \001(\0132\033.little" +
+      "horse.InlineArrayDefH\000\022\016\n\006masked\030\004 \001(\010B\016" +
+      "\n\014defined_typeJ\004\010\002\020\003J\004\010\003\020\004\"S\n\nReturnType" +
+      "\0225\n\013return_type\030\001 \001(\0132\033.littlehorse.Type" +
+      "DefinitionH\000\210\001\001B\016\n\014_return_type\"\357\004\n\017UTAc" +
+      "tionTrigger\0224\n\004task\030\001 \001(\0132$.littlehorse." +
+      "UTActionTrigger.UTATaskH\000\0228\n\006cancel\030\002 \001(" +
+      "\0132&.littlehorse.UTActionTrigger.UTACance" +
+      "lH\000\022<\n\010reassign\030\003 \001(\0132(.littlehorse.UTAc" +
+      "tionTrigger.UTAReassignH\000\0226\n\rdelay_secon" +
+      "ds\030\005 \001(\0132\037.littlehorse.VariableAssignmen" +
+      "t\0221\n\004hook\030\006 \001(\0162#.littlehorse.UTActionTr" +
+      "igger.UTHook\032\013\n\tUTACancel\032`\n\007UTATask\022#\n\004" +
+      "task\030\001 \001(\0132\025.littlehorse.TaskNode\0220\n\tmut" +
+      "ations\030\002 \003(\0132\035.littlehorse.VariableMutat" +
+      "ion\032\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(\0132\037.l" +
+      "ittlehorse.VariableAssignmentH\000\210\001\001\0228\n\nus" +
+      "er_group\030\002 \001(\0132\037.littlehorse.VariableAss" +
+      "ignmentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group\"" +
+      ".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TASK_ASS" +
+      "IGNED\020\001B\010\n\006action\"c\n\035ExponentialBackoffR" +
+      "etryPolicy\022\030\n\020base_interval_ms\030\001 \001(\005\022\024\n\014" +
+      "max_delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 \001(\002\"\311" +
+      "\002\n\010TaskNode\022-\n\013task_def_id\030\001 \001(\0132\026.littl" +
+      "ehorse.TaskDefIdH\000\0227\n\014dynamic_task\030\006 \001(\013" +
+      "2\037.littlehorse.VariableAssignmentH\000\022\027\n\017t" +
+      "imeout_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L\n" +
+      "\023exponential_backoff\030\005 \001(\0132*.littlehorse" +
+      ".ExponentialBackoffRetryPolicyH\001\210\001\001\0222\n\tv" +
+      "ariables\030\004 \003(\0132\037.littlehorse.VariableAss" +
+      "ignmentB\021\n\017task_to_executeB\026\n\024_exponenti" +
+      "al_backoff\"\227\001\n\017InlineStructDef\0228\n\006fields" +
+      "\030\001 \003(\0132(.littlehorse.InlineStructDef.Fie" +
+      "ldsEntry\032J\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\022*\n\005" +
+      "value\030\002 \001(\0132\033.littlehorse.StructFieldDef" +
+      ":\0028\001\"C\n\016InlineArrayDef\0221\n\014element_type\030\001" +
+      " \001(\0132\033.littlehorse.TypeDefinition\"\213\001\n\016St" +
+      "ructFieldDef\022/\n\nfield_type\030\001 \001(\0132\033.littl" +
+      "ehorse.TypeDefinition\0226\n\rdefault_value\030\002" +
+      " \001(\0132\032.littlehorse.VariableValueH\000\210\001\001B\020\n" +
+      "\016_default_value*\230\001\n\024VariableMutationType" +
+      "\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUB" +
+      "TRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REM" +
+      "OVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nRE" +
+      "MOVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_THAN\020\000" +
+      "\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017" +
+      "GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQU" +
+      "ALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.littleho" +
+      "rse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Litt" +
+      "leHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -229,7 +263,7 @@ public final class CommonWfspec {
     internal_static_littlehorse_TypeDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TypeDefinition_descriptor,
-        new java.lang.String[] { "Type", "Masked", });
+        new java.lang.String[] { "PrimitiveType", "StructDefId", "InlineStructDef", "InlineArrayDef", "Masked", "DefinedType", });
     internal_static_littlehorse_ReturnType_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_ReturnType_fieldAccessorTable = new
@@ -272,6 +306,30 @@ public final class CommonWfspec {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskNode_descriptor,
         new java.lang.String[] { "TaskDefId", "DynamicTask", "TimeoutSeconds", "Retries", "ExponentialBackoff", "Variables", "TaskToExecute", "ExponentialBackoff", });
+    internal_static_littlehorse_InlineStructDef_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_littlehorse_InlineStructDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_InlineStructDef_descriptor,
+        new java.lang.String[] { "Fields", });
+    internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor =
+      internal_static_littlehorse_InlineStructDef_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_InlineStructDef_FieldsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_littlehorse_InlineArrayDef_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_littlehorse_InlineArrayDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_InlineArrayDef_descriptor,
+        new java.lang.String[] { "ElementType", });
+    internal_static_littlehorse_StructFieldDef_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_littlehorse_StructFieldDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_StructFieldDef_descriptor,
+        new java.lang.String[] { "FieldType", "DefaultValue", "DefaultValue", });
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

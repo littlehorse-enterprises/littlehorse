@@ -118,7 +118,7 @@ public class InlineStructDefUtilTest {
         return Map.entry(
                 name,
                 StructFieldDef.newBuilder()
-                        .setFieldType(TypeDefinition.newBuilder().setType(type))
+                        .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
                         .build());
     }
 
@@ -134,7 +134,7 @@ public class InlineStructDefUtilTest {
         return Map.entry(
                 name,
                 StructFieldDef.newBuilder()
-                        .setFieldType(TypeDefinition.newBuilder().setType(type))
+                        .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
                         .setDefaultValue(LHLibUtil.objToVarVal(defaultValue))
                         .build());
     }
@@ -162,17 +162,17 @@ public class InlineStructDefUtilTest {
                 .putFields(
                         "model",
                         StructFieldDef.newBuilder()
-                                .setFieldType(TypeDefinition.newBuilder().setType(VariableType.STR))
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                 .build())
                 .putFields(
                         "year",
                         StructFieldDef.newBuilder()
-                                .setFieldType(TypeDefinition.newBuilder().setType(VariableType.INT))
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                                 .build())
                 .putFields(
                         "is_sold",
                         StructFieldDef.newBuilder()
-                                .setFieldType(TypeDefinition.newBuilder().setType(VariableType.BOOL))
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
                                 .build());
 
         for (Entry<String, StructFieldDef> extraField : extraFields.entrySet()) {

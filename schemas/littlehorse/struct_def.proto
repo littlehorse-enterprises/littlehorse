@@ -4,7 +4,6 @@ package littlehorse;
 
 import "common_wfspec.proto";
 import "object_id.proto";
-import "variable.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = ".;lhproto";
@@ -26,20 +25,4 @@ message StructDef {
 
   // The `StructDef` defines the actual structure of any `Struct` using this `InlineStructDeff`.
   InlineStructDef struct_def = 4;
-}
-
-// An `InlineStructDef` is the actual representation of the Schema.
-message InlineStructDef {
-  // The fields in this schema.
-  map<string, StructFieldDef> fields = 1;
-}
-
-// A `SchemaFieldDef` defines a field inside a `StructDef`.
-message StructFieldDef {
-  // The type of the field.
-  TypeDefinition field_type = 1;
-  
-  // The default value of the field, which should match the Field Type. If not
-   // provided, then the field is treated as required.
-  optional VariableValue default_value = 2;
 }

@@ -26,6 +26,7 @@ import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
@@ -366,18 +367,20 @@ final class WorkflowThreadImpl implements WorkflowThread {
             if (WfRunVariableImpl.class.isAssignableFrom(arg.getClass())) {
                 WfRunVariableImpl wfVar = ((WfRunVariableImpl) arg);
 
-                if ((wfVar.type == VariableType.JSON_ARR || wfVar.type == VariableType.JSON_OBJ)
+                if (wfVar.getDefinedType() == DefinedTypeCase.PRIMITIVE_TYPE
+                        && (wfVar.typeDef.getPrimitiveType() == VariableType.JSON_ARR
+                                || wfVar.typeDef.getPrimitiveType() == VariableType.JSON_OBJ)
                         && wfVar.jsonPath != null) {
                     log.info("There is a jsonpath, so not checking value because Json schema isn't"
                             + " yet implemented");
                     continue;
                 }
-                argType = wfVar.type;
+                argType = wfVar.typeDef.getPrimitiveType();
             } else {
                 argType = LHLibUtil.javaClassToLHVarType(arg.getClass());
             }
 
-            if (!argType.equals(taskDefInputVars.get(i).getTypeDef())) {
+            if (!argType.equals(taskDefInputVars.get(i).getTypeDef().getPrimitiveType())) {
                 throw new TaskSchemaMismatchError("Mismatch var type for param "
                         + i
                         + "on taskdef "
@@ -433,6 +436,13 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
         WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    public WfRunVariableImpl addStructVariable(String name, String structDefName) {
+        checkIfIsActive();
+        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, structDefName, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }

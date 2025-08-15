@@ -29,18 +29,17 @@ import lombok.Setter;
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private boolean masked;
-    private VariableType type;
+    private VariableType primitiveType;
 
     public TypeDefinitionModel() {}
 
-    public TypeDefinitionModel(VariableType type) {
-        // TODO: determine whether this should be refactored to fail when type == Struct.
-        this.type = type;
+    public TypeDefinitionModel(VariableType primitiveType) {
+        this.primitiveType = primitiveType;
         this.masked = false;
     }
 
     public TypeDefinitionModel(VariableType type, boolean masked) {
-        this.type = type;
+        this.primitiveType = type;
         this.masked = masked;
     }
 
@@ -52,7 +51,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     @Override
     public TypeDefinition.Builder toProto() {
         TypeDefinition.Builder out =
-                TypeDefinition.newBuilder().setMasked(masked).setType(type);
+                TypeDefinition.newBuilder().setMasked(masked).setPrimitiveType(primitiveType);
         return out;
     }
 
@@ -60,7 +59,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
-        this.type = p.getType();
+        this.primitiveType = p.getPrimitiveType();
     }
 
     public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
@@ -71,7 +70,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     public LHTypeStrategy getTypeStrategy() {
         // TODO: Support StructDefs
-        switch (type) {
+        switch (primitiveType) {
             case INT:
                 return new IntReturnTypeStrategy();
             case DOUBLE:
@@ -99,7 +98,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      */
     public boolean isPrimitive() {
         // TODO: Extend this when adding Struct and StructDef.
-        switch (type) {
+        switch (primitiveType) {
             case INT:
             case BOOL:
             case DOUBLE:
@@ -121,7 +120,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public boolean isJson() {
-        return type == VariableType.JSON_ARR || type == VariableType.JSON_OBJ;
+        return primitiveType == VariableType.JSON_ARR || primitiveType == VariableType.JSON_OBJ;
     }
 
     /**
@@ -129,7 +128,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      */
     public boolean isCompatibleWith(VariableValueModel value) {
         // TODO: Extend this when we add StructDef's and Structs.
-        return value.getType() == type;
+        return value.getType() == primitiveType;
     }
 
     /**
@@ -137,16 +136,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * exact match for now. In the future we'll support casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
-        if (type == VariableType.INT || type == VariableType.DOUBLE) {
-            return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
+        if (primitiveType == VariableType.INT || primitiveType == VariableType.DOUBLE) {
+            return other.getPrimitiveType() == VariableType.INT || other.getPrimitiveType() == VariableType.DOUBLE;
         }
-        return this.getType().equals(other.getType());
+        return this.getPrimitiveType().equals(other.getPrimitiveType());
     }
 
     @Override
     public String toString() {
         // TODO: when we have Structs, print out structdefid
-        String result = type.toString();
+        String result = primitiveType.toString();
         if (masked) result += " MASKED";
         return result;
     }
