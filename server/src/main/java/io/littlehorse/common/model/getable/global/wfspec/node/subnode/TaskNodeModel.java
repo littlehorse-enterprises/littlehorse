@@ -180,7 +180,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             "Input variable " + i + " needs to be " + taskDefVar.getTypeDef() + " but cannot be!",
                             node);
                 }
-                
+
                 if (assn.hasCast()) {
                     try {
                         validateTaskInputCasting(assn, taskDefVar, ctx);
@@ -204,26 +204,22 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     /**
      * Validates that casting operations in task input assignments are supported.
      */
-    private void validateTaskInputCasting(VariableAssignmentModel assignment, VariableDefModel taskDefVar, MetadataProcessorContext ctx) 
+    private void validateTaskInputCasting(
+            VariableAssignmentModel assignment, VariableDefModel taskDefVar, MetadataProcessorContext ctx)
             throws InvalidExpressionException {
         try {
             Optional<TypeDefinitionModel> sourceTypeOpt = assignment.getSourceType(
-                ctx.metadataManager(), 
-                node.getThreadSpec().getWfSpec(), 
-                node.getThreadSpec().getName()
-            );
-            
+                    ctx.metadataManager(),
+                    node.getThreadSpec().getWfSpec(),
+                    node.getThreadSpec().getName());
+
             if (sourceTypeOpt.isEmpty()) {
                 return;
             }
             VariableType sourceVariableType = sourceTypeOpt.get().getType();
             VariableType targetVariableType = assignment.getCastTo().getType();
             TypeCastingUtils.validateAssignment(
-                sourceVariableType, 
-                targetVariableType, 
-                true,
-                "task input parameter for " + taskDefVar.getName()
-            );
+                    sourceVariableType, targetVariableType, true, "task input parameter for " + taskDefVar.getName());
         } catch (InvalidMutationException e) {
             throw new InvalidExpressionException(e.getMessage());
         }

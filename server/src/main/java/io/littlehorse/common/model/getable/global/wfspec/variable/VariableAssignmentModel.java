@@ -219,13 +219,14 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     /**
      * Gets the source type of this VariableAssignment without considering any casting.
      * This method resolves the actual type of the source value before any casting is applied.
-     * 
+     *
      * @param manager The metadata manager for resolving types
-     * @param wfSpec The workflow specification 
+     * @param wfSpec The workflow specification
      * @param threadSpecName The thread specification name
      * @return The source type before any casting, or empty if it cannot be determined
      */
-    public Optional<TypeDefinitionModel> getSourceType(ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName) 
+    public Optional<TypeDefinitionModel> getSourceType(
+            ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
         if (jsonPath != null) {
             // There is no way to know what this `VariableAssignment` resolves to if there is a jsonpath in use,
