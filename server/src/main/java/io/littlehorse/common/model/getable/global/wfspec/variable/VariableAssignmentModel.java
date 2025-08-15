@@ -38,6 +38,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
     private ExpressionModel expression;
+    /**
+     * -- GETTER --
+     *  Gets the cast target type, or null if no cast is specified.
+     *  This is used for validation purposes.
+     */
     private TypeDefinitionModel castTo;
 
     public Class<VariableAssignment> getProtoBaseClass() {
@@ -139,10 +144,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
-        // If there's an explicit cast, check if the cast target can be the required type
-        if (castTo != null) {
-            return TypeCastingUtils.canCastTo(castTo.getType(), type);
-        }
 
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
@@ -177,7 +178,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
 
-        // Use utility to check if assignment is valid without explicit cast
         return TypeCastingUtils.canAssignWithoutCast(baseType, type);
     }
 
@@ -189,9 +189,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
      * @return The value after applying any specified casting
      * @throws LHVarSubError if casting fails
      */
-    public VariableValueModel applyCastTo(VariableValueModel sourceValue) throws LHVarSubError {
+    public VariableValueModel applyCast(VariableValueModel sourceValue) throws LHVarSubError {
         if (castTo == null) {
-            return sourceValue; // No casting needed
+            return sourceValue;
         }
 
         try {
@@ -206,14 +206,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
      */
     public boolean hasCast() {
         return castTo != null;
-    }
-
-    /**
-     * Gets the cast target type, or null if no cast is specified.
-     * This is used for validation purposes.
-     */
-    public TypeDefinitionModel getCastTo() {
-        return castTo;
     }
 
     /**

@@ -7,6 +7,14 @@ import io.littlehorse.sdk.common.proto.VariableType;
 public class TypeCastingUtils {
 
     public static boolean canCastTo(VariableType sourceType, VariableType targetType) {
+        if (sourceType == null) {
+            return true;
+        }
+
+        if (targetType == null) {
+            return false;
+        }
+
         if (sourceType == targetType) {
             return true;
         }
@@ -32,16 +40,24 @@ public class TypeCastingUtils {
     }
 
     public static boolean requiresManualCast(VariableType sourceType, VariableType targetType) {
-        if (sourceType == targetType) {
+        if (sourceType == null || targetType == null) {
             return false;
         }
-        if (isAutomaticCast(sourceType, targetType)) {
+
+        if (canAssignWithoutCast(sourceType, targetType)) {
             return false;
         }
         return canCastTo(sourceType, targetType);
     }
 
-    public static boolean isAutomaticCast(VariableType sourceType, VariableType targetType) {
+    public static boolean canAssignWithoutCast(VariableType sourceType, VariableType targetType) {
+        if (sourceType == null) {
+            return true;
+        }
+        if (targetType == null) {
+            return false;
+        }
+
         if (sourceType == targetType) {
             return true;
         }
@@ -51,34 +67,50 @@ public class TypeCastingUtils {
         return sourceType == VariableType.INT && targetType == VariableType.DOUBLE;
     }
 
-    public static boolean canAssignWithoutCast(VariableType sourceType, VariableType targetType) {
-        return isAutomaticCast(sourceType, targetType);
-    }
-
     public static void validateAssignment(
             VariableType sourceType, VariableType targetType, boolean hasCast, String context)
             throws InvalidMutationException {
+
+        if (sourceType == null) {
+            return;
+        }
+
+        if (targetType == null) {
+            throw new InvalidMutationException(
+                    "Cannot assign to null target type" + (context != null ? ". Context: " + context : ""));
+        }
+
         if (sourceType == targetType) {
             return;
         }
-        if (isAutomaticCast(sourceType, targetType)) {
-            return;
-        }
+
         if (requiresManualCast(sourceType, targetType)) {
             if (!hasCast) {
+                String suggestion = getCastingSuggestion(sourceType, targetType);
                 throw new InvalidMutationException("Cannot assign " + sourceType + " to " + targetType
-                        + " without explicit casting. Use .cast() method to perform manual type conversion."
+                        + " without explicit casting. " + suggestion
                         + (context != null ? " Context: " + context : ""));
             }
             return;
         }
 
         throw new InvalidMutationException("Cannot cast from " + sourceType + " to " + targetType
-                + ". This conversion is not supported." + (context != null ? " Context: " + context : ""));
+                + ". This conversion is not supported. Supported casts from " + sourceType + ": "
+                + getSupportedCastsFor(sourceType)
+                + (context != null ? " Context: " + context : ""));
     }
 
-    public static VariableValueModel performCast(VariableValueModel sourceValue, VariableType targetType) {
+    public static VariableValueModel castTo(VariableValueModel sourceValue, VariableType targetType) {
+
+        if (sourceValue == null) {
+            return null;
+        }
+
         VariableType sourceType = sourceValue.getTypeDefinition().getType();
+
+        if (sourceType == null) {
+            return sourceValue;
+        }
 
         if (sourceType == targetType) {
             return sourceValue;
@@ -86,7 +118,8 @@ public class TypeCastingUtils {
 
         if (!canCastTo(sourceType, targetType)) {
             throw new IllegalArgumentException(
-                    "Casting from " + sourceType + " to " + targetType + " is not supported");
+                    "Casting from " + sourceType + " to " + targetType + " is not supported. " + "Supported casts from "
+                            + sourceType + ": " + getSupportedCastsFor(sourceType));
         }
 
         try {
@@ -110,25 +143,76 @@ public class TypeCastingUtils {
                 };
             }
         } catch (Exception e) {
-            String errorMessage =
-                    switch (sourceType) {
-                        case STR -> switch (targetType) {
-                            case INT -> "Cannot parse '" + sourceValue.getStrVal() + "' as INT";
-                            case DOUBLE -> "Cannot parse '" + sourceValue.getStrVal() + "' as DOUBLE";
-                            case BOOL -> "Cannot parse '" + sourceValue.getStrVal() + "' as BOOL (use 'true'/'false')";
-                            case BYTES -> "Invalid Base64 string: '" + sourceValue.getStrVal() + "'";
-                            case WF_RUN_ID -> "Invalid UUID format: '" + sourceValue.getStrVal() + "'";
-                            default -> "Failed to cast STR to " + targetType;
-                        };
-                        default -> "Failed to cast " + sourceType + " to " + targetType + ": " + e.getMessage();
-                    };
+            String errorMessage = createCastingErrorMessage(sourceType, targetType, sourceValue, e);
             throw new IllegalArgumentException(errorMessage, e);
         }
 
-        throw new IllegalArgumentException("Unsupported casting from " + sourceType + " to " + targetType);
+        throw new IllegalArgumentException("Unsupported casting from " + sourceType + " to " + targetType
+                + ". This should not happen - please report this as a bug.");
+    }
+
+    private static String createCastingErrorMessage(
+            VariableType sourceType,
+            VariableType targetType,
+            VariableValueModel sourceValue,
+            Exception originalException) {
+
+        if (sourceType == VariableType.STR) {
+            String actualValue = sourceValue.getStrVal();
+            return switch (targetType) {
+                case INT -> "Cannot parse '" + actualValue + "' as INT.";
+                case DOUBLE -> "Cannot parse '" + actualValue + "' as DOUBLE.";
+                case BOOL -> "Cannot parse '" + actualValue + "' as BOOL.";
+                case BYTES -> "Invalid Base64 string: '" + actualValue + "'.";
+                case WF_RUN_ID -> "Invalid UUID format: '" + actualValue + "'.";
+                default -> "Failed to cast STR '" + actualValue + "' to " + targetType;
+            };
+        }
+
+        if (sourceType == VariableType.DOUBLE && targetType == VariableType.INT) {
+            return "Converting DOUBLE " + sourceValue.getDoubleVal() + " to INT. "
+                    + "Note: decimal part will be truncated";
+        }
+
+        return "Failed to cast " + sourceType + " to " + targetType + ": " + originalException.getMessage();
+    }
+
+    private static String getCastingSuggestion(VariableType sourceType, VariableType targetType) {
+        String methodName =
+                switch (targetType) {
+                    case INT -> "castToInt()";
+                    case DOUBLE -> "castToDouble()";
+                    case STR -> "castToStr()";
+                    case BOOL -> "castToBool()";
+                    case BYTES -> "castToBytes()";
+                    case WF_RUN_ID -> "castToWfRunId()";
+                    default -> "cast(VariableType." + targetType + ")";
+                };
+
+        return "Use ." + methodName + " or .cast(VariableType." + targetType + ") method.";
+    }
+
+    private static String getSupportedCastsFor(VariableType sourceType) {
+        if (sourceType == null) {
+            return "none (null source)";
+        }
+
+        return switch (sourceType) {
+            case INT -> "DOUBLE (automatic), STR (automatic)";
+            case DOUBLE -> "STR (automatic), INT (manual)";
+            case BOOL -> "STR (automatic)";
+            case BYTES -> "STR (automatic)";
+            case WF_RUN_ID -> "STR (automatic)";
+            case STR -> "INT (manual), DOUBLE (manual), BOOL (manual), BYTES (manual), WF_RUN_ID (manual)";
+            default -> "STR (if primitive type)";
+        };
     }
 
     private static boolean isPrimitive(VariableType type) {
+        if (type == null) {
+            return false;
+        }
+
         return switch (type) {
             case STR, INT, DOUBLE, BOOL, BYTES, WF_RUN_ID -> true;
             default -> false;

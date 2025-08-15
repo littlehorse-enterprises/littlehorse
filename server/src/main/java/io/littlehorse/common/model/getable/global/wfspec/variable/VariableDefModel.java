@@ -8,6 +8,7 @@ import io.littlehorse.common.exceptions.validation.InvalidVariableDefException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -87,7 +88,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
             return;
         }
 
-        if (TypeDefinitionModel.canCastTo(valueType, typeDef.getType())) {
+        if (TypeCastingUtils.canCastTo(valueType, typeDef.getType())) {
             return;
         }
 

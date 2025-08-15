@@ -146,15 +146,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         return TypeCastingUtils.canCastTo(this.getType(), other.getType());
     }
 
-    /**
-     * Checks if a cast from source to target type is possible.
-     * This includes both automatic and manual casting.
-     * Delegated to TypeCastingUtils for centralized casting logic.
-     */
-    public static boolean canCastTo(VariableType sourceType, VariableType targetType) {
-        return TypeCastingUtils.canCastTo(sourceType, targetType);
-    }
-
     @Override
     public String toString() {
         // TODO: when we have Structs, print out structdefid
@@ -172,6 +163,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * @throws IllegalArgumentException if casting is not supported for this type combination
      */
     public VariableValueModel castTo(VariableValueModel sourceValue) {
-        return TypeCastingUtils.performCast(sourceValue, this.type);
+        return TypeCastingUtils.castTo(sourceValue, this.type);
     }
 }

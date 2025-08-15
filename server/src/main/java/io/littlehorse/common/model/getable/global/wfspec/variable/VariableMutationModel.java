@@ -203,7 +203,6 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 return;
             }
 
-            // For ASSIGN operations, validate manual casting requirements
             if (operation == VariableMutationType.ASSIGN) {
                 boolean hasCast = (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) && rhsRhsAssignment.hasCast();
                 String context = "Variable mutation: " + lhsName + " = " + rhsType.get();

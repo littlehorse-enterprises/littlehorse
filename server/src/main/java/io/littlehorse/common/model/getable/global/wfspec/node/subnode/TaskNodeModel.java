@@ -176,14 +176,8 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             node);
                 }
                 if (!assn.canBeType(taskDefVar.getTypeDef(), this.node.getThreadSpec())) {
-                    throw new InvalidNodeException(
-                            "Input variable " + i + " needs to be " + taskDefVar.getTypeDef() + " but cannot be!",
-                            node);
-                }
-
-                if (assn.hasCast()) {
                     try {
-                        validateTaskInputCasting(assn, taskDefVar, ctx);
+                        validateTaskInputCasting(assn, taskDefVar, assn.hasCast(), ctx);
                     } catch (InvalidExpressionException exn) {
                         throw new InvalidNodeException(
                                 "Task input variable with name " + taskDefVar.getName() + " at position " + i
@@ -201,11 +195,11 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         validateRetryPolicy();
     }
 
-    /**
-     * Validates that casting operations in task input assignments are supported.
-     */
     private void validateTaskInputCasting(
-            VariableAssignmentModel assignment, VariableDefModel taskDefVar, MetadataProcessorContext ctx)
+            VariableAssignmentModel assignment,
+            VariableDefModel taskDefVar,
+            boolean hasCast,
+            MetadataProcessorContext ctx)
             throws InvalidExpressionException {
         try {
             Optional<TypeDefinitionModel> sourceTypeOpt = assignment.getSourceType(
@@ -217,9 +211,14 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                 return;
             }
             VariableType sourceVariableType = sourceTypeOpt.get().getType();
-            VariableType targetVariableType = assignment.getCastTo().getType();
+            VariableType targetVariableType = hasCast
+                ? assignment.getCastTo().getType()
+                : taskDefVar.getTypeDef().getType();
             TypeCastingUtils.validateAssignment(
-                    sourceVariableType, targetVariableType, true, "task input parameter for " + taskDefVar.getName());
+                    sourceVariableType,
+                    targetVariableType,
+                    hasCast,
+                    "task input parameter for " + taskDefVar.getName());
         } catch (InvalidMutationException e) {
             throw new InvalidExpressionException(e.getMessage());
         }
