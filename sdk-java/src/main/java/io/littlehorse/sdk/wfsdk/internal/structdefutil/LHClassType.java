@@ -164,7 +164,7 @@ public class LHClassType {
         try {
             for (PropertyDescriptor pd : Introspector.getBeanInfo(clazz).getPropertyDescriptors()) {
                 if ("class".equals(pd.getName())) continue;
-                
+
                 LHStructProperty property = new LHStructProperty(pd);
 
                 if (property.isIgnored()) continue;
