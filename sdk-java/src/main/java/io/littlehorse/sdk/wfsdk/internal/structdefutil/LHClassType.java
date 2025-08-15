@@ -127,9 +127,7 @@ public class LHClassType {
 
     private List<LHClassType> collectDependencyClasses() {
         if (!this.isStructDef()) {
-            throw new IllegalArgumentException(
-                    "Cannot collect dependencies: Missing `@LHStructDef` annotation on class: "
-                            + this.clazz.getCanonicalName());
+            return List.of();
         }
 
         Set<LHClassType> visited = new HashSet<>();
