@@ -43,10 +43,16 @@ public class LHStructProperty {
 
     public String getFieldName() {
         if (hasReadMethod() && pd.getReadMethod().isAnnotationPresent(LHStructField.class)) {
-            return pd.getReadMethod().getAnnotation(LHStructField.class).name();
+            String fieldName = pd.getReadMethod().getAnnotation(LHStructField.class).name();
+            if (!fieldName.isBlank()) {
+                return fieldName;
+            }
         }
         if (hasWriteMethod() && pd.getWriteMethod().isAnnotationPresent(LHStructField.class)) {
-            return pd.getWriteMethod().getAnnotation(LHStructField.class).name();
+            String fieldName = pd.getWriteMethod().getAnnotation(LHStructField.class).name();
+            if (!fieldName.isBlank()) {
+                return fieldName;
+            }
         }
 
         return pd.getName();
