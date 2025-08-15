@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.MissingThreadRunException;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
@@ -62,7 +62,6 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
@@ -100,7 +99,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     // K -> V
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(
+        List<GetableIndex<? extends AbstractGetable<?>>> indexes = new ArrayList<>(List.of(
                 new GetableIndex<>(
                         List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
@@ -123,7 +122,31 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         List.of(
                                 Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)));
+                        Optional.of(TagStorageType.LOCAL))));
+
+        if (id != null && id.getParentWfRunId() != null) {
+            indexes.add(new GetableIndex<>(
+                    List.of(Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL)));
+            indexes.add(new GetableIndex<>(
+                    List.of(
+                            Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL)));
+            indexes.add(new GetableIndex<>(
+                    List.of(
+                            Pair.of("status", GetableIndex.ValueType.SINGLE),
+                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL)));
+            indexes.add(new GetableIndex<>(
+                    List.of(
+                            Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                            Pair.of("status", GetableIndex.ValueType.SINGLE),
+                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                    Optional.of(TagStorageType.LOCAL)));
+        }
+
+        return indexes;
     }
 
     @Override
@@ -144,7 +167,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             case "wfSpecId" -> {
                 return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
             }
+            case "parentWfRunId" -> {
+                if (id.getParentWfRunId() != null) {
+                    return List.of(new IndexedField(key, id.getParentWfRunId().toString(), tagStorageType.get()));
+                }
+            }
         }
+        log.warn("Tried to get value for unknown index field {}", key);
         return List.of();
     }
 
@@ -484,11 +513,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         advance(processorContext.currentCommand().getTime());
     }
 
-    public void failDueToWfSpecDeletion() {
-        throw new NotImplementedException();
-        // getThreadRun(0).fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
-    }
-
     public void processExternalEvent(ExternalEventModel event) {
         // TODO LH-303: maybe if the event has a `threadRunNumber` and
         // `nodeRunPosition` set, it should do some validation here?
@@ -578,17 +602,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         this.advance(new Date());
     }
 
-    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationError {
+    public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationException {
         int threadRunNumber = req.getNodeRunId().getThreadRunNumber();
         int nodeRunPosition = req.getNodeRunId().getPosition();
         if (threadRunNumber >= threadRunsUseMeCarefully.size() || threadRunNumber < 0) {
-            throw new LHValidationError(null, "Reference to nonexistent thread.");
+            throw new LHValidationException(null, "Reference to nonexistent thread.");
         }
 
         ThreadRunModel thread = getThreadRun(threadRunNumber);
 
         if (nodeRunPosition > thread.currentNodePosition) {
-            throw new LHValidationError(null, "Reference to nonexistent nodeRun");
+            throw new LHValidationException(null, "Reference to nonexistent nodeRun");
         }
 
         thread.processSleepNodeMatured(req);

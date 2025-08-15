@@ -6,12 +6,11 @@ import { Separator } from '@/components/ui/separator'
 
 export const SelectionLink = ({
   href,
-  key,
   children,
   ...props
 }: { href: string | undefined } & Omit<React.ComponentProps<typeof LinkWithTenant>, 'href'>) => {
   return href !== undefined ? (
-    <Fragment key={key}>
+    <Fragment key={props.key}>
       <LinkWithTenant
         className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100"
         href={href}
@@ -23,7 +22,7 @@ export const SelectionLink = ({
       <Separator />
     </Fragment>
   ) : (
-    <Fragment key={key}>
+    <Fragment key={props.key}>
       <div className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100">{children}</div>
       <Separator />
     </Fragment>

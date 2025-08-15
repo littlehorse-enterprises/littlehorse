@@ -6,7 +6,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -109,7 +109,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
         // TODO: Add WfRun Start Metrics
 
-        WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id));
+        WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id, parentWfRunId));
         if (oldWfRun != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
         }
@@ -148,7 +148,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         ThreadSpecModel entrypointThread = spec.getEntrypointThread();
         try {
             entrypointThread.validateStartVariables(variables);
-        } catch (LHValidationError exn) {
+        } catch (LHValidationException exn) {
             throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
         }
 

@@ -57,6 +57,53 @@ message Struct {
   InlineStruct struct = 2;
 }
 
+// An Array is a list structure containing a single type of data.
+message Array {
+  message StringArray {
+    repeated string items = 1;
+  }
+
+  message DoubleArray {
+    repeated double items = 1;
+  }
+
+  message BoolArray {
+    repeated bool items = 1;
+  }
+
+  message IntArray {
+    repeated int64 items = 1;
+  }
+
+  message BytesArray {
+    repeated bytes items = 1;
+  }
+
+  message WfRunIdArray {
+    repeated WfRunId items = 1;
+  }
+
+  message StructArray {
+    repeated Struct items = 1;
+  }
+
+  message ArrayArray {
+    repeated Array items = 1;
+  }
+
+  oneof value {
+    StringArray json_obj_arr = 1;
+    StringArray json_arr_arr = 2;
+    DoubleArray double_arr = 3;
+    BoolArray bool_arr = 4;
+    IntArray int_arr = 5;
+    BytesArray bytes_arr = 6;
+    WfRunIdArray wf_run_id_arr = 7;
+    StructArray struct_arr = 8;
+    ArrayArray array_arr = 9;
+  }
+}
+
 // An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
 message InlineStruct {
   // The fields in the inline struct.
@@ -110,6 +157,11 @@ message StructDef {
 message InlineStructDef {
   // The fields in this schema.
   map<string, StructFieldDef> fields = 1;
+}
+
+// An InlineArrayDef is the actual representation of an Array's Schema.
+message InlineArrayDef {
+  TypeDefinition array_type = 1;
 }
 
 // Unique identifier for a `StructDef`.
@@ -175,6 +227,9 @@ message TypeDefinition {
 
     // Inline-defined Struct definition (does not refer to a Global Getable)
     InlineStructDef inline_struct = 6;
+
+    // Inline-defined Array definition
+    InlineArrayDef inline_array = 7;
   }
 
   // For compatibility purposes.
@@ -204,6 +259,9 @@ message VariableValue {
 
     // A Struct
     Struct struct = 9;
+
+    // An Array
+    Array array = 10;
   }
 }
 ```

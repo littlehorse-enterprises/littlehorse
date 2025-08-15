@@ -2,8 +2,9 @@ package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidVariableDefException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
@@ -79,18 +80,17 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return typeDef.isMasked();
     }
 
-    public void validateValue(VariableValueModel value) throws LHValidationError {
-        if (value.getType() == null || value.getType() == typeDef.getPrimitiveType()) {
+    public void validateValue(VariableValueModel value) throws InvalidVariableDefException {
+        if (value.getType() == null || value.getType() == typeDef.getType()) {
             return;
         }
-        throw new LHValidationError(
-                null, "Variable " + name + " should be " + typeDef + " but is of type " + value.getType());
+        throw new InvalidVariableDefException(this, "should be " + typeDef + " but is of type " + value.getType());
     }
 
     public VarNameAndValModel assignValue(VariableValueModel value) throws LHVarSubError {
         try {
             validateValue(value);
-        } catch (LHValidationError e) {
+        } catch (LHValidationException e) {
             throw new LHVarSubError(e, e.getMessage());
         }
         if (typeDef.isMasked()) {

@@ -33,6 +33,7 @@ type VariableValue struct {
 	// a NULL.
 	//
 	// Types that are assignable to Value:
+	//
 	//	*VariableValue_JsonObj
 	//	*VariableValue_JsonArr
 	//	*VariableValue_Double
@@ -418,6 +419,7 @@ type StructField struct {
 	// The value, which can be primitive or complex.
 	//
 	// Types that are assignable to StructValue:
+	//
 	//	*StructField_Primitive
 	//	*StructField_Struct
 	//	*StructField_List

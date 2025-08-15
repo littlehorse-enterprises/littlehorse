@@ -251,6 +251,7 @@ type VariableAssignment struct {
 	// The oneof determines where the value is resolved to.
 	//
 	// Types that are assignable to Source:
+	//
 	//	*VariableAssignment_VariableName
 	//	*VariableAssignment_LiteralValue
 	//	*VariableAssignment_FormatString_
@@ -403,6 +404,7 @@ type VariableMutation struct {
 	// As of 0.12.0, the SDK's only use rhs_assignment.
 	//
 	// Types that are assignable to RhsValue:
+	//
 	//	*VariableMutation_RhsAssignment
 	//	*VariableMutation_LiteralValue
 	//	*VariableMutation_NodeOutput
@@ -625,6 +627,7 @@ type TypeDefinition struct {
 	// The type of this definition. One of the following will be set.
 	//
 	// Types that are assignable to DefinedType:
+	//
 	//	*TypeDefinition_PrimitiveType
 	//	*TypeDefinition_StructDefId
 	//	*TypeDefinition_InlineStructDef
@@ -806,6 +809,7 @@ type UTActionTrigger struct {
 	// The action that is scheduled by the hook
 	//
 	// Types that are assignable to Action:
+	//
 	//	*UTActionTrigger_Task
 	//	*UTActionTrigger_Cancel
 	//	*UTActionTrigger_Reassign
@@ -997,6 +1001,7 @@ type TaskNode struct {
 	// The type of TaskRun to schedule.
 	//
 	// Types that are assignable to TaskToExecute:
+	//
 	//	*TaskNode_TaskDefId
 	//	*TaskNode_DynamicTask
 	TaskToExecute isTaskNode_TaskToExecute `protobuf_oneof:"task_to_execute"`
@@ -1007,10 +1012,10 @@ type TaskNode struct {
 	// Configures the amount of retries allowed on this TaskNode.
 	//
 	// Retryable errors include:
-	// - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
-	//   Task Worker in time.
-	// - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
-	//   the Task Function.
+	//   - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+	//     Task Worker in time.
+	//   - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+	//     the Task Function.
 	//
 	// Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
 	// TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).

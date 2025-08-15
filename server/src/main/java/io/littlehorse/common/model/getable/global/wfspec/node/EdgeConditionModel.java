@@ -2,15 +2,17 @@ package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.List;
@@ -51,8 +53,9 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
     public EdgeModel edge;
 
-    public void validate() throws LHApiException {
-        // TODO: do some type checking here...
+    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidEdgeException {
+        // TODO (#1458): after we support using VariableAssignment, make sure that the resolveType() is BOOL.
     }
 
     public Set<String> getRequiredVariableNames() {
