@@ -302,14 +302,21 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 if (firstSeenOutputType == null) {
                     // Record the first one we see.
                     firstSeenOutputType = typeDefOption;
-                } else {
-                    // Enforce that all subsequent EXIT nodes are the same.
-                    if ((firstSeenOutputType.isPresent() && !typeDefOption.isPresent())
-                            || firstSeenOutputType.isEmpty() && typeDefOption.isPresent()
-                            || !firstSeenOutputType.get().isCompatibleWith(typeDefOption.get())) {
-                        throw new InvalidThreadSpecException(
-                                this, "Detected that different EXIT nodes returned different output types!");
-                    }
+                }
+
+                // This checks to make sure that if one returns empty and the other does not, then we throw an error
+                if ((firstSeenOutputType.isPresent() && typeDefOption.isEmpty())
+                        || (firstSeenOutputType.isEmpty() && typeDefOption.isPresent())) {
+                    throw new InvalidThreadSpecException(
+                            this,
+                            "Detected an EXIT node that returns void and another EXIT node that returns non-void");
+                }
+
+                // If we are returning something, we need to make sure they're all the same.
+                if (firstSeenOutputType.isPresent()
+                        && !firstSeenOutputType.get().equals(typeDefOption.get())) {
+                    throw new InvalidThreadSpecException(
+                            this, "Detected that different EXIT nodes returned different output types!");
                 }
             } catch (InvalidExpressionException impossible) {
                 throw new IllegalStateException(
@@ -317,7 +324,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
         }
     }
-
     /*
      * Rules for ExternalEventDef usage:
      * 1. An ExternalEventDef may only be used for an EXTERNAL_EVENT node OR
