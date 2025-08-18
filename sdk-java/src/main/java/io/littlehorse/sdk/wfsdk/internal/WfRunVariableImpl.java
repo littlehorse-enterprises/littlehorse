@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,43 +40,90 @@ class WfRunVariableImpl implements WfRunVariable {
 
     private final WorkflowThreadImpl parent;
 
-    public WfRunVariableImpl(String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
-        this.name = name;
-        this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
-
+    public static WfRunVariableImpl createPrimitiveVar(
+            String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
         if (typeOrDefaultVal == null) {
             throw new IllegalArgumentException(
                     "The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
         }
-        this.typeOrDefaultVal = typeOrDefaultVal;
-
-        // As per GH Issue #582, the default is now PRIVATE_VAR.
-        this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
-        this.definedType = DefinedTypeCase.PRIMITIVE_TYPE;
-
-        if (typeOrDefaultVal instanceof VariableType) {
-            this.typeDef = TypeDefinition.newBuilder()
-                    .setPrimitiveType((VariableType) typeOrDefaultVal)
-                    .build();
-        } else {
-            setDefaultValue(typeOrDefaultVal);
-            this.typeDef = TypeDefinition.newBuilder()
-                    .setPrimitiveType(LHLibUtil.fromValueCase(defaultValue.getValueCase()))
-                    .build();
-        }
+        return new WfRunVariableImpl(name, typeOrDefaultVal, null, null, parent);
     }
 
-    public WfRunVariableImpl(String name, String structDefName, WorkflowThreadImpl parent) {
+    public static WfRunVariableImpl createStructDefVar(String name, LHClassType clazz, WorkflowThreadImpl parent) {
+        return new WfRunVariableImpl(name, null, clazz, null, parent);
+    }
+
+    public static WfRunVariableImpl createStructDefVar(String name, String structDefName, WorkflowThreadImpl parent) {
+        return new WfRunVariableImpl(name, null, null, structDefName, parent);
+    }
+
+    private WfRunVariableImpl(
+            String name,
+            Object typeOrDefaultVal,
+            LHClassType structClass,
+            String structDefName,
+            WorkflowThreadImpl parent) {
         this.name = name;
         this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
 
+        // As per GH Issue #582, the default is now PRIVATE_VAR.
         this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
-        this.definedType = DefinedTypeCase.STRUCT_DEF_ID;
 
-        this.typeDef = TypeDefinition.newBuilder()
-                .setStructDefId(StructDefId.newBuilder().setName(structDefName))
-                .build();
+        if (typeOrDefaultVal != null) {
+            this.definedType = DefinedTypeCase.PRIMITIVE_TYPE;
+
+            if (typeOrDefaultVal instanceof VariableType) {
+                this.typeDef = TypeDefinition.newBuilder()
+                        .setPrimitiveType((VariableType) typeOrDefaultVal)
+                        .build();
+            } else {
+                setDefaultValue(typeOrDefaultVal);
+                this.typeDef = TypeDefinition.newBuilder()
+                        .setPrimitiveType(LHLibUtil.fromValueCase(defaultValue.getValueCase()))
+                        .build();
+            }
+        } else if (structClass != null || structDefName != null) {
+            this.definedType = DefinedTypeCase.STRUCT_DEF_ID;
+
+            if (structClass != null) {
+                String structName = structClass.getStructDefAnnotation().name();
+
+                this.typeDef = TypeDefinition.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder().setName(structName))
+                        .build();
+            } else {
+                this.typeDef = TypeDefinition.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder().setName(structDefName))
+                        .build();
+            }
+        }
     }
+
+    // public WfRunVariableImpl(String name, LHClassType structClassType, WorkflowThreadImpl parent) {
+    //     this.name = name;
+    //     this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
+
+    //     this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
+    //     this.definedType = DefinedTypeCase.STRUCT_DEF_ID;
+
+    // String structName = structClassType.getStructDefAnnotation().name();
+
+    // this.typeDef = TypeDefinition.newBuilder()
+    //         .setStructDefId(StructDefId.newBuilder().setName(structName))
+    //         .build();
+    // }
+
+    // public WfRunVariableImpl(String name, String structDefName, WorkflowThreadImpl parent) {
+    //     this.name = name;
+    //     this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
+
+    //     this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
+    //     this.definedType = DefinedTypeCase.STRUCT_DEF_ID;
+
+    //     this.typeDef = TypeDefinition.newBuilder()
+    //             .setStructDefId(StructDefId.newBuilder().setName(structDefName))
+    //             .build();
+    // }
 
     @Override
     public WfRunVariableImpl withAccessLevel(WfRunVariableAccessLevel accessLevel) {
@@ -94,7 +142,7 @@ class WfRunVariableImpl implements WfRunVariable {
                     "JsonPath not allowed in a %s variable",
                     typeDef.getPrimitiveType().name()));
         }
-        WfRunVariableImpl out = new WfRunVariableImpl(name, typeOrDefaultVal, parent);
+        WfRunVariableImpl out = WfRunVariableImpl.createPrimitiveVar(name, typeOrDefaultVal, parent);
         out.jsonPath = path;
         return out;
     }

@@ -51,6 +51,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -435,17 +436,25 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
-        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal, this);
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createPrimitiveVar(name, typeOrDefaultVal, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
 
-    public WfRunVariableImpl addStructVariable(String name, String structDefName) {
+    private WfRunVariableImpl addStructVariable(String name, LHClassType clazz) {
         checkIfIsActive();
-        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, structDefName, this);
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, clazz, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
+
+    // private WfRunVariableImpl addStructVariable(String name, String structDefName) {
+    //     checkIfIsActive();
+    //     WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, structDefName, this);
+    //     wfRunVariables.add(wfRunVariable);
+    //     return wfRunVariable;
+    // }
 
     @Override
     public WfRunVariable declareBool(String name) {
@@ -480,6 +489,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public WfRunVariable declareJsonObj(String name) {
         return addVariable(name, VariableType.JSON_OBJ);
+    }
+
+    @Override
+    public WfRunVariable declareStruct(String name, Class<?> clazz) {
+        return addStructVariable(name, new LHClassType(clazz));
     }
 
     @Override

@@ -4,9 +4,9 @@ import io.littlehorse.sdk.worker.LHStructDef;
 
 @LHStructDef(name = "car")
 public class Car {
-  public String name;
+    public String name;
 
-  public String getName() {
-    return this.name;
-  }
+    public String getName() {
+        return this.name;
+    }
 }

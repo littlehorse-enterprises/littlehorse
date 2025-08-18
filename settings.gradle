@@ -36,6 +36,7 @@ include(
         'saga',
         'shared-variables',
         'spawn-thread-foreach',
+        'struct-def',
         'user-tasks',
         'variables',
         'wf-versions',

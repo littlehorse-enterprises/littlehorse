@@ -159,6 +159,14 @@ public interface WorkflowThread {
     WfRunVariable declareBool(String name);
 
     /**
+     * Creates a Struct variable based on your Struct clazz parameter.
+     * @param name is the name of the variable.
+     * @param clazz is the Struct class that defines your StructDef.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareStruct(String name, Class<?> clazz);
+
+    /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
      *
      * @param name the name of the variable.
