@@ -47,8 +47,8 @@ class BuilderUtil {
             VariableAssignment sourceAssignment = assignVariable(castExpr.getSource());
             builder = sourceAssignment.toBuilder();
 
-            // Set the cast_to field
-            builder.setCastTo(io.littlehorse.sdk.common.proto.TypeDefinition.newBuilder()
+            // Set the target_type field
+            builder.setTargetType(io.littlehorse.sdk.common.proto.TypeDefinition.newBuilder()
                     .setType(castExpr.getTargetType())
                     .setMasked(false)
                     .build());

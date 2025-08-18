@@ -156,13 +156,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     /**
      * Performs casting of a VariableValueModel to this type.
-     * Delegated to TypeCastingUtils for centralized casting logic.
      *
      * @param sourceValue The value to cast
      * @return A new VariableValueModel with the target type, or the original if no casting is needed
      * @throws IllegalArgumentException if casting is not supported for this type combination
      */
-    public VariableValueModel castTo(VariableValueModel sourceValue) {
-        return TypeCastingUtils.castTo(sourceValue, this.type);
+    public VariableValueModel applyCast(VariableValueModel sourceValue) {
+        return TypeCastingUtils.applyCast(sourceValue, this.type);
     }
 }

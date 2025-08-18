@@ -6,6 +6,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,18 +18,18 @@ public class CastingExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("casting-workflow", wf -> {
-            WfRunVariable stringInput = wf.declareStr("string-input").withDefault("true");
-            WfRunVariable intVar = wf.declareInt("int-var");
+            WfRunVariable stringInput = wf.declareStr("string-number").withDefault("3.14");
+            WfRunVariable stringBool = wf.declareStr("string-bool").withDefault("false");
 
-            var intResult = wf.execute("int-method", intVar); // Returns an INT
-            var doubleResult = wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
-            var strResult= wf.execute("string-method", doubleResult); // Auto cast from DOUBLE to STR
+            var doubleResult = wf.execute("double-method", stringInput.cast(VariableType.DOUBLE)); // Auto cast from INT to DOUBLE
+            var stringResult= wf.execute("string-method", doubleResult); // Auto cast from DOUBLE to STR
 
-            wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to INT
-            wf.execute("bool-method", stringInput.cast(VariableType.BOOL)); // Manual cast from STR to BOOL
+           var intResult=  wf.execute("int-method", stringResult.castToInt()); // Returns an INT
+            wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to IN
+            wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
 
-            stringInput.assign(strResult);
-            wf.execute("double-method", stringInput.castToDouble()); // Manual cast from STR to DOUBLE
+            wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
+
         });
     }
 
@@ -67,34 +68,10 @@ public class CastingExample {
             worker.registerTaskDef();
         }
 
-        // Register the workflow
         workflow.registerWfSpec(config.getBlockingStub());
 
         for (LHTaskWorker worker : workers) {
             worker.start();
         }
-
-        System.out.println("Casting example workers started!");
-        System.out.println();
-        System.out.println("=== CASTING WORKFLOW ===");
-        System.out.println("Demonstrates both automatic and manual type casting:");
-        System.out.println();
-        System.out.println("✅ Automatic Casting (no .cast() needed):");
-        System.out.println("   - INT → STR (automatic)");
-        System.out.println("   - INT → DOUBLE (automatic)");
-        System.out.println("   - DOUBLE → STR (automatic)");
-        System.out.println("   - BOOL → STR (automatic)");
-        System.out.println();
-        System.out.println("✅ Manual Casting (requires .cast() calls):");
-        System.out.println("   - STR → INT/DOUBLE/BOOL (manual)");
-        System.out.println("   - DOUBLE → INT (manual)");
-        System.out.println("   - Convenience methods: .castToInt(), .castToDouble(), .castToBool(), etc.");
-        System.out.println();
-        System.out.println("✅ Variable Assignment Validation:");
-        System.out.println("   - Automatic assignments work without .cast()");
-        System.out.println("   - Manual assignments require .cast() calls");
-        System.out.println();
-        System.out.println("Run with: lhctl run casting-workflow");
-        System.out.println("Inspect with: lhctl get wfSpec casting-workflow");
     }
 }

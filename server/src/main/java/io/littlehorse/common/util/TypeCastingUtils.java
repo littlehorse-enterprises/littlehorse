@@ -19,7 +19,7 @@ public class TypeCastingUtils {
             return true;
         }
 
-        if (targetType == VariableType.STR && isPrimitive(sourceType)) {
+        if (isPrimitive(sourceType) && targetType == VariableType.STR) {
             return true;
         }
         if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
@@ -57,7 +57,6 @@ public class TypeCastingUtils {
         if (targetType == null) {
             return false;
         }
-
         if (sourceType == targetType) {
             return true;
         }
@@ -67,8 +66,7 @@ public class TypeCastingUtils {
         return sourceType == VariableType.INT && targetType == VariableType.DOUBLE;
     }
 
-    public static void validateAssignment(
-            VariableType sourceType, VariableType targetType, boolean hasCast, String context)
+    public static void validateTypeCompatibility(VariableType sourceType, VariableType targetType, boolean hasExplicitCast)
             throws InvalidMutationException {
 
         if (sourceType == null) {
@@ -76,31 +74,31 @@ public class TypeCastingUtils {
         }
 
         if (targetType == null) {
-            throw new InvalidMutationException(
-                    "Cannot assign to null target type" + (context != null ? ". Context: " + context : ""));
+            throw new InvalidMutationException("Cannot assign to null target type");
         }
 
         if (sourceType == targetType) {
             return;
         }
 
+        if (canAssignWithoutCast(sourceType, targetType)) {
+            return;
+        }
+
         if (requiresManualCast(sourceType, targetType)) {
-            if (!hasCast) {
+            if (!hasExplicitCast) {
                 String suggestion = getCastingSuggestion(sourceType, targetType);
                 throw new InvalidMutationException("Cannot assign " + sourceType + " to " + targetType
-                        + " without explicit casting. " + suggestion
-                        + (context != null ? " Context: " + context : ""));
+                        + " without explicit casting. " + suggestion);
             }
             return;
         }
 
-        throw new InvalidMutationException("Cannot cast from " + sourceType + " to " + targetType
-                + ". This conversion is not supported. Supported casts from " + sourceType + ": "
-                + getSupportedCastsFor(sourceType)
-                + (context != null ? " Context: " + context : ""));
+        throw new InvalidMutationException(
+                "Cannot cast from " + sourceType + " to " + targetType + ". This conversion is not supported.");
     }
 
-    public static VariableValueModel castTo(VariableValueModel sourceValue, VariableType targetType) {
+    public static VariableValueModel applyCast(VariableValueModel sourceValue, VariableType targetType) {
 
         if (sourceValue == null) {
             return null;
@@ -118,8 +116,7 @@ public class TypeCastingUtils {
 
         if (!canCastTo(sourceType, targetType)) {
             throw new IllegalArgumentException(
-                    "Casting from " + sourceType + " to " + targetType + " is not supported. " + "Supported casts from "
-                            + sourceType + ": " + getSupportedCastsFor(sourceType));
+                    "Casting from " + sourceType + " to " + targetType + " is not supported. ");
         }
 
         try {
@@ -177,7 +174,7 @@ public class TypeCastingUtils {
         return "Failed to cast " + sourceType + " to " + targetType + ": " + originalException.getMessage();
     }
 
-    private static String getCastingSuggestion(VariableType sourceType, VariableType targetType) {
+    public static String getCastingSuggestion(VariableType sourceType, VariableType targetType) {
         String methodName =
                 switch (targetType) {
                     case INT -> "castToInt()";
@@ -190,22 +187,6 @@ public class TypeCastingUtils {
                 };
 
         return "Use ." + methodName + " or .cast(VariableType." + targetType + ") method.";
-    }
-
-    private static String getSupportedCastsFor(VariableType sourceType) {
-        if (sourceType == null) {
-            return "none (null source)";
-        }
-
-        return switch (sourceType) {
-            case INT -> "DOUBLE (automatic), STR (automatic)";
-            case DOUBLE -> "STR (automatic), INT (manual)";
-            case BOOL -> "STR (automatic)";
-            case BYTES -> "STR (automatic)";
-            case WF_RUN_ID -> "STR (automatic)";
-            case STR -> "INT (manual), DOUBLE (manual), BOOL (manual), BYTES (manual), WF_RUN_ID (manual)";
-            default -> "STR (if primitive type)";
-        };
     }
 
     private static boolean isPrimitive(VariableType type) {

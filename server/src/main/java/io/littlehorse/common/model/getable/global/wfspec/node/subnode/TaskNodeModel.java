@@ -24,7 +24,6 @@ import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -163,27 +162,24 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             ctx.metadataManager(),
                             node.getThreadSpec().getWfSpec(),
                             node.getThreadSpec().getName());
-                    if (typeDef.isPresent() && !typeDef.get().isCompatibleWith(taskDefVar.getTypeDef())) {
-                        throw new InvalidNodeException(
-                                "Task input variable with name " + taskDefVar.getName() + " at position " + i
-                                        + " expects type " + taskDefVar.getTypeDef() + " but is type " + typeDef.get(),
-                                node);
+                    if (typeDef.isPresent()) {
+                        TypeDefinitionModel sourceType = typeDef.get();
+                        TypeDefinitionModel targetType = taskDefVar.getTypeDef();
+                        try {
+                            TypeCastingUtils.validateTypeCompatibility(
+                                    sourceType.getType(), targetType.getType(), assn.hasExplicitCast());
+                        } catch (InvalidMutationException e) {
+                            throw new InvalidNodeException(
+                                    "Task input variable with name " + taskDefVar.getName() + " at position " + i + ": "
+                                            + e.getMessage(),
+                                    node);
+                        }
                     }
                 } catch (InvalidExpressionException exn) {
                     throw new InvalidNodeException(
                             "Task input variable with name " + taskDefVar.getName() + " at position " + i
                                     + " could not resolve type: " + exn.getMessage(),
                             node);
-                }
-                if (!assn.canBeType(taskDefVar.getTypeDef(), this.node.getThreadSpec())) {
-                    try {
-                        validateTaskInputCasting(assn, taskDefVar, assn.hasCast(), ctx);
-                    } catch (InvalidExpressionException exn) {
-                        throw new InvalidNodeException(
-                                "Task input variable with name " + taskDefVar.getName() + " at position " + i
-                                        + " has invalid cast operation: " + exn.getMessage(),
-                                node);
-                    }
                 }
             }
         }
@@ -193,35 +189,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         }
 
         validateRetryPolicy();
-    }
-
-    private void validateTaskInputCasting(
-            VariableAssignmentModel assignment,
-            VariableDefModel taskDefVar,
-            boolean hasCast,
-            MetadataProcessorContext ctx)
-            throws InvalidExpressionException {
-        try {
-            Optional<TypeDefinitionModel> sourceTypeOpt = assignment.getSourceType(
-                    ctx.metadataManager(),
-                    node.getThreadSpec().getWfSpec(),
-                    node.getThreadSpec().getName());
-
-            if (sourceTypeOpt.isEmpty()) {
-                return;
-            }
-            VariableType sourceVariableType = sourceTypeOpt.get().getType();
-            VariableType targetVariableType = hasCast
-                ? assignment.getCastTo().getType()
-                : taskDefVar.getTypeDef().getType();
-            TypeCastingUtils.validateAssignment(
-                    sourceVariableType,
-                    targetVariableType,
-                    hasCast,
-                    "task input parameter for " + taskDefVar.getName());
-        } catch (InvalidMutationException e) {
-            throw new InvalidExpressionException(e.getMessage());
-        }
     }
 
     private void validateRetryPolicy() throws InvalidNodeException {

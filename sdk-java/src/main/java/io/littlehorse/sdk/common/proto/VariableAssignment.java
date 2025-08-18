@@ -3239,8 +3239,8 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
   }
 
-  public static final int CAST_TO_FIELD_NUMBER = 7;
-  private io.littlehorse.sdk.common.proto.TypeDefinition castTo_;
+  public static final int TARGET_TYPE_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
   /**
    * <pre>
    * If specified, the resolved value will be cast to this type before being used.
@@ -3249,11 +3249,11 @@ private static final long serialVersionUID = 0L;
    * Note: Only primitive type conversions are supported.
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
-   * @return Whether the castTo field is set.
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return Whether the targetType field is set.
    */
   @java.lang.Override
-  public boolean hasCastTo() {
+  public boolean hasTargetType() {
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
@@ -3264,12 +3264,12 @@ private static final long serialVersionUID = 0L;
    * Note: Only primitive type conversions are supported.
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
-   * @return The castTo.
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return The targetType.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TypeDefinition getCastTo() {
-    return castTo_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+  public io.littlehorse.sdk.common.proto.TypeDefinition getTargetType() {
+    return targetType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
   }
   /**
    * <pre>
@@ -3279,11 +3279,11 @@ private static final long serialVersionUID = 0L;
    * Note: Only primitive type conversions are supported.
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getCastToOrBuilder() {
-    return castTo_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+  public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTargetTypeOrBuilder() {
+    return targetType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -3319,7 +3319,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(7, getCastTo());
+      output.writeMessage(7, getTargetType());
     }
     getUnknownFields().writeTo(output);
   }
@@ -3354,7 +3354,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, getCastTo());
+        .computeMessageSize(7, getTargetType());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3376,10 +3376,10 @@ private static final long serialVersionUID = 0L;
       if (!getJsonPath()
           .equals(other.getJsonPath())) return false;
     }
-    if (hasCastTo() != other.hasCastTo()) return false;
-    if (hasCastTo()) {
-      if (!getCastTo()
-          .equals(other.getCastTo())) return false;
+    if (hasTargetType() != other.hasTargetType()) return false;
+    if (hasTargetType()) {
+      if (!getTargetType()
+          .equals(other.getTargetType())) return false;
     }
     if (!getSourceCase().equals(other.getSourceCase())) return false;
     switch (sourceCase_) {
@@ -3421,9 +3421,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + JSON_PATH_FIELD_NUMBER;
       hash = (53 * hash) + getJsonPath().hashCode();
     }
-    if (hasCastTo()) {
-      hash = (37 * hash) + CAST_TO_FIELD_NUMBER;
-      hash = (53 * hash) + getCastTo().hashCode();
+    if (hasTargetType()) {
+      hash = (37 * hash) + TARGET_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getTargetType().hashCode();
     }
     switch (sourceCase_) {
       case 2:
@@ -3589,7 +3589,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getCastToFieldBuilder();
+        getTargetTypeFieldBuilder();
       }
     }
     @java.lang.Override
@@ -3609,10 +3609,10 @@ private static final long serialVersionUID = 0L;
       if (expressionBuilder_ != null) {
         expressionBuilder_.clear();
       }
-      castTo_ = null;
-      if (castToBuilder_ != null) {
-        castToBuilder_.dispose();
-        castToBuilder_ = null;
+      targetType_ = null;
+      if (targetTypeBuilder_ != null) {
+        targetTypeBuilder_.dispose();
+        targetTypeBuilder_ = null;
       }
       sourceCase_ = 0;
       source_ = null;
@@ -3656,9 +3656,9 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.castTo_ = castToBuilder_ == null
-            ? castTo_
-            : castToBuilder_.build();
+        result.targetType_ = targetTypeBuilder_ == null
+            ? targetType_
+            : targetTypeBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
@@ -3734,8 +3734,8 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.hasCastTo()) {
-        mergeCastTo(other.getCastTo());
+      if (other.hasTargetType()) {
+        mergeTargetType(other.getTargetType());
       }
       switch (other.getSourceCase()) {
         case VARIABLE_NAME: {
@@ -3831,7 +3831,7 @@ private static final long serialVersionUID = 0L;
             } // case 50
             case 58: {
               input.readMessage(
-                  getCastToFieldBuilder().getBuilder(),
+                  getTargetTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000040;
               break;
@@ -4812,9 +4812,9 @@ private static final long serialVersionUID = 0L;
       return expressionBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.TypeDefinition castTo_;
+    private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> castToBuilder_;
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> targetTypeBuilder_;
     /**
      * <pre>
      * If specified, the resolved value will be cast to this type before being used.
@@ -4823,10 +4823,10 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
-     * @return Whether the castTo field is set.
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     * @return Whether the targetType field is set.
      */
-    public boolean hasCastTo() {
+    public boolean hasTargetType() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
@@ -4837,14 +4837,14 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
-     * @return The castTo.
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     * @return The targetType.
      */
-    public io.littlehorse.sdk.common.proto.TypeDefinition getCastTo() {
-      if (castToBuilder_ == null) {
-        return castTo_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+    public io.littlehorse.sdk.common.proto.TypeDefinition getTargetType() {
+      if (targetTypeBuilder_ == null) {
+        return targetType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
       } else {
-        return castToBuilder_.getMessage();
+        return targetTypeBuilder_.getMessage();
       }
     }
     /**
@@ -4855,16 +4855,16 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
-    public Builder setCastTo(io.littlehorse.sdk.common.proto.TypeDefinition value) {
-      if (castToBuilder_ == null) {
+    public Builder setTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (targetTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        castTo_ = value;
+        targetType_ = value;
       } else {
-        castToBuilder_.setMessage(value);
+        targetTypeBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000040;
       onChanged();
@@ -4878,14 +4878,14 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
-    public Builder setCastTo(
+    public Builder setTargetType(
         io.littlehorse.sdk.common.proto.TypeDefinition.Builder builderForValue) {
-      if (castToBuilder_ == null) {
-        castTo_ = builderForValue.build();
+      if (targetTypeBuilder_ == null) {
+        targetType_ = builderForValue.build();
       } else {
-        castToBuilder_.setMessage(builderForValue.build());
+        targetTypeBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000040;
       onChanged();
@@ -4899,19 +4899,19 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
-    public Builder mergeCastTo(io.littlehorse.sdk.common.proto.TypeDefinition value) {
-      if (castToBuilder_ == null) {
+    public Builder mergeTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (targetTypeBuilder_ == null) {
         if (((bitField0_ & 0x00000040) != 0) &&
-          castTo_ != null &&
-          castTo_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
-          getCastToBuilder().mergeFrom(value);
+          targetType_ != null &&
+          targetType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
+          getTargetTypeBuilder().mergeFrom(value);
         } else {
-          castTo_ = value;
+          targetType_ = value;
         }
       } else {
-        castToBuilder_.mergeFrom(value);
+        targetTypeBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000040;
       onChanged();
@@ -4925,14 +4925,14 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
-    public Builder clearCastTo() {
+    public Builder clearTargetType() {
       bitField0_ = (bitField0_ & ~0x00000040);
-      castTo_ = null;
-      if (castToBuilder_ != null) {
-        castToBuilder_.dispose();
-        castToBuilder_ = null;
+      targetType_ = null;
+      if (targetTypeBuilder_ != null) {
+        targetTypeBuilder_.dispose();
+        targetTypeBuilder_ = null;
       }
       onChanged();
       return this;
@@ -4945,12 +4945,12 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
-    public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getCastToBuilder() {
+    public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTargetTypeBuilder() {
       bitField0_ |= 0x00000040;
       onChanged();
-      return getCastToFieldBuilder().getBuilder();
+      return getTargetTypeFieldBuilder().getBuilder();
     }
     /**
      * <pre>
@@ -4960,14 +4960,14 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
-    public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getCastToOrBuilder() {
-      if (castToBuilder_ != null) {
-        return castToBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTargetTypeOrBuilder() {
+      if (targetTypeBuilder_ != null) {
+        return targetTypeBuilder_.getMessageOrBuilder();
       } else {
-        return castTo_ == null ?
-            io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : castTo_;
+        return targetType_ == null ?
+            io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
       }
     }
     /**
@@ -4978,20 +4978,20 @@ private static final long serialVersionUID = 0L;
      * Note: Only primitive type conversions are supported.
      * </pre>
      *
-     * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> 
-        getCastToFieldBuilder() {
-      if (castToBuilder_ == null) {
-        castToBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        getTargetTypeFieldBuilder() {
+      if (targetTypeBuilder_ == null) {
+        targetTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder>(
-                getCastTo(),
+                getTargetType(),
                 getParentForChildren(),
                 isClean());
-        castTo_ = null;
+        targetType_ = null;
       }
-      return castToBuilder_;
+      return targetTypeBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

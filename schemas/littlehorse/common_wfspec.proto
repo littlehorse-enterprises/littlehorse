@@ -72,7 +72,7 @@ message VariableAssignment {
   // This allows explicit type conversions anywhere VariableAssignment is used.
   // The cast operation is non-mutating: original values remain unchanged.
   // Note: Only primitive type conversions are supported.
-  optional TypeDefinition cast_to = 7;
+  optional TypeDefinition target_type = 7;
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.

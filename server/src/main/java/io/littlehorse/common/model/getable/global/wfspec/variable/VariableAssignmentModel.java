@@ -38,12 +38,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
     private ExpressionModel expression;
-    /**
-     * -- GETTER --
-     *  Gets the cast target type, or null if no cast is specified.
-     *  This is used for validation purposes.
-     */
-    private TypeDefinitionModel castTo;
+    private TypeDefinitionModel targetType;
 
     public Class<VariableAssignment> getProtoBaseClass() {
         return VariableAssignment.class;
@@ -53,7 +48,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
         if (p.hasJsonPath()) jsonPath = p.getJsonPath();
-        if (p.hasCastTo()) castTo = TypeDefinitionModel.fromProto(p.getCastTo(), context);
+        if (p.hasTargetType()) targetType = TypeDefinitionModel.fromProto(p.getTargetType(), context);
 
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
@@ -82,7 +77,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
 
         if (jsonPath != null) out.setJsonPath(jsonPath);
-        if (castTo != null) out.setCastTo(castTo.toProto());
+        if (targetType != null) out.setTargetType(targetType.toProto());
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
@@ -135,11 +130,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public Optional<TypeDefinitionModel> resolveType(
             ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
-        // If there's an explicit cast, return the cast target type
-        if (castTo != null) {
-            return Optional.of(castTo);
+        if (targetType != null) {
+            return Optional.of(targetType);
         }
-
         return getSourceType(manager, wfSpec, threadSpecName);
     }
 
@@ -165,8 +158,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case NODE_OUTPUT:
             case EXPRESSION:
-                // For node outputs and expressions, use the utility's conservative approach
-                return TypeCastingUtils.canBeTypeWithoutCast(type, true);
+                return TypeCastingUtils.canAssignWithoutCast(baseType, type);
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException
@@ -190,26 +182,26 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
      * @throws LHVarSubError if casting fails
      */
     public VariableValueModel applyCast(VariableValueModel sourceValue) throws LHVarSubError {
-        if (castTo == null) {
+        if (targetType == null) {
             return sourceValue;
         }
 
         try {
-            return castTo.castTo(sourceValue);
+            return targetType.applyCast(sourceValue);
         } catch (IllegalArgumentException e) {
-            throw new LHVarSubError(e, "Failed to cast value to " + castTo.getType() + ": " + e.getMessage());
+            throw new LHVarSubError(e, "Failed to cast value to " + targetType.getType() + ": " + e.getMessage());
         }
     }
 
     /**
      * Returns true if this VariableAssignment has an explicit cast specified.
      */
-    public boolean hasCast() {
-        return castTo != null;
+    public boolean hasExplicitCast() {
+        return targetType != null;
     }
 
     /**
-     * Gets the source type of this VariableAssignment without considering any casting.
+     * Gets the source type of this VariableAssignment
      * This method resolves the actual type of the source value before any casting is applied.
      *
      * @param manager The metadata manager for resolving types

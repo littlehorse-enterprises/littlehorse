@@ -1,6 +1,5 @@
 plugins {
     id 'application'
-    id 'com.diffplug.spotless'
 }
 
 sourceCompatibility=17
@@ -21,9 +20,3 @@ application {
     mainClass = 'io.littlehorse.examples.ExpressionsExample'
 }
 
-spotless {
-    java {
-        target('**/*.java')
-        palantirJavaFormat()
-    }
-}

@@ -99,7 +99,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         try {
             validateValue(value);
 
-            VariableValueModel finalValue = typeDef.castTo(value);
+            VariableValueModel finalValue = typeDef.applyCast(value);
 
             if (typeDef.isMasked()) {
                 return new VarNameAndValModel(name, finalValue, true);

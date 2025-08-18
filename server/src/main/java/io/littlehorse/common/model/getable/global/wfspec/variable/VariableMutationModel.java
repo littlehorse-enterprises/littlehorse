@@ -204,9 +204,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             }
 
             if (operation == VariableMutationType.ASSIGN) {
-                boolean hasCast = (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) && rhsRhsAssignment.hasCast();
-                String context = "Variable mutation: " + lhsName + " = " + rhsType.get();
-                TypeCastingUtils.validateAssignment(rhsType.get().getType(), lhsType.getType(), hasCast, context);
+                boolean hasCast = (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) && rhsRhsAssignment.hasExplicitCast();
+                TypeCastingUtils.validateTypeCompatibility(rhsType.get().getType(), lhsType.getType(), hasCast);
             }
 
             Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy()

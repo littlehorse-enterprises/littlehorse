@@ -187,10 +187,10 @@ public interface VariableAssignmentOrBuilder extends
    * Note: Only primitive type conversions are supported.
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
-   * @return Whether the castTo field is set.
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return Whether the targetType field is set.
    */
-  boolean hasCastTo();
+  boolean hasTargetType();
   /**
    * <pre>
    * If specified, the resolved value will be cast to this type before being used.
@@ -199,10 +199,10 @@ public interface VariableAssignmentOrBuilder extends
    * Note: Only primitive type conversions are supported.
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
-   * @return The castTo.
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return The targetType.
    */
-  io.littlehorse.sdk.common.proto.TypeDefinition getCastTo();
+  io.littlehorse.sdk.common.proto.TypeDefinition getTargetType();
   /**
    * <pre>
    * If specified, the resolved value will be cast to this type before being used.
@@ -211,9 +211,9 @@ public interface VariableAssignmentOrBuilder extends
    * Note: Only primitive type conversions are supported.
    * </pre>
    *
-   * <code>optional .littlehorse.TypeDefinition cast_to = 7;</code>
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
    */
-  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getCastToOrBuilder();
+  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTargetTypeOrBuilder();
 
   io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }
