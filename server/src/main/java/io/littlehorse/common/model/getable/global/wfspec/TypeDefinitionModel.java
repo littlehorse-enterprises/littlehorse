@@ -13,9 +13,11 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Jso
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
@@ -29,16 +31,22 @@ import lombok.Setter;
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private boolean masked;
+
+    private DefinedTypeCase definedTypeCase;
+
     private VariableType primitiveType;
+    private StructDefIdModel structDefId;
 
     public TypeDefinitionModel() {}
 
     public TypeDefinitionModel(VariableType primitiveType) {
+        this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
         this.primitiveType = primitiveType;
         this.masked = false;
     }
 
     public TypeDefinitionModel(VariableType type, boolean masked) {
+        this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
         this.primitiveType = type;
         this.masked = masked;
     }
@@ -51,7 +59,14 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     @Override
     public TypeDefinition.Builder toProto() {
         TypeDefinition.Builder out =
-                TypeDefinition.newBuilder().setMasked(masked).setPrimitiveType(primitiveType);
+                TypeDefinition.newBuilder().setMasked(masked);
+
+        if (primitiveType != null) {
+            out.setPrimitiveType(primitiveType);
+        } else if (structDefId != null) {
+            out.setStructDefId(structDefId.toProto());
+        }
+
         return out;
     }
 
@@ -59,7 +74,13 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
-        this.primitiveType = p.getPrimitiveType();
+        this.definedTypeCase = p.getDefinedTypeCase();
+
+        if (p.hasPrimitiveType()) {
+            this.primitiveType = p.getPrimitiveType();
+        } else if (p.hasStructDefId()) {
+            this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
+        }
     }
 
     public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
@@ -97,6 +118,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * can be serialized to a string easily.
      */
     public boolean isPrimitive() {
+        if (this.primitiveType == null) return false;
+
         // TODO: Extend this when adding Struct and StructDef.
         switch (primitiveType) {
             case INT:
@@ -136,16 +159,46 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * exact match for now. In the future we'll support casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
-        if (primitiveType == VariableType.INT || primitiveType == VariableType.DOUBLE) {
-            return other.getPrimitiveType() == VariableType.INT || other.getPrimitiveType() == VariableType.DOUBLE;
+        if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
+            return false;
         }
-        return this.getPrimitiveType().equals(other.getPrimitiveType());
+
+        switch (this.getDefinedTypeCase()) {
+            case PRIMITIVE_TYPE:
+                if (primitiveType == VariableType.INT || primitiveType == VariableType.DOUBLE) {
+                    return other.getPrimitiveType() == VariableType.INT || other.getPrimitiveType() == VariableType.DOUBLE;
+                }
+                return this.getPrimitiveType().equals(other.getPrimitiveType());
+            case STRUCT_DEF_ID:
+                return this.getStructDefId().equals(other.getStructDefId());
+            case DEFINEDTYPE_NOT_SET:
+            case INLINE_ARRAY_DEF:
+            case INLINE_STRUCT_DEF:
+            default:
+                break;
+
+        }
+
+        return false;
     }
 
     @Override
     public String toString() {
-        // TODO: when we have Structs, print out structdefid
-        String result = primitiveType.toString();
+        String result = "";
+
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                result = primitiveType.toString();
+                break;
+            case STRUCT_DEF_ID:
+                result = String.format("<%s,%d>", structDefId.getName(), structDefId.getVersion());
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            case INLINE_ARRAY_DEF:
+            case INLINE_STRUCT_DEF:
+            default:
+                break;
+        }
         if (masked) result += " MASKED";
         return result;
     }
