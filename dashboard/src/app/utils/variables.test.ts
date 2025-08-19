@@ -364,8 +364,11 @@ describe('getVariableDefType', () => {
     const variableDef: VariableDef = {
       name: 'testVariable',
       typeDef: {
-        type: VariableType.STR,
-        masked: false,
+        definedType: {
+          "$case": "primitiveType",
+          "value": VariableType.STR,
+        },
+        masked: false
       },
     }
 
