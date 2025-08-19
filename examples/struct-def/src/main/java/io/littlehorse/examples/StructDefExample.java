@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -15,9 +16,9 @@ public class StructDefExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("struct-def", wf -> {
-            WfRunVariable structVar = wf.declareStruct("my-car", Car.class);
+            WfRunVariable structVar = wf.declareStruct("my-car", Person.class);
 
-            wf.execute("my-task", structVar);
+            wf.execute("greet", structVar);
         });
     }
 
@@ -47,18 +48,19 @@ public class StructDefExample {
 
         Workflow workflow = getWorkflow();
 
-        System.out.println(workflow.compileWfToJson());
-
         // New worker
-        // LHTaskWorker worker = getTaskWorker(config);
+        LHTaskWorker worker = getTaskWorker(config);
 
         // Register StructDefs
-        // worker.registerStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+        worker.registerStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
 
-        // // Register task
-        // worker.registerTaskDef();
+        // Register task
+        worker.registerTaskDef();
 
-        // // Run the worker
+        // Register WfSpec
+        workflow.registerWfSpec(config.getBlockingStub());
+        
+        // Run the worker
         // worker.start();
     }
 }
