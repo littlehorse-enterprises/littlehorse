@@ -944,6 +944,10 @@ public class LHServerConfig extends ConfigBase {
                 result.put(kafkaKey, props.get(key));
             }
         }
+        result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
+        result.put(StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MAX_BYTES_CONFIG), "1048576");
+        result.put(StreamsConfig.restoreConsumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "50");
+        result.put(StreamsConfig.restoreConsumerPrefix(ConsumerConfig.FETCH_MAX_BYTES_CONFIG), "1048576");
         return result;
     }
 
