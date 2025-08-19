@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Methods annotated with {@code @LHStructIgnore} and their properties 
+ * Methods annotated with {@code @LHStructIgnore} and their properties
  * will be excluded from StructDefs generated using this annotation.
- * 
+ *
  * This annotation can be applied to getter/setter methods of a StructDef class.
- * 
+ *
  * @see java.lang.annotation.ElementType
  * @see java.lang.annotation.RetentionPolicy
  * @see java.lang.annotation.Target

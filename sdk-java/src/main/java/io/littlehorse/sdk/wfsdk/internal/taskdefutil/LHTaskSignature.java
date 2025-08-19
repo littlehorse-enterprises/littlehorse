@@ -161,12 +161,6 @@ public class LHTaskSignature {
         LHTaskSignature o = (LHTaskSignature) other;
 
         // TODO: Improve TaskSignature equals!
-        // List<VariableType> otherTypes = o.getParamTypes();
-        // if (otherTypes.size() != paramTypes.size()) return false;
-
-        // for (int i = 0; i < otherTypes.size(); i++) {
-        // if (!otherTypes.get(i).equals(paramTypes.get(i))) return false;
-        // }
 
         return true;
     }

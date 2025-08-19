@@ -15,9 +15,9 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Str
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
@@ -58,8 +58,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     @Override
     public TypeDefinition.Builder toProto() {
-        TypeDefinition.Builder out =
-                TypeDefinition.newBuilder().setMasked(masked);
+        TypeDefinition.Builder out = TypeDefinition.newBuilder().setMasked(masked);
 
         if (primitiveType != null) {
             out.setPrimitiveType(primitiveType);
@@ -166,7 +165,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
                 if (primitiveType == VariableType.INT || primitiveType == VariableType.DOUBLE) {
-                    return other.getPrimitiveType() == VariableType.INT || other.getPrimitiveType() == VariableType.DOUBLE;
+                    return other.getPrimitiveType() == VariableType.INT
+                            || other.getPrimitiveType() == VariableType.DOUBLE;
                 }
                 return this.getPrimitiveType().equals(other.getPrimitiveType());
             case STRUCT_DEF_ID:
@@ -176,7 +176,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INLINE_STRUCT_DEF:
             default:
                 break;
-
         }
 
         return false;

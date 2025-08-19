@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
-import io.littlehorse.sdk.worker.LHStructIgnore;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
