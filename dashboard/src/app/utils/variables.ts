@@ -113,7 +113,17 @@ export const getTypedVariableValue = (
  */
 export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
   if (varDef.typeDef) {
-    return getVariableCaseFromType(varDef.typeDef.type)
+    switch (varDef.typeDef?.definedType?.$case) {
+      case 'primitiveType':
+        return getVariableCaseFromType(varDef.typeDef.definedType.value)
+      case 'structDefId':
+      case 'inlineStructDef':
+        return 'struct'
+      case 'inlineArrayDef':
+        return 'jsonArr'
+      default:
+        throw new Error('Unknown variable type.')
+    }
   } else if (varDef.type) {
     return getVariableCaseFromType(varDef.type)
   }

@@ -174,7 +174,9 @@ class TestWfRunVariable(unittest.TestCase):
             ThreadVarDef(
                 var_def=VariableDef(
                     name="my-var",
-                    type_def=TypeDefinition(primitive_type=VariableType.STR, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.STR, masked=False
+                    ),
                 ),
                 access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
             ),
@@ -185,7 +187,9 @@ class TestWfRunVariable(unittest.TestCase):
         expected_output = ThreadVarDef(
             var_def=VariableDef(
                 name="my-var",
-                type_def=TypeDefinition(primitive_type=VariableType.JSON_OBJ, masked=False),
+                type_def=TypeDefinition(
+                    primitive_type=VariableType.JSON_OBJ, masked=False
+                ),
             ),
             access_level="PRIVATE_VAR",
         )
