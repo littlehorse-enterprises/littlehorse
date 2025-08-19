@@ -46,12 +46,18 @@ public class LHClassTypeTest {
     }
 
     @LHStructDef(name = "library")
-    @Getter
     class Library {
         public String name;
 
-        @LHStructIgnore
         public Book[] books;
+
+        public String getName() {
+            return this.name;
+        }
+
+        public Book[] getBooks() {
+            return this.books;
+        }
     }
 
     @Getter

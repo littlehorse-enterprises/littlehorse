@@ -160,6 +160,7 @@ public class LHTaskSignature {
         if (!(other instanceof LHTaskSignature)) return false;
         LHTaskSignature o = (LHTaskSignature) other;
 
+        // TODO: Improve TaskSignature equals!
         // List<VariableType> otherTypes = o.getParamTypes();
         // if (otherTypes.size() != paramTypes.size()) return false;
 

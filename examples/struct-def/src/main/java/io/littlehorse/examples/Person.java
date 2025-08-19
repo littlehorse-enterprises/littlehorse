@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructIgnore;
 
 @LHStructDef(name = "person")
 public class Person {
@@ -31,6 +32,7 @@ public class Person {
         return accountId;
     }
 
+    @LHStructIgnore
     public String getPhoneNumber() {
         return phoneNumber;
     }

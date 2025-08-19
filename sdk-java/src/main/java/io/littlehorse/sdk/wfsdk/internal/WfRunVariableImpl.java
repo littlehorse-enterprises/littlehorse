@@ -99,32 +99,6 @@ class WfRunVariableImpl implements WfRunVariable {
         }
     }
 
-    // public WfRunVariableImpl(String name, LHClassType structClassType, WorkflowThreadImpl parent) {
-    //     this.name = name;
-    //     this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
-
-    //     this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
-    //     this.definedType = DefinedTypeCase.STRUCT_DEF_ID;
-
-    // String structName = structClassType.getStructDefAnnotation().name();
-
-    // this.typeDef = TypeDefinition.newBuilder()
-    //         .setStructDefId(StructDefId.newBuilder().setName(structName))
-    //         .build();
-    // }
-
-    // public WfRunVariableImpl(String name, String structDefName, WorkflowThreadImpl parent) {
-    //     this.name = name;
-    //     this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
-
-    //     this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
-    //     this.definedType = DefinedTypeCase.STRUCT_DEF_ID;
-
-    //     this.typeDef = TypeDefinition.newBuilder()
-    //             .setStructDefId(StructDefId.newBuilder().setName(structDefName))
-    //             .build();
-    // }
-
     @Override
     public WfRunVariableImpl withAccessLevel(WfRunVariableAccessLevel accessLevel) {
         this.accessLevel = accessLevel;

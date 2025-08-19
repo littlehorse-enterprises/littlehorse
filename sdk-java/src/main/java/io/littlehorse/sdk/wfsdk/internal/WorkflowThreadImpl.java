@@ -449,13 +449,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
-    // private WfRunVariableImpl addStructVariable(String name, String structDefName) {
-    //     checkIfIsActive();
-    //     WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, structDefName, this);
-    //     wfRunVariables.add(wfRunVariable);
-    //     return wfRunVariable;
-    // }
-
     @Override
     public WfRunVariable declareBool(String name) {
         return addVariable(name, VariableType.BOOL);
