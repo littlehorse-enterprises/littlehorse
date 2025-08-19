@@ -177,7 +177,9 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [to_type(var.type_def.type) for var in self.task_def.input_vars]
+        task_def_vars = [
+            to_type(var.type_def.primitive_type) for var in self.task_def.input_vars
+        ]
 
         callable_params = [
             param.annotation
@@ -684,12 +686,12 @@ def _return_to_lh_schema(return_type: type) -> Optional[ReturnType]:
         return None
     lh_type = _param_to_lh_type(return_type)
     var = TypeDefinition(
-        type=to_variable_type(return_type),
+        primitive_type=to_variable_type(return_type),
         masked=False,
     )
     if lh_type is not None:
         var = TypeDefinition(
-            type=to_variable_type(return_type),
+            primitive_type=to_variable_type(return_type),
             masked=lh_type.masked,
         )
     return ReturnType(return_type=var)

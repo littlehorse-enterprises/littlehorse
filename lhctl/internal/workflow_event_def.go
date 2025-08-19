@@ -30,7 +30,9 @@ var putWorkflowEventDefCmd = &cobra.Command{
 
 		returnType := lhproto.ReturnType{
 			ReturnType: &lhproto.TypeDefinition{
-				Type:   contentTypeEnum,
+				DefinedType: &lhproto.TypeDefinition_PrimitiveType{
+					PrimitiveType: contentTypeEnum,
+				},
 				Masked: false,
 			},
 		}

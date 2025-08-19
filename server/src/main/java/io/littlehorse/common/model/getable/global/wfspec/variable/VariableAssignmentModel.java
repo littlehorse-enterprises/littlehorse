@@ -120,7 +120,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
     public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
         // TODO: extend this to support Struct and StructDef when we implement that.
-        return canBeType(type.getType(), tspec);
+        return canBeType(type.getPrimitiveType(), tspec);
     }
 
     public Optional<TypeDefinitionModel> resolveType(
@@ -183,7 +183,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
 
                 // This will need to be refactored once we introduce Structs and StructDefs.
-                baseType = varDef.getTypeDef().getType();
+                baseType = varDef.getTypeDef().getPrimitiveType();
                 break;
             case LITERAL_VALUE:
                 baseType = rhsLiteralValue.getType();
