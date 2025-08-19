@@ -18,10 +18,6 @@ import {
   lHStatusFromJSON,
   lHStatusToJSON,
   lHStatusToNumber,
-  MeasurableObject,
-  measurableObjectFromJSON,
-  measurableObjectToJSON,
-  measurableObjectToNumber,
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToJSON,
@@ -263,7 +259,6 @@ export interface PutMetricSpecRequest {
   /** Defines how the metric will be computed and collected */
   aggregationType: AggregationType;
   reference?:
-    | { $case: "object"; value: MeasurableObject }
     | { $case: "node"; value: NodeReference }
     | { $case: "wfSpecId"; value: WfSpecId }
     | { $case: "threadSpec"; value: ThreadSpecReference }
@@ -2149,21 +2144,18 @@ export const PutMetricSpecRequest = {
       writer.uint32(8).int32(aggregationTypeToNumber(message.aggregationType));
     }
     switch (message.reference?.$case) {
-      case "object":
-        writer.uint32(16).int32(measurableObjectToNumber(message.reference.value));
-        break;
       case "node":
-        NodeReference.encode(message.reference.value, writer.uint32(26).fork()).ldelim();
+        NodeReference.encode(message.reference.value, writer.uint32(18).fork()).ldelim();
         break;
       case "wfSpecId":
-        WfSpecId.encode(message.reference.value, writer.uint32(34).fork()).ldelim();
+        WfSpecId.encode(message.reference.value, writer.uint32(26).fork()).ldelim();
         break;
       case "threadSpec":
-        ThreadSpecReference.encode(message.reference.value, writer.uint32(42).fork()).ldelim();
+        ThreadSpecReference.encode(message.reference.value, writer.uint32(34).fork()).ldelim();
         break;
     }
     if (message.windowLength !== undefined) {
-      Duration.encode(message.windowLength, writer.uint32(50).fork()).ldelim();
+      Duration.encode(message.windowLength, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -2183,35 +2175,28 @@ export const PutMetricSpecRequest = {
           message.aggregationType = aggregationTypeFromJSON(reader.int32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.reference = { $case: "object", value: measurableObjectFromJSON(reader.int32()) };
+          message.reference = { $case: "node", value: NodeReference.decode(reader, reader.uint32()) };
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.reference = { $case: "node", value: NodeReference.decode(reader, reader.uint32()) };
+          message.reference = { $case: "wfSpecId", value: WfSpecId.decode(reader, reader.uint32()) };
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.reference = { $case: "wfSpecId", value: WfSpecId.decode(reader, reader.uint32()) };
+          message.reference = { $case: "threadSpec", value: ThreadSpecReference.decode(reader, reader.uint32()) };
           continue;
         case 5:
           if (tag !== 42) {
-            break;
-          }
-
-          message.reference = { $case: "threadSpec", value: ThreadSpecReference.decode(reader, reader.uint32()) };
-          continue;
-        case 6:
-          if (tag !== 50) {
             break;
           }
 
@@ -2231,9 +2216,7 @@ export const PutMetricSpecRequest = {
       aggregationType: isSet(object.aggregationType)
         ? aggregationTypeFromJSON(object.aggregationType)
         : AggregationType.COUNT,
-      reference: isSet(object.object)
-        ? { $case: "object", value: measurableObjectFromJSON(object.object) }
-        : isSet(object.node)
+      reference: isSet(object.node)
         ? { $case: "node", value: NodeReference.fromJSON(object.node) }
         : isSet(object.wfSpecId)
         ? { $case: "wfSpecId", value: WfSpecId.fromJSON(object.wfSpecId) }
@@ -2248,9 +2231,6 @@ export const PutMetricSpecRequest = {
     const obj: any = {};
     if (message.aggregationType !== AggregationType.COUNT) {
       obj.aggregationType = aggregationTypeToJSON(message.aggregationType);
-    }
-    if (message.reference?.$case === "object") {
-      obj.object = measurableObjectToJSON(message.reference.value);
     }
     if (message.reference?.$case === "node") {
       obj.node = NodeReference.toJSON(message.reference.value);
@@ -2273,11 +2253,6 @@ export const PutMetricSpecRequest = {
   fromPartial(object: DeepPartial<PutMetricSpecRequest>): PutMetricSpecRequest {
     const message = createBasePutMetricSpecRequest();
     message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
-    if (
-      object.reference?.$case === "object" && object.reference?.value !== undefined && object.reference?.value !== null
-    ) {
-      message.reference = { $case: "object", value: object.reference.value };
-    }
     if (
       object.reference?.$case === "node" && object.reference?.value !== undefined && object.reference?.value !== null
     ) {

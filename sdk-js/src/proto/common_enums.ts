@@ -577,54 +577,6 @@ export function lHErrorTypeToNumber(object: LHErrorType): number {
   }
 }
 
-/** This enum is all the LittleHorse types that can be measured */
-export enum MeasurableObject {
-  /** WORKFLOW - Measures metrics related to WfSpec */
-  WORKFLOW = "WORKFLOW",
-  /** TASK - Measures metrics related to tasks */
-  TASK = "TASK",
-  UNRECOGNIZED = "UNRECOGNIZED",
-}
-
-export function measurableObjectFromJSON(object: any): MeasurableObject {
-  switch (object) {
-    case 0:
-    case "WORKFLOW":
-      return MeasurableObject.WORKFLOW;
-    case 1:
-    case "TASK":
-      return MeasurableObject.TASK;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return MeasurableObject.UNRECOGNIZED;
-  }
-}
-
-export function measurableObjectToJSON(object: MeasurableObject): string {
-  switch (object) {
-    case MeasurableObject.WORKFLOW:
-      return "WORKFLOW";
-    case MeasurableObject.TASK:
-      return "TASK";
-    case MeasurableObject.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
-export function measurableObjectToNumber(object: MeasurableObject): number {
-  switch (object) {
-    case MeasurableObject.WORKFLOW:
-      return 0;
-    case MeasurableObject.TASK:
-      return 1;
-    case MeasurableObject.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}
-
 export enum AggregationType {
   COUNT = "COUNT",
   AVG = "AVG",

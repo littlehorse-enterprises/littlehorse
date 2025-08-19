@@ -239,10 +239,9 @@ message ThreadSpecReference {
 
 message MetricSpecId {
   oneof reference {
-    MeasurableObject object = 1;
-    NodeReference node = 2;
-    WfSpecId wf_spec_id = 3;
-    ThreadSpecReference thread_spec = 4;
+    NodeReference node = 1;
+    WfSpecId wf_spec_id = 2;
+    ThreadSpecReference thread_spec = 3;
   }
 }
 

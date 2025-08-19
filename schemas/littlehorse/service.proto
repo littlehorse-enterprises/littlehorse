@@ -386,17 +386,15 @@ message PutMetricSpecRequest {
   AggregationType aggregation_type = 1;
   // Determines the entity or object for which the metric is being collected.
   oneof reference {
-    // Refers to a specific LittleHorse object
-    MeasurableObject object = 2;
     // Refers to a specific node
-    NodeReference node = 3;
+    NodeReference node = 2;
     // Refers to a specific WfSpec
-    WfSpecId wf_spec_id = 4;
+    WfSpecId wf_spec_id = 3;
     // Refers to a specific ThreadSpec within  a WfSpec
-    ThreadSpecReference thread_spec = 5;
+    ThreadSpecReference thread_spec = 4;
   }
   // Defines a length for every window recorded for this MetricSpec
-  google.protobuf.Duration window_length = 6;
+  google.protobuf.Duration window_length = 5;
 }
 
 // This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same

@@ -33,7 +33,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -684,7 +683,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         if (sensor == null) {
             MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new NodeReferenceModel("TASK"));
             return new Sensor(
-                    Set.of(wfSpecMetricId, new MetricSpecIdModel(MeasurableObject.TASK)),
+                    Set.of(wfSpecMetricId, new MetricSpecIdModel(new NodeReferenceModel(getNode().getType().name()))),
                     executionContext.castOnSupport(CoreProcessorContext.class));
         }
         return sensor;

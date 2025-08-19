@@ -11,10 +11,6 @@ import {
   aggregationTypeFromJSON,
   aggregationTypeToJSON,
   aggregationTypeToNumber,
-  MeasurableObject,
-  measurableObjectFromJSON,
-  measurableObjectToJSON,
-  measurableObjectToNumber,
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToJSON,
@@ -289,12 +285,10 @@ export interface ThreadSpecReference {
 }
 
 export interface MetricSpecId {
-  reference?:
-    | { $case: "object"; value: MeasurableObject }
-    | { $case: "node"; value: NodeReference }
-    | { $case: "wfSpecId"; value: WfSpecId }
-    | { $case: "threadSpec"; value: ThreadSpecReference }
-    | undefined;
+  reference?: { $case: "node"; value: NodeReference } | { $case: "wfSpecId"; value: WfSpecId } | {
+    $case: "threadSpec";
+    value: ThreadSpecReference;
+  } | undefined;
 }
 
 export interface MetricId {
@@ -1980,17 +1974,14 @@ function createBaseMetricSpecId(): MetricSpecId {
 export const MetricSpecId = {
   encode(message: MetricSpecId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     switch (message.reference?.$case) {
-      case "object":
-        writer.uint32(8).int32(measurableObjectToNumber(message.reference.value));
-        break;
       case "node":
-        NodeReference.encode(message.reference.value, writer.uint32(18).fork()).ldelim();
+        NodeReference.encode(message.reference.value, writer.uint32(10).fork()).ldelim();
         break;
       case "wfSpecId":
-        WfSpecId.encode(message.reference.value, writer.uint32(26).fork()).ldelim();
+        WfSpecId.encode(message.reference.value, writer.uint32(18).fork()).ldelim();
         break;
       case "threadSpec":
-        ThreadSpecReference.encode(message.reference.value, writer.uint32(34).fork()).ldelim();
+        ThreadSpecReference.encode(message.reference.value, writer.uint32(26).fork()).ldelim();
         break;
     }
     return writer;
@@ -2004,28 +1995,21 @@ export const MetricSpecId = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.reference = { $case: "object", value: measurableObjectFromJSON(reader.int32()) };
+          message.reference = { $case: "node", value: NodeReference.decode(reader, reader.uint32()) };
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.reference = { $case: "node", value: NodeReference.decode(reader, reader.uint32()) };
+          message.reference = { $case: "wfSpecId", value: WfSpecId.decode(reader, reader.uint32()) };
           continue;
         case 3:
           if (tag !== 26) {
-            break;
-          }
-
-          message.reference = { $case: "wfSpecId", value: WfSpecId.decode(reader, reader.uint32()) };
-          continue;
-        case 4:
-          if (tag !== 34) {
             break;
           }
 
@@ -2042,9 +2026,7 @@ export const MetricSpecId = {
 
   fromJSON(object: any): MetricSpecId {
     return {
-      reference: isSet(object.object)
-        ? { $case: "object", value: measurableObjectFromJSON(object.object) }
-        : isSet(object.node)
+      reference: isSet(object.node)
         ? { $case: "node", value: NodeReference.fromJSON(object.node) }
         : isSet(object.wfSpecId)
         ? { $case: "wfSpecId", value: WfSpecId.fromJSON(object.wfSpecId) }
@@ -2056,9 +2038,6 @@ export const MetricSpecId = {
 
   toJSON(message: MetricSpecId): unknown {
     const obj: any = {};
-    if (message.reference?.$case === "object") {
-      obj.object = measurableObjectToJSON(message.reference.value);
-    }
     if (message.reference?.$case === "node") {
       obj.node = NodeReference.toJSON(message.reference.value);
     }
@@ -2076,11 +2055,6 @@ export const MetricSpecId = {
   },
   fromPartial(object: DeepPartial<MetricSpecId>): MetricSpecId {
     const message = createBaseMetricSpecId();
-    if (
-      object.reference?.$case === "object" && object.reference?.value !== undefined && object.reference?.value !== null
-    ) {
-      message.reference = { $case: "object", value: object.reference.value };
-    }
     if (
       object.reference?.$case === "node" && object.reference?.value !== undefined && object.reference?.value !== null
     ) {

@@ -61,11 +61,6 @@ class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TASK_ERROR: _ClassVar[LHErrorType]
     INTERNAL_ERROR: _ClassVar[LHErrorType]
 
-class MeasurableObject(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    WORKFLOW: _ClassVar[MeasurableObject]
-    TASK: _ClassVar[MeasurableObject]
-
 class AggregationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     COUNT: _ClassVar[AggregationType]
@@ -118,8 +113,6 @@ TASK_FAILURE: LHErrorType
 VAR_ERROR: LHErrorType
 TASK_ERROR: LHErrorType
 INTERNAL_ERROR: LHErrorType
-WORKFLOW: MeasurableObject
-TASK: MeasurableObject
 COUNT: AggregationType
 AVG: AggregationType
 RATIO: AggregationType

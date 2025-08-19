@@ -44,10 +44,9 @@ private static final long serialVersionUID = 0L;
   public enum ReferenceCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    OBJECT(1),
-    NODE(2),
-    WF_SPEC_ID(3),
-    THREAD_SPEC(4),
+    NODE(1),
+    WF_SPEC_ID(2),
+    THREAD_SPEC(3),
     REFERENCE_NOT_SET(0);
     private final int value;
     private ReferenceCase(int value) {
@@ -65,10 +64,9 @@ private static final long serialVersionUID = 0L;
 
     public static ReferenceCase forNumber(int value) {
       switch (value) {
-        case 1: return OBJECT;
-        case 2: return NODE;
-        case 3: return WF_SPEC_ID;
-        case 4: return THREAD_SPEC;
+        case 1: return NODE;
+        case 2: return WF_SPEC_ID;
+        case 3: return THREAD_SPEC;
         case 0: return REFERENCE_NOT_SET;
         default: return null;
       }
@@ -84,125 +82,94 @@ private static final long serialVersionUID = 0L;
         referenceCase_);
   }
 
-  public static final int OBJECT_FIELD_NUMBER = 1;
+  public static final int NODE_FIELD_NUMBER = 1;
   /**
-   * <code>.littlehorse.MeasurableObject object = 1;</code>
-   * @return Whether the object field is set.
-   */
-  public boolean hasObject() {
-    return referenceCase_ == 1;
-  }
-  /**
-   * <code>.littlehorse.MeasurableObject object = 1;</code>
-   * @return The enum numeric value on the wire for object.
-   */
-  public int getObjectValue() {
-    if (referenceCase_ == 1) {
-      return (java.lang.Integer) reference_;
-    }
-    return 0;
-  }
-  /**
-   * <code>.littlehorse.MeasurableObject object = 1;</code>
-   * @return The object.
-   */
-  public io.littlehorse.sdk.common.proto.MeasurableObject getObject() {
-    if (referenceCase_ == 1) {
-      io.littlehorse.sdk.common.proto.MeasurableObject result = io.littlehorse.sdk.common.proto.MeasurableObject.forNumber(
-          (java.lang.Integer) reference_);
-      return result == null ? io.littlehorse.sdk.common.proto.MeasurableObject.UNRECOGNIZED : result;
-    }
-    return io.littlehorse.sdk.common.proto.MeasurableObject.WORKFLOW;
-  }
-
-  public static final int NODE_FIELD_NUMBER = 2;
-  /**
-   * <code>.littlehorse.NodeReference node = 2;</code>
+   * <code>.littlehorse.NodeReference node = 1;</code>
    * @return Whether the node field is set.
    */
   @java.lang.Override
   public boolean hasNode() {
-    return referenceCase_ == 2;
+    return referenceCase_ == 1;
   }
   /**
-   * <code>.littlehorse.NodeReference node = 2;</code>
+   * <code>.littlehorse.NodeReference node = 1;</code>
    * @return The node.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.NodeReference getNode() {
-    if (referenceCase_ == 2) {
+    if (referenceCase_ == 1) {
        return (io.littlehorse.sdk.common.proto.NodeReference) reference_;
     }
     return io.littlehorse.sdk.common.proto.NodeReference.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.NodeReference node = 2;</code>
+   * <code>.littlehorse.NodeReference node = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.NodeReferenceOrBuilder getNodeOrBuilder() {
-    if (referenceCase_ == 2) {
+    if (referenceCase_ == 1) {
        return (io.littlehorse.sdk.common.proto.NodeReference) reference_;
     }
     return io.littlehorse.sdk.common.proto.NodeReference.getDefaultInstance();
   }
 
-  public static final int WF_SPEC_ID_FIELD_NUMBER = 3;
+  public static final int WF_SPEC_ID_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return Whether the wfSpecId field is set.
    */
   @java.lang.Override
   public boolean hasWfSpecId() {
-    return referenceCase_ == 3;
+    return referenceCase_ == 2;
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
-    if (referenceCase_ == 3) {
+    if (referenceCase_ == 2) {
        return (io.littlehorse.sdk.common.proto.WfSpecId) reference_;
     }
     return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
-    if (referenceCase_ == 3) {
+    if (referenceCase_ == 2) {
        return (io.littlehorse.sdk.common.proto.WfSpecId) reference_;
     }
     return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
   }
 
-  public static final int THREAD_SPEC_FIELD_NUMBER = 4;
+  public static final int THREAD_SPEC_FIELD_NUMBER = 3;
   /**
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+   * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
    * @return Whether the threadSpec field is set.
    */
   @java.lang.Override
   public boolean hasThreadSpec() {
-    return referenceCase_ == 4;
+    return referenceCase_ == 3;
   }
   /**
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+   * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
    * @return The threadSpec.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.ThreadSpecReference getThreadSpec() {
-    if (referenceCase_ == 4) {
+    if (referenceCase_ == 3) {
        return (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_;
     }
     return io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+   * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder() {
-    if (referenceCase_ == 4) {
+    if (referenceCase_ == 3) {
        return (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_;
     }
     return io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance();
@@ -223,16 +190,13 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (referenceCase_ == 1) {
-      output.writeEnum(1, ((java.lang.Integer) reference_));
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.NodeReference) reference_);
     }
     if (referenceCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.NodeReference) reference_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.WfSpecId) reference_);
     }
     if (referenceCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.WfSpecId) reference_);
-    }
-    if (referenceCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -245,19 +209,15 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (referenceCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, ((java.lang.Integer) reference_));
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.NodeReference) reference_);
     }
     if (referenceCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.NodeReference) reference_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.WfSpecId) reference_);
     }
     if (referenceCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.WfSpecId) reference_);
-    }
-    if (referenceCase_ == 4) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -277,18 +237,14 @@ private static final long serialVersionUID = 0L;
     if (!getReferenceCase().equals(other.getReferenceCase())) return false;
     switch (referenceCase_) {
       case 1:
-        if (getObjectValue()
-            != other.getObjectValue()) return false;
-        break;
-      case 2:
         if (!getNode()
             .equals(other.getNode())) return false;
         break;
-      case 3:
+      case 2:
         if (!getWfSpecId()
             .equals(other.getWfSpecId())) return false;
         break;
-      case 4:
+      case 3:
         if (!getThreadSpec()
             .equals(other.getThreadSpec())) return false;
         break;
@@ -308,18 +264,14 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     switch (referenceCase_) {
       case 1:
-        hash = (37 * hash) + OBJECT_FIELD_NUMBER;
-        hash = (53 * hash) + getObjectValue();
-        break;
-      case 2:
         hash = (37 * hash) + NODE_FIELD_NUMBER;
         hash = (53 * hash) + getNode().hashCode();
         break;
-      case 3:
+      case 2:
         hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
         hash = (53 * hash) + getWfSpecId().hashCode();
         break;
-      case 4:
+      case 3:
         hash = (37 * hash) + THREAD_SPEC_FIELD_NUMBER;
         hash = (53 * hash) + getThreadSpec().hashCode();
         break;
@@ -507,15 +459,15 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.MetricSpecId result) {
       result.referenceCase_ = referenceCase_;
       result.reference_ = this.reference_;
-      if (referenceCase_ == 2 &&
+      if (referenceCase_ == 1 &&
           nodeBuilder_ != null) {
         result.reference_ = nodeBuilder_.build();
       }
-      if (referenceCase_ == 3 &&
+      if (referenceCase_ == 2 &&
           wfSpecIdBuilder_ != null) {
         result.reference_ = wfSpecIdBuilder_.build();
       }
-      if (referenceCase_ == 4 &&
+      if (referenceCase_ == 3 &&
           threadSpecBuilder_ != null) {
         result.reference_ = threadSpecBuilder_.build();
       }
@@ -566,10 +518,6 @@ private static final long serialVersionUID = 0L;
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.MetricSpecId other) {
       if (other == io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance()) return this;
       switch (other.getReferenceCase()) {
-        case OBJECT: {
-          setObjectValue(other.getObjectValue());
-          break;
-        }
         case NODE: {
           mergeNode(other.getNode());
           break;
@@ -612,33 +560,27 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              int rawValue = input.readEnum();
-              referenceCase_ = 1;
-              reference_ = rawValue;
-              break;
-            } // case 8
-            case 18: {
+            case 10: {
               input.readMessage(
                   getNodeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              referenceCase_ = 1;
+              break;
+            } // case 10
+            case 18: {
+              input.readMessage(
+                  getWfSpecIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               referenceCase_ = 2;
               break;
             } // case 18
             case 26: {
               input.readMessage(
-                  getWfSpecIdFieldBuilder().getBuilder(),
+                  getThreadSpecFieldBuilder().getBuilder(),
                   extensionRegistry);
               referenceCase_ = 3;
               break;
             } // case 26
-            case 34: {
-              input.readMessage(
-                  getThreadSpecFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              referenceCase_ = 4;
-              break;
-            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -671,106 +613,36 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    /**
-     * <code>.littlehorse.MeasurableObject object = 1;</code>
-     * @return Whether the object field is set.
-     */
-    @java.lang.Override
-    public boolean hasObject() {
-      return referenceCase_ == 1;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject object = 1;</code>
-     * @return The enum numeric value on the wire for object.
-     */
-    @java.lang.Override
-    public int getObjectValue() {
-      if (referenceCase_ == 1) {
-        return ((java.lang.Integer) reference_).intValue();
-      }
-      return 0;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject object = 1;</code>
-     * @param value The enum numeric value on the wire for object to set.
-     * @return This builder for chaining.
-     */
-    public Builder setObjectValue(int value) {
-      referenceCase_ = 1;
-      reference_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject object = 1;</code>
-     * @return The object.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MeasurableObject getObject() {
-      if (referenceCase_ == 1) {
-        io.littlehorse.sdk.common.proto.MeasurableObject result = io.littlehorse.sdk.common.proto.MeasurableObject.forNumber(
-            (java.lang.Integer) reference_);
-        return result == null ? io.littlehorse.sdk.common.proto.MeasurableObject.UNRECOGNIZED : result;
-      }
-      return io.littlehorse.sdk.common.proto.MeasurableObject.WORKFLOW;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject object = 1;</code>
-     * @param value The object to set.
-     * @return This builder for chaining.
-     */
-    public Builder setObject(io.littlehorse.sdk.common.proto.MeasurableObject value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      referenceCase_ = 1;
-      reference_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject object = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearObject() {
-      if (referenceCase_ == 1) {
-        referenceCase_ = 0;
-        reference_ = null;
-        onChanged();
-      }
-      return this;
-    }
-
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.NodeReference, io.littlehorse.sdk.common.proto.NodeReference.Builder, io.littlehorse.sdk.common.proto.NodeReferenceOrBuilder> nodeBuilder_;
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      * @return Whether the node field is set.
      */
     @java.lang.Override
     public boolean hasNode() {
-      return referenceCase_ == 2;
+      return referenceCase_ == 1;
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      * @return The node.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.NodeReference getNode() {
       if (nodeBuilder_ == null) {
-        if (referenceCase_ == 2) {
+        if (referenceCase_ == 1) {
           return (io.littlehorse.sdk.common.proto.NodeReference) reference_;
         }
         return io.littlehorse.sdk.common.proto.NodeReference.getDefaultInstance();
       } else {
-        if (referenceCase_ == 2) {
+        if (referenceCase_ == 1) {
           return nodeBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.NodeReference.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      */
     public Builder setNode(io.littlehorse.sdk.common.proto.NodeReference value) {
       if (nodeBuilder_ == null) {
@@ -782,11 +654,11 @@ private static final long serialVersionUID = 0L;
       } else {
         nodeBuilder_.setMessage(value);
       }
-      referenceCase_ = 2;
+      referenceCase_ = 1;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      */
     public Builder setNode(
         io.littlehorse.sdk.common.proto.NodeReference.Builder builderForValue) {
@@ -796,15 +668,15 @@ private static final long serialVersionUID = 0L;
       } else {
         nodeBuilder_.setMessage(builderForValue.build());
       }
-      referenceCase_ = 2;
+      referenceCase_ = 1;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      */
     public Builder mergeNode(io.littlehorse.sdk.common.proto.NodeReference value) {
       if (nodeBuilder_ == null) {
-        if (referenceCase_ == 2 &&
+        if (referenceCase_ == 1 &&
             reference_ != io.littlehorse.sdk.common.proto.NodeReference.getDefaultInstance()) {
           reference_ = io.littlehorse.sdk.common.proto.NodeReference.newBuilder((io.littlehorse.sdk.common.proto.NodeReference) reference_)
               .mergeFrom(value).buildPartial();
@@ -813,27 +685,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (referenceCase_ == 2) {
+        if (referenceCase_ == 1) {
           nodeBuilder_.mergeFrom(value);
         } else {
           nodeBuilder_.setMessage(value);
         }
       }
-      referenceCase_ = 2;
+      referenceCase_ = 1;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      */
     public Builder clearNode() {
       if (nodeBuilder_ == null) {
-        if (referenceCase_ == 2) {
+        if (referenceCase_ == 1) {
           referenceCase_ = 0;
           reference_ = null;
           onChanged();
         }
       } else {
-        if (referenceCase_ == 2) {
+        if (referenceCase_ == 1) {
           referenceCase_ = 0;
           reference_ = null;
         }
@@ -842,33 +714,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.NodeReference.Builder getNodeBuilder() {
       return getNodeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.NodeReferenceOrBuilder getNodeOrBuilder() {
-      if ((referenceCase_ == 2) && (nodeBuilder_ != null)) {
+      if ((referenceCase_ == 1) && (nodeBuilder_ != null)) {
         return nodeBuilder_.getMessageOrBuilder();
       } else {
-        if (referenceCase_ == 2) {
+        if (referenceCase_ == 1) {
           return (io.littlehorse.sdk.common.proto.NodeReference) reference_;
         }
         return io.littlehorse.sdk.common.proto.NodeReference.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.NodeReference node = 2;</code>
+     * <code>.littlehorse.NodeReference node = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.NodeReference, io.littlehorse.sdk.common.proto.NodeReference.Builder, io.littlehorse.sdk.common.proto.NodeReferenceOrBuilder> 
         getNodeFieldBuilder() {
       if (nodeBuilder_ == null) {
-        if (!(referenceCase_ == 2)) {
+        if (!(referenceCase_ == 1)) {
           reference_ = io.littlehorse.sdk.common.proto.NodeReference.getDefaultInstance();
         }
         nodeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -878,7 +750,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         reference_ = null;
       }
-      referenceCase_ = 2;
+      referenceCase_ = 1;
       onChanged();
       return nodeBuilder_;
     }
@@ -886,33 +758,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return Whether the wfSpecId field is set.
      */
     @java.lang.Override
     public boolean hasWfSpecId() {
-      return referenceCase_ == 3;
+      return referenceCase_ == 2;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return The wfSpecId.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
       if (wfSpecIdBuilder_ == null) {
-        if (referenceCase_ == 3) {
+        if (referenceCase_ == 2) {
           return (io.littlehorse.sdk.common.proto.WfSpecId) reference_;
         }
         return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       } else {
-        if (referenceCase_ == 3) {
+        if (referenceCase_ == 2) {
           return wfSpecIdBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
       if (wfSpecIdBuilder_ == null) {
@@ -924,11 +796,11 @@ private static final long serialVersionUID = 0L;
       } else {
         wfSpecIdBuilder_.setMessage(value);
       }
-      referenceCase_ = 3;
+      referenceCase_ = 2;
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(
         io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
@@ -938,15 +810,15 @@ private static final long serialVersionUID = 0L;
       } else {
         wfSpecIdBuilder_.setMessage(builderForValue.build());
       }
-      referenceCase_ = 3;
+      referenceCase_ = 2;
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
       if (wfSpecIdBuilder_ == null) {
-        if (referenceCase_ == 3 &&
+        if (referenceCase_ == 2 &&
             reference_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
           reference_ = io.littlehorse.sdk.common.proto.WfSpecId.newBuilder((io.littlehorse.sdk.common.proto.WfSpecId) reference_)
               .mergeFrom(value).buildPartial();
@@ -955,27 +827,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (referenceCase_ == 3) {
+        if (referenceCase_ == 2) {
           wfSpecIdBuilder_.mergeFrom(value);
         } else {
           wfSpecIdBuilder_.setMessage(value);
         }
       }
-      referenceCase_ = 3;
+      referenceCase_ = 2;
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder clearWfSpecId() {
       if (wfSpecIdBuilder_ == null) {
-        if (referenceCase_ == 3) {
+        if (referenceCase_ == 2) {
           referenceCase_ = 0;
           reference_ = null;
           onChanged();
         }
       } else {
-        if (referenceCase_ == 3) {
+        if (referenceCase_ == 2) {
           referenceCase_ = 0;
           reference_ = null;
         }
@@ -984,33 +856,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
-      if ((referenceCase_ == 3) && (wfSpecIdBuilder_ != null)) {
+      if ((referenceCase_ == 2) && (wfSpecIdBuilder_ != null)) {
         return wfSpecIdBuilder_.getMessageOrBuilder();
       } else {
-        if (referenceCase_ == 3) {
+        if (referenceCase_ == 2) {
           return (io.littlehorse.sdk.common.proto.WfSpecId) reference_;
         }
         return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
         getWfSpecIdFieldBuilder() {
       if (wfSpecIdBuilder_ == null) {
-        if (!(referenceCase_ == 3)) {
+        if (!(referenceCase_ == 2)) {
           reference_ = io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
         }
         wfSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1020,7 +892,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         reference_ = null;
       }
-      referenceCase_ = 3;
+      referenceCase_ = 2;
       onChanged();
       return wfSpecIdBuilder_;
     }
@@ -1028,33 +900,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ThreadSpecReference, io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder, io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder> threadSpecBuilder_;
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      * @return Whether the threadSpec field is set.
      */
     @java.lang.Override
     public boolean hasThreadSpec() {
-      return referenceCase_ == 4;
+      return referenceCase_ == 3;
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      * @return The threadSpec.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.ThreadSpecReference getThreadSpec() {
       if (threadSpecBuilder_ == null) {
-        if (referenceCase_ == 4) {
+        if (referenceCase_ == 3) {
           return (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_;
         }
         return io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance();
       } else {
-        if (referenceCase_ == 4) {
+        if (referenceCase_ == 3) {
           return threadSpecBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      */
     public Builder setThreadSpec(io.littlehorse.sdk.common.proto.ThreadSpecReference value) {
       if (threadSpecBuilder_ == null) {
@@ -1066,11 +938,11 @@ private static final long serialVersionUID = 0L;
       } else {
         threadSpecBuilder_.setMessage(value);
       }
-      referenceCase_ = 4;
+      referenceCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      */
     public Builder setThreadSpec(
         io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder builderForValue) {
@@ -1080,15 +952,15 @@ private static final long serialVersionUID = 0L;
       } else {
         threadSpecBuilder_.setMessage(builderForValue.build());
       }
-      referenceCase_ = 4;
+      referenceCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      */
     public Builder mergeThreadSpec(io.littlehorse.sdk.common.proto.ThreadSpecReference value) {
       if (threadSpecBuilder_ == null) {
-        if (referenceCase_ == 4 &&
+        if (referenceCase_ == 3 &&
             reference_ != io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance()) {
           reference_ = io.littlehorse.sdk.common.proto.ThreadSpecReference.newBuilder((io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_)
               .mergeFrom(value).buildPartial();
@@ -1097,27 +969,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (referenceCase_ == 4) {
+        if (referenceCase_ == 3) {
           threadSpecBuilder_.mergeFrom(value);
         } else {
           threadSpecBuilder_.setMessage(value);
         }
       }
-      referenceCase_ = 4;
+      referenceCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      */
     public Builder clearThreadSpec() {
       if (threadSpecBuilder_ == null) {
-        if (referenceCase_ == 4) {
+        if (referenceCase_ == 3) {
           referenceCase_ = 0;
           reference_ = null;
           onChanged();
         }
       } else {
-        if (referenceCase_ == 4) {
+        if (referenceCase_ == 3) {
           referenceCase_ = 0;
           reference_ = null;
         }
@@ -1126,33 +998,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder getThreadSpecBuilder() {
       return getThreadSpecFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder() {
-      if ((referenceCase_ == 4) && (threadSpecBuilder_ != null)) {
+      if ((referenceCase_ == 3) && (threadSpecBuilder_ != null)) {
         return threadSpecBuilder_.getMessageOrBuilder();
       } else {
-        if (referenceCase_ == 4) {
+        if (referenceCase_ == 3) {
           return (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_;
         }
         return io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
+     * <code>.littlehorse.ThreadSpecReference thread_spec = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ThreadSpecReference, io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder, io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder> 
         getThreadSpecFieldBuilder() {
       if (threadSpecBuilder_ == null) {
-        if (!(referenceCase_ == 4)) {
+        if (!(referenceCase_ == 3)) {
           reference_ = io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance();
         }
         threadSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1162,7 +1034,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         reference_ = null;
       }
-      referenceCase_ = 4;
+      referenceCase_ = 3;
       onChanged();
       return threadSpecBuilder_;
     }

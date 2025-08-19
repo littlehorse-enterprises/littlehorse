@@ -28,38 +28,10 @@ public interface PutMetricSpecRequestOrBuilder extends
 
   /**
    * <pre>
-   * Refers to a specific LittleHorse object
-   * </pre>
-   *
-   * <code>.littlehorse.MeasurableObject object = 2;</code>
-   * @return Whether the object field is set.
-   */
-  boolean hasObject();
-  /**
-   * <pre>
-   * Refers to a specific LittleHorse object
-   * </pre>
-   *
-   * <code>.littlehorse.MeasurableObject object = 2;</code>
-   * @return The enum numeric value on the wire for object.
-   */
-  int getObjectValue();
-  /**
-   * <pre>
-   * Refers to a specific LittleHorse object
-   * </pre>
-   *
-   * <code>.littlehorse.MeasurableObject object = 2;</code>
-   * @return The object.
-   */
-  io.littlehorse.sdk.common.proto.MeasurableObject getObject();
-
-  /**
-   * <pre>
    * Refers to a specific node
    * </pre>
    *
-   * <code>.littlehorse.NodeReference node = 3;</code>
+   * <code>.littlehorse.NodeReference node = 2;</code>
    * @return Whether the node field is set.
    */
   boolean hasNode();
@@ -68,7 +40,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific node
    * </pre>
    *
-   * <code>.littlehorse.NodeReference node = 3;</code>
+   * <code>.littlehorse.NodeReference node = 2;</code>
    * @return The node.
    */
   io.littlehorse.sdk.common.proto.NodeReference getNode();
@@ -77,7 +49,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific node
    * </pre>
    *
-   * <code>.littlehorse.NodeReference node = 3;</code>
+   * <code>.littlehorse.NodeReference node = 2;</code>
    */
   io.littlehorse.sdk.common.proto.NodeReferenceOrBuilder getNodeOrBuilder();
 
@@ -86,7 +58,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific WfSpec
    * </pre>
    *
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
@@ -95,7 +67,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific WfSpec
    * </pre>
    *
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
@@ -104,7 +76,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific WfSpec
    * </pre>
    *
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
@@ -113,7 +85,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific ThreadSpec within  a WfSpec
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 5;</code>
+   * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
    * @return Whether the threadSpec field is set.
    */
   boolean hasThreadSpec();
@@ -122,7 +94,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific ThreadSpec within  a WfSpec
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 5;</code>
+   * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
    * @return The threadSpec.
    */
   io.littlehorse.sdk.common.proto.ThreadSpecReference getThreadSpec();
@@ -131,7 +103,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Refers to a specific ThreadSpec within  a WfSpec
    * </pre>
    *
-   * <code>.littlehorse.ThreadSpecReference thread_spec = 5;</code>
+   * <code>.littlehorse.ThreadSpecReference thread_spec = 4;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder();
 
@@ -140,7 +112,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Defines a length for every window recorded for this MetricSpec
    * </pre>
    *
-   * <code>.google.protobuf.Duration window_length = 6;</code>
+   * <code>.google.protobuf.Duration window_length = 5;</code>
    * @return Whether the windowLength field is set.
    */
   boolean hasWindowLength();
@@ -149,7 +121,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Defines a length for every window recorded for this MetricSpec
    * </pre>
    *
-   * <code>.google.protobuf.Duration window_length = 6;</code>
+   * <code>.google.protobuf.Duration window_length = 5;</code>
    * @return The windowLength.
    */
   com.google.protobuf.Duration getWindowLength();
@@ -158,7 +130,7 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Defines a length for every window recorded for this MetricSpec
    * </pre>
    *
-   * <code>.google.protobuf.Duration window_length = 6;</code>
+   * <code>.google.protobuf.Duration window_length = 5;</code>
    */
   com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
 

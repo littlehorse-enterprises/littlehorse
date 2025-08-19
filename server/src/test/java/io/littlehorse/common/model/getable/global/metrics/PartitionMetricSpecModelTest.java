@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeReferenceModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
-import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.server.TestTenantScopedStore;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 class PartitionMetricSpecModelTest {
 
-    private final MetricSpecIdModel workflowRunningMetricId = new MetricSpecIdModel(MeasurableObject.WORKFLOW);
+    private final MetricSpecIdModel workflowRunningMetricId = new MetricSpecIdModel(new NodeReferenceModel("TaskNode"));
     private final TestTenantScopedStore tenantScopedStore = new TestTenantScopedStore();
     private final TenantIdModel testTenantId = new TenantIdModel("test");
     private final PartitionMetricIdModel partitionMetricId =

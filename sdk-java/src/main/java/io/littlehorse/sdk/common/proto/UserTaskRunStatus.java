@@ -139,7 +139,7 @@ public enum UserTaskRunStatus
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(8);
+    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(7);
   }
 
   private static final UserTaskRunStatus[] VALUES = values();

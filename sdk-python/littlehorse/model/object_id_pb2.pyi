@@ -186,16 +186,14 @@ class ThreadSpecReference(_message.Message):
     def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_number: _Optional[int] = ...) -> None: ...
 
 class MetricSpecId(_message.Message):
-    __slots__ = ["object", "node", "wf_spec_id", "thread_spec"]
-    OBJECT_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["node", "wf_spec_id", "thread_spec"]
     NODE_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPEC_FIELD_NUMBER: _ClassVar[int]
-    object: _common_enums_pb2.MeasurableObject
     node: NodeReference
     wf_spec_id: WfSpecId
     thread_spec: ThreadSpecReference
-    def __init__(self, object: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., node: _Optional[_Union[NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ...) -> None: ...
+    def __init__(self, node: _Optional[_Union[NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ...) -> None: ...
 
 class MetricId(_message.Message):
     __slots__ = ["metric_spec_id", "window_length", "window_start", "aggregation_type"]

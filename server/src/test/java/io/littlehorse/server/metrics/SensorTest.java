@@ -9,12 +9,12 @@ import io.littlehorse.common.model.getable.global.metrics.MetricSpecModel;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeReferenceModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
-import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.storeinternals.InMemoryGetableManager;
@@ -54,7 +54,7 @@ class SensorTest {
         private final TaskDefIdModel taskDef1 = new TaskDefIdModel("task1");
         private final TaskDefIdModel taskDef2 = new TaskDefIdModel("task2");
         private final NodeRunIdModel nodeRun = mock();
-        private final MetricSpecIdModel metricTaskId = new MetricSpecIdModel(MeasurableObject.TASK);
+        private final MetricSpecIdModel metricTaskId = new MetricSpecIdModel(new NodeReferenceModel("TaskNode"));
         private final MetricSpecModel countTask =
                 new MetricSpecModel(metricTaskId, Duration.ofMinutes(1), Set.of(AggregationType.COUNT));
 

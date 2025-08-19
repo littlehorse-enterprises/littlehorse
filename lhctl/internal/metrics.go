@@ -61,7 +61,7 @@ var listMetricRuns = &cobra.Command{
 	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		measurable := args[0]
-		aggregationType := toType(args[0])
+		aggregationType := toType(args[1])
 		windowLength, _ := time.ParseDuration(args[2])
 
 		metricId := &lhproto.MetricSpecId{
@@ -74,8 +74,9 @@ var listMetricRuns = &cobra.Command{
 		}
 
 		req := &lhproto.ListMetricsRequest{
-			MetricSpecId: metricId,
-			WindowLength: durationpb.New(windowLength),
+			MetricSpecId:    metricId,
+			WindowLength:    durationpb.New(windowLength),
+			AggregationType: aggregationType,
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ListMetrics(

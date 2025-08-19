@@ -5,7 +5,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.MeasurableObject;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
@@ -26,7 +25,7 @@ public class WfRunStatusUpdate extends GetableStatusUpdate {
 
     @Override
     public List<MetricSpecIdModel> toMetricId() {
-        return List.of(new MetricSpecIdModel(wfSpecId), new MetricSpecIdModel(MeasurableObject.WORKFLOW));
+        return List.of(new MetricSpecIdModel(wfSpecId), new MetricSpecIdModel(wfSpecId));
     }
 
     @Override

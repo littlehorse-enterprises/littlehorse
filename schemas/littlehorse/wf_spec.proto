@@ -331,10 +331,10 @@ message Node {
     // Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
     EntrypointNode entrypoint = 5;
 
-    // Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+    // Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
     ExitNode exit = 6;
 
-    // Creates a TaskNodeRUn
+    // Creates a TaskNodeRun
     TaskNode task = 7;
 
     // Creates an ExternalEventNodeRun
