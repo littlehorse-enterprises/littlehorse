@@ -71,6 +71,7 @@ class WfRunVariableImpl implements WfRunVariable {
 
         if (typeOrDefaultVal != null) {
             this.definedType = DefinedTypeCase.PRIMITIVE_TYPE;
+            this.typeOrDefaultVal = typeOrDefaultVal;
 
             if (typeOrDefaultVal instanceof VariableType) {
                 this.typeDef = TypeDefinition.newBuilder()
