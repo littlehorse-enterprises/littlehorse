@@ -13,6 +13,7 @@ export const VARIABLE_TYPES: { [key in NonNullable<VariableValue['value']>['$cas
   int: 'Integer',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
+  struct: 'Struct'
 }
 
 export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const

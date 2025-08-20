@@ -147,7 +147,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 .getVarDef(lhsName)
                 .getVarDef()
                 .getTypeDef()
-                .getType();
+                .getPrimitiveType();
 
         try {
             // NOTE Part 2: see below

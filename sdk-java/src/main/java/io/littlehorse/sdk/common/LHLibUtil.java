@@ -197,7 +197,9 @@ public class LHLibUtil {
     }
 
     /**
-     * Converts a ValueCase (from the VariableValue.value oneof field) to a VariableType Enum.
+     * Converts a ValueCase (from the VariableValue.value oneof field) to a
+     * VariableType Enum.
+     *
      * @param valueCase is the ValueCase from the VariableValue.
      * @return the corresponding VariableType.
      */
@@ -277,6 +279,22 @@ public class LHLibUtil {
         return VariableType.JSON_OBJ;
     }
 
+    public static boolean isJavaClassLHPrimitive(Class<?> clazz) {
+        if (clazz.isPrimitive()) return true;
+        if (clazz.equals(Short.class)) return true;
+        if (clazz.equals(Integer.class)) return true;
+        if (clazz.equals(Boolean.class)) return true;
+        if (clazz.equals(Long.class)) return true;
+        if (clazz.equals(Float.class)) return true;
+        if (clazz.equals(Double.class)) return true;
+        if (clazz.equals(String.class)) return true;
+        if (clazz.equals(WfRunId.class)) return true;
+        if (clazz.equals(Byte[].class)) return true;
+        if (clazz.equals(byte[].class)) return true;
+
+        return false;
+    }
+
     public static boolean areVariableValuesEqual(VariableValue a, VariableValue b) {
         if (a.getValueCase() != b.getValueCase()) return false;
 
@@ -299,6 +317,8 @@ public class LHLibUtil {
                 return a.getWfRunId().equals(b.getWfRunId());
             case VALUE_NOT_SET:
                 return true;
+            default:
+                break;
         }
         throw new IllegalStateException("Not possible to get here");
     }

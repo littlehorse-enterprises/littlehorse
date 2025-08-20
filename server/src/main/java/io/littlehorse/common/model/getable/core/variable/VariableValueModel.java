@@ -45,6 +45,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private Long intVal;
     private byte[] bytesVal;
     private WfRunIdModel wfRunId;
+    private StructModel struct;
 
     private ExecutionContext context;
 
@@ -110,6 +111,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case WF_RUN_ID:
                 wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
+            case STRUCT:
+                struct = StructModel.fromProto(p.getStruct(), StructModel.class, context);
             case VALUE_NOT_SET:
                 // it's a null variable! Nothing to do.
                 break;
@@ -222,6 +225,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     out.setWfRunId(wfRunId.toProto());
                 }
                 break;
+            case STRUCT:
+                if (struct != null) {
+                    out.setStruct(struct.toProto());
+                }
             case VALUE_NOT_SET:
                 // nothing to do
                 break;
