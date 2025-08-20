@@ -114,6 +114,13 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
+    public boolean maybeHalt(CoreProcessorContext processorContext) {
+        UserTaskRunModel utr = processorContext.getableManager().get(userTaskRunId);
+        utr.cancel();
+        return true;
+    }
+
+    @Override
     public Optional<UserTaskRunIdModel> getCreatedSubGetableId() {
         return Optional.ofNullable(userTaskRunId);
     }
