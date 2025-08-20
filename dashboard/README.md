@@ -1,8 +1,29 @@
 # LH Dashboard
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Environment Variables](#environment-variables)
+- [Development](#development)
+  - [LH Server without authentication](#lh-server-without-authentication)
+  - [LH Server with authentication](#lh-server-with-authentication)
+- [Start the Dashboard with Docker](#start-the-dashboard-with-docker)
+  - [Authentication Disabled](#authentication-disabled)
+  - [Authentication Enabled](#authentication-enabled)
+- [SSL termination](#ssl-termination)
+- [Running local with Oauth](#running-local-with-oauth)
+  - [Running local LH Server with OAuth](#running-local-lh-server-with-oauth)
+- [Linting](#linting)
+  - [Configuring your IDE to have Linter Live Feedback](#configuring-your-ide-to-have-linter-live-feedback)
+    - [Intellij](#intellij)
+    - [VSCode](#vscode)
+  - [Linter configuration](#linter-configuration)
+- [Testing](#testing)
+  - [Environment variables](#environment-variables-1)
+
 ## Requirements
 
-- It needs Node 20. You can install `NVM` and run on the dashboard folder:
+- This project requires Node v20. You can install [`nvm`](https://github.com/nvm-sh/nvm/blob/master/README.md#intro) and run the following command in the dashboard directory:
 
 ```shell
 nvm use
@@ -61,6 +82,128 @@ LHC_API_PORT=2023
 - For the needed Environment Variables please refer to the corresponding section in this README.
 
 - [Here a detail of the implemented authentication flow for this project](https://link.excalidraw.com/readonly/5sxfddEgSEFTEQLF3WAG)
+
+## Start the Dashboard with Docker
+
+The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
+
+1. Go under the `dashboard` directory, execute: `npm install`
+
+2. Build the docker image
+
+```sh
+./local-dev/build.sh --dashboard
+```
+
+Execute either of the following:
+
+### Authentication Disabled:
+
+```bash
+docker run --rm \
+  -p 3000:3000 \
+  --env LHC_API_HOST='localhost' \
+  --env LHC_API_PORT='2023' \
+  --network host \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
+
+### Authentication Enabled:
+
+```bash
+docker run --rm \
+  --env LHC_API_HOST='localhost' \
+  --env LHC_API_PORT='2023' \
+  --env LHD_OAUTH_ENABLED='true' \
+  --env LHD_OAUTH_CLIENT_ID='{a-client-id}' \
+  --env LHD_OAUTH_CLIENT_SECRET='{a-client-secret}' \
+  --env LHD_OAUTH_ISSUER_URI='{https://keycloack-env}/realms/lh' \
+  --env LHD_OAUTH_CALLBACK_URL='localhost:3000' \
+  --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' \
+  --network host \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
+
+## SSL termination
+
+Assuming you have a folder `./ssl` containing `tls.crt` and `tls.key`
+
+```bash
+docker run --rm \
+  --env SSL='true' \
+  --env LHC_API_HOST='localhost' \
+  --env LHC_API_PORT='2023' \
+  --network host \
+  -v ./ssl:/ssl \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
+
+## Running local with Oauth
+
+Modify the .env file using the following variables
+
+```
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+LHC_API_PROTOCOL=TLS
+LHD_OAUTH_ENABLED=true
+LHC_CA_CERT=path-to-ca-cert
+NEXTAUTH_SECRET=any random string
+KEYCLOAK_CLIENT_ID=dashboard
+KEYCLOAK_CLIENT_SECRET=74b897a0b5804ad3879b2117e1d51015
+KEYCLOAK_ISSUER_URI=http://localhost:8888/realms/lh
+```
+
+### Running local LH Server with OAuth
+
+1. Configure your Dashboard `.env.local` file:
+
+```env
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+LHC_API_PROTOCOL=TLS
+LHD_OAUTH_ENABLED=true
+LHC_CA_CERT=/Users/primary/Projects/littlehorse-enterprises/littlehorse/local-dev/certs/ca/ca.crt
+NEXTAUTH_SECRET=anyrandomstring
+KEYCLOAK_CLIENT_ID=dashboard
+KEYCLOAK_CLIENT_SECRET=74b897a0b5804ad3879b2117e1d51015
+KEYCLOAK_ISSUER_URI=http://localhost:8888/realms/lh
+NEXTAUTH_URL=http://localhost:3000
+```
+
+2. Generate certificates:
+
+```shell
+./local-dev/issue-certificates.sh
+```
+
+3. Setup Keycloak:
+
+```shell
+./local-dev/setup.sh --keycloak
+```
+
+4. Run the LH server with OAuth:
+
+```shell
+./local-dev/do-server.sh oauth
+```
+
+5. (Optional) Configure `lhctl` by setting `~/.config/littlehorse.config`:
+
+```
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+LHC_API_PROTOCOL=TLS
+LHC_OAUTH_CLIENT_ID=lhctl
+LHC_OAUTH_SERVER_URL=http://localhost:8888/realms/lh
+LHC_CA_CERT=/<PATH TO YOUR LH REPO>/local-dev/certs/ca/ca.crt
+```
+
+**Login Credentials:**
+
+- Keycloak admin (localhost:8888): `admin` / `admin`
+- Dashboard user: `user` / `password`
 
 ## Linting
 
@@ -134,74 +277,3 @@ npm run test --watch
 ### Environment variables
 
 You need to create a `env.test.local` file to contain any env variable you might for your tests.
-
-## Start the Dashboard with Docker
-
-The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
-
-1. Go under the `dashboard` directory, execute: `npm install`
-
-2. Build the docker image
-
-```sh
-./local-dev/build.sh --dashboard
-```
-
-Execute either of the following:
-
-### Authentication Disabled:
-
-```bash
-docker run --rm \
-  -p 3000:3000 \
-  --env LHC_API_HOST='localhost' \
-  --env LHC_API_PORT='2023' \
-  --network host \
-  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
-```
-
-### Authentication Enabled:
-
-```bash
-docker run --rm \
-  --env LHC_API_HOST='localhost' \
-  --env LHC_API_PORT='2023' \
-  --env LHD_OAUTH_ENABLED='true' \
-  --env LHD_OAUTH_CLIENT_ID='{a-client-id}' \
-  --env LHD_OAUTH_CLIENT_SECRET='{a-client-secret}' \
-  --env LHD_OAUTH_ISSUER_URI='{https://keycloack-env}/realms/lh' \
-  --env LHD_OAUTH_CALLBACK_URL='localhost:3000' \
-  --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' \
-  --network host \
-  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
-```
-
-## SSL termination
-
-Assuming you have a folder `./ssl` containing `tls.crt` and `tls.key`
-
-```bash
-docker run --rm \
-  --env SSL='true' \
-  --env LHC_API_HOST='localhost' \
-  --env LHC_API_PORT='2023' \
-  --network host \
-  -v ./ssl:/ssl \
-  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
-```
-
-## Running local with Oauth
-
-Modify the .env file using the following variables
-
-```
-LHC_API_HOST=localhost
-LHC_API_PORT=2023
-LHC_API_PROTOCOL=TLS
-LHD_OAUTH_ENABLED=true
-LHC_CA_CERT=path-to-ca-cert
-NEXTAUTH_SECRET=any random string
-KEYCLOAK_CLIENT_ID=dashboard
-KEYCLOAK_CLIENT_SECRET=74b897a0b5804ad3879b2117e1d51015
-KEYCLOAK_ISSUER_URI=http://localhost:8888/realms/lh
-```
