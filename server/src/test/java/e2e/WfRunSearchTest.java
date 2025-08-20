@@ -241,6 +241,155 @@ public class WfRunSearchTest {
                 .hasSize(0);
     }
 
+    @Test
+    @Order(2)
+    void shouldSearchChildWorkflowByParentId() {
+
+        WfRunId parentId = workflowVerifier
+                .prepareRun(getSearchableVariableWf())
+                .waitForStatus(COMPLETED)
+                .start();
+
+        SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
+        WfRunId childId = WfRunId.newBuilder()
+                .setId("child-id")
+                .setParentWfRunId(parentId)
+                .build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchByParentId = context ->
+                SearchWfRunRequest.newBuilder().setParentWfRunId(parentId).build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchByParentIdAndWfName =
+                context -> SearchWfRunRequest.newBuilder()
+                        .setParentWfRunId(parentId)
+                        .setWfSpecName("child-workflow")
+                        .build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchByParentIdWfNameAndStatus =
+                context -> SearchWfRunRequest.newBuilder()
+                        .setParentWfRunId(parentId)
+                        .setWfSpecName("child-workflow")
+                        .setStatus(COMPLETED)
+                        .build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchByParentIdAndStatus =
+                context -> SearchWfRunRequest.newBuilder()
+                        .setParentWfRunId(parentId)
+                        .setStatus(COMPLETED)
+                        .build();
+
+        workflowVerifier
+                .prepareRun(getChildWorkflow())
+                .waitForStatus(COMPLETED)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), searchByParentId)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), searchByParentIdAndWfName)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), searchByParentIdWfNameAndStatus)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), searchByParentIdAndStatus)
+                .start(childId);
+
+        WfRunIdList byIdResult = captor.getValue().get();
+        WfRunIdList byIdAndNameResult = captor.getValue().get();
+        WfRunIdList byIdAndNameAndStatusResult = captor.getValue().get();
+        WfRunIdList byIdAndStatusResult = captor.getValue().get();
+        Assertions.assertThat(byIdResult.getResultsList())
+                .hasSize(1)
+                .allSatisfy(foundId -> Assertions.assertThat(foundId.getId()).isEqualTo(childId.getId()));
+        Assertions.assertThat(byIdAndNameResult.getResultsList()).hasSize(1).allSatisfy(foundId -> {
+            Assertions.assertThat(foundId.getId()).isEqualTo(childId.getId());
+        });
+        Assertions.assertThat(byIdAndNameAndStatusResult.getResultsList())
+                .hasSize(1)
+                .allSatisfy(foundId -> {
+                    Assertions.assertThat(foundId.getId()).isEqualTo(childId.getId());
+                    Assertions.assertThat(foundId.getParentWfRunId().getId()).isEqualTo(parentId.getId());
+                });
+        Assertions.assertThat(byIdAndStatusResult.getResultsList()).hasSize(1).allSatisfy(foundId -> {
+            Assertions.assertThat(foundId.getId()).isEqualTo(childId.getId());
+            Assertions.assertThat(foundId.getParentWfRunId().getId()).isEqualTo(parentId.getId());
+        });
+    }
+
+    @Test
+    @Order(2)
+    void searchByParentIdShouldOnlyReturnChildNoGrandChild() {
+
+        WfRunId parentId = workflowVerifier
+                .prepareRun(getSearchableVariableWf())
+                .waitForStatus(COMPLETED)
+                .start();
+        WfRunId childId = WfRunId.newBuilder()
+                .setId("child-id")
+                .setParentWfRunId(parentId)
+                .build();
+        workflowVerifier.prepareRun(getChildWorkflow()).waitForStatus(COMPLETED).start(childId);
+
+        SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
+        WfRunId grandChildId = WfRunId.newBuilder()
+                .setId("grand-child-id")
+                .setParentWfRunId(childId)
+                .build();
+        Function<TestExecutionContext, SearchWfRunRequest> searchByParentId = context ->
+                SearchWfRunRequest.newBuilder().setParentWfRunId(parentId).build();
+        workflowVerifier
+                .prepareRun(getGrandChildWorkflow())
+                .waitForStatus(COMPLETED)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), searchByParentId)
+                .start(grandChildId);
+
+        WfRunIdList result = captor.getValue().get();
+        Assertions.assertThat(result.getResultsList())
+                .hasSize(1)
+                .allSatisfy(foundId -> Assertions.assertThat(foundId.getId()).isEqualTo(childId.getId()));
+    }
+
+    @Test
+    void searchByParentIdShouReturnGrandChild() {
+
+        WfRunId parentId = workflowVerifier
+                .prepareRun(getSearchableVariableWf())
+                .waitForStatus(COMPLETED)
+                .start();
+        WfRunId childId = WfRunId.newBuilder()
+                .setId("child-id")
+                .setParentWfRunId(parentId)
+                .build();
+        workflowVerifier.prepareRun(getChildWorkflow()).waitForStatus(COMPLETED).start(childId);
+        WfRunId childI2 = WfRunId.newBuilder()
+                .setId("child-id-2")
+                .setParentWfRunId(parentId)
+                .build();
+        workflowVerifier.prepareRun(getChildWorkflow()).waitForStatus(COMPLETED).start(childI2);
+        WfRunId grandChild2 = WfRunId.newBuilder()
+                .setId("grand-child-id-2")
+                .setParentWfRunId(childI2)
+                .build();
+        workflowVerifier
+                .prepareRun(getGrandChildWorkflow())
+                .waitForStatus(COMPLETED)
+                .start(grandChild2);
+
+        SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
+        WfRunId grandChildId = WfRunId.newBuilder()
+                .setId("grand-child-id")
+                .setParentWfRunId(childId)
+                .build();
+        Function<TestExecutionContext, SearchWfRunRequest> parentSearch = context -> SearchWfRunRequest.newBuilder()
+                .setParentWfRunId(parentId)
+                .setShowFullTree(true)
+                .build();
+        Function<TestExecutionContext, SearchWfRunRequest> childSearch = context -> SearchWfRunRequest.newBuilder()
+                .setParentWfRunId(childId)
+                .setShowFullTree(true)
+                .build();
+        workflowVerifier
+                .prepareRun(getGrandChildWorkflow())
+                .waitForStatus(COMPLETED)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), parentSearch)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), childSearch)
+                .start(grandChildId);
+
+        WfRunIdList parentSearchResult = captor.getValue().get();
+        WfRunIdList childSearchResult = captor.getValue().get();
+        Assertions.assertThat(parentSearchResult.getResultsList()).hasSize(4);
+        Assertions.assertThat(childSearchResult.getResultsList()).hasSize(1);
+    }
+
     @LHWorkflow("complex-workflow")
     public Workflow getEqualsWorkflowImpl() {
         return new WorkflowImpl("complex-workflow", thread -> {
@@ -254,6 +403,24 @@ public class WfRunSearchTest {
         return Workflow.newWorkflow("searchable-variable-wf", wf -> {
             wf.addVariable("my-var", VariableType.STR).searchable();
         });
+    }
+
+    @LHWorkflow("child-workflow")
+    public Workflow getChildWorkflow() {
+        var workflow = Workflow.newWorkflow("child-workflow", wf -> {
+            wf.addVariable("my-var", VariableType.STR).searchable();
+        });
+        workflow.setParent("searchable-variable-wf");
+        return workflow;
+    }
+
+    @LHWorkflow("grand-child-workflow")
+    public Workflow getGrandChildWorkflow() {
+        var workflow = Workflow.newWorkflow("grand-child-workflow", wf -> {
+            wf.addVariable("my-var", VariableType.STR).searchable();
+        });
+        workflow.setParent("child-workflow");
+        return workflow;
     }
 
     @LHTaskMethod("my-task-2")
