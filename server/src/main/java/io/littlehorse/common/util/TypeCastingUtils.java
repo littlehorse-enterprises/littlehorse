@@ -66,8 +66,8 @@ public class TypeCastingUtils {
         return sourceType == VariableType.INT && targetType == VariableType.DOUBLE;
     }
 
-    public static void validateTypeCompatibility(VariableType sourceType, VariableType targetType, boolean hasExplicitCast)
-            throws InvalidMutationException {
+    public static void validateTypeCompatibility(
+            VariableType sourceType, VariableType targetType, boolean hasExplicitCast) throws InvalidMutationException {
 
         if (sourceType == null) {
             return;
