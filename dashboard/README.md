@@ -140,7 +140,9 @@ docker run --rm \
 
 ## Running local with Oauth
 
-Modify the .env file using the following variables
+Modify the .env file using the following variables.
+
+Replace `path-to-ca-cert` with your path to this repo's `./local-dev/certs/ca/ca.crt`
 
 ```
 LHC_API_HOST=localhost
@@ -163,7 +165,7 @@ LHC_API_HOST=localhost
 LHC_API_PORT=2023
 LHC_API_PROTOCOL=TLS
 LHD_OAUTH_ENABLED=true
-LHC_CA_CERT=/Users/primary/Projects/littlehorse-enterprises/littlehorse/local-dev/certs/ca/ca.crt
+LHC_CA_CERT=path-to-ca-cert
 NEXTAUTH_SECRET=anyrandomstring
 KEYCLOAK_CLIENT_ID=dashboard
 KEYCLOAK_CLIENT_SECRET=74b897a0b5804ad3879b2117e1d51015
