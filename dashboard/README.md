@@ -92,7 +92,7 @@ The Dashboard docker image is under `docker/dashboard`, in order to run it pleas
 2. Build the docker image
 
 ```sh
-./local-dev/build.sh --dashboard
+.././local-dev/build.sh --dashboard
 ```
 
 Execute either of the following:
@@ -138,27 +138,17 @@ docker run --rm \
   ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
 ```
 
-## Running local with Oauth
+## Running local LH Server with Oauth
 
-Modify the .env file using the following variables.
+1. Generate certificates:
 
-Replace `path-to-ca-cert` with your path to this repo's `./local-dev/certs/ca/ca.crt`
-
-```
-LHC_API_HOST=localhost
-LHC_API_PORT=2023
-LHC_API_PROTOCOL=TLS
-LHD_OAUTH_ENABLED=true
-LHC_CA_CERT=path-to-ca-cert
-NEXTAUTH_SECRET=any random string
-KEYCLOAK_CLIENT_ID=dashboard
-KEYCLOAK_CLIENT_SECRET=74b897a0b5804ad3879b2117e1d51015
-KEYCLOAK_ISSUER_URI=http://localhost:8888/realms/lh
+```shell
+.././local-dev/issue-certificates.sh
 ```
 
-### Running local LH Server with OAuth
+2. Configure your Dashboard `.env.local` file:
 
-1. Configure your Dashboard `.env.local` file:
+_Replace `path-to-ca-cert` with your path to this repo's `./local-dev/certs/ca/ca.crt`_
 
 ```env
 LHC_API_HOST=localhost
@@ -173,25 +163,21 @@ KEYCLOAK_ISSUER_URI=http://localhost:8888/realms/lh
 NEXTAUTH_URL=http://localhost:3000
 ```
 
-2. Generate certificates:
-
-```shell
-./local-dev/issue-certificates.sh
-```
-
 3. Setup Keycloak:
 
 ```shell
-./local-dev/setup.sh --keycloak
+.././local-dev/setup.sh --keycloak
 ```
 
 4. Run the LH server with OAuth:
 
 ```shell
-./local-dev/do-server.sh oauth
+.././local-dev/do-server.sh oauth
 ```
 
 5. (Optional) Configure `lhctl` by setting `~/.config/littlehorse.config`:
+
+_Replace `path-to-ca-cert` with your path to this repo's `./local-dev/certs/ca/ca.crt`_
 
 ```
 LHC_API_HOST=localhost
