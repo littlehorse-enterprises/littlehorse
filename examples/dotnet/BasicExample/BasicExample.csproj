@@ -8,6 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\LittleHorse.Sdk\LittleHorse.Sdk.csproj" />
+    <ProjectReference Include="../../../sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj" />
   </ItemGroup>
 </Project>
