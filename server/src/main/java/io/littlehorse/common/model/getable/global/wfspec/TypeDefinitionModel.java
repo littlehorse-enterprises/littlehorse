@@ -196,6 +196,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INLINE_ARRAY_DEF:
             case INLINE_STRUCT_DEF:
             default:
+                result = "UNKNOWN";
                 break;
         }
         if (masked) result += " MASKED";

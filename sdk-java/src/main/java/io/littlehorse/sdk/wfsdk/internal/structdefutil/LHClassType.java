@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class LHClassType {
@@ -24,10 +25,7 @@ public class LHClassType {
     private InlineStructDef inlineStructDef;
 
     public LHClassType(Class<?> clazz) {
-        if (clazz == null) {
-            throw new IllegalArgumentException("Argument 'clazz' cannot be null");
-        }
-        this.clazz = clazz;
+        this.clazz = Objects.requireNonNull(clazz);
     }
 
     public Class<?> getClassType() {
@@ -54,7 +52,7 @@ public class LHClassType {
         } else if (this.isArray()) {
             return TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF;
         }
-        return TypeDefinition.DefinedTypeCase.DEFINEDTYPE_NOT_SET;
+        return TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE;
     }
 
     public TypeDefinition getTypeDefinition() {
