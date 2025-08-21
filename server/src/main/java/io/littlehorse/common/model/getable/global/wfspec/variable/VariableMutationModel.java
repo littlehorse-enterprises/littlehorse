@@ -204,8 +204,33 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             }
 
             if (operation == VariableMutationType.ASSIGN) {
-                boolean hasCast = (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) && rhsRhsAssignment.hasExplicitCast();
-                TypeCastingUtils.validateTypeCompatibility(rhsType.get().getType(), lhsType.getType(), hasCast);
+                if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.hasExplicitCast()) {
+                    // Step 1: Validate the explicit cast (original type -> cast target)
+                    Optional<TypeDefinitionModel> sourceTypeOpt =
+                            rhsRhsAssignment.getSourceType(manager, threadSpec.getWfSpec(), threadSpec.getName());
+                    VariableType originalType =
+                            sourceTypeOpt.map(TypeDefinitionModel::getType).orElse(null);
+                    VariableType castTargetType = rhsRhsAssignment.getTargetType() != null
+                            ? rhsRhsAssignment.getTargetType().getType()
+                            : null;
+                    if (!TypeCastingUtils.canCastTo(originalType, castTargetType)) {
+                        throw new InvalidMutationException("Cannot cast from " + originalType + " to " + castTargetType
+                                + ". This conversion is not supported.");
+                    }
+                    TypeCastingUtils.validateTypeCompatibility(originalType, castTargetType);
+
+                    // Step 2: Validate assignment (cast target type -> lhs type)
+                    TypeCastingUtils.validateTypeCompatibility(castTargetType, lhsType.getType());
+                } else {
+                    // No explicit cast, only allow assignment if possible without cast
+                    VariableType rhsActualType = rhsType.get().getType();
+                    VariableType lhsActualType = lhsType.getType();
+                    if (!TypeCastingUtils.canAssignWithoutCast(rhsActualType, lhsActualType)) {
+                        throw new InvalidMutationException("Cannot assign " + rhsActualType + " to " + lhsActualType
+                                + " without explicit casting.");
+                    }
+                    TypeCastingUtils.validateTypeCompatibility(rhsActualType, lhsActualType);
+                }
             }
 
             Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy()

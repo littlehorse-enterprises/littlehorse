@@ -126,21 +126,15 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the VariableValueModel matches this type or can be casted to it (autocast).
-     * Supports automatic casting for primitive types:
-     * - Any primitive type → STR
-     * - INT → DOUBLE
+     * /**
+     * Returns true if the value can be assigned to this type, including supported casts.
      */
     public boolean isCompatibleWith(VariableValueModel value) {
         return TypeCastingUtils.canCastTo(value.getTypeDefinition().getType(), this.type);
     }
 
     /**
-     * Returns true if this type is compatible with the other type.
-     * This method answers: "Can this type be used where the other type is expected?"
-     * Supports automatic casting for primitive types:
-     * - Any primitive type → STR
-     * - INT → DOUBLE
+     * Returns true if this type can be assigned from the other type, including supported casts.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
         return TypeCastingUtils.canCastTo(this.getType(), other.getType());

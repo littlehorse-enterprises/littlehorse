@@ -4,8 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
-import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -24,6 +22,7 @@ import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -156,29 +155,41 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             for (int i = 0; i < variables.size(); i++) {
                 VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
                 VariableAssignmentModel assn = variables.get(i);
-
                 try {
-                    Optional<TypeDefinitionModel> typeDef = assn.resolveType(
+                    Optional<TypeDefinitionModel> sourceTypeOpt = assn.getSourceType(
                             ctx.metadataManager(),
                             node.getThreadSpec().getWfSpec(),
                             node.getThreadSpec().getName());
-                    if (typeDef.isPresent()) {
-                        TypeDefinitionModel sourceType = typeDef.get();
-                        TypeDefinitionModel targetType = taskDefVar.getTypeDef();
-                        try {
-                            TypeCastingUtils.validateTypeCompatibility(
-                                    sourceType.getType(), targetType.getType(), assn.hasExplicitCast());
-                        } catch (InvalidMutationException e) {
+                    VariableType sourceType =
+                            sourceTypeOpt.map(TypeDefinitionModel::getType).orElse(null);
+                    VariableType targetType = taskDefVar.getTypeDef().getType();
+
+                    // If explicit cast, validate the cast itself (original type -> cast target)
+                    if (assn.hasExplicitCast()) {
+                        VariableType castTargetType = assn.getTargetType().getType();
+                        if (!TypeCastingUtils.canCastTo(sourceType, castTargetType)) {
                             throw new InvalidNodeException(
-                                    "Task input variable with name " + taskDefVar.getName() + " at position " + i + ": "
-                                            + e.getMessage(),
+                                    "Cannot cast from " + sourceType + " to " + castTargetType
+                                            + ". This conversion is not supported.",
+                                    node);
+                        }
+                        TypeCastingUtils.validateTypeCompatibility(sourceType, castTargetType);
+                        // After cast, source becomes castTargetType for assignment
+                        sourceType = castTargetType;
+                    } else {
+                        // No explicit cast, only allow assignment if possible without cast
+                        if (!TypeCastingUtils.canAssignWithoutCast(sourceType, targetType)) {
+                            throw new InvalidNodeException(
+                                    "Cannot assign " + sourceType + " to " + targetType + " without explicit casting.",
                                     node);
                         }
                     }
-                } catch (InvalidExpressionException exn) {
+                    TypeCastingUtils.validateTypeCompatibility(sourceType, targetType);
+
+                } catch (Exception exn) {
                     throw new InvalidNodeException(
-                            "Task input variable with name " + taskDefVar.getName() + " at position " + i
-                                    + " could not resolve type: " + exn.getMessage(),
+                            "Task input variable with name " + taskDefVar.getName() + " at position " + i + ": "
+                                    + exn.getMessage(),
                             node);
                 }
             }

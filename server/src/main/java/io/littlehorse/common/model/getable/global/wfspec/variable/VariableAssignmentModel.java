@@ -158,7 +158,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case NODE_OUTPUT:
             case EXPRESSION:
-                return TypeCastingUtils.canAssignWithoutCast(baseType, type);
+                return true;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException

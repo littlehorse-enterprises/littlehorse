@@ -20,14 +20,14 @@ public class CastingExample {
         return new WorkflowImpl("casting-workflow", wf -> {
             WfRunVariable stringInput = wf.declareStr("string-number").withDefault("3.14");
             WfRunVariable stringBool = wf.declareStr("string-bool").withDefault("false");
-
+            
             var doubleResult = wf.execute("double-method", stringInput.cast(VariableType.DOUBLE)); // Auto cast from INT to DOUBLE
             var stringResult= wf.execute("string-method", doubleResult); // Auto cast from DOUBLE to STR
-
-           var intResult=  wf.execute("int-method", stringResult.castToInt()); // Returns an INT
+            
+            var intResult=  wf.execute("int-method", stringResult.castToInt()); // Returns an INT
             wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to IN
-            wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
-
+            wf.execute("bool-method", doubleResult.castToBool()); // Manual cast from STR to BOOL
+            
             wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
 
         });

@@ -10,33 +10,34 @@ public class TypeCastingUtils {
         if (sourceType == null) {
             return true;
         }
-
         if (targetType == null) {
             return false;
         }
-
         if (sourceType == targetType) {
             return true;
         }
-
+        // Allow primitive to STR
         if (isPrimitive(sourceType) && targetType == VariableType.STR) {
             return true;
         }
+        // Allow INT -> DOUBLE
         if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
             return true;
         }
-        if (!isPrimitive(sourceType) || !isPrimitive(targetType)) {
-            return false;
+        // Allow DOUBLE -> INT (manual cast only)
+        if (sourceType == VariableType.DOUBLE && targetType == VariableType.INT) {
+            return true;
         }
-        return switch (sourceType) {
-            case DOUBLE -> targetType == VariableType.INT;
-            case STR -> targetType == VariableType.INT
+        // Allow STR -> INT, DOUBLE, BOOL, BYTES, WF_RUN_ID
+        if (sourceType == VariableType.STR) {
+            return targetType == VariableType.INT
                     || targetType == VariableType.DOUBLE
                     || targetType == VariableType.BOOL
                     || targetType == VariableType.BYTES
                     || targetType == VariableType.WF_RUN_ID;
-            default -> false;
-        };
+        }
+        // Explicitly reject all other casts (e.g., DOUBLE->BOOL, INT->BOOL, etc.)
+        return false;
     }
 
     public static boolean requiresManualCast(VariableType sourceType, VariableType targetType) {
@@ -66,34 +67,28 @@ public class TypeCastingUtils {
         return sourceType == VariableType.INT && targetType == VariableType.DOUBLE;
     }
 
-    public static void validateTypeCompatibility(
-            VariableType sourceType, VariableType targetType, boolean hasExplicitCast) throws InvalidMutationException {
-
+    /**
+     * Validates if a value of sourceType can be assigned to targetType, regardless of explicit cast.
+     * Throws InvalidMutationException if the assignment is not possible by any means (with or without cast).
+     * The caller is responsible for enforcing explicit cast requirements.
+     */
+    public static void validateTypeCompatibility(VariableType sourceType, VariableType targetType)
+            throws InvalidMutationException {
         if (sourceType == null) {
             return;
         }
-
         if (targetType == null) {
             throw new InvalidMutationException("Cannot assign to null target type");
         }
-
         if (sourceType == targetType) {
             return;
         }
-
         if (canAssignWithoutCast(sourceType, targetType)) {
             return;
         }
-
         if (requiresManualCast(sourceType, targetType)) {
-            if (!hasExplicitCast) {
-                String suggestion = getCastingSuggestion(sourceType, targetType);
-                throw new InvalidMutationException("Cannot assign " + sourceType + " to " + targetType
-                        + " without explicit casting. " + suggestion);
-            }
             return;
         }
-
         throw new InvalidMutationException(
                 "Cannot cast from " + sourceType + " to " + targetType + ". This conversion is not supported.");
     }
@@ -174,21 +169,6 @@ public class TypeCastingUtils {
         return "Failed to cast " + sourceType + " to " + targetType + ": " + originalException.getMessage();
     }
 
-    public static String getCastingSuggestion(VariableType sourceType, VariableType targetType) {
-        String methodName =
-                switch (targetType) {
-                    case INT -> "castToInt()";
-                    case DOUBLE -> "castToDouble()";
-                    case STR -> "castToStr()";
-                    case BOOL -> "castToBool()";
-                    case BYTES -> "castToBytes()";
-                    case WF_RUN_ID -> "castToWfRunId()";
-                    default -> "cast(VariableType." + targetType + ")";
-                };
-
-        return "Use ." + methodName + " or .cast(VariableType." + targetType + ") method.";
-    }
-
     private static boolean isPrimitive(VariableType type) {
         if (type == null) {
             return false;
@@ -198,19 +178,5 @@ public class TypeCastingUtils {
             case STR, INT, DOUBLE, BOOL, BYTES, WF_RUN_ID -> true;
             default -> false;
         };
-    }
-
-    public static boolean canBeTypeWithoutCast(VariableType targetType, boolean isNodeOutput) {
-
-        if (isNodeOutput) {
-            if (targetType == VariableType.DOUBLE) {
-                return true;
-            }
-            if (targetType == VariableType.STR) {
-                return true;
-            }
-            return targetType != VariableType.INT && targetType != VariableType.BOOL;
-        }
-        return true;
     }
 }
