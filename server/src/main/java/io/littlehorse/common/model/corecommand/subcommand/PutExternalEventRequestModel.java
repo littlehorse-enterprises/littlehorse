@@ -13,11 +13,14 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
+import io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -91,6 +94,41 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             }
         }
 
+        WfRunModel wfRun = getableManager.get(wfRunId);
+        // Reject external events that violate their given ValidationPolicy
+        ExternalEventValidationPolicy validationPolicy = eed.getValidationPolicy();
+
+        if (validationPolicy == ExternalEventValidationPolicy.REQUIRE_WF_RUN
+                || validationPolicy == ExternalEventValidationPolicy.REQUIRE_WF_SPEC_REF) {
+            if (wfRun == null) {
+                throw new LHApiException(
+                        Status.NOT_FOUND,
+                        "The external event " + eed.getName()
+                                + " requires the associated wfRun to exist prior to being posted");
+            }
+
+            if (validationPolicy == ExternalEventValidationPolicy.REQUIRE_WF_SPEC_REF) {
+                WfSpecModel spec = service.getWfSpec(wfRun.getWfSpecId());
+                boolean containsRef = false;
+                if (spec.getNodeExternalEventDefs().contains(eed.getName())) containsRef = true;
+                if (!containsRef) {
+                    for (ThreadSpecModel thread : spec.threadSpecs.values()) {
+                        if (thread.getInterruptExternalEventDefs().contains(eed.getName())) {
+                            containsRef = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!containsRef) {
+                    throw new LHApiException(
+                            Status.NOT_FOUND,
+                            "The external event " + eed.getName()
+                                    + " requires a reference from the corresponding wfSpec");
+                }
+            }
+        }
+
         ExternalEventModel evt =
                 new ExternalEventModel(content, externalEventId, threadRunNumber, nodeRunPosition, eventTime);
         getableManager.put(evt);
@@ -104,7 +142,6 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             executionContext.getTaskManager().scheduleTimer(new LHTimer(deleteExtEventCmd));
         }
 
-        WfRunModel wfRun = getableManager.get(wfRunId);
         if (wfRun != null) {
             wfRun.processExternalEvent(evt);
             wfRun.advance(eventTime);

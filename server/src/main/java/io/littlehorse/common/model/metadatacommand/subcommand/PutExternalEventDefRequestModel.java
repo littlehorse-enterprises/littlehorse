@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.ExternalEventValidationPolicy;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -24,6 +25,7 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     private ExternalEventRetentionPolicyModel retentionPolicy;
     private ReturnTypeModel contentType;
     private CorrelatedEventConfigModel correlatedEventConfig;
+    private ExternalEventValidationPolicy validationPolicy;
 
     @Override
     public Class<PutExternalEventDefRequest> getProtoBaseClass() {
@@ -32,8 +34,10 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
 
     @Override
     public PutExternalEventDefRequest.Builder toProto() {
-        PutExternalEventDefRequest.Builder out =
-                PutExternalEventDefRequest.newBuilder().setName(name).setRetentionPolicy(retentionPolicy.toProto());
+        PutExternalEventDefRequest.Builder out = PutExternalEventDefRequest.newBuilder()
+                .setName(name)
+                .setRetentionPolicy(retentionPolicy.toProto())
+                .setValidationPolicy(validationPolicy);
 
         if (contentType != null) {
             out.setContentType(contentType.toProto());
@@ -51,6 +55,7 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         name = p.getName();
         retentionPolicy =
                 LHSerializable.fromProto(p.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
+        validationPolicy = p.getValidationPolicy();
         if (p.hasContentType()) {
             contentType = LHSerializable.fromProto(p.getContentType(), ReturnTypeModel.class, context);
         }
@@ -68,7 +73,11 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
             throw new LHApiException(Status.INVALID_ARGUMENT, "ExternalEventDefName must be a valid hostname");
         }
 
-        ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy, contentType);
+        if (validationPolicy == ExternalEventValidationPolicy.UNRECOGNIZED) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Unrecognized validation policy");
+        }
+
+        ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy, contentType, validationPolicy);
         if (correlatedEventConfig != null) {
             spec.setCorrelatedEventConfig(correlatedEventConfig);
         }
