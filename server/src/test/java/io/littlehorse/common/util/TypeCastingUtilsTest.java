@@ -226,7 +226,6 @@ class TypeCastingUtilsTest {
 @Nested
 class EdgeCasesTest {
 
-
     @Test
     void shouldValidateComplexCastingChainsLogically() {
         assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.INT, VariableType.STR));

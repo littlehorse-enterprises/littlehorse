@@ -87,7 +87,7 @@ public class TypeCastingTest {
 
     @Test
     void shouldPerformManualCastingStrToDouble() {
-        verifier.prepareRun(manualCastingWorkflow, Arg.of("str-var", "123.45"))
+        verifier.prepareRun(manualCastingWorkflow, Arg.of("str-double-var", "123.45"))
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(0, 2, result -> assertEquals(185.175, result.getDouble(), 0.001))
@@ -225,12 +225,15 @@ public class TypeCastingTest {
     @LHWorkflow("manual-casting-wf")
     public Workflow manualCastingWorkflow() {
         return new WorkflowImpl("manual-casting-wf", wf -> {
-            WfRunVariable strVar = wf.addVariable("str-var", VariableType.STR).withDefault("123");
+            WfRunVariable strIntVar =
+                    wf.addVariable("str-var", VariableType.STR).withDefault("3");
+            WfRunVariable strDoubleVar =
+                    wf.addVariable("str-double-var", VariableType.STR).withDefault("3.14");
             WfRunVariable doubleVar =
                     wf.addVariable("double-var", VariableType.DOUBLE).withDefault(123.67);
 
-            wf.execute("casting-int-task", strVar.cast(VariableType.INT));
-            wf.execute("casting-double-task", strVar.cast(VariableType.DOUBLE));
+            wf.execute("casting-int-task", strIntVar.cast(VariableType.INT));
+            wf.execute("casting-double-task", strDoubleVar.cast(VariableType.DOUBLE));
 
             WfRunVariable boolStrVar =
                     wf.addVariable("bool-str-var", VariableType.STR).withDefault("true");
