@@ -1875,6 +1875,37 @@ public final class LittleHorseGrpc {
     return getSearchPrincipalMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchStructDefRequest,
+      io.littlehorse.sdk.common.proto.StructDefIdList> getSearchStructDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchStructDef",
+      requestType = io.littlehorse.sdk.common.proto.SearchStructDefRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.StructDefIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchStructDefRequest,
+      io.littlehorse.sdk.common.proto.StructDefIdList> getSearchStructDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchStructDefRequest, io.littlehorse.sdk.common.proto.StructDefIdList> getSearchStructDefMethod;
+    if ((getSearchStructDefMethod = LittleHorseGrpc.getSearchStructDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchStructDefMethod = LittleHorseGrpc.getSearchStructDefMethod) == null) {
+          LittleHorseGrpc.getSearchStructDefMethod = getSearchStructDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchStructDefRequest, io.littlehorse.sdk.common.proto.StructDefIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchStructDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchStructDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.StructDefIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchStructDef"))
+              .build();
+        }
+      }
+    }
+    return getSearchStructDefMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest,
       io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> getRegisterTaskWorkerMethod;
 
@@ -3367,6 +3398,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for StructDef's
+     * </pre>
+     */
+    default void searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -4361,6 +4402,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for StructDef's
+     * </pre>
+     */
+    public void searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -5306,6 +5358,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchPrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for StructDef's
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.StructDefIdList searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchStructDefMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6282,6 +6344,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for StructDef's
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDefIdList> searchStructDef(
+        io.littlehorse.sdk.common.proto.SearchStructDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -6625,32 +6698,33 @@ public final class LittleHorseGrpc {
   private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 57;
   private static final int METHODID_SEARCH_TENANT = 58;
   private static final int METHODID_SEARCH_PRINCIPAL = 59;
-  private static final int METHODID_REGISTER_TASK_WORKER = 60;
-  private static final int METHODID_REPORT_TASK = 61;
-  private static final int METHODID_STOP_WF_RUN = 62;
-  private static final int METHODID_RESUME_WF_RUN = 63;
-  private static final int METHODID_RESCUE_THREAD_RUN = 64;
-  private static final int METHODID_DELETE_WF_RUN = 65;
-  private static final int METHODID_DELETE_TASK_DEF = 66;
-  private static final int METHODID_DELETE_STRUCT_DEF = 67;
-  private static final int METHODID_DELETE_WF_SPEC = 68;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 69;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 70;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 71;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 72;
-  private static final int METHODID_DELETE_PRINCIPAL = 73;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 74;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 75;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 76;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 77;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 78;
-  private static final int METHODID_PUT_TENANT = 79;
-  private static final int METHODID_GET_TENANT = 80;
-  private static final int METHODID_PUT_PRINCIPAL = 81;
-  private static final int METHODID_GET_PRINCIPAL = 82;
-  private static final int METHODID_WHOAMI = 83;
-  private static final int METHODID_GET_SERVER_VERSION = 84;
-  private static final int METHODID_POLL_TASK = 85;
+  private static final int METHODID_SEARCH_STRUCT_DEF = 60;
+  private static final int METHODID_REGISTER_TASK_WORKER = 61;
+  private static final int METHODID_REPORT_TASK = 62;
+  private static final int METHODID_STOP_WF_RUN = 63;
+  private static final int METHODID_RESUME_WF_RUN = 64;
+  private static final int METHODID_RESCUE_THREAD_RUN = 65;
+  private static final int METHODID_DELETE_WF_RUN = 66;
+  private static final int METHODID_DELETE_TASK_DEF = 67;
+  private static final int METHODID_DELETE_STRUCT_DEF = 68;
+  private static final int METHODID_DELETE_WF_SPEC = 69;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 70;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 71;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 72;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 73;
+  private static final int METHODID_DELETE_PRINCIPAL = 74;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 75;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 76;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 77;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 78;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 79;
+  private static final int METHODID_PUT_TENANT = 80;
+  private static final int METHODID_GET_TENANT = 81;
+  private static final int METHODID_PUT_PRINCIPAL = 82;
+  private static final int METHODID_GET_PRINCIPAL = 83;
+  private static final int METHODID_WHOAMI = 84;
+  private static final int METHODID_GET_SERVER_VERSION = 85;
+  private static final int METHODID_POLL_TASK = 86;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -6908,6 +6982,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_PRINCIPAL:
           serviceImpl.searchPrincipal((io.littlehorse.sdk.common.proto.SearchPrincipalRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList>) responseObserver);
+          break;
+        case METHODID_SEARCH_STRUCT_DEF:
+          serviceImpl.searchStructDef((io.littlehorse.sdk.common.proto.SearchStructDefRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList>) responseObserver);
           break;
         case METHODID_REGISTER_TASK_WORKER:
           serviceImpl.registerTaskWorker((io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest) request,
@@ -7451,6 +7529,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.PrincipalIdList>(
                 service, METHODID_SEARCH_PRINCIPAL)))
         .addMethod(
+          getSearchStructDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchStructDefRequest,
+              io.littlehorse.sdk.common.proto.StructDefIdList>(
+                service, METHODID_SEARCH_STRUCT_DEF)))
+        .addMethod(
           getRegisterTaskWorkerMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -7740,6 +7825,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchWorkflowEventDefMethod())
               .addMethod(getSearchTenantMethod())
               .addMethod(getSearchPrincipalMethod())
+              .addMethod(getSearchStructDefMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())

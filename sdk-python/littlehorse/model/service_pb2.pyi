@@ -289,7 +289,7 @@ class AwaitWorkflowEventRequest(_message.Message):
     def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., event_def_ids: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]]] = ..., workflow_events_to_ignore: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventId, _Mapping]]] = ...) -> None: ...
 
 class SearchWfRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start", "variable_filters"]
+    __slots__ = ["bookmark", "limit", "wf_spec_name", "wf_spec_major_version", "wf_spec_revision", "status", "earliest_start", "latest_start", "variable_filters", "parent_wf_run_id", "show_full_tree"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
@@ -299,6 +299,8 @@ class SearchWfRunRequest(_message.Message):
     EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_FILTERS_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    SHOW_FULL_TREE_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
     wf_spec_name: str
@@ -308,7 +310,9 @@ class SearchWfRunRequest(_message.Message):
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
     variable_filters: _containers.RepeatedCompositeFieldContainer[VariableMatch]
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., variable_filters: _Optional[_Iterable[_Union[VariableMatch, _Mapping]]] = ...) -> None: ...
+    parent_wf_run_id: _object_id_pb2.WfRunId
+    show_full_tree: bool
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., variable_filters: _Optional[_Iterable[_Union[VariableMatch, _Mapping]]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., show_full_tree: bool = ...) -> None: ...
 
 class WfRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
@@ -495,6 +499,26 @@ class SearchUserTaskDefRequest(_message.Message):
     prefix: str
     name: str
     def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
+
+class SearchStructDefRequest(_message.Message):
+    __slots__ = ["bookmark", "limit", "prefix", "name"]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    PREFIX_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    prefix: str
+    name: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
+
+class StructDefIdList(_message.Message):
+    __slots__ = ["results", "bookmark"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.StructDefId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.StructDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class UserTaskDefIdList(_message.Message):
     __slots__ = ["results", "bookmark"]

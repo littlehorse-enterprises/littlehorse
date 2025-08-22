@@ -944,6 +944,7 @@ public class LHServerConfig extends ConfigBase {
                 result.put(kafkaKey, props.get(key));
             }
         }
+        result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
         return result;
     }
 
