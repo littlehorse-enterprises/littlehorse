@@ -111,17 +111,17 @@ docker run --rm \
 ### Authentication Enabled:
 
 ```bash
-docker run --rm \
-  --env LHC_API_HOST='localhost' \
-  --env LHC_API_PORT='2023' \
-  --env LHD_OAUTH_ENABLED='true' \
-  --env LHD_OAUTH_CLIENT_ID='{a-client-id}' \
-  --env LHD_OAUTH_CLIENT_SECRET='{a-client-secret}' \
-  --env LHD_OAUTH_ISSUER_URI='{https://keycloack-env}/realms/lh' \
-  --env LHD_OAUTH_CALLBACK_URL='localhost:3000' \
-  --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' \
-  --network host \
-  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+docker run --rm
+--env LHC_API_HOST='localhost'
+--env LHC_API_PORT='2023'
+--env LHD_OAUTH_ENABLED='true'
+--env LHD_OAUTH_CLIENT_ID='dashboard'
+--env LHD_OAUTH_CLIENT_SECRET='74b897a0b5804ad3879b2117e1d51015'
+--env LHD_OAUTH_ISSUER_URI='http://localhost:8888/realms/lh'
+--env LHD_OAUTH_CALLBACK_URL='http://localhost:3000'
+--env LHD_OAUTH_ENCRYPT_SECRET='anyrandomstring'
+--network host
+ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
 ```
 
 ## SSL termination
@@ -164,6 +164,8 @@ NEXTAUTH_URL=http://localhost:3000
 ```
 
 3. Setup Keycloak:
+
+_Make sure [httpie](https://httpie.io/) and [jq](https://jqlang.org/) are both installed._
 
 ```shell
 .././local-dev/setup.sh --keycloak
