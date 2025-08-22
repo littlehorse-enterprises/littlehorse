@@ -81,8 +81,6 @@ LHC_API_PORT=2023
 
 - For the needed Environment Variables please refer to the corresponding section in this README.
 
-- [Here a detail of the implemented authentication flow for this project](https://link.excalidraw.com/readonly/5sxfddEgSEFTEQLF3WAG)
-
 ## Start the Dashboard with Docker
 
 The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
