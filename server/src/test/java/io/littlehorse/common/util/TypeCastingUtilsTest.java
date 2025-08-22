@@ -156,7 +156,6 @@ class TypeCastingUtilsTest {
 
         @Test
         void shouldPassForManualCastingWithExplicitCast() {
-            // For explicit casts, validateTypeCompatibility should be called only to check if the cast is possible
             assertDoesNotThrow(() -> TypeCastingUtils.validateTypeCompatibility(VariableType.STR, VariableType.INT));
             assertDoesNotThrow(() -> TypeCastingUtils.validateTypeCompatibility(VariableType.STR, VariableType.DOUBLE));
             assertDoesNotThrow(() -> TypeCastingUtils.validateTypeCompatibility(VariableType.DOUBLE, VariableType.INT));
@@ -164,9 +163,6 @@ class TypeCastingUtilsTest {
 
         @Test
         void shouldFailForManualCastingWithoutExplicitCast() {
-            // Now, explicit cast logic is handled at the call site, so this test is not applicable for
-            // validateTypeCompatibility
-            // Instead, test canAssignWithoutCast for false, and canCastTo for true
             assertFalse(TypeCastingUtils.canAssignWithoutCast(VariableType.STR, VariableType.INT));
             assertTrue(TypeCastingUtils.canCastTo(VariableType.STR, VariableType.INT));
         }

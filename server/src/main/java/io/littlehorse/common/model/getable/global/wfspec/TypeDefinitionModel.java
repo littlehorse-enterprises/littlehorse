@@ -126,18 +126,17 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * /**
-     * Returns true if the value can be assigned to this type, including supported casts.
+     * Returns true if the value can be assigned to this type, without casting.
      */
     public boolean isCompatibleWith(VariableValueModel value) {
-        return TypeCastingUtils.canCastTo(value.getTypeDefinition().getType(), this.type);
+        return TypeCastingUtils.canAssignWithoutCast(value.getTypeDefinition().getType(), this.type);
     }
 
     /**
-     * Returns true if this type can be assigned from the other type, including supported casts.
+     * Returns true if this type can be assigned from the other type, without casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
-        return TypeCastingUtils.canCastTo(this.getType(), other.getType());
+        return TypeCastingUtils.canAssignWithoutCast(this.getType(), other.getType());
     }
 
     @Override

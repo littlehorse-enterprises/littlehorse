@@ -38,7 +38,7 @@ public class TypeValidationsTest {
                 .matches(exn -> {
                     StatusRuntimeException sre = (StatusRuntimeException) exn;
                     return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && sre.getMessage().toLowerCase().contains("expects type int but is type str");
+                            && sre.getMessage().toLowerCase().contains("cannot assign str to int without explicit casting");
                 });
     }
 
@@ -48,14 +48,8 @@ public class TypeValidationsTest {
             NodeOutput result = wf.execute("validations-return-double", "input");
             wf.execute("validations-accept-string", result);
         });
-        assertThatThrownBy(() -> {
-                    badWorkflow.registerWfSpec(client);
-                })
-                .matches(exn -> {
-                    StatusRuntimeException sre = (StatusRuntimeException) exn;
-                    return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && sre.getMessage().toLowerCase().contains("expects type str but is type double");
-                });
+    // This assignment is now allowed (DOUBLE to STR is accepted), so we expect no exception
+    badWorkflow.registerWfSpec(client);
     }
 
     @Test
@@ -70,7 +64,7 @@ public class TypeValidationsTest {
                 .matches(exn -> {
                     StatusRuntimeException sre = (StatusRuntimeException) exn;
                     return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && sre.getMessage().toLowerCase().contains("expects type double but is type str");
+                            && sre.getMessage().toLowerCase().contains("cannot assign str to double without explicit casting");
                 });
     }
 
@@ -101,7 +95,7 @@ public class TypeValidationsTest {
     }
 
     @Test
-    void cannotAssignAStrToADoubleVar() {
+    void cannotAssignAStrToInt() {
         Workflow badWorkflow = Workflow.newWorkflow("shouldnt-work-multiply-str", wf -> {
             WfRunVariable myStr = wf.declareStr("foo");
             WfRunVariable myInt = wf.declareInt("my-int");
@@ -113,9 +107,7 @@ public class TypeValidationsTest {
                 .matches(exn -> {
                     StatusRuntimeException sre = (StatusRuntimeException) exn;
                     return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && sre.getMessage()
-                                    .toLowerCase()
-                                    .contains("mutation of variable my-int invalid: cannot use a str as a int");
+                            && sre.getMessage().toLowerCase().contains("cannot assign str to int without explicit casting");
                 });
     }
 

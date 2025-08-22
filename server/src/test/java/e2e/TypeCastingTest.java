@@ -51,10 +51,10 @@ public class TypeCastingTest {
 
     @Test
     void shouldPerformAutomaticCastingIntToDouble() {
-        verifier.prepareRun(automaticCastingWorkflow, Arg.of("int-var", 42))
+        verifier.prepareRun(automaticCastingWorkflow, Arg.of("int-var", 4))
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
-                .thenVerifyTaskRunResult(0, 2, result -> assertEquals(63.0, result.getDouble(), 0.001))
+                .thenVerifyTaskRunResult(0, 2, result -> assertEquals(6.0, result.getDouble(), 0.001))
                 .start();
     }
 
@@ -87,28 +87,28 @@ public class TypeCastingTest {
 
     @Test
     void shouldPerformManualCastingStrToDouble() {
-        verifier.prepareRun(manualCastingWorkflow, Arg.of("str-double-var", "123.45"))
+        verifier.prepareRun(manualCastingWorkflow, Arg.of("str-double-var", "4.4"))
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
-                .thenVerifyTaskRunResult(0, 2, result -> assertEquals(185.175, result.getDouble(), 0.001))
+                .thenVerifyTaskRunResult(0, 2, result -> assertEquals(6.6, result.getDouble(), 0.001))
                 .start();
     }
 
     @Test
     void shouldPerformManualCastingStrToBool() {
-        verifier.prepareRun(manualCastingWorkflow, Arg.of("bool-str-var", "true"))
+        verifier.prepareRun(manualCastingWorkflow, Arg.of("bool-str-var", "false"))
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 3, TaskStatus.TASK_SUCCESS)
-                .thenVerifyTaskRunResult(0, 3, result -> assertEquals(false, result.getBool()))
+                .thenVerifyTaskRunResult(0, 3, result -> assertEquals(true, result.getBool()))
                 .start();
     }
 
     @Test
     void shouldPerformManualCastingDoubleToInt() {
-        verifier.prepareRun(manualCastingWorkflow, Arg.of("double-var", 123.67))
+        verifier.prepareRun(manualCastingWorkflow, Arg.of("double-var", 4.4))
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 4, TaskStatus.TASK_SUCCESS)
-                .thenVerifyTaskRunResult(0, 4, result -> assertEquals(246, result.getInt()))
+                .thenVerifyTaskRunResult(0, 4, result -> assertEquals(8, result.getInt()))
                 .start();
     }
 
@@ -159,7 +159,7 @@ public class TypeCastingTest {
     void shouldFailWorkflowRegistrationForUnsupportedIntToBoolCast() {
         Workflow invalidWorkflow = new WorkflowImpl("invalid-int-bool-cast", wf -> {
             WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
-            wf.execute("casting-bool-task", intVar.cast(VariableType.BOOL));
+            wf.execute("invert-boolean", intVar.cast(VariableType.BOOL));
         });
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client))
@@ -178,7 +178,7 @@ public class TypeCastingTest {
     void shouldFailWorkflowRegistrationForMissingManualCast() {
         Workflow invalidWorkflow = new WorkflowImpl("missing-manual-cast", wf -> {
             WfRunVariable strVar = wf.addVariable("str-var", VariableType.STR);
-            wf.execute("casting-int-task", strVar);
+            wf.execute("int-times-two", strVar);
         });
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
@@ -215,10 +215,10 @@ public class TypeCastingTest {
             WfRunVariable boolVar =
                     wf.addVariable("bool-var", VariableType.BOOL).withDefault(true);
 
-            wf.execute("casting-string-task", intVar);
-            wf.execute("casting-double-task", intVar);
-            wf.execute("casting-string-task", doubleVar);
-            wf.execute("casting-string-task", boolVar);
+            wf.execute("prefix-string", intVar);
+            wf.execute("double-times-one-point-five", intVar);
+            wf.execute("prefix-string", doubleVar);
+            wf.execute("prefix-string", boolVar);
         });
     }
 
@@ -232,14 +232,14 @@ public class TypeCastingTest {
             WfRunVariable doubleVar =
                     wf.addVariable("double-var", VariableType.DOUBLE).withDefault(123.67);
 
-            wf.execute("casting-int-task", strIntVar.cast(VariableType.INT));
-            wf.execute("casting-double-task", strDoubleVar.cast(VariableType.DOUBLE));
+            wf.execute("int-times-two", strIntVar.cast(VariableType.INT));
+            wf.execute("double-times-one-point-five", strDoubleVar.cast(VariableType.DOUBLE));
 
             WfRunVariable boolStrVar =
                     wf.addVariable("bool-str-var", VariableType.STR).withDefault("true");
-            wf.execute("casting-bool-task", boolStrVar.cast(VariableType.BOOL));
+            wf.execute("invert-boolean", boolStrVar.cast(VariableType.BOOL));
 
-            wf.execute("casting-int-task", doubleVar.cast(VariableType.INT));
+            wf.execute("int-times-two", doubleVar.cast(VariableType.INT));
         });
     }
 
@@ -252,7 +252,7 @@ public class TypeCastingTest {
 
             resultInt.assign(inputStr.cast(VariableType.INT));
 
-            wf.execute("casting-int-task", resultInt);
+            wf.execute("int-times-two", resultInt);
         });
     }
 
@@ -262,10 +262,10 @@ public class TypeCastingTest {
             WfRunVariable initialStr =
                     wf.addVariable("initial-str", VariableType.STR).withDefault("100");
 
-            NodeOutput step1 = wf.execute("casting-int-task", initialStr.cast(VariableType.INT));
-            NodeOutput step2 = wf.execute("casting-double-task", step1);
-            NodeOutput step3 = wf.execute("casting-int-task", step2.cast(VariableType.INT));
-            wf.execute("casting-string-task", step3);
+            NodeOutput step1 = wf.execute("int-times-two", initialStr.cast(VariableType.INT));
+            NodeOutput step2 = wf.execute("double-times-one-point-five", step1);
+            NodeOutput step3 = wf.execute("int-times-two", step2.cast(VariableType.INT));
+            wf.execute("prefix-string", step3);
         });
     }
 
@@ -275,23 +275,23 @@ public class TypeCastingTest {
 
     public class CastingWorker {
 
-        @LHTaskMethod("casting-string-task")
-        public String stringTask(String value) {
+        @LHTaskMethod("prefix-string")
+        public String prefixString(String value) {
             return "processed-" + value;
         }
 
-        @LHTaskMethod("casting-int-task")
-        public int intTask(int value) {
+        @LHTaskMethod("int-times-two")
+        public int multiplyIntByTwo(int value) {
             return value * 2;
         }
 
-        @LHTaskMethod("casting-double-task")
-        public double doubleTask(double value) {
+        @LHTaskMethod("double-times-one-point-five")
+        public double multiplyDoubleByOnePointFive(double value) {
             return value * 1.5;
         }
 
-        @LHTaskMethod("casting-bool-task")
-        public boolean boolTask(boolean value) {
+        @LHTaskMethod("invert-boolean")
+        public boolean invertBoolean(boolean value) {
             return !value;
         }
     }

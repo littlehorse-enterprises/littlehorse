@@ -52,7 +52,7 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
     }
 
     /**
-     * Returns true if the provided value's type exactly matches this ReturnType.
+     * Returns true if the provided value's type is compatible with this ReturnType without casting.
      */
     public boolean isCompatibleWith(VariableValueModel value) {
         if (returnType != null) {
