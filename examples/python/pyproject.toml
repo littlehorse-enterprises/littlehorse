@@ -1,0 +1,22 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "littlehorse-examples"
+version = "0.1.0"
+description = "Standalone LittleHorse Python examples."
+readme = "README.md"
+license = { text = "AGPLv3" }
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "littlehorse-client @ ../../sdk-python",
+    "typing_extensions"
+]
+
+[tool.poetry]
+name = "littlehorse-examples"
+version = "0.1.0"
+description = "Standalone LittleHorse Python examples."
+packages = []
+package-mode = false
