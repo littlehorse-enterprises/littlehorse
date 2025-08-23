@@ -16,7 +16,7 @@ public interface ExitNodeOrBuilder extends
    * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
    * </pre>
    *
-   * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+   * <code>.littlehorse.FailureDef failure_def = 1;</code>
    * @return Whether the failureDef field is set.
    */
   boolean hasFailureDef();
@@ -29,7 +29,7 @@ public interface ExitNodeOrBuilder extends
    * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
    * </pre>
    *
-   * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+   * <code>.littlehorse.FailureDef failure_def = 1;</code>
    * @return The failureDef.
    */
   io.littlehorse.sdk.common.proto.FailureDef getFailureDef();
@@ -42,7 +42,36 @@ public interface ExitNodeOrBuilder extends
    * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
    * </pre>
    *
-   * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+   * <code>.littlehorse.FailureDef failure_def = 1;</code>
    */
   io.littlehorse.sdk.common.proto.FailureDefOrBuilder getFailureDefOrBuilder();
+
+  /**
+   * <pre>
+   * If set, the ExitNode returns the value that comes from this VariableAssignment.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+   * @return Whether the returnContent field is set.
+   */
+  boolean hasReturnContent();
+  /**
+   * <pre>
+   * If set, the ExitNode returns the value that comes from this VariableAssignment.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+   * @return The returnContent.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getReturnContent();
+  /**
+   * <pre>
+   * If set, the ExitNode returns the value that comes from this VariableAssignment.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getReturnContentOrBuilder();
+
+  io.littlehorse.sdk.common.proto.ExitNode.ResultCase getResultCase();
 }

@@ -449,14 +449,10 @@ export interface EntrypointNode {
 
 /** Defines the end of the ThreadRun execution. */
 export interface ExitNode {
-  /**
-   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
-   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
-   * by the entrypoint ThreadRun).
-   *
-   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
-   */
-  failureDef?: FailureDef | undefined;
+  result?:
+    | { $case: "failureDef"; value: FailureDef }
+    | { $case: "returnContent"; value: VariableAssignment }
+    | undefined;
 }
 
 /** Defines a Failure that can be thrown. */
@@ -2532,13 +2528,18 @@ export const EntrypointNode = {
 };
 
 function createBaseExitNode(): ExitNode {
-  return { failureDef: undefined };
+  return { result: undefined };
 }
 
 export const ExitNode = {
   encode(message: ExitNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.failureDef !== undefined) {
-      FailureDef.encode(message.failureDef, writer.uint32(10).fork()).ldelim();
+    switch (message.result?.$case) {
+      case "failureDef":
+        FailureDef.encode(message.result.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "returnContent":
+        VariableAssignment.encode(message.result.value, writer.uint32(18).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -2555,7 +2556,14 @@ export const ExitNode = {
             break;
           }
 
-          message.failureDef = FailureDef.decode(reader, reader.uint32());
+          message.result = { $case: "failureDef", value: FailureDef.decode(reader, reader.uint32()) };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.result = { $case: "returnContent", value: VariableAssignment.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2567,13 +2575,22 @@ export const ExitNode = {
   },
 
   fromJSON(object: any): ExitNode {
-    return { failureDef: isSet(object.failureDef) ? FailureDef.fromJSON(object.failureDef) : undefined };
+    return {
+      result: isSet(object.failureDef)
+        ? { $case: "failureDef", value: FailureDef.fromJSON(object.failureDef) }
+        : isSet(object.returnContent)
+        ? { $case: "returnContent", value: VariableAssignment.fromJSON(object.returnContent) }
+        : undefined,
+    };
   },
 
   toJSON(message: ExitNode): unknown {
     const obj: any = {};
-    if (message.failureDef !== undefined) {
-      obj.failureDef = FailureDef.toJSON(message.failureDef);
+    if (message.result?.$case === "failureDef") {
+      obj.failureDef = FailureDef.toJSON(message.result.value);
+    }
+    if (message.result?.$case === "returnContent") {
+      obj.returnContent = VariableAssignment.toJSON(message.result.value);
     }
     return obj;
   },
@@ -2583,9 +2600,14 @@ export const ExitNode = {
   },
   fromPartial(object: DeepPartial<ExitNode>): ExitNode {
     const message = createBaseExitNode();
-    message.failureDef = (object.failureDef !== undefined && object.failureDef !== null)
-      ? FailureDef.fromPartial(object.failureDef)
-      : undefined;
+    if (object.result?.$case === "failureDef" && object.result?.value !== undefined && object.result?.value !== null) {
+      message.result = { $case: "failureDef", value: FailureDef.fromPartial(object.result.value) };
+    }
+    if (
+      object.result?.$case === "returnContent" && object.result?.value !== undefined && object.result?.value !== null
+    ) {
+      message.result = { $case: "returnContent", value: VariableAssignment.fromPartial(object.result.value) };
+    }
     return message;
   },
 };
