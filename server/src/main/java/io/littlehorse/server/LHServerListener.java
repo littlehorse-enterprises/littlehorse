@@ -660,7 +660,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);

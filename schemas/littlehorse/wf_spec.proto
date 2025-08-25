@@ -293,12 +293,19 @@ message EntrypointNode {
 
 // Defines the end of the ThreadRun execution.
 message ExitNode {
-  // If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
-  // are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
-  // by the entrypoint ThreadRun).
-  //
-  // If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
-  optional FailureDef failure_def = 1;
+  // If neither failure_def nor return_content are set, then a ThreadRun arriving
+  // at this ExitNode completes successfully with no output.
+  oneof result {
+    // If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+    // are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+    // by the entrypoint ThreadRun).
+    //
+    // If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+    FailureDef failure_def = 1;
+
+    // If set, the ExitNode returns the value that comes from this VariableAssignment.
+    VariableAssignment return_content = 2;
+  }
 }
 
 // Defines a Failure that can be thrown.

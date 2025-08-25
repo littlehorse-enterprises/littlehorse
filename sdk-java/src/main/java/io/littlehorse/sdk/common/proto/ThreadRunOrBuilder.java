@@ -414,4 +414,31 @@ public interface ThreadRunOrBuilder extends
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.ThreadType getType();
+
+  /**
+   * <pre>
+   * The output of the `ThreadRun`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue output = 16;</code>
+   * @return Whether the output field is set.
+   */
+  boolean hasOutput();
+  /**
+   * <pre>
+   * The output of the `ThreadRun`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue output = 16;</code>
+   * @return The output.
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getOutput();
+  /**
+   * <pre>
+   * The output of the `ThreadRun`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue output = 16;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
 }
