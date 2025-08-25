@@ -56,11 +56,8 @@ public class PutMetricSpecRequestModel extends MetadataSubCommand<PutMetricSpecR
             MetricSpecModel metricModel = new MetricSpecModel(metricSpecId, windowLength, Set.of(aggregationType));
             executionContext.metadataManager().put(metricModel);
             return metricModel.toProto().build();
-        } else {
-            storedMetricSpec.addWindowLength(windowLength);
-            executionContext.metadataManager().put(storedMetricSpec);
-            return storedMetricSpec.toProto().build();
         }
+        return null;
     }
 
     @Override

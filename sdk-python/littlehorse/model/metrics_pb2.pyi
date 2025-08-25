@@ -10,22 +10,50 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class MetricSpec(_message.Message):
-    __slots__ = ["id", "created_at", "window_lengths", "aggregate_as", "lh_status_ranges", "task_status_ranges", "user_task_status_ranges"]
+    __slots__ = ["id", "created_at", "aggregators"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_LENGTHS_FIELD_NUMBER: _ClassVar[int]
-    AGGREGATE_AS_FIELD_NUMBER: _ClassVar[int]
-    LH_STATUS_RANGES_FIELD_NUMBER: _ClassVar[int]
-    TASK_STATUS_RANGES_FIELD_NUMBER: _ClassVar[int]
-    USER_TASK_STATUS_RANGES_FIELD_NUMBER: _ClassVar[int]
+    AGGREGATORS_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.MetricSpecId
     created_at: _timestamp_pb2.Timestamp
-    window_lengths: _containers.RepeatedCompositeFieldContainer[_duration_pb2.Duration]
-    aggregate_as: _containers.RepeatedScalarFieldContainer[_common_enums_pb2.AggregationType]
-    lh_status_ranges: _containers.RepeatedCompositeFieldContainer[LHStatusRange]
-    task_status_ranges: _containers.RepeatedCompositeFieldContainer[LHStatusRange]
-    user_task_status_ranges: _containers.RepeatedCompositeFieldContainer[UserTaskRunStatusRange]
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricSpecId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_lengths: _Optional[_Iterable[_Union[_duration_pb2.Duration, _Mapping]]] = ..., aggregate_as: _Optional[_Iterable[_Union[_common_enums_pb2.AggregationType, str]]] = ..., lh_status_ranges: _Optional[_Iterable[_Union[LHStatusRange, _Mapping]]] = ..., task_status_ranges: _Optional[_Iterable[_Union[LHStatusRange, _Mapping]]] = ..., user_task_status_ranges: _Optional[_Iterable[_Union[UserTaskRunStatusRange, _Mapping]]] = ...) -> None: ...
+    aggregators: _containers.RepeatedCompositeFieldContainer[Aggregator]
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricSpecId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., aggregators: _Optional[_Iterable[_Union[Aggregator, _Mapping]]] = ...) -> None: ...
+
+class Aggregator(_message.Message):
+    __slots__ = ["window_length", "count", "ratio", "latency"]
+    class StatusRange(_message.Message):
+        __slots__ = ["lh_status", "task_run", "user_task_run"]
+        LH_STATUS_FIELD_NUMBER: _ClassVar[int]
+        TASK_RUN_FIELD_NUMBER: _ClassVar[int]
+        USER_TASK_RUN_FIELD_NUMBER: _ClassVar[int]
+        lh_status: LHStatusRange
+        task_run: TaskRunStatusRange
+        user_task_run: UserTaskRunStatusRange
+        def __init__(self, lh_status: _Optional[_Union[LHStatusRange, _Mapping]] = ..., task_run: _Optional[_Union[TaskRunStatusRange, _Mapping]] = ..., user_task_run: _Optional[_Union[UserTaskRunStatusRange, _Mapping]] = ...) -> None: ...
+    class Count(_message.Message):
+        __slots__ = ["status_range"]
+        STATUS_RANGE_FIELD_NUMBER: _ClassVar[int]
+        status_range: Aggregator.StatusRange
+        def __init__(self, status_range: _Optional[_Union[Aggregator.StatusRange, _Mapping]] = ...) -> None: ...
+    class Ratio(_message.Message):
+        __slots__ = ["status_range"]
+        STATUS_RANGE_FIELD_NUMBER: _ClassVar[int]
+        status_range: Aggregator.StatusRange
+        def __init__(self, status_range: _Optional[_Union[Aggregator.StatusRange, _Mapping]] = ...) -> None: ...
+    class Latency(_message.Message):
+        __slots__ = ["status_range"]
+        STATUS_RANGE_FIELD_NUMBER: _ClassVar[int]
+        status_range: Aggregator.StatusRange
+        def __init__(self, status_range: _Optional[_Union[Aggregator.StatusRange, _Mapping]] = ...) -> None: ...
+    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    COUNT_FIELD_NUMBER: _ClassVar[int]
+    RATIO_FIELD_NUMBER: _ClassVar[int]
+    LATENCY_FIELD_NUMBER: _ClassVar[int]
+    window_length: _duration_pb2.Duration
+    count: Aggregator.Count
+    ratio: Aggregator.Ratio
+    latency: Aggregator.Latency
+    def __init__(self, window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ..., count: _Optional[_Union[Aggregator.Count, _Mapping]] = ..., ratio: _Optional[_Union[Aggregator.Ratio, _Mapping]] = ..., latency: _Optional[_Union[Aggregator.Latency, _Mapping]] = ...) -> None: ...
 
 class LHStatusRange(_message.Message):
     __slots__ = ["starts", "ends"]

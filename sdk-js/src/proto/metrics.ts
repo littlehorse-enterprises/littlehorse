@@ -32,11 +32,34 @@ import { MetricId, MetricSpecId, TenantId } from "./object_id";
 export interface MetricSpec {
   id: MetricSpecId | undefined;
   createdAt: string | undefined;
-  windowLengths: Duration[];
-  aggregateAs: AggregationType[];
-  lhStatusRanges: LHStatusRange[];
-  taskStatusRanges: LHStatusRange[];
-  userTaskStatusRanges: UserTaskRunStatusRange[];
+  aggregators: Aggregator[];
+}
+
+export interface Aggregator {
+  windowLength: Duration | undefined;
+  type?: { $case: "count"; value: Aggregator_Count } | { $case: "ratio"; value: Aggregator_Ratio } | {
+    $case: "latency";
+    value: Aggregator_Latency;
+  } | undefined;
+}
+
+export interface Aggregator_StatusRange {
+  type?: { $case: "lhStatus"; value: LHStatusRange } | { $case: "taskRun"; value: TaskRunStatusRange } | {
+    $case: "userTaskRun";
+    value: UserTaskRunStatusRange;
+  } | undefined;
+}
+
+export interface Aggregator_Count {
+  statusRange?: Aggregator_StatusRange | undefined;
+}
+
+export interface Aggregator_Ratio {
+  statusRange?: Aggregator_StatusRange | undefined;
+}
+
+export interface Aggregator_Latency {
+  statusRange?: Aggregator_StatusRange | undefined;
 }
 
 export interface LHStatusRange {
@@ -92,15 +115,7 @@ export interface Metric_ValuePerPartitionEntry {
 }
 
 function createBaseMetricSpec(): MetricSpec {
-  return {
-    id: undefined,
-    createdAt: undefined,
-    windowLengths: [],
-    aggregateAs: [],
-    lhStatusRanges: [],
-    taskStatusRanges: [],
-    userTaskStatusRanges: [],
-  };
+  return { id: undefined, createdAt: undefined, aggregators: [] };
 }
 
 export const MetricSpec = {
@@ -111,22 +126,8 @@ export const MetricSpec = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    for (const v of message.windowLengths) {
-      Duration.encode(v!, writer.uint32(26).fork()).ldelim();
-    }
-    writer.uint32(34).fork();
-    for (const v of message.aggregateAs) {
-      writer.int32(aggregationTypeToNumber(v));
-    }
-    writer.ldelim();
-    for (const v of message.lhStatusRanges) {
-      LHStatusRange.encode(v!, writer.uint32(42).fork()).ldelim();
-    }
-    for (const v of message.taskStatusRanges) {
-      LHStatusRange.encode(v!, writer.uint32(50).fork()).ldelim();
-    }
-    for (const v of message.userTaskStatusRanges) {
-      UserTaskRunStatusRange.encode(v!, writer.uint32(58).fork()).ldelim();
+    for (const v of message.aggregators) {
+      Aggregator.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -152,50 +153,12 @@ export const MetricSpec = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.windowLengths.push(Duration.decode(reader, reader.uint32()));
-          continue;
         case 4:
-          if (tag === 32) {
-            message.aggregateAs.push(aggregationTypeFromJSON(reader.int32()));
-
-            continue;
-          }
-
-          if (tag === 34) {
-            const end2 = reader.uint32() + reader.pos;
-            while (reader.pos < end2) {
-              message.aggregateAs.push(aggregationTypeFromJSON(reader.int32()));
-            }
-
-            continue;
-          }
-
-          break;
-        case 5:
-          if (tag !== 42) {
+          if (tag !== 34) {
             break;
           }
 
-          message.lhStatusRanges.push(LHStatusRange.decode(reader, reader.uint32()));
-          continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.taskStatusRanges.push(LHStatusRange.decode(reader, reader.uint32()));
-          continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.userTaskStatusRanges.push(UserTaskRunStatusRange.decode(reader, reader.uint32()));
+          message.aggregators.push(Aggregator.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -210,20 +173,8 @@ export const MetricSpec = {
     return {
       id: isSet(object.id) ? MetricSpecId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
-      windowLengths: globalThis.Array.isArray(object?.windowLengths)
-        ? object.windowLengths.map((e: any) => Duration.fromJSON(e))
-        : [],
-      aggregateAs: globalThis.Array.isArray(object?.aggregateAs)
-        ? object.aggregateAs.map((e: any) => aggregationTypeFromJSON(e))
-        : [],
-      lhStatusRanges: globalThis.Array.isArray(object?.lhStatusRanges)
-        ? object.lhStatusRanges.map((e: any) => LHStatusRange.fromJSON(e))
-        : [],
-      taskStatusRanges: globalThis.Array.isArray(object?.taskStatusRanges)
-        ? object.taskStatusRanges.map((e: any) => LHStatusRange.fromJSON(e))
-        : [],
-      userTaskStatusRanges: globalThis.Array.isArray(object?.userTaskStatusRanges)
-        ? object.userTaskStatusRanges.map((e: any) => UserTaskRunStatusRange.fromJSON(e))
+      aggregators: globalThis.Array.isArray(object?.aggregators)
+        ? object.aggregators.map((e: any) => Aggregator.fromJSON(e))
         : [],
     };
   },
@@ -236,20 +187,8 @@ export const MetricSpec = {
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
     }
-    if (message.windowLengths?.length) {
-      obj.windowLengths = message.windowLengths.map((e) => Duration.toJSON(e));
-    }
-    if (message.aggregateAs?.length) {
-      obj.aggregateAs = message.aggregateAs.map((e) => aggregationTypeToJSON(e));
-    }
-    if (message.lhStatusRanges?.length) {
-      obj.lhStatusRanges = message.lhStatusRanges.map((e) => LHStatusRange.toJSON(e));
-    }
-    if (message.taskStatusRanges?.length) {
-      obj.taskStatusRanges = message.taskStatusRanges.map((e) => LHStatusRange.toJSON(e));
-    }
-    if (message.userTaskStatusRanges?.length) {
-      obj.userTaskStatusRanges = message.userTaskStatusRanges.map((e) => UserTaskRunStatusRange.toJSON(e));
+    if (message.aggregators?.length) {
+      obj.aggregators = message.aggregators.map((e) => Aggregator.toJSON(e));
     }
     return obj;
   },
@@ -261,11 +200,403 @@ export const MetricSpec = {
     const message = createBaseMetricSpec();
     message.id = (object.id !== undefined && object.id !== null) ? MetricSpecId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.windowLengths = object.windowLengths?.map((e) => Duration.fromPartial(e)) || [];
-    message.aggregateAs = object.aggregateAs?.map((e) => e) || [];
-    message.lhStatusRanges = object.lhStatusRanges?.map((e) => LHStatusRange.fromPartial(e)) || [];
-    message.taskStatusRanges = object.taskStatusRanges?.map((e) => LHStatusRange.fromPartial(e)) || [];
-    message.userTaskStatusRanges = object.userTaskStatusRanges?.map((e) => UserTaskRunStatusRange.fromPartial(e)) || [];
+    message.aggregators = object.aggregators?.map((e) => Aggregator.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseAggregator(): Aggregator {
+  return { windowLength: undefined, type: undefined };
+}
+
+export const Aggregator = {
+  encode(message: Aggregator, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(10).fork()).ldelim();
+    }
+    switch (message.type?.$case) {
+      case "count":
+        Aggregator_Count.encode(message.type.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "ratio":
+        Aggregator_Ratio.encode(message.type.value, writer.uint32(26).fork()).ldelim();
+        break;
+      case "latency":
+        Aggregator_Latency.encode(message.type.value, writer.uint32(34).fork()).ldelim();
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Aggregator {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregator();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.type = { $case: "count", value: Aggregator_Count.decode(reader, reader.uint32()) };
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.type = { $case: "ratio", value: Aggregator_Ratio.decode(reader, reader.uint32()) };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.type = { $case: "latency", value: Aggregator_Latency.decode(reader, reader.uint32()) };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Aggregator {
+    return {
+      windowLength: isSet(object.windowLength) ? Duration.fromJSON(object.windowLength) : undefined,
+      type: isSet(object.count)
+        ? { $case: "count", value: Aggregator_Count.fromJSON(object.count) }
+        : isSet(object.ratio)
+        ? { $case: "ratio", value: Aggregator_Ratio.fromJSON(object.ratio) }
+        : isSet(object.latency)
+        ? { $case: "latency", value: Aggregator_Latency.fromJSON(object.latency) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: Aggregator): unknown {
+    const obj: any = {};
+    if (message.windowLength !== undefined) {
+      obj.windowLength = Duration.toJSON(message.windowLength);
+    }
+    if (message.type?.$case === "count") {
+      obj.count = Aggregator_Count.toJSON(message.type.value);
+    }
+    if (message.type?.$case === "ratio") {
+      obj.ratio = Aggregator_Ratio.toJSON(message.type.value);
+    }
+    if (message.type?.$case === "latency") {
+      obj.latency = Aggregator_Latency.toJSON(message.type.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Aggregator>): Aggregator {
+    return Aggregator.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Aggregator>): Aggregator {
+    const message = createBaseAggregator();
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
+      : undefined;
+    if (object.type?.$case === "count" && object.type?.value !== undefined && object.type?.value !== null) {
+      message.type = { $case: "count", value: Aggregator_Count.fromPartial(object.type.value) };
+    }
+    if (object.type?.$case === "ratio" && object.type?.value !== undefined && object.type?.value !== null) {
+      message.type = { $case: "ratio", value: Aggregator_Ratio.fromPartial(object.type.value) };
+    }
+    if (object.type?.$case === "latency" && object.type?.value !== undefined && object.type?.value !== null) {
+      message.type = { $case: "latency", value: Aggregator_Latency.fromPartial(object.type.value) };
+    }
+    return message;
+  },
+};
+
+function createBaseAggregator_StatusRange(): Aggregator_StatusRange {
+  return { type: undefined };
+}
+
+export const Aggregator_StatusRange = {
+  encode(message: Aggregator_StatusRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.type?.$case) {
+      case "lhStatus":
+        LHStatusRange.encode(message.type.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "taskRun":
+        TaskRunStatusRange.encode(message.type.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "userTaskRun":
+        UserTaskRunStatusRange.encode(message.type.value, writer.uint32(26).fork()).ldelim();
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Aggregator_StatusRange {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregator_StatusRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.type = { $case: "lhStatus", value: LHStatusRange.decode(reader, reader.uint32()) };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.type = { $case: "taskRun", value: TaskRunStatusRange.decode(reader, reader.uint32()) };
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.type = { $case: "userTaskRun", value: UserTaskRunStatusRange.decode(reader, reader.uint32()) };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Aggregator_StatusRange {
+    return {
+      type: isSet(object.lhStatus)
+        ? { $case: "lhStatus", value: LHStatusRange.fromJSON(object.lhStatus) }
+        : isSet(object.taskRun)
+        ? { $case: "taskRun", value: TaskRunStatusRange.fromJSON(object.taskRun) }
+        : isSet(object.userTaskRun)
+        ? { $case: "userTaskRun", value: UserTaskRunStatusRange.fromJSON(object.userTaskRun) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: Aggregator_StatusRange): unknown {
+    const obj: any = {};
+    if (message.type?.$case === "lhStatus") {
+      obj.lhStatus = LHStatusRange.toJSON(message.type.value);
+    }
+    if (message.type?.$case === "taskRun") {
+      obj.taskRun = TaskRunStatusRange.toJSON(message.type.value);
+    }
+    if (message.type?.$case === "userTaskRun") {
+      obj.userTaskRun = UserTaskRunStatusRange.toJSON(message.type.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Aggregator_StatusRange>): Aggregator_StatusRange {
+    return Aggregator_StatusRange.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Aggregator_StatusRange>): Aggregator_StatusRange {
+    const message = createBaseAggregator_StatusRange();
+    if (object.type?.$case === "lhStatus" && object.type?.value !== undefined && object.type?.value !== null) {
+      message.type = { $case: "lhStatus", value: LHStatusRange.fromPartial(object.type.value) };
+    }
+    if (object.type?.$case === "taskRun" && object.type?.value !== undefined && object.type?.value !== null) {
+      message.type = { $case: "taskRun", value: TaskRunStatusRange.fromPartial(object.type.value) };
+    }
+    if (object.type?.$case === "userTaskRun" && object.type?.value !== undefined && object.type?.value !== null) {
+      message.type = { $case: "userTaskRun", value: UserTaskRunStatusRange.fromPartial(object.type.value) };
+    }
+    return message;
+  },
+};
+
+function createBaseAggregator_Count(): Aggregator_Count {
+  return { statusRange: undefined };
+}
+
+export const Aggregator_Count = {
+  encode(message: Aggregator_Count, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.statusRange !== undefined) {
+      Aggregator_StatusRange.encode(message.statusRange, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Aggregator_Count {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregator_Count();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.statusRange = Aggregator_StatusRange.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Aggregator_Count {
+    return { statusRange: isSet(object.statusRange) ? Aggregator_StatusRange.fromJSON(object.statusRange) : undefined };
+  },
+
+  toJSON(message: Aggregator_Count): unknown {
+    const obj: any = {};
+    if (message.statusRange !== undefined) {
+      obj.statusRange = Aggregator_StatusRange.toJSON(message.statusRange);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Aggregator_Count>): Aggregator_Count {
+    return Aggregator_Count.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Aggregator_Count>): Aggregator_Count {
+    const message = createBaseAggregator_Count();
+    message.statusRange = (object.statusRange !== undefined && object.statusRange !== null)
+      ? Aggregator_StatusRange.fromPartial(object.statusRange)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseAggregator_Ratio(): Aggregator_Ratio {
+  return { statusRange: undefined };
+}
+
+export const Aggregator_Ratio = {
+  encode(message: Aggregator_Ratio, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.statusRange !== undefined) {
+      Aggregator_StatusRange.encode(message.statusRange, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Aggregator_Ratio {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregator_Ratio();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.statusRange = Aggregator_StatusRange.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Aggregator_Ratio {
+    return { statusRange: isSet(object.statusRange) ? Aggregator_StatusRange.fromJSON(object.statusRange) : undefined };
+  },
+
+  toJSON(message: Aggregator_Ratio): unknown {
+    const obj: any = {};
+    if (message.statusRange !== undefined) {
+      obj.statusRange = Aggregator_StatusRange.toJSON(message.statusRange);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Aggregator_Ratio>): Aggregator_Ratio {
+    return Aggregator_Ratio.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Aggregator_Ratio>): Aggregator_Ratio {
+    const message = createBaseAggregator_Ratio();
+    message.statusRange = (object.statusRange !== undefined && object.statusRange !== null)
+      ? Aggregator_StatusRange.fromPartial(object.statusRange)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseAggregator_Latency(): Aggregator_Latency {
+  return { statusRange: undefined };
+}
+
+export const Aggregator_Latency = {
+  encode(message: Aggregator_Latency, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.statusRange !== undefined) {
+      Aggregator_StatusRange.encode(message.statusRange, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Aggregator_Latency {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregator_Latency();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.statusRange = Aggregator_StatusRange.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Aggregator_Latency {
+    return { statusRange: isSet(object.statusRange) ? Aggregator_StatusRange.fromJSON(object.statusRange) : undefined };
+  },
+
+  toJSON(message: Aggregator_Latency): unknown {
+    const obj: any = {};
+    if (message.statusRange !== undefined) {
+      obj.statusRange = Aggregator_StatusRange.toJSON(message.statusRange);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Aggregator_Latency>): Aggregator_Latency {
+    return Aggregator_Latency.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Aggregator_Latency>): Aggregator_Latency {
+    const message = createBaseAggregator_Latency();
+    message.statusRange = (object.statusRange !== undefined && object.statusRange !== null)
+      ? Aggregator_StatusRange.fromPartial(object.statusRange)
+      : undefined;
     return message;
   },
 };

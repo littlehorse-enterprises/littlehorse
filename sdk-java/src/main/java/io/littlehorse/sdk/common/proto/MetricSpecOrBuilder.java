@@ -38,127 +38,26 @@ public interface MetricSpecOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
+   * <code>repeated .littlehorse.Aggregator aggregators = 4;</code>
    */
-  java.util.List<com.google.protobuf.Duration> 
-      getWindowLengthsList();
+  java.util.List<io.littlehorse.sdk.common.proto.Aggregator> 
+      getAggregatorsList();
   /**
-   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
+   * <code>repeated .littlehorse.Aggregator aggregators = 4;</code>
    */
-  com.google.protobuf.Duration getWindowLengths(int index);
+  io.littlehorse.sdk.common.proto.Aggregator getAggregators(int index);
   /**
-   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
+   * <code>repeated .littlehorse.Aggregator aggregators = 4;</code>
    */
-  int getWindowLengthsCount();
+  int getAggregatorsCount();
   /**
-   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
+   * <code>repeated .littlehorse.Aggregator aggregators = 4;</code>
    */
-  java.util.List<? extends com.google.protobuf.DurationOrBuilder> 
-      getWindowLengthsOrBuilderList();
+  java.util.List<? extends io.littlehorse.sdk.common.proto.AggregatorOrBuilder> 
+      getAggregatorsOrBuilderList();
   /**
-   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
+   * <code>repeated .littlehorse.Aggregator aggregators = 4;</code>
    */
-  com.google.protobuf.DurationOrBuilder getWindowLengthsOrBuilder(
-      int index);
-
-  /**
-   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
-   * @return A list containing the aggregateAs.
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.AggregationType> getAggregateAsList();
-  /**
-   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
-   * @return The count of aggregateAs.
-   */
-  int getAggregateAsCount();
-  /**
-   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
-   * @param index The index of the element to return.
-   * @return The aggregateAs at the given index.
-   */
-  io.littlehorse.sdk.common.proto.AggregationType getAggregateAs(int index);
-  /**
-   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
-   * @return A list containing the enum numeric values on the wire for aggregateAs.
-   */
-  java.util.List<java.lang.Integer>
-  getAggregateAsValueList();
-  /**
-   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
-   * @param index The index of the value to return.
-   * @return The enum numeric value on the wire of aggregateAs at the given index.
-   */
-  int getAggregateAsValue(int index);
-
-  /**
-   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> 
-      getLhStatusRangesList();
-  /**
-   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.LHStatusRange getLhStatusRanges(int index);
-  /**
-   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
-   */
-  int getLhStatusRangesCount();
-  /**
-   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
-      getLhStatusRangesOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder getLhStatusRangesOrBuilder(
-      int index);
-
-  /**
-   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> 
-      getTaskStatusRangesList();
-  /**
-   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
-   */
-  io.littlehorse.sdk.common.proto.LHStatusRange getTaskStatusRanges(int index);
-  /**
-   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
-   */
-  int getTaskStatusRangesCount();
-  /**
-   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
-      getTaskStatusRangesOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
-   */
-  io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder getTaskStatusRangesOrBuilder(
-      int index);
-
-  /**
-   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskRunStatusRange> 
-      getUserTaskStatusRangesList();
-  /**
-   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserTaskRunStatusRange getUserTaskStatusRanges(int index);
-  /**
-   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
-   */
-  int getUserTaskStatusRangesCount();
-  /**
-   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder> 
-      getUserTaskStatusRangesOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder getUserTaskStatusRangesOrBuilder(
+  io.littlehorse.sdk.common.proto.AggregatorOrBuilder getAggregatorsOrBuilder(
       int index);
 }

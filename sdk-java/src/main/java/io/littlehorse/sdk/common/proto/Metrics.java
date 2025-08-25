@@ -20,6 +20,31 @@ public final class Metrics {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_MetricSpec_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Aggregator_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_Aggregator_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Aggregator_StatusRange_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_Aggregator_StatusRange_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Aggregator_Count_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_Aggregator_Count_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Aggregator_Ratio_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_Aggregator_Ratio_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Aggregator_Latency_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_Aggregator_Latency_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_LHStatusRange_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -71,46 +96,57 @@ public final class Metrics {
       "\n\rmetrics.proto\022\013littlehorse\032\037google/pro" +
       "tobuf/timestamp.proto\032\036google/protobuf/d" +
       "uration.proto\032\017object_id.proto\032\022common_e" +
-      "nums.proto\"\376\002\n\nMetricSpec\022%\n\002id\030\001 \001(\0132\031." +
+      "nums.proto\"\221\001\n\nMetricSpec\022%\n\002id\030\001 \001(\0132\031." +
       "littlehorse.MetricSpecId\022.\n\ncreated_at\030\002" +
-      " \001(\0132\032.google.protobuf.Timestamp\0221\n\016wind" +
-      "ow_lengths\030\003 \003(\0132\031.google.protobuf.Durat" +
-      "ion\0222\n\014aggregate_as\030\004 \003(\0162\034.littlehorse." +
-      "AggregationType\0224\n\020lh_status_ranges\030\005 \003(" +
-      "\0132\032.littlehorse.LHStatusRange\0226\n\022task_st" +
-      "atus_ranges\030\006 \003(\0132\032.littlehorse.LHStatus" +
-      "Range\022D\n\027user_task_status_ranges\030\007 \003(\0132#" +
-      ".littlehorse.UserTaskRunStatusRange\"[\n\rL" +
-      "HStatusRange\022%\n\006starts\030\001 \001(\0162\025.littlehor" +
-      "se.LHStatus\022#\n\004ends\030\002 \001(\0162\025.littlehorse." +
-      "LHStatus\"d\n\022TaskRunStatusRange\022\'\n\006starts" +
-      "\030\001 \001(\0162\027.littlehorse.TaskStatus\022%\n\004ends\030" +
-      "\002 \001(\0162\027.littlehorse.TaskStatus\"v\n\026UserTa" +
-      "skRunStatusRange\022.\n\006starts\030\001 \001(\0162\036.littl" +
-      "ehorse.UserTaskRunStatus\022,\n\004ends\030\002 \001(\0162\036" +
-      ".littlehorse.UserTaskRunStatus\"\335\001\n\017Parti" +
-      "tionMetric\022*\n\002id\030\001 \001(\0132\036.littlehorse.Par" +
-      "titionMetricId\022.\n\ncreated_at\030\002 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\022<\n\016active_windows" +
-      "\030\003 \003(\0132$.littlehorse.PartitionWindowedMe" +
-      "tric\0220\n\rwindow_length\030\004 \001(\0132\031.google.pro" +
-      "tobuf.Duration\"u\n\027PartitionWindowedMetri" +
-      "c\022\r\n\005value\030\001 \001(\001\0220\n\014window_start\030\002 \001(\0132\032" +
-      ".google.protobuf.Timestamp\022\031\n\021number_of_" +
-      "samples\030\003 \001(\003\"\234\001\n\021PartitionMetricId\022%\n\002i" +
-      "d\030\001 \001(\0132\031.littlehorse.MetricSpecId\022(\n\tte" +
-      "nant_id\030\002 \001(\0132\025.littlehorse.TenantId\0226\n\020" +
-      "aggregation_type\030\003 \001(\0162\034.littlehorse.Agg" +
-      "regationType\"\217\002\n\006Metric\022!\n\002id\030\001 \001(\0132\025.li" +
-      "ttlehorse.MetricId\022\017\n\005count\030\002 \001(\003H\000\022\025\n\013l" +
-      "atency_avg\030\003 \001(\003H\000\022.\n\ncreated_at\030\004 \001(\0132\032" +
-      ".google.protobuf.Timestamp\022G\n\023value_per_" +
-      "partition\030\005 \003(\0132*.littlehorse.Metric.Val" +
-      "uePerPartitionEntry\0328\n\026ValuePerPartition" +
-      "Entry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\001:\0028\001B\007\n" +
-      "\005valueBM\n\037io.littlehorse.sdk.common.prot" +
-      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
-      "Protob\006proto3"
+      " \001(\0132\032.google.protobuf.Timestamp\022,\n\013aggr" +
+      "egators\030\004 \003(\0132\027.littlehorse.Aggregator\"\246" +
+      "\005\n\nAggregator\0220\n\rwindow_length\030\001 \001(\0132\031.g" +
+      "oogle.protobuf.Duration\022.\n\005count\030\002 \001(\0132\035" +
+      ".littlehorse.Aggregator.CountH\000\022.\n\005ratio" +
+      "\030\003 \001(\0132\035.littlehorse.Aggregator.RatioH\000\022" +
+      "2\n\007latency\030\004 \001(\0132\037.littlehorse.Aggregato" +
+      "r.LatencyH\000\032\271\001\n\013StatusRange\022/\n\tlh_status" +
+      "\030\001 \001(\0132\032.littlehorse.LHStatusRangeH\000\0223\n\010" +
+      "task_run\030\002 \001(\0132\037.littlehorse.TaskRunStat" +
+      "usRangeH\000\022<\n\ruser_task_run\030\003 \001(\0132#.littl" +
+      "ehorse.UserTaskRunStatusRangeH\000B\006\n\004type\032" +
+      "X\n\005Count\022>\n\014status_range\030\001 \001(\0132#.littleh" +
+      "orse.Aggregator.StatusRangeH\000\210\001\001B\017\n\r_sta" +
+      "tus_range\032X\n\005Ratio\022>\n\014status_range\030\002 \001(\013" +
+      "2#.littlehorse.Aggregator.StatusRangeH\000\210" +
+      "\001\001B\017\n\r_status_range\032Z\n\007Latency\022>\n\014status" +
+      "_range\030\003 \001(\0132#.littlehorse.Aggregator.St" +
+      "atusRangeH\000\210\001\001B\017\n\r_status_rangeB\006\n\004type\"" +
+      "[\n\rLHStatusRange\022%\n\006starts\030\001 \001(\0162\025.littl" +
+      "ehorse.LHStatus\022#\n\004ends\030\002 \001(\0162\025.littleho" +
+      "rse.LHStatus\"d\n\022TaskRunStatusRange\022\'\n\006st" +
+      "arts\030\001 \001(\0162\027.littlehorse.TaskStatus\022%\n\004e" +
+      "nds\030\002 \001(\0162\027.littlehorse.TaskStatus\"v\n\026Us" +
+      "erTaskRunStatusRange\022.\n\006starts\030\001 \001(\0162\036.l" +
+      "ittlehorse.UserTaskRunStatus\022,\n\004ends\030\002 \001" +
+      "(\0162\036.littlehorse.UserTaskRunStatus\"\335\001\n\017P" +
+      "artitionMetric\022*\n\002id\030\001 \001(\0132\036.littlehorse" +
+      ".PartitionMetricId\022.\n\ncreated_at\030\002 \001(\0132\032" +
+      ".google.protobuf.Timestamp\022<\n\016active_win" +
+      "dows\030\003 \003(\0132$.littlehorse.PartitionWindow" +
+      "edMetric\0220\n\rwindow_length\030\004 \001(\0132\031.google" +
+      ".protobuf.Duration\"u\n\027PartitionWindowedM" +
+      "etric\022\r\n\005value\030\001 \001(\001\0220\n\014window_start\030\002 \001" +
+      "(\0132\032.google.protobuf.Timestamp\022\031\n\021number" +
+      "_of_samples\030\003 \001(\003\"\234\001\n\021PartitionMetricId\022" +
+      "%\n\002id\030\001 \001(\0132\031.littlehorse.MetricSpecId\022(" +
+      "\n\ttenant_id\030\002 \001(\0132\025.littlehorse.TenantId" +
+      "\0226\n\020aggregation_type\030\003 \001(\0162\034.littlehorse" +
+      ".AggregationType\"\217\002\n\006Metric\022!\n\002id\030\001 \001(\0132" +
+      "\025.littlehorse.MetricId\022\017\n\005count\030\002 \001(\003H\000\022" +
+      "\025\n\013latency_avg\030\003 \001(\003H\000\022.\n\ncreated_at\030\004 \001" +
+      "(\0132\032.google.protobuf.Timestamp\022G\n\023value_" +
+      "per_partition\030\005 \003(\0132*.littlehorse.Metric" +
+      ".ValuePerPartitionEntry\0328\n\026ValuePerParti" +
+      "tionEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\001:\0028" +
+      "\001B\007\n\005valueBM\n\037io.littlehorse.sdk.common." +
+      "protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Com" +
+      "mon.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -125,45 +161,75 @@ public final class Metrics {
     internal_static_littlehorse_MetricSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_MetricSpec_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "WindowLengths", "AggregateAs", "LhStatusRanges", "TaskStatusRanges", "UserTaskStatusRanges", });
-    internal_static_littlehorse_LHStatusRange_descriptor =
+        new java.lang.String[] { "Id", "CreatedAt", "Aggregators", });
+    internal_static_littlehorse_Aggregator_descriptor =
       getDescriptor().getMessageTypes().get(1);
+    internal_static_littlehorse_Aggregator_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_Aggregator_descriptor,
+        new java.lang.String[] { "WindowLength", "Count", "Ratio", "Latency", "Type", });
+    internal_static_littlehorse_Aggregator_StatusRange_descriptor =
+      internal_static_littlehorse_Aggregator_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_Aggregator_StatusRange_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_Aggregator_StatusRange_descriptor,
+        new java.lang.String[] { "LhStatus", "TaskRun", "UserTaskRun", "Type", });
+    internal_static_littlehorse_Aggregator_Count_descriptor =
+      internal_static_littlehorse_Aggregator_descriptor.getNestedTypes().get(1);
+    internal_static_littlehorse_Aggregator_Count_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_Aggregator_Count_descriptor,
+        new java.lang.String[] { "StatusRange", "StatusRange", });
+    internal_static_littlehorse_Aggregator_Ratio_descriptor =
+      internal_static_littlehorse_Aggregator_descriptor.getNestedTypes().get(2);
+    internal_static_littlehorse_Aggregator_Ratio_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_Aggregator_Ratio_descriptor,
+        new java.lang.String[] { "StatusRange", "StatusRange", });
+    internal_static_littlehorse_Aggregator_Latency_descriptor =
+      internal_static_littlehorse_Aggregator_descriptor.getNestedTypes().get(3);
+    internal_static_littlehorse_Aggregator_Latency_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_Aggregator_Latency_descriptor,
+        new java.lang.String[] { "StatusRange", "StatusRange", });
+    internal_static_littlehorse_LHStatusRange_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_LHStatusRange_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHStatusRange_descriptor,
         new java.lang.String[] { "Starts", "Ends", });
     internal_static_littlehorse_TaskRunStatusRange_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_TaskRunStatusRange_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskRunStatusRange_descriptor,
         new java.lang.String[] { "Starts", "Ends", });
     internal_static_littlehorse_UserTaskRunStatusRange_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_UserTaskRunStatusRange_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskRunStatusRange_descriptor,
         new java.lang.String[] { "Starts", "Ends", });
     internal_static_littlehorse_PartitionMetric_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_PartitionMetric_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PartitionMetric_descriptor,
         new java.lang.String[] { "Id", "CreatedAt", "ActiveWindows", "WindowLength", });
     internal_static_littlehorse_PartitionWindowedMetric_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_PartitionWindowedMetric_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PartitionWindowedMetric_descriptor,
         new java.lang.String[] { "Value", "WindowStart", "NumberOfSamples", });
     internal_static_littlehorse_PartitionMetricId_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_PartitionMetricId_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PartitionMetricId_descriptor,
         new java.lang.String[] { "Id", "TenantId", "AggregationType", });
     internal_static_littlehorse_Metric_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_Metric_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Metric_descriptor,

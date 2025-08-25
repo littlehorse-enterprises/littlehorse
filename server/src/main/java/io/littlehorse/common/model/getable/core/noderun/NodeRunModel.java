@@ -683,7 +683,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         if (sensor == null) {
             MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new NodeReferenceModel("TASK"));
             return new Sensor(
-                    Set.of(wfSpecMetricId, new MetricSpecIdModel(new NodeReferenceModel(getNode().getType().name()))),
+                    Set.of(
+                            wfSpecMetricId,
+                            new MetricSpecIdModel(
+                                    new NodeReferenceModel(getNode().getType().name()))),
                     executionContext.castOnSupport(CoreProcessorContext.class));
         }
         return sensor;
