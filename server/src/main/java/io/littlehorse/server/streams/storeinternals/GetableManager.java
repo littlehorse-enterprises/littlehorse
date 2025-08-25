@@ -101,6 +101,8 @@ public class GetableManager extends ReadOnlyGetableManager {
         StoredGetable<U, T> previousValue =
                 (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
 
+        ctx.getableUpdates().add(getable.updates());
+
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
 

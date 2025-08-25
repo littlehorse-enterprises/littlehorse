@@ -29,7 +29,9 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.ThreadSpecReferenceModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -43,6 +45,8 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.server.metrics.GetableStatusUpdate;
+import io.littlehorse.server.metrics.Sensor;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.text.MessageFormat;
@@ -52,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -87,6 +92,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
+    private Sensor sensor;
 
     public ThreadRunModel() {}
 
@@ -529,6 +535,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
 
             boolean canAdvance = currentNR.checkIfProcessingCompleted(processorContext);
+            currentNR.recordMetrics(processorContext, this);
 
             if (!canAdvance) {
                 // then we're still waiting on the NodeRun, nothing happened.
@@ -955,6 +962,26 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         return null;
+    }
+
+    public void recordMetrics(CoreProcessorContext processorExecutionContext) {
+        GetableStatusUpdate update;
+        while ((update = processorExecutionContext
+                        .getableUpdates()
+                        .getUpdatesForThreadRunNumber(wfRun.getId(), number)
+                        .poll())
+                != null) {
+            sensor().record(update);
+            processorContext.getableUpdates().append(wfRun.getId(), update);
+        }
+    }
+
+    private Sensor sensor() {
+        if (sensor == null) {
+            MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new ThreadSpecReferenceModel(wfSpecId, number));
+            return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(CoreProcessorContext.class));
+        }
+        return sensor;
     }
 
     /**

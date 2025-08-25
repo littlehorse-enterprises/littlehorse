@@ -24,6 +24,8 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsR
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeReferenceModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -34,14 +36,19 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.server.metrics.GetableStatusUpdate;
+import io.littlehorse.server.metrics.NodeRunCompleteUpdate;
+import io.littlehorse.server.metrics.Sensor;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -83,6 +90,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     @Setter(AccessLevel.NONE)
     // Use `NodeRunModel#getThreadRun()`, as this field is lazy-loaded.
     private ThreadRunModel threadRunDoNotUseMe;
+
+    private Sensor sensor;
 
     public NodeRunModel() {}
 
@@ -470,6 +479,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         boolean completed;
         try {
+            Duration latency = Duration.between(arrivalTime.toInstant(), new Date().toInstant());
+            processorContext
+                    .getableUpdates()
+                    .append(
+                            id,
+                            new NodeRunCompleteUpdate(
+                                    processorContext.authorization().tenantId(), getNodeType(), latency));
             completed = getSubNodeRun().checkIfProcessingCompleted(processorContext);
         } catch (NodeFailureException exn) {
             failures.add(exn.getFailure());
@@ -649,5 +665,27 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 LHErrorType.VAR_SUB_ERROR.toString());
         failures.add(invalidWfSpecFailure);
         throw new NodeFailureException(invalidWfSpecFailure);
+    }
+
+    public void recordMetrics(CoreProcessorContext processorContext, ThreadRunModel threadRun) {
+        GetableStatusUpdate update;
+        while ((update = processorContext
+                        .getableUpdates()
+                        .getUpdatesForNodeRun(id)
+                        .poll())
+                != null) {
+            sensor(threadRun).record(update);
+            processorContext.getableUpdates().append(id.getWfRunId(), getThreadRunNumber(), update);
+        }
+    }
+
+    private Sensor sensor(ThreadRunModel threadRun) {
+        if (sensor == null) {
+            MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new NodeReferenceModel("TASK"));
+            return new Sensor(
+                    Set.of(wfSpecMetricId, new MetricSpecIdModel(new NodeReferenceModel(getNode().getType().name()))),
+                    executionContext.castOnSupport(CoreProcessorContext.class));
+        }
+        return sensor;
     }
 }
