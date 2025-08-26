@@ -339,6 +339,12 @@ public interface WorkflowThread {
     void complete();
 
     /**
+     * Adds an EXIT node which returns the provided result. This causes the ThreadRun to complete
+     * gracefully. It is equivalent to putting a call to `return;` early in your function.
+     */
+    void complete(Serializable output);
+
+    /**
      * Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
      * Failure has the specified name and human-readable message.
      *

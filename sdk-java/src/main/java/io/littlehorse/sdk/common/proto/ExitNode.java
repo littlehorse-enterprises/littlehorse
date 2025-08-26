@@ -42,9 +42,49 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ExitNode.class, io.littlehorse.sdk.common.proto.ExitNode.Builder.class);
   }
 
-  private int bitField0_;
+  private int resultCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object result_;
+  public enum ResultCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    FAILURE_DEF(1),
+    RETURN_CONTENT(2),
+    RESULT_NOT_SET(0);
+    private final int value;
+    private ResultCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ResultCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static ResultCase forNumber(int value) {
+      switch (value) {
+        case 1: return FAILURE_DEF;
+        case 2: return RETURN_CONTENT;
+        case 0: return RESULT_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public ResultCase
+  getResultCase() {
+    return ResultCase.forNumber(
+        resultCase_);
+  }
+
   public static final int FAILURE_DEF_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.FailureDef failureDef_;
   /**
    * <pre>
    * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
@@ -54,12 +94,12 @@ private static final long serialVersionUID = 0L;
    * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
    * </pre>
    *
-   * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+   * <code>.littlehorse.FailureDef failure_def = 1;</code>
    * @return Whether the failureDef field is set.
    */
   @java.lang.Override
   public boolean hasFailureDef() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return resultCase_ == 1;
   }
   /**
    * <pre>
@@ -70,12 +110,15 @@ private static final long serialVersionUID = 0L;
    * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
    * </pre>
    *
-   * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+   * <code>.littlehorse.FailureDef failure_def = 1;</code>
    * @return The failureDef.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.FailureDef getFailureDef() {
-    return failureDef_ == null ? io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance() : failureDef_;
+    if (resultCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.FailureDef) result_;
+    }
+    return io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance();
   }
   /**
    * <pre>
@@ -86,11 +129,57 @@ private static final long serialVersionUID = 0L;
    * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
    * </pre>
    *
-   * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+   * <code>.littlehorse.FailureDef failure_def = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.FailureDefOrBuilder getFailureDefOrBuilder() {
-    return failureDef_ == null ? io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance() : failureDef_;
+    if (resultCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.FailureDef) result_;
+    }
+    return io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance();
+  }
+
+  public static final int RETURN_CONTENT_FIELD_NUMBER = 2;
+  /**
+   * <pre>
+   * If set, the ExitNode returns the value that comes from this VariableAssignment.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+   * @return Whether the returnContent field is set.
+   */
+  @java.lang.Override
+  public boolean hasReturnContent() {
+    return resultCase_ == 2;
+  }
+  /**
+   * <pre>
+   * If set, the ExitNode returns the value that comes from this VariableAssignment.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+   * @return The returnContent.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment getReturnContent() {
+    if (resultCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) result_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * If set, the ExitNode returns the value that comes from this VariableAssignment.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getReturnContentOrBuilder() {
+    if (resultCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) result_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -107,8 +196,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(1, getFailureDef());
+    if (resultCase_ == 1) {
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.FailureDef) result_);
+    }
+    if (resultCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignment) result_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -119,9 +211,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (resultCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getFailureDef());
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.FailureDef) result_);
+    }
+    if (resultCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignment) result_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -138,10 +234,18 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.ExitNode other = (io.littlehorse.sdk.common.proto.ExitNode) obj;
 
-    if (hasFailureDef() != other.hasFailureDef()) return false;
-    if (hasFailureDef()) {
-      if (!getFailureDef()
-          .equals(other.getFailureDef())) return false;
+    if (!getResultCase().equals(other.getResultCase())) return false;
+    switch (resultCase_) {
+      case 1:
+        if (!getFailureDef()
+            .equals(other.getFailureDef())) return false;
+        break;
+      case 2:
+        if (!getReturnContent()
+            .equals(other.getReturnContent())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -154,9 +258,17 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasFailureDef()) {
-      hash = (37 * hash) + FAILURE_DEF_FIELD_NUMBER;
-      hash = (53 * hash) + getFailureDef().hashCode();
+    switch (resultCase_) {
+      case 1:
+        hash = (37 * hash) + FAILURE_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getFailureDef().hashCode();
+        break;
+      case 2:
+        hash = (37 * hash) + RETURN_CONTENT_FIELD_NUMBER;
+        hash = (53 * hash) + getReturnContent().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -281,29 +393,26 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.ExitNode.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getFailureDefFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      failureDef_ = null;
       if (failureDefBuilder_ != null) {
-        failureDefBuilder_.dispose();
-        failureDefBuilder_ = null;
+        failureDefBuilder_.clear();
       }
+      if (returnContentBuilder_ != null) {
+        returnContentBuilder_.clear();
+      }
+      resultCase_ = 0;
+      result_ = null;
       return this;
     }
 
@@ -331,20 +440,26 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.ExitNode buildPartial() {
       io.littlehorse.sdk.common.proto.ExitNode result = new io.littlehorse.sdk.common.proto.ExitNode(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.ExitNode result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.failureDef_ = failureDefBuilder_ == null
-            ? failureDef_
-            : failureDefBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.ExitNode result) {
+      result.resultCase_ = resultCase_;
+      result.result_ = this.result_;
+      if (resultCase_ == 1 &&
+          failureDefBuilder_ != null) {
+        result.result_ = failureDefBuilder_.build();
       }
-      result.bitField0_ |= to_bitField0_;
+      if (resultCase_ == 2 &&
+          returnContentBuilder_ != null) {
+        result.result_ = returnContentBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -391,8 +506,18 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.ExitNode other) {
       if (other == io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance()) return this;
-      if (other.hasFailureDef()) {
-        mergeFailureDef(other.getFailureDef());
+      switch (other.getResultCase()) {
+        case FAILURE_DEF: {
+          mergeFailureDef(other.getFailureDef());
+          break;
+        }
+        case RETURN_CONTENT: {
+          mergeReturnContent(other.getReturnContent());
+          break;
+        }
+        case RESULT_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -424,9 +549,16 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getFailureDefFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000001;
+              resultCase_ = 1;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  getReturnContentFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              resultCase_ = 2;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -442,9 +574,23 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int resultCase_ = 0;
+    private java.lang.Object result_;
+    public ResultCase
+        getResultCase() {
+      return ResultCase.forNumber(
+          resultCase_);
+    }
+
+    public Builder clearResult() {
+      resultCase_ = 0;
+      result_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.FailureDef failureDef_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.FailureDef, io.littlehorse.sdk.common.proto.FailureDef.Builder, io.littlehorse.sdk.common.proto.FailureDefOrBuilder> failureDefBuilder_;
     /**
@@ -456,11 +602,12 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      * @return Whether the failureDef field is set.
      */
+    @java.lang.Override
     public boolean hasFailureDef() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return resultCase_ == 1;
     }
     /**
      * <pre>
@@ -471,14 +618,21 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      * @return The failureDef.
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.FailureDef getFailureDef() {
       if (failureDefBuilder_ == null) {
-        return failureDef_ == null ? io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance() : failureDef_;
+        if (resultCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.FailureDef) result_;
+        }
+        return io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance();
       } else {
-        return failureDefBuilder_.getMessage();
+        if (resultCase_ == 1) {
+          return failureDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance();
       }
     }
     /**
@@ -490,19 +644,19 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder setFailureDef(io.littlehorse.sdk.common.proto.FailureDef value) {
       if (failureDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        failureDef_ = value;
+        result_ = value;
+        onChanged();
       } else {
         failureDefBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      resultCase_ = 1;
       return this;
     }
     /**
@@ -514,17 +668,17 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder setFailureDef(
         io.littlehorse.sdk.common.proto.FailureDef.Builder builderForValue) {
       if (failureDefBuilder_ == null) {
-        failureDef_ = builderForValue.build();
+        result_ = builderForValue.build();
+        onChanged();
       } else {
         failureDefBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      resultCase_ = 1;
       return this;
     }
     /**
@@ -536,22 +690,26 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder mergeFailureDef(io.littlehorse.sdk.common.proto.FailureDef value) {
       if (failureDefBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          failureDef_ != null &&
-          failureDef_ != io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance()) {
-          getFailureDefBuilder().mergeFrom(value);
+        if (resultCase_ == 1 &&
+            result_ != io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance()) {
+          result_ = io.littlehorse.sdk.common.proto.FailureDef.newBuilder((io.littlehorse.sdk.common.proto.FailureDef) result_)
+              .mergeFrom(value).buildPartial();
         } else {
-          failureDef_ = value;
+          result_ = value;
         }
+        onChanged();
       } else {
-        failureDefBuilder_.mergeFrom(value);
+        if (resultCase_ == 1) {
+          failureDefBuilder_.mergeFrom(value);
+        } else {
+          failureDefBuilder_.setMessage(value);
+        }
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      resultCase_ = 1;
       return this;
     }
     /**
@@ -563,16 +721,22 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder clearFailureDef() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      failureDef_ = null;
-      if (failureDefBuilder_ != null) {
-        failureDefBuilder_.dispose();
-        failureDefBuilder_ = null;
+      if (failureDefBuilder_ == null) {
+        if (resultCase_ == 1) {
+          resultCase_ = 0;
+          result_ = null;
+          onChanged();
+        }
+      } else {
+        if (resultCase_ == 1) {
+          resultCase_ = 0;
+          result_ = null;
+        }
+        failureDefBuilder_.clear();
       }
-      onChanged();
       return this;
     }
     /**
@@ -584,11 +748,9 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureDef.Builder getFailureDefBuilder() {
-      bitField0_ |= 0x00000001;
-      onChanged();
       return getFailureDefFieldBuilder().getBuilder();
     }
     /**
@@ -600,14 +762,17 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.FailureDefOrBuilder getFailureDefOrBuilder() {
-      if (failureDefBuilder_ != null) {
+      if ((resultCase_ == 1) && (failureDefBuilder_ != null)) {
         return failureDefBuilder_.getMessageOrBuilder();
       } else {
-        return failureDef_ == null ?
-            io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance() : failureDef_;
+        if (resultCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.FailureDef) result_;
+        }
+        return io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance();
       }
     }
     /**
@@ -619,20 +784,203 @@ private static final long serialVersionUID = 0L;
      * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
      * </pre>
      *
-     * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
+     * <code>.littlehorse.FailureDef failure_def = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.FailureDef, io.littlehorse.sdk.common.proto.FailureDef.Builder, io.littlehorse.sdk.common.proto.FailureDefOrBuilder> 
         getFailureDefFieldBuilder() {
       if (failureDefBuilder_ == null) {
+        if (!(resultCase_ == 1)) {
+          result_ = io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance();
+        }
         failureDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.FailureDef, io.littlehorse.sdk.common.proto.FailureDef.Builder, io.littlehorse.sdk.common.proto.FailureDefOrBuilder>(
-                getFailureDef(),
+                (io.littlehorse.sdk.common.proto.FailureDef) result_,
                 getParentForChildren(),
                 isClean());
-        failureDef_ = null;
+        result_ = null;
       }
+      resultCase_ = 1;
+      onChanged();
       return failureDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> returnContentBuilder_;
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     * @return Whether the returnContent field is set.
+     */
+    @java.lang.Override
+    public boolean hasReturnContent() {
+      return resultCase_ == 2;
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     * @return The returnContent.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getReturnContent() {
+      if (returnContentBuilder_ == null) {
+        if (resultCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) result_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      } else {
+        if (resultCase_ == 2) {
+          return returnContentBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     */
+    public Builder setReturnContent(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (returnContentBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result_ = value;
+        onChanged();
+      } else {
+        returnContentBuilder_.setMessage(value);
+      }
+      resultCase_ = 2;
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     */
+    public Builder setReturnContent(
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+      if (returnContentBuilder_ == null) {
+        result_ = builderForValue.build();
+        onChanged();
+      } else {
+        returnContentBuilder_.setMessage(builderForValue.build());
+      }
+      resultCase_ = 2;
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     */
+    public Builder mergeReturnContent(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (returnContentBuilder_ == null) {
+        if (resultCase_ == 2 &&
+            result_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          result_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) result_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          result_ = value;
+        }
+        onChanged();
+      } else {
+        if (resultCase_ == 2) {
+          returnContentBuilder_.mergeFrom(value);
+        } else {
+          returnContentBuilder_.setMessage(value);
+        }
+      }
+      resultCase_ = 2;
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     */
+    public Builder clearReturnContent() {
+      if (returnContentBuilder_ == null) {
+        if (resultCase_ == 2) {
+          resultCase_ = 0;
+          result_ = null;
+          onChanged();
+        }
+      } else {
+        if (resultCase_ == 2) {
+          resultCase_ = 0;
+          result_ = null;
+        }
+        returnContentBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getReturnContentBuilder() {
+      return getReturnContentFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getReturnContentOrBuilder() {
+      if ((resultCase_ == 2) && (returnContentBuilder_ != null)) {
+        return returnContentBuilder_.getMessageOrBuilder();
+      } else {
+        if (resultCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) result_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * If set, the ExitNode returns the value that comes from this VariableAssignment.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment return_content = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+        getReturnContentFieldBuilder() {
+      if (returnContentBuilder_ == null) {
+        if (!(resultCase_ == 2)) {
+          result_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        }
+        returnContentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) result_,
+                getParentForChildren(),
+                isClean());
+        result_ = null;
+      }
+      resultCase_ = 2;
+      onChanged();
+      return returnContentBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

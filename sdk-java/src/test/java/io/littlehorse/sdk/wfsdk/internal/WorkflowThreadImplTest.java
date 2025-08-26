@@ -731,4 +731,91 @@ public class WorkflowThreadImplTest {
         Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
         Assertions.assertThat(throwable.getMessage()).isEqualTo("UserGroup can't be empty");
     }
+
+    @Test
+    void testCompleteWithoutReturnValue() {
+        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
+            thread.execute("some-task");
+            thread.complete();
+        });
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+
+        // Find the exit node
+        List<Map.Entry<String, Node>> exitNodes =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesMap().entrySet().stream()
+                        .filter(nodePair -> nodePair.getValue().getNodeCase() == NodeCase.EXIT)
+                        .collect(Collectors.toList());
+
+        assertEquals(exitNodes.size(), 1);
+        Node exitNode = exitNodes.get(0).getValue();
+        assertThat(exitNode.getExit().hasReturnContent()).isFalse();
+    }
+
+    @Test
+    void testCompleteWithLiteralReturnValue() {
+        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
+            thread.execute("some-task");
+            thread.complete("success");
+        });
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+
+        // Find the exit node
+        List<Map.Entry<String, Node>> exitNodes =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesMap().entrySet().stream()
+                        .filter(nodePair -> nodePair.getValue().getNodeCase() == NodeCase.EXIT)
+                        .collect(Collectors.toList());
+
+        assertEquals(exitNodes.size(), 1);
+        Node exitNode = exitNodes.get(0).getValue();
+        assertThat(exitNode.getExit().hasReturnContent()).isTrue();
+        assertThat(exitNode.getExit().getReturnContent().hasLiteralValue()).isTrue();
+        assertEquals(exitNode.getExit().getReturnContent().getLiteralValue().getStr(), "success");
+    }
+
+    @Test
+    void testCompleteWithVariableReturnValue() {
+        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
+            WfRunVariable result = thread.addVariable("result", VariableType.STR);
+            thread.execute("some-task");
+            thread.complete(result);
+        });
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+
+        // Find the exit node
+        List<Map.Entry<String, Node>> exitNodes =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesMap().entrySet().stream()
+                        .filter(nodePair -> nodePair.getValue().getNodeCase() == NodeCase.EXIT)
+                        .collect(Collectors.toList());
+
+        assertEquals(exitNodes.size(), 1);
+        Node exitNode = exitNodes.get(0).getValue();
+        assertThat(exitNode.getExit().hasReturnContent()).isTrue();
+        assertThat(exitNode.getExit().getReturnContent().hasVariableName()).isTrue();
+        assertEquals(exitNode.getExit().getReturnContent().getVariableName(), "result");
+    }
+
+    @Test
+    void testCompleteWithNodeOutputReturnValue() {
+        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
+            var taskOutput = thread.execute("some-task");
+            thread.complete(taskOutput);
+        });
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+
+        // Find the exit node
+        List<Map.Entry<String, Node>> exitNodes =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesMap().entrySet().stream()
+                        .filter(nodePair -> nodePair.getValue().getNodeCase() == NodeCase.EXIT)
+                        .collect(Collectors.toList());
+
+        assertEquals(exitNodes.size(), 1);
+        Node exitNode = exitNodes.get(0).getValue();
+        assertThat(exitNode.getExit().hasReturnContent()).isTrue();
+        assertThat(exitNode.getExit().getReturnContent().hasNodeOutput()).isTrue();
+        assertEquals(exitNode.getExit().getReturnContent().getNodeOutput().getNodeName(), "1-some-task-TASK");
+    }
 }
