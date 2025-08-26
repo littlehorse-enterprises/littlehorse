@@ -643,6 +643,44 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.ThreadType.UNRECOGNIZED : result;
   }
 
+  public static final int OUTPUT_FIELD_NUMBER = 16;
+  private io.littlehorse.sdk.common.proto.VariableValue output_;
+  /**
+   * <pre>
+   * The output of the `ThreadRun`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue output = 16;</code>
+   * @return Whether the output field is set.
+   */
+  @java.lang.Override
+  public boolean hasOutput() {
+    return ((bitField0_ & 0x00000020) != 0);
+  }
+  /**
+   * <pre>
+   * The output of the `ThreadRun`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue output = 16;</code>
+   * @return The output.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
+    return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
+  }
+  /**
+   * <pre>
+   * The output of the `ThreadRun`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableValue output = 16;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
+    return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -710,6 +748,9 @@ private static final long serialVersionUID = 0L;
     }
     if (type_ != io.littlehorse.sdk.common.proto.ThreadType.ENTRYPOINT.getNumber()) {
       output.writeEnum(15, type_);
+    }
+    if (((bitField0_ & 0x00000020) != 0)) {
+      output.writeMessage(16, getOutput());
     }
     getUnknownFields().writeTo(output);
   }
@@ -798,6 +839,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(15, type_);
     }
+    if (((bitField0_ & 0x00000020) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(16, getOutput());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -862,6 +907,11 @@ private static final long serialVersionUID = 0L;
     if (!getHandledFailedChildrenList()
         .equals(other.getHandledFailedChildrenList())) return false;
     if (type_ != other.type_) return false;
+    if (hasOutput() != other.hasOutput()) return false;
+    if (hasOutput()) {
+      if (!getOutput()
+          .equals(other.getOutput())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -923,6 +973,10 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + TYPE_FIELD_NUMBER;
     hash = (53 * hash) + type_;
+    if (hasOutput()) {
+      hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
+      hash = (53 * hash) + getOutput().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1063,6 +1117,7 @@ private static final long serialVersionUID = 0L;
         getHaltReasonsFieldBuilder();
         getInterruptTriggerIdFieldBuilder();
         getFailureBeingHandledFieldBuilder();
+        getOutputFieldBuilder();
       }
     }
     @java.lang.Override
@@ -1110,6 +1165,11 @@ private static final long serialVersionUID = 0L;
       currentNodePosition_ = 0;
       handledFailedChildren_ = emptyIntList();
       type_ = 0;
+      output_ = null;
+      if (outputBuilder_ != null) {
+        outputBuilder_.dispose();
+        outputBuilder_ = null;
+      }
       return this;
     }
 
@@ -1217,6 +1277,12 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00004000) != 0)) {
         result.type_ = type_;
+      }
+      if (((from_bitField0_ & 0x00008000) != 0)) {
+        result.output_ = outputBuilder_ == null
+            ? output_
+            : outputBuilder_.build();
+        to_bitField0_ |= 0x00000020;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1350,6 +1416,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.type_ != 0) {
         setTypeValue(other.getTypeValue());
+      }
+      if (other.hasOutput()) {
+        mergeOutput(other.getOutput());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1492,6 +1561,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00004000;
               break;
             } // case 120
+            case 130: {
+              input.readMessage(
+                  getOutputFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00008000;
+              break;
+            } // case 130
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3426,6 +3502,161 @@ private static final long serialVersionUID = 0L;
       type_ = 0;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.VariableValue output_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> outputBuilder_;
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     * @return Whether the output field is set.
+     */
+    public boolean hasOutput() {
+      return ((bitField0_ & 0x00008000) != 0);
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     * @return The output.
+     */
+    public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
+      if (outputBuilder_ == null) {
+        return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
+      } else {
+        return outputBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     */
+    public Builder setOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (outputBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        output_ = value;
+      } else {
+        outputBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00008000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     */
+    public Builder setOutput(
+        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
+      if (outputBuilder_ == null) {
+        output_ = builderForValue.build();
+      } else {
+        outputBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00008000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     */
+    public Builder mergeOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (outputBuilder_ == null) {
+        if (((bitField0_ & 0x00008000) != 0) &&
+          output_ != null &&
+          output_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
+          getOutputBuilder().mergeFrom(value);
+        } else {
+          output_ = value;
+        }
+      } else {
+        outputBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00008000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     */
+    public Builder clearOutput() {
+      bitField0_ = (bitField0_ & ~0x00008000);
+      output_ = null;
+      if (outputBuilder_ != null) {
+        outputBuilder_.dispose();
+        outputBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getOutputBuilder() {
+      bitField0_ |= 0x00008000;
+      onChanged();
+      return getOutputFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
+      if (outputBuilder_ != null) {
+        return outputBuilder_.getMessageOrBuilder();
+      } else {
+        return output_ == null ?
+            io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
+      }
+    }
+    /**
+     * <pre>
+     * The output of the `ThreadRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableValue output = 16;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
+        getOutputFieldBuilder() {
+      if (outputBuilder_ == null) {
+        outputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
+                getOutput(),
+                getParentForChildren(),
+                isClean());
+        output_ = null;
+      }
+      return outputBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

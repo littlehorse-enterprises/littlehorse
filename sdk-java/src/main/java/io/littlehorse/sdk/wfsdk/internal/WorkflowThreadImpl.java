@@ -861,6 +861,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         addNode("complete", NodeCase.EXIT, exitNode);
     }
 
+    public void complete(Serializable result) {
+        checkIfIsActive();
+        ExitNode exitNode =
+                ExitNode.newBuilder().setReturnContent(assignVariable(result)).build();
+
+        addNode("complete", NodeCase.EXIT, exitNode);
+    }
+
     public void fail(String failureName, String message) {
         fail(null, failureName, message);
     }

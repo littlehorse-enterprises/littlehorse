@@ -201,10 +201,12 @@ class EntrypointNode(_message.Message):
     def __init__(self) -> None: ...
 
 class ExitNode(_message.Message):
-    __slots__ = ["failure_def"]
+    __slots__ = ["failure_def", "return_content"]
     FAILURE_DEF_FIELD_NUMBER: _ClassVar[int]
+    RETURN_CONTENT_FIELD_NUMBER: _ClassVar[int]
     failure_def: FailureDef
-    def __init__(self, failure_def: _Optional[_Union[FailureDef, _Mapping]] = ...) -> None: ...
+    return_content: _common_wfspec_pb2.VariableAssignment
+    def __init__(self, failure_def: _Optional[_Union[FailureDef, _Mapping]] = ..., return_content: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class FailureDef(_message.Message):
     __slots__ = ["failure_name", "message", "content"]

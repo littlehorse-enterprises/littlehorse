@@ -9,6 +9,21 @@ import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 import { structFromJSONString, structToJSONString } from './struct'
 
 /**
+ * Maps VariableValue cases to their human-readable display names.
+ * This is used for UI components that need to show friendly type names.
+ */
+export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$case'], string> = {
+  str: 'String',
+  int: 'Integer',
+  double: 'Double',
+  bool: 'Boolean',
+  jsonObj: 'JSON Object',
+  jsonArr: 'JSON Array',
+  bytes: 'Bytes',
+  wfRunId: 'WfRunId',
+}
+
+/**
  * Retrieves the value of a variable based on its assignment and source.
  * Handles different types of variable sources including expressions, format strings, literals, node outputs, and variable names.
  *
