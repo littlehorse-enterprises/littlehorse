@@ -8,9 +8,13 @@ public class MyWorker {
 
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
 
-    @LHTaskMethod("greet")
-    public String greeting(Person person) {
-        log.debug("Executing task greet");
-        return "hello there, " + person.getFirstName();
+    @LHTaskMethod("get-owner")
+    public Person getOwner(Car car) {
+        return car.getOwner();
+    }
+
+    @LHTaskMethod("notify-owner")
+    public String notifyOwner(Person person) {
+        return person.toString() + " has been notified!";
     }
 }
