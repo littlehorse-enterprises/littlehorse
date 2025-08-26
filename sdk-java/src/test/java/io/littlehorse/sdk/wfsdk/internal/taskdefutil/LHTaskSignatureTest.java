@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
@@ -163,9 +163,9 @@ public class LHTaskSignatureTest {
     @Test
     void shouldReturnSortedListOfParamAndReturnTypeStructDefDependencies() {
         LHTaskSignature taskSignature = new LHTaskSignature("struct-task", new MyWorker(), "struct-task");
-        List<LHClassType> actualClassList = taskSignature.getStructDefDependencies();
-        List<LHClassType> expectedClassList =
-                List.of(new LHClassType(Person.class), new LHClassType(Garage.class), new LHClassType(Car.class));
+        List<LHStructDefType> actualClassList = taskSignature.getStructDefDependencies();
+        List<LHStructDefType> expectedClassList = List.of(
+                new LHStructDefType(Person.class), new LHStructDefType(Garage.class), new LHStructDefType(Car.class));
 
         assertThat(actualClassList).isEqualTo(expectedClassList);
     }

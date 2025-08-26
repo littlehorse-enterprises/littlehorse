@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -23,7 +24,7 @@ public class LHTaskSignature {
     @Getter
     List<VariableDef> variableDefs;
 
-    LinkedHashSet<LHClassType> structDefClasses;
+    LinkedHashSet<LHStructDefType> structDefClasses;
 
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
@@ -83,8 +84,12 @@ public class LHTaskSignature {
 
     private VariableDef buildVariableDef(Parameter param) {
         VariableDef.Builder varDef = VariableDef.newBuilder();
-        LHClassType lhClassType = new LHClassType(param.getType());
-        structDefClasses.addAll(lhClassType.getDependencyClasses());
+        LHClassType lhClassType = LHClassType.createLHClassType(param.getType());
+
+        if (lhClassType instanceof LHStructDefType) {
+            LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
+            structDefClasses.addAll(lhStructDefType.getDependencyClasses());
+        }
 
         TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
 
@@ -107,8 +112,12 @@ public class LHTaskSignature {
             // Empty `type` field signifies that it's void.
             return ReturnType.newBuilder().build();
         } else {
-            LHClassType lhClassType = new LHClassType(classReturnType);
-            structDefClasses.addAll(lhClassType.getDependencyClasses());
+            LHClassType lhClassType = LHClassType.createLHClassType(classReturnType);
+
+            if (lhClassType instanceof LHStructDefType) {
+                LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
+                structDefClasses.addAll(lhStructDefType.getDependencyClasses());
+            }
 
             TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
 
@@ -151,7 +160,7 @@ public class LHTaskSignature {
         return outputSchema;
     }
 
-    public List<LHClassType> getStructDefDependencies() {
+    public List<LHStructDefType> getStructDefDependencies() {
         return Collections.unmodifiableList(new ArrayList<>(structDefClasses));
     }
 

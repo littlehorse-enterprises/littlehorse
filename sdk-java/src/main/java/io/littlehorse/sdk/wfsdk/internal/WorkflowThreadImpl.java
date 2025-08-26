@@ -51,7 +51,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -441,7 +441,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
-    private WfRunVariableImpl addStructVariable(String name, LHClassType clazz) {
+    private WfRunVariableImpl addStructVariable(String name, LHStructDefType clazz) {
         checkIfIsActive();
 
         WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, clazz, this);
@@ -486,7 +486,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
-        return addStructVariable(name, new LHClassType(clazz));
+        return addStructVariable(name, new LHStructDefType(clazz));
     }
 
     @Override

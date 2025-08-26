@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ class WfRunVariableImpl implements WfRunVariable {
         return new WfRunVariableImpl(name, typeOrDefaultVal, null, null, parent);
     }
 
-    public static WfRunVariableImpl createStructDefVar(String name, LHClassType clazz, WorkflowThreadImpl parent) {
+    public static WfRunVariableImpl createStructDefVar(String name, LHStructDefType clazz, WorkflowThreadImpl parent) {
         return new WfRunVariableImpl(name, null, clazz, null, parent);
     }
 
@@ -87,11 +88,7 @@ class WfRunVariableImpl implements WfRunVariable {
             this.definedType = DefinedTypeCase.STRUCT_DEF_ID;
 
             if (structClass != null) {
-                String structName = structClass.getStructDefAnnotation().name();
-
-                this.typeDef = TypeDefinition.newBuilder()
-                        .setStructDefId(StructDefId.newBuilder().setName(structName))
-                        .build();
+                this.typeDef = structClass.getTypeDefinition();
             } else {
                 this.typeDef = TypeDefinition.newBuilder()
                         .setStructDefId(StructDefId.newBuilder().setName(structDefName))

@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
@@ -206,11 +206,11 @@ public class LHTaskWorker implements Closeable {
     }
 
     public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
-        List<LHClassType> lhClassTypes = tdb.getStructDefDependencies();
+        List<LHStructDefType> lhStructDefTypes = tdb.getStructDefDependencies();
 
-        if (lhClassTypes.isEmpty()) return;
+        if (lhStructDefTypes.isEmpty()) return;
 
-        for (LHClassType lhClassType : lhClassTypes) {
+        for (LHStructDefType lhClassType : lhStructDefTypes) {
             StructDef structDef = lhClassType.toStructDef();
             PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
             putStructDefRequest.setName(structDef.getId().getName());
