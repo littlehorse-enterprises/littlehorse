@@ -165,7 +165,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                     VariableType targetType = taskDefVar.getTypeDef().getType();
 
                     // If explicit cast, validate the cast itself (original type -> cast target)
-                    if (assn.hasExplicitCast()) {
+                    if (assn.getTargetType() != null) {
                         VariableType castTargetType = assn.getTargetType().getType();
                         if (!TypeCastingUtils.canCastTo(sourceType, castTargetType)) {
                             throw new InvalidNodeException(
@@ -176,6 +176,11 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                         TypeCastingUtils.validateTypeCompatibility(sourceType, castTargetType);
                         // After cast, source becomes castTargetType for assignment
                         sourceType = castTargetType;
+                        if (!TypeCastingUtils.canAssignWithoutCast(sourceType, targetType)) {
+                            throw new InvalidNodeException(
+                                    "Cannot assign " + sourceType + " to " + targetType + ".", node);
+                        }
+
                     } else {
                         // No explicit cast, only allow assignment if possible without cast
                         if (!TypeCastingUtils.canAssignWithoutCast(sourceType, targetType)) {
@@ -184,7 +189,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                                     node);
                         }
                     }
-                    TypeCastingUtils.validateTypeCompatibility(sourceType, targetType);
 
                 } catch (Exception exn) {
                     throw new InvalidNodeException(

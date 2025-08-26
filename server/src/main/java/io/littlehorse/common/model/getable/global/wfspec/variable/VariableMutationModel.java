@@ -204,7 +204,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             }
 
             if (operation == VariableMutationType.ASSIGN) {
-                if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.hasExplicitCast()) {
+                if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.getTargetType() != null) {
                     // Step 1: Validate the explicit cast (original type -> cast target)
                     Optional<TypeDefinitionModel> sourceTypeOpt =
                             rhsRhsAssignment.getSourceType(manager, threadSpec.getWfSpec(), threadSpec.getName());

@@ -38,7 +38,7 @@ public class TypeValidationsTest {
                 .matches(exn -> {
                     StatusRuntimeException sre = (StatusRuntimeException) exn;
                     return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && sre.getMessage().toLowerCase().contains("cannot assign str to int without explicit casting");
+                            && sre.getMessage().contains("Cannot assign STR to INT without explicit casting");
                 });
     }
 
@@ -48,8 +48,8 @@ public class TypeValidationsTest {
             NodeOutput result = wf.execute("validations-return-double", "input");
             wf.execute("validations-accept-string", result);
         });
-    // This assignment is now allowed (DOUBLE to STR is accepted), so we expect no exception
-    badWorkflow.registerWfSpec(client);
+        // This assignment is now allowed (DOUBLE to STR is accepted), so we expect no exception
+        badWorkflow.registerWfSpec(client);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TypeValidationsTest {
                 .matches(exn -> {
                     StatusRuntimeException sre = (StatusRuntimeException) exn;
                     return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && sre.getMessage().toLowerCase().contains("cannot assign str to double without explicit casting");
+                            && sre.getMessage().contains("Cannot assign STR to DOUBLE without explicit casting.");
                 });
     }
 
@@ -107,7 +107,9 @@ public class TypeValidationsTest {
                 .matches(exn -> {
                     StatusRuntimeException sre = (StatusRuntimeException) exn;
                     return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
-                            && sre.getMessage().toLowerCase().contains("cannot assign str to int without explicit casting");
+                            && sre.getMessage()
+                                    .toLowerCase()
+                                    .contains("cannot assign str to int without explicit casting");
                 });
     }
 

@@ -84,11 +84,25 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
 
     public void validateValue(VariableValueModel value) throws InvalidVariableDefException {
         VariableType valueType = value.getTypeDefinition().getType();
+        VariableType expectedType = typeDef.getType();
         if (valueType == null) {
             return;
         }
 
-        if (TypeCastingUtils.canCastTo(valueType, typeDef.getType())) {
+        // If value is from jsonPath (i.e., not explicitly cast and not matching expected type), enforce strict typing
+        boolean isJsonPath =
+                value.getSourceJsonPath() != null && !value.getSourceJsonPath().isEmpty();
+        boolean explicitCast = valueType == expectedType;
+        boolean requiresManualCast = TypeCastingUtils.requiresManualCast(valueType, expectedType);
+        if (isJsonPath && !explicitCast && requiresManualCast) {
+            throw new InvalidVariableDefException(
+                    this,
+                    "Cannot implicitly cast " + valueType + " to " + expectedType
+                            + " from jsonPath. Use an explicit cast method like .cast(" + expectedType
+                            + ") or the appropriate helper (e.g., .castToInt()).");
+        }
+
+        if (TypeCastingUtils.canCastTo(valueType, expectedType)) {
             return;
         }
 
@@ -98,9 +112,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     public VarNameAndValModel assignValue(VariableValueModel value) throws LHVarSubError {
         try {
             validateValue(value);
-
             VariableValueModel finalValue = typeDef.applyCast(value);
-
             if (typeDef.isMasked()) {
                 return new VarNameAndValModel(name, finalValue, true);
             }

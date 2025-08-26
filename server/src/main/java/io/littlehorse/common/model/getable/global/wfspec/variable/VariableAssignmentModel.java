@@ -194,13 +194,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     /**
-     * Returns true if this VariableAssignment has an explicit cast specified.
-     */
-    public boolean hasExplicitCast() {
-        return targetType != null;
-    }
-
-    /**
      * Gets the source type of this VariableAssignment
      * This method resolves the actual type of the source value before any casting is applied.
      *

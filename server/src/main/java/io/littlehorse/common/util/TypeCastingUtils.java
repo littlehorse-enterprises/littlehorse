@@ -16,19 +16,15 @@ public class TypeCastingUtils {
         if (sourceType == targetType) {
             return true;
         }
-        // Allow primitive to STR
         if (isPrimitive(sourceType) && targetType == VariableType.STR) {
             return true;
         }
-        // Allow INT -> DOUBLE
         if (sourceType == VariableType.INT && targetType == VariableType.DOUBLE) {
             return true;
         }
-        // Allow DOUBLE -> INT (manual cast only)
         if (sourceType == VariableType.DOUBLE && targetType == VariableType.INT) {
             return true;
         }
-        // Allow STR -> INT, DOUBLE, BOOL, BYTES, WF_RUN_ID
         if (sourceType == VariableType.STR) {
             return targetType == VariableType.INT
                     || targetType == VariableType.DOUBLE
@@ -36,7 +32,7 @@ public class TypeCastingUtils {
                     || targetType == VariableType.BYTES
                     || targetType == VariableType.WF_RUN_ID;
         }
-        // Explicitly reject all other casts (e.g., DOUBLE->BOOL, INT->BOOL, etc.)
+        // Reject all others
         return false;
     }
 
@@ -87,6 +83,10 @@ public class TypeCastingUtils {
             return;
         }
         if (requiresManualCast(sourceType, targetType)) {
+            if (!canCastTo(sourceType, targetType)) {
+                throw new InvalidMutationException(
+                        "Cannot cast from " + sourceType + " to " + targetType + ". This conversion is not supported.");
+            }
             return;
         }
         throw new InvalidMutationException(
