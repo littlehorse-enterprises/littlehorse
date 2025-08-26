@@ -171,12 +171,9 @@ message TypeDefinition {
     VariableType primitive_type = 1;
 
     StructDefId struct_def_id = 5;
-    
-    // Object Def
-    InlineStructDef inline_struct_def = 6;
 
     // Array Def
-    InlineArrayDef inline_array_def = 7;
+    InlineArrayDef inline_array_def = 6;
   }
 
   // For compatibility purposes.

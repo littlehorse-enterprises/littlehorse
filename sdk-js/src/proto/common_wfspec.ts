@@ -378,7 +378,6 @@ export interface TypeDefinition {
   definedType?:
     | { $case: "primitiveType"; value: VariableType }
     | { $case: "structDefId"; value: StructDefId }
-    | { $case: "inlineStructDef"; value: InlineStructDef }
     | { $case: "inlineArrayDef"; value: InlineArrayDef }
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
@@ -1351,11 +1350,8 @@ export const TypeDefinition = {
       case "structDefId":
         StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
         break;
-      case "inlineStructDef":
-        InlineStructDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
-        break;
       case "inlineArrayDef":
-        InlineArrayDef.encode(message.definedType.value, writer.uint32(58).fork()).ldelim();
+        InlineArrayDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
         break;
     }
     if (message.masked !== false) {
@@ -1390,13 +1386,6 @@ export const TypeDefinition = {
             break;
           }
 
-          message.definedType = { $case: "inlineStructDef", value: InlineStructDef.decode(reader, reader.uint32()) };
-          continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.decode(reader, reader.uint32()) };
           continue;
         case 4:
@@ -1421,8 +1410,6 @@ export const TypeDefinition = {
         ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
         : isSet(object.structDefId)
         ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
-        : isSet(object.inlineStructDef)
-        ? { $case: "inlineStructDef", value: InlineStructDef.fromJSON(object.inlineStructDef) }
         : isSet(object.inlineArrayDef)
         ? { $case: "inlineArrayDef", value: InlineArrayDef.fromJSON(object.inlineArrayDef) }
         : undefined,
@@ -1437,9 +1424,6 @@ export const TypeDefinition = {
     }
     if (message.definedType?.$case === "structDefId") {
       obj.structDefId = StructDefId.toJSON(message.definedType.value);
-    }
-    if (message.definedType?.$case === "inlineStructDef") {
-      obj.inlineStructDef = InlineStructDef.toJSON(message.definedType.value);
     }
     if (message.definedType?.$case === "inlineArrayDef") {
       obj.inlineArrayDef = InlineArrayDef.toJSON(message.definedType.value);
@@ -1468,13 +1452,6 @@ export const TypeDefinition = {
       object.definedType?.value !== null
     ) {
       message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
-    }
-    if (
-      object.definedType?.$case === "inlineStructDef" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "inlineStructDef", value: InlineStructDef.fromPartial(object.definedType.value) };
     }
     if (
       object.definedType?.$case === "inlineArrayDef" &&
