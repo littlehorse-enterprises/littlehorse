@@ -42,6 +42,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -399,15 +400,23 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
         for (Map.Entry<String, VariableValueModel> field : event.getResults().entrySet()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(field.getKey());
+            // TODO: Support StructDefs
+            if (field.getValue().getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Field [name = %s, type = %s] has non-primitive TypeDefinition and is unsupported for a UserTask schema.".formatted(
+                                        field.getKey(),
+                                        field.getValue().getTypeDefinition().getPrimitiveType()));
+            }
             boolean isUndefined = userTaskFieldFromTaskDef == null
                     || !userTaskFieldFromTaskDef
                             .getType()
-                            .equals(field.getValue().getType());
+                            .equals(field.getValue().getTypeDefinition().getPrimitiveType());
             if (isUndefined) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Field [name = %s, type = %s] is not defined in UserTask schema or has different type"
-                                .formatted(field.getKey(), field.getValue().getType()));
+                                .formatted(
+                                        field.getKey(),
+                                        field.getValue().getTypeDefinition().getPrimitiveType()));
             }
             results.put(field.getKey(), field.getValue());
         }

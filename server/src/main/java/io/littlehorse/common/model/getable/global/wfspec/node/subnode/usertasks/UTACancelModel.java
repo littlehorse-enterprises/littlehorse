@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.time.Instant;
@@ -35,8 +36,15 @@ public class UTACancelModel extends LHSerializable<UTActionTrigger.UTACancel> {
     public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger, CoreProcessorContext processorContext)
             throws LHVarSubError {
         VariableValueModel delaySeconds = utr.getNodeRun().getThreadRun().assignVariable(trigger.delaySeconds);
-        if (delaySeconds.getType() != VariableType.INT) {
-            throw new LHVarSubError(null, "Delay for User Task Action was not an INT, got a " + delaySeconds.getType());
+        // TODO: Decide how to support StructDefs
+        if (delaySeconds.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            throw new LHVarSubError(null, "Delay for User Task Action was not an INT, got a " + delaySeconds.getTypeDefinition());
+        }
+        if (delaySeconds.getTypeDefinition().getPrimitiveType() != VariableType.INT) {
+            throw new LHVarSubError(
+                    null,
+                    "Delay for User Task Action was not an INT, got a "
+                            + delaySeconds.getTypeDefinition().getPrimitiveType());
         }
 
         Instant maturationTime = Instant.now().plus(delaySeconds.asInt().getIntVal(), ChronoUnit.SECONDS);
