@@ -365,10 +365,10 @@ describe('getVariableDefType', () => {
       name: 'testVariable',
       typeDef: {
         definedType: {
-          "$case": "primitiveType",
-          "value": VariableType.STR,
+          $case: 'primitiveType',
+          value: VariableType.STR,
         },
-        masked: false
+        masked: false,
       },
     }
 

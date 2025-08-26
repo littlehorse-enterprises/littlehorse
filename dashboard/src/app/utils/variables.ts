@@ -6,6 +6,7 @@ import {
   VariableValue,
 } from 'littlehorse-client/proto'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
+import { structFromJSONString, structToJSONString } from './struct'
 
 /**
  * Retrieves the value of a variable based on its assignment and source.
@@ -50,6 +51,8 @@ export const getVariableValue = ({ value }: VariableValue): string => {
       return '[bytes]'
     case 'wfRunId':
       return flattenWfRunId(value.value)
+    case 'struct':
+      return structToJSONString(value.value)
     default:
       return value.value.toString()
   }
@@ -100,7 +103,9 @@ export const getTypedVariableValue = (
                   ? { bytes: Buffer.from(value) }
                   : type === 'wfRunId'
                     ? { wfRunId: wfRunIdFromFlattenedId(value) }
-                    : undefined
+                    : type === 'struct'
+                      ? { struct: structFromJSONString(value) }
+                      : undefined
   return VariableValue.fromJSON(variable)
 }
 
