@@ -44,9 +44,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         // was post-1.0, we would not modify the stored proto.
         if (p.hasType()) {
             log.debug("Detected a `VariableDef` from before 0.13.2!");
-            this.typeDef = new TypeDefinitionModel();
-            this.typeDef.setMasked(p.getMaskedValue());
-            this.typeDef.setPrimitiveType(p.getType());
+            this.typeDef = new TypeDefinitionModel(p.getType(), p.getMaskedValue());
         } else {
             // This means the proto is up-to-date, so we're all good.
             this.typeDef = LHSerializable.fromProto(p.getTypeDef(), TypeDefinitionModel.class, context);
@@ -81,10 +79,14 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     }
 
     public void validateValue(VariableValueModel value) throws InvalidVariableDefException {
-        if (value.getType() == null || value.getType() == typeDef.getPrimitiveType()) {
+        if (value.getTypeDefinition().getPrimitiveType() == null
+                || value.getTypeDefinition().getPrimitiveType() == typeDef.getPrimitiveType()) {
             return;
         }
-        throw new InvalidVariableDefException(this, "should be " + typeDef + " but is of type " + value.getType());
+        throw new InvalidVariableDefException(
+                this,
+                "should be " + typeDef + " but is of type "
+                        + value.getTypeDefinition().getPrimitiveType());
     }
 
     public VarNameAndValModel assignValue(VariableValueModel value) throws LHVarSubError {

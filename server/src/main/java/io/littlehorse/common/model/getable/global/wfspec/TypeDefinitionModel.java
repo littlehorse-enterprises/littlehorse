@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
@@ -12,6 +13,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Jso
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StructReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -23,10 +25,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @EqualsAndHashCode(callSuper = false)
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
@@ -36,8 +36,23 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private VariableType primitiveType;
     private StructDefIdModel structDefId;
+    private InlineArrayDefModel inlineArrayDef;
 
-    public TypeDefinitionModel() {}
+    public TypeDefinitionModel() {
+        this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
+    }
+
+    public TypeDefinitionModel(StructDefIdModel structDefId) {
+        this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
+        this.structDefId = structDefId;
+        this.masked = false;
+    }
+
+    public TypeDefinitionModel(StructDefIdModel structDefId, boolean masked) {
+        this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
+        this.structDefId = structDefId;
+        this.masked = masked;
+    }
 
     public TypeDefinitionModel(VariableType primitiveType) {
         this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
@@ -60,10 +75,19 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public TypeDefinition.Builder toProto() {
         TypeDefinition.Builder out = TypeDefinition.newBuilder().setMasked(masked);
 
-        if (primitiveType != null) {
-            out.setPrimitiveType(primitiveType);
-        } else if (structDefId != null) {
-            out.setStructDefId(structDefId.toProto());
+        switch (definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                out.setPrimitiveType(primitiveType);
+                break;
+            case STRUCT_DEF_ID:
+                out.setStructDefId(structDefId.toProto());
+                break;
+            case INLINE_ARRAY_DEF:
+                out.setInlineArrayDef(inlineArrayDef.toProto());
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
         }
 
         return out;
@@ -75,10 +99,19 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.masked = p.getMasked();
         this.definedTypeCase = p.getDefinedTypeCase();
 
-        if (p.hasPrimitiveType()) {
-            this.primitiveType = p.getPrimitiveType();
-        } else if (p.hasStructDefId()) {
-            this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
+        switch (definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                this.primitiveType = p.getPrimitiveType();
+                break;
+            case STRUCT_DEF_ID:
+                this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
+                break;
+            case INLINE_ARRAY_DEF:
+                this.inlineArrayDef = InlineArrayDefModel.fromProto(p.getInlineArrayDef(), ctx);
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
         }
     }
 
@@ -89,25 +122,31 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public LHTypeStrategy getTypeStrategy() {
-        // TODO: Support StructDefs
-        switch (primitiveType) {
-            case INT:
-                return new IntReturnTypeStrategy();
-            case DOUBLE:
-                return new DoubleReturnTypeStrategy();
-            case STR:
-                return new StrReturnTypeStrategy();
-            case BOOL:
-                return new BoolReturnTypeStrategy();
-            case WF_RUN_ID:
-                return new WfRunIdReturnTypeStrategy();
-            case BYTES:
-                return new BytesReturnTypeStrategy();
-            case JSON_ARR:
-                return new JsonArrReturnTypeStrategy();
-            case JSON_OBJ:
-                return new JsonObjReturnTypeStrategy();
-            case UNRECOGNIZED:
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                switch (primitiveType) {
+                    case INT:
+                        return new IntReturnTypeStrategy();
+                    case DOUBLE:
+                        return new DoubleReturnTypeStrategy();
+                    case STR:
+                        return new StrReturnTypeStrategy();
+                    case BOOL:
+                        return new BoolReturnTypeStrategy();
+                    case WF_RUN_ID:
+                        return new WfRunIdReturnTypeStrategy();
+                    case BYTES:
+                        return new BytesReturnTypeStrategy();
+                    case JSON_ARR:
+                        return new JsonArrReturnTypeStrategy();
+                    case JSON_OBJ:
+                        return new JsonObjReturnTypeStrategy();
+                    case UNRECOGNIZED:
+                }
+                break;
+            case STRUCT_DEF_ID:
+                return new StructReturnTypeStrategy(this.structDefId);
+            default:
         }
         throw new IllegalStateException();
     }
@@ -150,7 +189,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      */
     public boolean isCompatibleWith(VariableValueModel value) {
         // TODO: Extend this when we add StructDef's and Structs.
-        return value.getType() == primitiveType;
+        return this.isCompatibleWith(value.getTypeDefinition());
     }
 
     /**
@@ -173,7 +212,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 return this.getStructDefId().equals(other.getStructDefId());
             case DEFINEDTYPE_NOT_SET:
             case INLINE_ARRAY_DEF:
-            case INLINE_STRUCT_DEF:
             default:
                 break;
         }
@@ -190,11 +228,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 result = primitiveType.toString();
                 break;
             case STRUCT_DEF_ID:
-                result = String.format("<%s,%d>", structDefId.getName(), structDefId.getVersion());
+                result = String.format("<%s,v%d>", structDefId.getName(), structDefId.getVersion());
                 break;
             case DEFINEDTYPE_NOT_SET:
             case INLINE_ARRAY_DEF:
-            case INLINE_STRUCT_DEF:
             default:
                 result = "UNKNOWN";
                 break;

@@ -6,10 +6,13 @@ import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
 public class StructModel extends LHSerializable<Struct> {
 
+    @Getter
     private StructDefIdModel structDefId;
+
     private InlineStructModel inlineStruct;
 
     @Override
@@ -28,6 +31,10 @@ public class StructModel extends LHSerializable<Struct> {
         out.setStruct(inlineStruct.toProto());
 
         return out;
+    }
+
+    public void validate(ExecutionContext context) {
+        // TODO: Implement Struct validation
     }
 
     @Override

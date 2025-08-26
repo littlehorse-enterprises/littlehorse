@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -16,6 +17,8 @@ public class InlineStructModel extends LHSerializable<InlineStruct> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         InlineStruct p = (InlineStruct) proto;
+
+        fields = new HashMap<>();
 
         for (Entry<String, StructField> entry : p.getFieldsMap().entrySet()) {
             fields.put(entry.getKey(), StructFieldModel.fromProto(entry.getValue(), StructFieldModel.class, context));

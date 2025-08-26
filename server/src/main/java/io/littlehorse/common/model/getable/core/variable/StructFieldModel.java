@@ -4,51 +4,21 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructField;
-import io.littlehorse.sdk.common.proto.StructField.StructValueCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class StructFieldModel extends LHSerializable<StructField> {
-    private StructValueCase structValueCase;
-
-    private VariableValueModel variableValue;
-    private InlineStructModel inlineStructValue;
+    private VariableValueModel value;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         StructField p = (StructField) proto;
 
-        this.structValueCase = p.getStructValueCase();
-
-        switch (structValueCase) {
-            case PRIMITIVE:
-                this.variableValue = VariableValueModel.fromProto(p.getPrimitive(), context);
-                break;
-            case STRUCT:
-                this.inlineStructValue = InlineStructModel.fromProto(p.getStruct(), InlineStructModel.class, context);
-                break;
-            case STRUCTVALUE_NOT_SET:
-            case LIST:
-            default:
-                break;
-        }
+        this.value = VariableValueModel.fromProto(p.getValue(), context);
     }
 
     @Override
     public StructField.Builder toProto() {
-        StructField.Builder out = StructField.newBuilder();
-
-        switch (structValueCase) {
-            case PRIMITIVE:
-                out.setPrimitive(variableValue.toProto());
-                break;
-            case STRUCT:
-                out.setStruct(inlineStructValue.toProto());
-                break;
-            case STRUCTVALUE_NOT_SET:
-            case LIST:
-            default:
-                break;
-        }
+        StructField.Builder out = StructField.newBuilder().setValue(value.toProto());
 
         return out;
     }

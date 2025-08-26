@@ -66,7 +66,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
 
         structDef.validate();
 
-        StructDefModel spec = new StructDefModel(context);
+        StructDefModel spec = new StructDefModel();
         spec.setStructDef(structDef);
         spec.setCreatedAt(new Date());
 
