@@ -9,84 +9,28 @@ public interface StructFieldOrBuilder extends
 
   /**
    * <pre>
-   * The `value` of the field is an untyped primitive `VariableValue`.
+   * The `value` of the field is an untyped `VariableValue`.
    * </pre>
    *
-   * <code>.littlehorse.VariableValue primitive = 1;</code>
-   * @return Whether the primitive field is set.
+   * <code>.littlehorse.VariableValue value = 1;</code>
+   * @return Whether the value field is set.
    */
-  boolean hasPrimitive();
+  boolean hasValue();
   /**
    * <pre>
-   * The `value` of the field is an untyped primitive `VariableValue`.
+   * The `value` of the field is an untyped `VariableValue`.
    * </pre>
    *
-   * <code>.littlehorse.VariableValue primitive = 1;</code>
-   * @return The primitive.
+   * <code>.littlehorse.VariableValue value = 1;</code>
+   * @return The value.
    */
-  io.littlehorse.sdk.common.proto.VariableValue getPrimitive();
+  io.littlehorse.sdk.common.proto.VariableValue getValue();
   /**
    * <pre>
-   * The `value` of the field is an untyped primitive `VariableValue`.
+   * The `value` of the field is an untyped `VariableValue`.
    * </pre>
    *
-   * <code>.littlehorse.VariableValue primitive = 1;</code>
+   * <code>.littlehorse.VariableValue value = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getPrimitiveOrBuilder();
-
-  /**
-   * <pre>
-   * The `value` of the field is a complex `Struct`.
-   * </pre>
-   *
-   * <code>.littlehorse.InlineStruct struct = 2;</code>
-   * @return Whether the struct field is set.
-   */
-  boolean hasStruct();
-  /**
-   * <pre>
-   * The `value` of the field is a complex `Struct`.
-   * </pre>
-   *
-   * <code>.littlehorse.InlineStruct struct = 2;</code>
-   * @return The struct.
-   */
-  io.littlehorse.sdk.common.proto.InlineStruct getStruct();
-  /**
-   * <pre>
-   * The `value` of the field is a complex `Struct`.
-   * </pre>
-   *
-   * <code>.littlehorse.InlineStruct struct = 2;</code>
-   */
-  io.littlehorse.sdk.common.proto.InlineStructOrBuilder getStructOrBuilder();
-
-  /**
-   * <pre>
-   * The `value` of the field is a list of fields.
-   * </pre>
-   *
-   * <code>.littlehorse.StructField.FieldList list = 3;</code>
-   * @return Whether the list field is set.
-   */
-  boolean hasList();
-  /**
-   * <pre>
-   * The `value` of the field is a list of fields.
-   * </pre>
-   *
-   * <code>.littlehorse.StructField.FieldList list = 3;</code>
-   * @return The list.
-   */
-  io.littlehorse.sdk.common.proto.StructField.FieldList getList();
-  /**
-   * <pre>
-   * The `value` of the field is a list of fields.
-   * </pre>
-   *
-   * <code>.littlehorse.StructField.FieldList list = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.StructField.FieldListOrBuilder getListOrBuilder();
-
-  io.littlehorse.sdk.common.proto.StructField.StructValueCase getStructValueCase();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
 }

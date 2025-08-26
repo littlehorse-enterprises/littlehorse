@@ -416,14 +416,8 @@ type StructField struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The value, which can be primitive or complex.
-	//
-	// Types that are assignable to StructValue:
-	//
-	//	*StructField_Primitive
-	//	*StructField_Struct
-	//	*StructField_List
-	StructValue isStructField_StructValue `protobuf_oneof:"struct_value"`
+	// The `value` of the field is an untyped `VariableValue`.
+	Value *VariableValue `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *StructField) Reset() {
@@ -458,103 +452,9 @@ func (*StructField) Descriptor() ([]byte, []int) {
 	return file_variable_proto_rawDescGZIP(), []int{4}
 }
 
-func (m *StructField) GetStructValue() isStructField_StructValue {
-	if m != nil {
-		return m.StructValue
-	}
-	return nil
-}
-
-func (x *StructField) GetPrimitive() *VariableValue {
-	if x, ok := x.GetStructValue().(*StructField_Primitive); ok {
-		return x.Primitive
-	}
-	return nil
-}
-
-func (x *StructField) GetStruct() *InlineStruct {
-	if x, ok := x.GetStructValue().(*StructField_Struct); ok {
-		return x.Struct
-	}
-	return nil
-}
-
-func (x *StructField) GetList() *StructField_FieldList {
-	if x, ok := x.GetStructValue().(*StructField_List); ok {
-		return x.List
-	}
-	return nil
-}
-
-type isStructField_StructValue interface {
-	isStructField_StructValue()
-}
-
-type StructField_Primitive struct {
-	// The `value` of the field is an untyped primitive `VariableValue`.
-	Primitive *VariableValue `protobuf:"bytes,1,opt,name=primitive,proto3,oneof"`
-}
-
-type StructField_Struct struct {
-	// The `value` of the field is a complex `Struct`.
-	Struct *InlineStruct `protobuf:"bytes,2,opt,name=struct,proto3,oneof"`
-}
-
-type StructField_List struct {
-	// The `value` of the field is a list of fields.
-	List *StructField_FieldList `protobuf:"bytes,3,opt,name=list,proto3,oneof"`
-}
-
-func (*StructField_Primitive) isStructField_StructValue() {}
-
-func (*StructField_Struct) isStructField_StructValue() {}
-
-func (*StructField_List) isStructField_StructValue() {}
-
-// A FieldList is a sub-structure of a `Struct`
-type StructField_FieldList struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Fields []*StructField `protobuf:"bytes,1,rep,name=fields,proto3" json:"fields,omitempty"`
-}
-
-func (x *StructField_FieldList) Reset() {
-	*x = StructField_FieldList{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_variable_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *StructField_FieldList) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StructField_FieldList) ProtoMessage() {}
-
-func (x *StructField_FieldList) ProtoReflect() protoreflect.Message {
-	mi := &file_variable_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StructField_FieldList.ProtoReflect.Descriptor instead.
-func (*StructField_FieldList) Descriptor() ([]byte, []int) {
-	return file_variable_proto_rawDescGZIP(), []int{4, 0}
-}
-
-func (x *StructField_FieldList) GetFields() []*StructField {
+func (x *StructField) GetValue() *VariableValue {
 	if x != nil {
-		return x.Fields
+		return x.Value
 	}
 	return nil
 }
@@ -618,29 +518,17 @@ var file_variable_proto_rawDesc = []byte{
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x2e, 0x0a, 0x05, 0x76, 0x61, 0x6c,
 	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
 	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x46, 0x69, 0x65,
-	0x6c, 0x64, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x87, 0x02,
-	0x0a, 0x0b, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x12, 0x3a, 0x0a,
-	0x09, 0x70, 0x72, 0x69, 0x6d, 0x69, 0x74, 0x69, 0x76, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56,
-	0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x48, 0x00, 0x52, 0x09,
-	0x70, 0x72, 0x69, 0x6d, 0x69, 0x74, 0x69, 0x76, 0x65, 0x12, 0x33, 0x0a, 0x06, 0x73, 0x74, 0x72,
-	0x75, 0x63, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6c, 0x69, 0x74, 0x74,
-	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x49, 0x6e, 0x6c, 0x69, 0x6e, 0x65, 0x53, 0x74,
-	0x72, 0x75, 0x63, 0x74, 0x48, 0x00, 0x52, 0x06, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x12, 0x38,
-	0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x6c,
-	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x74, 0x72, 0x75, 0x63,
-	0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x4c, 0x69, 0x73, 0x74,
-	0x48, 0x00, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x1a, 0x3d, 0x0a, 0x09, 0x46, 0x69, 0x65, 0x6c,
-	0x64, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x30, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x18,
-	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
-	0x72, 0x73, 0x65, 0x2e, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x52,
-	0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x42, 0x0e, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x75, 0x63,
-	0x74, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69,
-	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b,
-	0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x64, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x3f, 0x0a,
+	0x0b, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x12, 0x30, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62,
+	0x6c, 0x65, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x42, 0x4d,
+	0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02,
+	0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b,
+	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -655,7 +543,7 @@ func file_variable_proto_rawDescGZIP() []byte {
 	return file_variable_proto_rawDescData
 }
 
-var file_variable_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_variable_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_variable_proto_goTypes = []interface{}{
 	(*VariableValue)(nil),         // 0: littlehorse.VariableValue
 	(*Variable)(nil),              // 1: littlehorse.Variable
@@ -663,33 +551,29 @@ var file_variable_proto_goTypes = []interface{}{
 	(*InlineStruct)(nil),          // 3: littlehorse.InlineStruct
 	(*StructField)(nil),           // 4: littlehorse.StructField
 	nil,                           // 5: littlehorse.InlineStruct.FieldsEntry
-	(*StructField_FieldList)(nil), // 6: littlehorse.StructField.FieldList
-	(*WfRunId)(nil),               // 7: littlehorse.WfRunId
-	(*VariableId)(nil),            // 8: littlehorse.VariableId
-	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
-	(*WfSpecId)(nil),              // 10: littlehorse.WfSpecId
-	(*StructDefId)(nil),           // 11: littlehorse.StructDefId
+	(*WfRunId)(nil),               // 6: littlehorse.WfRunId
+	(*VariableId)(nil),            // 7: littlehorse.VariableId
+	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
+	(*WfSpecId)(nil),              // 9: littlehorse.WfSpecId
+	(*StructDefId)(nil),           // 10: littlehorse.StructDefId
 }
 var file_variable_proto_depIdxs = []int32{
-	7,  // 0: littlehorse.VariableValue.wf_run_id:type_name -> littlehorse.WfRunId
+	6,  // 0: littlehorse.VariableValue.wf_run_id:type_name -> littlehorse.WfRunId
 	2,  // 1: littlehorse.VariableValue.struct:type_name -> littlehorse.Struct
-	8,  // 2: littlehorse.Variable.id:type_name -> littlehorse.VariableId
+	7,  // 2: littlehorse.Variable.id:type_name -> littlehorse.VariableId
 	0,  // 3: littlehorse.Variable.value:type_name -> littlehorse.VariableValue
-	9,  // 4: littlehorse.Variable.created_at:type_name -> google.protobuf.Timestamp
-	10, // 5: littlehorse.Variable.wf_spec_id:type_name -> littlehorse.WfSpecId
-	11, // 6: littlehorse.Struct.struct_def_id:type_name -> littlehorse.StructDefId
+	8,  // 4: littlehorse.Variable.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 5: littlehorse.Variable.wf_spec_id:type_name -> littlehorse.WfSpecId
+	10, // 6: littlehorse.Struct.struct_def_id:type_name -> littlehorse.StructDefId
 	3,  // 7: littlehorse.Struct.struct:type_name -> littlehorse.InlineStruct
 	5,  // 8: littlehorse.InlineStruct.fields:type_name -> littlehorse.InlineStruct.FieldsEntry
-	0,  // 9: littlehorse.StructField.primitive:type_name -> littlehorse.VariableValue
-	3,  // 10: littlehorse.StructField.struct:type_name -> littlehorse.InlineStruct
-	6,  // 11: littlehorse.StructField.list:type_name -> littlehorse.StructField.FieldList
-	4,  // 12: littlehorse.InlineStruct.FieldsEntry.value:type_name -> littlehorse.StructField
-	4,  // 13: littlehorse.StructField.FieldList.fields:type_name -> littlehorse.StructField
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	0,  // 9: littlehorse.StructField.value:type_name -> littlehorse.VariableValue
+	4,  // 10: littlehorse.InlineStruct.FieldsEntry.value:type_name -> littlehorse.StructField
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_variable_proto_init() }
@@ -759,18 +643,6 @@ func file_variable_proto_init() {
 				return nil
 			}
 		}
-		file_variable_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StructField_FieldList); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	file_variable_proto_msgTypes[0].OneofWrappers = []interface{}{
 		(*VariableValue_JsonObj)(nil),
@@ -783,18 +655,13 @@ func file_variable_proto_init() {
 		(*VariableValue_WfRunId)(nil),
 		(*VariableValue_Struct)(nil),
 	}
-	file_variable_proto_msgTypes[4].OneofWrappers = []interface{}{
-		(*StructField_Primitive)(nil),
-		(*StructField_Struct)(nil),
-		(*StructField_List)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_variable_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

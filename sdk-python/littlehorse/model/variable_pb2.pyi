@@ -3,7 +3,7 @@ import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -65,16 +65,7 @@ class InlineStruct(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructField]] = ...) -> None: ...
 
 class StructField(_message.Message):
-    __slots__ = ["primitive", "struct", "list"]
-    class FieldList(_message.Message):
-        __slots__ = ["fields"]
-        FIELDS_FIELD_NUMBER: _ClassVar[int]
-        fields: _containers.RepeatedCompositeFieldContainer[StructField]
-        def __init__(self, fields: _Optional[_Iterable[_Union[StructField, _Mapping]]] = ...) -> None: ...
-    PRIMITIVE_FIELD_NUMBER: _ClassVar[int]
-    STRUCT_FIELD_NUMBER: _ClassVar[int]
-    LIST_FIELD_NUMBER: _ClassVar[int]
-    primitive: VariableValue
-    struct: InlineStruct
-    list: StructField.FieldList
-    def __init__(self, primitive: _Optional[_Union[VariableValue, _Mapping]] = ..., struct: _Optional[_Union[InlineStruct, _Mapping]] = ..., list: _Optional[_Union[StructField.FieldList, _Mapping]] = ...) -> None: ...
+    __slots__ = ["value"]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: VariableValue
+    def __init__(self, value: _Optional[_Union[VariableValue, _Mapping]] = ...) -> None: ...

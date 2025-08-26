@@ -80,15 +80,8 @@ export interface InlineStruct_FieldsEntry {
 
 /** A StructField represents the value for a single field in a struct. */
 export interface StructField {
-  structValue?: { $case: "primitive"; value: VariableValue } | { $case: "struct"; value: InlineStruct } | {
-    $case: "list";
-    value: StructField_FieldList;
-  } | undefined;
-}
-
-/** A FieldList is a sub-structure of a `Struct` */
-export interface StructField_FieldList {
-  fields: StructField[];
+  /** The `value` of the field is an untyped `VariableValue`. */
+  value: VariableValue | undefined;
 }
 
 function createBaseVariableValue(): VariableValue {
@@ -656,21 +649,13 @@ export const InlineStruct_FieldsEntry = {
 };
 
 function createBaseStructField(): StructField {
-  return { structValue: undefined };
+  return { value: undefined };
 }
 
 export const StructField = {
   encode(message: StructField, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.structValue?.$case) {
-      case "primitive":
-        VariableValue.encode(message.structValue.value, writer.uint32(10).fork()).ldelim();
-        break;
-      case "struct":
-        InlineStruct.encode(message.structValue.value, writer.uint32(18).fork()).ldelim();
-        break;
-      case "list":
-        StructField_FieldList.encode(message.structValue.value, writer.uint32(26).fork()).ldelim();
-        break;
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -687,21 +672,7 @@ export const StructField = {
             break;
           }
 
-          message.structValue = { $case: "primitive", value: VariableValue.decode(reader, reader.uint32()) };
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.structValue = { $case: "struct", value: InlineStruct.decode(reader, reader.uint32()) };
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.structValue = { $case: "list", value: StructField_FieldList.decode(reader, reader.uint32()) };
+          message.value = VariableValue.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -713,27 +684,13 @@ export const StructField = {
   },
 
   fromJSON(object: any): StructField {
-    return {
-      structValue: isSet(object.primitive)
-        ? { $case: "primitive", value: VariableValue.fromJSON(object.primitive) }
-        : isSet(object.struct)
-        ? { $case: "struct", value: InlineStruct.fromJSON(object.struct) }
-        : isSet(object.list)
-        ? { $case: "list", value: StructField_FieldList.fromJSON(object.list) }
-        : undefined,
-    };
+    return { value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined };
   },
 
   toJSON(message: StructField): unknown {
     const obj: any = {};
-    if (message.structValue?.$case === "primitive") {
-      obj.primitive = VariableValue.toJSON(message.structValue.value);
-    }
-    if (message.structValue?.$case === "struct") {
-      obj.struct = InlineStruct.toJSON(message.structValue.value);
-    }
-    if (message.structValue?.$case === "list") {
-      obj.list = StructField_FieldList.toJSON(message.structValue.value);
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
     }
     return obj;
   },
@@ -743,86 +700,9 @@ export const StructField = {
   },
   fromPartial(object: DeepPartial<StructField>): StructField {
     const message = createBaseStructField();
-    if (
-      object.structValue?.$case === "primitive" &&
-      object.structValue?.value !== undefined &&
-      object.structValue?.value !== null
-    ) {
-      message.structValue = { $case: "primitive", value: VariableValue.fromPartial(object.structValue.value) };
-    }
-    if (
-      object.structValue?.$case === "struct" &&
-      object.structValue?.value !== undefined &&
-      object.structValue?.value !== null
-    ) {
-      message.structValue = { $case: "struct", value: InlineStruct.fromPartial(object.structValue.value) };
-    }
-    if (
-      object.structValue?.$case === "list" &&
-      object.structValue?.value !== undefined &&
-      object.structValue?.value !== null
-    ) {
-      message.structValue = { $case: "list", value: StructField_FieldList.fromPartial(object.structValue.value) };
-    }
-    return message;
-  },
-};
-
-function createBaseStructField_FieldList(): StructField_FieldList {
-  return { fields: [] };
-}
-
-export const StructField_FieldList = {
-  encode(message: StructField_FieldList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.fields) {
-      StructField.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): StructField_FieldList {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStructField_FieldList();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.fields.push(StructField.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): StructField_FieldList {
-    return {
-      fields: globalThis.Array.isArray(object?.fields) ? object.fields.map((e: any) => StructField.fromJSON(e)) : [],
-    };
-  },
-
-  toJSON(message: StructField_FieldList): unknown {
-    const obj: any = {};
-    if (message.fields?.length) {
-      obj.fields = message.fields.map((e) => StructField.toJSON(e));
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<StructField_FieldList>): StructField_FieldList {
-    return StructField_FieldList.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<StructField_FieldList>): StructField_FieldList {
-    const message = createBaseStructField_FieldList();
-    message.fields = object.fields?.map((e) => StructField.fromPartial(e)) || [];
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };

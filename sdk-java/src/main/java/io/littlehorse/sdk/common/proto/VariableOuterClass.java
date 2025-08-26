@@ -44,11 +44,6 @@ public final class VariableOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_StructField_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_StructField_FieldList_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_StructField_FieldList_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -77,15 +72,10 @@ public final class VariableOuterClass {
       "elds\030\001 \003(\0132%.littlehorse.InlineStruct.Fi" +
       "eldsEntry\032G\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\022\'\n" +
       "\005value\030\002 \001(\0132\030.littlehorse.StructField:\002" +
-      "8\001\"\346\001\n\013StructField\022/\n\tprimitive\030\001 \001(\0132\032." +
-      "littlehorse.VariableValueH\000\022+\n\006struct\030\002 " +
-      "\001(\0132\031.littlehorse.InlineStructH\000\0222\n\004list" +
-      "\030\003 \001(\0132\".littlehorse.StructField.FieldLi" +
-      "stH\000\0325\n\tFieldList\022(\n\006fields\030\001 \003(\0132\030.litt" +
-      "lehorse.StructFieldB\016\n\014struct_valueBM\n\037i" +
-      "o.littlehorse.sdk.common.protoP\001Z\t.;lhpr" +
-      "oto\252\002\034LittleHorse.Sdk.Common.Protob\006prot" +
-      "o3"
+      "8\001\"8\n\013StructField\022)\n\005value\030\001 \001(\0132\032.littl" +
+      "ehorse.VariableValueBM\n\037io.littlehorse.s" +
+      "dk.common.protoP\001Z\t.;lhproto\252\002\034LittleHor" +
+      "se.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -128,13 +118,7 @@ public final class VariableOuterClass {
     internal_static_littlehorse_StructField_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_StructField_descriptor,
-        new java.lang.String[] { "Primitive", "Struct", "List", "StructValue", });
-    internal_static_littlehorse_StructField_FieldList_descriptor =
-      internal_static_littlehorse_StructField_descriptor.getNestedTypes().get(0);
-    internal_static_littlehorse_StructField_FieldList_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_StructField_FieldList_descriptor,
-        new java.lang.String[] { "Fields", });
+        new java.lang.String[] { "Value", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
   }

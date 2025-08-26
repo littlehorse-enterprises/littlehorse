@@ -42,967 +42,42 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.StructField.class, io.littlehorse.sdk.common.proto.StructField.Builder.class);
   }
 
-  public interface FieldListOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.StructField.FieldList)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    java.util.List<io.littlehorse.sdk.common.proto.StructField> 
-        getFieldsList();
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    io.littlehorse.sdk.common.proto.StructField getFields(int index);
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    int getFieldsCount();
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    java.util.List<? extends io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-        getFieldsOrBuilderList();
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    io.littlehorse.sdk.common.proto.StructFieldOrBuilder getFieldsOrBuilder(
-        int index);
-  }
+  public static final int VALUE_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.VariableValue value_;
   /**
    * <pre>
-   * A FieldList is a sub-structure of a `Struct`
+   * The `value` of the field is an untyped `VariableValue`.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.StructField.FieldList}
-   */
-  public static final class FieldList extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.StructField.FieldList)
-      FieldListOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FieldList.newBuilder() to construct.
-    private FieldList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FieldList() {
-      fields_ = java.util.Collections.emptyList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FieldList();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_StructField_FieldList_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_StructField_FieldList_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.StructField.FieldList.class, io.littlehorse.sdk.common.proto.StructField.FieldList.Builder.class);
-    }
-
-    public static final int FIELDS_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<io.littlehorse.sdk.common.proto.StructField> fields_;
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<io.littlehorse.sdk.common.proto.StructField> getFieldsList() {
-      return fields_;
-    }
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-        getFieldsOrBuilderList() {
-      return fields_;
-    }
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    @java.lang.Override
-    public int getFieldsCount() {
-      return fields_.size();
-    }
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructField getFields(int index) {
-      return fields_.get(index);
-    }
-    /**
-     * <code>repeated .littlehorse.StructField fields = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructFieldOrBuilder getFieldsOrBuilder(
-        int index) {
-      return fields_.get(index);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      for (int i = 0; i < fields_.size(); i++) {
-        output.writeMessage(1, fields_.get(i));
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < fields_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, fields_.get(i));
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.StructField.FieldList)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.sdk.common.proto.StructField.FieldList other = (io.littlehorse.sdk.common.proto.StructField.FieldList) obj;
-
-      if (!getFieldsList()
-          .equals(other.getFieldsList())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getFieldsCount() > 0) {
-        hash = (37 * hash) + FIELDS_FIELD_NUMBER;
-        hash = (53 * hash) + getFieldsList().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.StructField.FieldList prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * A FieldList is a sub-structure of a `Struct`
-     * </pre>
-     *
-     * Protobuf type {@code littlehorse.StructField.FieldList}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.StructField.FieldList)
-        io.littlehorse.sdk.common.proto.StructField.FieldListOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_StructField_FieldList_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_StructField_FieldList_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.StructField.FieldList.class, io.littlehorse.sdk.common.proto.StructField.FieldList.Builder.class);
-      }
-
-      // Construct using io.littlehorse.sdk.common.proto.StructField.FieldList.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        if (fieldsBuilder_ == null) {
-          fields_ = java.util.Collections.emptyList();
-        } else {
-          fields_ = null;
-          fieldsBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.VariableOuterClass.internal_static_littlehorse_StructField_FieldList_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.StructField.FieldList getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.StructField.FieldList build() {
-        io.littlehorse.sdk.common.proto.StructField.FieldList result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.StructField.FieldList buildPartial() {
-        io.littlehorse.sdk.common.proto.StructField.FieldList result = new io.littlehorse.sdk.common.proto.StructField.FieldList(this);
-        buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.StructField.FieldList result) {
-        if (fieldsBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            fields_ = java.util.Collections.unmodifiableList(fields_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.fields_ = fields_;
-        } else {
-          result.fields_ = fieldsBuilder_.build();
-        }
-      }
-
-      private void buildPartial0(io.littlehorse.sdk.common.proto.StructField.FieldList result) {
-        int from_bitField0_ = bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.StructField.FieldList) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.StructField.FieldList)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.StructField.FieldList other) {
-        if (other == io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance()) return this;
-        if (fieldsBuilder_ == null) {
-          if (!other.fields_.isEmpty()) {
-            if (fields_.isEmpty()) {
-              fields_ = other.fields_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureFieldsIsMutable();
-              fields_.addAll(other.fields_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.fields_.isEmpty()) {
-            if (fieldsBuilder_.isEmpty()) {
-              fieldsBuilder_.dispose();
-              fieldsBuilder_ = null;
-              fields_ = other.fields_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              fieldsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getFieldsFieldBuilder() : null;
-            } else {
-              fieldsBuilder_.addAllMessages(other.fields_);
-            }
-          }
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                io.littlehorse.sdk.common.proto.StructField m =
-                    input.readMessage(
-                        io.littlehorse.sdk.common.proto.StructField.parser(),
-                        extensionRegistry);
-                if (fieldsBuilder_ == null) {
-                  ensureFieldsIsMutable();
-                  fields_.add(m);
-                } else {
-                  fieldsBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<io.littlehorse.sdk.common.proto.StructField> fields_ =
-        java.util.Collections.emptyList();
-      private void ensureFieldsIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          fields_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.StructField>(fields_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.StructField, io.littlehorse.sdk.common.proto.StructField.Builder, io.littlehorse.sdk.common.proto.StructFieldOrBuilder> fieldsBuilder_;
-
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public java.util.List<io.littlehorse.sdk.common.proto.StructField> getFieldsList() {
-        if (fieldsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(fields_);
-        } else {
-          return fieldsBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public int getFieldsCount() {
-        if (fieldsBuilder_ == null) {
-          return fields_.size();
-        } else {
-          return fieldsBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.StructField getFields(int index) {
-        if (fieldsBuilder_ == null) {
-          return fields_.get(index);
-        } else {
-          return fieldsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder setFields(
-          int index, io.littlehorse.sdk.common.proto.StructField value) {
-        if (fieldsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureFieldsIsMutable();
-          fields_.set(index, value);
-          onChanged();
-        } else {
-          fieldsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder setFields(
-          int index, io.littlehorse.sdk.common.proto.StructField.Builder builderForValue) {
-        if (fieldsBuilder_ == null) {
-          ensureFieldsIsMutable();
-          fields_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          fieldsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder addFields(io.littlehorse.sdk.common.proto.StructField value) {
-        if (fieldsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureFieldsIsMutable();
-          fields_.add(value);
-          onChanged();
-        } else {
-          fieldsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder addFields(
-          int index, io.littlehorse.sdk.common.proto.StructField value) {
-        if (fieldsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureFieldsIsMutable();
-          fields_.add(index, value);
-          onChanged();
-        } else {
-          fieldsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder addFields(
-          io.littlehorse.sdk.common.proto.StructField.Builder builderForValue) {
-        if (fieldsBuilder_ == null) {
-          ensureFieldsIsMutable();
-          fields_.add(builderForValue.build());
-          onChanged();
-        } else {
-          fieldsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder addFields(
-          int index, io.littlehorse.sdk.common.proto.StructField.Builder builderForValue) {
-        if (fieldsBuilder_ == null) {
-          ensureFieldsIsMutable();
-          fields_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          fieldsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder addAllFields(
-          java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.StructField> values) {
-        if (fieldsBuilder_ == null) {
-          ensureFieldsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, fields_);
-          onChanged();
-        } else {
-          fieldsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder clearFields() {
-        if (fieldsBuilder_ == null) {
-          fields_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          fieldsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public Builder removeFields(int index) {
-        if (fieldsBuilder_ == null) {
-          ensureFieldsIsMutable();
-          fields_.remove(index);
-          onChanged();
-        } else {
-          fieldsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.StructField.Builder getFieldsBuilder(
-          int index) {
-        return getFieldsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.StructFieldOrBuilder getFieldsOrBuilder(
-          int index) {
-        if (fieldsBuilder_ == null) {
-          return fields_.get(index);  } else {
-          return fieldsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public java.util.List<? extends io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-           getFieldsOrBuilderList() {
-        if (fieldsBuilder_ != null) {
-          return fieldsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(fields_);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.StructField.Builder addFieldsBuilder() {
-        return getFieldsFieldBuilder().addBuilder(
-            io.littlehorse.sdk.common.proto.StructField.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.StructField.Builder addFieldsBuilder(
-          int index) {
-        return getFieldsFieldBuilder().addBuilder(
-            index, io.littlehorse.sdk.common.proto.StructField.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .littlehorse.StructField fields = 1;</code>
-       */
-      public java.util.List<io.littlehorse.sdk.common.proto.StructField.Builder> 
-           getFieldsBuilderList() {
-        return getFieldsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.StructField, io.littlehorse.sdk.common.proto.StructField.Builder, io.littlehorse.sdk.common.proto.StructFieldOrBuilder> 
-          getFieldsFieldBuilder() {
-        if (fieldsBuilder_ == null) {
-          fieldsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.StructField, io.littlehorse.sdk.common.proto.StructField.Builder, io.littlehorse.sdk.common.proto.StructFieldOrBuilder>(
-                  fields_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          fields_ = null;
-        }
-        return fieldsBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.StructField.FieldList)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.StructField.FieldList)
-    private static final io.littlehorse.sdk.common.proto.StructField.FieldList DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.StructField.FieldList();
-    }
-
-    public static io.littlehorse.sdk.common.proto.StructField.FieldList getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FieldList>
-        PARSER = new com.google.protobuf.AbstractParser<FieldList>() {
-      @java.lang.Override
-      public FieldList parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<FieldList> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FieldList> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructField.FieldList getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  private int structValueCase_ = 0;
-  @SuppressWarnings("serial")
-  private java.lang.Object structValue_;
-  public enum StructValueCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    PRIMITIVE(1),
-    STRUCT(2),
-    LIST(3),
-    STRUCTVALUE_NOT_SET(0);
-    private final int value;
-    private StructValueCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static StructValueCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static StructValueCase forNumber(int value) {
-      switch (value) {
-        case 1: return PRIMITIVE;
-        case 2: return STRUCT;
-        case 3: return LIST;
-        case 0: return STRUCTVALUE_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public StructValueCase
-  getStructValueCase() {
-    return StructValueCase.forNumber(
-        structValueCase_);
-  }
-
-  public static final int PRIMITIVE_FIELD_NUMBER = 1;
-  /**
-   * <pre>
-   * The `value` of the field is an untyped primitive `VariableValue`.
-   * </pre>
-   *
-   * <code>.littlehorse.VariableValue primitive = 1;</code>
-   * @return Whether the primitive field is set.
+   * <code>.littlehorse.VariableValue value = 1;</code>
+   * @return Whether the value field is set.
    */
   @java.lang.Override
-  public boolean hasPrimitive() {
-    return structValueCase_ == 1;
+  public boolean hasValue() {
+    return value_ != null;
   }
   /**
    * <pre>
-   * The `value` of the field is an untyped primitive `VariableValue`.
+   * The `value` of the field is an untyped `VariableValue`.
    * </pre>
    *
-   * <code>.littlehorse.VariableValue primitive = 1;</code>
-   * @return The primitive.
+   * <code>.littlehorse.VariableValue value = 1;</code>
+   * @return The value.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValue getPrimitive() {
-    if (structValueCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.VariableValue) structValue_;
-    }
-    return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+  public io.littlehorse.sdk.common.proto.VariableValue getValue() {
+    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
   /**
    * <pre>
-   * The `value` of the field is an untyped primitive `VariableValue`.
+   * The `value` of the field is an untyped `VariableValue`.
    * </pre>
    *
-   * <code>.littlehorse.VariableValue primitive = 1;</code>
+   * <code>.littlehorse.VariableValue value = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getPrimitiveOrBuilder() {
-    if (structValueCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.VariableValue) structValue_;
-    }
-    return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
-  }
-
-  public static final int STRUCT_FIELD_NUMBER = 2;
-  /**
-   * <pre>
-   * The `value` of the field is a complex `Struct`.
-   * </pre>
-   *
-   * <code>.littlehorse.InlineStruct struct = 2;</code>
-   * @return Whether the struct field is set.
-   */
-  @java.lang.Override
-  public boolean hasStruct() {
-    return structValueCase_ == 2;
-  }
-  /**
-   * <pre>
-   * The `value` of the field is a complex `Struct`.
-   * </pre>
-   *
-   * <code>.littlehorse.InlineStruct struct = 2;</code>
-   * @return The struct.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.InlineStruct getStruct() {
-    if (structValueCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.InlineStruct) structValue_;
-    }
-    return io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * The `value` of the field is a complex `Struct`.
-   * </pre>
-   *
-   * <code>.littlehorse.InlineStruct struct = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.InlineStructOrBuilder getStructOrBuilder() {
-    if (structValueCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.InlineStruct) structValue_;
-    }
-    return io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance();
-  }
-
-  public static final int LIST_FIELD_NUMBER = 3;
-  /**
-   * <pre>
-   * The `value` of the field is a list of fields.
-   * </pre>
-   *
-   * <code>.littlehorse.StructField.FieldList list = 3;</code>
-   * @return Whether the list field is set.
-   */
-  @java.lang.Override
-  public boolean hasList() {
-    return structValueCase_ == 3;
-  }
-  /**
-   * <pre>
-   * The `value` of the field is a list of fields.
-   * </pre>
-   *
-   * <code>.littlehorse.StructField.FieldList list = 3;</code>
-   * @return The list.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StructField.FieldList getList() {
-    if (structValueCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_;
-    }
-    return io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * The `value` of the field is a list of fields.
-   * </pre>
-   *
-   * <code>.littlehorse.StructField.FieldList list = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StructField.FieldListOrBuilder getListOrBuilder() {
-    if (structValueCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_;
-    }
-    return io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance();
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
+    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1019,14 +94,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (structValueCase_ == 1) {
-      output.writeMessage(1, (io.littlehorse.sdk.common.proto.VariableValue) structValue_);
-    }
-    if (structValueCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.InlineStruct) structValue_);
-    }
-    if (structValueCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_);
+    if (value_ != null) {
+      output.writeMessage(1, getValue());
     }
     getUnknownFields().writeTo(output);
   }
@@ -1037,17 +106,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (structValueCase_ == 1) {
+    if (value_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.VariableValue) structValue_);
-    }
-    if (structValueCase_ == 2) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.InlineStruct) structValue_);
-    }
-    if (structValueCase_ == 3) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_);
+        .computeMessageSize(1, getValue());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1064,22 +125,10 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.StructField other = (io.littlehorse.sdk.common.proto.StructField) obj;
 
-    if (!getStructValueCase().equals(other.getStructValueCase())) return false;
-    switch (structValueCase_) {
-      case 1:
-        if (!getPrimitive()
-            .equals(other.getPrimitive())) return false;
-        break;
-      case 2:
-        if (!getStruct()
-            .equals(other.getStruct())) return false;
-        break;
-      case 3:
-        if (!getList()
-            .equals(other.getList())) return false;
-        break;
-      case 0:
-      default:
+    if (hasValue() != other.hasValue()) return false;
+    if (hasValue()) {
+      if (!getValue()
+          .equals(other.getValue())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -1092,21 +141,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    switch (structValueCase_) {
-      case 1:
-        hash = (37 * hash) + PRIMITIVE_FIELD_NUMBER;
-        hash = (53 * hash) + getPrimitive().hashCode();
-        break;
-      case 2:
-        hash = (37 * hash) + STRUCT_FIELD_NUMBER;
-        hash = (53 * hash) + getStruct().hashCode();
-        break;
-      case 3:
-        hash = (37 * hash) + LIST_FIELD_NUMBER;
-        hash = (53 * hash) + getList().hashCode();
-        break;
-      case 0:
-      default:
+    if (hasValue()) {
+      hash = (37 * hash) + VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getValue().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1243,17 +280,11 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      if (primitiveBuilder_ != null) {
-        primitiveBuilder_.clear();
+      value_ = null;
+      if (valueBuilder_ != null) {
+        valueBuilder_.dispose();
+        valueBuilder_ = null;
       }
-      if (structBuilder_ != null) {
-        structBuilder_.clear();
-      }
-      if (listBuilder_ != null) {
-        listBuilder_.clear();
-      }
-      structValueCase_ = 0;
-      structValue_ = null;
       return this;
     }
 
@@ -1281,29 +312,16 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.StructField buildPartial() {
       io.littlehorse.sdk.common.proto.StructField result = new io.littlehorse.sdk.common.proto.StructField(this);
       if (bitField0_ != 0) { buildPartial0(result); }
-      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.StructField result) {
       int from_bitField0_ = bitField0_;
-    }
-
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.StructField result) {
-      result.structValueCase_ = structValueCase_;
-      result.structValue_ = this.structValue_;
-      if (structValueCase_ == 1 &&
-          primitiveBuilder_ != null) {
-        result.structValue_ = primitiveBuilder_.build();
-      }
-      if (structValueCase_ == 2 &&
-          structBuilder_ != null) {
-        result.structValue_ = structBuilder_.build();
-      }
-      if (structValueCase_ == 3 &&
-          listBuilder_ != null) {
-        result.structValue_ = listBuilder_.build();
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.value_ = valueBuilder_ == null
+            ? value_
+            : valueBuilder_.build();
       }
     }
 
@@ -1351,22 +369,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.StructField other) {
       if (other == io.littlehorse.sdk.common.proto.StructField.getDefaultInstance()) return this;
-      switch (other.getStructValueCase()) {
-        case PRIMITIVE: {
-          mergePrimitive(other.getPrimitive());
-          break;
-        }
-        case STRUCT: {
-          mergeStruct(other.getStruct());
-          break;
-        }
-        case LIST: {
-          mergeList(other.getList());
-          break;
-        }
-        case STRUCTVALUE_NOT_SET: {
-          break;
-        }
+      if (other.hasValue()) {
+        mergeValue(other.getValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1396,25 +400,11 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  getPrimitiveFieldBuilder().getBuilder(),
+                  getValueFieldBuilder().getBuilder(),
                   extensionRegistry);
-              structValueCase_ = 1;
+              bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              input.readMessage(
-                  getStructFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              structValueCase_ = 2;
-              break;
-            } // case 18
-            case 26: {
-              input.readMessage(
-                  getListFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              structValueCase_ = 3;
-              break;
-            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1430,555 +420,161 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int structValueCase_ = 0;
-    private java.lang.Object structValue_;
-    public StructValueCase
-        getStructValueCase() {
-      return StructValueCase.forNumber(
-          structValueCase_);
-    }
-
-    public Builder clearStructValue() {
-      structValueCase_ = 0;
-      structValue_ = null;
-      onChanged();
-      return this;
-    }
-
     private int bitField0_;
 
+    private io.littlehorse.sdk.common.proto.VariableValue value_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> primitiveBuilder_;
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
-     * @return Whether the primitive field is set.
+     * <code>.littlehorse.VariableValue value = 1;</code>
+     * @return Whether the value field is set.
      */
-    @java.lang.Override
-    public boolean hasPrimitive() {
-      return structValueCase_ == 1;
+    public boolean hasValue() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
-     * @return The primitive.
+     * <code>.littlehorse.VariableValue value = 1;</code>
+     * @return The value.
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValue getPrimitive() {
-      if (primitiveBuilder_ == null) {
-        if (structValueCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.VariableValue) structValue_;
-        }
-        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.VariableValue getValue() {
+      if (valueBuilder_ == null) {
+        return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
       } else {
-        if (structValueCase_ == 1) {
-          return primitiveBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+        return valueBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public Builder setPrimitive(io.littlehorse.sdk.common.proto.VariableValue value) {
-      if (primitiveBuilder_ == null) {
+    public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (valueBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        structValue_ = value;
-        onChanged();
+        value_ = value;
       } else {
-        primitiveBuilder_.setMessage(value);
+        valueBuilder_.setMessage(value);
       }
-      structValueCase_ = 1;
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public Builder setPrimitive(
+    public Builder setValue(
         io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
-      if (primitiveBuilder_ == null) {
-        structValue_ = builderForValue.build();
-        onChanged();
+      if (valueBuilder_ == null) {
+        value_ = builderForValue.build();
       } else {
-        primitiveBuilder_.setMessage(builderForValue.build());
+        valueBuilder_.setMessage(builderForValue.build());
       }
-      structValueCase_ = 1;
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public Builder mergePrimitive(io.littlehorse.sdk.common.proto.VariableValue value) {
-      if (primitiveBuilder_ == null) {
-        if (structValueCase_ == 1 &&
-            structValue_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
-          structValue_ = io.littlehorse.sdk.common.proto.VariableValue.newBuilder((io.littlehorse.sdk.common.proto.VariableValue) structValue_)
-              .mergeFrom(value).buildPartial();
+    public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (valueBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          value_ != null &&
+          value_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
+          getValueBuilder().mergeFrom(value);
         } else {
-          structValue_ = value;
+          value_ = value;
         }
-        onChanged();
       } else {
-        if (structValueCase_ == 1) {
-          primitiveBuilder_.mergeFrom(value);
-        } else {
-          primitiveBuilder_.setMessage(value);
-        }
+        valueBuilder_.mergeFrom(value);
       }
-      structValueCase_ = 1;
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public Builder clearPrimitive() {
-      if (primitiveBuilder_ == null) {
-        if (structValueCase_ == 1) {
-          structValueCase_ = 0;
-          structValue_ = null;
-          onChanged();
-        }
-      } else {
-        if (structValueCase_ == 1) {
-          structValueCase_ = 0;
-          structValue_ = null;
-        }
-        primitiveBuilder_.clear();
+    public Builder clearValue() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      value_ = null;
+      if (valueBuilder_ != null) {
+        valueBuilder_.dispose();
+        valueBuilder_ = null;
       }
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableValue.Builder getPrimitiveBuilder() {
-      return getPrimitiveFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return getValueFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getPrimitiveOrBuilder() {
-      if ((structValueCase_ == 1) && (primitiveBuilder_ != null)) {
-        return primitiveBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
+      if (valueBuilder_ != null) {
+        return valueBuilder_.getMessageOrBuilder();
       } else {
-        if (structValueCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.VariableValue) structValue_;
-        }
-        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+        return value_ == null ?
+            io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
       }
     }
     /**
      * <pre>
-     * The `value` of the field is an untyped primitive `VariableValue`.
+     * The `value` of the field is an untyped `VariableValue`.
      * </pre>
      *
-     * <code>.littlehorse.VariableValue primitive = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
-        getPrimitiveFieldBuilder() {
-      if (primitiveBuilder_ == null) {
-        if (!(structValueCase_ == 1)) {
-          structValue_ = io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
-        }
-        primitiveBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        getValueFieldBuilder() {
+      if (valueBuilder_ == null) {
+        valueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableValue) structValue_,
+                getValue(),
                 getParentForChildren(),
                 isClean());
-        structValue_ = null;
+        value_ = null;
       }
-      structValueCase_ = 1;
-      onChanged();
-      return primitiveBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.InlineStruct, io.littlehorse.sdk.common.proto.InlineStruct.Builder, io.littlehorse.sdk.common.proto.InlineStructOrBuilder> structBuilder_;
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     * @return Whether the struct field is set.
-     */
-    @java.lang.Override
-    public boolean hasStruct() {
-      return structValueCase_ == 2;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     * @return The struct.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.InlineStruct getStruct() {
-      if (structBuilder_ == null) {
-        if (structValueCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.InlineStruct) structValue_;
-        }
-        return io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance();
-      } else {
-        if (structValueCase_ == 2) {
-          return structBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     */
-    public Builder setStruct(io.littlehorse.sdk.common.proto.InlineStruct value) {
-      if (structBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        structValue_ = value;
-        onChanged();
-      } else {
-        structBuilder_.setMessage(value);
-      }
-      structValueCase_ = 2;
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     */
-    public Builder setStruct(
-        io.littlehorse.sdk.common.proto.InlineStruct.Builder builderForValue) {
-      if (structBuilder_ == null) {
-        structValue_ = builderForValue.build();
-        onChanged();
-      } else {
-        structBuilder_.setMessage(builderForValue.build());
-      }
-      structValueCase_ = 2;
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     */
-    public Builder mergeStruct(io.littlehorse.sdk.common.proto.InlineStruct value) {
-      if (structBuilder_ == null) {
-        if (structValueCase_ == 2 &&
-            structValue_ != io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance()) {
-          structValue_ = io.littlehorse.sdk.common.proto.InlineStruct.newBuilder((io.littlehorse.sdk.common.proto.InlineStruct) structValue_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          structValue_ = value;
-        }
-        onChanged();
-      } else {
-        if (structValueCase_ == 2) {
-          structBuilder_.mergeFrom(value);
-        } else {
-          structBuilder_.setMessage(value);
-        }
-      }
-      structValueCase_ = 2;
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     */
-    public Builder clearStruct() {
-      if (structBuilder_ == null) {
-        if (structValueCase_ == 2) {
-          structValueCase_ = 0;
-          structValue_ = null;
-          onChanged();
-        }
-      } else {
-        if (structValueCase_ == 2) {
-          structValueCase_ = 0;
-          structValue_ = null;
-        }
-        structBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.InlineStruct.Builder getStructBuilder() {
-      return getStructFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.InlineStructOrBuilder getStructOrBuilder() {
-      if ((structValueCase_ == 2) && (structBuilder_ != null)) {
-        return structBuilder_.getMessageOrBuilder();
-      } else {
-        if (structValueCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.InlineStruct) structValue_;
-        }
-        return io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a complex `Struct`.
-     * </pre>
-     *
-     * <code>.littlehorse.InlineStruct struct = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.InlineStruct, io.littlehorse.sdk.common.proto.InlineStruct.Builder, io.littlehorse.sdk.common.proto.InlineStructOrBuilder> 
-        getStructFieldBuilder() {
-      if (structBuilder_ == null) {
-        if (!(structValueCase_ == 2)) {
-          structValue_ = io.littlehorse.sdk.common.proto.InlineStruct.getDefaultInstance();
-        }
-        structBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.InlineStruct, io.littlehorse.sdk.common.proto.InlineStruct.Builder, io.littlehorse.sdk.common.proto.InlineStructOrBuilder>(
-                (io.littlehorse.sdk.common.proto.InlineStruct) structValue_,
-                getParentForChildren(),
-                isClean());
-        structValue_ = null;
-      }
-      structValueCase_ = 2;
-      onChanged();
-      return structBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StructField.FieldList, io.littlehorse.sdk.common.proto.StructField.FieldList.Builder, io.littlehorse.sdk.common.proto.StructField.FieldListOrBuilder> listBuilder_;
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     * @return Whether the list field is set.
-     */
-    @java.lang.Override
-    public boolean hasList() {
-      return structValueCase_ == 3;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     * @return The list.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructField.FieldList getList() {
-      if (listBuilder_ == null) {
-        if (structValueCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_;
-        }
-        return io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance();
-      } else {
-        if (structValueCase_ == 3) {
-          return listBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     */
-    public Builder setList(io.littlehorse.sdk.common.proto.StructField.FieldList value) {
-      if (listBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        structValue_ = value;
-        onChanged();
-      } else {
-        listBuilder_.setMessage(value);
-      }
-      structValueCase_ = 3;
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     */
-    public Builder setList(
-        io.littlehorse.sdk.common.proto.StructField.FieldList.Builder builderForValue) {
-      if (listBuilder_ == null) {
-        structValue_ = builderForValue.build();
-        onChanged();
-      } else {
-        listBuilder_.setMessage(builderForValue.build());
-      }
-      structValueCase_ = 3;
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     */
-    public Builder mergeList(io.littlehorse.sdk.common.proto.StructField.FieldList value) {
-      if (listBuilder_ == null) {
-        if (structValueCase_ == 3 &&
-            structValue_ != io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance()) {
-          structValue_ = io.littlehorse.sdk.common.proto.StructField.FieldList.newBuilder((io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          structValue_ = value;
-        }
-        onChanged();
-      } else {
-        if (structValueCase_ == 3) {
-          listBuilder_.mergeFrom(value);
-        } else {
-          listBuilder_.setMessage(value);
-        }
-      }
-      structValueCase_ = 3;
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     */
-    public Builder clearList() {
-      if (listBuilder_ == null) {
-        if (structValueCase_ == 3) {
-          structValueCase_ = 0;
-          structValue_ = null;
-          onChanged();
-        }
-      } else {
-        if (structValueCase_ == 3) {
-          structValueCase_ = 0;
-          structValue_ = null;
-        }
-        listBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.StructField.FieldList.Builder getListBuilder() {
-      return getListFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructField.FieldListOrBuilder getListOrBuilder() {
-      if ((structValueCase_ == 3) && (listBuilder_ != null)) {
-        return listBuilder_.getMessageOrBuilder();
-      } else {
-        if (structValueCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_;
-        }
-        return io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * The `value` of the field is a list of fields.
-     * </pre>
-     *
-     * <code>.littlehorse.StructField.FieldList list = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StructField.FieldList, io.littlehorse.sdk.common.proto.StructField.FieldList.Builder, io.littlehorse.sdk.common.proto.StructField.FieldListOrBuilder> 
-        getListFieldBuilder() {
-      if (listBuilder_ == null) {
-        if (!(structValueCase_ == 3)) {
-          structValue_ = io.littlehorse.sdk.common.proto.StructField.FieldList.getDefaultInstance();
-        }
-        listBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.StructField.FieldList, io.littlehorse.sdk.common.proto.StructField.FieldList.Builder, io.littlehorse.sdk.common.proto.StructField.FieldListOrBuilder>(
-                (io.littlehorse.sdk.common.proto.StructField.FieldList) structValue_,
-                getParentForChildren(),
-                isClean());
-        structValue_ = null;
-      }
-      structValueCase_ = 3;
-      onChanged();
-      return listBuilder_;
+      return valueBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
