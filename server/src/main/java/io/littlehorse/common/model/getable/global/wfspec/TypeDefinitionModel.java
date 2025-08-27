@@ -22,6 +22,8 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
+import java.util.Objects;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,25 +46,25 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     public TypeDefinitionModel(StructDefIdModel structDefId) {
         this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
-        this.structDefId = structDefId;
+        this.structDefId = Objects.requireNonNull(structDefId);
         this.masked = false;
     }
 
     public TypeDefinitionModel(StructDefIdModel structDefId, boolean masked) {
         this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
-        this.structDefId = structDefId;
+        this.structDefId = Objects.requireNonNull(structDefId);
         this.masked = masked;
     }
 
     public TypeDefinitionModel(VariableType primitiveType) {
         this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
-        this.primitiveType = primitiveType;
+        this.primitiveType = Objects.requireNonNull(primitiveType);
         this.masked = false;
     }
 
     public TypeDefinitionModel(VariableType type, boolean masked) {
         this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
-        this.primitiveType = type;
+        this.primitiveType = Objects.requireNonNull(type);
         this.masked = masked;
     }
 
@@ -113,6 +115,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             default:
                 break;
         }
+    }
+
+    public boolean isNull() {
+        return this.definedTypeCase == DefinedTypeCase.DEFINEDTYPE_NOT_SET;
     }
 
     public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
@@ -233,7 +239,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case DEFINEDTYPE_NOT_SET:
             case INLINE_ARRAY_DEF:
             default:
-                result = "UNKNOWN";
+                result = this.definedTypeCase.toString();
                 break;
         }
         if (masked) result += " MASKED";

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.variable;
 import com.google.gson.JsonSyntaxException;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import com.google.protobuf.Type;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -15,6 +16,7 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -122,13 +124,15 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public TypeDefinitionModel getTypeDefinition() {
-        switch (this.valueType) {
-            case STRUCT:
-                return new TypeDefinitionModel(this.struct.getStructDefId());
-            case VALUE_NOT_SET:
-                return new TypeDefinitionModel();
+        if (this.valueType == ValueCase.STRUCT) {
+            return new TypeDefinitionModel(this.struct.getStructDefId());
         }
-        return new TypeDefinitionModel(fromValueCase(valueType));
+
+        VariableType primitiveType = fromValueCase(valueType);
+
+        if (primitiveType == null) return new TypeDefinitionModel();
+
+        return new TypeDefinitionModel(primitiveType);
     }
 
     private String getJsonString() throws LHVarSubError {
@@ -264,7 +268,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             }
         }
 
-        if (typeToCoerceTo.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+        if (typeToCoerceTo.getDefinedTypeCase() != DefinedTypeCase.DEFINEDTYPE_NOT_SET && typeToCoerceTo.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
             throw new RuntimeException("Unsupported operation: " + operation);
         }
 
@@ -507,9 +511,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel coerceToType(TypeDefinitionModel otherType) throws LHVarSubError {
+        if (getTypeDefinition().isNull()) {
+            throw new LHVarSubError(null, "Coercing from NULL not supported.");
+        } else if (otherType.isNull()) {
+            throw new LHVarSubError(null, "Coercing to NULL not supported.");
+        }
+
         if (getTypeDefinition().getDefinedTypeCase() != otherType.getDefinedTypeCase()) {
-            System.out.println(getTypeDefinition());
-            System.out.println(otherType);
             throw new LHVarSubError(
                     null,
                     "Coercing from " + getTypeDefinition() + " to " + otherType + " or vice versa not supported.");
