@@ -8,8 +8,7 @@ public class Person {
     public String lastName;
     public Integer accountId;
 
-    public Person() {}
-    ;
+    public Person() {};
 
     public Person(String firstName, String lastName, Integer accountId) {
         this.firstName = firstName;

@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -30,6 +29,8 @@ public class StructDefExample {
 
             ownerVar.assign(wf.execute("get-owner", structVar));
             wf.execute("notify-owner", ownerVar);
+
+            ownerVar.assign(wf.waitForEvent("change-owner").registeredAs(Person.class));
         });
     }
 
@@ -80,11 +81,6 @@ public class StructDefExample {
             worker.registerStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
             worker.registerTaskDef();
         }
-
-        config.getBlockingStub()
-                .putExternalEventDef(PutExternalEventDefRequest.newBuilder()
-                        .setName("change-owner")
-                        .build());
 
         // Register WfSpec
         workflow.registerWfSpec(config.getBlockingStub());
