@@ -1,2 +1,2 @@
 export * from './ModalContext'
-export * from './ThreadContext'
+export * from './DiagramContext'

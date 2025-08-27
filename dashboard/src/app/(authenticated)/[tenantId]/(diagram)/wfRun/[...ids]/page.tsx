@@ -1,13 +1,18 @@
+import { getWfRun } from '@/app/actions/getWfRun'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
 import { WfRun } from './components/WfRun'
+import { WfRunId } from 'littlehorse-client/proto'
+import { wfRunIdFromList } from '@/app/utils'
 
 type Props = { params: { ids: string[]; tenantId: string } }
 
 export default async function Page({ params: { ids, tenantId } }: Props) {
   try {
-    return <WfRun ids={ids} tenantId={tenantId} />
+    const wfRunId = wfRunIdFromList(ids)
+    const wfRun = await getWfRun({wfRunId, tenantId})
+    return <WfRun {...wfRun} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()
     throw error
