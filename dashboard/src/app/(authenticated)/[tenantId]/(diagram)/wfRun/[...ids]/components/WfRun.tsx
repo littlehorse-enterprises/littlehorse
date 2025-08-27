@@ -1,28 +1,32 @@
 'use client'
 import { Diagram } from '@/app/(authenticated)/[tenantId]/(diagram)/components/Diagram'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
-import { useWfRun } from '@/app/hooks/useWfRun'
+import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
+import { wfRunIdToPath } from '@/app/utils'
 import { Separator } from '@/components/ui/separator'
-import { WfRunId } from 'littlehorse-client/proto'
-import { useSearchParams } from 'next/navigation'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { FC } from 'react'
+import useSWR from 'swr'
 import { ChildWorkflows } from './ChildWorkflows'
 import { Details } from './Details'
 import { Variables } from './Variables'
 
-export const WfRun: FC<{ ids: string[]; tenantId: string }> = ({ ids, tenantId }) => {
-  const wfRunId = ids.reduce((wfRunId, id, i) => (i === 0 ? { id } : { id, parentWfRunId: wfRunId }), {} as WfRunId)
+export const WfRun: FC<WfRunResponse> = wfRunData => {
+  const { tenantId } = useWhoAmI()
+  const wfRunId = wfRunData.wfRun.id
+  if (!wfRunId) return
 
-  const searchParams = useSearchParams()
-  const threadRunNumber = Number(searchParams.get('threadRunNumber'))
-  const { wfRunData } = useWfRun({ wfRunId, tenantId })
+  const { data } = useSWR(
+    `wfRun/${tenantId}/${wfRunIdToPath(wfRunId)}`,
+    async () => {
+      return await getWfRun({ wfRunId, tenantId })
+    },
+    { fallbackData: wfRunData }
+  )
 
-  if (!wfRunData) return null
-  const { wfRun, wfSpec, nodeRuns, variables } = wfRunData
+  const { wfSpec, wfRun, variables } = data
 
-  if (!wfRun) return null
-
-  const variableDefs = wfSpec.threadSpecs[wfRun.threadRuns[threadRunNumber].threadSpecName].variableDefs
+  const variableDefs = wfSpec.threadSpecs[wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName].variableDefs
 
   return (
     <div className="mb-16">
@@ -31,7 +35,7 @@ export const WfRun: FC<{ ids: string[]; tenantId: string }> = ({ ids, tenantId }
         title="Go back to WfSpec"
       />
       <Details {...wfRun} />
-      <Diagram spec={wfSpec} wfRun={wfRun} nodeRuns={nodeRuns} />
+      <Diagram spec={wfSpec} wfRun={wfRun} />
 
       {wfRun.id && (
         <Variables

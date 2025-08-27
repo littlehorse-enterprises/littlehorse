@@ -9,14 +9,14 @@ import { NodeRunsList } from '../../NodeRunsList'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 import { Fade } from '../Fade'
 import { NodeProps } from '../index'
-import { NodeDetails } from '../NodeDetails'
+import { SelectedNode } from '../SelectedNode'
 
 const Node: FC<NodeProps<'userTask', UserTaskNode>> = ({ data, selected }) => {
   const { fade, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList, ...userTaskNode } = data
 
   return (
     <>
-      <NodeDetails nodeRunList={data.nodeRunsList}>
+      <SelectedNode nodeRunList={data.nodeRunsList}>
         <DiagramDataGroup label={nodeRun ? 'UserTaskRun' : 'UserTaskDef'}>
           <div className="flex flex-col">
             <ExternalLinkButton
@@ -37,7 +37,7 @@ const Node: FC<NodeProps<'userTask', UserTaskNode>> = ({ data, selected }) => {
             )}
           </div>
         </DiagramDataGroup>
-      </NodeDetails>
+      </SelectedNode>
       <Fade fade={fade} status={nodeRunsList?.[nodeRunsList.length - 1]?.status}>
         <div
           className={

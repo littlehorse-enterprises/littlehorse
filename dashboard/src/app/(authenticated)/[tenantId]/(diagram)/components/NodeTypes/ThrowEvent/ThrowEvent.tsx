@@ -6,7 +6,7 @@ import { NodeProps } from '..'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Fade } from '../Fade'
-import { NodeDetails } from '../NodeDetails'
+import { SelectedNode } from '../SelectedNode'
 
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
@@ -15,7 +15,7 @@ const Node: FC<NodeProps<'throwEvent', ThrowEventNode>> = ({ data }) => {
   if (!eventDefId) return null
   return (
     <>
-      <NodeDetails nodeRunList={data.nodeRunsList}>
+      <SelectedNode nodeRunList={data.nodeRunsList}>
         <DiagramDataGroup label={nodeRun ? 'WorkflowEvent' : 'WorkflowEventDef'}>
           <div>
             <div>
@@ -31,7 +31,7 @@ const Node: FC<NodeProps<'throwEvent', ThrowEventNode>> = ({ data }) => {
             </div>
           </div>
         </DiagramDataGroup>
-      </NodeDetails>
+      </SelectedNode>
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div

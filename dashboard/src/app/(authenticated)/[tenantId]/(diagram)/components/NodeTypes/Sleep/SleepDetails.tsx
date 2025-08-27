@@ -3,7 +3,7 @@ import { NodeRun, SleepNode } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { NodeRunsList } from '../../NodeRunsList'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
-import { NodeDetails } from '../NodeDetails'
+import { SelectedNode } from '../SelectedNode'
 export const SleepDetails: FC<{ sleepLength?: SleepNode['sleepLength']; nodeRunsList: [NodeRun] }> = ({
   sleepLength,
   nodeRunsList,
@@ -13,7 +13,7 @@ export const SleepDetails: FC<{ sleepLength?: SleepNode['sleepLength']; nodeRuns
   const { $case, value } = sleepLength
 
   return (
-    <NodeDetails nodeRunList={nodeRunsList}>
+    <SelectedNode nodeRunList={nodeRunsList}>
       <DiagramDataGroup label="Sleep">
         <div className="mb-2">
           <div className="flex flex-col gap-1 text-nowrap">
@@ -26,6 +26,6 @@ export const SleepDetails: FC<{ sleepLength?: SleepNode['sleepLength']; nodeRuns
           </div>
         </div>
       </DiagramDataGroup>
-    </NodeDetails>
+    </SelectedNode>
   )
 }

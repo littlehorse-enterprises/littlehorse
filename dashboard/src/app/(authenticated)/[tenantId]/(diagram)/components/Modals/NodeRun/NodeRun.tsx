@@ -3,7 +3,6 @@ import * as Accordion from '@radix-ui/react-accordion'
 import { FC } from 'react'
 import { Modal, NodeRuns } from '../../../context'
 import { useModal } from '../../../hooks/useModal'
-import { TaskLink } from '../../NodeTypes/Task/TaskDetails'
 import { AccordionItem } from './AccordionItem'
 
 export const NodeRun: FC<Modal<NodeRuns>> = ({ data, type }) => {
@@ -17,7 +16,7 @@ export const NodeRun: FC<Modal<NodeRuns>> = ({ data, type }) => {
         <DialogHeader>
           <DialogTitle className="mr-8 flex items-center justify-between">
             <h2 className="text-lg font-bold">NodeRuns</h2>
-            {taskNode?.taskToExecute && <TaskLink taskToExecute={taskNode.taskToExecute} />}
+            {/* {taskNode?.taskToExecute && <TaskLink taskToExecute={taskNode.taskToExecute} />} */}
           </DialogTitle>
         </DialogHeader>
         <hr />
