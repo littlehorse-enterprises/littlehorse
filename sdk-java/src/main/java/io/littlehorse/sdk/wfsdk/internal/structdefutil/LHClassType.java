@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.lang.reflect.InvocationTargetException;
@@ -9,7 +10,9 @@ public abstract class LHClassType {
     protected Class<?> clazz;
 
     public static LHClassType createLHClassType(Class<?> classType) {
-        if (classType.isAnnotationPresent(LHStructDef.class)) {
+        if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
+            return new LHPrimitiveType(classType);
+        } else if (classType.isAnnotationPresent(LHStructDef.class)) {
             return new LHStructDefType(classType);
         } else if (classType.isArray()) {
             return new LHArrayDefType(classType);
