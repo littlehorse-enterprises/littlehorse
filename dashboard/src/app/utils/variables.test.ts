@@ -1,5 +1,11 @@
-import { VariableAssignment, VariableDef, VariableMutationType, VariableType } from 'littlehorse-client/proto'
-import { getTypedVariableValue, getVariable, getVariableDefType } from './variables'
+import {
+  TypeDefinition,
+  VariableAssignment,
+  VariableDef,
+  VariableMutationType,
+  VariableType,
+} from 'littlehorse-client/proto'
+import { getTypedVariableValue, getVariable, getVariableCaseFromTypeDef, getVariableDefType } from './variables'
 
 describe('getVariable', () => {
   it('should return from literalValue str', () => {
@@ -374,5 +380,52 @@ describe('getVariableDefType', () => {
 
     const type = getVariableDefType(variableDef)
     expect(type).toEqual('str')
+  })
+})
+
+describe('getVariableCaseFromTypeDef', () => {
+  it('should return primitive type case', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'primitiveType',
+        value: VariableType.STR,
+      },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('str')
+  })
+
+  it('should return struct for structDefId', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'structDefId',
+        value: {
+          // minimal stub; fields are not used by the function
+        } as any,
+      },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
+  })
+
+  it('should return jsonArr for inlineArrayDef', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'inlineArrayDef',
+        value: {
+          // minimal stub; fields are not used by the function
+        } as any,
+      },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('jsonArr')
+  })
+
+  it('should throw on unknown type', () => {
+    const typeDef = {} as TypeDefinition
+    expect(() => getVariableCaseFromTypeDef(typeDef)).toThrow('Unknown variable type.')
   })
 })
