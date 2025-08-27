@@ -12,12 +12,10 @@ const structToJSONObject = (struct: Struct): Object => {
   if (struct.struct == null) return '{}'
 
   for (const entry of Object.entries(struct.struct.fields)) {
-    if (entry[1].structValue?.$case == 'primitive') {
-      if (entry[1].structValue.value.value?.$case == 'struct') {
-        structObject[entry[0]] = structToJSONObject(entry[1].structValue.value.value.value)
-      } else {
-        structObject[entry[0]] = getVariableValue(entry[1].structValue.value)
-      }
+    if (entry[1].value?.value?.$case == 'struct') {
+      structObject[entry[0]] = structToJSONObject(entry[1].value?.value?.value)
+    } else if (entry[1].value) {
+      structObject[entry[0]] = getVariableValue(entry[1].value)
     }
   }
   return structObject
