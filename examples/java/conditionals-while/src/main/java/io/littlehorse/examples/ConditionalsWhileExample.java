@@ -32,6 +32,8 @@ public class ConditionalsWhileExample {
                     VariableType.INT
                 ).required();
 
+                    var bo = wf.declareBool("demo").withDefault(false);
+
                 wf.doWhile(
                         wf.condition(numDonuts, Comparator.GREATER_THAN, 0),
                     handler -> {
