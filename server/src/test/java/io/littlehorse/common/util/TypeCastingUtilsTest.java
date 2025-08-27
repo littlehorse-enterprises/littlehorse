@@ -97,7 +97,7 @@ class TypeCastingUtilsTest {
         @ParameterizedTest(name = "{0} → {1} automatic = {2}")
         @MethodSource("io.littlehorse.common.util.TypeCastingUtilsTest#automaticCastingCases")
         void testCanAssignAutomatically(VariableType sourceType, VariableType targetType, boolean expected) {
-            boolean result = TypeCastingUtils.canAssignWithoutCast(sourceType, targetType);
+            boolean result = TypeCastingUtils.canBeType(sourceType, targetType);
             assertEquals(expected, result);
         }
     }
@@ -118,26 +118,26 @@ class TypeCastingUtilsTest {
 
         @Test
         void shouldAllowAutomaticCasting() {
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.INT, VariableType.STR));
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.INT, VariableType.DOUBLE));
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.DOUBLE, VariableType.STR));
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.BOOL, VariableType.STR));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.INT, VariableType.STR));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.INT, VariableType.DOUBLE));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.DOUBLE, VariableType.STR));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.BOOL, VariableType.STR));
         }
 
         @Test
         void shouldRejectManualCasting() {
-            assertFalse(TypeCastingUtils.canAssignWithoutCast(VariableType.STR, VariableType.INT));
-            assertFalse(TypeCastingUtils.canAssignWithoutCast(VariableType.STR, VariableType.DOUBLE));
-            assertFalse(TypeCastingUtils.canAssignWithoutCast(VariableType.STR, VariableType.BOOL));
-            assertFalse(TypeCastingUtils.canAssignWithoutCast(VariableType.DOUBLE, VariableType.INT));
+            assertFalse(TypeCastingUtils.canBeType(VariableType.STR, VariableType.INT));
+            assertFalse(TypeCastingUtils.canBeType(VariableType.STR, VariableType.DOUBLE));
+            assertFalse(TypeCastingUtils.canBeType(VariableType.STR, VariableType.BOOL));
+            assertFalse(TypeCastingUtils.canBeType(VariableType.DOUBLE, VariableType.INT));
         }
 
         @Test
         void shouldAllowSameType() {
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.INT, VariableType.INT));
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.STR, VariableType.STR));
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.DOUBLE, VariableType.DOUBLE));
-            assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.BOOL, VariableType.BOOL));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.INT, VariableType.INT));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.STR, VariableType.STR));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.DOUBLE, VariableType.DOUBLE));
+            assertTrue(TypeCastingUtils.canBeType(VariableType.BOOL, VariableType.BOOL));
         }
     }
 
@@ -163,7 +163,7 @@ class TypeCastingUtilsTest {
 
         @Test
         void shouldFailForManualCastingWithoutExplicitCast() {
-            assertFalse(TypeCastingUtils.canAssignWithoutCast(VariableType.STR, VariableType.INT));
+            assertFalse(TypeCastingUtils.canBeType(VariableType.STR, VariableType.INT));
             assertTrue(TypeCastingUtils.canCastTo(VariableType.STR, VariableType.INT));
         }
 
@@ -224,10 +224,10 @@ class EdgeCasesTest {
 
     @Test
     void shouldValidateComplexCastingChainsLogically() {
-        assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.INT, VariableType.STR));
+        assertTrue(TypeCastingUtils.canBeType(VariableType.INT, VariableType.STR));
         assertTrue(TypeCastingUtils.requiresManualCast(VariableType.STR, VariableType.DOUBLE));
 
-        assertTrue(TypeCastingUtils.canAssignWithoutCast(VariableType.DOUBLE, VariableType.STR));
+        assertTrue(TypeCastingUtils.canBeType(VariableType.DOUBLE, VariableType.STR));
         assertTrue(TypeCastingUtils.requiresManualCast(VariableType.STR, VariableType.INT));
     }
 }

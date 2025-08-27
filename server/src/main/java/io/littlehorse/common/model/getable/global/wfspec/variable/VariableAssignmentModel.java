@@ -170,7 +170,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
 
-        return TypeCastingUtils.canAssignWithoutCast(baseType, type);
+        return TypeCastingUtils.canBeType(baseType, type);
     }
 
     /**

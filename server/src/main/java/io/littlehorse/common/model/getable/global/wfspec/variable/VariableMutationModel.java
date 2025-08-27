@@ -225,7 +225,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                     // No explicit cast, only allow assignment if possible without cast
                     VariableType rhsActualType = rhsType.get().getType();
                     VariableType lhsActualType = lhsType.getType();
-                    if (!TypeCastingUtils.canAssignWithoutCast(rhsActualType, lhsActualType)) {
+                    if (!TypeCastingUtils.canBeType(rhsActualType, lhsActualType)) {
                         throw new InvalidMutationException("Cannot assign " + rhsActualType + " to " + lhsActualType
                                 + " without explicit casting.");
                     }

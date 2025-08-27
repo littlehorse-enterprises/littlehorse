@@ -34,7 +34,6 @@ import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -837,17 +836,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (assn.getJsonPath() != null) {
             val = val.jsonPath(assn.getJsonPath());
-            var resolvedType = val.getTypeDefinition().getType();
-            var targetType = assn.getTargetType() != null ? assn.getTargetType().getType() : null;
-            boolean requiresManualCast =
-                    targetType != null && TypeCastingUtils.requiresManualCast(resolvedType, targetType);
-            if (requiresManualCast && assn.getTargetType() == null) {
-                throw new LHVarSubError(
-                        null,
-                        "Cannot implicitly cast " + resolvedType + " to " + targetType
-                                + " from jsonPath. Use an explicit cast method like .cast(" + targetType
-                                + ") or the appropriate helper (e.g., .castToInt()).");
-            }
         }
 
         val = assn.applyCast(val);

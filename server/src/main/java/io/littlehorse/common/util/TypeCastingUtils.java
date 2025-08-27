@@ -41,13 +41,13 @@ public class TypeCastingUtils {
             return false;
         }
 
-        if (canAssignWithoutCast(sourceType, targetType)) {
+        if (canBeType(sourceType, targetType)) {
             return false;
         }
         return canCastTo(sourceType, targetType);
     }
 
-    public static boolean canAssignWithoutCast(VariableType sourceType, VariableType targetType) {
+    public static boolean canBeType(VariableType sourceType, VariableType targetType) {
         if (sourceType == null) {
             return true;
         }
@@ -79,7 +79,7 @@ public class TypeCastingUtils {
         if (sourceType == targetType) {
             return;
         }
-        if (canAssignWithoutCast(sourceType, targetType)) {
+        if (canBeType(sourceType, targetType)) {
             return;
         }
         if (requiresManualCast(sourceType, targetType)) {

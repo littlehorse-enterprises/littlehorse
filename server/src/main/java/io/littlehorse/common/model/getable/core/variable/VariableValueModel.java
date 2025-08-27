@@ -53,8 +53,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     private String jsonStr;
 
-    private String sourceJsonPath;
-
     public static VariableValueModel fromProto(VariableValue proto, ExecutionContext context) {
         VariableValueModel out = new VariableValueModel();
         out.initFrom(proto, context);
@@ -297,27 +295,24 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel();
         }
 
-        VariableValueModel result;
         if (Long.class.isAssignableFrom(val.getClass())) {
-            result = new VariableValueModel((long) val);
+            return new VariableValueModel((long) val);
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
-            result = new VariableValueModel((long) ((Integer) val));
+            return new VariableValueModel((long) ((Integer) val));
         } else if (String.class.isAssignableFrom(val.getClass())) {
-            result = new VariableValueModel((String) val);
+            return new VariableValueModel((String) val);
         } else if (Boolean.class.isAssignableFrom(val.getClass())) {
-            result = new VariableValueModel((Boolean) val);
+            return new VariableValueModel((Boolean) val);
         } else if (Double.class.isAssignableFrom(val.getClass())) {
-            result = new VariableValueModel((Double) val);
+            return new VariableValueModel((Double) val);
         } else if (Map.class.isAssignableFrom(val.getClass())) {
-            result = new VariableValueModel((Map<String, Object>) val);
+            return new VariableValueModel((Map<String, Object>) val);
         } else if (List.class.isAssignableFrom(val.getClass())) {
-            result = new VariableValueModel((List<Object>) val);
+            return new VariableValueModel((List<Object>) val);
         } else {
             log.error("Not possible to get this from jsonpath {}={}", val, val.getClass());
             throw new RuntimeException("Not possible to get this from jsonpath");
         }
-        result.sourceJsonPath = path;
-        return result;
     }
 
     public VariableValueModel add(VariableValueModel rhs) throws LHVarSubError {

@@ -176,14 +176,14 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                         TypeCastingUtils.validateTypeCompatibility(sourceType, castTargetType);
                         // After cast, source becomes castTargetType for assignment
                         sourceType = castTargetType;
-                        if (!TypeCastingUtils.canAssignWithoutCast(sourceType, targetType)) {
+                        if (!TypeCastingUtils.canBeType(sourceType, targetType)) {
                             throw new InvalidNodeException(
                                     "Cannot assign " + sourceType + " to " + targetType + ".", node);
                         }
 
                     } else {
                         // No explicit cast, only allow assignment if possible without cast
-                        if (!TypeCastingUtils.canAssignWithoutCast(sourceType, targetType)) {
+                        if (!TypeCastingUtils.canBeType(sourceType, targetType)) {
                             throw new InvalidNodeException(
                                     "Cannot assign " + sourceType + " to " + targetType + " without explicit casting.",
                                     node);

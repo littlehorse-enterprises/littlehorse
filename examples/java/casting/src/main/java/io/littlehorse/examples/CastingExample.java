@@ -1,7 +1,9 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -12,24 +14,25 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class CastingExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("casting-workflow", wf -> {
-//            WfRunVariable stringInput = wf.declareStr("string-number").withDefault("3.14");
-//            WfRunVariable stringBool = wf.declareStr("string-bool").withDefault("false");
-            WfRunVariable jsonInput = wf.declareJsonObj("json-input").required();
+            WfRunVariable stringInput = wf.declareStr("string-number").withDefault("3.14");
+            WfRunVariable stringBool = wf.declareStr("string-bool").withDefault("false");
+            WfRunVariable jsonInput = wf.declareJsonObj("json-input").withDefault(Map.of("int", "1", "string", "hello"));
 
-//            var doubleResult = wf.execute("double-method", stringInput.cast(VariableType.DOUBLE)); // Auto cast from INT to DOUBLE
+            NodeOutput doubleResult = wf.execute("double-method", stringInput.cast(VariableType.DOUBLE)); // Manual cast from STR variable to DOUBLE
+            NodeOutput intResult = wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE output to INT
 
-//            var intResult = wf.execute("int-method", doubleResult.castToInt()); // Returns an INT
-//            wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
-//            wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to IN
-//
-//            wf.execute("double-method", intResult);
-            wf.execute("int-method", jsonInput.jsonPath("$.int").castToDouble());// Auto cast from INT to DOUBLE
+            wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
+            wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to INT
+            wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
+            wf.execute("int-method", jsonInput.jsonPath("$.int").castToInt());// We dont know the type of json path, but here we are forcing it to INT
+            wf.execute("string-method", stringInput); // Print the original string
 
         });
     }

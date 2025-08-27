@@ -76,7 +76,7 @@ public class VariableValueModelTest {
         VariableValueModel doubleVarval = new VariableValueModel("not a double");
         LHVarSubError varSubError = (LHVarSubError) Assertions.catchThrowable(doubleVarval::asDouble);
         Assertions.assertThat(varSubError).isNotNull();
-        Assertions.assertThat(varSubError.getMessage()).isEqualTo("Couldn't convert STR to DOUBLE");
+        Assertions.assertThat(varSubError.getMessage()).isEqualTo("Couldn't convert STR 'not a double' to DOUBLE");
     }
 
     @Test

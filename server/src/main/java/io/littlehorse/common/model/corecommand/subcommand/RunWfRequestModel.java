@@ -149,7 +149,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         try {
             entrypointThread.validateStartVariables(variables);
         } catch (LHValidationException exn) {
-            System.err.println("[LH DEBUG] Throwing LHApiException for required variable: " + exn.getMessage());
             throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
         }
 
