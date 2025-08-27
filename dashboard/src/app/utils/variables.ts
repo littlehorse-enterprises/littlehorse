@@ -1,12 +1,26 @@
 import {
+  TypeDefinition,
   VariableAssignment,
   VariableDef,
   VariableMutationType,
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
-import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 import { structFromJSONString, structToJSONString } from './struct'
+import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
+
+export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
+  switch (typeDef.definedType?.$case) {
+    case 'primitiveType':
+      return getVariableCaseFromType(typeDef.definedType.value)
+    case 'structDefId':
+      return 'struct'
+    case 'inlineArrayDef':
+      return 'jsonArr'
+    default:
+      throw new Error('Unknown variable type.')
+  }
+}
 
 /**
  * Maps VariableValue cases to their human-readable display names.
@@ -21,6 +35,7 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   jsonArr: 'JSON Array',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
+  struct: 'Struct',
 }
 
 /**
@@ -137,7 +152,6 @@ export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableVal
       case 'primitiveType':
         return getVariableCaseFromType(varDef.typeDef.definedType.value)
       case 'structDefId':
-      case 'inlineStructDef':
         return 'struct'
       case 'inlineArrayDef':
         return 'jsonArr'
