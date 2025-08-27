@@ -228,9 +228,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
         // Current behavior is that null variables are NOT indexed. This may change in future
         // releases, but it will be a backwards-compatible change.
         if (value.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
-            log.warn(
-                        "Tags unimplemented for variable type definition: {}",
-                        value.getTypeDefinition());
+            log.warn("Tags unimplemented for variable type definition: {}", value.getTypeDefinition());
             return List.of();
         }
 

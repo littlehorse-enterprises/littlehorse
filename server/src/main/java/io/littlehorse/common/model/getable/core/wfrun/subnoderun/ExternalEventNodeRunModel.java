@@ -23,8 +23,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -163,10 +163,12 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         try {
             VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
                     .assignVariable(getNode().externalEventNode.getTimeoutSeconds());
-            
+
             // TODO: Decide how to StructDefs
             if (timeoutSeconds.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
-                throw new LHVarSubError(null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.getTypeDefinition() + " not INT!");
+                throw new LHVarSubError(
+                        null,
+                        "Resulting TimeoutSeconds was of type " + timeoutSeconds.getTypeDefinition() + " not INT!");
             }
             if (timeoutSeconds.getTypeDefinition().getPrimitiveType() != VariableType.INT) {
                 throw new LHVarSubError(

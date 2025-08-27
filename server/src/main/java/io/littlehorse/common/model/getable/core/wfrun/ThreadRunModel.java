@@ -39,9 +39,9 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -802,7 +802,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                         assignVariable(assn.getFormatString().getFormat(), txnCache);
                 // TODO: Decide how to support StructDefs
                 if (formatStringVarVal.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
-                    throw new LHVarSubError(null, "Format String template isn't a primitive; it's a " + formatStringVarVal.getTypeDefinition());
+                    throw new LHVarSubError(
+                            null,
+                            "Format String template isn't a primitive; it's a "
+                                    + formatStringVarVal.getTypeDefinition());
                 }
                 if (formatStringVarVal.getTypeDefinition().getPrimitiveType() != VariableType.STR) {
                     throw new LHVarSubError(

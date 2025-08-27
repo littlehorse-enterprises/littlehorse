@@ -36,13 +36,13 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -402,7 +402,10 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(field.getKey());
             // TODO: Support StructDefs
             if (field.getValue().getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Field [name = %s, type = %s] has non-primitive TypeDefinition and is unsupported for a UserTask schema.".formatted(
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Field [name = %s, type = %s] has non-primitive TypeDefinition and is unsupported for a UserTask schema."
+                                .formatted(
                                         field.getKey(),
                                         field.getValue().getTypeDefinition().getPrimitiveType()));
             }

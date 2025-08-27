@@ -1,12 +1,9 @@
 package io.littlehorse.common.model.getable.core.variable;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-
-import java.util.List;
-import java.util.Map;
-
-import org.assertj.core.api.Assertions;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -16,10 +13,9 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import java.util.List;
+import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class VariableValueModelTest {

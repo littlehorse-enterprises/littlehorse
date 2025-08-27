@@ -22,7 +22,6 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-
 import java.util.Objects;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -187,6 +186,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public boolean isJson() {
+        if (definedTypeCase != DefinedTypeCase.PRIMITIVE_TYPE) return false;
         return primitiveType == VariableType.JSON_ARR || primitiveType == VariableType.JSON_OBJ;
     }
 
