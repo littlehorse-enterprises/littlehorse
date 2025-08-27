@@ -3,14 +3,11 @@ package io.littlehorse.sdk.wfsdk.internal;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ReturnType;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import java.util.List;
-import java.util.Map;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 
 class BuilderUtil {
 
@@ -65,23 +62,11 @@ class BuilderUtil {
             // We don't set the typeDef: the event has no payload
             return ReturnType.newBuilder().build();
         }
-        TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
-        if (String.class.isAssignableFrom(payloadClass)) {
-            typeDef.setPrimitiveType(VariableType.STR);
-        } else if (Double.class.isAssignableFrom(payloadClass)) {
-            typeDef.setPrimitiveType(VariableType.DOUBLE);
-        } else if (Integer.class.isAssignableFrom(payloadClass)) {
-            typeDef.setPrimitiveType(VariableType.INT);
-        } else if (Boolean.class.isAssignableFrom(payloadClass)) {
-            typeDef.setPrimitiveType(VariableType.BOOL);
-        } else if (Map.class.isAssignableFrom(payloadClass)) {
-            typeDef.setPrimitiveType(VariableType.JSON_OBJ);
-        } else if (List.class.isAssignableFrom(payloadClass)) {
-            typeDef.setPrimitiveType(VariableType.JSON_ARR);
-        } else {
-            throw new IllegalArgumentException(
-                    "ExternalEventDef payload class must be one of String, Double, Integer or Boolean");
-        }
-        return ReturnType.newBuilder().setReturnType(typeDef).build();
+
+        LHClassType lhClassType = LHClassType.createLHClassType(payloadClass);
+
+        return ReturnType.newBuilder()
+                .setReturnType(lhClassType.getTypeDefinition())
+                .build();
     }
 }

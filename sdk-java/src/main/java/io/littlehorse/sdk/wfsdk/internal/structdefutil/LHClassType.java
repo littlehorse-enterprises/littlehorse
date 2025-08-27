@@ -10,7 +10,9 @@ public abstract class LHClassType {
     protected Class<?> clazz;
 
     public static LHClassType createLHClassType(Class<?> classType) {
-        if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
+        if (classType == null) {
+            return null;
+        } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
             return new LHPrimitiveType(classType);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
             return new LHStructDefType(classType);
