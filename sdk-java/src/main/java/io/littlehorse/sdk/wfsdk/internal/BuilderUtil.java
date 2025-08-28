@@ -45,8 +45,7 @@ class BuilderUtil {
     }
 
     private static VariableAssignment buildFromWfRunVariable(WfRunVariableImpl wfRunVariable) {
-        VariableAssignment.Builder builder = VariableAssignment.newBuilder()
-                .setVariableName(wfRunVariable.name);
+        VariableAssignment.Builder builder = VariableAssignment.newBuilder().setVariableName(wfRunVariable.name);
         if (wfRunVariable.jsonPath != null) {
             builder.setJsonPath(wfRunVariable.jsonPath);
         }
@@ -94,16 +93,12 @@ class BuilderUtil {
     private static VariableAssignment buildFromLiteral(Object variable) {
         try {
             VariableValue defVal = LHLibUtil.objToVarVal(variable);
-            return VariableAssignment.newBuilder()
-                    .setLiteralValue(defVal)
-                    .build();
+            return VariableAssignment.newBuilder().setLiteralValue(defVal).build();
         } catch (LHSerdeException exn) {
             throw new IllegalArgumentException(
-                    "Failed to convert literal to VariableAssignment for variable: " + variable, exn
-            );
+                    "Failed to convert literal to VariableAssignment for variable: " + variable, exn);
         }
     }
-
 
     private static final ReturnType STRING_TYPE = buildReturnType(VariableType.STR);
     private static final ReturnType DOUBLE_TYPE = buildReturnType(VariableType.DOUBLE);
@@ -123,10 +118,8 @@ class BuilderUtil {
         if (Map.class.isAssignableFrom(payloadClass)) return JSON_OBJ_TYPE;
         if (List.class.isAssignableFrom(payloadClass)) return JSON_ARR_TYPE;
 
-        throw new IllegalArgumentException(
-                "Unsupported payload type: " + payloadClass.getName()
-                        + ". Must be one of String, Double, Integer, Boolean, Map, or List"
-        );
+        throw new IllegalArgumentException("Unsupported payload type: " + payloadClass.getName()
+                + ". Must be one of String, Double, Integer, Boolean, Map, or List");
     }
 
     private static ReturnType buildReturnType(VariableType type) {
