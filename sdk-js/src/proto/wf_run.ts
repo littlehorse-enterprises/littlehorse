@@ -9,6 +9,7 @@ import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventId, WfRunId, WfSpecId } from "./object_id";
+import { VariableValue } from "./variable";
 
 /** The type of a ThreadRUn. */
 export enum ThreadType {
@@ -207,6 +208,8 @@ export interface ThreadRun {
   handledFailedChildren: number[];
   /** The Type of this ThreadRun. */
   type: ThreadType;
+  /** The output of the `ThreadRun`. */
+  output?: VariableValue | undefined;
 }
 
 /** Points to the Failure that is currently being handled in the ThreadRun. */
@@ -536,6 +539,7 @@ function createBaseThreadRun(): ThreadRun {
     currentNodePosition: 0,
     handledFailedChildren: [],
     type: ThreadType.ENTRYPOINT,
+    output: undefined,
   };
 }
 
@@ -589,6 +593,9 @@ export const ThreadRun = {
     writer.ldelim();
     if (message.type !== ThreadType.ENTRYPOINT) {
       writer.uint32(120).int32(threadTypeToNumber(message.type));
+    }
+    if (message.output !== undefined) {
+      VariableValue.encode(message.output, writer.uint32(130).fork()).ldelim();
     }
     return writer;
   },
@@ -725,6 +732,13 @@ export const ThreadRun = {
 
           message.type = threadTypeFromJSON(reader.int32());
           continue;
+        case 16:
+          if (tag !== 130) {
+            break;
+          }
+
+          message.output = VariableValue.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -761,6 +775,7 @@ export const ThreadRun = {
         ? object.handledFailedChildren.map((e: any) => globalThis.Number(e))
         : [],
       type: isSet(object.type) ? threadTypeFromJSON(object.type) : ThreadType.ENTRYPOINT,
+      output: isSet(object.output) ? VariableValue.fromJSON(object.output) : undefined,
     };
   },
 
@@ -811,6 +826,9 @@ export const ThreadRun = {
     if (message.type !== ThreadType.ENTRYPOINT) {
       obj.type = threadTypeToJSON(message.type);
     }
+    if (message.output !== undefined) {
+      obj.output = VariableValue.toJSON(message.output);
+    }
     return obj;
   },
 
@@ -840,6 +858,9 @@ export const ThreadRun = {
     message.currentNodePosition = object.currentNodePosition ?? 0;
     message.handledFailedChildren = object.handledFailedChildren?.map((e) => e) || [];
     message.type = object.type ?? ThreadType.ENTRYPOINT;
+    message.output = (object.output !== undefined && object.output !== null)
+      ? VariableValue.fromPartial(object.output)
+      : undefined;
     return message;
   },
 };
