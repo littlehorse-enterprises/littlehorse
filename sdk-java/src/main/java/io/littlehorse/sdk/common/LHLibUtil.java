@@ -31,12 +31,11 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
-import java.lang.reflect.Field;
+import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class LHLibUtil {
 
@@ -207,23 +206,26 @@ public class LHLibUtil {
             throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
         }
 
+        LHStructDefType structDefType = (LHStructDefType) lhClassType;
+
         try {
-            Object structObject = lhClassType.getDefaultInstance();
+            Object structObject = structDefType.getDefaultInstance();
 
-            for (Entry<String, StructField> entry :
-                    struct.getStruct().getFieldsMap().entrySet()) {
-                String fieldName = entry.getKey();
-                VariableValue fieldValue = entry.getValue().getValue();
+            List<LHStructProperty> structProperties = structDefType.getStructProperties();
 
-                try {
-                    Field field = structObject.getClass().getDeclaredField(fieldName);
-                    field.set(structObject, varValToObj(fieldValue, field.getType())); // Set the field value
-                } catch (NoSuchFieldException e) {
+            for (LHStructProperty property : structProperties) {
+                String fieldName = property.getFieldName();
+                if (!struct.getStruct().containsFields(fieldName)) {
                     throw new LHSerdeException(
-                            e,
+                            null,
                             "Failed deserializing VariableValue into Struct because no such field " + fieldName
                                     + " exists on class " + clazz.getName());
                 }
+                ;
+
+                VariableValue fieldValue =
+                        struct.getStruct().getFieldsMap().get(fieldName).getValue();
+                property.setValueTo(structObject, fieldValue);
             }
 
             return structObject;
@@ -232,8 +234,9 @@ public class LHLibUtil {
                 | IllegalArgumentException
                 | InvocationTargetException
                 | NoSuchMethodException
+                | IntrospectionException
                 | SecurityException e) {
-            throw new LHSerdeException(e, "Failed deserializing VariableValue into Struct");
+            throw new LHSerdeException(e, "Failed deserializing Struct into Object");
         }
     }
 

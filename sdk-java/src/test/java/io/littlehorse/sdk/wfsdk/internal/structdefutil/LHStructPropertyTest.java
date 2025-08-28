@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -17,9 +18,18 @@ import org.junit.jupiter.api.Test;
 public class LHStructPropertyTest {
     @LHStructDef(name = "library")
     class Library {
+        public String name;
         public String[] books;
         public int ignoredField;
         public WfRunId maskedField;
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public String[] getBooks() {
             return this.books;
@@ -86,5 +96,33 @@ public class LHStructPropertyTest {
                 .build();
 
         assertThat(actualStructFieldDef).isEqualTo(expectedStructFieldDef);
+    }
+
+    @Test
+    public void testGetValueFrom() throws IntrospectionException {
+        PropertyDescriptor pd = new PropertyDescriptor("name", Library.class);
+        LHStructProperty nameProperty = new LHStructProperty(pd);
+
+        Library library = new Library();
+        library.setName("Jedi Archives");
+
+        String expectedPropertyValue = "Jedi Archives";
+        String actualPropertyValue = nameProperty.getValueFrom(library).getStr();
+
+        assertThat(expectedPropertyValue).isEqualTo(actualPropertyValue);
+    }
+
+    @Test
+    public void testSetValueTo() throws IntrospectionException {
+        PropertyDescriptor pd = new PropertyDescriptor("name", Library.class);
+        LHStructProperty nameProperty = new LHStructProperty(pd);
+
+        Library library = new Library();
+        nameProperty.setValueTo(library, LHLibUtil.objToVarVal("Parkway Central"));
+
+        String expectedPropertyValue = "Parkway Central";
+        String actualPropertyValue = library.getName();
+
+        assertThat(expectedPropertyValue).isEqualTo(actualPropertyValue);
     }
 }

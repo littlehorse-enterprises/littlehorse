@@ -54,7 +54,7 @@ public class LHStructProperty {
         }
 
         try {
-            pd.getWriteMethod().invoke(LHLibUtil.varValToObj(v, o.getClass()));
+            pd.getWriteMethod().invoke(o, LHLibUtil.varValToObj(v, o.getClass()));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e, "Failed setting value of property " + this.fieldName + "from object of type: " + o.getClass());
