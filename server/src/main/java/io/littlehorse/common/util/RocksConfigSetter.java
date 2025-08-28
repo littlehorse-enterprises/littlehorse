@@ -42,7 +42,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     // NOT put a Bloom Filter on the last level of SST files. This reduces memory usage of the
     // Bloom Filter by 90%, but it costs one IO operation on every get() for a missing key.
     // In my opinion, it's a good trade-off.
-    private static final boolean OPTIMIZE_FILTERS_FOR_HITS = true;
+    private static final boolean OPTIMIZE_FILTERS_FOR_HITS = false;
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
