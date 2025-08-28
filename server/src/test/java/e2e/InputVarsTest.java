@@ -80,10 +80,7 @@ public class InputVarsTest {
     public void structVarInput() {
         LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
 
-        client.putStructDef(PutStructDefRequest.newBuilder()
-                .setName("car")
-                .setStructDef(lhStructDefType.getInlineStructDef())
-                .build());
+        client.putStructDef(lhStructDefType.toPutStructDefRequest());
 
         VariableValue originalStruct = LHLibUtil.objToVarVal(new Car("Obi-Wan", "Kenobi", 123));
         VariableValue expectedStructFromTask1 = LHLibUtil.objToVarVal(new Car("Obi-Wan", "Kenobi", 124));

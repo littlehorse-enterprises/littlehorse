@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import io.littlehorse.sdk.common.exception.StructDefCircularDependencyException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
+import io.littlehorse.sdk.common.proto.PutStructDefRequest;
 import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -31,6 +32,8 @@ public class LHStructDefType extends LHClassType {
                     "Cannot create LHStructDefType, missing `@LHStructDef` annotation on provided class: "
                             + this.clazz);
         }
+
+        this.inlineStructDef = this.buildInlineStructDef();
     }
 
     @Override
@@ -55,6 +58,14 @@ public class LHStructDefType extends LHClassType {
 
     private LHStructDef getStructDefAnnotation() {
         return this.clazz.getAnnotation(LHStructDef.class);
+    }
+
+    public PutStructDefRequest toPutStructDefRequest() {
+        return PutStructDefRequest.newBuilder()
+            .setName(this.getStructDefAnnotation().name())
+            .setDescription(this.getStructDefAnnotation().description())
+            .setStructDef(this.getInlineStructDef())
+            .build();
     }
 
     public StructDef toStructDef() {
@@ -190,9 +201,6 @@ public class LHStructDefType extends LHClassType {
      * @return an InlineStructDef representing the class stored in this LHClassType
      */
     public InlineStructDef getInlineStructDef() {
-        if (this.inlineStructDef == null) {
-            this.inlineStructDef = this.buildInlineStructDef();
-        }
         return this.inlineStructDef;
     }
 

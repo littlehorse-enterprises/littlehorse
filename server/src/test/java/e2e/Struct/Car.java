@@ -4,7 +4,7 @@ import io.littlehorse.sdk.worker.LHStructDef;
 import lombok.Getter;
 import lombok.Setter;
 
-@LHStructDef(name = "car")
+@LHStructDef(name = "struct-car")
 @Getter
 @Setter
 public class Car {
