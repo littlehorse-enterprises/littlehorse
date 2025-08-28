@@ -1,11 +1,26 @@
 import {
+  TypeDefinition,
   VariableAssignment,
   VariableDef,
   VariableMutationType,
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
+import { structFromJSONString, structToJSONString } from './struct'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
+
+export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
+  switch (typeDef.definedType?.$case) {
+    case 'primitiveType':
+      return getVariableCaseFromType(typeDef.definedType.value)
+    case 'structDefId':
+      return 'struct'
+    case 'inlineArrayDef':
+      return 'jsonArr'
+    default:
+      throw new Error('Unknown variable type.')
+  }
+}
 
 /**
  * Maps VariableValue cases to their human-readable display names.
@@ -20,6 +35,7 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   jsonArr: 'JSON Array',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
+  struct: 'Struct',
 }
 
 /**
@@ -65,6 +81,8 @@ export const getVariableValue = ({ value }: VariableValue): string => {
       return '[bytes]'
     case 'wfRunId':
       return flattenWfRunId(value.value)
+    case 'struct':
+      return structToJSONString(value.value)
     default:
       return value.value.toString()
   }
@@ -115,7 +133,9 @@ export const getTypedVariableValue = (
                   ? { bytes: Buffer.from(value) }
                   : type === 'wfRunId'
                     ? { wfRunId: wfRunIdFromFlattenedId(value) }
-                    : undefined
+                    : type === 'struct'
+                      ? { struct: structFromJSONString(value) }
+                      : undefined
   return VariableValue.fromJSON(variable)
 }
 
@@ -128,7 +148,16 @@ export const getTypedVariableValue = (
  */
 export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
   if (varDef.typeDef) {
-    return getVariableCaseFromType(varDef.typeDef.type)
+    switch (varDef.typeDef?.definedType?.$case) {
+      case 'primitiveType':
+        return getVariableCaseFromType(varDef.typeDef.definedType.value)
+      case 'structDefId':
+        return 'struct'
+      case 'inlineArrayDef':
+        return 'jsonArr'
+      default:
+        throw new Error('Unknown variable type.')
+    }
   } else if (varDef.type) {
     return getVariableCaseFromType(varDef.type)
   }

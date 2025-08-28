@@ -24,14 +24,14 @@ public class VariableValueModelTest {
     void castDoubleToInt() throws LHVarSubError {
         VariableValueModel doubleVarval = new VariableValueModel(22.1);
 
-        assertThat(doubleVarval.getType()).isEqualTo(VariableType.DOUBLE);
+        assertThat(doubleVarval.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
 
         assertDoesNotThrow(() -> {
             doubleVarval.asInt();
         });
         VariableValueModel intVarVal = doubleVarval.asInt();
 
-        assertThat(intVarVal.getType()).isEqualTo(VariableType.INT);
+        assertThat(intVarVal.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
         assertThat(intVarVal.getIntVal()).isEqualTo(22);
     }
 
@@ -40,7 +40,7 @@ public class VariableValueModelTest {
         VariableValueModel doubleVarval = new VariableValueModel(22.1);
 
         VariableValueModel strVarVal = doubleVarval.asStr();
-        assertThat(strVarVal.getType()).isEqualTo(VariableType.STR);
+        assertThat(strVarVal.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(strVarVal.getStrVal()).isEqualTo("22.1");
     }
 
@@ -58,12 +58,12 @@ public class VariableValueModelTest {
         ObjVarThing thing = new ObjVarThing("Hi There");
         VariableValueModel first = VariableValueModel.fromProto(LHLibUtil.objToVarVal(thing), mock());
 
-        assertThat(first.getType()).isEqualTo(VariableType.JSON_OBJ);
+        assertThat(first.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.JSON_OBJ);
         assertThat(first.getJsonObjVal().get("foo")).isEqualTo("Hi There");
 
         // copy
         VariableValueModel second = first.asObj();
-        assertThat(second.getType()).isEqualTo(VariableType.JSON_OBJ);
+        assertThat(second.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.JSON_OBJ);
         assertThat(second.getJsonObjVal().get("foo")).isEqualTo("Hi There");
 
         second.getJsonObjVal().put("foo", "bar");
@@ -85,7 +85,7 @@ public class VariableValueModelTest {
         VariableValue valueWfRunId =
                 VariableValue.newBuilder().setWfRunId(wfrunId).build();
         VariableValueModel variableValueModel = VariableValueModel.fromProto(valueWfRunId, mock());
-        assertThat(variableValueModel.getType()).isEqualTo(VariableType.WF_RUN_ID);
+        assertThat(variableValueModel.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.WF_RUN_ID);
         assertThat(variableValueModel.getWfRunId().toProto().build()).isEqualTo(wfrunId);
         assertThat(variableValueModel.toProto().build()).isEqualTo(valueWfRunId);
     }
@@ -147,7 +147,7 @@ public class VariableValueModelTest {
         VariableValueModel valueWfRunId =
                 new VariableValueModel(WfRunIdModel.fromProto(wfrunId, WfRunIdModel.class, mock()));
         VariableValueModel strVarVal = valueWfRunId.asStr();
-        assertThat(strVarVal.getType()).isEqualTo(VariableType.STR);
+        assertThat(strVarVal.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(strVarVal.getStrVal()).isEqualTo("parent_child");
     }
 }

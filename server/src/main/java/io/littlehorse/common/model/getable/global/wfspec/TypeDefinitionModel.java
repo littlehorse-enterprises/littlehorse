@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
@@ -12,35 +13,57 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Jso
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StructReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @EqualsAndHashCode(callSuper = false)
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private boolean masked;
-    private VariableType type;
 
-    public TypeDefinitionModel() {}
+    private DefinedTypeCase definedTypeCase;
 
-    public TypeDefinitionModel(VariableType type) {
-        // TODO: determine whether this should be refactored to fail when type == Struct.
-        this.type = type;
+    private VariableType primitiveType;
+    private StructDefIdModel structDefId;
+    private InlineArrayDefModel inlineArrayDef;
+
+    public TypeDefinitionModel() {
+        this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
+    }
+
+    public TypeDefinitionModel(StructDefIdModel structDefId) {
+        this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
+        this.structDefId = Objects.requireNonNull(structDefId);
+        this.masked = false;
+    }
+
+    public TypeDefinitionModel(StructDefIdModel structDefId, boolean masked) {
+        this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
+        this.structDefId = Objects.requireNonNull(structDefId);
+        this.masked = masked;
+    }
+
+    public TypeDefinitionModel(VariableType primitiveType) {
+        this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
+        this.primitiveType = Objects.requireNonNull(primitiveType);
         this.masked = false;
     }
 
     public TypeDefinitionModel(VariableType type, boolean masked) {
-        this.type = type;
+        this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
+        this.primitiveType = Objects.requireNonNull(type);
         this.masked = masked;
     }
 
@@ -51,8 +74,23 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     @Override
     public TypeDefinition.Builder toProto() {
-        TypeDefinition.Builder out =
-                TypeDefinition.newBuilder().setMasked(masked).setType(type);
+        TypeDefinition.Builder out = TypeDefinition.newBuilder().setMasked(masked);
+
+        switch (definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                out.setPrimitiveType(primitiveType);
+                break;
+            case STRUCT_DEF_ID:
+                out.setStructDefId(structDefId.toProto());
+                break;
+            case INLINE_ARRAY_DEF:
+                out.setInlineArrayDef(inlineArrayDef.toProto());
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
+        }
+
         return out;
     }
 
@@ -60,7 +98,26 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
-        this.type = p.getType();
+        this.definedTypeCase = p.getDefinedTypeCase();
+
+        switch (definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                this.primitiveType = p.getPrimitiveType();
+                break;
+            case STRUCT_DEF_ID:
+                this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
+                break;
+            case INLINE_ARRAY_DEF:
+                this.inlineArrayDef = InlineArrayDefModel.fromProto(p.getInlineArrayDef(), ctx);
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
+        }
+    }
+
+    public boolean isNull() {
+        return this.definedTypeCase == DefinedTypeCase.DEFINEDTYPE_NOT_SET;
     }
 
     public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
@@ -70,25 +127,31 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public LHTypeStrategy getTypeStrategy() {
-        // TODO: Support StructDefs
-        switch (type) {
-            case INT:
-                return new IntReturnTypeStrategy();
-            case DOUBLE:
-                return new DoubleReturnTypeStrategy();
-            case STR:
-                return new StrReturnTypeStrategy();
-            case BOOL:
-                return new BoolReturnTypeStrategy();
-            case WF_RUN_ID:
-                return new WfRunIdReturnTypeStrategy();
-            case BYTES:
-                return new BytesReturnTypeStrategy();
-            case JSON_ARR:
-                return new JsonArrReturnTypeStrategy();
-            case JSON_OBJ:
-                return new JsonObjReturnTypeStrategy();
-            case UNRECOGNIZED:
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                switch (primitiveType) {
+                    case INT:
+                        return new IntReturnTypeStrategy();
+                    case DOUBLE:
+                        return new DoubleReturnTypeStrategy();
+                    case STR:
+                        return new StrReturnTypeStrategy();
+                    case BOOL:
+                        return new BoolReturnTypeStrategy();
+                    case WF_RUN_ID:
+                        return new WfRunIdReturnTypeStrategy();
+                    case BYTES:
+                        return new BytesReturnTypeStrategy();
+                    case JSON_ARR:
+                        return new JsonArrReturnTypeStrategy();
+                    case JSON_OBJ:
+                        return new JsonObjReturnTypeStrategy();
+                    case UNRECOGNIZED:
+                }
+                break;
+            case STRUCT_DEF_ID:
+                return new StructReturnTypeStrategy(this.structDefId);
+            default:
         }
         throw new IllegalStateException();
     }
@@ -98,8 +161,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * can be serialized to a string easily.
      */
     public boolean isPrimitive() {
+        if (this.primitiveType == null) return false;
+
         // TODO: Extend this when adding Struct and StructDef.
-        switch (type) {
+        switch (primitiveType) {
             case INT:
             case BOOL:
             case DOUBLE:
@@ -121,7 +186,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public boolean isJson() {
-        return type == VariableType.JSON_ARR || type == VariableType.JSON_OBJ;
+        if (definedTypeCase != DefinedTypeCase.PRIMITIVE_TYPE) return false;
+        return primitiveType == VariableType.JSON_ARR || primitiveType == VariableType.JSON_OBJ;
     }
 
     /**
@@ -129,7 +195,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      */
     public boolean isCompatibleWith(VariableValueModel value) {
         // TODO: Extend this when we add StructDef's and Structs.
-        return value.getType() == type;
+        return this.isCompatibleWith(value.getTypeDefinition());
     }
 
     /**
@@ -137,16 +203,45 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * exact match for now. In the future we'll support casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
-        if (type == VariableType.INT || type == VariableType.DOUBLE) {
-            return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
+        if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
+            return false;
         }
-        return this.getType().equals(other.getType());
+
+        switch (this.getDefinedTypeCase()) {
+            case PRIMITIVE_TYPE:
+                if (primitiveType == VariableType.INT || primitiveType == VariableType.DOUBLE) {
+                    return other.getPrimitiveType() == VariableType.INT
+                            || other.getPrimitiveType() == VariableType.DOUBLE;
+                }
+                return this.getPrimitiveType().equals(other.getPrimitiveType());
+            case STRUCT_DEF_ID:
+                return this.getStructDefId().equals(other.getStructDefId());
+            case DEFINEDTYPE_NOT_SET:
+            case INLINE_ARRAY_DEF:
+            default:
+                break;
+        }
+
+        return false;
     }
 
     @Override
     public String toString() {
-        // TODO: when we have Structs, print out structdefid
-        String result = type.toString();
+        String result = "";
+
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                result = primitiveType.toString();
+                break;
+            case STRUCT_DEF_ID:
+                result = String.format("<%s,v%d>", structDefId.getName(), structDefId.getVersion());
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            case INLINE_ARRAY_DEF:
+            default:
+                result = this.definedTypeCase.toString();
+                break;
+        }
         if (masked) result += " MASKED";
         return result;
     }

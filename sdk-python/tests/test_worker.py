@@ -175,7 +175,9 @@ class TestLHTask(unittest.TestCase):
                 input_vars=[
                     VariableDef(
                         name="param",
-                        type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                        type_def=TypeDefinition(
+                            primitive_type=VariableType.STR, masked=False
+                        ),
                     )
                 ]
             ),
@@ -224,11 +226,15 @@ class TestLHTask(unittest.TestCase):
             input_vars=[
                 VariableDef(
                     name="paramA",
-                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.STR, masked=False
+                    ),
                 ),
                 VariableDef(
                     name="paramB",
-                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.INT, masked=False
+                    ),
                 ),
             ]
         )
@@ -246,11 +252,15 @@ class TestLHTask(unittest.TestCase):
             input_vars=[
                 VariableDef(
                     name="param2",
-                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.INT, masked=False
+                    ),
                 ),
                 VariableDef(
                     name="param1",
-                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.STR, masked=False
+                    ),
                 ),
             ]
         )
@@ -271,11 +281,15 @@ class TestLHTask(unittest.TestCase):
             input_vars=[
                 VariableDef(
                     name="param1",
-                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.STR, masked=False
+                    ),
                 ),
                 VariableDef(
                     name="param2",
-                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.INT, masked=False
+                    ),
                 ),
             ]
         )
@@ -296,11 +310,15 @@ class TestLHTask(unittest.TestCase):
             input_vars=[
                 VariableDef(
                     name="param1",
-                    type_def=TypeDefinition(type=VariableType.STR, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.STR, masked=False
+                    ),
                 ),
                 VariableDef(
                     name="param2",
-                    type_def=TypeDefinition(type=VariableType.INT, masked=False),
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.INT, masked=False
+                    ),
                 ),
             ]
         )
@@ -322,7 +340,9 @@ class TestLHTask(unittest.TestCase):
                 input_vars=[
                     VariableDef(
                         name="param",
-                        type_def=TypeDefinition(type=variable_type, masked=False),
+                        type_def=TypeDefinition(
+                            primitive_type=variable_type, masked=False
+                        ),
                     )
                 ]
             )
@@ -350,7 +370,9 @@ class TestLHTask(unittest.TestCase):
                 input_vars=[
                     VariableDef(
                         name="param",
-                        type_def=TypeDefinition(type=variable_type, masked=False),
+                        type_def=TypeDefinition(
+                            primitive_type=variable_type, masked=False
+                        ),
                     ),
                 ]
             )

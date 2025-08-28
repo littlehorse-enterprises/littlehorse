@@ -16,6 +16,9 @@ import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder;
@@ -24,6 +27,11 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.JsonResult;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
+import io.littlehorse.sdk.worker.LHStructDef;
+import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;
@@ -147,6 +155,91 @@ public class LHLibUtil {
         return wfRunIdToString(taskRunId.getWfRunId()) + "/" + taskRunId.getTaskGuid();
     }
 
+    public static Object varValToObj(VariableValue val, Class<?> targetClazz) throws LHSerdeException {
+        String jsonStr = null;
+
+        switch (val.getValueCase()) {
+            case INT:
+                if (targetClazz == Long.class || targetClazz == long.class) {
+                    return val.getInt();
+                } else {
+                    return (int) val.getInt();
+                }
+            case DOUBLE:
+                if (targetClazz == Double.class || targetClazz == double.class) {
+                    return val.getDouble();
+                } else {
+                    return (float) val.getDouble();
+                }
+            case STR:
+                return val.getStr();
+            case BYTES:
+                return val.getBytes().toByteArray();
+            case BOOL:
+                return val.getBool();
+            case JSON_ARR:
+                jsonStr = val.getJsonArr();
+                break;
+            case JSON_OBJ:
+                jsonStr = val.getJsonObj();
+                break;
+            case WF_RUN_ID:
+                return val.getWfRunId();
+            case STRUCT:
+                Struct struct = val.getStruct();
+                return deserializeStructToObject(struct, targetClazz);
+            case VALUE_NOT_SET:
+                return null;
+        }
+
+        try {
+            return LHLibUtil.deserializeFromjson(jsonStr, targetClazz);
+        } catch (LHJsonProcessingException exn) {
+            throw new LHSerdeException(exn, "Failed deserializing VariableValue from JSON");
+        }
+    }
+
+    private static Object deserializeStructToObject(Struct struct, Class<?> clazz) throws LHSerdeException {
+        LHClassType lhClassType = LHClassType.createLHClassType(clazz);
+
+        if (!(lhClassType instanceof LHStructDefType)) {
+            throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
+        }
+
+        LHStructDefType structDefType = (LHStructDefType) lhClassType;
+
+        try {
+            Object structObject = structDefType.getDefaultInstance();
+
+            List<LHStructProperty> structProperties = structDefType.getStructProperties();
+
+            for (LHStructProperty property : structProperties) {
+                String fieldName = property.getFieldName();
+                if (!struct.getStruct().containsFields(fieldName)) {
+                    throw new LHSerdeException(
+                            null,
+                            "Failed deserializing VariableValue into Struct because no such field " + fieldName
+                                    + " exists on class " + clazz.getName());
+                }
+                ;
+
+                VariableValue fieldValue =
+                        struct.getStruct().getFieldsMap().get(fieldName).getValue();
+                property.setValueTo(structObject, fieldValue);
+            }
+
+            return structObject;
+        } catch (InstantiationException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException
+                | NoSuchMethodException
+                | IntrospectionException
+                | SecurityException e) {
+            throw new LHSerdeException(e, "Failed deserializing Struct into Object");
+        }
+    }
+
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
 
@@ -169,6 +262,8 @@ public class LHLibUtil {
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
+        } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
+            out.setStruct(serializeToStruct(o));
         } else {
             // At this point, all we can do is try to make it a JSON type.
             JsonResult jsonResult = LHLibUtil.serializeToJson(o);
@@ -197,7 +292,48 @@ public class LHLibUtil {
     }
 
     /**
-     * Converts a ValueCase (from the VariableValue.value oneof field) to a VariableType Enum.
+     * Serializes a Java Object to a Struct based on the object's properties that have public getter methods.
+     * @param o is a Java object
+     * @return a Struct where the fields mirror the object's properties
+     */
+    public static Struct serializeToStruct(Object o) {
+        LHClassType lhClassType = LHClassType.createLHClassType(o.getClass());
+
+        if (!(lhClassType instanceof LHStructDefType))
+            throw new IllegalStateException("Cannot serialize given object to Struct");
+
+        LHStructDefType structDefType = (LHStructDefType) lhClassType;
+
+        Struct.Builder outputStruct = Struct.newBuilder();
+
+        outputStruct.setStructDefId(structDefType.getStructDefId());
+
+        InlineStruct.Builder inlineStruct = InlineStruct.newBuilder();
+
+        try {
+            List<LHStructProperty> lhStructProperties = structDefType.getStructProperties();
+
+            for (LHStructProperty property : lhStructProperties) {
+                VariableValue fieldValue = property.getValueFrom(o);
+
+                StructField structField =
+                        StructField.newBuilder().setValue(fieldValue).build();
+
+                inlineStruct.putFields(property.getFieldName(), structField);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        outputStruct.setStruct(inlineStruct);
+
+        return outputStruct.build();
+    }
+
+    /**
+     * Converts a ValueCase (from the VariableValue.value oneof field) to a
+     * VariableType Enum.
+     *
      * @param valueCase is the ValueCase from the VariableValue.
      * @return the corresponding VariableType.
      */
@@ -277,6 +413,22 @@ public class LHLibUtil {
         return VariableType.JSON_OBJ;
     }
 
+    public static boolean isJavaClassLHPrimitive(Class<?> clazz) {
+        if (clazz.isPrimitive()) return true;
+        if (clazz.equals(Short.class)) return true;
+        if (clazz.equals(Integer.class)) return true;
+        if (clazz.equals(Boolean.class)) return true;
+        if (clazz.equals(Long.class)) return true;
+        if (clazz.equals(Float.class)) return true;
+        if (clazz.equals(Double.class)) return true;
+        if (clazz.equals(String.class)) return true;
+        if (clazz.equals(WfRunId.class)) return true;
+        if (clazz.equals(Byte[].class)) return true;
+        if (clazz.equals(byte[].class)) return true;
+
+        return false;
+    }
+
     public static boolean areVariableValuesEqual(VariableValue a, VariableValue b) {
         if (a.getValueCase() != b.getValueCase()) return false;
 
@@ -299,6 +451,8 @@ public class LHLibUtil {
                 return a.getWfRunId().equals(b.getWfRunId());
             case VALUE_NOT_SET:
                 return true;
+            default:
+                break;
         }
         throw new IllegalStateException("Not possible to get here");
     }

@@ -2,9 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableDef;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,31 +11,30 @@ public class TaskDefBuilder {
 
     public Object executable;
     public LHTaskSignature signature;
+    public boolean shouldPutStructDefs;
+    public List<LHStructDefType> structDefDependencies;
 
     public TaskDefBuilder(Object executable, String taskDefName, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
         signature = new LHTaskSignature(taskDefName, executable, lhTaskMethodAnnotationValue);
         this.executable = executable;
+        this.structDefDependencies = signature.getStructDefDependencies();
     }
 
     public PutTaskDefRequest toPutTaskDefRequest() {
         PutTaskDefRequest.Builder out = PutTaskDefRequest.newBuilder();
-        List<String> varNames = signature.getVarNames();
-        List<VariableType> varTypes = signature.getParamTypes();
-        List<Boolean> maskedParams = signature.getMaskedParams();
 
-        for (int i = 0; i < varNames.size(); i++) {
-            out.addInputVars(VariableDef.newBuilder()
-                    .setName(varNames.get(i))
-                    .setTypeDef(
-                            TypeDefinition.newBuilder().setType(varTypes.get(i)).setMasked(maskedParams.get(i))));
-        }
+        out.addAllInputVars(signature.getVariableDefs());
         out.setName(this.signature.taskDefName);
         if (signature.getReturnType() != null) {
             out.setReturnType(signature.getReturnType());
         }
 
         return out.build();
+    }
+
+    public List<LHStructDefType> getStructDefDependencies() {
+        return this.structDefDependencies;
     }
 
     @Override

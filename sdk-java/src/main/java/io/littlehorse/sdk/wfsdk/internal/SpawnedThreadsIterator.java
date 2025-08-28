@@ -10,7 +10,7 @@ public class SpawnedThreadsIterator implements SpawnedThreads {
 
     public SpawnedThreadsIterator(final WfRunVariableImpl internalStartedThreadVar) {
         this.internalStartedThreadVar = internalStartedThreadVar;
-        if (!internalStartedThreadVar.getType().equals(VariableType.JSON_ARR)) {
+        if (!internalStartedThreadVar.getTypeDef().getPrimitiveType().equals(VariableType.JSON_ARR)) {
             throw new IllegalArgumentException("Only support for json arrays");
         }
     }
