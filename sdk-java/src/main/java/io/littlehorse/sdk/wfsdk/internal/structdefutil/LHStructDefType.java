@@ -62,10 +62,10 @@ public class LHStructDefType extends LHClassType {
 
     public PutStructDefRequest toPutStructDefRequest() {
         return PutStructDefRequest.newBuilder()
-            .setName(this.getStructDefAnnotation().name())
-            .setDescription(this.getStructDefAnnotation().description())
-            .setStructDef(this.getInlineStructDef())
-            .build();
+                .setName(this.getStructDefAnnotation().name())
+                .setDescription(this.getStructDefAnnotation().description())
+                .setStructDef(this.getInlineStructDef())
+                .build();
     }
 
     public StructDef toStructDef() {
