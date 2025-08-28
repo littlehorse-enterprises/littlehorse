@@ -6,15 +6,24 @@ This example demonstrates both automatic and manual type casting in LittleHorse 
 
 The casting example shows how LittleHorse handles type conversions between different variable types:
 
+
 **Automatic Casting (No .cast() needed):**
 - `INT` → `DOUBLE` (automatic)
+- `INT` → `STR` (automatic)
 - `DOUBLE` → `STR` (automatic)
 - `BOOL` → `STR` (automatic)
-- All primitive types → `STR` (automatic)
+- `INT` → `DOUBLE` (automatic)
+- `INT` → `STR` (automatic)
+- `DOUBLE` → `STR` (automatic)
+- `BOOL` → `STR` (automatic)
 
 **Manual Casting (Requires .cast() calls):**
-- `STR` → `INT`/`DOUBLE`/`BOOL` (manual)
+- `STR` → `DOUBLE` (manual)
 - `DOUBLE` → `INT` (manual)
+- `STR` → `BOOL` (manual)
+- JSON path result → `INT` (manual, when type is ambiguous)
+
+For more details on casting and type system proposals, see the [proposals directory](../../../proposals/) in the LittleHorse repo.
 
 The workflow demonstrates these casting behaviors through task chaining, variable assignments, and different scenarios where casting occurs.
 
@@ -24,14 +33,15 @@ The workflow demonstrates these casting behaviors through task chaining, variabl
 ./gradlew example-casting:run
 ```
 
+
 In another terminal, use `lhctl` to run the workflow:
 
 ```bash
 # Run the casting workflow with default values
 lhctl run casting-workflow
 
-# Run with custom input values
-lhctl run casting-workflow string-var "false" int-var 50
+# Run with custom input values (matching the workflow's variable names)
+lhctl run casting-workflow string-number "3.15" string-bool "true" json-input '{"int": "42", "string": "hi"}'
 ```
 
 ### Inspecting the Results
@@ -42,24 +52,10 @@ You can inspect how casting works by examining the workflow specification and ex
 # Get the WfSpec to see casting information
 lhctl get wfSpec casting-workflow
 
-# Look for "cast_to" fields in variable assignments
-lhctl get wfSpec casting-workflow | jq '.threadSpecs.entrypoint.nodes[] | select(.task) | .task.variables[]'
+# Look for "cast_to" fields in variable assignments (requires jq)
+lhctl get wfSpec casting-workflow | jq '.threadSpecs.entrypoint.nodes[] | select(.task) | .task.variables[]? | select(.castTo != null)'
 
 # Get workflow run details to see casting in action
 lhctl get wfRun <wf_run_id>
 
-# List task runs to see input/output values with casting
-lhctl list nodeRun <wf_run_id>
-```
-
-### Code Formatting
-
-To format the code in this example:
-
-```bash
-# Apply code formatting
-./gradlew :example-casting:spotlessApply
-
-# Check code formatting
-./gradlew :example-casting:spotlessCheck
 ```

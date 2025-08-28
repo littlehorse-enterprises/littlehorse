@@ -31,7 +31,7 @@ public class CastingExample {
             wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
             wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to INT
             wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
-            wf.execute("int-method", jsonInput.jsonPath("$.int").castToInt());// We dont know the type of json path, but here we are forcing it to INT
+            wf.execute("int-method", jsonInput.jsonPath("$.int").castToInt());// We don't know the type of json path, but here we are forcing it to be INT
             wf.execute("string-method", stringInput); // Print the original string
 
         });

@@ -4,6 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -156,44 +158,46 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                 VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
                 VariableAssignmentModel assn = variables.get(i);
                 try {
-                    Optional<TypeDefinitionModel> sourceTypeOpt = assn.getSourceType(
+                    Optional<TypeDefinitionModel> sourceVariableTypeOpt = assn.getSourceType(
                             ctx.metadataManager(),
                             node.getThreadSpec().getWfSpec(),
                             node.getThreadSpec().getName());
-                    VariableType sourceType =
-                            sourceTypeOpt.map(TypeDefinitionModel::getType).orElse(null);
-                    VariableType targetType = taskDefVar.getTypeDef().getType();
+                    VariableType sourceVariableType = sourceVariableTypeOpt
+                            .map(TypeDefinitionModel::getType)
+                            .orElse(null);
+                    VariableType taskInputType = taskDefVar.getTypeDef().getType();
 
-                    // If explicit cast, validate the cast itself (original type -> cast target)
                     if (assn.getTargetType() != null) {
+                        // If explicit cast, validate the cast itself (original type -> cast target)
                         VariableType castTargetType = assn.getTargetType().getType();
-                        if (!TypeCastingUtils.canCastTo(sourceType, castTargetType)) {
+                        if (!TypeCastingUtils.canCastTo(sourceVariableType, castTargetType)) {
                             throw new InvalidNodeException(
-                                    "Cannot cast from " + sourceType + " to " + castTargetType
+                                    "Cannot cast from " + sourceVariableType + " to " + castTargetType
                                             + ". This conversion is not supported.",
                                     node);
                         }
-                        TypeCastingUtils.validateTypeCompatibility(sourceType, castTargetType);
+                        TypeCastingUtils.validateTypeCompatibility(sourceVariableType, castTargetType);
                         // After cast, source becomes castTargetType for assignment
-                        sourceType = castTargetType;
-                        if (!TypeCastingUtils.canBeType(sourceType, targetType)) {
+                        sourceVariableType = castTargetType;
+                        if (!TypeCastingUtils.canBeType(sourceVariableType, taskInputType)) {
                             throw new InvalidNodeException(
-                                    "Cannot assign " + sourceType + " to " + targetType + ".", node);
+                                    "Cannot assign " + sourceVariableType + " to " + taskInputType + ".", node);
                         }
 
                     } else {
                         // No explicit cast, only allow assignment if possible without cast
-                        if (!TypeCastingUtils.canBeType(sourceType, targetType)) {
+                        if (!TypeCastingUtils.canBeType(sourceVariableType, taskInputType)) {
                             throw new InvalidNodeException(
-                                    "Cannot assign " + sourceType + " to " + targetType + " without explicit casting.",
+                                    "Cannot assign " + sourceVariableType + " to " + taskInputType
+                                            + " without explicit casting.",
                                     node);
                         }
                     }
 
-                } catch (Exception exn) {
+                } catch (InvalidExpressionException | InvalidMutationException | IllegalArgumentException exception) {
                     throw new InvalidNodeException(
                             "Task input variable with name " + taskDefVar.getName() + " at position " + i + ": "
-                                    + exn.getMessage(),
+                                    + exception.getMessage(),
                             node);
                 }
             }
