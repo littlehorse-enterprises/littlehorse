@@ -1204,20 +1204,20 @@ func (t *WorkflowThread) maskCorrelationId(n *ExternalEventNodeOutput, masked bo
 	return n
 }
 
-func (t *WorkflowThread) registerWorkflowEventdAs(n *ThrowEventNodeOutput, payloadType lhproto.VariableType) *ThrowEventNodeOutput {
+func (t *WorkflowThread) registerWorkflowEventDefAs(n *ThrowEventNodeOutput, payloadType lhproto.VariableType) *ThrowEventNodeOutput {
 	t.checkIfIsActive()
 	n.payloadType = payloadType
 	t.wf.workflowEventsToRegister = append(t.wf.workflowEventsToRegister, n)
 	return n
 }
 
-func (t *WorkflowThread) registerExternalEventdAs(n *ExternalEventNodeOutput, payloadType lhproto.VariableType) *ExternalEventNodeOutput {
+func (t *WorkflowThread) registerExternalEventDefAs(n *ExternalEventNodeOutput, payloadType lhproto.VariableType) *ExternalEventNodeOutput {
 	t.checkIfIsActive()
 	n.payloadType = &payloadType
 	t.wf.externalEventsToRegister = append(t.wf.externalEventsToRegister, n)
 	return n
 }
-func (t *WorkflowThread) registerExternalEventAsEmpty(n *ExternalEventNodeOutput) *ExternalEventNodeOutput {
+func (t *WorkflowThread) registerExternalEventDefAsEmpty(n *ExternalEventNodeOutput) *ExternalEventNodeOutput {
 	t.checkIfIsActive()
 	t.wf.externalEventsToRegister = append(t.wf.externalEventsToRegister, n)
 	return n
