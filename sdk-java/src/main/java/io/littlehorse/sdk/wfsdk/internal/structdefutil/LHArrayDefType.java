@@ -19,7 +19,7 @@ public class LHArrayDefType extends LHClassType {
     public TypeDefinition getTypeDefinition() {
         TypeDefinition.Builder typeDef = TypeDefinition.newBuilder();
         Class<?> componentType = this.clazz.getComponentType();
-        LHClassType lhClassType = LHClassType.createLHClassType(componentType);
+        LHClassType lhClassType = LHClassType.fromJavaClass(componentType);
         typeDef.setInlineArrayDef(InlineArrayDef.newBuilder().setElementType(lhClassType.getTypeDefinition()));
         return typeDef.build();
     }

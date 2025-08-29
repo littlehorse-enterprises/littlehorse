@@ -63,7 +63,7 @@ class BuilderUtil {
             return ReturnType.newBuilder().build();
         }
 
-        LHClassType lhClassType = LHClassType.createLHClassType(payloadClass);
+        LHClassType lhClassType = LHClassType.fromJavaClass(payloadClass);
 
         return ReturnType.newBuilder()
                 .setReturnType(lhClassType.getTypeDefinition())

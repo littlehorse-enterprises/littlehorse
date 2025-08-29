@@ -82,7 +82,7 @@ public class LHStructProperty {
      * @return An optional LHClassType, which will be empty if the property contains the LHStructIgnore annotation on its getter or setters
      */
     public LHClassType getPropertyType() {
-        return LHClassType.createLHClassType(pd.getPropertyType());
+        return LHClassType.fromJavaClass(pd.getPropertyType());
     }
 
     private <T extends Annotation> T getAnnotation(Class<T> annotationClass) {

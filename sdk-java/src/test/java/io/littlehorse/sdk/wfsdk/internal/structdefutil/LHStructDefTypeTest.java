@@ -209,7 +209,7 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getStructDefTypeDefinition() {
-        LHClassType structDefType = LHClassType.createLHClassType(Author.class);
+        LHClassType structDefType = LHClassType.fromJavaClass(Author.class);
 
         TypeDefinition actualTypeDefinition = structDefType.getTypeDefinition();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()

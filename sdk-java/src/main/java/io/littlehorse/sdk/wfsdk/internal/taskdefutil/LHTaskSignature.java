@@ -84,7 +84,7 @@ public class LHTaskSignature {
 
     private VariableDef buildVariableDef(Parameter param) {
         VariableDef.Builder varDef = VariableDef.newBuilder();
-        LHClassType lhClassType = LHClassType.createLHClassType(param.getType());
+        LHClassType lhClassType = LHClassType.fromJavaClass(param.getType());
 
         if (lhClassType instanceof LHStructDefType) {
             LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
@@ -112,7 +112,7 @@ public class LHTaskSignature {
             // Empty `type` field signifies that it's void.
             return ReturnType.newBuilder().build();
         } else {
-            LHClassType lhClassType = LHClassType.createLHClassType(classReturnType);
+            LHClassType lhClassType = LHClassType.fromJavaClass(classReturnType);
 
             if (lhClassType instanceof LHStructDefType) {
                 LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;

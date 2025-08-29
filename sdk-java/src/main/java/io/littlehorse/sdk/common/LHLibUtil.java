@@ -200,7 +200,7 @@ public class LHLibUtil {
     }
 
     private static Object deserializeStructToObject(Struct struct, Class<?> clazz) throws LHSerdeException {
-        LHClassType lhClassType = LHClassType.createLHClassType(clazz);
+        LHClassType lhClassType = LHClassType.fromJavaClass(clazz);
 
         if (!(lhClassType instanceof LHStructDefType)) {
             throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
@@ -209,7 +209,7 @@ public class LHLibUtil {
         LHStructDefType structDefType = (LHStructDefType) lhClassType;
 
         try {
-            Object structObject = structDefType.getDefaultInstance();
+            Object structObject = structDefType.createInstance();
 
             List<LHStructProperty> structProperties = structDefType.getStructProperties();
 
@@ -225,6 +225,7 @@ public class LHLibUtil {
 
                 VariableValue fieldValue =
                         struct.getStruct().getFieldsMap().get(fieldName).getValue();
+
                 property.setValueTo(structObject, fieldValue);
             }
 
@@ -297,7 +298,7 @@ public class LHLibUtil {
      * @return a Struct where the fields mirror the object's properties
      */
     public static Struct serializeToStruct(Object o) {
-        LHClassType lhClassType = LHClassType.createLHClassType(o.getClass());
+        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass());
 
         if (!(lhClassType instanceof LHStructDefType))
             throw new IllegalStateException("Cannot serialize given object to Struct");

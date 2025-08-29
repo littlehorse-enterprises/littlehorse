@@ -9,7 +9,7 @@ import java.util.Objects;
 public abstract class LHClassType {
     protected Class<?> clazz;
 
-    public static LHClassType createLHClassType(Class<?> classType) {
+    public static LHClassType fromJavaClass(Class<?> classType) {
         if (classType == null) {
             return null;
         } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
@@ -22,7 +22,7 @@ public abstract class LHClassType {
         return new LHPrimitiveType(classType);
     }
 
-    public Object getDefaultInstance()
+    public Object createInstance()
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
                     NoSuchMethodException, SecurityException {
         return clazz.getDeclaredConstructor().newInstance();
@@ -32,7 +32,7 @@ public abstract class LHClassType {
 
     public abstract TypeDefinition getTypeDefinition();
 
-    public LHClassType(Class<?> clazz) {
+    protected LHClassType(Class<?> clazz) {
         this.clazz = Objects.requireNonNull(clazz);
     }
 
@@ -47,7 +47,7 @@ public abstract class LHClassType {
             coreType = coreType.getComponentType();
         }
 
-        return LHClassType.createLHClassType(coreType);
+        return LHClassType.fromJavaClass(coreType);
     }
 
     @Override
