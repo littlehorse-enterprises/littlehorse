@@ -8,10 +8,8 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
-import org.rocksdb.CompactionOptionsUniversal;
 import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionType;
-import org.rocksdb.FilterPolicyType;
 import org.rocksdb.IndexType;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
@@ -95,7 +93,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
 
         options.setTableFormatConfig(tableConfig);
-
 
         Optional<InfoLogLevel> rocksDBLogLevel = serverConfig.getRocksDBLogLevel();
         if (rocksDBLogLevel.isPresent()) {
