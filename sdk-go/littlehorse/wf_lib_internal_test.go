@@ -35,6 +35,42 @@ func TestEarlyReturnOnExitNode(t *testing.T) {
 	assert.Equal(t, exitNodeCount, 1)
 }
 
+func TestEarlyComplete(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.Execute("some-task")
+		t.Complete(nil)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	exitNode := entrypoint.Nodes["2-exit-EXIT"].GetExit()
+
+	assert.Nil(t, exitNode.GetReturnContent())
+}
+
+func TestEarlyCompleteWithReturn(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		taskOutput := t.Execute("some-task")
+		t.Complete(taskOutput)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	exitNode := entrypoint.Nodes["2-exit-EXIT"].GetExit()
+
+	assert.NotNil(t, exitNode.GetReturnContent())
+	result := exitNode.GetReturnContent()
+	assert.NotNil(t, result.GetNodeOutput().GetNodeName(), "1-some-task-TASK")
+}
+
 func TestCanMakeSearchableVariable(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		t.AddVariable(

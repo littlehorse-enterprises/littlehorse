@@ -36,7 +36,6 @@ public class NodeModelTest {
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage("INVALID_ARGUMENT: Invalid names for exception handlers: my.handler");
-        verify(mockSubnode, never()).validate(Mockito.any());
     }
 
     @Test

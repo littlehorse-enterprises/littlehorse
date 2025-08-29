@@ -389,6 +389,10 @@ func (t *WorkflowThread) DeclareJsonObj(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_JSON_OBJ)
 }
 
+func (t *WorkflowThread) Complete(result interface{}) {
+	t.complete(result)
+}
+
 func (l *LHWorkflow) WithRetentionPolicy(policy *lhproto.WorkflowRetentionPolicy) *LHWorkflow {
 	l.spec.RetentionPolicy = policy
 	return l

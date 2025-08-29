@@ -1638,10 +1638,21 @@ class WorkflowThread:
             ),
         )
 
-    def complete(self) -> None:
-        """Adds an Exit Node, returning from the WorkflowThread early"""
+    def complete(self, output: Optional[Any] = None) -> None:
+        """Adds an Exit Node, causing the ThreadSpec to return early.
+
+        Args:
+            output (Optional[Any], optional): The return value for the thread.
+                Can be a literal value, WfRunVariable, or NodeOutput. Defaults to None.
+        """
         self._check_if_active()
-        self.add_node("complete", ExitNode())
+
+        if output is not None:
+            exit_node = ExitNode(return_content=to_variable_assignment(output))
+        else:
+            exit_node = ExitNode()
+
+        self.add_node("complete", exit_node)
 
     def assign_user_task(
         self,

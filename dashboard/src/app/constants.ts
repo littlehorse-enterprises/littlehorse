@@ -4,7 +4,7 @@ export const SEARCH_LIMITS = [10, 20, 30, 60, 100] as const
 export type SearchLimit = (typeof SEARCH_LIMITS)[number]
 export const SEARCH_DEFAULT_LIMIT: SearchLimit = 10
 
-export const VARIABLE_TYPES: { [key in NonNullable<VariableValue['value']>['$case']]: string } = {
+export const VARIABLE_TYPES = {
   jsonObj: 'JSON Object',
   jsonArr: 'JSON Array',
   double: 'Double',
@@ -13,7 +13,9 @@ export const VARIABLE_TYPES: { [key in NonNullable<VariableValue['value']>['$cas
   int: 'Integer',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
-}
+} as const satisfies { [key in NonNullable<VariableValue['value']>['$case']]: string }
+
+export const VARIABLE_TYPE_ENTRIES = Object.entries(VARIABLE_TYPES)
 
 export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
 export const WF_RUN_STATUSES = Object.values(LHStatus).filter(status => status !== 'UNRECOGNIZED')
