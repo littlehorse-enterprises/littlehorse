@@ -25,11 +25,11 @@ public class WaitForConditionTest {
     void waitForConditionCompletesWhenChildMutatesParentVar() {
         verifier.prepareRun(waitForConditionWorkflow)
                 .thenVerifyWfRun(wfRun -> {
-                    Assertions.assertEquals(wfRun.getStatus(), LHStatus.RUNNING);
+                    Assertions.assertEquals(LHStatus.RUNNING, wfRun.getStatus());
                 })
                 .thenSendExternalEventWithContent(EVENT_NAME, null)
                 .thenVerifyWfRun(wfRun -> {
-                    Assertions.assertEquals(wfRun.getStatus(), LHStatus.RUNNING);
+                    Assertions.assertEquals(LHStatus.RUNNING, wfRun.getStatus());
                 })
                 .thenSendExternalEventWithContent(EVENT_NAME, null)
                 .waitForStatus(LHStatus.COMPLETED)
