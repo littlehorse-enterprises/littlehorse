@@ -67,6 +67,12 @@ message VariableAssignment {
     // Assign the value of an Expression.
     Expression expression = 6;
   }
+
+  // If specified, the resolved value will be cast to this type before being used.
+  // This allows explicit type conversions anywhere VariableAssignment is used.
+  // The cast operation is non-mutating: original values remain unchanged.
+  // Note: Only primitive type conversions are supported.
+  optional TypeDefinition target_type = 7;
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.

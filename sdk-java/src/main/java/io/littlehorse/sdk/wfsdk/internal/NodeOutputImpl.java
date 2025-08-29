@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import java.io.Serializable;
@@ -68,5 +69,10 @@ class NodeOutputImpl implements NodeOutput {
     @Override
     public LHExpression removeKey(Serializable key) {
         return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
+    }
+
+    @Override
+    public LHExpression cast(VariableType targetType) {
+        return new CastExpressionImpl(this, targetType);
     }
 }
