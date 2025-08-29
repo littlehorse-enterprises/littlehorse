@@ -2,39 +2,16 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.sdk.common.proto.InlineArrayDef;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableType;
 import org.junit.jupiter.api.Test;
 
 public class LHClassTypeTest {
-
     @Test
-    public void getArrayOfPrimitiveTypeDefinition() {
-        LHClassType intArrayTypeDef = LHClassType.createLHClassType(Integer[].class);
+    public void testGetCoreComponentType() {
+        LHClassType lhClassType = LHClassType.fromJavaClass(String[][][][].class);
 
-        TypeDefinition actualTypeDefinition = intArrayTypeDef.getTypeDefinition();
-        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setInlineArrayDef(InlineArrayDef.newBuilder()
-                        .setElementType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))
-                .build();
+        LHClassType expectedCoreComponentType = LHClassType.fromJavaClass(String.class);
+        LHClassType actualCoreComponentType = lhClassType.getCoreComponentType();
 
-        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
-    }
-
-    @Test
-    public void get2DArrayOfPrimitiveTypeDefinition() {
-        LHClassType intArrayTypeDef = LHClassType.createLHClassType(Integer[][].class);
-
-        TypeDefinition actualTypeDefinition = intArrayTypeDef.getTypeDefinition();
-        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setInlineArrayDef(InlineArrayDef.newBuilder()
-                        .setElementType(TypeDefinition.newBuilder()
-                                .setInlineArrayDef(InlineArrayDef.newBuilder()
-                                        .setElementType(
-                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))))
-                .build();
-
-        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
+        assertThat(actualCoreComponentType).isEqualTo(expectedCoreComponentType);
     }
 }
