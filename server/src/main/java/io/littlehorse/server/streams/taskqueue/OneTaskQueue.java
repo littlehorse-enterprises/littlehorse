@@ -7,6 +7,7 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
@@ -134,7 +135,12 @@ public class OneTaskQueue {
             return pendingTasks.removeFirst();
         });
         if (nextItem != null) {
-            parent.itsAMatch(nextItem.resolveTask(requestContext), requestObserver);
+            Optional<ScheduledTaskModel> resolvedTask = nextItem.resolveTask(requestContext);
+            if (resolvedTask.isPresent()) {
+                parent.itsAMatch(resolvedTask.get(), requestObserver);
+            } else {
+                requestObserver.sendResponse(null);
+            }
         }
     }
 
@@ -155,7 +161,7 @@ public class OneTaskQueue {
 
         public QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {
             this.taskId = streamsTaskId;
-            if (numberOfInMemoryTasks.get() > capacity) {
+            if (numberOfInMemoryTasks.get() >= capacity) {
                 this.scheduledTask = null;
             } else {
                 this.scheduledTask = scheduledTask;
@@ -164,16 +170,12 @@ public class OneTaskQueue {
             this.scheduledTaskStoreKey = scheduledTask.getTaskRunId().toString();
         }
 
-        private ScheduledTaskModel resolveTask(RequestExecutionContext context) {
+        private Optional<ScheduledTaskModel> resolveTask(RequestExecutionContext context) {
             if (scheduledTask != null) {
                 numberOfInMemoryTasks.decrementAndGet();
-                return scheduledTask;
+                return Optional.of(scheduledTask);
             } else {
-                ScheduledTaskModel task = context.getableManager(taskId).getScheduledTask(scheduledTaskStoreKey);
-                if (task == null) {
-                    throw new RuntimeException("Unable to find scheduled task for " + scheduledTaskStoreKey);
-                }
-                return task;
+                return Optional.ofNullable(context.getableManager(taskId).getScheduledTask(scheduledTaskStoreKey));
             }
         }
 

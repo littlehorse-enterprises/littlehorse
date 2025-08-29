@@ -113,8 +113,16 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     }
 
     public void sendResponse(ScheduledTaskModel toExecute) {
-        PollTaskResponse response =
-                PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
-        responseObserver.onNext(response);
+        if (toExecute == null) {
+            // Tasks may be already claimed by other workers during rebalancing.
+            // TODO: Add metrics to track the frequency of empty scheduled tasks to better monitor rebalancing impact
+            log.warn("Processing pollTaskRequest for task that was already claimed");
+            PollTaskResponse emptyResponse = PollTaskResponse.newBuilder().build();
+            responseObserver.onNext(emptyResponse);
+        } else {
+            PollTaskResponse response =
+                    PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
+            responseObserver.onNext(response);
+        }
     }
 }
