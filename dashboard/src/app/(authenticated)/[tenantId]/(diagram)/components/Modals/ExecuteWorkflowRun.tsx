@@ -1,3 +1,4 @@
+import { getVariableDefType, wfRunIdFromFlattenedId, wfRunIdToPath } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -8,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
+import { RunWfRequest, ThreadVarDef, VariableValue, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
@@ -16,19 +17,18 @@ import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
-import { getVariableDefType } from '@/app/utils'
 
 export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
 
-export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
+export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
   const { showModal, setShowModal } = useModal()
-  const lhWorkflowSpec = data as WfSpec
   const tenantId = useParams().tenantId as string
-  const router = useRouter()
   const formRef = useRef<HTMLFormElement | null>(null)
+  const router = useRouter()
   const wfSpecVariables = useMemo(() => {
+    if (!wfSpec.threadSpecs[wfSpec.entrypointThreadName]) return []
     return (
-      lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs?.map(variable => {
+      wfSpec.threadSpecs[wfSpec.entrypointThreadName].variableDefs.map(variable => {
         const newVariable = { ...variable }
         if (newVariable.varDef?.name) {
           newVariable.varDef.name = newVariable.varDef.name.replace(/\./g, DOT_REPLACEMENT_PATTERN)
@@ -36,57 +36,64 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
         return newVariable
       }) ?? []
     )
-  }, [lhWorkflowSpec])
+  }, [wfSpec])
 
   const formatVariablesPayload = (values: FormValues) => {
-    const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
+    const transformedObj = Object.keys(values).reduce((acc: RunWfRequest['variables'], key) => {
       if (values[key] === undefined) return acc
       const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
-      acc[transformedKey] = { [matchVariableType(transformedKey)]: values[key] }
+
+      if (
+        wfSpecVariables.some(
+          variable =>
+            variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR && variable.varDef?.name === transformedKey
+        )
+      ) {
+        return acc
+      }
+
+      acc[transformedKey] = VariableValue.fromJSON({ [matchVariableType(transformedKey)]: values[key] })
       return acc
     }, {})
 
     return transformedObj
   }
 
-  const matchVariableType = (key: string): string => {
+  const matchVariableType = (key: string) => {
     const variable = wfSpecVariables.find((variable: ThreadVarDef) => variable.varDef?.name === key)
+    if (!variable || !variable.varDef) return ''
 
-    if (!variable) return ''
-
-    if (!variable.varDef) return ''
-
-    const type = getVariableDefType(variable.varDef)
-
-    switch (type) {
-      case VariableType.JSON_ARR:
-        return 'jsonArr'
-      case VariableType.JSON_OBJ:
-        return 'jsonObj'
-      default:
-        return type.toLowerCase()
-    }
+    return getVariableDefType(variable.varDef)
   }
 
   const handleFormSubmit = async (values: FormValues) => {
     const customWfRunId = values.customWfRunId as string
+    const parentWfRunId = values.parentWfRunId as string
     delete values.customWfRunId
-    if (!lhWorkflowSpec.id) return
+    delete values.parentWfRunId
+    if (!wfSpec.id || (wfSpec.parentWfSpec && !parentWfRunId)) return
+    const variables = formatVariablesPayload(values)
+
     try {
       const wfRun = await runWfSpec({
         tenantId,
-        wfSpecName: lhWorkflowSpec.id.name,
-        majorVersion: lhWorkflowSpec.id.majorVersion,
-        revision: lhWorkflowSpec.id.revision,
+        parentWfRunId: wfSpec.parentWfSpec ? wfRunIdFromFlattenedId(parentWfRunId) : undefined,
+        wfSpecName: wfSpec.id.name,
+        majorVersion: wfSpec.id.majorVersion,
+        revision: wfSpec.id.revision,
         id: customWfRunId || undefined,
-        variables: formatVariablesPayload(values),
+        variables,
       })
       if (!wfRun.id) return
       toast.success('Workflow has been executed')
       setShowModal(false)
-      router.push(`/${tenantId}/wfRun/${wfRun.id.id}`)
+      router.push(`/${tenantId}/wfRun/${wfRunIdToPath(wfRun.id)}`)
     } catch (error: any) {
-      toast.error(error.message?.split(':')?.[1])
+      if (error.message) {
+        toast.error(error.message.split(':')[1])
+      } else {
+        toast.error('An error occurred while executing the workflow')
+      }
     }
   }
 
@@ -94,13 +101,13 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Execute {lhWorkflowSpec.id?.name}</DialogTitle>
+          <DialogTitle>Execute {wfSpec.id?.name}</DialogTitle>
           <DialogDescription className="text-primary/50">
             You can leave all optional fields blank if desired.
           </DialogDescription>
         </DialogHeader>
 
-        <WfRunForm wfSpecVariables={wfSpecVariables} onSubmit={handleFormSubmit} ref={formRef} />
+        <WfRunForm wfSpecVariables={wfSpecVariables} wfSpec={wfSpec} onSubmit={handleFormSubmit} ref={formRef} />
 
         <DialogFooter>
           <DialogClose className="mr-4">Cancel</DialogClose>

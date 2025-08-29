@@ -1,4 +1,5 @@
-import { getVariable, getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { getVariable, getVariableValue, hasEventCase, utcToLocalDateTime } from '@/app/utils'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
 import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client/proto'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
@@ -6,20 +7,17 @@ import { FC } from 'react'
 import { getUserTaskRun } from '../../NodeTypes/UserTask/getUserTaskRun'
 import { AccordionNode } from './AccordionContent'
 
-export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) => {
-  const taskId = nodeRun?.userTask?.userTaskRunId?.userTaskGuid
-  const wfRunId = nodeRun?.userTask?.userTaskRunId?.wfRunId?.id
+export const UserTaskDefDetail: FC<AccordionNode<'userTask'>> = ({ nodeRun, userTaskNode }) => {
+  const { userTaskRunId } = nodeRun.nodeType.value
+  const { tenantId } = useWhoAmI()
+
   const { data, isLoading } = useQuery({
-    queryKey: ['userTaskRun', wfRunId, taskId],
+    queryKey: ['userTaskRun', userTaskRunId],
     queryFn: async () => {
-      if (!wfRunId) return
-      if (!taskId) return
+      if (!userTaskRunId) return
       const taskRun = await getUserTaskRun({
-        wfRunId: {
-          id: wfRunId,
-          parentWfRunId: undefined,
-        },
-        userTaskGuid: taskId,
+        tenantId,
+        ...userTaskRunId,
       })
 
       return taskRun
@@ -37,8 +35,8 @@ export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) 
   if (!data) return
 
   const lhUserTaskRun = data as LHUserTaskRun
-  const assigmentHistory = lhUserTaskRun.events.filter(e => e.assigned !== undefined)
-  const cancellationHistory = lhUserTaskRun.events.filter(e => e.cancelled !== undefined)
+  const assigmentHistory = lhUserTaskRun.events.filter(hasEventCase('assigned'))
+  const cancellationHistory = lhUserTaskRun.events.filter(hasEventCase('cancelled'))
   const resultsToRender = Object.keys(lhUserTaskRun.results).map(k => ({
     field: k,
     value: getVariableValue(lhUserTaskRun.results[k]),
@@ -148,10 +146,10 @@ export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) 
               {assigmentHistory.map((e, index) => (
                 <tr key={index} className="border-b border-neutral-200">
                   <td className="px-6 py-4">{e.time && utcToLocalDateTime(e.time)}</td>
-                  <td className="px-6 py-4">{e.assigned?.oldUserGroup}</td>
-                  <td className="px-6 py-4">{e.assigned?.newUserGroup}</td>
-                  <td className="px-6 py-4">{e.assigned?.oldUserId}</td>
-                  <td className="px-6 py-4">{e.assigned?.newUserId}</td>
+                  <td className="px-6 py-4">{e.event?.value?.oldUserGroup}</td>
+                  <td className="px-6 py-4">{e.event.value.newUserGroup}</td>
+                  <td className="px-6 py-4">{e.event.value.oldUserId}</td>
+                  <td className="px-6 py-4">{e.event.value.newUserId}</td>
                 </tr>
               ))}
             </tbody>
@@ -176,7 +174,7 @@ export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) 
                   {cancellationHistory.map((e, index) => (
                     <tr key={index} className="border-b border-neutral-200">
                       <td className="px-6 py-4">{e.time && utcToLocalDateTime(e.time)}</td>
-                      <td className="px-6 py-4">{e.cancelled?.message}</td>
+                      <td className="px-6 py-4">{e.event.value.message}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -50,7 +50,6 @@ import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
-import org.jetbrains.annotations.Nullable;
 import org.rocksdb.Cache;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.LRUCache;
@@ -554,7 +553,6 @@ public class LHServerConfig extends ConfigBase {
         return new TLSConfig(certChain, privateKey);
     }
 
-    @Nullable
     @SuppressWarnings("null")
     private File getFile(String configName) {
         String fileLocation = getOrSetDefault(configName, null);
@@ -947,6 +945,7 @@ public class LHServerConfig extends ConfigBase {
                 result.put(kafkaKey, props.get(key));
             }
         }
+        result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
         return result;
     }
 

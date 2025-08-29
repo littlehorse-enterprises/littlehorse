@@ -5,7 +5,7 @@ import { FC, PropsWithChildren, createContext, useContext } from 'react'
 
 type ContextProps = {
   user: DefaultSession['user']
-  tenantId?: string
+  tenantId: string
   tenants: string[]
 }
 

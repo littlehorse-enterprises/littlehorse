@@ -1,5 +1,5 @@
 'use client'
-import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
+import { sortNodeRunsByLatest } from '@/app/utils/sortNodeRunsByLatest'
 import { NodeRun } from 'littlehorse-client/proto'
 import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
@@ -23,6 +23,7 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
   const contextNodeId = useNodeId()
   const nodes = useStore(state => state.getNodes())
   const setNodes = useStore(state => state.setNodes)
+  const transform = useStore(state => state.transform)
   const selectedNode = useMemo(
     () => nodes.find(node => node.selected && node.id === contextNodeId),
     [contextNodeId, nodes]
@@ -55,8 +56,9 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',
-    bottom: selectedNode.height!,
-    transform: `translate(${selectedNode.width! / 2}px, 0px) translate(-50%, 0%)`,
+    top: -(50 / transform[2]), // Much larger spacing that scales with zoom
+    transform: `translate(${selectedNode.width! / 2}px, 0px) translate(-50%, -100%) scale(${1 / transform[2]})`,
+    transformOrigin: 'center bottom',
     zIndex,
   }
 
@@ -73,10 +75,20 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
     return []
   }) as React.ReactElement[]
 
+  const hasNodeRun = nodeRunList && nodeRunList[nodeRunsIndexInternal]
+  const totalDataGroups = (hasNodeRun ? 1 : 0) + diagramDataGroups.length
+  const isOddCount = totalDataGroups % 2 === 1
+  const middleIndex = Math.floor(totalDataGroups / 2)
+
   return (
     <div style={wrapperStyle} className="mb-6 flex select-none items-start justify-center gap-4 drop-shadow">
-      {nodeRunList && nodeRunList[nodeRunsIndexInternal] && (
-        <DiagramDataGroup label={'NodeRun'} index={nodeRunsIndexInternal} indexes={nodeRunList.length}>
+      {hasNodeRun && nodeRunList && (
+        <DiagramDataGroup
+          label={'NodeRun'}
+          index={nodeRunsIndexInternal}
+          indexes={nodeRunList.length}
+          arrow={isOddCount && middleIndex === 0}
+        >
           <DiagramDataGroupIndexer
             index={nodeRunsIndexInternal}
             setIndex={setNodeRunsIndexInternal}
@@ -96,10 +108,21 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
           </Entry>
         </DiagramDataGroup>
       )}
-      <div></div>
-      {diagramDataGroups.map((element, i) => (
-        <span key={i}>{element}</span>
-      ))}
+      {diagramDataGroups.map((element, i) => {
+        if (React.isValidElement(element) && element.type === DiagramDataGroup) {
+          const currentIndex = (hasNodeRun ? 1 : 0) + i
+          const isMiddleElement = isOddCount && currentIndex === middleIndex
+          return (
+            <span key={i}>
+              {React.cloneElement(element, {
+                ...(element.props as any),
+                arrow: isMiddleElement,
+              })}
+            </span>
+          )
+        }
+        return <span key={i}>{element}</span>
+      })}
     </div>
   )
 }

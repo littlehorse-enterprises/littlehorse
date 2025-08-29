@@ -4,7 +4,11 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEventNodeModel;
@@ -25,6 +29,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
@@ -205,32 +210,23 @@ public class NodeModel extends LHSerializable<Node> {
         return Optional.empty();
     }
 
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
-        for (EdgeModel e : outgoingEdges) {
-            if (e.getSinkNodeName().equals(name)) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
-            }
-
-            NodeModel sink = threadSpec.nodes.get(e.getSinkNodeName());
-            if (sink == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        String.format("Outgoing edge referring to missing node %s!", e.getSinkNodeName()));
-            }
-
-            if (sink.type == NodeCase.ENTRYPOINT) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, name));
-            }
-            if (e.getCondition() != null) {
-                e.getCondition().validate();
-            }
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+        getSubNode().validate(ctx);
+        // This can throw an exception, so let's call it here to catch it early on.
+        try {
+            getOutputType(ctx.metadataManager());
+        } catch (InvalidExpressionException exn) {
+            throw new InvalidNodeException("Invalid output type for the Node: " + exn.getMessage(), this);
         }
 
+        for (EdgeModel e : outgoingEdges) {
+            try {
+                e.validate(this, ctx.metadataManager(), threadSpec);
+            } catch (InvalidEdgeException exn) {
+                throw new InvalidNodeException(exn.getMessage(), this);
+            }
+        }
         validateFailureHandlers();
-
-        getSubNode().validate(ctx);
     }
 
     private void validateFailureHandlers() {
@@ -293,5 +289,17 @@ public class NodeModel extends LHSerializable<Node> {
         out.addAll(getSubNode().getNeededVariableNames());
 
         return out;
+    }
+
+    /**
+     * The Output Type of a node has three cases:
+     *
+     * 1. The root optional is empty. This means that we do not know what the node returns—could be empty, could
+     *    be something.
+     * 2. The root optional specifies an empty TypeDefinition. This means that the Node doesn't return anything.
+     * 3. The TypeDefinition is set. This means that we *do* know what the Node returns.
+     */
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) throws InvalidExpressionException {
+        return getSubNode().getOutputType(manager);
     }
 }

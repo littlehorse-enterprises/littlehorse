@@ -240,4 +240,52 @@ public interface SearchWfRunRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableMatchOrBuilder getVariableFiltersOrBuilder(
       int index);
+
+  /**
+   * <pre>
+   * If set, only return WfRuns that are direct children of the given parent WfRun
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 10;</code>
+   * @return Whether the parentWfRunId field is set.
+   */
+  boolean hasParentWfRunId();
+  /**
+   * <pre>
+   * If set, only return WfRuns that are direct children of the given parent WfRun
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 10;</code>
+   * @return The parentWfRunId.
+   */
+  io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
+  /**
+   * <pre>
+   * If set, only return WfRuns that are direct children of the given parent WfRun
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 10;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
+
+  /**
+   * <pre>
+   * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+   * using Object ID scan. If false or not set, uses index-based search for direct children only.
+   * </pre>
+   *
+   * <code>optional bool show_full_tree = 11;</code>
+   * @return Whether the showFullTree field is set.
+   */
+  boolean hasShowFullTree();
+  /**
+   * <pre>
+   * If set to true when parent_wf_run_id is provided, will return the full tree of descendants
+   * using Object ID scan. If false or not set, uses index-based search for direct children only.
+   * </pre>
+   *
+   * <code>optional bool show_full_tree = 11;</code>
+   * @return The showFullTree.
+   */
+  boolean getShowFullTree();
 }

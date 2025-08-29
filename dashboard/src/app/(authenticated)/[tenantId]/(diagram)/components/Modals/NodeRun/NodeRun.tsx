@@ -1,14 +1,13 @@
-import { FC } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import * as Accordion from '@radix-ui/react-accordion'
+import { FC } from 'react'
 import { Modal, NodeRuns } from '../../../context'
 import { useModal } from '../../../hooks/useModal'
 import { TaskLink } from '../../NodeTypes/Task/TaskDetails'
-import { getNodeType } from '../../NodeTypes/extractNodes'
-import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionItem } from './AccordionItem'
 
-export const NodeRun: FC<Modal> = ({ data }) => {
-  const { nodeRunsList, taskNode, userTaskNode } = data as NodeRuns
+export const NodeRun: FC<Modal<NodeRuns>> = ({ data, type }) => {
+  const { nodeRunsList, taskNode, userTaskNode } = data
   const node = nodeRunsList[0]
   const { showModal, setShowModal } = useModal()
 
@@ -18,7 +17,7 @@ export const NodeRun: FC<Modal> = ({ data }) => {
         <DialogHeader>
           <DialogTitle className="mr-8 flex items-center justify-between">
             <h2 className="text-lg font-bold">NodeRuns</h2>
-            {taskNode && <TaskLink taskName={taskNode.taskDefId?.name} />}
+            {taskNode?.taskToExecute && <TaskLink taskToExecute={taskNode.taskToExecute} />}
           </DialogTitle>
         </DialogHeader>
         <hr />
@@ -27,7 +26,7 @@ export const NodeRun: FC<Modal> = ({ data }) => {
             <strong>WfRun</strong>: {node.id?.wfRunId?.id}
           </div>
           <div>
-            <strong>Node Type</strong>: {getNodeType(node)}
+            <strong>Node Type</strong>: {type}
           </div>
         </div>
 
@@ -39,7 +38,7 @@ export const NodeRun: FC<Modal> = ({ data }) => {
             collapsible
           >
             {nodeRunsList?.map(nodeRun => (
-              <AccordionItem key={`item-${node.id?.position}`} node={nodeRun} userTaskNode={userTaskNode} />
+              <AccordionItem key={`item-${node.id?.position}`} nodeRun={nodeRun} userTaskNode={userTaskNode} />
             ))}
           </Accordion.Root>
         </div>

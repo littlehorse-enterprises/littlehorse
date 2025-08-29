@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.VariableMatch;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
+import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
@@ -48,6 +49,8 @@ public class SearchWfRunRequestModel
 
     private Date earliestStart;
     private Date latestStart;
+    private WfRunIdModel parentWfRunId;
+    private Boolean showFullTree;
 
     // not from proto
     private ExecutionContext executionContext;
@@ -79,6 +82,9 @@ public class SearchWfRunRequestModel
 
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
+        if (p.hasParentWfRunId())
+            parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
+        if (p.hasShowFullTree()) showFullTree = p.getShowFullTree();
 
         for (VariableMatch vm : p.getVariableFiltersList()) {
             variableMatches.add(LHSerializable.fromProto(vm, VariableMatchModel.class, context));
@@ -88,7 +94,10 @@ public class SearchWfRunRequestModel
     }
 
     public SearchWfRunRequest.Builder toProto() {
-        SearchWfRunRequest.Builder out = SearchWfRunRequest.newBuilder().setWfSpecName(wfSpecName);
+        SearchWfRunRequest.Builder out = SearchWfRunRequest.newBuilder();
+        if (wfSpecName != null) {
+            out.setWfSpecName(wfSpecName);
+        }
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
@@ -101,6 +110,8 @@ public class SearchWfRunRequestModel
 
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
+        if (parentWfRunId != null) out.setParentWfRunId(parentWfRunId.toProto());
+        if (showFullTree != null) out.setShowFullTree(showFullTree);
 
         for (VariableMatchModel vmm : variableMatches) {
             out.addVariableFilters(vmm.toProto());
@@ -117,25 +128,38 @@ public class SearchWfRunRequestModel
 
     public List<Attribute> getSearchAttributes() {
         List<Attribute> out = new ArrayList<>();
+        boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
+        boolean hasMajor = wfSpecMajorVersion != null;
+        boolean hasRevision = wfSpecRevision != null;
 
-        if (wfSpecMajorVersion != null) {
-            if (wfSpecRevision == null) {
+        if (!hasName && (hasMajor || hasRevision)) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Cannot provide wfSpecMajorVersion or wfSpecRevision without wfSpecName");
+        }
+
+        if (hasRevision && !hasMajor) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
+        }
+
+        if (hasName) {
+            if (hasMajor && hasRevision) {
+                out.add(new Attribute(
+                        "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
+            } else if (hasMajor) {
                 out.add(new Attribute(
                         "majorVersion", wfSpecName + "/" + LHUtil.toLHDbVersionFormat(wfSpecMajorVersion)));
             } else {
-                out.add(new Attribute(
-                        "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
+                out.add(new Attribute("wfSpecName", wfSpecName));
             }
-        } else {
-            if (wfSpecRevision != null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Cannot provide wfSpecRevision without wfSpecMajorVersion");
-            }
-            out.add(new Attribute("wfSpecName", wfSpecName));
         }
 
         if (status != null) {
             out.add(new Attribute("status", status.toString()));
+        }
+
+        if (parentWfRunId != null) {
+            out.add(new Attribute("parentWfRunId", parentWfRunId.toString()));
         }
 
         return out;
@@ -154,6 +178,14 @@ public class SearchWfRunRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
+
+        if (!hasName && parentWfRunId != null && showFullTree != null && showFullTree) {
+            String parentId = parentWfRunId.toString();
+            String partitionKey = parentWfRunId.getPartitionKey().orElse(parentId);
+            return new ObjectIdScanBoundaryStrategy(partitionKey, parentId + "_", parentId + "_~");
+        }
+
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
@@ -161,6 +193,19 @@ public class SearchWfRunRequestModel
     @Override
     public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) throws LHApiException {
         // TODO: optimize it so that we send a Variable Search query before sending a WfRun Scan.
+
+        List<ScanFilterModel> out = new ArrayList<>();
+        if (wfSpecName == null || wfSpecName.isEmpty()) {
+            if (!variableMatches.isEmpty()) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Cannot filter by variables without specifying wfSpecName");
+            }
+
+            if (parentWfRunId != null && status != null) {
+                out.add(new ScanFilterModel(status));
+            }
+            return out;
+        }
 
         WfSpecModel wfSpec = ctx.service().getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
         if (wfSpec == null) {
@@ -173,7 +218,6 @@ public class SearchWfRunRequestModel
         Map<String, ThreadVarDefModel> vars = thread.getVariableDefs().stream()
                 .collect(Collectors.toMap(var -> var.getVarDef().getName(), var -> var));
 
-        List<ScanFilterModel> out = new ArrayList<>();
         for (VariableMatchModel variableMatch : variableMatches) {
             ThreadVarDefModel var = vars.get(variableMatch.getVarName());
 

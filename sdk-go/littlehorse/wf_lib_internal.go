@@ -862,6 +862,26 @@ func (t *WorkflowThread) addVariable(
 	}
 }
 
+func (t *WorkflowThread) complete(result interface{}) {
+	t.checkIfIsActive()
+
+	_, node := t.createBlankNode("exit", "EXIT")
+
+	node.Node = &lhproto.Node_Exit{
+		Exit: &lhproto.ExitNode{},
+	}
+
+	if result != nil {
+		resultVarVal, err := t.assignVariable(result)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		node.GetExit().Result = &lhproto.ExitNode_ReturnContent{
+			ReturnContent: resultVarVal,
+		}
+	}
+}
+
 func (t *WorkflowThread) condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
 ) *WorkflowCondition {
@@ -1408,10 +1428,12 @@ func (t *WorkflowThread) fail(content interface{}, failureName string, msg *stri
 
 	node.Node = &lhproto.Node_Exit{
 		Exit: &lhproto.ExitNode{
-			FailureDef: &lhproto.FailureDef{
-				FailureName: failureName,
-				Content:     contentVarVal,
-				Message:     message,
+			Result: &lhproto.ExitNode_FailureDef{
+				FailureDef: &lhproto.FailureDef{
+					FailureName: failureName,
+					Content:     contentVarVal,
+					Message:     message,
+				},
 			},
 		},
 	}

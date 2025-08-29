@@ -4,7 +4,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'signing'
-    id 'com.diffplug.spotless' version '6.25.0'
+    id 'com.diffplug.spotless'
 }
 
 java {
@@ -126,7 +126,6 @@ dependencies {
 
     // Prometheus
     implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
-    implementation "io.javalin:javalin:${javalinVersion}"
 
     // Lombok stuff
     compileOnly "org.projectlombok:lombok:${lombokVersion}"

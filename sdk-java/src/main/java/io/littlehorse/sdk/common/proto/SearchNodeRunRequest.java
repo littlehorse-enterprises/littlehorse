@@ -475,6 +475,47 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
   }
 
+  public static final int EXTERNAL_EVENT_DEF_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDef_;
+  /**
+   * <pre>
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * @return Whether the externalEventDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasExternalEventDef() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <pre>
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * @return The externalEventDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDef() {
+    return externalEventDef_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDef_;
+  }
+  /**
+   * <pre>
+   * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+   * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefOrBuilder() {
+    return externalEventDef_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDef_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -506,6 +547,9 @@ private static final long serialVersionUID = 0L;
     }
     if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
       output.writeEnum(6, status_);
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeMessage(7, getExternalEventDef());
     }
     getUnknownFields().writeTo(output);
   }
@@ -539,6 +583,10 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(6, status_);
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getExternalEventDef());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -577,6 +625,11 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeType_ != other.nodeType_) return false;
     if (status_ != other.status_) return false;
+    if (hasExternalEventDef() != other.hasExternalEventDef()) return false;
+    if (hasExternalEventDef()) {
+      if (!getExternalEventDef()
+          .equals(other.getExternalEventDef())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -608,6 +661,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + nodeType_;
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
+    if (hasExternalEventDef()) {
+      hash = (37 * hash) + EXTERNAL_EVENT_DEF_FIELD_NUMBER;
+      hash = (53 * hash) + getExternalEventDef().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -744,6 +801,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getEarliestStartFieldBuilder();
         getLatestStartFieldBuilder();
+        getExternalEventDefFieldBuilder();
       }
     }
     @java.lang.Override
@@ -764,6 +822,11 @@ private static final long serialVersionUID = 0L;
       }
       nodeType_ = 0;
       status_ = 0;
+      externalEventDef_ = null;
+      if (externalEventDefBuilder_ != null) {
+        externalEventDefBuilder_.dispose();
+        externalEventDefBuilder_ = null;
+      }
       return this;
     }
 
@@ -823,6 +886,12 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.status_ = status_;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.externalEventDef_ = externalEventDefBuilder_ == null
+            ? externalEventDef_
+            : externalEventDefBuilder_.build();
+        to_bitField0_ |= 0x00000010;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -889,6 +958,9 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
+      if (other.hasExternalEventDef()) {
+        mergeExternalEventDef(other.getExternalEventDef());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -949,6 +1021,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 48
+            case 58: {
+              input.readMessage(
+                  getExternalEventDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1532,6 +1611,170 @@ private static final long serialVersionUID = 0L;
       status_ = 0;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDef_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefBuilder_;
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * @return Whether the externalEventDef field is set.
+     */
+    public boolean hasExternalEventDef() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * @return The externalEventDef.
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDef() {
+      if (externalEventDefBuilder_ == null) {
+        return externalEventDef_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDef_;
+      } else {
+        return externalEventDefBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     */
+    public Builder setExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
+      if (externalEventDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        externalEventDef_ = value;
+      } else {
+        externalEventDefBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     */
+    public Builder setExternalEventDef(
+        io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder builderForValue) {
+      if (externalEventDefBuilder_ == null) {
+        externalEventDef_ = builderForValue.build();
+      } else {
+        externalEventDefBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     */
+    public Builder mergeExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
+      if (externalEventDefBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          externalEventDef_ != null &&
+          externalEventDef_ != io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance()) {
+          getExternalEventDefBuilder().mergeFrom(value);
+        } else {
+          externalEventDef_ = value;
+        }
+      } else {
+        externalEventDefBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     */
+    public Builder clearExternalEventDef() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      externalEventDef_ = null;
+      if (externalEventDefBuilder_ != null) {
+        externalEventDefBuilder_.dispose();
+        externalEventDefBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefBuilder() {
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return getExternalEventDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefOrBuilder() {
+      if (externalEventDefBuilder_ != null) {
+        return externalEventDefBuilder_.getMessageOrBuilder();
+      } else {
+        return externalEventDef_ == null ?
+            io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDef_;
+      }
+    }
+    /**
+     * <pre>
+     * Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
+     * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> 
+        getExternalEventDefFieldBuilder() {
+      if (externalEventDefBuilder_ == null) {
+        externalEventDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder>(
+                getExternalEventDef(),
+                getParentForChildren(),
+                isClean());
+        externalEventDef_ = null;
+      }
+      return externalEventDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

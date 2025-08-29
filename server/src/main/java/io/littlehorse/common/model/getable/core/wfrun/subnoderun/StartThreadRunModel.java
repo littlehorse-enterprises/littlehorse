@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -77,7 +77,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
         ThreadSpecModel threadSpec = getWfSpec().getThreadSpecs().get(threadSpecName);
         try {
             threadSpec.validateStartVariables(variables);
-        } catch (LHValidationError exn) {
+        } catch (LHValidationException exn) {
             throw new NodeFailureException(new FailureModel(
                     "Invalid input variables for child thread: %s".formatted(exn.getMessage()),
                     LHErrorType.VAR_SUB_ERROR.toString()));

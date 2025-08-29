@@ -4,7 +4,7 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -76,7 +76,7 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
         try {
             wfRunModel.processSleepNodeMatured(
                     this, executionContext.currentCommand().getTime());
-        } catch (LHValidationError exn) {
+        } catch (LHValidationException exn) {
             log.debug("Uh, invalid timer event: {}", exn.getMessage(), exn);
         }
 
