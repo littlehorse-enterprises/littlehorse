@@ -20,9 +20,9 @@ class ExitNodeModelTest {
 
     @Test
     public void shouldValidateFailureName() {
-        exitNodeModel.failureDef = exception;
+        exitNodeModel.setFailureDef(exception);
         exitNodeModel.validate(commandContext);
-        exitNodeModel.failureDef = invalidException;
+        exitNodeModel.setFailureDef(invalidException);
         Throwable throwable = Assertions.catchThrowable(() -> exitNodeModel.validate(commandContext));
         Assertions.assertThat(throwable)
                 .isNotNull()

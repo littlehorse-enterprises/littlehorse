@@ -21,12 +21,15 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     private ProcessorContext<String, LHTimer> context;
     private KeyValueStore<String, LHTimer> timerStore;
     private Cancellable punctuator;
+    private String lastSeenKey;
 
     public void init(final ProcessorContext<String, LHTimer> context) {
         this.context = context;
         timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
         this.punctuator = context.schedule(
                 LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
+
+        this.lastSeenKey = "0000000000";
     }
 
     @Override
@@ -46,16 +49,16 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     }
 
     private void clearTimers(long timestamp) {
-        String start = "00000000";
         String end = LHUtil.toLhDbFormat(new Date(timestamp));
 
-        try (KeyValueIterator<String, LHTimer> iter = timerStore.range(start, end)) {
+        try (KeyValueIterator<String, LHTimer> iter = timerStore.range(lastSeenKey, end)) {
             while (iter.hasNext()) {
                 KeyValue<String, LHTimer> entry = iter.next();
                 sendOneTimer(entry.value);
                 timerStore.delete(entry.key);
             }
         }
+        lastSeenKey = end;
     }
 
     private void sendOneTimer(LHTimer timer) {

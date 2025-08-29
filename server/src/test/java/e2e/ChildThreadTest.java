@@ -56,8 +56,8 @@ public class ChildThreadTest {
                 })
                 .thenSendExternalEventWithContent(COMPLETE_PARENT, Map.of("result", 4321))
                 .thenVerifyNodeRun(0, 3, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
-                    WaitForThreadsRun wftr = nodeRun.getWaitThreads();
+                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_THREADS);
+                    WaitForThreadsRun wftr = nodeRun.getWaitForThreads();
 
                     Assertions.assertThat(wftr.getThreadsCount()).isEqualTo(1);
                     WaitForThread childStatus = wftr.getThreads(0);
@@ -97,8 +97,8 @@ public class ChildThreadTest {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.ERROR);
                 })
                 .thenVerifyNodeRun(0, 3, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
-                    WaitForThreadsRun wftr = nodeRun.getWaitThreads();
+                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_THREADS);
+                    WaitForThreadsRun wftr = nodeRun.getWaitForThreads();
 
                     Assertions.assertThat(wftr.getThreadsCount()).isEqualTo(1);
                     WaitForThread childStatus = wftr.getThreads(0);
@@ -148,8 +148,8 @@ public class ChildThreadTest {
                     Assertions.assertThat(varVal.getInt()).isEqualTo(1234);
                 })
                 .thenVerifyNodeRun(0, 3, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
-                    WaitForThreadsRun wftr = nodeRun.getWaitThreads();
+                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_THREADS);
+                    WaitForThreadsRun wftr = nodeRun.getWaitForThreads();
 
                     Assertions.assertThat(wftr.getThreadsCount()).isEqualTo(1);
                     WaitForThread childStatus = wftr.getThreads(0);
@@ -158,8 +158,8 @@ public class ChildThreadTest {
                 })
                 .thenSendExternalEventWithContent(COMPLETE_CHILD, Map.of("result", 137))
                 .thenVerifyNodeRun(0, 3, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
-                    WaitForThreadsRun wftr = nodeRun.getWaitThreads();
+                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_THREADS);
+                    WaitForThreadsRun wftr = nodeRun.getWaitForThreads();
 
                     Assertions.assertThat(wftr.getThreadsCount()).isEqualTo(1);
                     WaitForThread childStatus = wftr.getThreads(0);

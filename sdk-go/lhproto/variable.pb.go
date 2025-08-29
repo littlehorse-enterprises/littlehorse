@@ -33,6 +33,7 @@ type VariableValue struct {
 	// a NULL.
 	//
 	// Types that are assignable to Value:
+	//
 	//	*VariableValue_JsonObj
 	//	*VariableValue_JsonArr
 	//	*VariableValue_Double

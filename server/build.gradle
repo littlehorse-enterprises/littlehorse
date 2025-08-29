@@ -4,7 +4,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'signing'
-    id 'com.diffplug.spotless' version '6.25.0'
+    id 'com.diffplug.spotless'
 }
 
 java {
@@ -16,6 +16,11 @@ task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
     from javadoc
 }
+
+def defaultJvmArgs = [
+    '-XX:+UseZGC'
+]
+
 
 javadoc {
     excludes = [
@@ -121,7 +126,6 @@ dependencies {
 
     // Prometheus
     implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
-    implementation "io.javalin:javalin:${javalinVersion}"
 
     // Lombok stuff
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -146,6 +150,7 @@ application {
     // Define the main class for the application.
     mainClass = 'io.littlehorse.App'
     executableDir = 'server'
+    applicationDefaultJvmArgs = defaultJvmArgs
 }
 
 compileJava {
@@ -154,6 +159,12 @@ compileJava {
 
 shadowJar {
     mergeServiceFiles()
+    manifest {
+        attributes(
+            'Main-Class': 'io.littlehorse.App',
+            'JVM-Args': defaultJvmArgs.join(' ')
+        )
+    }
 }
 
 test {

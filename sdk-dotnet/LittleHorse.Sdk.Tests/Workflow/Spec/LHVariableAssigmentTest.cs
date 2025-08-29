@@ -61,16 +61,44 @@ public class LHVariableAssigmentTest
        Assert.Equal(nodeOutput.NodeName, variableAssigment.NodeOutput.NodeName);
     }
 
-    [Theory]
-    [InlineData("TestVariable")]
-    [InlineData(5)]
-    [InlineData(true)]
-    [InlineData(7.892)]
-    public void VariableAssigment_WithNotDefinedObject_ShouldAssignObjectAsLiteralValue(object notDefinedObject)
+    [Fact]
+    public void VariableAssigment_WithString_ShouldAssignStringAsLiteralValue()
     {
+        const string notDefinedObject = "TestVariable";
+        
         var variableAssigment = _parentWfThread.AssignVariableHelper(notDefinedObject);
         
-        Assert.Contains(notDefinedObject.ToString()!.ToLower(), variableAssigment.LiteralValue.ToString().ToLower());
+        Assert.Equal(notDefinedObject, variableAssigment.LiteralValue.Str);
+    }
+
+    [Fact]
+    public void VariableAssigment_WithInt_ShouldAssignIntAsLiteralValue()
+    {
+        const int notDefinedObject = 5;
+        
+        var variableAssigment = _parentWfThread.AssignVariableHelper(notDefinedObject);
+        
+        Assert.Equal(notDefinedObject, variableAssigment.LiteralValue.Int);
+    }
+
+    [Fact]
+    public void VariableAssigment_WithBool_ShouldAssignBoolAsLiteralValue()
+    {
+        const bool notDefinedObject = true;
+        
+        var variableAssigment = _parentWfThread.AssignVariableHelper(notDefinedObject);
+        
+        Assert.Equal(notDefinedObject, variableAssigment.LiteralValue.Bool);
+    }
+
+    [Fact]
+    public void VariableAssigment_WithDouble_ShouldAssignDoubleAsLiteralValue()
+    {
+        const double notDefinedObject = 7.892;
+        
+        var variableAssigment = _parentWfThread.AssignVariableHelper(notDefinedObject);
+        
+        Assert.Equal(notDefinedObject, variableAssigment.LiteralValue.Double);
     }
     
     [Fact]

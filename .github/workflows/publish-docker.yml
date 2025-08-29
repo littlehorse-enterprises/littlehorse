@@ -6,7 +6,7 @@ on:
       tag:
         type: string
         required: false
-        default: ''
+        default: ""
 permissions:
   packages: write
   contents: read
@@ -28,12 +28,17 @@ jobs:
         run: sed -i "s/version=.*/version=${{ inputs.tag }}/g" gradle.properties
 
       - name: Tests and Build
-        run: ./gradlew server:test server:shadowJar
+        run: ./gradlew server:test server:shadowJar server:installDist
 
       - uses: actions/upload-artifact@v4
         with:
           name: server-jar
           path: server/build/libs/server-*-all.jar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-dist
+          path: server/build/install/server
 
   lh-server:
     runs-on: ubuntu-latest
@@ -43,11 +48,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Server Jar artifact
+      - name: Download Server Binaries
         uses: actions/download-artifact@v4
         with:
-          name: server-jar
-          path: server/build/libs/
+          name: server-dist
+          path: server/build/install/server
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
@@ -119,16 +124,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Update Dashboard Version
-        working-directory: ./dashboard
-        run: |
-          if [ "${{ inputs.tag }}" != "" ]; then
-            VERSION="${{ inputs.tag }}"
-          else
-            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            VERSION="${{ github.ref_name }}-$SHORT_SHA"
-          fi
-          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+      # - name: Update Dashboard Version
+      #   working-directory: ./dashboard
+      #   run: |
+      #     if [ "${{ inputs.tag }}" != "" ]; then
+      #       VERSION="${{ inputs.tag }}"
+      #     else
+      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+      #       VERSION="${{ github.ref_name }}-$SHORT_SHA"
+      #     fi
+      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -159,16 +164,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Update Dashboard Version
-        working-directory: ./dashboard
-        run: |
-          if [ "${{ inputs.tag }}" != "" ]; then
-            VERSION="${{ inputs.tag }}"
-          else
-            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            VERSION="${{ github.ref_name }}-$SHORT_SHA"
-          fi
-          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+      # - name: Update Dashboard Version
+      #   working-directory: ./dashboard
+      #   run: |
+      #     if [ "${{ inputs.tag }}" != "" ]; then
+      #       VERSION="${{ inputs.tag }}"
+      #     else
+      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+      #       VERSION="${{ github.ref_name }}-$SHORT_SHA"
+      #     fi
+      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -191,3 +196,4 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
+

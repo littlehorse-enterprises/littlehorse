@@ -1,10 +1,11 @@
 package io.littlehorse.server.monitoring;
 
-import io.javalin.Javalin;
-import io.javalin.http.Context;
+import com.google.gson.Gson;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
+import io.littlehorse.server.monitoring.http.ContentType;
+import io.littlehorse.server.monitoring.http.StatusServer;
 import io.littlehorse.server.monitoring.metrics.InstanceState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -29,7 +30,8 @@ import org.apache.kafka.streams.processor.TaskId;
 public class HealthService implements Closeable, StateRestoreListener, StandbyUpdateListener {
 
     private PrometheusMetricExporter prom;
-    private Javalin server;
+    private final StatusServer statusServer;
+    private final Gson gson = new Gson();
     private LHServerConfig config;
 
     private Map<TopicPartition, InProgressRestoration> restorations;
@@ -49,6 +51,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             MetadataCache metadataCache,
             BackendInternalComms internalComms) {
         this.prom = new PrometheusMetricExporter(config);
+        this.statusServer = new StatusServer();
+
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
 
         this.coreState = new InstanceState(coreStreams, internalComms);
@@ -59,19 +63,17 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
                 metadataCache,
                 new StandbyMetrics(standbyStores, config.getLHInstanceName()),
                 coreState);
-        this.server = Javalin.create();
 
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
 
         this.config = config;
         this.restorations = new ConcurrentHashMap<>();
-
-        this.server.get(config.getPrometheusExporterPath(), prom.handleRequest());
-        this.server.get(config.getLivenessPath(), this::getLiveness);
-        this.server.get(config.getStatusPath(), this::getStatus);
-        this.server.get(config.getDiskUsagePath(), this::getDiskUsage);
-        this.server.get(config.getStandbyStatusPath(), this::getStandbyStatus);
+        statusServer.handle(config.getPrometheusExporterPath(), ContentType.TEXT, () -> prom.handleRequest());
+        statusServer.handle(config.getLivenessPath(), ContentType.TEXT, this::getLiveness);
+        statusServer.handle(config.getStatusPath(), ContentType.JSON, this::getStatus);
+        statusServer.handle(config.getDiskUsagePath(), ContentType.JSON, this::getDiskUsage);
+        statusServer.handle(config.getStandbyStatusPath(), ContentType.JSON, this::getStandbyStatus);
 
         coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
@@ -87,7 +89,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     public void start() {
         log.info("Starting health+metrics server");
-        server.start(config.getHealthServicePort());
+        statusServer.start(config.getHealthServicePort());
     }
 
     public MeterRegistry getMeterRegistry() {
@@ -118,43 +120,42 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         restorations.remove(tp);
     }
 
-    private void getStandbyStatus(Context ctx) {
+    private String getStandbyStatus() {
         try {
-            ctx.json(standbyStores);
+            return gson.toJson(standbyStores);
         } catch (Exception e) {
-            ctx.status(500);
-            log.error(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    private void getLiveness(Context ctx) {
+    private String getLiveness() {
         Predicate<State> isAlive = state -> state == State.RUNNING || state == State.REBALANCING;
 
         if (isAlive.test(timerState) && isAlive.test(coreState.getCurrentState())) {
-            ctx.result("OK!");
+            return "OK!";
         } else {
-            ctx.status(500);
-            ctx.result("Core state is " + coreState + " and timer is " + timerState);
+            throw new RuntimeException("Timer or core topology is not alive");
         }
     }
 
-    private void getStatus(Context ctx) {
+    private String getStatus() {
         try {
             ServerHealthState result =
                     new ServerHealthState(config, coreStreams, timerStreams, restorations, standbyStores);
-            ctx.json(result);
+            return gson.toJson(result);
         } catch (Exception exn) {
-            exn.printStackTrace();
+            throw new RuntimeException(exn);
         }
     }
 
-    private void getDiskUsage(Context ctx) {
-        ctx.json(Map.of("diskUsageBytes", FileUtils.sizeOfDirectory(new File(config.getStateDirectory()))));
+    private String getDiskUsage() {
+        return gson.toJson(Map.of("diskUsageBytes", FileUtils.sizeOfDirectory(new File(config.getStateDirectory()))));
     }
 
     @Override
     public void close() {
         this.prom.close();
+        this.statusServer.close();
     }
 
     @Override

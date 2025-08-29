@@ -22,6 +22,16 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
         this.returnType = new TypeDefinitionModel(type);
     }
 
+    public ReturnTypeModel(TypeDefinitionModel typeDef) {
+        this.returnType = typeDef;
+    }
+
+    public ReturnTypeModel(Optional<TypeDefinitionModel> typeDefOption) {
+        if (typeDefOption.isPresent()) {
+            this.returnType = typeDefOption.get();
+        }
+    }
+
     @Override
     public Class<ReturnType> getProtoBaseClass() {
         return ReturnType.class;
@@ -42,10 +52,6 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
         if (p.hasReturnType()) {
             this.returnType = LHSerializable.fromProto(p.getReturnType(), TypeDefinitionModel.class, ignored);
         }
-    }
-
-    public boolean isVoidOrPrimitive() {
-        return getOutputType().isEmpty() || getOutputType().get().isPrimitive();
     }
 
     /**
