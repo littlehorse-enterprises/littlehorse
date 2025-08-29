@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
+import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -28,7 +29,12 @@ public class CastingExample {
             NodeOutput doubleResult = wf.execute("double-method", stringInput.cast(VariableType.DOUBLE)); // Manual cast from STR variable to DOUBLE
             NodeOutput intResult = wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE output to INT
 
-            wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
+            TaskNodeOutput boolResult = wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
+            wf.handleError(boolResult, handler -> {
+                // If we want to cast "Hello" to BOOL, that will fail at runtime, and we could handle it here.
+                handler.execute("string-method", "This is how to handle casting errors");
+            });
+
             wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to INT
             wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
             wf.execute("int-method", jsonInput.jsonPath("$.int").castToInt());// We don't know the type of json path, but here we are forcing it to be INT
