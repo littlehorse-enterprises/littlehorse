@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Properties;
 /*
  * This is a simple example, which does two things:
@@ -21,10 +22,9 @@ public class BasicExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
-            "example-basic",
+            "parent",
             wf -> {
-                WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
-                wf.execute("greet", theName);
+                wf.runWf("another-workflow", Map.of("name", "colt"));
             }
         );
     }

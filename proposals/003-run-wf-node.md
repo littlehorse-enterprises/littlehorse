@@ -205,12 +205,8 @@ message ExitNode {
         FailureDef failure_def = 1;
 
         // If set, the ExitNode returns the value that comes from this VariableAssignment.
-        VariableValue return_result = 2;
+        VariableAssignment return_result = 2;
     }
-
-    // If set, then the output of the ThreadRun becomes the resolution
-    // of this VariableValue.
-    optional VariableValue output = 2;
 }
 ```
 

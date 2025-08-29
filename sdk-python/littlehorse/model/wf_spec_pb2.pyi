@@ -148,6 +148,23 @@ class StartMultipleThreadsNode(_message.Message):
     iterable: _common_wfspec_pb2.VariableAssignment
     def __init__(self, thread_spec_name: _Optional[str] = ..., variables: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ..., iterable: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
+class RunChildWfNode(_message.Message):
+    __slots__ = ["wf_spec_name", "major_version", "inputs"]
+    class InputsEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _common_wfspec_pb2.VariableAssignment
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    INPUTS_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_name: str
+    major_version: int
+    inputs: _containers.MessageMap[str, _common_wfspec_pb2.VariableAssignment]
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., inputs: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ...) -> None: ...
+
 class FailureHandlerDef(_message.Message):
     __slots__ = ["handler_spec_name", "specific_failure", "any_failure_of_type"]
     class LHFailureType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
@@ -219,7 +236,7 @@ class FailureDef(_message.Message):
     def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class Node(_message.Message):
-    __slots__ = ["outgoing_edges", "failure_handlers", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads", "throw_event", "wait_for_condition"]
+    __slots__ = ["outgoing_edges", "failure_handlers", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads", "throw_event", "wait_for_condition", "run_child_wf"]
     OUTGOING_EDGES_FIELD_NUMBER: _ClassVar[int]
     FAILURE_HANDLERS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_FIELD_NUMBER: _ClassVar[int]
@@ -234,6 +251,7 @@ class Node(_message.Message):
     START_MULTIPLE_THREADS_FIELD_NUMBER: _ClassVar[int]
     THROW_EVENT_FIELD_NUMBER: _ClassVar[int]
     WAIT_FOR_CONDITION_FIELD_NUMBER: _ClassVar[int]
+    RUN_CHILD_WF_FIELD_NUMBER: _ClassVar[int]
     outgoing_edges: _containers.RepeatedCompositeFieldContainer[Edge]
     failure_handlers: _containers.RepeatedCompositeFieldContainer[FailureHandlerDef]
     entrypoint: EntrypointNode
@@ -248,7 +266,8 @@ class Node(_message.Message):
     start_multiple_threads: StartMultipleThreadsNode
     throw_event: ThrowEventNode
     wait_for_condition: WaitForConditionNode
-    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNode, _Mapping]] = ..., wait_for_condition: _Optional[_Union[WaitForConditionNode, _Mapping]] = ...) -> None: ...
+    run_child_wf: RunChildWfNode
+    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNode, _Mapping]] = ..., wait_for_condition: _Optional[_Union[WaitForConditionNode, _Mapping]] = ..., run_child_wf: _Optional[_Union[RunChildWfNode, _Mapping]] = ...) -> None: ...
 
 class WaitForConditionNode(_message.Message):
     __slots__ = ["condition"]

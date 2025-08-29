@@ -690,6 +690,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
         }
 
+        if (endTime != null) {
+            // wake up parent if parent exists
+            if (id.getParentWfRunId() != null) {
+                WfRunModel parent = executionContext
+                        .castOnSupport(CoreProcessorContext.class)
+                        .getableManager()
+                        .get(id.getParentWfRunId());
+                parent.advance(time);
+            }
+        }
+
         // ThreadRuns depend on each other, for example Exception Handler Threads or
         // child threads, so we need to signal to the other threads that they might
         // want to wake up. Ding Ding Ding! Get out of bed.
