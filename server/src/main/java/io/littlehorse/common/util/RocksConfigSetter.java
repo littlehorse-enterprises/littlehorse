@@ -43,23 +43,20 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         log.trace("Overriding rocksdb settings for store {}", storeName);
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
 
-        // Contains info about write stalls
-        options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
-
-        // switch (serverConfig.getServerMetricLevel().toLowerCase()) {
-        //     case "debug":
-        //     case "trace":
-        //         options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
-        //         break;
-        //     case "warn":
-        //         options.setInfoLogLevel(InfoLogLevel.WARN_LEVEL);
-        //     case "error":
-        //         options.setInfoLogLevel(InfoLogLevel.ERROR_LEVEL);
-        //         break;
-        //     case "info":
-        //     default:
-        //         options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
-        // }
+        switch (serverConfig.getServerMetricLevel().toLowerCase()) {
+            case "debug":
+            case "trace":
+                options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
+                break;
+            case "warn":
+                options.setInfoLogLevel(InfoLogLevel.WARN_LEVEL);
+            case "error":
+                options.setInfoLogLevel(InfoLogLevel.ERROR_LEVEL);
+                break;
+            case "info":
+            default:
+                options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
+        }
 
         // Parallelism for Compactions and Flushing
         Env rocksEnv = Env.getDefault();
@@ -107,8 +104,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // Reduce read amplification
         options.setOptimizeFiltersForHits(false);
 
-        // // Save disk space a bit. This will also help (marginally) with Write Amplification.
-        // options.setCompressionType(CompressionType.SNAPPY_COMPRESSION);
+        // Save disk space a bit. This will also help (marginally) with Write Amplification.
+        options.setCompressionType(CompressionType.SNAPPY_COMPRESSION);
 
         // Compaction Configurations.
         if (serverConfig.getRocksDBUseLevelCompaction()) {
