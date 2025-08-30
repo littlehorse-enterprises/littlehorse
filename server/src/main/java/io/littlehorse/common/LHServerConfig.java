@@ -92,6 +92,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
     public static final String TRANSACTION_TIMEOUT_MS_KEY = "LHS_STREAMS_TRANSACTION_TIMEOUT_MS";
+    public static final String STATE_CLEANUP_DELAY_MS_KEY = "LHS_STREAMS_STATE_CLEANUP_DELAY_MS";
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
     // General LittleHorse Runtime Behavior Config Env Vars
@@ -1020,6 +1021,9 @@ public class LHServerConfig extends ConfigBase {
 
         props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
 
+        // The delay before the state cleanup thread runs. This is used to clean up state stores
+        props.put("state.cleanup.delay.ms", getStreamsStateCleanupDelayMs());
+
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
 
@@ -1038,6 +1042,10 @@ public class LHServerConfig extends ConfigBase {
     public int getStreamsSessionTimeout() {
         return Integer.valueOf(
                 getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, String.valueOf(getTransactionTimeoutMs())));
+    }
+
+    public int getStreamsStateCleanupDelayMs() {
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.STATE_CLEANUP_DELAY_MS_KEY, "600000"));
     }
 
     public boolean areStructDefsEnabled() {
