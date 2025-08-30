@@ -294,7 +294,7 @@ private static final long serialVersionUID = 0L;
   public static final int EXIT_FIELD_NUMBER = 6;
   /**
    * <pre>
-   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+   * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -306,7 +306,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+   * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -321,7 +321,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+   * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -337,7 +337,7 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_FIELD_NUMBER = 7;
   /**
    * <pre>
-   * Creates a TaskNodeRUn
+   * Creates a TaskNodeRun
    * </pre>
    *
    * <code>.littlehorse.TaskNode task = 7;</code>
@@ -349,7 +349,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates a TaskNodeRUn
+   * Creates a TaskNodeRun
    * </pre>
    *
    * <code>.littlehorse.TaskNode task = 7;</code>
@@ -364,7 +364,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates a TaskNodeRUn
+   * Creates a TaskNodeRun
    * </pre>
    *
    * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2521,7 +2521,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ExitNode, io.littlehorse.sdk.common.proto.ExitNode.Builder, io.littlehorse.sdk.common.proto.ExitNodeOrBuilder> exitBuilder_;
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2533,7 +2533,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2555,7 +2555,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2575,7 +2575,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2593,7 +2593,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2620,7 +2620,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2643,7 +2643,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2653,7 +2653,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2671,7 +2671,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2699,7 +2699,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> taskBuilder_;
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2711,7 +2711,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2733,7 +2733,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2753,7 +2753,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2771,7 +2771,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2798,7 +2798,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2821,7 +2821,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2831,7 +2831,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>
@@ -2849,7 +2849,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates a TaskNodeRUn
+     * Creates a TaskNodeRun
      * </pre>
      *
      * <code>.littlehorse.TaskNode task = 7;</code>

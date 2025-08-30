@@ -60,6 +60,20 @@ class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     VAR_ERROR: _ClassVar[LHErrorType]
     TASK_ERROR: _ClassVar[LHErrorType]
     INTERNAL_ERROR: _ClassVar[LHErrorType]
+
+class AggregationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    COUNT: _ClassVar[AggregationType]
+    AVG: _ClassVar[AggregationType]
+    RATIO: _ClassVar[AggregationType]
+    LATENCY: _ClassVar[AggregationType]
+
+class UserTaskRunStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    UNASSIGNED: _ClassVar[UserTaskRunStatus]
+    ASSIGNED: _ClassVar[UserTaskRunStatus]
+    DONE: _ClassVar[UserTaskRunStatus]
+    CANCELLED: _ClassVar[UserTaskRunStatus]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -99,3 +113,11 @@ TASK_FAILURE: LHErrorType
 VAR_ERROR: LHErrorType
 TASK_ERROR: LHErrorType
 INTERNAL_ERROR: LHErrorType
+COUNT: AggregationType
+AVG: AggregationType
+RATIO: AggregationType
+LATENCY: AggregationType
+UNASSIGNED: UserTaskRunStatus
+ASSIGNED: UserTaskRunStatus
+DONE: UserTaskRunStatus
+CANCELLED: UserTaskRunStatus

@@ -1488,12 +1488,12 @@ type Node_Entrypoint struct {
 }
 
 type Node_Exit struct {
-	// Creates an `ExitRun“. Every ThreadSpec has at least one Exit Node.
+	// Creates an `ExitRun`. Every ThreadSpec has at least one Exit Node.
 	Exit *ExitNode `protobuf:"bytes,6,opt,name=exit,proto3,oneof"`
 }
 
 type Node_Task struct {
-	// Creates a TaskNodeRUn
+	// Creates a TaskNodeRun
 	Task *TaskNode `protobuf:"bytes,7,opt,name=task,proto3,oneof"`
 }
 
