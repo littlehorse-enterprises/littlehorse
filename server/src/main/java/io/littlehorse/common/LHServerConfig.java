@@ -51,7 +51,6 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
-import org.rocksdb.InfoLogLevel;
 import org.rocksdb.LRUCache;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
@@ -145,13 +144,7 @@ public class LHServerConfig extends ConfigBase {
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
-    public static final String X_USE_AT_LEAST_ONCE_KEY = "LHS_X_USE_AT_LEAST_ONCE";
-    public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
-    public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
-    public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
-    public static final String ROCKSDB_LOG_LEVEL_KEY = "LHS_X_ROCKSDB_LOG_LEVEL";
-
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
     // Instance configs
@@ -738,27 +731,6 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_LEVEL_COMPACTION_KEY, "false"));
     }
 
-    public Optional<InfoLogLevel> getRocksDBLogLevel() {
-        String logLevel = getOrSetDefault(ROCKSDB_LOG_LEVEL_KEY, "NONE");
-        if (logLevel.equals("NONE")) {
-            return Optional.empty();
-        }
-        switch (logLevel) {
-            case "INFO":
-                return Optional.of(InfoLogLevel.INFO_LEVEL);
-            case "DEBUG":
-                return Optional.of(InfoLogLevel.DEBUG_LEVEL);
-            case "ERROR":
-                return Optional.of(InfoLogLevel.ERROR_LEVEL);
-            case "WARN":
-                return Optional.of(InfoLogLevel.WARN_LEVEL);
-            case "FATAL":
-                return Optional.of(InfoLogLevel.FATAL_LEVEL);
-        }
-        throw new LHMisconfigurationException(
-                "Unrecognized rocksdb log level: " + logLevel + "; allowed: INFO|DEBUG|WARN|ERROR|FATAL|NONE");
-    }
-
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -892,12 +864,7 @@ public class LHServerConfig extends ConfigBase {
         result.put("application.id", getKafkaGroupId("core"));
         result.put("client.id", this.getClientId("core"));
 
-        if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
-            log.warn("Using experimental override config to use at-least-once for Core topology");
-            result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
-        } else {
-            result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
-        }
+        result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
 
         result.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
@@ -998,23 +965,8 @@ public class LHServerConfig extends ConfigBase {
         props.put(
                 StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
 
-        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "true").equalsIgnoreCase("false")) {
-            log.warn(
-                    "Using experimental internal config LHS_X_LEAVE_GROUP_ON_SHUTDOWN to NOT leave group on shutdown!");
-            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), false);
-        } else {
-            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
-        }
-
-        if (getOrSetDefault(X_USE_STATE_UPDATER_KEY, "false").equals("true")) {
-            log.warn("Using experimental internal config to use State Updater!");
-            props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
-        }
-
-        if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
-            log.warn("Using experimental internal config to enable static membership");
-            props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceName());
-        }
+        // Unfortunately, there is a bug that means the only way to do this is with an "internal" config.
+        props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
 
         props.put(
                 "application.server",
@@ -1023,15 +975,17 @@ public class LHServerConfig extends ConfigBase {
 
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("state.dir", getStateDirectory());
-        props.put("request.timeout.ms", 1000 * 60);
+
+        // We want a request to be able to fail and be handled (if non-fatal) before a transaction times out.
+        // Therefore, request timeout should be less than transaction timeout.
+        props.put("request.timeout.ms", (int) (getTransactionTimeoutMs() * 0.75));
+
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
         props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
         props.put("probing.rebalance.interval.ms", 60 * 1000);
-        props.put(
-                "metrics.recording.level",
-                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
+        props.put("metrics.recording.level", getServerMetricLevel().toUpperCase());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getTransactionTimeoutMs());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
@@ -1064,14 +1018,6 @@ public class LHServerConfig extends ConfigBase {
         props.put(RocksConfigSetter.LH_SERVER_CONFIG_KEY, this);
         props.put("rocksdb.config.setter", RocksConfigSetter.class);
 
-        // Until KIP-924 is implemented, for cluster stability it is best to avoid rebalances.
-        // 30 seconds of startup is enough time for LH to shut down and be re-spawned during a
-        // rolling restart.
-        //
-        // It also gives enough time for the new server to come up, meaning that
-        // in the case of a server failure while a request is being processed, the resulting
-        // `Command` should be processed on a new server within a minute. Issue #479
-        // should verify this behavior
         props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
 
         // In case we need to authenticate to Kafka, this sets it.
@@ -1090,7 +1036,8 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public int getStreamsSessionTimeout() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
+        return Integer.valueOf(
+                getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, String.valueOf(getTransactionTimeoutMs())));
     }
 
     public boolean areStructDefsEnabled() {

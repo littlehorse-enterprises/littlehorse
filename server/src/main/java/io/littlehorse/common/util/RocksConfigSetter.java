@@ -2,7 +2,6 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
 import java.util.Map;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
@@ -10,9 +9,11 @@ import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionType;
+import org.rocksdb.Env;
 import org.rocksdb.IndexType;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
+import org.rocksdb.Priority;
 import org.rocksdb.RateLimiter;
 
 @Slf4j
@@ -40,11 +41,48 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
         log.trace("Overriding rocksdb settings for store {}", storeName);
-
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
+
+        switch (serverConfig.getServerMetricLevel().toLowerCase()) {
+            case "debug":
+            case "trace":
+                options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
+                break;
+            case "warn":
+                options.setInfoLogLevel(InfoLogLevel.WARN_LEVEL);
+            case "error":
+                options.setInfoLogLevel(InfoLogLevel.ERROR_LEVEL);
+                break;
+            case "info":
+            default:
+                options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
+        }
+
+        // Parallelism for Compactions and Flushing
+        Env rocksEnv = Env.getDefault();
+        int threads = Math.max(2, Runtime.getRuntime().availableProcessors());
+        rocksEnv.setBackgroundThreads(threads, Priority.LOW);
+        rocksEnv.setBackgroundThreads(threads, Priority.HIGH);
+        options.setEnv(rocksEnv);
+        options.setMaxBackgroundJobs(threads);
+        options.setMaxSubcompactions(threads);
+
+        // Configurations to avoid the "many small L0 files" problem
+        options.setMaxWriteBufferNumber(4);
+        options.setMinWriteBufferNumberToMerge(2);
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
+
+        // Partition the Index Filters to reduce stress on block cache.
+        tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
+        tableConfig.setPartitionFilters(true);
+        tableConfig.setIndexType(IndexType.kTwoLevelIndexSearch);
+        tableConfig.setOptimizeFiltersForMemory(true);
+        tableConfig.setBlockSize(BLOCK_SIZE);
+        tableConfig.setCacheIndexAndFilterBlocks(true);
+
+        // Memory limits
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
             // Streams provisions a *NON-shared* 50MB cache for every RocksDB instance. Need
             // to .close() it to avoid leaks so that we can provide a global one.
@@ -52,19 +90,24 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
             oldCache.close();
         }
+        if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
+            options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
+        }
+        if (isCoreStore(storeName)) {
+            options.setWriteBufferSize(serverConfig.getCoreMemtableSize());
+        } else {
+            // NOTE: We are experimenting with treating the timer store the same way as we treat
+            // the core store.
+            options.setWriteBufferSize(serverConfig.getCoreMemtableSize());
+        }
 
-        // Bloom Filters: Partitioned Index Filters, cached.
-        tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
-        tableConfig.setPartitionFilters(true);
-        tableConfig.setIndexType(IndexType.kTwoLevelIndexSearch);
-        tableConfig.setOptimizeFiltersForMemory(true);
-        tableConfig.setBlockSize(BLOCK_SIZE);
-        tableConfig.setCacheIndexAndFilterBlocks(true);
+        // Reduce read amplification
         options.setOptimizeFiltersForHits(false);
 
-        options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
-        options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
+        // Save disk space a bit. This will also help (marginally) with Write Amplification.
+        options.setCompressionType(CompressionType.SNAPPY_COMPRESSION);
 
+        // Compaction Configurations.
         if (serverConfig.getRocksDBUseLevelCompaction()) {
             // Level compaction has higher write amplification and lower read amplification.
             // Therefore, we use other configs to attempt to reduce WA.
@@ -72,52 +115,20 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
             // Configure gradual slowdowns of writes
             options.setLevel0FileNumCompactionTrigger(10); // Default 4. Larger compactions -> less WA.
-            options.setLevel0SlowdownWritesTrigger(20); // Default 20.
-            options.setLevel0StopWritesTrigger(48); // Default 36. Higher RA, reduces stop-the-world.
+            options.setLevel0SlowdownWritesTrigger(15); // Default 20. We want to avoid saturation.
+            options.setLevel0StopWritesTrigger(36); // Default 36.
 
             // Configure how levels grow.
             options.setTargetFileSizeBase(64 * 1024L * 1024L); // 64MB, default.
             options.setMaxBytesForLevelBase(1024L * 512L); // 512MB in L1
-            options.setMaxBytesForLevelMultiplier(10); // default: 5GB L2, 50GB L3, etc
-
-            tableConfig.setPinL0FilterAndIndexBlocksInCache(true);
-
-            // Use blobs: larger values are stored separately from the keys.
-            // This reduces write amplification during compaction at the cost of slower
-            // reads.
-            options.setEnableBlobFiles(true);
-            options.setBlobFileSize(512L);
-            options.setCompressionType(CompressionType.SNAPPY_COMPRESSION);
-        } else {
-            options.setCompactionStyle(CompactionStyle.UNIVERSAL);
+            options.setMaxBytesForLevelMultiplier(20); // default 10; higher means lower Write Amp
         }
 
-        options.setTableFormatConfig(tableConfig);
-
-        Optional<InfoLogLevel> rocksDBLogLevel = serverConfig.getRocksDBLogLevel();
-        if (rocksDBLogLevel.isPresent()) {
-            options.setInfoLogLevel(rocksDBLogLevel.get());
+        if (serverConfig.useDirectIOForRocksDB()) {
+            options.setUseDirectIoForFlushAndCompaction(true);
+            options.setUseDirectReads(true);
         }
 
-        options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
-
-        // Memtable size
-        options.setWriteBufferSize(
-                isCoreStore(storeName) ? serverConfig.getCoreMemtableSize() : serverConfig.getTimerMemtableSize());
-
-        if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
-            options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
-        }
-
-        // Streams default is 3
-        options.setMaxWriteBufferNumber(4);
-        options.setMinWriteBufferNumberToMerge(2);
-
-        //  Concurrent jobs for both flushes and compaction
-        options.setMaxBackgroundJobs(serverConfig.getRocksDBCompactionThreads());
-        // Speeds up compaction by deploying sub compactions.
-        // there may be max_background_jobs * max_subcompactions background threads running compaction
-        options.setMaxSubcompactions(3);
         long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
         if (rateLimit > 0) {
             options.setRateLimiter(new RateLimiter(
@@ -127,11 +138,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
                     RateLimiter.DEFAULT_MODE,
                     false));
         }
-        // Future Work: Enable larger scaling by using Partitioned Index Filters
-        // https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters
-        //
-        // We should do scale testing with the LH Canary to determine whether that should be enabled
-        // by default or as a configuration.
+
+        options.setTableFormatConfig(tableConfig);
     }
 
     @Override
