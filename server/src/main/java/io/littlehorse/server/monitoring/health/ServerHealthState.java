@@ -128,15 +128,12 @@ public class ServerHealthState {
     public static LHProcessorType fromTopic(String topic, LHServerConfig config) {
         String truncated = topic.substring(config.getLHClusterId().length());
 
-        if (truncated.contains("core-store")) {
+        if (truncated.contains("core-store") || truncated.contains("core-cmd")) {
             return LHProcessorType.CORE;
         }
 
-        if (truncated.contains("repartition-store")) {
+        if (truncated.contains("repartition-store") || truncated.contains("repartition-cmd")) {
             return LHProcessorType.REPARTITION;
-        }
-        if (truncated.contains("changelog")) {
-            return LHProcessorType.GLOBAL_METADATA;
         }
         if (truncated.contains("metadata")) {
             return LHProcessorType.METADATA;
