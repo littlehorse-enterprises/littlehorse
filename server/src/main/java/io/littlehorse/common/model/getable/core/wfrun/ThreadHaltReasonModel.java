@@ -118,6 +118,12 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
         }
     }
 
+    public boolean isTransitioningHaltState() {
+        return type == ReasonCase.HANDLING_FAILURE
+                || type == ReasonCase.PENDING_FAILURE
+                || type == ReasonCase.PENDING_INTERRUPT;
+    }
+
     public static ThreadHaltReasonModel fromProto(ThreadHaltReason p, ExecutionContext context) {
         ThreadHaltReasonModel out = new ThreadHaltReasonModel();
         out.initFrom(p, context);
