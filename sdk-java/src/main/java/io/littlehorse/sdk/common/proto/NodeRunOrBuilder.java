@@ -591,5 +591,35 @@ public interface NodeRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForConditionRunOrBuilder getWaitForConditionOrBuilder();
 
+  /**
+   * <pre>
+   * A RUN_CHILD_WF_NODE starts a WfRun as a child and blocks the ThreadRun until
+   * the started WfRun completes or fails.
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNodeRun run_child_wf = 24;</code>
+   * @return Whether the runChildWf field is set.
+   */
+  boolean hasRunChildWf();
+  /**
+   * <pre>
+   * A RUN_CHILD_WF_NODE starts a WfRun as a child and blocks the ThreadRun until
+   * the started WfRun completes or fails.
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNodeRun run_child_wf = 24;</code>
+   * @return The runChildWf.
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNodeRun getRunChildWf();
+  /**
+   * <pre>
+   * A RUN_CHILD_WF_NODE starts a WfRun as a child and blocks the ThreadRun until
+   * the started WfRun completes or fails.
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNodeRun run_child_wf = 24;</code>
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNodeRunOrBuilder getRunChildWfOrBuilder();
+
   io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase getNodeTypeCase();
 }
