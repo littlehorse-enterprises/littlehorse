@@ -35,6 +35,42 @@ func TestEarlyReturnOnExitNode(t *testing.T) {
 	assert.Equal(t, exitNodeCount, 1)
 }
 
+func TestEarlyComplete(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.Execute("some-task")
+		t.Complete(nil)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	exitNode := entrypoint.Nodes["2-exit-EXIT"].GetExit()
+
+	assert.Nil(t, exitNode.GetReturnContent())
+}
+
+func TestEarlyCompleteWithReturn(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		taskOutput := t.Execute("some-task")
+		t.Complete(taskOutput)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	exitNode := entrypoint.Nodes["2-exit-EXIT"].GetExit()
+
+	assert.NotNil(t, exitNode.GetReturnContent())
+	result := exitNode.GetReturnContent()
+	assert.NotNil(t, result.GetNodeOutput().GetNodeName(), "1-some-task-TASK")
+}
+
 func TestCanMakeSearchableVariable(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		t.AddVariable(
@@ -1727,4 +1763,85 @@ func TestShouldNotMaskCorrelationIdIfITellItNotTo(t *testing.T) {
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	node := entrypoint.Nodes["1-identity-verified-EXTERNAL_EVENT"]
 	assert.False(t, node.GetExternalEvent().GetMaskCorrelationKey())
+}
+
+func TestRegisteredAsExternalEvent(ts *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.WaitForEvent("str-event").RegisteredAs(lhproto.VariableType_STR)
+		t.WaitForEvent("int-event").RegisteredAs(lhproto.VariableType_INT)
+		t.WaitForEvent("double-event").RegisteredAs(lhproto.VariableType_DOUBLE)
+		t.WaitForEvent("bool-event").RegisteredAs(lhproto.VariableType_BOOL)
+		t.WaitForEvent("json-event").RegisteredAs(lhproto.VariableType_JSON_OBJ)
+		t.WaitForEvent("list-event").RegisteredAs(lhproto.VariableType_JSON_ARR)
+	}, "test-workflow")
+
+	putWf, err := wf.Compile()
+	assert.Nil(ts, err)
+	assert.NotNil(ts, putWf)
+	strNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["1-str-event-EXTERNAL_EVENT"]
+	intNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["2-int-event-EXTERNAL_EVENT"]
+	doubleNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["3-double-event-EXTERNAL_EVENT"]
+	boolNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["4-bool-event-EXTERNAL_EVENT"]
+	jsonNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["5-json-event-EXTERNAL_EVENT"]
+	listNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["6-list-event-EXTERNAL_EVENT"]
+	assert.NotNil(ts, strNode)
+	assert.NotNil(ts, intNode)
+	assert.NotNil(ts, doubleNode)
+	assert.NotNil(ts, boolNode)
+	assert.NotNil(ts, jsonNode)
+	assert.NotNil(ts, listNode)
+	assert.Equal(ts, "str-event", strNode.GetExternalEvent().GetExternalEventDefId().GetName())
+	assert.Equal(ts, "int-event", intNode.GetExternalEvent().GetExternalEventDefId().GetName())
+	assert.Equal(ts, "double-event", doubleNode.GetExternalEvent().GetExternalEventDefId().GetName())
+	assert.Equal(ts, "bool-event", boolNode.GetExternalEvent().GetExternalEventDefId().GetName())
+	assert.Equal(ts, "json-event", jsonNode.GetExternalEvent().GetExternalEventDefId().GetName())
+	assert.Equal(ts, "list-event", listNode.GetExternalEvent().GetExternalEventDefId().GetName())
+
+}
+
+func TestRegisteredAsEmptyExternalEvent(ts *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.WaitForEvent("empty-event").RegisteredAsEmpty()
+	}, "test-workflow")
+
+	putWf, err := wf.Compile()
+	assert.Nil(ts, err)
+	assert.NotNil(ts, putWf)
+	strNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["1-empty-event-EXTERNAL_EVENT"]
+	assert.NotNil(ts, strNode)
+	assert.Equal(ts, "empty-event", strNode.GetExternalEvent().GetExternalEventDefId().GetName())
+}
+
+func TestRegisteredAsWorkflowEvent(ts *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.ThrowEvent("str-event", "value").RegisteredAs(lhproto.VariableType_STR)
+		t.ThrowEvent("int-event", 1).RegisteredAs(lhproto.VariableType_INT)
+		t.ThrowEvent("double-event", 1.1).RegisteredAs(lhproto.VariableType_DOUBLE)
+		t.ThrowEvent("bool-event", true).RegisteredAs(lhproto.VariableType_BOOL)
+		t.ThrowEvent("json-event", map[string]interface{}{}).RegisteredAs(lhproto.VariableType_JSON_OBJ)
+		t.ThrowEvent("list-event", []any{}).RegisteredAs(lhproto.VariableType_JSON_ARR)
+	}, "test-workflow")
+
+	putWf, err := wf.Compile()
+	assert.Nil(ts, err)
+	assert.NotNil(ts, putWf)
+	strNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["1-throw-str-event-THROW_EVENT"]
+	intNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["2-throw-int-event-THROW_EVENT"]
+	doubleNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["3-throw-double-event-THROW_EVENT"]
+	boolNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["4-throw-bool-event-THROW_EVENT"]
+	jsonNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["5-throw-json-event-THROW_EVENT"]
+	listNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["6-throw-list-event-THROW_EVENT"]
+	assert.NotNil(ts, strNode)
+	assert.NotNil(ts, intNode)
+	assert.NotNil(ts, doubleNode)
+	assert.NotNil(ts, boolNode)
+	assert.NotNil(ts, jsonNode)
+	assert.NotNil(ts, listNode)
+	assert.Equal(ts, "str-event", strNode.GetThrowEvent().GetEventDefId().GetName())
+	assert.Equal(ts, "int-event", intNode.GetThrowEvent().GetEventDefId().GetName())
+	assert.Equal(ts, "double-event", doubleNode.GetThrowEvent().GetEventDefId().GetName())
+	assert.Equal(ts, "bool-event", boolNode.GetThrowEvent().GetEventDefId().GetName())
+	assert.Equal(ts, "json-event", jsonNode.GetThrowEvent().GetEventDefId().GetName())
+	assert.Equal(ts, "list-event", listNode.GetThrowEvent().GetEventDefId().GetName())
+
 }
