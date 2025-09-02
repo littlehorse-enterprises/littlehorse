@@ -6,10 +6,11 @@ import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { wfRunIdToPath } from '@/app/utils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { cn } from '@/lib/utils'
 import { LHStatus, lHStatusFromJSON, WfRunId, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
-import { useParams, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { PaginatedWfRunIdList, searchWfRun } from '../../../wfSpec/[...props]/actions/searchWfRun'
@@ -17,7 +18,7 @@ import { WfRunsHeader } from '../../../wfSpec/[...props]/components/WfRunsHeader
 import { statusColors } from './Details'
 
 export default function ChildWorkflows({ parentWfRunId, spec }: { parentWfRunId: WfRunId; spec: WfSpec }) {
-  const tenantId = useParams().tenantId as string
+  const { tenantId } = useWhoAmI()
   const searchParams = useSearchParams()
   const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
     | LHStatus
