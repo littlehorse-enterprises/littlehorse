@@ -269,7 +269,7 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public LHExpression cast(VariableType targetType) {
+    public LHExpression castTo(VariableType targetType) {
         return new CastExpressionImpl(this, targetType);
     }
 }

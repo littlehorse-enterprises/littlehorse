@@ -72,7 +72,7 @@ class NodeOutputImpl implements NodeOutput {
     }
 
     @Override
-    public LHExpression cast(VariableType targetType) {
+    public LHExpression castTo(VariableType targetType) {
         return new CastExpressionImpl(this, targetType);
     }
 }

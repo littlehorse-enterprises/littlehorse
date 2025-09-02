@@ -40,7 +40,6 @@ public class TypeCastingUtils {
         if (sourceType == null || targetType == null) {
             return false;
         }
-
         if (canBeType(sourceType, targetType)) {
             return false;
         }
@@ -98,22 +97,17 @@ public class TypeCastingUtils {
         if (sourceValue == null) {
             return null;
         }
-
         VariableType sourceType = sourceValue.getTypeDefinition().getType();
-
         if (sourceType == null) {
             return sourceValue;
         }
-
         if (sourceType == targetType) {
             return sourceValue;
         }
-
         if (!canCastTo(sourceType, targetType)) {
             throw new IllegalArgumentException(
                     "Casting from " + sourceType + " to " + targetType + " is not supported. ");
         }
-
         try {
             if (targetType == VariableType.STR) {
                 return sourceValue.asStr();

@@ -1,12 +1,8 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.wfsdk.NodeOutput;
-import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
-import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.*;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 
@@ -26,8 +22,11 @@ public class CastingExample {
             WfRunVariable stringBool = wf.declareStr("string-bool").withDefault("false");
             WfRunVariable jsonInput = wf.declareJsonObj("json-input").withDefault(Map.of("int", "1", "string", "hello"));
 
-            NodeOutput doubleResult = wf.execute("double-method", stringInput.cast(VariableType.DOUBLE)); // Manual cast from STR variable to DOUBLE
+            NodeOutput doubleResult = wf.execute("double-method", stringInput.castTo(VariableType.DOUBLE)); // Manual cast from STR variable to DOUBLE
             NodeOutput intResult = wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE output to INT
+
+            LHExpression mathOverDouble = doubleResult.multiply(2.0).divide(6.0); // This is a DOUBLE expression
+            wf.execute("int-method", mathOverDouble.castToInt()); // Auto cast from LHExpression to DOUBLE
 
             TaskNodeOutput boolResult = wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
             wf.handleError(boolResult, handler -> {

@@ -135,7 +135,7 @@ public class TypeCastingTest {
         Workflow invalidWorkflow = new WorkflowImpl("invalid-cast", wf -> {
             WfRunVariable doubleVar = wf.addVariable("double-var", VariableType.DOUBLE);
             WfRunVariable boolVar = wf.addVariable("bool-var", VariableType.BOOL);
-            boolVar.assign(doubleVar.cast(VariableType.BOOL));
+            boolVar.assign(doubleVar.castTo(VariableType.BOOL));
         });
 
         assertThatThrownBy(() -> {
@@ -159,7 +159,7 @@ public class TypeCastingTest {
     void shouldFailWorkflowRegistrationForUnsupportedIntToBoolCast() {
         Workflow invalidWorkflow = new WorkflowImpl("invalid-int-bool-cast", wf -> {
             WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
-            wf.execute("invert-boolean", intVar.cast(VariableType.BOOL));
+            wf.execute("invert-boolean", intVar.castTo(VariableType.BOOL));
         });
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client))
@@ -232,14 +232,14 @@ public class TypeCastingTest {
             WfRunVariable doubleVar =
                     wf.addVariable("double-var", VariableType.DOUBLE).withDefault(123.67);
 
-            wf.execute("int-times-two", strIntVar.cast(VariableType.INT));
-            wf.execute("double-times-one-point-five", strDoubleVar.cast(VariableType.DOUBLE));
+            wf.execute("int-times-two", strIntVar.castTo(VariableType.INT));
+            wf.execute("double-times-one-point-five", strDoubleVar.castTo(VariableType.DOUBLE));
 
             WfRunVariable boolStrVar =
                     wf.addVariable("bool-str-var", VariableType.STR).withDefault("true");
-            wf.execute("invert-boolean", boolStrVar.cast(VariableType.BOOL));
+            wf.execute("invert-boolean", boolStrVar.castTo(VariableType.BOOL));
 
-            wf.execute("int-times-two", doubleVar.cast(VariableType.INT));
+            wf.execute("int-times-two", doubleVar.castTo(VariableType.INT));
         });
     }
 
@@ -250,7 +250,7 @@ public class TypeCastingTest {
                     wf.addVariable("input-str", VariableType.STR).withDefault("456");
             WfRunVariable resultInt = wf.addVariable("result-int", VariableType.INT);
 
-            resultInt.assign(inputStr.cast(VariableType.INT));
+            resultInt.assign(inputStr.castTo(VariableType.INT));
 
             wf.execute("int-times-two", resultInt);
         });
@@ -262,9 +262,9 @@ public class TypeCastingTest {
             WfRunVariable initialStr =
                     wf.addVariable("initial-str", VariableType.STR).withDefault("100");
 
-            NodeOutput step1 = wf.execute("int-times-two", initialStr.cast(VariableType.INT));
+            NodeOutput step1 = wf.execute("int-times-two", initialStr.castTo(VariableType.INT));
             NodeOutput step2 = wf.execute("double-times-one-point-five", step1);
-            NodeOutput step3 = wf.execute("int-times-two", step2.cast(VariableType.INT));
+            NodeOutput step3 = wf.execute("int-times-two", step2.castTo(VariableType.INT));
             wf.execute("prefix-string", step3);
         });
     }

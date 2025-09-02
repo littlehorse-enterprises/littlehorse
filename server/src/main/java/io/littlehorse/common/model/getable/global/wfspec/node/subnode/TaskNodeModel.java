@@ -177,7 +177,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                                     node);
                         }
                         TypeCastingUtils.validateTypeCompatibility(sourceVariableType, castTargetType);
-                        // After cast, source becomes castTargetType for assignment
+                        // After cast, source becomes castTargetType, and we verify if it could be assigned to the task input
                         sourceVariableType = castTargetType;
                         if (!TypeCastingUtils.canBeType(sourceVariableType, taskInputType)) {
                             throw new InvalidNodeException(

@@ -64,4 +64,9 @@ class CastExpressionImpl implements LHExpression {
     public LHExpression removeKey(java.io.Serializable key) {
         return new LHExpressionImpl(this, io.littlehorse.sdk.common.proto.VariableMutationType.REMOVE_KEY, key);
     }
+
+    @Override
+    public LHExpression castTo(VariableType targetType) {
+        return new CastExpressionImpl(this, targetType);
+    }
 }
