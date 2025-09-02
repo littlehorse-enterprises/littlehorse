@@ -1145,7 +1145,9 @@ public class LHServerConfig extends ConfigBase {
         RocksDB.loadLibrary();
         long cacheSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, "-1"));
         if (cacheSize != -1) {
-            this.globalRocksdbBlockCache = new LRUCache(cacheSize);
+            // The global RocksDB cache is shared across multiple state stores, requiring strict size limits to prevent
+            // unexpected out-of-memory errors
+            this.globalRocksdbBlockCache = new LRUCache(cacheSize, -1, true);
         }
 
         long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
