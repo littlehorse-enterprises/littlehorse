@@ -127,7 +127,6 @@ export const WfRuns: FC<WfSpec> = spec => {
     </div>
   )
 }
-
 const getStatus = (status: string | null) => {
   if (!status) return undefined
   return lHStatusFromJSON(status)
