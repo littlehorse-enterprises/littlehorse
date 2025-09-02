@@ -13,6 +13,72 @@ import { CorrelatedEventId, ExternalEventDefId, ExternalEventId } from "./object
 import { VariableValue } from "./variable";
 
 /**
+ * Policies to provide extra validations on when an external
+ * event can be posted to a wfRun
+ */
+export enum ExternalEventValidationPolicy {
+  /** NONE - Default no extra validations */
+  NONE = "NONE",
+  /**
+   * REQUIRE_WF_RUN - Requires the wfRun to exist prior to an
+   * event being posted
+   */
+  REQUIRE_WF_RUN = "REQUIRE_WF_RUN",
+  /**
+   * REQUIRE_WF_SPEC_REF - Requires not only the wfRun to exist but also
+   * the corresponding wfSpec to hold a reference to the external event
+   */
+  REQUIRE_WF_SPEC_REF = "REQUIRE_WF_SPEC_REF",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function externalEventValidationPolicyFromJSON(object: any): ExternalEventValidationPolicy {
+  switch (object) {
+    case 0:
+    case "NONE":
+      return ExternalEventValidationPolicy.NONE;
+    case 1:
+    case "REQUIRE_WF_RUN":
+      return ExternalEventValidationPolicy.REQUIRE_WF_RUN;
+    case 2:
+    case "REQUIRE_WF_SPEC_REF":
+      return ExternalEventValidationPolicy.REQUIRE_WF_SPEC_REF;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return ExternalEventValidationPolicy.UNRECOGNIZED;
+  }
+}
+
+export function externalEventValidationPolicyToJSON(object: ExternalEventValidationPolicy): string {
+  switch (object) {
+    case ExternalEventValidationPolicy.NONE:
+      return "NONE";
+    case ExternalEventValidationPolicy.REQUIRE_WF_RUN:
+      return "REQUIRE_WF_RUN";
+    case ExternalEventValidationPolicy.REQUIRE_WF_SPEC_REF:
+      return "REQUIRE_WF_SPEC_REF";
+    case ExternalEventValidationPolicy.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function externalEventValidationPolicyToNumber(object: ExternalEventValidationPolicy): number {
+  switch (object) {
+    case ExternalEventValidationPolicy.NONE:
+      return 0;
+    case ExternalEventValidationPolicy.REQUIRE_WF_RUN:
+      return 1;
+    case ExternalEventValidationPolicy.REQUIRE_WF_SPEC_REF:
+      return 2;
+    case ExternalEventValidationPolicy.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+/**
  * An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
  * Generally, an ExternalEvent is used to represent a document getting signed, an incident
  * being resolved, an order being fulfilled, etc.
@@ -90,7 +156,11 @@ export interface ExternalEventDef {
    * If not set, then the users cannot use the `rpc PutCorrelatedEvent` to post externalEvents of this
    * type.
    */
-  correlatedEventConfig?: CorrelatedEventConfig | undefined;
+  correlatedEventConfig?:
+    | CorrelatedEventConfig
+    | undefined;
+  /** Extra validation surrounding when an external event can be posted */
+  validationPolicy?: ExternalEventValidationPolicy | undefined;
 }
 
 /** Configures behavior of `CorrelatedEvent`s created for a specific `ExternalEventDef`. */
@@ -296,6 +366,7 @@ function createBaseExternalEventDef(): ExternalEventDef {
     retentionPolicy: undefined,
     typeInformation: undefined,
     correlatedEventConfig: undefined,
+    validationPolicy: undefined,
   };
 }
 
@@ -315,6 +386,9 @@ export const ExternalEventDef = {
     }
     if (message.correlatedEventConfig !== undefined) {
       CorrelatedEventConfig.encode(message.correlatedEventConfig, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.validationPolicy !== undefined) {
+      writer.uint32(48).int32(externalEventValidationPolicyToNumber(message.validationPolicy));
     }
     return writer;
   },
@@ -361,6 +435,13 @@ export const ExternalEventDef = {
 
           message.correlatedEventConfig = CorrelatedEventConfig.decode(reader, reader.uint32());
           continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.validationPolicy = externalEventValidationPolicyFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -381,6 +462,9 @@ export const ExternalEventDef = {
       correlatedEventConfig: isSet(object.correlatedEventConfig)
         ? CorrelatedEventConfig.fromJSON(object.correlatedEventConfig)
         : undefined,
+      validationPolicy: isSet(object.validationPolicy)
+        ? externalEventValidationPolicyFromJSON(object.validationPolicy)
+        : undefined,
     };
   },
 
@@ -400,6 +484,9 @@ export const ExternalEventDef = {
     }
     if (message.correlatedEventConfig !== undefined) {
       obj.correlatedEventConfig = CorrelatedEventConfig.toJSON(message.correlatedEventConfig);
+    }
+    if (message.validationPolicy !== undefined) {
+      obj.validationPolicy = externalEventValidationPolicyToJSON(message.validationPolicy);
     }
     return obj;
   },
@@ -423,6 +510,7 @@ export const ExternalEventDef = {
       (object.correlatedEventConfig !== undefined && object.correlatedEventConfig !== null)
         ? CorrelatedEventConfig.fromPartial(object.correlatedEventConfig)
         : undefined;
+    message.validationPolicy = object.validationPolicy ?? undefined;
     return message;
   },
 };

@@ -3,11 +3,21 @@ import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
 from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
+
+class ExternalEventValidationPolicy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    NONE: _ClassVar[ExternalEventValidationPolicy]
+    REQUIRE_WF_RUN: _ClassVar[ExternalEventValidationPolicy]
+    REQUIRE_WF_SPEC_REF: _ClassVar[ExternalEventValidationPolicy]
+NONE: ExternalEventValidationPolicy
+REQUIRE_WF_RUN: ExternalEventValidationPolicy
+REQUIRE_WF_SPEC_REF: ExternalEventValidationPolicy
 
 class ExternalEvent(_message.Message):
     __slots__ = ["id", "created_at", "content", "thread_run_number", "node_run_position", "claimed"]
@@ -26,18 +36,20 @@ class ExternalEvent(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ..., claimed: bool = ...) -> None: ...
 
 class ExternalEventDef(_message.Message):
-    __slots__ = ["id", "created_at", "retention_policy", "type_information", "correlated_event_config"]
+    __slots__ = ["id", "created_at", "retention_policy", "type_information", "correlated_event_config", "validation_policy"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     TYPE_INFORMATION_FIELD_NUMBER: _ClassVar[int]
     CORRELATED_EVENT_CONFIG_FIELD_NUMBER: _ClassVar[int]
+    VALIDATION_POLICY_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.ExternalEventDefId
     created_at: _timestamp_pb2.Timestamp
     retention_policy: ExternalEventRetentionPolicy
     type_information: _common_wfspec_pb2.ReturnType
     correlated_event_config: CorrelatedEventConfig
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., retention_policy: _Optional[_Union[ExternalEventRetentionPolicy, _Mapping]] = ..., type_information: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[CorrelatedEventConfig, _Mapping]] = ...) -> None: ...
+    validation_policy: ExternalEventValidationPolicy
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., retention_policy: _Optional[_Union[ExternalEventRetentionPolicy, _Mapping]] = ..., type_information: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[CorrelatedEventConfig, _Mapping]] = ..., validation_policy: _Optional[_Union[ExternalEventValidationPolicy, str]] = ...) -> None: ...
 
 class CorrelatedEventConfig(_message.Message):
     __slots__ = ["ttl_seconds", "delete_after_first_correlation"]
