@@ -5,6 +5,7 @@ import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/Selec
 import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { wfRunIdToPath } from '@/app/utils'
+import { computeStartTimeWindow } from '@/app/utils/dateTime'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { cn } from '@/lib/utils'
@@ -27,20 +28,7 @@ export default function ChildWorkflows({ parentWfRunId, spec }: { parentWfRunId:
   const [resolvedWfRuns, setResolvedWfRuns] = useState<Record<string, WfRunResponse>>({})
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
 
-  const startTime = useMemo(() => {
-    if (window === -1) return undefined
-    const now = new Date()
-    const latestStart = now.toISOString()
-    const earliestStart = new Date(now.getTime() - window * 6e4).toISOString()
-
-    return {
-      latestStart,
-      earliestStart,
-    }
-  }, [window])
-
-  type StartTimeRange = { latestStart: string; earliestStart: string } | undefined
-  type ChildWfRunsKey = ['childWfRuns', LHStatus | 'ALL', string, number, StartTimeRange, string | undefined, WfRunId]
+  const startTime = useMemo(() => computeStartTimeWindow(window), [window])
 
   const getKey: SWRInfiniteKeyLoader<PaginatedWfRunIdList, ChildWfRunsKey | null> = (_pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end

@@ -4,6 +4,7 @@ import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/Selec
 import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { wfRunIdToPath } from '@/app/utils'
+import { computeStartTimeWindow } from '@/app/utils/dateTime'
 import { cn } from '@/lib/utils'
 import { lHStatusFromJSON, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
@@ -22,17 +23,7 @@ export const WfRuns: FC<WfSpec> = spec => {
   const tenantId = useParams().tenantId as string
   const [resolvedWfRuns, setResolvedWfRuns] = useState<Record<string, WfRunResponse>>({})
 
-  const startTime = useMemo(() => {
-    if (window === -1) return undefined
-    const now = new Date()
-    const latestStart = now.toISOString()
-    const earliestStart = new Date(now.getTime() - window * 6e4).toISOString()
-
-    return {
-      latestStart,
-      earliestStart,
-    }
-  }, [window])
+  const startTime = useMemo(() => computeStartTimeWindow(window), [window])
 
   const getKey = (_pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
