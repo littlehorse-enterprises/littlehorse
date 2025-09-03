@@ -105,7 +105,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setOptimizeFiltersForHits(false);
 
         // Save disk space a bit. This will also help (marginally) with Write Amplification.
-        options.setCompressionType(CompressionType.SNAPPY_COMPRESSION);
+        options.setCompressionType(CompressionType.ZSTD_COMPRESSION);
 
         // Compaction Configurations.
         if (serverConfig.getRocksDBUseLevelCompaction()) {
