@@ -45,7 +45,7 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
       parentWfRunId,
     ] as ChildWfRunsKey
   }
-  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(
+  const { data, size, setSize, isLoading } = useSWRInfinite<PaginatedWfRunResponseList>(
     getKey,
     async (key: ChildWfRunsKey) => {
       const [, status, tenantId, limit, startTime, bookmarkAsString, parentWfRunId] = key
@@ -62,7 +62,6 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
     }
   )
 
-  const isPending = !data && !error
   const hasNextPage = !!(data && data[data.length - 1]?.bookmarkAsString)
 
   return (
@@ -74,7 +73,7 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
         <TabsContent value="child-wfruns">
           <WfRunsHeader currentStatus={status} currentWindow={window} setWindow={setWindow} spec={spec} />
           <div className="flex min-h-[180px] flex-col">
-            {isPending ? (
+            {isLoading ? (
               <div className="flex min-h-[180px] items-center justify-center text-center">
                 <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
               </div>
