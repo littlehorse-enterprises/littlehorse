@@ -114,6 +114,7 @@ final class RebalanceThread extends Thread {
                     pollThread.close();
                 }
                 runningConnections.remove(toRemove);
+                log.info("Stopped connection for LH Server Instance at host {}:{}", toRemove.getHost(), toRemove.getPort());
             }
         }
 
