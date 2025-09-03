@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator'
 import { WfRunId } from 'littlehorse-client/proto'
 import { useSearchParams } from 'next/navigation'
 import { FC } from 'react'
-import ChildWorkflows from './ChildWorkflows'
+import { ChildWorkflows } from './ChildWorkflows'
 import { Details } from './Details'
 import { Variables } from './Variables'
 

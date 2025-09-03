@@ -1,31 +1,43 @@
 'use client'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
-import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
-import { wfRunIdToPath } from '@/app/utils'
-import { computeStartTimeWindow } from '@/app/utils/dateTime'
+import { getStatus, wfRunIdToPath } from '@/app/utils'
+import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { cn } from '@/lib/utils'
-import { lHStatusFromJSON, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
-import { useParams, useSearchParams } from 'next/navigation'
-import { FC, Fragment, useEffect, useMemo, useState } from 'react'
-import useSWRInfinite from 'swr/infinite'
+import { useSearchParams } from 'next/navigation'
+import { FC, Fragment, useMemo, useState } from 'react'
+import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { statusColors } from '../../../wfRun/[...ids]/components/Details'
-import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
+import { PaginatedWfRunResponseList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
 
+type WfRunsKey = [
+  'wfRun',
+  LHStatus | 'ALL',
+  string,
+  number,
+  StartTimeWindow,
+  string | undefined,
+  string,
+  number,
+  number,
+]
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
-  const status = searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL'
+  const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
+    | LHStatus
+    | 'ALL'
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
-  const tenantId = useParams().tenantId as string
-  const [resolvedWfRuns, setResolvedWfRuns] = useState<Record<string, WfRunResponse>>({})
+  const { tenantId } = useWhoAmI()
 
   const startTime = useMemo(() => computeStartTimeWindow(window), [window])
 
-  const getKey = (_pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
+  const getKey: SWRInfiniteKeyLoader<PaginatedWfRunResponseList, WfRunsKey | null> = (_pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
     return [
       'wfRun',
@@ -37,10 +49,10 @@ export const WfRuns: FC<WfSpec> = spec => {
       spec.id!.name,
       spec.id!.majorVersion,
       spec.id!.revision,
-    ]
+    ] as WfRunsKey
   }
 
-  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunIdList>(getKey, async key => {
+  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(getKey, async (key: WfRunsKey) => {
     const [, status, tenantId, limit, startTime, bookmarkAsString, wfSpecName, wfSpecMajorVersion, wfSpecRevision] = key
     return await searchWfRun({
       wfSpecName,
@@ -54,27 +66,6 @@ export const WfRuns: FC<WfSpec> = spec => {
       ...startTime,
     })
   })
-
-  const wfRunPromises = useMemo(() => {
-    return (
-      data?.flatMap(page =>
-        page.results.map(wfRunId => ({
-          wfRunId: wfRunId.id,
-          promise: getWfRun({ wfRunId, tenantId }),
-        }))
-      ) ?? []
-    )
-  }, [data, tenantId])
-
-  useEffect(() => {
-    wfRunPromises.forEach(async ({ wfRunId, promise }) => {
-      const data = await promise
-      setResolvedWfRuns(prev => ({
-        ...prev,
-        [wfRunId]: data,
-      }))
-    })
-  }, [wfRunPromises])
 
   const isPending = !data && !error
   const hasNextPage = !!(data && data[data.length - 1]?.bookmarkAsString)
@@ -90,21 +81,24 @@ export const WfRuns: FC<WfSpec> = spec => {
         <div className="flex min-h-[360px] flex-col">
           {data?.map((page, i) => (
             <Fragment key={i}>
-              {page.results.map(wfRunId => (
-                <SelectionLink key={wfRunId.id} href={`/wfRun/${wfRunIdToPath(wfRunId)}`}>
-                  <p>{wfRunId.id}</p>
-                  <span className={cn('ml-2 rounded px-2', statusColors[resolvedWfRuns[wfRunId.id]?.wfRun.status])}>
-                    {`${resolvedWfRuns[wfRunId.id]?.wfRun.status}`}
-                  </span>
-                  <span className="ml-2 rounded bg-gray-200 px-2">
-                    Started:{' '}
-                    {(() => {
-                      const startTime = resolvedWfRuns[wfRunId.id]?.wfRun.startTime
-                      return startTime ? new Date(startTime).toLocaleString() : ''
-                    })()}
-                  </span>
-                </SelectionLink>
-              ))}
+              {page.results.map(wfRun => {
+                if (!wfRun.wfRun.id) return null
+                return (
+                  <SelectionLink key={wfRun.wfRun.id.id} href={`/wfRun/${wfRunIdToPath(wfRun.wfRun.id)}`}>
+                    <p>{wfRun.wfRun.id.id}</p>
+                    <span className={cn('ml-2 rounded px-2', statusColors[wfRun.wfRun.status])}>
+                      {`${wfRun.wfRun.status ?? ''}`}
+                    </span>
+                    <span className="ml-2 rounded bg-gray-200 px-2">
+                      Started:{' '}
+                      {(() => {
+                        const startTime = wfRun.wfRun.startTime
+                        return startTime ? new Date(startTime).toLocaleString() : ''
+                      })()}
+                    </span>
+                  </SelectionLink>
+                )
+              })}
             </Fragment>
           ))}
         </div>
@@ -117,8 +111,4 @@ export const WfRuns: FC<WfSpec> = spec => {
       />
     </div>
   )
-}
-const getStatus = (status: string | null) => {
-  if (!status) return undefined
-  return lHStatusFromJSON(status)
 }
