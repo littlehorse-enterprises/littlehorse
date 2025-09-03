@@ -58,6 +58,7 @@ private static final long serialVersionUID = 0L;
     INT(7),
     BYTES(8),
     WF_RUN_ID(9),
+    UTC_TIMESTAMP(10),
     VALUE_NOT_SET(0);
     private final int value;
     private ValueCase(int value) {
@@ -83,6 +84,7 @@ private static final long serialVersionUID = 0L;
         case 7: return INT;
         case 8: return BYTES;
         case 9: return WF_RUN_ID;
+        case 10: return UTC_TIMESTAMP;
         case 0: return VALUE_NOT_SET;
         default: return null;
       }
@@ -451,6 +453,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
   }
 
+  public static final int UTC_TIMESTAMP_FIELD_NUMBER = 10;
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return Whether the utcTimestamp field is set.
+   */
+  @java.lang.Override
+  public boolean hasUtcTimestamp() {
+    return valueCase_ == 10;
+  }
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return The utcTimestamp.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getUtcTimestamp() {
+    if (valueCase_ == 10) {
+       return (com.google.protobuf.Timestamp) value_;
+    }
+    return com.google.protobuf.Timestamp.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getUtcTimestampOrBuilder() {
+    if (valueCase_ == 10) {
+       return (com.google.protobuf.Timestamp) value_;
+    }
+    return com.google.protobuf.Timestamp.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -493,6 +538,9 @@ private static final long serialVersionUID = 0L;
     if (valueCase_ == 9) {
       output.writeMessage(9, (io.littlehorse.sdk.common.proto.WfRunId) value_);
     }
+    if (valueCase_ == 10) {
+      output.writeMessage(10, (com.google.protobuf.Timestamp) value_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -534,6 +582,10 @@ private static final long serialVersionUID = 0L;
     if (valueCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(9, (io.littlehorse.sdk.common.proto.WfRunId) value_);
+    }
+    if (valueCase_ == 10) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, (com.google.protobuf.Timestamp) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -585,6 +637,10 @@ private static final long serialVersionUID = 0L;
         if (!getWfRunId()
             .equals(other.getWfRunId())) return false;
         break;
+      case 10:
+        if (!getUtcTimestamp()
+            .equals(other.getUtcTimestamp())) return false;
+        break;
       case 0:
       default:
     }
@@ -634,6 +690,10 @@ private static final long serialVersionUID = 0L;
       case 9:
         hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
         hash = (53 * hash) + getWfRunId().hashCode();
+        break;
+      case 10:
+        hash = (37 * hash) + UTC_TIMESTAMP_FIELD_NUMBER;
+        hash = (53 * hash) + getUtcTimestamp().hashCode();
         break;
       case 0:
       default:
@@ -778,6 +838,9 @@ private static final long serialVersionUID = 0L;
       if (wfRunIdBuilder_ != null) {
         wfRunIdBuilder_.clear();
       }
+      if (utcTimestampBuilder_ != null) {
+        utcTimestampBuilder_.clear();
+      }
       valueCase_ = 0;
       value_ = null;
       return this;
@@ -822,6 +885,10 @@ private static final long serialVersionUID = 0L;
       if (valueCase_ == 9 &&
           wfRunIdBuilder_ != null) {
         result.value_ = wfRunIdBuilder_.build();
+      }
+      if (valueCase_ == 10 &&
+          utcTimestampBuilder_ != null) {
+        result.value_ = utcTimestampBuilder_.build();
       }
     }
 
@@ -908,6 +975,10 @@ private static final long serialVersionUID = 0L;
           mergeWfRunId(other.getWfRunId());
           break;
         }
+        case UTC_TIMESTAMP: {
+          mergeUtcTimestamp(other.getUtcTimestamp());
+          break;
+        }
         case VALUE_NOT_SET: {
           break;
         }
@@ -983,6 +1054,13 @@ private static final long serialVersionUID = 0L;
               valueCase_ = 9;
               break;
             } // case 74
+            case 82: {
+              input.readMessage(
+                  getUtcTimestampFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              valueCase_ = 10;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1778,6 +1856,184 @@ private static final long serialVersionUID = 0L;
       valueCase_ = 9;
       onChanged();
       return wfRunIdBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> utcTimestampBuilder_;
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     * @return Whether the utcTimestamp field is set.
+     */
+    @java.lang.Override
+    public boolean hasUtcTimestamp() {
+      return valueCase_ == 10;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     * @return The utcTimestamp.
+     */
+    @java.lang.Override
+    public com.google.protobuf.Timestamp getUtcTimestamp() {
+      if (utcTimestampBuilder_ == null) {
+        if (valueCase_ == 10) {
+          return (com.google.protobuf.Timestamp) value_;
+        }
+        return com.google.protobuf.Timestamp.getDefaultInstance();
+      } else {
+        if (valueCase_ == 10) {
+          return utcTimestampBuilder_.getMessage();
+        }
+        return com.google.protobuf.Timestamp.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder setUtcTimestamp(com.google.protobuf.Timestamp value) {
+      if (utcTimestampBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        value_ = value;
+        onChanged();
+      } else {
+        utcTimestampBuilder_.setMessage(value);
+      }
+      valueCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder setUtcTimestamp(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (utcTimestampBuilder_ == null) {
+        value_ = builderForValue.build();
+        onChanged();
+      } else {
+        utcTimestampBuilder_.setMessage(builderForValue.build());
+      }
+      valueCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder mergeUtcTimestamp(com.google.protobuf.Timestamp value) {
+      if (utcTimestampBuilder_ == null) {
+        if (valueCase_ == 10 &&
+            value_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          value_ = com.google.protobuf.Timestamp.newBuilder((com.google.protobuf.Timestamp) value_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          value_ = value;
+        }
+        onChanged();
+      } else {
+        if (valueCase_ == 10) {
+          utcTimestampBuilder_.mergeFrom(value);
+        } else {
+          utcTimestampBuilder_.setMessage(value);
+        }
+      }
+      valueCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder clearUtcTimestamp() {
+      if (utcTimestampBuilder_ == null) {
+        if (valueCase_ == 10) {
+          valueCase_ = 0;
+          value_ = null;
+          onChanged();
+        }
+      } else {
+        if (valueCase_ == 10) {
+          valueCase_ = 0;
+          value_ = null;
+        }
+        utcTimestampBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getUtcTimestampBuilder() {
+      return getUtcTimestampFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    @java.lang.Override
+    public com.google.protobuf.TimestampOrBuilder getUtcTimestampOrBuilder() {
+      if ((valueCase_ == 10) && (utcTimestampBuilder_ != null)) {
+        return utcTimestampBuilder_.getMessageOrBuilder();
+      } else {
+        if (valueCase_ == 10) {
+          return (com.google.protobuf.Timestamp) value_;
+        }
+        return com.google.protobuf.Timestamp.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getUtcTimestampFieldBuilder() {
+      if (utcTimestampBuilder_ == null) {
+        if (!(valueCase_ == 10)) {
+          value_ = com.google.protobuf.Timestamp.getDefaultInstance();
+        }
+        utcTimestampBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                (com.google.protobuf.Timestamp) value_,
+                getParentForChildren(),
+                isClean());
+        value_ = null;
+      }
+      valueCase_ = 10;
+      onChanged();
+      return utcTimestampBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

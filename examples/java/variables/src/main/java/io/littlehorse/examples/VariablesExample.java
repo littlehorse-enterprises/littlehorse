@@ -32,33 +32,28 @@ public class VariablesExample {
         return new WorkflowImpl(
             "example-variables",
             wf -> {
-                WfRunVariable inputText = wf.addVariable("input-text", VariableType.STR).searchable().masked();
+                WfRunVariable inputText = wf.declareStr("input-text").searchable().masked();
 
-                WfRunVariable addLength = wf.addVariable(
-                    "add-length",
-                    VariableType.BOOL
-                ).searchable();
+                WfRunVariable addLength = wf.declareBool("add-length").searchable();
 
-                WfRunVariable userId = wf
-                    .addVariable("user-id", VariableType.INT).searchable();
+                WfRunVariable userId = wf.declareInt("user-id").searchable();
 
-                WfRunVariable sentimentScore = wf
-                    .addVariable("sentiment-score", VariableType.DOUBLE).searchable();
+                WfRunVariable sentimentScore = wf.declareDouble("sentiment-score").searchable();
+
+                // Example timestamp variable
+                WfRunVariable myTimestamp = wf.declareTimestamp("my-timestamp");
 
                 WfRunVariable processedResult = wf
-                    .addVariable("processed-result", VariableType.JSON_OBJ)
+                    .declareJsonObj("processed-result")
                     .searchableOn("$.sentimentScore", VariableType.DOUBLE)
                     .masked();
+
 
                 NodeOutput sentimentAnalysisOutput = wf.execute(
                     "sentiment-analysis",
                     inputText
                 );
-                wf.mutate(
-                    sentimentScore,
-                    VariableMutationType.ASSIGN,
-                    sentimentAnalysisOutput
-                );
+                sentimentScore.assign(sentimentAnalysisOutput);
                 NodeOutput processedTextOutput = wf.execute(
                     "process-text",
                     inputText,
@@ -72,6 +67,8 @@ public class VariablesExample {
                     processedTextOutput
                 );
                 wf.execute("send", processedResult);
+                // Example: assign timestamp from a task that returns an Instant
+                // myTimestamp.assign(wf.execute("task-that-returns-instant"));
             }
         );
     }

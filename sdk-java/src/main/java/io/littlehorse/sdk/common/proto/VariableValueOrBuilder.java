@@ -199,5 +199,32 @@ public interface VariableValueOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return Whether the utcTimestamp field is set.
+   */
+  boolean hasUtcTimestamp();
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return The utcTimestamp.
+   */
+  com.google.protobuf.Timestamp getUtcTimestamp();
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getUtcTimestampOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableValue.ValueCase getValueCase();
 }

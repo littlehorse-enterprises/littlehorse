@@ -47,6 +47,14 @@ public class LHLibUtil {
         return fromMillis(date.getTime());
     }
 
+    public static Timestamp fromInstant(Instant instant) {
+        if (instant == null) return null;
+        return Timestamp.newBuilder()
+                .setSeconds(instant.getEpochSecond())
+                .setNanos(instant.getNano())
+                .build();
+    }
+
     public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeException {
         try {
             return cls.cast(cls.getMethod("parseFrom", byte[].class).invoke(null, data));
@@ -169,6 +177,10 @@ public class LHLibUtil {
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
+        } else if (o instanceof Instant) {
+            out.setUtcTimestamp(fromInstant((Instant) o));
+        } else if (o instanceof Date) {
+            out.setUtcTimestamp(fromDate((Date) o));
         } else {
             // At this point, all we can do is try to make it a JSON type.
             JsonResult jsonResult = LHLibUtil.serializeToJson(o);
@@ -219,6 +231,8 @@ public class LHLibUtil {
                 return VariableType.BOOL;
             case WF_RUN_ID:
                 return VariableType.WF_RUN_ID;
+            case UTC_TIMESTAMP:
+                return VariableType.TIMESTAMP;
             case VALUE_NOT_SET:
             default:
                 return null;
@@ -259,6 +273,12 @@ public class LHLibUtil {
         return WfRunId.class.isAssignableFrom(cls);
     }
 
+    public static boolean isTIMESTAMP(Class<?> cls) {
+        return java.time.Instant.class.isAssignableFrom(cls)
+                || java.util.Date.class.isAssignableFrom(cls)
+                || com.google.protobuf.Timestamp.class.isAssignableFrom(cls);
+    }
+
     public static VariableType javaClassToLHVarType(Class<?> cls) {
         if (isINT(cls)) return VariableType.INT;
 
@@ -273,6 +293,8 @@ public class LHLibUtil {
         if (isJSON_ARR(cls)) return VariableType.JSON_ARR;
 
         if (isWfRunId(cls)) return VariableType.WF_RUN_ID;
+
+        if (isTIMESTAMP(cls)) return VariableType.TIMESTAMP;
 
         return VariableType.JSON_OBJ;
     }
@@ -297,6 +319,8 @@ public class LHLibUtil {
                 return a.getBytes().equals(b.getBytes());
             case WF_RUN_ID:
                 return a.getWfRunId().equals(b.getWfRunId());
+            case UTC_TIMESTAMP:
+                return a.getUtcTimestamp().equals(b.getUtcTimestamp());
             case VALUE_NOT_SET:
                 return true;
         }
