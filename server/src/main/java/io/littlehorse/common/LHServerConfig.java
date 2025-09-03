@@ -753,7 +753,8 @@ public class LHServerConfig extends ConfigBase {
         Properties conf = new Properties();
         conf.put("client.id", this.getClientId(component));
         conf.put(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG, "rebootstrap");
-        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG);
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "zstd");
+        props.put(ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG, 8);
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -956,9 +957,8 @@ public class LHServerConfig extends ConfigBase {
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
 
-        props.put(
-                StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_TYPE_CONFIG),
-                ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG);
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_TYPE_CONFIG), "zstd");
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG), 8);
         props.put(StreamsConfig.producerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
         props.put(StreamsConfig.consumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
         props.put(
