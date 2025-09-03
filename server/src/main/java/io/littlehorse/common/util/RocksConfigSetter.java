@@ -14,7 +14,6 @@ import org.rocksdb.IndexType;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
 import org.rocksdb.Priority;
-import org.rocksdb.RateLimiter;
 
 @Slf4j
 public class RocksConfigSetter implements RocksDBConfigSetter {
@@ -129,14 +128,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setUseDirectReads(true);
         }
 
-        long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
-        if (rateLimit > 0) {
-            options.setRateLimiter(new RateLimiter(
-                    rateLimit,
-                    RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
-                    RateLimiter.DEFAULT_FAIRNESS,
-                    RateLimiter.DEFAULT_MODE,
-                    false));
+        if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
+            options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
         }
 
         options.setTableFormatConfig(tableConfig);
