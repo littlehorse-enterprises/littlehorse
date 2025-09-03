@@ -199,5 +199,32 @@ public interface VariableValueOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
+  /**
+   * <pre>
+   * A Struct object.
+   * </pre>
+   *
+   * <code>.littlehorse.Struct struct = 10;</code>
+   * @return Whether the struct field is set.
+   */
+  boolean hasStruct();
+  /**
+   * <pre>
+   * A Struct object.
+   * </pre>
+   *
+   * <code>.littlehorse.Struct struct = 10;</code>
+   * @return The struct.
+   */
+  io.littlehorse.sdk.common.proto.Struct getStruct();
+  /**
+   * <pre>
+   * A Struct object.
+   * </pre>
+   *
+   * <code>.littlehorse.Struct struct = 10;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableValue.ValueCase getValueCase();
 }

@@ -349,7 +349,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				}
 
 				scheduleWfReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, varDef.TypeDef.Type,
+					varValStr, varDef.TypeDef.GetPrimitiveType(),
 				)
 
 				if err != nil {

@@ -15,7 +15,7 @@ public class JsonObjReturnTypeStrategy implements LHTypeStrategy {
     @Override
     public Optional<TypeDefinitionModel> add(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        throw new InvalidExpressionException("Cannot subtract from a JSON_OBJ");
+        throw new InvalidExpressionException("Cannot add to a JSON_OBJ");
     }
 
     @Override

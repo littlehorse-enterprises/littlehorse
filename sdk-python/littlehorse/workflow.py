@@ -622,7 +622,7 @@ class WfRunVariable:
         """
         return ThreadVarDef(
             var_def=VariableDef(
-                type_def=TypeDefinition(type=self.type, masked=self._masked),
+                type_def=TypeDefinition(primitive_type=self.type, masked=self._masked),
                 name=self.name,
                 default_value=self.default_value,
             ),
@@ -2315,17 +2315,17 @@ def python_type_to_return_type(py_type: type | None) -> ReturnType:
         raise ValueError("Payload type must be set before generating the request.")
     type_def = TypeDefinition()
     if py_type is str:
-        type_def.type = VariableType.STR
+        type_def.primitive_type = VariableType.STR
     elif py_type is int:
-        type_def.type = VariableType.INT
+        type_def.primitive_type = VariableType.INT
     elif py_type is float:
-        type_def.type = VariableType.DOUBLE
+        type_def.primitive_type = VariableType.DOUBLE
     elif py_type is bool:
-        type_def.type = VariableType.BOOL
+        type_def.primitive_type = VariableType.BOOL
     elif issubclass(py_type, dict):
-        type_def.type = VariableType.JSON_OBJ
+        type_def.primitive_type = VariableType.JSON_OBJ
     elif issubclass(py_type, list):
-        type_def.type = VariableType.JSON_ARR
+        type_def.primitive_type = VariableType.JSON_ARR
     else:
         raise ValueError("Unsupported payload type.")
     return ReturnType(return_type=type_def)
@@ -2608,7 +2608,7 @@ def create_workflow_event_def(
     stub = config.stub()
     request = PutWorkflowEventDefRequest(
         name=name,
-        content_type=ReturnType(TypeDefinition(type=type)),
+        content_type=ReturnType(TypeDefinition(primitive_type=type)),
     )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")
