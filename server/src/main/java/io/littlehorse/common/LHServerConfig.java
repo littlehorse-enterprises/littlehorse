@@ -52,6 +52,7 @@ import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
 import org.rocksdb.LRUCache;
+import org.rocksdb.RateLimiter;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
 
@@ -157,6 +158,9 @@ public class LHServerConfig extends ConfigBase {
 
     @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
+
+    @Getter
+    private RateLimiter globalRocksdbRateLimiter;
 
     public LHServerConfig() {
         super();
@@ -1105,6 +1109,16 @@ public class LHServerConfig extends ConfigBase {
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
                     new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
+        }
+
+        long rateLimit = Long.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
+        if (rateLimit > 0) {
+            this.globalRocksdbRateLimiter = new RateLimiter(
+                rateLimit,
+                RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
+                RateLimiter.DEFAULT_FAIRNESS,
+                RateLimiter.DEFAULT_MODE,
+                false);
         }
     }
 
