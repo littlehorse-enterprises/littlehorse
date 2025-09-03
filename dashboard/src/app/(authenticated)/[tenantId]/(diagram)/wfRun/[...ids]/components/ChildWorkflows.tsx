@@ -18,6 +18,9 @@ import { PaginatedWfRunIdList, searchWfRun } from '../../../wfSpec/[...props]/ac
 import { WfRunsHeader } from '../../../wfSpec/[...props]/components/WfRunsHeader'
 import { statusColors } from './Details'
 
+type StartTimeRange = { latestStart: string; earliestStart: string } | undefined
+type ChildWfRunsKey = ['childWfRuns', LHStatus | 'ALL', string, number, StartTimeRange, string | undefined, WfRunId]
+
 export default function ChildWorkflows({ parentWfRunId, spec }: { parentWfRunId: WfRunId; spec: WfSpec }) {
   const { tenantId } = useWhoAmI()
   const searchParams = useSearchParams()
