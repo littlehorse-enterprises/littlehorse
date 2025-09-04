@@ -7,6 +7,7 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
+import org.rocksdb.CompactionPriority;
 import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionType;
 import org.rocksdb.Env;
@@ -63,8 +64,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         rocksEnv.setBackgroundThreads(threads, Priority.LOW);
         rocksEnv.setBackgroundThreads(threads, Priority.HIGH);
         options.setEnv(rocksEnv);
-        options.setMaxBackgroundJobs(threads);
-        options.setMaxSubcompactions(threads);
+        options.setMaxBackgroundJobs(6); // Rocksdb tuning guide recommendation
+        options.setMaxSubcompactions(3);
 
         // Configurations to avoid the "many small L0 files" problem
         options.setMaxWriteBufferNumber(4);
@@ -103,7 +104,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // Reduce read amplification
         options.setOptimizeFiltersForHits(false);
 
-        // Save disk space a bit. This will also help (marginally) with Write Amplification.
+        // Save disk space (in practice this helps a LOT...up to 80% with small variables and TaskRun inputs).
+        // This will also help with Write Amplification.
         options.setCompressionType(CompressionType.ZSTD_COMPRESSION);
 
         // Compaction Configurations.
@@ -123,10 +125,22 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setMaxBytesForLevelMultiplier(20); // default 10; higher means lower Write Amp
         }
 
+        // I/O Configurations
         if (serverConfig.useDirectIOForRocksDB()) {
             options.setUseDirectIoForFlushAndCompaction(true);
             options.setUseDirectReads(true);
         }
+        // Periodically sync the bytes in the background. This reduces burstiness of the I/O, which
+        // reduces tail latency (and can also reduce overall page cache usage when buffered I/O is
+        // used).
+        //
+        // References:
+        // - https://github.com/facebook/rocksdb/wiki/Setup-Options-and-Basic-Tuning#other-general-options
+        // - https://github.com/facebook/rocksdb/wiki/IO#range-sync
+        options.setBytesPerSync(1024L * 1024L);
+
+        // Reduce write amplification compared to default. Also recommended by RocksDB Tuning Guide
+        options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
 
         if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
             options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
