@@ -20,12 +20,15 @@
       - [Using and Creating `StructDef`s](#using-and-creating-structdefs)
       - [Accessing Sub-Structures](#accessing-sub-structures)
   - [`StructDef` Naming Conventions](#structdef-naming-conventions)
-    - [RegEx](#regex)
-      - [Why?](#why)
-      - [Setting `StructDef` Names via SDKs](#setting-structdef-names-via-sdks)
-  - [`StructDef` Field Naming Conventions](#structdef-field-naming-conventions)
-    - [Example](#example)
     - [Convention](#convention)
+      - [RegEx](#regex)
+      - [Why?](#why)
+    - [Setting `StructDef` Names via SDKs](#setting-structdef-names-via-sdks)
+  - [`StructDef` Field Naming Conventions](#structdef-field-naming-conventions)
+    - [Background](#background)
+    - [Example](#example)
+    - [Convention](#convention-1)
+    - [Setting `StructDef` Field Names via SDK](#setting-structdef-field-names-via-sdk)
   - [Further Discussion](#further-discussion)
     - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
     - [External Events?](#external-events)
@@ -580,6 +583,8 @@ Additionally, the `Workflow#registerWfSpec()` method should create the `person` 
 
 ## `StructDef` Naming Conventions
 
+### Convention
+
 The name of a given `StructDef` will adhere to the LittleHorse Server Hostname standard, which says that:
 
 - All letters are lower case
@@ -587,7 +592,7 @@ The name of a given `StructDef` will adhere to the LittleHorse Server Hostname s
 - The last character must be a letter or a number
 - In between characters can match any lower case letter, number, or hyphen
 
-### RegEx
+#### RegEx
 
 This standard is matched by the following Regular Expression:
 
@@ -614,7 +619,7 @@ This standard was set because `Getable` `ID`s, like a `StructDef` name, are stor
 
 Since `StructDef`s are a `Getable` object on the LittleHorse Server, we will adhere to this existing naming standard for `StructDef` names.
 
-#### Setting `StructDef` Names via SDKs
+### Setting `StructDef` Names via SDKs
 
 The LittleHorse SDKs will allow users to set the name of a `StructDef` similarly to how users set the names of `TaskDef`s, using annotations and reflection where possible, and otherwise by passing the names as strings into a `register` method.
 
@@ -675,9 +680,9 @@ public class Car
 
 ## `StructDef` Field Naming Conventions
 
-`StructDef` Fields will adhere to a common standard that all SDKs can support or convert towards without breaking language conventions.
+### Background
 
-This is important, because one of my core principles when designing and proof-reading our SDKs is that any user should be able to port code from one SDK to another without fuss. 
+Since `StructDef` Field Names will be inferred using reflection in languages that support it, `StructDef` Fields need to adhere to a common standard that all SDKs can support or convert towards without breaking language conventions.
 
 ### Example
 
@@ -752,6 +757,23 @@ Since we will be handling some of the conversion ✨magic✨ behind the scenes i
   - Why no underscores? We want Java, .NET, and Go users to design compatible fields without breaking their individual language naming conventions. Since underscores are typically only used in constants in Java, and private member variables in `C#`, this character breaks support for these languages. Sorry Python, you can keep your `snake_case`, we will just convert them to `camelCase` during the `StructDef` compilation process.
 - For our case, field names will be `case insensitive`.
   - Why? This is because we'll be doing some magic on the Python side to convert lower `snake_case` to lower `camelCase`, and we don't want to users to worry about capitalization.
+
+### Setting `StructDef` Field Names via SDK
+
+We will allow users to manually override the field names of `StructDef` Fields if needed, so as to not rely on reflection for inferring the field names.
+
+An example of how this may look in Java:
+
+```java
+@LHStructDef(name="car")
+public class Car {
+  @LHStructField(name="customName")
+  public String name;
+  public int year = 1970; // sets default value
+  public boolean isSold;
+  public String vinNumberISO3779; // Ok, this one is extreme, but you gotta throw a curveball in there
+}
+```
 
 ## Further Discussion
 
