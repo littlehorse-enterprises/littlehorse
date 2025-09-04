@@ -82,4 +82,21 @@ public class OneTaskQueueTest {
         InOrder inOrder = inOrder(taskQueueManager);
         inOrder.verify(taskQueueManager, times(4)).itsAMatch(any(), same(mockClient));
     }
+
+    @Test
+    public void shouldHandleAlreadyClaimedTask() {
+        ScheduledTaskModel task1 = TestUtil.scheduledTaskModel("wf-1");
+        task1.setCreatedAt(new Date(new Date().getTime() + 2000L));
+        ScheduledTaskModel task2 = TestUtil.scheduledTaskModel("wf-2");
+        task2.setCreatedAt(new Date(new Date().getTime() + 3000L));
+        OneTaskQueue boundedQueue =
+                new OneTaskQueue(taskName, taskQueueManager, 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
+        boundedQueue.onTaskScheduled(streamsTaskId, task1);
+        boundedQueue.onTaskScheduled(streamsTaskId, task2);
+        boundedQueue.onPollRequest(mockClient, requestContext);
+        boundedQueue.onPollRequest(mockClient, requestContext);
+        InOrder inOrder = inOrder(taskQueueManager, mockClient);
+        inOrder.verify(taskQueueManager, times(1)).itsAMatch(any(), same(mockClient));
+        inOrder.verify(mockClient, times(1)).sendResponse(null);
+    }
 }

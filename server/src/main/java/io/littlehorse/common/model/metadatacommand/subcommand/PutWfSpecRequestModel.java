@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidWfSpecException;
 import io.littlehorse.common.model.getable.global.wfspec.ParentWfSpecReferenceModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
@@ -107,7 +108,12 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null, null);
         Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
 
-        spec.validateAndMaybeBumpVersion(optWfSpec, executionContext);
+        try {
+            spec.validateAndMaybeBumpVersion(optWfSpec, executionContext);
+        } catch (InvalidWfSpecException exn) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
+        }
+
         if (optWfSpec.isPresent() && WfSpecUtil.equals(spec, oldVersion)) {
             return optWfSpec.get().toProto().build();
         }

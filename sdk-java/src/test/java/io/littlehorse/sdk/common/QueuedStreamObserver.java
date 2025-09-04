@@ -4,6 +4,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Setter;
 
 public class QueuedStreamObserver<REQ, RES> {
@@ -49,6 +50,8 @@ public class QueuedStreamObserver<REQ, RES> {
         @Setter
         private StreamObserver<REQ> observer;
 
+        public final AtomicBoolean completed = new AtomicBoolean(false);
+
         @Override
         public void onNext(REQ value) {
             observer.onNext(value);
@@ -62,6 +65,11 @@ public class QueuedStreamObserver<REQ, RES> {
         @Override
         public void onCompleted() {
             observer.onCompleted();
+            completed.set(true);
+        }
+
+        public boolean isCompleted() {
+            return completed.get();
         }
     }
 

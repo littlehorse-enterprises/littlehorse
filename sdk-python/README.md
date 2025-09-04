@@ -30,6 +30,16 @@ poetry shell
 python -m unittest discover -v
 ```
 
+## Validate Indentations
+```
+poetry run ruff check .
+```
+
+## Validate types
+```
+poetry run mypy .
+```
+
 ## Useful Commands
 
 Set python version:

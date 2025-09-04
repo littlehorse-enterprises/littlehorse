@@ -3,16 +3,23 @@ package io.littlehorse.common.model.getable.global.wfspec.variable;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -177,5 +184,32 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             out.addAll(rhsRhsAssignment.getRequiredWfRunVarNames());
         }
         return out;
+    }
+
+    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidMutationException {
+        if (lhsJsonPath != null) {
+            // Can't validate anything, sorry.
+            return;
+        }
+
+        TypeDefinitionModel lhsType = threadSpec.getVarDef(lhsName).getVarDef().getTypeDef();
+
+        try {
+            Optional<TypeDefinitionModel> rhsType =
+                    rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
+            if (rhsType.isEmpty()) {
+                return;
+            }
+
+            Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy()
+                    .resolveOperation(manager, operation, rhsType.get().getTypeStrategy());
+            if (resultingType.isPresent() && !lhsType.isCompatibleWith(resultingType.get())) {
+                throw new InvalidMutationException(
+                        "Cannot mutate a " + lhsType + " by assigning it a value of type " + resultingType.get());
+            }
+        } catch (InvalidExpressionException exn) {
+            throw new InvalidMutationException("Mutation of variable " + lhsName + " invalid: " + exn.getMessage());
+        }
     }
 }

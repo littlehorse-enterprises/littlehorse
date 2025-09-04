@@ -1,20 +1,22 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 
@@ -74,7 +76,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
@@ -84,12 +86,17 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         // TODO: validate the timeout
 
         if (eed == null) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "Refers to nonexistent ExternalEventDef " + externalEventDefId);
+            throw new InvalidNodeException("Refers to nonexistent ExternalEventDef " + externalEventDefId, node);
         }
     }
 
     public ExternalEventNodeRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new ExternalEventNodeRunModel(externalEventDefId, processorContext);
+    }
+
+    @Override
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        ExternalEventDefModel event = manager.get(externalEventDefId);
+        return event.getReturnType();
     }
 }

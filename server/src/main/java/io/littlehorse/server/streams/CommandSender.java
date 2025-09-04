@@ -1,9 +1,11 @@
 package io.littlehorse.server.streams;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -16,7 +18,9 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -24,8 +28,8 @@ import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -72,16 +76,25 @@ public class CommandSender {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    public Future<Message> doSend(
+    public CompletableFuture<Message> doSend(
             AbstractCommand<?> command,
             Class<?> responseCls,
             PrincipalIdModel principalId,
             TenantIdModel tenantId,
             RequestExecutionContext context) {
+        return doSend(commandProducer, command, responseCls, principalId, tenantId, context);
+    }
 
+    private CompletableFuture<Message> doSend(
+            LHProducer producer,
+            AbstractCommand<?> command,
+            Class<?> responseCls,
+            PrincipalIdModel principalId,
+            TenantIdModel tenantId,
+            RequestExecutionContext context) {
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        return commandProducer
-                .send(command.getPartitionKey(), command, command.getTopic(serverConfig), commandMetadata.toArray())
+        return producer.send(
+                        command.getPartitionKey(), command, command.getTopic(serverConfig), commandMetadata.toArray())
                 .thenCompose((recordMetadata) -> waitForCommand(command, responseCls, context));
     }
 
@@ -95,23 +108,23 @@ public class CommandSender {
         }
     }
 
-    public CompletableFuture<RecordMetadata> doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
+    public void doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         CommandModel taskClaim = new CommandModel(new TaskClaimEvent(scheduledTask, client));
-        BiFunction<RecordMetadata, Throwable, RecordMetadata> completeTaskClaim = (recordMetadata, exception) -> {
+        BiFunction<Message, Throwable, TaskClaimEvent> completeTaskClaim = (taskClaimResponse, exception) -> {
             if (exception != null) {
                 client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
             } else {
                 client.sendResponse(scheduledTask);
             }
-            return recordMetadata;
+            return (TaskClaimEvent) taskClaimResponse;
         };
-        return taskClaimProducer
-                .send(
-                        taskClaim.getPartitionKey(),
+        doSend(
+                        taskClaimProducer,
                         taskClaim,
-                        taskClaim.getTopic(serverConfig),
-                        HeadersUtil.metadataHeadersFor(client.getTenantId(), client.getPrincipalId())
-                                .toArray())
+                        PollTaskResponse.class,
+                        client.getPrincipalId(),
+                        client.getTenantId(),
+                        client.getRequestContext())
                 .handleAsync(completeTaskClaim, networkThreadpool);
     }
 
@@ -160,10 +173,24 @@ public class CommandSender {
                     .setCommandId(commandId.get())
                     .setPartition(meta.partition())
                     .build();
-            LHInternalsGrpc.LHInternalsBlockingStub internalClient =
-                    internalComms.getInternalClient(meta.activeHost(), InternalCallCredentials.forContext(context));
-            return CompletableFuture.completedFuture(
-                    buildRespFromBytes(internalClient.waitForCommand(req).getResult(), responseCls));
+            LHInternalsGrpc.LHInternalsFutureStub internalClient = internalComms.getInternalFutureClient(
+                    meta.activeHost(), InternalCallCredentials.forContext(context));
+            ListenableFuture<WaitForCommandResponse> futureResponse = internalClient.waitForCommand(req);
+            CompletableFuture<Message> out = new CompletableFuture<>();
+            futureResponse.addListener(
+                    () -> {
+                        try {
+                            WaitForCommandResponse response = futureResponse.get();
+                            out.complete(buildRespFromBytes(response.getResult(), responseCls));
+                        } catch (ExecutionException e) {
+                            out.completeExceptionally(e.getCause());
+                        } catch (InterruptedException e) {
+                            log.error("Unexpected interrupted exception", e);
+                            out.completeExceptionally(new StatusRuntimeException(Status.INTERNAL));
+                        }
+                    },
+                    Runnable::run);
+            return out;
         }
     }
 }

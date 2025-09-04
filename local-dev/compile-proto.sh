@@ -1,25 +1,25 @@
 #!/bin/bash
 set -e
-
+PROTOC_VERSION=31.1
 # define variable
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 PUBLIC_PROTOS=$(ls "$WORK_DIR"/schemas/littlehorse | grep -v -E "^internal")
 INTERNAL_PROTOS=$(ls "$WORK_DIR"/schemas/internal)
-docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littlehorse lh-protoc:23.4"
+docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littlehorse lh-protoc:$PROTOC_VERSION"
 
 # compile protoc
-echo "Compiling docker image 'lh-protoc:23.4'"
-docker build -q --tag lh-protoc:23.4 -f - "${SCRIPT_DIR}" <<EOF
+echo "Compiling docker image 'lh-protoc:$PROTOC_VERSION'"
+docker build -q --tag lh-protoc:$PROTOC_VERSION -f - "${SCRIPT_DIR}" <<EOF
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV PROTOC_VERSION           23.4
 ENV PROTO_GEN_JAVA           1.57.2
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
 ENV PROTO_GEN_PYTHON         1.69.0
-ENV PROTO_GEN_JS             1.178.0
+ENV PROTO_GEN_JS             1.181.2
 
 ENV GOBIN /usr/local/bin
 
@@ -54,7 +54,7 @@ RUN chmod +x /usr/local/bin/* && \
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v\${PROTO_GEN_GO} && \
   go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v\${PROTO_GEN_GO_GRPC}
 
-RUN pip3 install grpcio-tools==\${PROTO_GEN_PYTHON}
+RUN pip3 install grpcio-tools==\${PROTO_GEN_PYTHON} --break-system-packages
 
 RUN npm install -g ts-proto@\${PROTO_GEN_JS}
 
@@ -114,7 +114,7 @@ echo "Compiling protobuf sdk-js"
 $docker_run protoc \
 	--plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto \
 	--ts_proto_out /littlehorse/sdk-js/src/proto \
-	--ts_proto_opt=env=node,oneof=unions,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false,eslint_disable,esModuleInterop=true,useDate=string,stringEnums=true,exportCommonSymbols=false \
+	--ts_proto_opt=env=node,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=true,esModuleInterop=true,useDate=string,stringEnums=true,useExactTypes=false,exportCommonSymbols=false,oneof=unions-value \
 	-I /littlehorse/schemas/littlehorse \
     service.proto
 

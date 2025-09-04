@@ -1,6 +1,5 @@
 package io.littlehorse.server.monitoring.metrics;
 
-import io.javalin.http.Handler;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.StandbyMetrics;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -78,11 +77,8 @@ public class PrometheusMetricExporter implements Closeable {
         processorMetrics.bindTo(prometheusRegistry);
     }
 
-    public Handler handleRequest() {
-        return ctx -> {
-            log.trace("Processing metrics request");
-            ctx.result(prometheusRegistry.scrape());
-        };
+    public String handleRequest() {
+        return prometheusRegistry.scrape();
     }
 
     @Override

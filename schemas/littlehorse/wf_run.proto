@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 import "object_id.proto";
+import "variable.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -132,6 +133,9 @@ message ThreadRun {
 
   // The Type of this ThreadRun.
   ThreadType type = 15;
+
+  // The output of the `ThreadRun`.
+  optional VariableValue output = 16;
 }
 
 // Points to the Failure that is currently being handled in the ThreadRun.
