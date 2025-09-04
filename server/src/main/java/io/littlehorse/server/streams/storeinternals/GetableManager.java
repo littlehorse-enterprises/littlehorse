@@ -96,13 +96,18 @@ public class GetableManager extends ReadOnlyGetableManager {
         // the
         // store, we need to store the TagsCache in the buffer. Therefore, we still
         // have to call get().
+        boolean alreadyExists =
+                uncommittedChanges.containsKey(getable.getObjectId().getStoreableKey());
 
-        @SuppressWarnings("unchecked")
-        StoredGetable<U, T> previousValue =
-                (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
-
-        @SuppressWarnings("unchecked")
-        GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
+        GetableToStore<U, T> toPut;
+        if (alreadyExists) {
+            @SuppressWarnings("unchecked")
+            StoredGetable<U, T> previousValue =
+                    (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
+            toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
+        } else {
+            toPut = new GetableToStore<>((Class<T>) getable.getClass());
+        }
 
         toPut.setObjectToStore(getable);
         uncommittedChanges.put(getable.getObjectId().getStoreableKey(), toPut);
