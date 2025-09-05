@@ -80,8 +80,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setBlockSize(BLOCK_SIZE);
         options.setTableFormatConfig(tableConfig);
 
-        // Compression
-        options.setCompressionType(CompressionType.ZSTD_COMPRESSION);
+        // Compress the bottom level only, which contains about 90% of the database,
+        // but shouldn't be involved in most of the write paths and I/O.
+        options.setBottommostCompressionType(CompressionType.ZSTD_COMPRESSION);
 
         options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
         options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
