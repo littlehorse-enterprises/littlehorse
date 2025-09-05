@@ -36,7 +36,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     //
     // Confluent: https://docs.confluent.io/platform/current/streams/developer-guide/memory-mgmt.html
     // Rocksdb: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#indexes-and-filter-blocks
-    private static final long BLOCK_SIZE = 1024 * 32;
+    private static final long BLOCK_SIZE = 1024 * 16;
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
@@ -74,10 +74,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
 
-        // Partition the Index Filters to reduce stress on block cache.
         tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
-        tableConfig.setPartitionFilters(true);
-        tableConfig.setIndexType(IndexType.kTwoLevelIndexSearch);
         tableConfig.setOptimizeFiltersForMemory(true);
         tableConfig.setBlockSize(BLOCK_SIZE);
         tableConfig.setCacheIndexAndFilterBlocks(true);
