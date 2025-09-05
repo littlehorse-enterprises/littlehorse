@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Jso
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -125,22 +126,17 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the VariableValueModel matches this type.
+     * Returns true if the value can be assigned to this type, without casting.
      */
     public boolean isCompatibleWith(VariableValueModel value) {
-        // TODO: Extend this when we add StructDef's and Structs.
-        return value.getType() == type;
+        return TypeCastingUtils.canBeType(value.getTypeDefinition().getType(), this.type);
     }
 
     /**
-     * Returns true if the other type is compatible with this type. Note that it requires
-     * exact match for now. In the future we'll support casting.
+     * Returns true if this type can be assigned from the other type, without casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
-        if (type == VariableType.INT || type == VariableType.DOUBLE) {
-            return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
-        }
-        return this.getType().equals(other.getType());
+        return TypeCastingUtils.canBeType(this.getType(), other.getType());
     }
 
     @Override
@@ -149,5 +145,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         String result = type.toString();
         if (masked) result += " MASKED";
         return result;
+    }
+
+    /**
+     * Performs casting of a VariableValueModel to this type.
+     *
+     * @param sourceValue The value to cast
+     * @return A new VariableValueModel with the target type, or the original if no casting is needed
+     * @throws IllegalArgumentException if casting is not supported for this type combination
+     */
+    public VariableValueModel applyCast(VariableValueModel sourceValue) {
+        return TypeCastingUtils.applyCast(sourceValue, this.type);
     }
 }

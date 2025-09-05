@@ -8,7 +8,9 @@ import io.littlehorse.common.exceptions.validation.InvalidVariableDefException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -81,21 +83,29 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     }
 
     public void validateValue(VariableValueModel value) throws InvalidVariableDefException {
-        if (value.getType() == null || value.getType() == typeDef.getType()) {
+        VariableType valueType = value.getTypeDefinition().getType();
+        VariableType expectedType = typeDef.getType();
+        if (valueType == null) {
             return;
         }
-        throw new InvalidVariableDefException(this, "should be " + typeDef + " but is of type " + value.getType());
+
+        if (TypeCastingUtils.canBeType(valueType, expectedType)) {
+            return;
+        }
+
+        throw new InvalidVariableDefException(this, "should be " + typeDef + " but is of type " + valueType);
     }
 
     public VarNameAndValModel assignValue(VariableValueModel value) throws LHVarSubError {
         try {
             validateValue(value);
+            VariableValueModel finalValue = typeDef.applyCast(value);
+            if (typeDef.isMasked()) {
+                return new VarNameAndValModel(name, finalValue, true);
+            }
+            return new VarNameAndValModel(name, finalValue, false);
         } catch (LHValidationException e) {
             throw new LHVarSubError(e, e.getMessage());
         }
-        if (typeDef.isMasked()) {
-            return new VarNameAndValModel(name, value, true);
-        }
-        return new VarNameAndValModel(name, value, false);
     }
 }

@@ -215,4 +215,6 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the value to set this WfRunVariable to.
      */
     void assign(Serializable rhs);
+
+    // cast methods are provided by LHExpression
 }

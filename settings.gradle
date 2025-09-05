@@ -35,6 +35,8 @@ include(
         'run-wf',
         'saga',
         'shared-variables',
+        'workflow-events',
+        'casting',
         'spawn-thread-foreach',
         'user-tasks',
         'variables',
