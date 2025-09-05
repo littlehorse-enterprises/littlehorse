@@ -8,6 +8,7 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
+import org.rocksdb.CompressionType;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
 import org.rocksdb.RateLimiter;
@@ -64,6 +65,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setOptimizeFiltersForMemory(OPTIMIZE_FILTERS_FOR_MEMORY);
         tableConfig.setBlockSize(BLOCK_SIZE);
         options.setTableFormatConfig(tableConfig);
+
+        // Compression
+        options.setCompressionType(CompressionType.ZSTD_COMPRESSION);
 
         options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
         options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
