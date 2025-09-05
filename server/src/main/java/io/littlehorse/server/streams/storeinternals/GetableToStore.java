@@ -6,6 +6,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,15 +35,16 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
 
     @SuppressWarnings("unchecked")
     public GetableToStore(StoredGetable<U, T> thingInStore, Class<T> cls) {
+        Objects.requireNonNull(thingInStore);
         this.objectType = AbstractGetable.getTypeEnum(cls);
+        this.tagsPresentBeforeUpdate = thingInStore.getIndexCache();
+        this.objectToStore = thingInStore.getStoredObject();
+        this.previouslyStoredProto =
+                (U) (thingInStore.getStoredObject().toProto().build());
+    }
 
-        if (thingInStore != null) {
-            this.tagsPresentBeforeUpdate = thingInStore.getIndexCache();
-            this.objectToStore = thingInStore.getStoredObject();
-            this.previouslyStoredProto =
-                    (U) (thingInStore.getStoredObject().toProto().build());
-        } else {
-            this.tagsPresentBeforeUpdate = new TagsCache(List.of());
-        }
+    public GetableToStore(Class<T> cls) {
+        this.objectType = AbstractGetable.getTypeEnum(cls);
+        this.tagsPresentBeforeUpdate = new TagsCache(List.of());
     }
 }

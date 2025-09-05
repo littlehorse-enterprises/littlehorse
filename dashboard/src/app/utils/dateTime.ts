@@ -57,3 +57,13 @@ export function formatDuration(durationMs: number) {
   }
   return durationDisplay
 }
+
+export type StartTimeWindow = { latestStart: string; earliestStart: string } | undefined
+
+export function computeStartTimeWindow(windowMinutes: number): StartTimeWindow {
+  if (windowMinutes === -1) return undefined
+  const now = new Date()
+  const latestStart = now.toISOString()
+  const earliestStart = new Date(now.getTime() - windowMinutes * 6e4).toISOString()
+  return { latestStart, earliestStart }
+}
