@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.NodeRunIdList;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
-import io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
@@ -34,8 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchNodeRunRequestModel
         extends PublicScanRequest<SearchNodeRunRequest, NodeRunIdList, NodeRunId, NodeRunIdModel, SearchNodeRunReply> {
 
-    private NodeType nodeType;
-    private LHStatus status;
     private Timestamp earliestStart;
     private Timestamp latestStart;
     private ExternalEventDefIdModel externalEventDefId;
@@ -63,8 +60,6 @@ public class SearchNodeRunRequestModel
         if (p.hasEarliestStart()) earliestStart = p.getEarliestStart();
         if (p.hasLatestStart()) latestStart = p.getLatestStart();
 
-        nodeType = p.getNodeType();
-        status = p.getStatus();
         if (p.hasExternalEventDef()) {
             externalEventDefId =
                     ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
@@ -72,8 +67,7 @@ public class SearchNodeRunRequestModel
     }
 
     public SearchNodeRunRequest.Builder toProto() {
-        SearchNodeRunRequest.Builder out =
-                SearchNodeRunRequest.newBuilder().setNodeType(nodeType).setStatus(status);
+        SearchNodeRunRequest.Builder out = SearchNodeRunRequest.newBuilder();
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
@@ -97,12 +91,6 @@ public class SearchNodeRunRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
-        if (externalEventDefId != null) {
-            if (nodeType != NodeType.EXTERNAL_EVENT) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "external_event_def filter only valid when node_type=EXTERNAL_EVENT");
-            }
-        }
         return TagStorageType.LOCAL;
     }
 
@@ -121,12 +109,6 @@ public class SearchNodeRunRequestModel
 
     @Override
     public List<Attribute> getSearchAttributes() {
-        List<Attribute> attrs = new ArrayList<>();
-        attrs.add(new Attribute("status", status.toString()));
-        attrs.add(new Attribute("type", nodeType.toString()));
-        if (externalEventDefId != null) {
-            attrs.add(new Attribute("extEvtDefName", externalEventDefId.toString()));
-        }
-        return attrs;
+        return List.of(new Attribute("extEvtDefName", externalEventDefId.toString()));
     }
 }
