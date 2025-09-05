@@ -21,7 +21,6 @@ private static final long serialVersionUID = 0L;
   }
   private SearchNodeRunRequest() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
-    nodeType_ = 0;
     status_ = 0;
   }
 
@@ -43,253 +42,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchNodeRunRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.SearchNodeRunRequest.class, io.littlehorse.sdk.common.proto.SearchNodeRunRequest.Builder.class);
-  }
-
-  /**
-   * <pre>
-   * This enum denotes the type of a NodeRun.
-   * </pre>
-   *
-   * Protobuf enum {@code littlehorse.SearchNodeRunRequest.NodeType}
-   */
-  public enum NodeType
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <pre>
-     * TASK node schedules a TaskRun
-     * </pre>
-     *
-     * <code>TASK = 0;</code>
-     */
-    TASK(0),
-    /**
-     * <pre>
-     * EXTERNAL_EVENT blocks the ThreadRun until a specified ExternalEvent arrives
-     * </pre>
-     *
-     * <code>EXTERNAL_EVENT = 1;</code>
-     */
-    EXTERNAL_EVENT(1),
-    /**
-     * <pre>
-     * ENTRYPOINT kicks off a ThreadRun
-     * </pre>
-     *
-     * <code>ENTRYPOINT = 2;</code>
-     */
-    ENTRYPOINT(2),
-    /**
-     * <pre>
-     * EXIT completes a ThreadRun
-     * </pre>
-     *
-     * <code>EXIT = 3;</code>
-     */
-    EXIT(3),
-    /**
-     * <pre>
-     * START_THREAD creates a Child ThreadRun
-     * </pre>
-     *
-     * <code>START_THREAD = 4;</code>
-     */
-    START_THREAD(4),
-    /**
-     * <pre>
-     * WAIT_THREADS waits for one or more child ThreadRuns to complete
-     * </pre>
-     *
-     * <code>WAIT_THREADS = 5;</code>
-     */
-    WAIT_THREADS(5),
-    /**
-     * <pre>
-     * SLEEP makes the ThreadRun sleep for a specified time
-     * </pre>
-     *
-     * <code>SLEEP = 6;</code>
-     */
-    SLEEP(6),
-    /**
-     * <pre>
-     * USER_TASK creates a UserTaskRun and blocks until the UserTaskRun is completed.
-     * </pre>
-     *
-     * <code>USER_TASK = 7;</code>
-     */
-    USER_TASK(7),
-    /**
-     * <pre>
-     * START_MULTIPLE_THREADS iterates over a list and starts a Child Thread for each item
-     * </pre>
-     *
-     * <code>START_MULTIPLE_THREADS = 8;</code>
-     */
-    START_MULTIPLE_THREADS(8),
-    UNRECOGNIZED(-1),
-    ;
-
-    /**
-     * <pre>
-     * TASK node schedules a TaskRun
-     * </pre>
-     *
-     * <code>TASK = 0;</code>
-     */
-    public static final int TASK_VALUE = 0;
-    /**
-     * <pre>
-     * EXTERNAL_EVENT blocks the ThreadRun until a specified ExternalEvent arrives
-     * </pre>
-     *
-     * <code>EXTERNAL_EVENT = 1;</code>
-     */
-    public static final int EXTERNAL_EVENT_VALUE = 1;
-    /**
-     * <pre>
-     * ENTRYPOINT kicks off a ThreadRun
-     * </pre>
-     *
-     * <code>ENTRYPOINT = 2;</code>
-     */
-    public static final int ENTRYPOINT_VALUE = 2;
-    /**
-     * <pre>
-     * EXIT completes a ThreadRun
-     * </pre>
-     *
-     * <code>EXIT = 3;</code>
-     */
-    public static final int EXIT_VALUE = 3;
-    /**
-     * <pre>
-     * START_THREAD creates a Child ThreadRun
-     * </pre>
-     *
-     * <code>START_THREAD = 4;</code>
-     */
-    public static final int START_THREAD_VALUE = 4;
-    /**
-     * <pre>
-     * WAIT_THREADS waits for one or more child ThreadRuns to complete
-     * </pre>
-     *
-     * <code>WAIT_THREADS = 5;</code>
-     */
-    public static final int WAIT_THREADS_VALUE = 5;
-    /**
-     * <pre>
-     * SLEEP makes the ThreadRun sleep for a specified time
-     * </pre>
-     *
-     * <code>SLEEP = 6;</code>
-     */
-    public static final int SLEEP_VALUE = 6;
-    /**
-     * <pre>
-     * USER_TASK creates a UserTaskRun and blocks until the UserTaskRun is completed.
-     * </pre>
-     *
-     * <code>USER_TASK = 7;</code>
-     */
-    public static final int USER_TASK_VALUE = 7;
-    /**
-     * <pre>
-     * START_MULTIPLE_THREADS iterates over a list and starts a Child Thread for each item
-     * </pre>
-     *
-     * <code>START_MULTIPLE_THREADS = 8;</code>
-     */
-    public static final int START_MULTIPLE_THREADS_VALUE = 8;
-
-
-    public final int getNumber() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
-      }
-      return value;
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static NodeType valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     */
-    public static NodeType forNumber(int value) {
-      switch (value) {
-        case 0: return TASK;
-        case 1: return EXTERNAL_EVENT;
-        case 2: return ENTRYPOINT;
-        case 3: return EXIT;
-        case 4: return START_THREAD;
-        case 5: return WAIT_THREADS;
-        case 6: return SLEEP;
-        case 7: return USER_TASK;
-        case 8: return START_MULTIPLE_THREADS;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<NodeType>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        NodeType> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<NodeType>() {
-            public NodeType findValueByNumber(int number) {
-              return NodeType.forNumber(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
-      return getDescriptor().getValues().get(ordinal());
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.SearchNodeRunRequest.getDescriptor().getEnumTypes().get(0);
-    }
-
-    private static final NodeType[] VALUES = values();
-
-    public static NodeType valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      if (desc.getIndex() == -1) {
-        return UNRECOGNIZED;
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int value;
-
-    private NodeType(int value) {
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:littlehorse.SearchNodeRunRequest.NodeType)
   }
 
   private int bitField0_;
@@ -423,32 +175,6 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
 
-  public static final int NODE_TYPE_FIELD_NUMBER = 5;
-  private int nodeType_ = 0;
-  /**
-   * <pre>
-   * Specifies the type of NodeRun to search for.
-   * </pre>
-   *
-   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-   * @return The enum numeric value on the wire for nodeType.
-   */
-  @java.lang.Override public int getNodeTypeValue() {
-    return nodeType_;
-  }
-  /**
-   * <pre>
-   * Specifies the type of NodeRun to search for.
-   * </pre>
-   *
-   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-   * @return The nodeType.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType getNodeType() {
-    io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType result = io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.forNumber(nodeType_);
-    return result == null ? io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.UNRECOGNIZED : result;
-  }
-
   public static final int STATUS_FIELD_NUMBER = 6;
   private int status_ = 0;
   /**
@@ -483,12 +209,12 @@ private static final long serialVersionUID = 0L;
    * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
    * </pre>
    *
-   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
    * @return Whether the externalEventDef field is set.
    */
   @java.lang.Override
   public boolean hasExternalEventDef() {
-    return ((bitField0_ & 0x00000010) != 0);
+    return externalEventDef_ != null;
   }
   /**
    * <pre>
@@ -496,7 +222,7 @@ private static final long serialVersionUID = 0L;
    * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
    * </pre>
    *
-   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
    * @return The externalEventDef.
    */
   @java.lang.Override
@@ -509,7 +235,7 @@ private static final long serialVersionUID = 0L;
    * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
    * </pre>
    *
-   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefOrBuilder() {
@@ -542,13 +268,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       output.writeMessage(4, getLatestStart());
     }
-    if (nodeType_ != io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.TASK.getNumber()) {
-      output.writeEnum(5, nodeType_);
-    }
     if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
       output.writeEnum(6, status_);
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
+    if (externalEventDef_ != null) {
       output.writeMessage(7, getExternalEventDef());
     }
     getUnknownFields().writeTo(output);
@@ -576,15 +299,11 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getLatestStart());
     }
-    if (nodeType_ != io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.TASK.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(5, nodeType_);
-    }
     if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(6, status_);
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
+    if (externalEventDef_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getExternalEventDef());
     }
@@ -623,7 +342,6 @@ private static final long serialVersionUID = 0L;
       if (!getLatestStart()
           .equals(other.getLatestStart())) return false;
     }
-    if (nodeType_ != other.nodeType_) return false;
     if (status_ != other.status_) return false;
     if (hasExternalEventDef() != other.hasExternalEventDef()) return false;
     if (hasExternalEventDef()) {
@@ -657,8 +375,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getLatestStart().hashCode();
     }
-    hash = (37 * hash) + NODE_TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + nodeType_;
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
     if (hasExternalEventDef()) {
@@ -820,7 +536,6 @@ private static final long serialVersionUID = 0L;
         latestStartBuilder_.dispose();
         latestStartBuilder_ = null;
       }
-      nodeType_ = 0;
       status_ = 0;
       externalEventDef_ = null;
       if (externalEventDefBuilder_ != null) {
@@ -882,16 +597,12 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.nodeType_ = nodeType_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.status_ = status_;
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.externalEventDef_ = externalEventDefBuilder_ == null
             ? externalEventDef_
             : externalEventDefBuilder_.build();
-        to_bitField0_ |= 0x00000010;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -952,9 +663,6 @@ private static final long serialVersionUID = 0L;
       if (other.hasLatestStart()) {
         mergeLatestStart(other.getLatestStart());
       }
-      if (other.nodeType_ != 0) {
-        setNodeTypeValue(other.getNodeTypeValue());
-      }
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
@@ -1011,21 +719,16 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 40: {
-              nodeType_ = input.readEnum();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 40
             case 48: {
               status_ = input.readEnum();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000010;
               break;
             } // case 48
             case 58: {
               input.readMessage(
                   getExternalEventDefFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000020;
               break;
             } // case 58
             default: {
@@ -1467,79 +1170,6 @@ private static final long serialVersionUID = 0L;
       return latestStartBuilder_;
     }
 
-    private int nodeType_ = 0;
-    /**
-     * <pre>
-     * Specifies the type of NodeRun to search for.
-     * </pre>
-     *
-     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-     * @return The enum numeric value on the wire for nodeType.
-     */
-    @java.lang.Override public int getNodeTypeValue() {
-      return nodeType_;
-    }
-    /**
-     * <pre>
-     * Specifies the type of NodeRun to search for.
-     * </pre>
-     *
-     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-     * @param value The enum numeric value on the wire for nodeType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeTypeValue(int value) {
-      nodeType_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Specifies the type of NodeRun to search for.
-     * </pre>
-     *
-     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-     * @return The nodeType.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType getNodeType() {
-      io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType result = io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.forNumber(nodeType_);
-      return result == null ? io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Specifies the type of NodeRun to search for.
-     * </pre>
-     *
-     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-     * @param value The nodeType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeType(io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000010;
-      nodeType_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Specifies the type of NodeRun to search for.
-     * </pre>
-     *
-     * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNodeType() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      nodeType_ = 0;
-      onChanged();
-      return this;
-    }
-
     private int status_ = 0;
     /**
      * <pre>
@@ -1563,7 +1193,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setStatusValue(int value) {
       status_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1593,7 +1223,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       status_ = value.getNumber();
       onChanged();
       return this;
@@ -1607,7 +1237,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStatus() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       status_ = 0;
       onChanged();
       return this;
@@ -1622,11 +1252,11 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      * @return Whether the externalEventDef field is set.
      */
     public boolean hasExternalEventDef() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <pre>
@@ -1634,7 +1264,7 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      * @return The externalEventDef.
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDef() {
@@ -1650,7 +1280,7 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      */
     public Builder setExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
       if (externalEventDefBuilder_ == null) {
@@ -1661,7 +1291,7 @@ private static final long serialVersionUID = 0L;
       } else {
         externalEventDefBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1671,7 +1301,7 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      */
     public Builder setExternalEventDef(
         io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder builderForValue) {
@@ -1680,7 +1310,7 @@ private static final long serialVersionUID = 0L;
       } else {
         externalEventDefBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1690,11 +1320,11 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      */
     public Builder mergeExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
       if (externalEventDefBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000020) != 0) &&
           externalEventDef_ != null &&
           externalEventDef_ != io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance()) {
           getExternalEventDefBuilder().mergeFrom(value);
@@ -1704,7 +1334,7 @@ private static final long serialVersionUID = 0L;
       } else {
         externalEventDefBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1714,10 +1344,10 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      */
     public Builder clearExternalEventDef() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000020);
       externalEventDef_ = null;
       if (externalEventDefBuilder_ != null) {
         externalEventDefBuilder_.dispose();
@@ -1732,10 +1362,10 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return getExternalEventDefFieldBuilder().getBuilder();
     }
@@ -1745,7 +1375,7 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefOrBuilder() {
       if (externalEventDefBuilder_ != null) {
@@ -1761,7 +1391,7 @@ private static final long serialVersionUID = 0L;
      * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
      * </pre>
      *
-     * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> 

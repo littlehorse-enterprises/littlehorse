@@ -42,21 +42,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         log.trace("Overriding rocksdb settings for store {}", storeName);
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
 
-        switch (serverConfig.getServerMetricLevel().toLowerCase()) {
-            case "debug":
-            case "trace":
-                options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
-                break;
-            case "warn":
-                options.setInfoLogLevel(InfoLogLevel.WARN_LEVEL);
-            case "error":
-                options.setInfoLogLevel(InfoLogLevel.ERROR_LEVEL);
-                break;
-            case "info":
-            default:
-                options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
-        }
-
         // Parallelism for Compactions and Flushing
         Env rocksEnv = Env.getDefault();
         int threads = Math.max(2, Runtime.getRuntime().availableProcessors());
@@ -69,6 +54,21 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // Configurations to avoid the "many small L0 files" problem
         options.setMaxWriteBufferNumber(4);
         options.setMinWriteBufferNumberToMerge(2);
+
+        switch (serverConfig.getServerMetricLevel()) {
+            case "TRACE":
+                // Trace is the lowest level available in LH Server, so we map
+                // it to the lowest level in RocksDB (DEBUG)
+                options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
+                break;
+            case "DEBUG":
+                // The second lowest level in LH is "DEBUG", so we set it to the
+                // second-lowest level in RocksDB (INFO)
+                options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
+                break;
+            default:
+                options.setInfoLogLevel(InfoLogLevel.WARN_LEVEL);
+        }
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
@@ -100,8 +100,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // Reduce read amplification
         options.setOptimizeFiltersForHits(false);
 
-        // Save disk space (in practice this helps a LOT...up to 80% with small variables and TaskRun inputs).
-        // This will also help with Write Amplification.
+        // Compression
         options.setCompressionType(CompressionType.ZSTD_COMPRESSION);
 
         // Compaction Configurations.

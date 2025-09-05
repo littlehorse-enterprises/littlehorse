@@ -89,7 +89,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
-    public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
     public static final String TRANSACTION_TIMEOUT_MS_KEY = "LHS_STREAMS_TRANSACTION_TIMEOUT_MS";
@@ -150,7 +149,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
     // Instance configs
-    private final String lhsMetricsLevel;
+    private String lhsMetricsLevel;
 
     // Singletons for RocksConfigSetter
     @Getter
@@ -183,6 +182,19 @@ public class LHServerConfig extends ConfigBase {
         lhsMetricsLevel = getServerMetricLevel();
     }
 
+    @Override
+    protected void doSetup() {
+        initKafkaAdmin();
+        initRocksdbSingletons();
+        this.lhsMetricsLevel = getServerMetricLevel();
+    }
+
+    @Override
+    protected List<String> deprecatedConfigs() {
+        return List.of("LHS_STREAMS_METRICS_LEVEL", "LHS_X_ROCKSDB_LOG_LEVEL");
+    }
+
+    @Override
     protected String[] getEnvKeyPrefixes() {
         return new String[] {"LHS_"};
     }
@@ -999,7 +1011,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
         props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
         props.put("probing.rebalance.interval.ms", 60 * 1000);
-        props.put("metrics.recording.level", getServerMetricLevel().toUpperCase());
+        props.put("metrics.recording.level", getServerMetricLevel());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getTransactionTimeoutMs());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.

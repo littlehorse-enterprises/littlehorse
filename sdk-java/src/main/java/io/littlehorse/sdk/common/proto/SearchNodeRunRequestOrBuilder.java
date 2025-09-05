@@ -101,25 +101,6 @@ public interface SearchNodeRunRequestOrBuilder extends
 
   /**
    * <pre>
-   * Specifies the type of NodeRun to search for.
-   * </pre>
-   *
-   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-   * @return The enum numeric value on the wire for nodeType.
-   */
-  int getNodeTypeValue();
-  /**
-   * <pre>
-   * Specifies the type of NodeRun to search for.
-   * </pre>
-   *
-   * <code>.littlehorse.SearchNodeRunRequest.NodeType node_type = 5;</code>
-   * @return The nodeType.
-   */
-  io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType getNodeType();
-
-  /**
-   * <pre>
    * Specifies the status of NodeRun to search for.
    * </pre>
    *
@@ -143,7 +124,7 @@ public interface SearchNodeRunRequestOrBuilder extends
    * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
    * </pre>
    *
-   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
    * @return Whether the externalEventDef field is set.
    */
   boolean hasExternalEventDef();
@@ -153,7 +134,7 @@ public interface SearchNodeRunRequestOrBuilder extends
    * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
    * </pre>
    *
-   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
    * @return The externalEventDef.
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDef();
@@ -163,7 +144,7 @@ public interface SearchNodeRunRequestOrBuilder extends
    * Only valid if `node_type` is set to `EXTERNAL_EVENT`.
    * </pre>
    *
-   * <code>optional .littlehorse.ExternalEventDefId external_event_def = 7;</code>
+   * <code>.littlehorse.ExternalEventDefId external_event_def = 7;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefOrBuilder();
 }

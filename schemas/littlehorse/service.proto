@@ -799,28 +799,6 @@ message TaskRunIdList {
 
 // Search for NodeRun's by certain criteria.
 message SearchNodeRunRequest {
-  // This enum denotes the type of a NodeRun.
-  enum NodeType {
-    // TASK node schedules a TaskRun
-    TASK = 0;
-    // EXTERNAL_EVENT blocks the ThreadRun until a specified ExternalEvent arrives
-    EXTERNAL_EVENT = 1;
-    // ENTRYPOINT kicks off a ThreadRun
-    ENTRYPOINT = 2;
-    // EXIT completes a ThreadRun
-    EXIT = 3;
-    // START_THREAD creates a Child ThreadRun
-    START_THREAD = 4;
-    // WAIT_THREADS waits for one or more child ThreadRuns to complete
-    WAIT_THREADS = 5;
-    // SLEEP makes the ThreadRun sleep for a specified time
-    SLEEP = 6;
-    // USER_TASK creates a UserTaskRun and blocks until the UserTaskRun is completed.
-    USER_TASK = 7;
-    // START_MULTIPLE_THREADS iterates over a list and starts a Child Thread for each item
-    START_MULTIPLE_THREADS = 8;
-  }
-
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
 
@@ -833,16 +811,15 @@ message SearchNodeRunRequest {
   // Only return NodeRun's created before this time.
   optional google.protobuf.Timestamp latest_start = 4;
 
-  // Specifies the type of NodeRun to search for.
-  NodeType node_type = 5;
+  // Reserved from previous capability to search by node type
+  reserved 5;
 
   // Specifies the status of NodeRun to search for.
   LHStatus status = 6;
 
   // Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
   // Only valid if `node_type` is set to `EXTERNAL_EVENT`.
-  optional ExternalEventDefId external_event_def = 7;
-
+  ExternalEventDefId external_event_def = 7;
 }
 
 // List of NodeRun Id's.
