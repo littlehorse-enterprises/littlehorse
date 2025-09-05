@@ -57,22 +57,18 @@ public class SearchNodeRunRequestModel
         if (p.hasEarliestStart()) earliestStart = p.getEarliestStart();
         if (p.hasLatestStart()) latestStart = p.getLatestStart();
 
-        if (p.hasExternalEventDef()) {
-            externalEventDefId =
-                    ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
-        }
+        externalEventDefId =
+                ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
     }
 
     public SearchNodeRunRequest.Builder toProto() {
-        SearchNodeRunRequest.Builder out = SearchNodeRunRequest.newBuilder();
+        SearchNodeRunRequest.Builder out =
+                SearchNodeRunRequest.newBuilder().setExternalEventDef(externalEventDefId.toProto());
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
         if (limit != null) {
             out.setLimit(limit);
-        }
-        if (externalEventDefId != null) {
-            out.setExternalEventDef(externalEventDefId.toProto());
         }
 
         if (earliestStart != null) out.setEarliestStart(earliestStart);
