@@ -158,6 +158,27 @@ public class LHServerConfig extends ConfigBase {
     @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
 
+    public LHServerConfig() {
+        super();
+        initKafkaAdmin();
+        initRocksdbSingletons();
+        lhsMetricsLevel = getServerMetricLevel();
+    }
+
+    public LHServerConfig(String propertiesPath) {
+        super(propertiesPath);
+        initKafkaAdmin();
+        initRocksdbSingletons();
+        lhsMetricsLevel = getServerMetricLevel();
+    }
+
+    public LHServerConfig(Properties props) {
+        super(props);
+        initKafkaAdmin();
+        initRocksdbSingletons();
+        lhsMetricsLevel = getServerMetricLevel();
+    }
+
     @Override
     protected void doSetup() {
         initKafkaAdmin();
