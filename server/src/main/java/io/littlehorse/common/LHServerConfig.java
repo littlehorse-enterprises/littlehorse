@@ -146,10 +146,6 @@ public class LHServerConfig extends ConfigBase {
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
-    public static final String X_USE_AT_LEAST_ONCE_KEY = "LHS_X_USE_AT_LEAST_ONCE";
-    public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
-    public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
-    public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
     public static final String ROCKSDB_LOG_LEVEL_KEY = "LHS_X_ROCKSDB_LOG_LEVEL";
 
@@ -895,12 +891,7 @@ public class LHServerConfig extends ConfigBase {
         result.put("application.id", getKafkaGroupId("core"));
         result.put("client.id", this.getClientId("core"));
 
-        if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
-            log.warn("Using experimental override config to use at-least-once for Core topology");
-            result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
-        } else {
-            result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
-        }
+        result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
 
         result.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
@@ -1003,23 +994,13 @@ public class LHServerConfig extends ConfigBase {
         props.put(
                 StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
 
-        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "true").equalsIgnoreCase("false")) {
-            log.warn(
-                    "Using experimental internal config LHS_X_LEAVE_GROUP_ON_SHUTDOWN to NOT leave group on shutdown!");
-            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), false);
-        } else {
-            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
-        }
-
-        if (getOrSetDefault(X_USE_STATE_UPDATER_KEY, "false").equals("true")) {
-            log.warn("Using experimental internal config to use State Updater!");
-            props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
-        }
-
-        if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
-            log.warn("Using experimental internal config to enable static membership");
-            props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceName());
-        }
+        // Due to bug in Kafka Streams, the only way to get the server to leave the group on shutdown is to use this
+        // internal flag. We actually want to leave the group when we close() so that tasks can be reassigned during
+        // a rolling restart. Our optimization in this ticket #497 relies on leaving the group during a rolling bounce.
+        //
+        // https://github.com/littlehorse-enterprises/littlehorse/issues/497
+        // https://github.com/littlehorse-enterprises/littlehorse/pull/838
+        props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
 
         props.put(
                 "application.server",
