@@ -6,6 +6,8 @@ import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
+
 public class MyWorker {
 
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
@@ -51,4 +53,14 @@ public class MyWorker {
     public int addOne(int input) {
         return input + 1;
     }
+
+    @LHTaskMethod("print-time")
+    public Timestamp printTimestamp(Timestamp input) {
+        log.info("Timestamp: " + input);
+        input.setTime(input.getTime() + 1000L * 60L * 60L * 24L * 365); // add one year
+        return input;
+    }
+
+
+
 }

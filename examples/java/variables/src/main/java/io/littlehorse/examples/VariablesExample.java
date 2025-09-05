@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class VariablesExample {
                 WfRunVariable sentimentScore = wf.declareDouble("sentiment-score").searchable();
 
                 // Example timestamp variable
-                WfRunVariable myTimestamp = wf.declareTimestamp("my-timestamp");
+                WfRunVariable myTimestamp = wf.declareTimestamp("my-timestamp").withDefault(new Timestamp(System.currentTimeMillis()- 820_497_600_000L));
 
                 WfRunVariable processedResult = wf
                     .declareJsonObj("processed-result")
@@ -67,6 +68,7 @@ public class VariablesExample {
                     processedTextOutput
                 );
                 wf.execute("send", processedResult);
+                wf.execute("print-time", myTimestamp);
                 // Example: assign timestamp from a task that returns an Instant
                 // myTimestamp.assign(wf.execute("task-that-returns-instant"));
             }
@@ -90,7 +92,8 @@ public class VariablesExample {
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "sentiment-analysis", config),
             new LHTaskWorker(executable, "process-text", config),
-            new LHTaskWorker(executable, "send", config)
+            new LHTaskWorker(executable, "send", config),
+            new LHTaskWorker(executable,  "print-time", config)
         );
         // Gracefully shutdown
         Runtime

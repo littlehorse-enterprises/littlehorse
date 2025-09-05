@@ -4,7 +4,14 @@ import static com.google.protobuf.util.Timestamps.fromMillis;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.ToNumberPolicy;
 import com.google.protobuf.ByteString;
@@ -13,6 +20,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
+import java.time.format.DateTimeParseException;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -82,6 +90,29 @@ public class LHLibUtil {
 
     public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .registerTypeAdapter(java.sql.Timestamp.class, new JsonSerializer<java.sql.Timestamp>() {
+                @Override
+                public JsonElement serialize(java.sql.Timestamp src, java.lang.reflect.Type typeOfSrc, JsonSerializationContext context) {
+                    if (src == null) return JsonNull.INSTANCE;
+                    return new JsonPrimitive(Instant.ofEpochMilli(src.getTime()).toString());
+                }
+            })
+            .registerTypeAdapter(java.sql.Timestamp.class, new JsonDeserializer<java.sql.Timestamp>() {
+                @Override
+                public java.sql.Timestamp deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    if (json == null || json.isJsonNull()) return null;
+                    try {
+                        if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isNumber()) {
+                            return new java.sql.Timestamp(json.getAsLong());
+                        }
+                        Instant i = Instant.parse(json.getAsString());
+                        return new java.sql.Timestamp(i.toEpochMilli());
+                    } catch (DateTimeParseException exn) {
+                        throw new JsonParseException(exn);
+                    }
+                }
+            })
             .create();
 
     public static JsonResult serializeToJson(Object o) {
