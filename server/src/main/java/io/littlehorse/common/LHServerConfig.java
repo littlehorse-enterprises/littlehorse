@@ -1061,8 +1061,8 @@ public class LHServerConfig extends ConfigBase {
         // need to allow users to configure a shorter session timeout than transaction timeout. This
         // may one day be fixed by KIP-1071 follow up.
         //
-        // We use a 45-second default timeout.
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "45000"));
+        // We use a 60-second default timeout.
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "60000"));
     }
 
     public int getStreamsStateCleanupDelayMs() {
