@@ -91,6 +91,10 @@ final class RebalanceThread extends Thread {
                     final List<PollThread> connections = new ArrayList<>();
                     for (int i = 0; i < config.getWorkerThreads(); i++) {
                         String threadName = String.format("lh-poll-%s", i);
+                        log.info(
+                                "Connecting PollThread to LH Server Instance on host {}:{}",
+                                lhHostInfo.getHost(),
+                                lhHostInfo.getPort());
                         PollThread connection = pollThreadFactory.create(threadName, lhHostInfo);
                         connection.start();
                         connections.add(connection);
@@ -114,6 +118,10 @@ final class RebalanceThread extends Thread {
                     pollThread.close();
                 }
                 runningConnections.remove(toRemove);
+                log.info(
+                        "Stopped connection for LH Server Instance at host {}:{}",
+                        toRemove.getHost(),
+                        toRemove.getPort());
             }
         }
 
@@ -133,6 +141,10 @@ final class RebalanceThread extends Thread {
                     int numberMissingPollThreads = config.getWorkerThreads() - runningThreads.size();
                     for (int i = 0; i < numberMissingPollThreads; i++) {
                         String threadName = String.format("lh-poll-%s", runningThreads.size() + 1);
+                        log.info(
+                                "Connecting PollThread to LH Server Instance on host {}:{}",
+                                hostInfo.getHost(),
+                                hostInfo.getPort());
                         PollThread pollThread = pollThreadFactory.create(threadName, hostInfo);
                         pollThread.start();
                         runningThreads.add(pollThread);
