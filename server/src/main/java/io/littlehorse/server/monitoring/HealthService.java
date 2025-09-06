@@ -71,6 +71,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.restorations = new ConcurrentHashMap<>();
         statusServer.handle(config.getPrometheusExporterPath(), ContentType.TEXT, () -> prom.handleRequest());
         statusServer.handle(config.getLivenessPath(), ContentType.TEXT, this::getLiveness);
+        statusServer.handle(config.getReadinessPath(), ContentType.TEXT, this::getReadiness);
         statusServer.handle(config.getStatusPath(), ContentType.JSON, this::getStatus);
         statusServer.handle(config.getDiskUsagePath(), ContentType.JSON, this::getDiskUsage);
         statusServer.handle(config.getStandbyStatusPath(), ContentType.JSON, this::getStandbyStatus);
@@ -128,13 +129,38 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         }
     }
 
-    private String getLiveness() {
-        Predicate<State> isAlive = state -> state == State.RUNNING || state == State.REBALANCING;
+    private String getReadiness() {
+        // We can only answer requests when the state is RUNNING or REBALANCING (when REBALANCING,
+        // it is possible we are restoring state, which means that some partitions might actually
+        // be alive, and those partitions can answer requests).
+        Predicate<State> isReady = state -> state == State.RUNNING || state == State.REBALANCING;
 
-        if (isAlive.test(timerState) && isAlive.test(coreState.getCurrentState())) {
+        if (isReady.test(coreState.getCurrentState())) {
             return "OK!";
         } else {
-            throw new RuntimeException("Timer or core topology is not alive");
+            throw new RuntimeException("Core topology is not ready to receive traffic");
+        }
+    }
+
+    private String getLiveness() {
+        Predicate<State> isAlive = (state) -> {
+            switch (state) {
+                case CREATED:
+                case RUNNING:
+                case REBALANCING:
+                case PENDING_SHUTDOWN:
+                    return true;
+                case PENDING_ERROR:
+                case ERROR:
+                case NOT_RUNNING:
+            }
+            return false;
+        };
+
+        if (isAlive.test(coreState.getCurrentState()) && isAlive.test(timerState)) {
+            return "OK!";
+        } else {
+            throw new RuntimeException("Core topology or Timer Topology has an error");
         }
     }
 
