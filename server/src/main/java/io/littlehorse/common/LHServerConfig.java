@@ -90,7 +90,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
-    public static final String TRANSACTION_TIMEOUT_MS_KEY = "LHS_STREAMS_TRANSACTION_TIMEOUT_MS";
     public static final String STATE_CLEANUP_DELAY_MS_KEY = "LHS_STREAMS_STATE_CLEANUP_DELAY_MS";
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
@@ -188,7 +187,7 @@ public class LHServerConfig extends ConfigBase {
 
     @Override
     protected List<String> deprecatedConfigs() {
-        return List.of("LHS_STREAMS_METRICS_LEVEL", "LHS_X_ROCKSDB_LOG_LEVEL");
+        return List.of("LHS_STREAMS_METRICS_LEVEL", "LHS_X_ROCKSDB_LOG_LEVEL", "LHS_STREAMS_TRANSACTION_TIMEOUT_MS");
     }
 
     @Override
@@ -998,14 +997,17 @@ public class LHServerConfig extends ConfigBase {
 
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("state.dir", getStateDirectory());
-        props.put("request.timeout.ms", 1000 * 60);
+
+        // We want a request to be able to fail and be handled (if non-fatal) before a transaction times out.
+        // Therefore, request timeout should be less than transaction timeout / session timeout.
+        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.75));
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
         props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
         props.put("probing.rebalance.interval.ms", 60 * 1000);
         props.put("metrics.recording.level", getServerMetricLevel());
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getTransactionTimeoutMs());
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getStreamsSessionTimeout());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
@@ -1037,14 +1039,6 @@ public class LHServerConfig extends ConfigBase {
         props.put(RocksConfigSetter.LH_SERVER_CONFIG_KEY, this);
         props.put("rocksdb.config.setter", RocksConfigSetter.class);
 
-        // Until KIP-924 is implemented, for cluster stability it is best to avoid rebalances.
-        // 30 seconds of startup is enough time for LH to shut down and be re-spawned during a
-        // rolling restart.
-        //
-        // It also gives enough time for the new server to come up, meaning that
-        // in the case of a server failure while a request is being processed, the resulting
-        // `Command` should be processed on a new server within a minute. Issue #479
-        // should verify this behavior
         props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
 
         // The delay before the state cleanup thread runs. This is used to clean up state stores
@@ -1056,21 +1050,24 @@ public class LHServerConfig extends ConfigBase {
         return props;
     }
 
-    private int getTransactionTimeoutMs() {
-        // Default 60 second transaction timeout.
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.TRANSACTION_TIMEOUT_MS_KEY, "60000"));
-    }
-
     private String getClientId(String component) {
         return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
     }
 
     public int getStreamsSessionTimeout() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
+        // Default 45-second timeout. This is shared for kafka transaction and for consumer rebalance.
+        // Unfortunately, even if the consumer group rebalances, we have to wait for the transaction
+        // timeout to expire anyways before we can take over the forfeited partitions, so there's no
+        // need to allow users to configure a shorter session timeout than transaction timeout. This
+        // may one day be fixed by KIP-1071 follow up.
+        //
+        // We use a 45-second default timeout.
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "45000"));
     }
 
     public int getStreamsStateCleanupDelayMs() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.STATE_CLEANUP_DELAY_MS_KEY, "600000"));
+        // 20 minutes before cleaning up
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.STATE_CLEANUP_DELAY_MS_KEY, "1200000"));
     }
 
     public boolean areStructDefsEnabled() {
