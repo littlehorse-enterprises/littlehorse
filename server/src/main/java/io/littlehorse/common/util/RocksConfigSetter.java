@@ -12,6 +12,7 @@ import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionOptions;
 import org.rocksdb.CompressionType;
 import org.rocksdb.Env;
+import org.rocksdb.IndexType;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
 import org.rocksdb.Priority;
@@ -35,7 +36,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     //
     // Confluent: https://docs.confluent.io/platform/current/streams/developer-guide/memory-mgmt.html
     // Rocksdb: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#indexes-and-filter-blocks
-    private static final long BLOCK_SIZE = 1024 * 16;
+    private static final long BLOCK_SIZE = 1024 * 32;
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
@@ -77,7 +78,13 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
         tableConfig.setOptimizeFiltersForMemory(true);
         tableConfig.setBlockSize(BLOCK_SIZE);
+        tableConfig.setPinL0FilterAndIndexBlocksInCache(true);
         tableConfig.setCacheIndexAndFilterBlocks(true);
+        tableConfig.setCacheIndexAndFilterBlocksWithHighPriority(true);
+        tableConfig.setPartitionFilters(true);
+        tableConfig.setIndexType(IndexType.kTwoLevelIndexSearch);
+        options.setAllowMmapReads(false);
+        options.setAllowMmapWrites(false);
 
         // Memory limits
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
@@ -123,11 +130,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         // I/O Configurations
         if (serverConfig.useDirectIOForRocksDB()) {
-            System.out.println("\n\n\n\nUSING DIRECT IO FOR ROCKSDB\n\n\n\n\n\n");
             options.setUseDirectIoForFlushAndCompaction(true);
             options.setUseDirectReads(true);
         } else {
-            System.out.println("\n\n\n\nUSING PAGE CACHE FOR ROCKSDB\n\n\n\n\n\n");
             // Periodically sync the bytes in the background. This reduces burstiness of the I/O, which
             // reduces tail latency (and can also reduce overall page cache usage when buffered I/O is
             // used).
