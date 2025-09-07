@@ -439,5 +439,32 @@ public interface NodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder getWaitForConditionOrBuilder();
 
+  /**
+   * <pre>
+   * Synchronously runs a child workflow
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   * @return Whether the runChildWf field is set.
+   */
+  boolean hasRunChildWf();
+  /**
+   * <pre>
+   * Synchronously runs a child workflow
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   * @return The runChildWf.
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNode getRunChildWf();
+  /**
+   * <pre>
+   * Synchronously runs a child workflow
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNodeOrBuilder getRunChildWfOrBuilder();
+
   io.littlehorse.sdk.common.proto.Node.NodeCase getNodeCase();
 }
