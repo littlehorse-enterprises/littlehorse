@@ -123,17 +123,20 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         // I/O Configurations
         if (serverConfig.useDirectIOForRocksDB()) {
+            System.out.println("\n\n\n\nUSING DIRECT IO FOR ROCKSDB\n\n\n\n\n\n");
             options.setUseDirectIoForFlushAndCompaction(true);
             options.setUseDirectReads(true);
+        } else {
+            System.out.println("\n\n\n\nUSING PAGE CACHE FOR ROCKSDB\n\n\n\n\n\n");
+            // Periodically sync the bytes in the background. This reduces burstiness of the I/O, which
+            // reduces tail latency (and can also reduce overall page cache usage when buffered I/O is
+            // used).
+            //
+            // References:
+            // - https://github.com/facebook/rocksdb/wiki/Setup-Options-and-Basic-Tuning#other-general-options
+            // - https://github.com/facebook/rocksdb/wiki/IO#range-sync
+            options.setBytesPerSync(1024L * 1024L);
         }
-        // Periodically sync the bytes in the background. This reduces burstiness of the I/O, which
-        // reduces tail latency (and can also reduce overall page cache usage when buffered I/O is
-        // used).
-        //
-        // References:
-        // - https://github.com/facebook/rocksdb/wiki/Setup-Options-and-Basic-Tuning#other-general-options
-        // - https://github.com/facebook/rocksdb/wiki/IO#range-sync
-        options.setBytesPerSync(1024L * 1024L);
 
         // Reduce write amplification compared to default. Also recommended by RocksDB Tuning Guide
         options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
