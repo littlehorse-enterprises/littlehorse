@@ -124,7 +124,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
             // Configure how levels grow.
             options.setTargetFileSizeBase(64 * 1024L * 1024L); // 64MB, default.
-            options.setMaxBytesForLevelBase(1024L * 512L); // 512MB in L1
+            options.setMaxBytesForLevelBase(1024L * 1024L * 512L); // 512MB in L1
             options.setMaxBytesForLevelMultiplier(20); // default 10; higher means lower Write Amp
         }
 
