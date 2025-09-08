@@ -290,6 +290,7 @@ public class LHTaskWorker implements Closeable {
      * Starts polling for and executing tasks.
      */
     public void start() {
+        log.info("Starting task worker for TaskDef {}", taskDefName);
         createManager();
         manager.start();
     }

@@ -371,42 +371,20 @@ class TaskRunIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TaskRunId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchNodeRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "node_type", "status", "external_event_def"]
-    class NodeType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = []
-        TASK: _ClassVar[SearchNodeRunRequest.NodeType]
-        EXTERNAL_EVENT: _ClassVar[SearchNodeRunRequest.NodeType]
-        ENTRYPOINT: _ClassVar[SearchNodeRunRequest.NodeType]
-        EXIT: _ClassVar[SearchNodeRunRequest.NodeType]
-        START_THREAD: _ClassVar[SearchNodeRunRequest.NodeType]
-        WAIT_THREADS: _ClassVar[SearchNodeRunRequest.NodeType]
-        SLEEP: _ClassVar[SearchNodeRunRequest.NodeType]
-        USER_TASK: _ClassVar[SearchNodeRunRequest.NodeType]
-        START_MULTIPLE_THREADS: _ClassVar[SearchNodeRunRequest.NodeType]
-    TASK: SearchNodeRunRequest.NodeType
-    EXTERNAL_EVENT: SearchNodeRunRequest.NodeType
-    ENTRYPOINT: SearchNodeRunRequest.NodeType
-    EXIT: SearchNodeRunRequest.NodeType
-    START_THREAD: SearchNodeRunRequest.NodeType
-    WAIT_THREADS: SearchNodeRunRequest.NodeType
-    SLEEP: SearchNodeRunRequest.NodeType
-    USER_TASK: SearchNodeRunRequest.NodeType
-    START_MULTIPLE_THREADS: SearchNodeRunRequest.NodeType
+    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "status", "external_event_def"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
-    NODE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     EXTERNAL_EVENT_DEF_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    node_type: SearchNodeRunRequest.NodeType
     status: _common_enums_pb2.LHStatus
     external_event_def: _object_id_pb2.ExternalEventDefId
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_type: _Optional[_Union[SearchNodeRunRequest.NodeType, str]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., external_event_def: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., external_event_def: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ...) -> None: ...
 
 class NodeRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
