@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
+import java.sql.Timestamp;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -112,6 +113,9 @@ public class VariableMapping {
                 break;
             case WF_RUN_ID:
                 return val.getWfRunId();
+            case UTC_TIMESTAMP:
+                return new Timestamp(
+                        LHLibUtil.fromProtoTs(val.getUtcTimestamp()).getTime());
             case VALUE_NOT_SET:
                 return null;
         }
