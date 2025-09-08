@@ -22,6 +22,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private Long intVal;
     private byte[] bytesVal;
     private WfRunIdModel wfRunId;
+    private Date utcTimestampVal;
 
     private ExecutionContext context;
 
@@ -107,6 +109,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case BYTES:
                 bytesVal = p.getBytes().toByteArray();
                 break;
+            case UTC_TIMESTAMP:
+                utcTimestampVal = LHUtil.fromProtoTs(p.getUtcTimestamp());
+                break;
             case WF_RUN_ID:
                 wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
@@ -155,6 +160,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return VariableType.BOOL;
             case WF_RUN_ID:
                 return VariableType.WF_RUN_ID;
+            case UTC_TIMESTAMP:
+                return VariableType.TIMESTAMP;
             case VALUE_NOT_SET:
             default:
                 return null;
@@ -220,6 +227,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case WF_RUN_ID:
                 if (wfRunId != null) {
                     out.setWfRunId(wfRunId.toProto());
+                }
+                break;
+            case UTC_TIMESTAMP:
+                if (utcTimestampVal != null) {
+                    out.setUtcTimestamp(LHUtil.fromDate(utcTimestampVal));
                 }
                 break;
             case VALUE_NOT_SET:
@@ -475,6 +487,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return this.bytesVal;
             case WF_RUN_ID:
                 return this.wfRunId;
+            case UTC_TIMESTAMP:
+                return this.utcTimestampVal;
             case VALUE_NOT_SET:
         }
         return null;
@@ -501,6 +515,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return asBytes();
         } else if (otherType == VariableType.WF_RUN_ID) {
             return asWfRunId();
+        } else if (otherType == VariableType.TIMESTAMP) {
+            return asTimestamp();
         } else {
             throw new LHVarSubError(null, "Unsupported type for coersion: " + otherType);
         }
@@ -599,6 +615,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return new VariableValueModel(b);
     }
 
+    public VariableValueModel asTimestamp() throws LHVarSubError {
+        if (getType() == VariableType.TIMESTAMP) {
+            return new VariableValueModel(utcTimestampVal);
+        }
+        throw new LHVarSubError(null, "Cant convert " + type + " to TIMESTAMP");
+    }
+
     public VariableValueModel() {
         type = ValueCase.VALUE_NOT_SET;
     }
@@ -631,6 +654,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public VariableValueModel(Map<String, Object> val) {
         jsonObjVal = val;
         type = ValueCase.JSON_OBJ;
+    }
+
+    public VariableValueModel(Date val) {
+        utcTimestampVal = val;
+        type = ValueCase.UTC_TIMESTAMP;
     }
 
     public VariableValueModel(boolean val) {
@@ -671,6 +699,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case JSON_OBJ:
                 valuePair = Pair.of("jsonObj", String.valueOf(jsonObjVal.toString()));
+                break;
+            case UTC_TIMESTAMP:
+                valuePair = Pair.of("utcTimestamp", LHUtil.toLhDbFormat(utcTimestampVal));
                 break;
             case BYTES:
             case JSON_ARR:
