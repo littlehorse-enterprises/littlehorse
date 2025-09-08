@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
@@ -32,6 +31,7 @@ import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.JsonResult;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
@@ -90,23 +90,60 @@ public class LHLibUtil {
 
     public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-            .registerTypeAdapter(java.sql.Timestamp.class, new JsonSerializer<java.sql.Timestamp>() {
+            .registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
                 @Override
-                public JsonElement serialize(
-                        java.sql.Timestamp src, java.lang.reflect.Type typeOfSrc, JsonSerializationContext context) {
-                    return new JsonPrimitive(Instant.ofEpochMilli(src.getTime()).toString());
+                public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+                    return new JsonPrimitive(src.toInstant().toString());
                 }
             })
-            .registerTypeAdapter(java.sql.Timestamp.class, new JsonDeserializer<java.sql.Timestamp>() {
+            .registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                 @Override
-                public java.sql.Timestamp deserialize(
-                        JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context)
+                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                         throws JsonParseException {
                     try {
                         Instant instant = Instant.parse(json.getAsString());
-                        return new java.sql.Timestamp(instant.toEpochMilli());
-                    } catch (DateTimeParseException exn) {
-                        throw new JsonParseException(exn);
+                        return Date.from(instant);
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid ISO-8601 date: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            .registerTypeAdapter(Instant.class, new JsonSerializer<Instant>() {
+                @Override
+                public JsonElement serialize(Instant src, Type typeOfSrc, JsonSerializationContext context) {
+                    return new JsonPrimitive(src.toString());
+                }
+            })
+            .registerTypeAdapter(Instant.class, new JsonDeserializer<Instant>() {
+                @Override
+                public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        return Instant.parse(json.getAsString());
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid ISO-8601 instant: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            .registerTypeAdapter(Timestamp.class, new JsonSerializer<Timestamp>() {
+                @Override
+                public JsonElement serialize(Timestamp src, Type typeOfSrc, JsonSerializationContext context) {
+                    Instant instant = Instant.ofEpochSecond(src.getSeconds(), src.getNanos());
+                    return new JsonPrimitive(instant.toString()); // ISO-8601
+                }
+            })
+            .registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {
+                @Override
+                public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        Instant instant = Instant.parse(json.getAsString());
+                        return Timestamp.newBuilder()
+                                .setSeconds(instant.getEpochSecond())
+                                .setNanos(instant.getNano())
+                                .build();
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid ISO-8601 protobuf timestamp: " + json.getAsString(), ex);
                     }
                 }
             })

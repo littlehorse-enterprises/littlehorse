@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.worker.internal.util;
 
+import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
@@ -10,7 +11,8 @@ import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -65,6 +67,13 @@ public class VariableMapping {
             case JSON_OBJ:
                 log.info("Info: Will use Gson to deserialize Json into {}", type.getName());
                 break;
+            case TIMESTAMP:
+                if (!(Date.class.isAssignableFrom(type)
+                        || Instant.class.isAssignableFrom(type)
+                        || Timestamp.class.isAssignableFrom(type))) {
+                    msg = "TaskDef provides a TIMESTAMP, func accepts " + type.getName();
+                }
+                break;
             case UNRECOGNIZED:
                 throw new RuntimeException("Not possible");
         }
@@ -114,8 +123,15 @@ public class VariableMapping {
             case WF_RUN_ID:
                 return val.getWfRunId();
             case UTC_TIMESTAMP:
-                return new Timestamp(
-                        LHLibUtil.fromProtoTs(val.getUtcTimestamp()).getTime());
+                if (!val.hasUtcTimestamp()) return null;
+                Timestamp protoTs = val.getUtcTimestamp();
+                if (Timestamp.class.isAssignableFrom(type)) {
+                    return protoTs;
+                }
+                if (type == Instant.class) {
+                    return Instant.ofEpochSecond(protoTs.getSeconds(), protoTs.getNanos());
+                }
+                return LHLibUtil.fromProtoTs(protoTs);
             case VALUE_NOT_SET:
                 return null;
         }

@@ -41,9 +41,6 @@ public class VariablesExample {
 
                 WfRunVariable sentimentScore = wf.declareDouble("sentiment-score").searchable();
 
-                // Example timestamp variable
-                WfRunVariable myTimestamp = wf.declareTimestamp("my-timestamp").withDefault(new Timestamp(System.currentTimeMillis()- 820_497_600_000L));
-
                 WfRunVariable processedResult = wf
                     .declareJsonObj("processed-result")
                     .searchableOn("$.sentimentScore", VariableType.DOUBLE)
@@ -68,9 +65,12 @@ public class VariablesExample {
                     processedTextOutput
                 );
                 wf.execute("send", processedResult);
-                wf.execute("print-time", myTimestamp);
-                // Example: assign timestamp from a task that returns an Instant
-                // myTimestamp.assign(wf.execute("task-that-returns-instant"));
+
+                NodeOutput currentDate = wf.execute("get-current-date");
+//                NodeOutput oneHourLater = wf.execute("add-15-minutes", currentDate);
+                wf.execute("print-date", currentDate);
+                wf.execute("print-instant", currentDate);
+                wf.execute("print-proto-timestamp", currentDate);
             }
         );
     }
@@ -93,7 +93,12 @@ public class VariablesExample {
             new LHTaskWorker(executable, "sentiment-analysis", config),
             new LHTaskWorker(executable, "process-text", config),
             new LHTaskWorker(executable, "send", config),
-            new LHTaskWorker(executable,  "print-time", config)
+            new LHTaskWorker(executable, "get-current-date", config),
+            new LHTaskWorker(executable, "add-15-minutes", config),
+            new LHTaskWorker(executable,  "print-proto-timestamp", config),
+            new LHTaskWorker(executable,  "print-date", config),
+            new LHTaskWorker(executable,  "print-instant", config)
+
         );
         // Gracefully shutdown
         Runtime
