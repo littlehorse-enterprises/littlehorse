@@ -129,7 +129,7 @@ public class LHLibUtil {
                 @Override
                 public JsonElement serialize(Timestamp src, Type typeOfSrc, JsonSerializationContext context) {
                     Instant instant = Instant.ofEpochSecond(src.getSeconds(), src.getNanos());
-                    return new JsonPrimitive(instant.toString()); // ISO-8601
+                    return new JsonPrimitive(instant.toString());
                 }
             })
             .registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {

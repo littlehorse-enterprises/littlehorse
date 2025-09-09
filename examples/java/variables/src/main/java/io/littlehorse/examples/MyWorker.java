@@ -49,19 +49,22 @@ public class MyWorker {
     public Date getDate() {
         return new Date();
     }
+
     @LHTaskMethod("add-15-minutes")
     public Date addFifteenMinutes(Date input) {
         return new Date(input.getTime() + 15 * 60 * 1000);
     }
-
+    
     @LHTaskMethod("print-proto-timestamp")
     public void printTimestamp(Timestamp input) {
         log.info("Timestamp: {}", input);
     }
+
     @LHTaskMethod("print-date")
     public void printDate(Date input) {
         log.info("Date: {}", input);
     }
+
     @LHTaskMethod("print-instant")
     public void printInstant(Instant input) {
         log.info("instant: {}", input);

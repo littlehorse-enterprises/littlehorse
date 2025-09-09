@@ -12,7 +12,6 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.time.Instant;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -68,9 +67,7 @@ public class VariableMapping {
                 log.info("Info: Will use Gson to deserialize Json into {}", type.getName());
                 break;
             case TIMESTAMP:
-                if (!(Date.class.isAssignableFrom(type)
-                        || Instant.class.isAssignableFrom(type)
-                        || Timestamp.class.isAssignableFrom(type))) {
+                if (!LHLibUtil.isTIMESTAMP(type)) {
                     msg = "TaskDef provides a TIMESTAMP, func accepts " + type.getName();
                 }
                 break;
@@ -123,15 +120,14 @@ public class VariableMapping {
             case WF_RUN_ID:
                 return val.getWfRunId();
             case UTC_TIMESTAMP:
-                if (!val.hasUtcTimestamp()) return null;
-                Timestamp protoTs = val.getUtcTimestamp();
+                Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(type)) {
-                    return protoTs;
+                    return timestamp;
                 }
                 if (type == Instant.class) {
-                    return Instant.ofEpochSecond(protoTs.getSeconds(), protoTs.getNanos());
+                    return Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
                 }
-                return LHLibUtil.fromProtoTs(protoTs);
+                return LHLibUtil.fromProtoTs(timestamp);
             case VALUE_NOT_SET:
                 return null;
         }
