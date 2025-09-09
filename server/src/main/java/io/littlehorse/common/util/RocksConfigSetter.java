@@ -9,7 +9,6 @@ import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionPriority;
 import org.rocksdb.CompactionStyle;
-import org.rocksdb.CompressionOptions;
 import org.rocksdb.CompressionType;
 import org.rocksdb.Env;
 import org.rocksdb.IndexType;
@@ -104,12 +103,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         // Compress the bottom level only, which contains about 90% of the database,
         // but shouldn't be involved in most of the write paths and I/O.
-        options.setBottommostCompressionType(CompressionType.ZSTD_COMPRESSION);
-        CompressionOptions compressionOptions = new CompressionOptions();
-        // Reduce ZSTD compression level to be faster at the cost of less disk savings.
-        compressionOptions.setLevel(1);
-        options.setCompressionOptions(compressionOptions);
-        compressionOptions.close();
+        options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
 
         // Compaction Configurations.
         if (serverConfig.getRocksDBUseLevelCompaction()) {
