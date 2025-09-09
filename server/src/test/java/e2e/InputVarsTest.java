@@ -1,7 +1,9 @@
 package e2e;
 
+import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -14,6 +16,9 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -50,6 +55,7 @@ public class InputVarsTest {
         TestJsonObject inputVar = new TestJsonObject();
         inputVar.subObject = subObj;
         inputVar.baz = 137;
+        inputVar.creationDate = new Date(1690000000000L);
 
         Consumer<VariableValue> verifyProcessBigObjectOutput = variableValue -> {
             Assertions.assertEquals("Greeting: Hello there", variableValue.getStr());
@@ -59,11 +65,43 @@ public class InputVarsTest {
             Assertions.assertEquals(11, variableValue.getInt());
         };
 
+        Consumer<VariableValue> verifyPrintDateOutput = variableValue -> {
+            Assertions.assertEquals(1690000000L, variableValue.getUtcTimestamp().getSeconds());
+        };
+
         workflowVerifier
                 .prepareRun(jsonWorkflow, Arg.of("my-json-var", inputVar))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRunResult(0, 1, verifyProcessSubObjectOutput)
                 .thenVerifyTaskRunResult(0, 2, verifyProcessBigObjectOutput)
+                .thenVerifyTaskRunResult(0, 4, verifyPrintDateOutput)
+                .start();
+    }
+
+    @Test
+    public void timestampVarInput() {
+        long epochMs = 1690000000000L;
+        Date dt = new Date(epochMs);
+
+        workflowVerifier
+                .prepareRun(workflow, Arg.of("ts-var", dt), Arg.of("my-var", 10))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRun(0, 3, taskRun -> {
+                    List<VarNameAndVal> inputVars = taskRun.getInputVariablesList();
+                    Assertions.assertEquals(1, inputVars.size());
+                    VariableValue varValue = inputVars.getFirst().getValue();
+                    Assertions.assertEquals(VariableValue.ValueCase.UTC_TIMESTAMP, varValue.getValueCase());
+                    Assertions.assertEquals(
+                            epochMs / 1000, varValue.getUtcTimestamp().getSeconds());
+                })
+                .thenVerifyTaskRun(0, 4, taskRun -> {
+                    List<VarNameAndVal> inputVars = taskRun.getInputVariablesList();
+                    Assertions.assertEquals(1, inputVars.size());
+                    VariableValue varValue = inputVars.getFirst().getValue();
+                    Assertions.assertEquals(VariableValue.ValueCase.UTC_TIMESTAMP, varValue.getValueCase());
+                    Assertions.assertEquals(
+                            epochMs / 1000, varValue.getUtcTimestamp().getSeconds());
+                })
                 .start();
     }
 
@@ -86,8 +124,13 @@ public class InputVarsTest {
     public Workflow buildWorkflow() {
         return new WorkflowImpl("input-vars-wf", thread -> {
             WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
+            WfRunVariable tsVar = thread.addVariable("ts-var", VariableType.TIMESTAMP);
+
             thread.execute("ab-double-it", myVar);
             thread.execute("ab-subtract", 10, 8);
+            thread.execute("print-date", tsVar);
+            thread.execute("print-proto-ts", tsVar);
+            thread.execute("print-instant", tsVar);
         });
     }
 
@@ -109,6 +152,9 @@ public class InputVarsTest {
             // Can also pass in a whole sub object rather than just a
             // string
             thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
+
+            // Can also extract a date field and pass it into a date task
+            thread.execute("print-date", myVar.jsonPath("$.creationDate"));
         });
     }
 
@@ -122,12 +168,31 @@ public class InputVarsTest {
     public Long subtract(long first, Integer second) {
         return first - second;
     }
+
+    @LHTaskMethod("print-date")
+    public Date printDate(Date input) {
+        System.out.println("print-date: " + input);
+        return input;
+    }
+
+    @LHTaskMethod("print-proto-ts")
+    public Timestamp printProtoTs(Timestamp input) {
+        System.out.println("print-proto-ts: " + input);
+        return input;
+    }
+
+    @LHTaskMethod("print-instant")
+    public Instant printInstant(Instant input) {
+        System.out.println("print-instant: " + input);
+        return input;
+    }
 }
 
 class TestJsonObject {
 
     public int baz;
     public TestSubJsonObject subObject;
+    public Date creationDate;
 }
 
 class TestSubJsonObject {

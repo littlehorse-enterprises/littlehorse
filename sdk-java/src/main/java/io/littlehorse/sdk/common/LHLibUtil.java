@@ -92,13 +92,13 @@ public class LHLibUtil {
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
                 @Override
-                public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-                    return new JsonPrimitive(src.toInstant().toString());
+                public JsonElement serialize(Date value, Type type, JsonSerializationContext context) {
+                    return new JsonPrimitive(value.toInstant().toString());
                 }
             })
             .registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                 @Override
-                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                public Date deserialize(JsonElement json, Type type, JsonDeserializationContext context)
                         throws JsonParseException {
                     try {
                         Instant instant = Instant.parse(json.getAsString());
@@ -110,13 +110,13 @@ public class LHLibUtil {
             })
             .registerTypeAdapter(Instant.class, new JsonSerializer<Instant>() {
                 @Override
-                public JsonElement serialize(Instant src, Type typeOfSrc, JsonSerializationContext context) {
-                    return new JsonPrimitive(src.toString());
+                public JsonElement serialize(Instant value, Type type, JsonSerializationContext context) {
+                    return new JsonPrimitive(value.toString());
                 }
             })
             .registerTypeAdapter(Instant.class, new JsonDeserializer<Instant>() {
                 @Override
-                public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                public Instant deserialize(JsonElement json, Type type, JsonDeserializationContext context)
                         throws JsonParseException {
                     try {
                         return Instant.parse(json.getAsString());
@@ -127,14 +127,14 @@ public class LHLibUtil {
             })
             .registerTypeAdapter(Timestamp.class, new JsonSerializer<Timestamp>() {
                 @Override
-                public JsonElement serialize(Timestamp src, Type typeOfSrc, JsonSerializationContext context) {
-                    Instant instant = Instant.ofEpochSecond(src.getSeconds(), src.getNanos());
+                public JsonElement serialize(Timestamp value, Type type, JsonSerializationContext context) {
+                    Instant instant = Instant.ofEpochSecond(value.getSeconds(), value.getNanos());
                     return new JsonPrimitive(instant.toString());
                 }
             })
             .registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {
                 @Override
-                public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                public Timestamp deserialize(JsonElement json, Type type, JsonDeserializationContext context)
                         throws JsonParseException {
                     try {
                         Instant instant = Instant.parse(json.getAsString());
@@ -339,9 +339,9 @@ public class LHLibUtil {
     }
 
     public static boolean isTIMESTAMP(Class<?> cls) {
-        return java.time.Instant.class.isAssignableFrom(cls)
-                || java.util.Date.class.isAssignableFrom(cls)
-                || com.google.protobuf.Timestamp.class.isAssignableFrom(cls);
+        return Instant.class.isAssignableFrom(cls)
+                || Date.class.isAssignableFrom(cls)
+                || Timestamp.class.isAssignableFrom(cls);
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {

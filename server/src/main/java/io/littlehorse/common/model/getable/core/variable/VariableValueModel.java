@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.variable;
 import com.google.gson.JsonSyntaxException;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -22,7 +23,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private Long intVal;
     private byte[] bytesVal;
     private WfRunIdModel wfRunId;
-    private Date utcTimestampVal;
+    private Timestamp utcTimestampVal;
 
     private ExecutionContext context;
 
@@ -110,7 +110,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 bytesVal = p.getBytes().toByteArray();
                 break;
             case UTC_TIMESTAMP:
-                utcTimestampVal = LHUtil.fromProtoTs(p.getUtcTimestamp());
+                utcTimestampVal = p.getUtcTimestamp();
                 break;
             case WF_RUN_ID:
                 wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
@@ -231,7 +231,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case UTC_TIMESTAMP:
                 if (utcTimestampVal != null) {
-                    out.setUtcTimestamp(LHUtil.fromDate(utcTimestampVal));
+                    out.setUtcTimestamp(utcTimestampVal);
                 }
                 break;
             case VALUE_NOT_SET:
@@ -322,7 +322,12 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel(Long.valueOf((long) ((Integer) val)));
         } else if (String.class.isAssignableFrom(val.getClass())) {
-            return new VariableValueModel((String) val);
+            String s = (String) val;
+            Optional<Timestamp> maybeDate = LHUtil.fromString(s);
+            if (maybeDate.isPresent()) {
+                return new VariableValueModel(maybeDate.get());
+            }
+            return new VariableValueModel(s);
         } else if (Boolean.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Boolean) val);
         } else if (Double.class.isAssignableFrom(val.getClass())) {
@@ -656,7 +661,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         type = ValueCase.JSON_OBJ;
     }
 
-    public VariableValueModel(Date val) {
+    public VariableValueModel(Timestamp val) {
         utcTimestampVal = val;
         type = ValueCase.UTC_TIMESTAMP;
     }

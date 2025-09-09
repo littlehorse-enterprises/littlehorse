@@ -23,14 +23,15 @@ public class MyWorker {
     @LHTaskMethod("process-text")
     @LHType(masked = true)
     public ProcessedText result(@LHType(masked = true) String text, Double sentimentScore,
-            Boolean addLength, Integer userId) {
-        log.debug("Executing task sentiment-analysis vars (%s, %s, %s, %s)".formatted(text,
-                sentimentScore, addLength, userId));
+            Boolean addLength, Integer userId, Date createdAt) {
+        log.debug("Executing task sentiment-analysis vars (%s, %s, %s, %s, %s)".formatted(text,
+                sentimentScore, addLength, userId, createdAt));
         ProcessedText processedText = new ProcessedText();
         processedText.text = text;
         processedText.addLength = addLength;
         processedText.userId = userId;
         processedText.sentimentScore = sentimentScore;
+        processedText.createdAt = createdAt;
         return processedText;
     }
 

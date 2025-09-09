@@ -52,12 +52,15 @@ public class VariablesExample {
                     inputText
                 );
                 sentimentScore.assign(sentimentAnalysisOutput);
+                NodeOutput currentDate = wf.execute("get-current-date");
+
                 NodeOutput processedTextOutput = wf.execute(
                     "process-text",
                     inputText,
                     sentimentScore,
                     addLength,
-                    userId
+                    userId,
+                    currentDate
                 );
                 wf.mutate(
                     processedResult,
@@ -66,8 +69,10 @@ public class VariablesExample {
                 );
                 wf.execute("send", processedResult);
 
-                NodeOutput currentDate = wf.execute("get-current-date");
-//                NodeOutput oneHourLater = wf.execute("add-15-minutes", currentDate);
+                wf.execute("print-date", processedTextOutput.jsonPath("$.createdAt"));
+                wf.execute("print-instant", processedTextOutput.jsonPath("$.createdAt"));
+                wf.execute("print-proto-timestamp", processedTextOutput.jsonPath("$.createdAt"));
+
                 wf.execute("print-date", currentDate);
                 wf.execute("print-instant", currentDate);
                 wf.execute("print-proto-timestamp", currentDate);
