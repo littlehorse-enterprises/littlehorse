@@ -171,22 +171,15 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        GetableIndex<? extends AbstractGetable<?>> basicIndex = new GetableIndex<>(
-                List.of(
-                        Pair.of("status", GetableIndex.ValueType.SINGLE),
-                        Pair.of("type", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL));
-
         if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
             GetableIndex<? extends AbstractGetable<?>> externalEventIndex = new GetableIndex<>(
                     List.of(
                             Pair.of("status", GetableIndex.ValueType.SINGLE),
-                            Pair.of("type", GetableIndex.ValueType.SINGLE),
                             Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL));
-            return List.of(basicIndex, externalEventIndex);
+            return List.of(externalEventIndex);
         }
-        return List.of(basicIndex);
+        return List.of();
     }
 
     @Override
@@ -194,9 +187,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         switch (key) {
             case "status" -> {
                 return List.of(new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
-            }
-            case "type" -> {
-                return List.of(new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
             }
             case "extEvtDefName" -> {
                 if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {

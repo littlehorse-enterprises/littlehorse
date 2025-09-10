@@ -2,12 +2,13 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
 import java.util.Map;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
+import org.rocksdb.CompressionOptions;
+import org.rocksdb.CompressionType;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
 import org.rocksdb.RateLimiter;
@@ -50,6 +51,21 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
 
+        switch (serverConfig.getServerMetricLevel()) {
+            case "TRACE":
+                // Trace is the lowest level available in LH Server, so we map
+                // it to the lowest level in RocksDB (DEBUG)
+                options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
+                break;
+            case "DEBUG":
+                // The second lowest level in LH is "DEBUG", so we set it to the
+                // second-lowest level in RocksDB (INFO)
+                options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
+                break;
+            default:
+                options.setInfoLogLevel(InfoLogLevel.WARN_LEVEL);
+        }
+
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
@@ -65,6 +81,15 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setBlockSize(BLOCK_SIZE);
         options.setTableFormatConfig(tableConfig);
 
+        // Compress the bottom level only, which contains about 90% of the database,
+        // but shouldn't be involved in most of the write paths and I/O.
+        options.setBottommostCompressionType(CompressionType.ZSTD_COMPRESSION);
+        CompressionOptions compressionOptions = new CompressionOptions();
+        // Reduce ZSTD compression level to be faster at the cost of less disk savings.
+        compressionOptions.setLevel(1);
+        options.setCompressionOptions(compressionOptions);
+        compressionOptions.close();
+
         options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
         options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
 
@@ -74,11 +99,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setCompactionStyle(CompactionStyle.LEVEL);
         } else {
             options.setCompactionStyle(CompactionStyle.UNIVERSAL);
-        }
-
-        Optional<InfoLogLevel> rocksDBLogLevel = serverConfig.getRocksDBLogLevel();
-        if (rocksDBLogLevel.isPresent()) {
-            options.setInfoLogLevel(rocksDBLogLevel.get());
         }
 
         options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());

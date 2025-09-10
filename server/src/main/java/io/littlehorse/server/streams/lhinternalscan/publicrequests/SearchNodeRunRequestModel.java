@@ -2,7 +2,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
-import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
@@ -11,18 +10,15 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.NodeRunIdList;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
-import io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NodeType;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchNodeRunRequestModel
         extends PublicScanRequest<SearchNodeRunRequest, NodeRunIdList, NodeRunId, NodeRunIdModel, SearchNodeRunReply> {
 
-    private NodeType nodeType;
-    private LHStatus status;
     private Timestamp earliestStart;
     private Timestamp latestStart;
     private ExternalEventDefIdModel externalEventDefId;
@@ -63,25 +57,18 @@ public class SearchNodeRunRequestModel
         if (p.hasEarliestStart()) earliestStart = p.getEarliestStart();
         if (p.hasLatestStart()) latestStart = p.getLatestStart();
 
-        nodeType = p.getNodeType();
-        status = p.getStatus();
-        if (p.hasExternalEventDef()) {
-            externalEventDefId =
-                    ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
-        }
+        externalEventDefId =
+                ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
     }
 
     public SearchNodeRunRequest.Builder toProto() {
         SearchNodeRunRequest.Builder out =
-                SearchNodeRunRequest.newBuilder().setNodeType(nodeType).setStatus(status);
+                SearchNodeRunRequest.newBuilder().setExternalEventDef(externalEventDefId.toProto());
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
         if (limit != null) {
             out.setLimit(limit);
-        }
-        if (externalEventDefId != null) {
-            out.setExternalEventDef(externalEventDefId.toProto());
         }
 
         if (earliestStart != null) out.setEarliestStart(earliestStart);
@@ -97,12 +84,6 @@ public class SearchNodeRunRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
-        if (externalEventDefId != null) {
-            if (nodeType != NodeType.EXTERNAL_EVENT) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "external_event_def filter only valid when node_type=EXTERNAL_EVENT");
-            }
-        }
         return TagStorageType.LOCAL;
     }
 
@@ -121,12 +102,6 @@ public class SearchNodeRunRequestModel
 
     @Override
     public List<Attribute> getSearchAttributes() {
-        List<Attribute> attrs = new ArrayList<>();
-        attrs.add(new Attribute("status", status.toString()));
-        attrs.add(new Attribute("type", nodeType.toString()));
-        if (externalEventDefId != null) {
-            attrs.add(new Attribute("extEvtDefName", externalEventDefId.toString()));
-        }
-        return attrs;
+        return List.of(new Attribute("extEvtDefName", externalEventDefId.toString()));
     }
 }
