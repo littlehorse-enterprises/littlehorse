@@ -88,6 +88,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 return new JsonArrReturnTypeStrategy();
             case JSON_OBJ:
                 return new JsonObjReturnTypeStrategy();
+                //            case TIMESTAMP:
+                //                return
             case UNRECOGNIZED:
         }
         throw new IllegalStateException();

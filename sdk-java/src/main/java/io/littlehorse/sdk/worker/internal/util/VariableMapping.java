@@ -12,6 +12,8 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -126,6 +128,14 @@ public class VariableMapping {
                 }
                 if (type == Instant.class) {
                     return Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                }
+                if (type == LocalDateTime.class) {
+                    Instant inst = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                    return LocalDateTime.ofInstant(inst, ZoneId.systemDefault());
+                }
+                if (java.sql.Timestamp.class.isAssignableFrom(type)) {
+                    Instant inst = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                    return new java.sql.Timestamp(inst.toEpochMilli());
                 }
                 return LHLibUtil.fromProtoTs(timestamp);
             case VALUE_NOT_SET:

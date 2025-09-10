@@ -33,6 +33,8 @@ import io.littlehorse.sdk.common.util.JsonResult;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
@@ -122,6 +124,63 @@ public class LHLibUtil {
                         return Instant.parse(json.getAsString());
                     } catch (DateTimeParseException ex) {
                         throw new JsonParseException("Invalid ISO-8601 instant: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            .registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+                @Override
+                public JsonElement serialize(LocalDateTime value, Type type, JsonSerializationContext context) {
+                    return new JsonPrimitive(value.toString());
+                }
+            })
+            .registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+                @Override
+                public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        String stringDate = json.getAsString();
+                        try {
+                            Instant instant = Instant.parse(stringDate);
+                            return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                        } catch (DateTimeParseException ex) {
+                            return LocalDateTime.parse(stringDate);
+                        }
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid LocalDateTime: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            // java.sql.Timestamp adapters
+            .registerTypeAdapter(java.sql.Timestamp.class, new JsonSerializer<java.sql.Timestamp>() {
+                @Override
+                public JsonElement serialize(java.sql.Timestamp value, Type type, JsonSerializationContext context) {
+                    if (value == null) return null;
+                    return new JsonPrimitive(value.toInstant().toString());
+                }
+            })
+            .registerTypeAdapter(java.sql.Timestamp.class, new JsonDeserializer<java.sql.Timestamp>() {
+                @Override
+                public java.sql.Timestamp deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        String s = json.getAsString();
+                        // Try ISO instant
+                        try {
+                            Instant inst = Instant.parse(s);
+                            return new java.sql.Timestamp(inst.toEpochMilli());
+                        } catch (DateTimeParseException ex) {
+                            // Try numeric epoch millis
+                            if (s.matches("^\\d+$")) {
+                                long ms = Long.parseLong(s);
+                                return new java.sql.Timestamp(ms);
+                            }
+                            // Try LocalDateTime
+                            LocalDateTime ldt = LocalDateTime.parse(s);
+                            Instant inst = ldt.atZone(ZoneId.systemDefault()).toInstant();
+                            return new java.sql.Timestamp(inst.toEpochMilli());
+                        }
+                    } catch (Exception ex) {
+                        throw new JsonParseException("Invalid java.sql.Timestamp: " + json.getAsString(), ex);
                     }
                 }
             })
@@ -244,6 +303,9 @@ public class LHLibUtil {
             out.setWfRunId((WfRunId) o);
         } else if (o instanceof Instant) {
             out.setUtcTimestamp(fromInstant((Instant) o));
+        } else if (o instanceof LocalDateTime) {
+            Instant inst = ((LocalDateTime) o).atZone(ZoneId.systemDefault()).toInstant();
+            out.setUtcTimestamp(fromInstant(inst));
         } else if (o instanceof Date) {
             out.setUtcTimestamp(fromDate((Date) o));
         } else {
@@ -341,7 +403,8 @@ public class LHLibUtil {
     public static boolean isTIMESTAMP(Class<?> cls) {
         return Instant.class.isAssignableFrom(cls)
                 || Date.class.isAssignableFrom(cls)
-                || Timestamp.class.isAssignableFrom(cls);
+                || Timestamp.class.isAssignableFrom(cls)
+                || LocalDateTime.class.isAssignableFrom(cls);
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {

@@ -322,12 +322,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel(Long.valueOf((long) ((Integer) val)));
         } else if (String.class.isAssignableFrom(val.getClass())) {
-            String s = (String) val;
-            Optional<Timestamp> maybeDate = LHUtil.fromString(s);
-            if (maybeDate.isPresent()) {
-                return new VariableValueModel(maybeDate.get());
-            }
-            return new VariableValueModel(s);
+            return new VariableValueModel((String) val);
         } else if (Boolean.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Boolean) val);
         } else if (Double.class.isAssignableFrom(val.getClass())) {

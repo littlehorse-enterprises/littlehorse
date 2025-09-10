@@ -56,7 +56,7 @@ public class LHUtil {
         return out;
     }
 
-    public static Optional<Timestamp> fromString(String stringDate) {
+    public static Optional<Timestamp> timestampFromString(String stringDate) {
         if (stringDate == null) return Optional.empty();
         try {
             Instant instant = Instant.parse(stringDate);

@@ -17,6 +17,8 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -33,6 +35,39 @@ public class InputVarsTest {
 
     @LHWorkflow("json-input-vars-wf")
     private Workflow jsonWorkflow;
+
+    @LHWorkflow("input-vars-wf")
+    public Workflow buildWorkflow() {
+        return new WorkflowImpl("input-vars-wf", thread -> {
+            WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
+            WfRunVariable tsVar = thread.addVariable("ts-var", VariableType.TIMESTAMP);
+
+            thread.execute("ab-double-it", myVar);
+            thread.execute("ab-subtract", 10, 8);
+            thread.execute("print-timestamps", tsVar, tsVar, tsVar, tsVar, tsVar);
+        });
+    }
+
+    @LHWorkflow("json-input-vars-wf")
+    public Workflow jsonInputVarsWf() {
+        return new WorkflowImpl("json-input-vars-wf", thread -> {
+            WfRunVariable myVar = thread.addVariable("my-json-var", VariableType.JSON_OBJ);
+
+            // Use JsonPath to pass in a String from a nested subobject.
+            NodeOutput taskOutput = thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
+
+            // Use jsonpath to edit a nested field in a big object
+            thread.mutate(myVar.jsonPath("$.subObject.bar"), VariableMutationType.ADD, taskOutput);
+
+            // Pass in a JSON_OBJ to a Java task that takes in a POJO.
+            // Behold the magic of the Java LH SDK!
+            thread.execute("process-big-obj", myVar);
+
+            // Can also pass in a whole sub object rather than just a
+            // string
+            thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
+        });
+    }
 
     @Test
     public void simpleIntegerVarInput() {
@@ -55,7 +90,15 @@ public class InputVarsTest {
         TestJsonObject inputVar = new TestJsonObject();
         inputVar.subObject = subObj;
         inputVar.baz = 137;
+        Instant instant = Instant.ofEpochMilli(1690000000000L);
         inputVar.creationDate = new Date(1690000000000L);
+        inputVar.creationInstant = instant;
+        inputVar.creationLocalDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        inputVar.creationSqlTimestamp = java.sql.Timestamp.from(instant);
+        inputVar.creationTimestamp = Timestamp.newBuilder()
+                .setSeconds(instant.getEpochSecond())
+                .setNanos(instant.getNano())
+                .build();
 
         Consumer<VariableValue> verifyProcessBigObjectOutput = variableValue -> {
             Assertions.assertEquals("Greeting: Hello there", variableValue.getStr());
@@ -65,16 +108,11 @@ public class InputVarsTest {
             Assertions.assertEquals(11, variableValue.getInt());
         };
 
-        Consumer<VariableValue> verifyPrintDateOutput = variableValue -> {
-            Assertions.assertEquals(1690000000L, variableValue.getUtcTimestamp().getSeconds());
-        };
-
         workflowVerifier
                 .prepareRun(jsonWorkflow, Arg.of("my-json-var", inputVar))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRunResult(0, 1, verifyProcessSubObjectOutput)
                 .thenVerifyTaskRunResult(0, 2, verifyProcessBigObjectOutput)
-                .thenVerifyTaskRunResult(0, 4, verifyPrintDateOutput)
                 .start();
     }
 
@@ -88,19 +126,13 @@ public class InputVarsTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRun(0, 3, taskRun -> {
                     List<VarNameAndVal> inputVars = taskRun.getInputVariablesList();
-                    Assertions.assertEquals(1, inputVars.size());
-                    VariableValue varValue = inputVars.getFirst().getValue();
-                    Assertions.assertEquals(VariableValue.ValueCase.UTC_TIMESTAMP, varValue.getValueCase());
-                    Assertions.assertEquals(
-                            epochMs / 1000, varValue.getUtcTimestamp().getSeconds());
-                })
-                .thenVerifyTaskRun(0, 4, taskRun -> {
-                    List<VarNameAndVal> inputVars = taskRun.getInputVariablesList();
-                    Assertions.assertEquals(1, inputVars.size());
-                    VariableValue varValue = inputVars.getFirst().getValue();
-                    Assertions.assertEquals(VariableValue.ValueCase.UTC_TIMESTAMP, varValue.getValueCase());
-                    Assertions.assertEquals(
-                            epochMs / 1000, varValue.getUtcTimestamp().getSeconds());
+                    Assertions.assertEquals(5, inputVars.size());
+                    for (VarNameAndVal v : inputVars) {
+                        VariableValue varValue = v.getValue();
+                        Assertions.assertEquals(VariableValue.ValueCase.UTC_TIMESTAMP, varValue.getValueCase());
+                        Assertions.assertEquals(
+                                epochMs / 1000, varValue.getUtcTimestamp().getSeconds());
+                    }
                 })
                 .start();
     }
@@ -112,50 +144,17 @@ public class InputVarsTest {
 
     @LHTaskMethod("process-big-obj")
     public String processBigObject(TestJsonObject input) {
+        System.out.println("Instant: " + input.creationInstant);
+        System.out.println("Date: " + input.creationDate);
+        System.out.println("LocalDateTime: " + input.creationLocalDateTime);
+        System.out.println("Java SQL Timestamp: " + input.creationSqlTimestamp);
+        System.out.println("Protobuf Timestamp: " + input.creationTimestamp);
         return "Greeting: " + input.subObject.foo;
     }
 
     @LHTaskMethod("process-sub-obj")
     public int processSubObj(TestSubJsonObject input) {
         return 2 * input.bar;
-    }
-
-    @LHWorkflow("input-vars-wf")
-    public Workflow buildWorkflow() {
-        return new WorkflowImpl("input-vars-wf", thread -> {
-            WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
-            WfRunVariable tsVar = thread.addVariable("ts-var", VariableType.TIMESTAMP);
-
-            thread.execute("ab-double-it", myVar);
-            thread.execute("ab-subtract", 10, 8);
-            thread.execute("print-date", tsVar);
-            thread.execute("print-proto-ts", tsVar);
-            thread.execute("print-instant", tsVar);
-        });
-    }
-
-    @LHWorkflow("json-input-vars-wf")
-    public Workflow jsonInputVarsWf() {
-        return new WorkflowImpl("json-input-vars-wf", thread -> {
-            WfRunVariable myVar = thread.addVariable("my-json-var", VariableType.JSON_OBJ);
-
-            // Use JsonPath to pass in a String from a nested subobject.
-            NodeOutput taskOutput = thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
-
-            // Use jsonpath to edit a nested field in a big object
-            thread.mutate(myVar.jsonPath("$.subObject.bar"), VariableMutationType.ADD, taskOutput);
-
-            // Pass in a JSON_OBJ to a Java task that takes in a POJO.
-            // Behold the magic of the Java LH SDK!
-            thread.execute("process-big-obj", myVar);
-
-            // Can also pass in a whole sub object rather than just a
-            // string
-            thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
-
-            // Can also extract a date field and pass it into a date task
-            thread.execute("print-date", myVar.jsonPath("$.creationDate"));
-        });
     }
 
     @LHTaskMethod("ab-double-it")
@@ -169,22 +168,18 @@ public class InputVarsTest {
         return first - second;
     }
 
-    @LHTaskMethod("print-date")
-    public Date printDate(Date input) {
-        System.out.println("print-date: " + input);
-        return input;
-    }
-
-    @LHTaskMethod("print-proto-ts")
-    public Timestamp printProtoTs(Timestamp input) {
-        System.out.println("print-proto-ts: " + input);
-        return input;
-    }
-
-    @LHTaskMethod("print-instant")
-    public Instant printInstant(Instant input) {
-        System.out.println("print-instant: " + input);
-        return input;
+    @LHTaskMethod("print-timestamps")
+    public void printTimestamps(
+            Instant instant,
+            Date date,
+            LocalDateTime localDateTime,
+            java.sql.Timestamp sqlTimestamp,
+            Timestamp timestamp) {
+        System.out.println("Instant: " + instant);
+        System.out.println("Date: " + date);
+        System.out.println("LocalDateTime: " + localDateTime);
+        System.out.println("Java SQL Timestamp: " + sqlTimestamp);
+        System.out.println("Protobuf Timestamp: " + timestamp);
     }
 }
 
@@ -192,7 +187,11 @@ class TestJsonObject {
 
     public int baz;
     public TestSubJsonObject subObject;
+    public Instant creationInstant;
     public Date creationDate;
+    public LocalDateTime creationLocalDateTime;
+    public java.sql.Timestamp creationSqlTimestamp;
+    public Timestamp creationTimestamp;
 }
 
 class TestSubJsonObject {

@@ -1,9 +1,14 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
+
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +28,26 @@ public class MyWorker {
     @LHTaskMethod("process-text")
     @LHType(masked = true)
     public ProcessedText result(@LHType(masked = true) String text, Double sentimentScore,
-            Boolean addLength, Integer userId, Date createdAt) {
+                                Boolean addLength, Integer userId, Instant instant) {
         log.debug("Executing task sentiment-analysis vars (%s, %s, %s, %s, %s)".formatted(text,
-                sentimentScore, addLength, userId, createdAt));
+                sentimentScore, addLength, userId, instant));
         ProcessedText processedText = new ProcessedText();
         processedText.text = text;
         processedText.addLength = addLength;
         processedText.userId = userId;
         processedText.sentimentScore = sentimentScore;
-        processedText.createdAt = createdAt;
+        processedText.creationDate = Date.from(instant);
+        processedText.creationInstant = instant;
+        processedText.creationTimestamp = LHLibUtil.fromInstant(instant);
+        processedText.creationSqlTimestamp = new java.sql.Timestamp(instant.toEpochMilli());
+        processedText.creationLocalDateTime =
+                LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        return processedText;
+    }
+
+    @LHTaskMethod("print-processed-text")
+    public ProcessedText printProcessedText(ProcessedText processedText) {
+        log.info("ProcessedText: {}", processedText);
         return processedText;
     }
 
@@ -51,23 +67,18 @@ public class MyWorker {
         return new Date();
     }
 
-    @LHTaskMethod("add-15-minutes")
-    public Date addFifteenMinutes(Date input) {
-        return new Date(input.getTime() + 15 * 60 * 1000);
-    }
-    
-    @LHTaskMethod("print-proto-timestamp")
-    public void printTimestamp(Timestamp input) {
-        log.info("Timestamp: {}", input);
-    }
-
-    @LHTaskMethod("print-date")
-    public void printDate(Date input) {
-        log.info("Date: {}", input);
-    }
-
-    @LHTaskMethod("print-instant")
-    public void printInstant(Instant input) {
-        log.info("instant: {}", input);
+    @LHTaskMethod("print-timestamps")
+    public void printTimestamps(
+            Instant instant,
+            Date date,
+            LocalDateTime localDateTime,
+            java.sql.Timestamp sqlTimestamp,
+            Timestamp timestamp
+            ) {
+        log.info("Instant: {}", instant);
+        log.info("Date: {}", date);
+        log.info("LocalDateTime: {}", localDateTime);
+        log.info("Java SQL Timestamp: {}", sqlTimestamp);
+        log.info("Protobuf Timestamp: {}", timestamp);
     }
 }

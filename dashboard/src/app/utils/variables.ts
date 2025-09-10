@@ -160,6 +160,8 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
       return 'wfRunId'
     case VariableType.BYTES:
       return 'bytes'
+    case VariableType.TIMESTAMP:
+      return 'utcTimestamp'
     default:
       throw new Error(`Unknown variable type: ${type}`)
   }
