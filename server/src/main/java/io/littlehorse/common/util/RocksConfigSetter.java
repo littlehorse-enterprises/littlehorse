@@ -7,8 +7,6 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
-import org.rocksdb.CompactionPriority;
-import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionType;
 import org.rocksdb.Env;
 import org.rocksdb.IndexType;
@@ -45,11 +43,11 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         // Parallelism for Compactions and Flushing
         Env rocksEnv = Env.getDefault();
-        int threads = Math.max(2, Runtime.getRuntime().availableProcessors());
+        int threads = serverConfig.getRocksDBCompactionThreads();
         rocksEnv.setBackgroundThreads(threads, Priority.LOW);
         rocksEnv.setBackgroundThreads(threads, Priority.HIGH);
         options.setEnv(rocksEnv);
-        options.setMaxBackgroundJobs(6); // Rocksdb tuning guide recommendation
+        options.setMaxBackgroundJobs(threads);
         options.setMaxSubcompactions(3);
 
         // Configurations to avoid the "many small L0 files" problem
@@ -101,26 +99,27 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setWriteBufferSize(serverConfig.getCoreMemtableSize());
         options.setOptimizeFiltersForHits(false);
 
-        // Compress the bottom level only, which contains about 90% of the database,
-        // but shouldn't be involved in most of the write paths and I/O.
-        options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+        // // Compaction Configurations.
+        // if (serverConfig.getRocksDBUseLevelCompaction()) {
+        //     // Level compaction has higher write amplification and lower read amplification.
+        //     // Therefore, we use other configs to attempt to reduce WA.
+        //     options.setCompactionStyle(CompactionStyle.LEVEL);
 
-        // Compaction Configurations.
-        if (serverConfig.getRocksDBUseLevelCompaction()) {
-            // Level compaction has higher write amplification and lower read amplification.
-            // Therefore, we use other configs to attempt to reduce WA.
-            options.setCompactionStyle(CompactionStyle.LEVEL);
+        // options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+        //     // Configure gradual slowdowns of writes
+        //     options.setLevel0FileNumCompactionTrigger(10); // Default 4. Larger compactions -> less WA.
+        //     options.setLevel0SlowdownWritesTrigger(15); // Default 20. We want to avoid saturation.
+        //     options.setLevel0StopWritesTrigger(36); // Default 36.
 
-            // Configure gradual slowdowns of writes
-            options.setLevel0FileNumCompactionTrigger(10); // Default 4. Larger compactions -> less WA.
-            options.setLevel0SlowdownWritesTrigger(15); // Default 20. We want to avoid saturation.
-            options.setLevel0StopWritesTrigger(36); // Default 36.
+        //     // Configure how levels grow.
+        //     options.setTargetFileSizeBase(64 * 1024L * 1024L); // 64MB, default.
+        //     options.setMaxBytesForLevelBase(1024L * 1024L * 512L); // 512MB in L1
+        //     options.setMaxBytesForLevelMultiplier(20); // default 10; higher means lower Write Amp
 
-            // Configure how levels grow.
-            options.setTargetFileSizeBase(64 * 1024L * 1024L); // 64MB, default.
-            options.setMaxBytesForLevelBase(1024L * 1024L * 512L); // 512MB in L1
-            options.setMaxBytesForLevelMultiplier(20); // default 10; higher means lower Write Amp
-        }
+        //     // Reduce write amplification compared to default. Also recommended by RocksDB Tuning Guide
+        //     options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
+        // }
+        options.setCompressionType(CompressionType.LZ4_COMPRESSION);
 
         // I/O Configurations
         if (serverConfig.useDirectIOForRocksDB()) {
@@ -136,9 +135,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             // - https://github.com/facebook/rocksdb/wiki/IO#range-sync
             options.setBytesPerSync(1024L * 1024L);
         }
-
-        // Reduce write amplification compared to default. Also recommended by RocksDB Tuning Guide
-        options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
 
         if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
             options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
