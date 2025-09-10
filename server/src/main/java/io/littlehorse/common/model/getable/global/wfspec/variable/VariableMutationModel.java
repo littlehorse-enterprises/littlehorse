@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -200,6 +201,36 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                     rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             if (rhsType.isEmpty()) {
                 return;
+            }
+
+            if (operation == VariableMutationType.ASSIGN) {
+                if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.getTargetType() != null) {
+                    // Step 1: Validate the explicit cast (original type -> cast target)
+                    Optional<TypeDefinitionModel> sourceTypeOpt =
+                            rhsRhsAssignment.getSourceType(manager, threadSpec.getWfSpec(), threadSpec.getName());
+                    VariableType originalType =
+                            sourceTypeOpt.map(TypeDefinitionModel::getType).orElse(null);
+                    VariableType castTargetType = rhsRhsAssignment.getTargetType() != null
+                            ? rhsRhsAssignment.getTargetType().getType()
+                            : null;
+                    if (!TypeCastingUtils.canCastTo(originalType, castTargetType)) {
+                        throw new InvalidMutationException("Cannot cast from " + originalType + " to " + castTargetType
+                                + ". This conversion is not supported.");
+                    }
+                    TypeCastingUtils.validateTypeCompatibility(originalType, castTargetType);
+
+                    // Step 2: Validate assignment (cast target type -> lhs type)
+                    TypeCastingUtils.validateTypeCompatibility(castTargetType, lhsType.getType());
+                } else {
+                    // No explicit cast, only allow assignment if possible without cast
+                    VariableType rhsActualType = rhsType.get().getType();
+                    VariableType lhsActualType = lhsType.getType();
+                    if (!TypeCastingUtils.canBeType(rhsActualType, lhsActualType)) {
+                        throw new InvalidMutationException("Cannot assign " + rhsActualType + " to " + lhsActualType
+                                + " without explicit casting.");
+                    }
+                    TypeCastingUtils.validateTypeCompatibility(rhsActualType, lhsActualType);
+                }
             }
 
             Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy()
