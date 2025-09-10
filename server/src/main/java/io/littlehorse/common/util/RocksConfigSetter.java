@@ -120,6 +120,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setTargetFileSizeBase(64 * 1024L * 1024L); // 64MB, default.
             options.setMaxBytesForLevelBase(1024L * 1024L * 512L); // 512MB in L1
             options.setMaxBytesForLevelMultiplier(20); // default 10; higher means lower Write Amp
+
+            options.setCompactionPriority(CompactionPriority.OldestSmallestSeqFirst);
         }
 
         // I/O Configurations
@@ -136,9 +138,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             // - https://github.com/facebook/rocksdb/wiki/IO#range-sync
             options.setBytesPerSync(1024L * 1024L);
         }
-
-        // Reduce write amplification compared to default. Also recommended by RocksDB Tuning Guide
-        options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
 
         if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
             options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
