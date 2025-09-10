@@ -67,7 +67,7 @@ public class MetadataProcessorContext implements ExecutionContext {
 
     @Override
     public WfService service() {
-        return new WfService(this.metadataManager, metadataCache, this);
+        return new WfService(this.metadataManager);
     }
 
     @Override
