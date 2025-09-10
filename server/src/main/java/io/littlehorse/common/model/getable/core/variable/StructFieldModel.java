@@ -5,8 +5,10 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
 public class StructFieldModel extends LHSerializable<StructField> {
+    @Getter
     private VariableValueModel value;
 
     @Override

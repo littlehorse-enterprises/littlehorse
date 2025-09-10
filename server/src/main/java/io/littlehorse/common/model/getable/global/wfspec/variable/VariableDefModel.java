@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -78,20 +79,23 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return typeDef.isMasked();
     }
 
-    public void validateValue(VariableValueModel value) throws InvalidVariableDefException {
-        if (value.getTypeDefinition().getPrimitiveType() == null
-                || value.getTypeDefinition().getPrimitiveType() == typeDef.getPrimitiveType()) {
+    public void validateValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
+            throws InvalidVariableDefException {
+        System.out.println("Validating " + value + " against " + typeDef);
+        if (value.isNull()) return;
+
+        if (typeDef.isCompatibleWith(value, metadataManager)) {
             return;
         }
+
         throw new InvalidVariableDefException(
-                this,
-                "should be " + typeDef + " but is of type "
-                        + value.getTypeDefinition().getPrimitiveType());
+                this, "should be " + typeDef + " but is of type " + value.getTypeDefinition());
     }
 
-    public VarNameAndValModel assignValue(VariableValueModel value) throws LHVarSubError {
+    public VarNameAndValModel assignValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
+            throws LHVarSubError {
         try {
-            validateValue(value);
+            validateValue(value, metadataManager);
         } catch (LHValidationException e) {
             throw new LHVarSubError(e, e.getMessage());
         }

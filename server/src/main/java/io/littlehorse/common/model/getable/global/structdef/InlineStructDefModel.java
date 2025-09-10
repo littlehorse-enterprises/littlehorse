@@ -1,10 +1,15 @@
 package io.littlehorse.common.model.getable.global.structdef;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +49,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         return InlineStructDef.class;
     }
 
-    public void validate() {
+    public void validate(ReadOnlyMetadataManager metadataManager) {
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             // TODO: Propose and agree upon Field Name validation technique!
             // if (!LHUtil.isValidLHName(field.getKey())) {
@@ -53,8 +58,28 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
             //             MessageFormat.format("StructField name [{0}] must be a valid hostname", field.getKey()));
             // }
 
-            field.getValue().validate();
+            field.getValue().validate(metadataManager);
         }
+    }
+
+    public boolean validateAgainst(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager) {
+        for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
+            // If InlineStruct is missing required field...
+            String fieldName = entry.getKey();
+            StructFieldDefModel fieldDef = entry.getValue();
+
+            if (fieldDef.isRequired() && !inlineStruct.getFields().containsKey(fieldName)) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Struct does not match StructDef, missing required field %s".formatted(fieldName));
+            } else if (inlineStruct.getFields().containsKey(fieldName)) {
+                StructFieldModel fieldValue = inlineStruct.getFields().get(fieldName);
+
+                fieldDef.validateAgainst(fieldValue, metadataManager);
+            }
+        }
+
+        return false;
     }
 
     public Map<String, StructFieldDefModel> getRequiredFields() {

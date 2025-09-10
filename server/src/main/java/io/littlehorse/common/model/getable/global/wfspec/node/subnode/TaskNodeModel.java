@@ -252,7 +252,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             } else {
                 throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
-            out.add(requiredVarDef.assignValue(val));
+            out.add(requiredVarDef.assignValue(val, processorContext.metadataManager()));
         }
 
         return out;

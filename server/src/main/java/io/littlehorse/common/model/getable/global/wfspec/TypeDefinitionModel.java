@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Objects;
@@ -193,9 +194,29 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     /**
      * Returns true if the VariableValueModel matches this type.
      */
-    public boolean isCompatibleWith(VariableValueModel value) {
-        // TODO: Extend this when we add StructDef's and Structs.
-        return this.isCompatibleWith(value.getTypeDefinition());
+    public boolean isCompatibleWith(VariableValueModel value, ReadOnlyMetadataManager readOnlyMetadataManager) {
+        if (value.getValueType() == ValueCase.STRUCT) {
+            value.getStruct().validateAgainstStructDefId(readOnlyMetadataManager);
+        }
+
+        TypeDefinitionModel other = value.getTypeDefinition();
+
+        if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
+            return false;
+        }
+
+        switch (this.getDefinedTypeCase()) {
+            case PRIMITIVE_TYPE:
+                return this.getPrimitiveType().equals(other.getPrimitiveType());
+            case STRUCT_DEF_ID:
+                return this.getStructDefId().equals(other.getStructDefId());
+            case DEFINEDTYPE_NOT_SET:
+            case INLINE_ARRAY_DEF:
+            default:
+                break;
+        }
+
+        return false;
     }
 
     /**
@@ -209,7 +230,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                if (primitiveType == VariableType.INT || primitiveType == VariableType.DOUBLE) {
+                if (this.primitiveType == VariableType.INT || this.primitiveType == VariableType.DOUBLE) {
                     return other.getPrimitiveType() == VariableType.INT
                             || other.getPrimitiveType() == VariableType.DOUBLE;
                 }

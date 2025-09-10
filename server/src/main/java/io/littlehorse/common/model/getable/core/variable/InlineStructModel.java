@@ -9,9 +9,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import lombok.Getter;
 
 public class InlineStructModel extends LHSerializable<InlineStruct> {
 
+    @Getter
     private Map<String, StructFieldModel> fields;
 
     @Override

@@ -4,12 +4,15 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
@@ -53,6 +56,19 @@ public class StructDefModel extends MetadataGetable<StructDef> {
         }
 
         return out;
+    }
+
+    public boolean validateAgainst(StructModel struct, ReadOnlyMetadataManager metadataManager) {
+        if (!struct.getStructDefId().getName().equals(this.id.getName())) {
+            return false;
+        }
+
+        InlineStructDefModel inlineStructDef = this.structDef;
+        InlineStructModel inlineStruct = struct.getInlineStruct();
+
+        inlineStructDef.validateAgainst(inlineStruct, metadataManager);
+
+        return true;
     }
 
     @Override
