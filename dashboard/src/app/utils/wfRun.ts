@@ -1,4 +1,4 @@
-import { WfRunId } from 'littlehorse-client/proto'
+import { lHStatusFromJSON, WfRunId } from 'littlehorse-client/proto'
 
 /**
  * Converts a WfRunId to a path string by concatenating its IDs.
@@ -46,4 +46,16 @@ export const wfRunIdFromFlattenedId = (flattenedId: string): WfRunId => {
     }),
     undefined
   )!
+}
+
+/**
+ * Converts a status string to an LHStatus enum value.
+ * Returns undefined if the status is null or empty.
+ *
+ * @param status - The status string to convert.
+ * @returns The LHStatus enum value or undefined.
+ */
+export const getStatus = (status: string | null) => {
+  if (!status) return undefined
+  return lHStatusFromJSON(status)
 }

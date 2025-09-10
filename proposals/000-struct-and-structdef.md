@@ -19,6 +19,16 @@
     - [The `WfSpec` DSL](#the-wfspec-dsl)
       - [Using and Creating `StructDef`s](#using-and-creating-structdefs)
       - [Accessing Sub-Structures](#accessing-sub-structures)
+  - [`StructDef` Naming Conventions](#structdef-naming-conventions)
+    - [Convention](#convention)
+      - [RegEx](#regex)
+      - [Why?](#why)
+    - [Setting `StructDef` Names via SDKs](#setting-structdef-names-via-sdks)
+  - [`StructDef` Field Naming Conventions](#structdef-field-naming-conventions)
+    - [Background](#background)
+    - [Example](#example)
+    - [Convention](#convention-1)
+    - [Setting `StructDef` Field Names via SDK](#setting-structdef-field-names-via-sdk)
   - [Further Discussion](#further-discussion)
     - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
     - [External Events?](#external-events)
@@ -404,7 +414,6 @@ In the past, this only worked if the variable on the ScheduledTask was of the ty
 
 This means that the SDK will dynamically convert the `VariableValue` into a `Car` whether it is a `STRUCT` or a `JSON_OBJ`.
 
-
 ## Client-Side Enhancements
 
 We want to make it just as _fast_ to work with `Struct`s as it is to work with `JSON_OBJ` variables. This means that we need to support automatic `StructDef` / `InlineStructDef` creation within our SDK's to make it so that users do not need to manually build the `StructDef` protobuf.
@@ -571,6 +580,200 @@ public void wfLogic(WorkflowThread wf) {
 Note that the `.get()` should be recursive: it should allow fetching sub-fields.
 
 Additionally, the `Workflow#registerWfSpec()` method should create the `person` `StructDef` using reflection from the `Person` java class.
+
+## `StructDef` Naming Conventions
+
+### Convention
+
+The name of a given `StructDef` will adhere to the LittleHorse Server Hostname standard, which says that:
+
+- All letters are lower case
+- The first character must be a letter or a number
+- The last character must be a letter or a number
+- In between characters can match any lower case letter, number, or hyphen
+
+#### RegEx
+
+This standard is matched by the following Regular Expression:
+
+```regex
+[a-z0-9]([-a-z0-9]*[a-z0-9])?
+```
+
+The regular expression can be broken down into parts:
+
+- `[a-z0-9]`
+  - The first character must be within ranges `a-z` or `0-9`
+- `([-a-z0-9]*[a-z0-9])?`
+  - `(...)?` matches the expression in the parentheses zero to one times
+  - `([-a-z0-9]...)`
+    - Matches a character within ranges `a-z`, `0-9` or `-`
+  - `(...*...)`
+    - Matches the previous expression zero to unlimited times
+  - `(...[a-z0-9])`
+    - Matches a character within ranges `a-z`, `0-9`
+
+#### Why?
+
+This standard was set because `Getable` `ID`s, like a `StructDef` name, are stored within keys in the RocksDB state store embedded in the Server. These keys contain other special characters for delimitting data, such as `/`, `_`, and `__`.
+
+Since `StructDef`s are a `Getable` object on the LittleHorse Server, we will adhere to this existing naming standard for `StructDef` names.
+
+### Setting `StructDef` Names via SDKs
+
+The LittleHorse SDKs will allow users to set the name of a `StructDef` similarly to how users set the names of `TaskDef`s, using annotations and reflection where possible, and otherwise by passing the names as strings into a `register` method.
+
+Here are some examples of how this will work:
+
+**Java**
+
+In Java, we will use a class annotation with a `String name` parameter.
+
+```java
+@LHStructDef(name = "car")
+public class Car {
+  ...
+}
+```
+
+**Python**
+
+In Python, we will use a class decorator with a `str name` parameter:
+
+```python
+@lh_struct_def(name="car")
+class Car:
+    ...
+```
+
+**Go**
+
+In Go, we will pass in the name to whichever method registers the `StructDef`:
+
+```go
+
+const StructDefName string = "car"
+
+type Car struct {
+  ...
+}
+
+func main() {
+  littlehorse.RegisterStructDef(config, Car{}, StructDefName)
+}
+```
+
+> [!NOTE]  
+> Go does include support for Field Tags, which when used effectively can emulate Field Annotations or Decorators available in other languages. Unfortunately, however, these Field Tags cannot be added to an entire struct. There are work arounds, like asking users to define a field `StructDefName string` inside of a struct, and then adding a tag to the type struct to give the entire struct a name. But in an effort to have no "special" or "reserved" field names, I don't think this is a good solution.
+
+**.NET/C#**
+
+In .NET/C#, we will use a class attribute with a `string Name` parameter:
+
+```c#
+[LHStructDef("car")]
+public class Car
+{
+  ...
+}
+```
+
+## `StructDef` Field Naming Conventions
+
+### Background
+
+Since `StructDef` Field Names will be inferred using reflection in languages that support it, `StructDef` Fields need to adhere to a common standard that all SDKs can support or convert towards without breaking language conventions.
+
+### Example
+
+For example, the following `StructDef` in Java and the following `StructDef` in Python should compile to the same `StructDef` protobuf message, converting the field names to common standard:
+
+**Java**
+```java
+@LHStructDef(name="car")
+public class Car {
+  public String name;
+  public int year = 1970; // sets default value
+  public boolean isSold;
+  public String vinNumberISO3779; // Ok, this one is extreme, but you gotta throw a curveball in there
+}
+```
+
+**Python**
+```python
+@lh_struct_def(name="car")
+class Car:
+    name: str = None 
+    year: int = 1970 // sets default value
+    is_sold: bool = None
+    vin_number_iso3779: str = None
+```
+
+**JSON Representation of Protobuf**
+```json
+{
+  "id": {
+    "name": "car",
+  },
+  "struct_def": {
+    "name": {
+      "field_type": {
+        "type": "STR"
+      }
+    },
+    "year": {
+      "field_type": {
+        "type": "INT"
+      },
+      "default_value": {
+        "int": 1970
+      }
+    },
+    "is_sold": {
+      "field_type": {
+        "type": "BOOL"
+      }
+    },
+    "vin_number_iso3779": {
+      "field_type": {
+        "type": "STR"
+      }
+    }
+  }
+}
+```
+
+As shown above, if we use `snake_case` as the default convention at the protobuf message level, the Java SDK should be able to convert to `snake_case` for full compatibility with an identical `StructDef` class written in Python. Vice-versa, if we use `camelCase` as the default convention at the protobuf message level, the Python SDK should be able to convert to `camelCase` for full compatibility with an identical `StructDef` class written in Java.
+
+Since we will be handling some of the conversion ✨magic✨ behind the scenes in order to support standard language naming conventions, the conversion should be straight forward and easy to understand.
+
+### Convention
+
+`StructDef` Field names will follow the lower `camelCase` convention, meaning:
+
+- The field name must start with a lowercase letter
+  - Why no numbers? Java, Python, Go, class attributes cannot start with numbers
+- Subsequent characters must match the ranges `A-Z`, `A-Z`, and `0-9`
+  - Why no underscores? We want Java, .NET, and Go users to design compatible fields without breaking their individual language naming conventions. Since underscores are typically only used in constants in Java, and private member variables in `C#`, this character breaks support for these languages. Sorry Python, you can keep your `snake_case`, we will just convert them to `camelCase` during the `StructDef` compilation process.
+- For our case, field names will be `case insensitive`.
+  - Why? This is because we'll be doing some magic on the Python side to convert lower `snake_case` to lower `camelCase`, and we don't want to users to worry about capitalization.
+
+### Setting `StructDef` Field Names via SDK
+
+We will allow users to manually override the field names of `StructDef` Fields if needed, so as to not rely on reflection for inferring the field names.
+
+An example of how this may look in Java:
+
+```java
+@LHStructDef(name="car")
+public class Car {
+  @LHStructField(name="customName")
+  public String name;
+  public int year = 1970; // sets default value
+  public boolean isSold;
+  public String vinNumberISO3779; // Ok, this one is extreme, but you gotta throw a curveball in there
+}
+```
 
 ## Further Discussion
 

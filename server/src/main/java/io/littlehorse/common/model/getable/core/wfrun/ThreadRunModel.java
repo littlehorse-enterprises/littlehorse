@@ -80,6 +80,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public ExternalEventIdModel interruptTriggerId;
     public FailureBeingHandledModel failureBeingHandled;
     public List<Integer> handledFailedChildren = new ArrayList<>();
+    private VariableValueModel output;
 
     public ThreadType type;
 
@@ -132,6 +133,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
             handledFailedChildren.add(handledFailedChildId);
         }
+        if (proto.hasOutput()) {
+            this.output = LHSerializable.fromProto(proto.getOutput(), VariableValueModel.class, context);
+        }
         executionContext = context;
         processorContext = context.castOnSupport(CoreProcessorContext.class);
         type = proto.getType();
@@ -170,6 +174,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
         for (Integer handledFailedChildId : handledFailedChildren) {
             out.addHandledFailedChildren(handledFailedChildId);
+        }
+        if (output != null) {
+            out.setOutput(output.toProto());
         }
         return out;
     }
@@ -362,7 +369,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         pi.externalEventId = trigger.getObjectId();
         pi.interruptedThreadId = number;
         pi.handlerSpecName = idef.handlerSpecName;
-
         wfRun.pendingInterrupts.add(pi);
     }
 
@@ -457,7 +463,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         getCurrentNodeRun().maybeHalt(processorContext);
-        maybeFinishHaltingProcess();
+        boolean halted = maybeFinishHaltingProcess();
+        if (number == 0 && halted && !reason.isTransitioningHaltState()) {
+            wfRun.transitionTo(LHStatus.HALTED);
+        }
     }
 
     public void setStatus(LHStatus status) {

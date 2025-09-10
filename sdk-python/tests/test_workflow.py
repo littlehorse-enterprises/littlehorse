@@ -1478,6 +1478,95 @@ class TestThreadBuilder(unittest.TestCase):
             compiled_last_nope_node.outgoing_edges[0].sink_node_name,
         )
 
+    def test_complete_without_return_value(self):
+        def my_workflow(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+            wf.complete()
+
+        wf = Workflow("test-workflow", my_workflow)
+        wf_spec = wf.compile()
+
+        # Find the exit node
+        entrypoint_thread = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        exit_nodes = [
+            (name, node)
+            for name, node in entrypoint_thread.nodes.items()
+            if node.WhichOneof("node") == "exit"
+        ]
+
+        self.assertEqual(len(exit_nodes), 1)
+        exit_node = exit_nodes[0][1]
+        self.assertFalse(exit_node.exit.HasField("return_content"))
+
+    def test_complete_with_literal_return_value(self):
+        def my_workflow(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+            wf.complete("success")
+
+        wf = Workflow("test-workflow", my_workflow)
+        wf_spec = wf.compile()
+
+        # Find the exit node
+        entrypoint_thread = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        exit_nodes = [
+            (name, node)
+            for name, node in entrypoint_thread.nodes.items()
+            if node.WhichOneof("node") == "exit"
+        ]
+
+        self.assertEqual(len(exit_nodes), 1)
+        exit_node = exit_nodes[0][1]
+        self.assertTrue(exit_node.exit.HasField("return_content"))
+        self.assertTrue(exit_node.exit.return_content.HasField("literal_value"))
+        self.assertEqual(exit_node.exit.return_content.literal_value.str, "success")
+
+    def test_complete_with_variable_return_value(self):
+        def my_workflow(wf: WorkflowThread) -> None:
+            result = wf.add_variable("result", VariableType.STR)
+            wf.execute("some-task")
+            wf.complete(result)
+
+        wf = Workflow("test-workflow", my_workflow)
+        wf_spec = wf.compile()
+
+        # Find the exit node
+        entrypoint_thread = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        exit_nodes = [
+            (name, node)
+            for name, node in entrypoint_thread.nodes.items()
+            if node.WhichOneof("node") == "exit"
+        ]
+
+        self.assertEqual(len(exit_nodes), 1)
+        exit_node = exit_nodes[0][1]
+        self.assertTrue(exit_node.exit.HasField("return_content"))
+        self.assertTrue(exit_node.exit.return_content.HasField("variable_name"))
+        self.assertEqual(exit_node.exit.return_content.variable_name, "result")
+
+    def test_complete_with_node_output_return_value(self):
+        def my_workflow(wf: WorkflowThread) -> None:
+            task_output = wf.execute("some-task")
+            wf.complete(task_output)
+
+        wf = Workflow("test-workflow", my_workflow)
+        wf_spec = wf.compile()
+
+        # Find the exit node
+        entrypoint_thread = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        exit_nodes = [
+            (name, node)
+            for name, node in entrypoint_thread.nodes.items()
+            if node.WhichOneof("node") == "exit"
+        ]
+
+        self.assertEqual(len(exit_nodes), 1)
+        exit_node = exit_nodes[0][1]
+        self.assertTrue(exit_node.exit.HasField("return_content"))
+        self.assertTrue(exit_node.exit.return_content.HasField("node_output"))
+        self.assertEqual(
+            exit_node.exit.return_content.node_output.node_name, "1-some-task-TASK"
+        )
+
     def test_wf_raises_error_when_adding_node_after_completing_thread(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
             def if_body_a(body: WorkflowThread) -> None:
