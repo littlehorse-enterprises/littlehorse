@@ -145,7 +145,6 @@ public class LHServerConfig extends ConfigBase {
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
-    public static final String ROCKSDB_USE_COMPRESSION_KEY = "LHS_X_ROCKSDB_USE_COMPRESSION";
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
@@ -747,10 +746,6 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean getRocksDBUseLevelCompaction() {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_LEVEL_COMPACTION_KEY, "false"));
-    }
-
-    public boolean getRocksDBUseCompression() {
-        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_COMPRESSION_KEY, "false"));
     }
 
     public long getCoreMemtableSize() {
