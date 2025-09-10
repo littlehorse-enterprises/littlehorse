@@ -221,7 +221,7 @@ public class CoreProcessorContext implements ExecutionContext {
         if (service != null) {
             return service;
         }
-        service = new WfService(this.metadataManager, metadataCache, this);
+        service = new WfService(this.metadataManager);
         return service;
     }
 
