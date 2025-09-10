@@ -121,9 +121,13 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
 
             // Compression workss wonders
-            options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+            if (serverConfig.getRocksDBUseCompression()) {
+                options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+            }
         } else {
-            options.setCompressionType(CompressionType.LZ4_COMPRESSION);
+            if (serverConfig.getRocksDBUseCompression()) {
+                options.setCompressionType(CompressionType.LZ4_COMPRESSION);
+            }
         }
 
         // I/O Configurations
