@@ -23,20 +23,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     // passed into the setConfig() method.
     public static final String LH_SERVER_CONFIG_KEY = "obiwan.kenobi";
 
-    // From RocksDB docs: default is 4kb, but Facebook tends to use 16-32kb in production.
-    // With longer keys (we have a lot of long keys), higher block size is recommended.
-    //
-    // The danger here is that we don't have a "hard limit" on memory allocated by these
-    // blocks. To do that, we would need to investigate creating an LRUCache with a
-    // special index filter block ratio, and then do some math. For more context:
-    //
-    // NOTE: Increasing the Block Size makes the un-managed memory footprint SMALLER because
-    // there are fewer blocks to index. However, I think it makes reads a bit slower.
-    //
-    // Confluent: https://docs.confluent.io/platform/current/streams/developer-guide/memory-mgmt.html
-    // Rocksdb: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#indexes-and-filter-blocks
-    private static final long BLOCK_SIZE = 1024 * 8;
-
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
         log.trace("Overriding rocksdb settings for store {}", storeName);
@@ -76,7 +62,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
         tableConfig.setOptimizeFiltersForMemory(true);
-        tableConfig.setBlockSize(BLOCK_SIZE);
+        tableConfig.setBlockSize(serverConfig.getRocksDBBlockSize());
         tableConfig.setPinL0FilterAndIndexBlocksInCache(true);
         tableConfig.setCacheIndexAndFilterBlocks(true);
         tableConfig.setCacheIndexAndFilterBlocksWithHighPriority(true);
@@ -101,9 +87,13 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setWriteBufferSize(serverConfig.getCoreMemtableSize());
         options.setOptimizeFiltersForHits(false);
 
-        // Compress the bottom level only, which contains about 90% of the database,
+        // Configurable compression: compress the bottom level only, which contains about 90% of the database,
         // but shouldn't be involved in most of the write paths and I/O.
-        options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+        if (serverConfig.getRocksDBUseCompression()) {
+            options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+        } else {
+            options.setBottommostCompressionType(CompressionType.NO_COMPRESSION);
+        }
 
         // Compaction Configurations.
         if (serverConfig.getRocksDBUseLevelCompaction()) {

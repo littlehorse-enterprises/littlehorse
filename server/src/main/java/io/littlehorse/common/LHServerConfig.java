@@ -145,6 +145,8 @@ public class LHServerConfig extends ConfigBase {
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
+    public static final String ROCKSDB_BLOCK_SIZE_KEY = "LHS_X_ROCKSDB_BLOCK_SIZE";
+    public static final String ROCKSDB_USE_COMPRESSION_KEY = "LHS_X_ROCKSDB_USE_COMPRESSION";
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
@@ -755,6 +757,15 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean useDirectIOForRocksDB() {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_DIRECT_IO_KEY, "false"));
+    }
+
+    public long getRocksDBBlockSize() {
+        // Default block size: 8KB (8 * 1024 bytes)
+        return Long.valueOf(getOrSetDefault(ROCKSDB_BLOCK_SIZE_KEY, String.valueOf(1024L * 8)));
+    }
+
+    public boolean getRocksDBUseCompression() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_COMPRESSION_KEY, "true"));
     }
 
     // Timer Topology generally has smaller values that are written. The majority of them
