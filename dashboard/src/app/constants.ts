@@ -13,6 +13,7 @@ export const VARIABLE_TYPES = {
   int: 'Integer',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
+  utcTimestamp: 'UTC Timestamp',
 } as const satisfies { [key in NonNullable<VariableValue['value']>['$case']]: string }
 
 export const VARIABLE_TYPE_ENTRIES = Object.entries(VARIABLE_TYPES)

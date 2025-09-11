@@ -463,6 +463,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public WfRunVariable declareTimestamp(String name) {
+        return addVariable(name, VariableType.TIMESTAMP);
+    }
+
+    @Override
     public WfRunVariable declareJsonArr(String name) {
         return addVariable(name, VariableType.JSON_ARR);
     }

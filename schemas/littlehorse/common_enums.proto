@@ -113,6 +113,9 @@ enum VariableType {
   // referencing specific workflow executions in various use cases, such as inter-workflow
   // communication or tracking dependencies between workflows.
   WF_RUN_ID = 7;
+
+  // Represents a time normalized to Coordinated Universal Time (UTC).
+  TIMESTAMP = 8;
 }
 
 // This enum is all of the types of technical failure that can occur in a WfRun.
