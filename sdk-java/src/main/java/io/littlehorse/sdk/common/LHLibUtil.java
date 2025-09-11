@@ -139,18 +139,12 @@ public class LHLibUtil {
                         throws JsonParseException {
                     try {
                         String stringDate = json.getAsString();
-                        try {
-                            Instant instant = Instant.parse(stringDate);
-                            return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-                        } catch (DateTimeParseException ex) {
-                            return LocalDateTime.parse(stringDate);
-                        }
+                        return LocalDateTime.parse(stringDate);
                     } catch (DateTimeParseException ex) {
                         throw new JsonParseException("Invalid LocalDateTime: " + json.getAsString(), ex);
                     }
                 }
             })
-            // java.sql.Timestamp adapters
             .registerTypeAdapter(java.sql.Timestamp.class, new JsonSerializer<java.sql.Timestamp>() {
                 @Override
                 public JsonElement serialize(java.sql.Timestamp value, Type type, JsonSerializationContext context) {
@@ -163,22 +157,9 @@ public class LHLibUtil {
                 public java.sql.Timestamp deserialize(JsonElement json, Type type, JsonDeserializationContext context)
                         throws JsonParseException {
                     try {
-                        String s = json.getAsString();
-                        // Try ISO instant
-                        try {
-                            Instant inst = Instant.parse(s);
-                            return new java.sql.Timestamp(inst.toEpochMilli());
-                        } catch (DateTimeParseException ex) {
-                            // Try numeric epoch millis
-                            if (s.matches("^\\d+$")) {
-                                long ms = Long.parseLong(s);
-                                return new java.sql.Timestamp(ms);
-                            }
-                            // Try LocalDateTime
-                            LocalDateTime ldt = LocalDateTime.parse(s);
-                            Instant inst = ldt.atZone(ZoneId.systemDefault()).toInstant();
-                            return new java.sql.Timestamp(inst.toEpochMilli());
-                        }
+                        String stringDate = json.getAsString();
+                        Instant instant = Instant.parse(stringDate);
+                        return new java.sql.Timestamp(instant.toEpochMilli());
                     } catch (Exception ex) {
                         throw new JsonParseException("Invalid java.sql.Timestamp: " + json.getAsString(), ex);
                     }
@@ -337,6 +318,7 @@ public class LHLibUtil {
 
     /**
      * Converts a ValueCase (from the VariableValue.value oneof field) to a VariableType Enum.
+     *
      * @param valueCase is the ValueCase from the VariableValue.
      * @return the corresponding VariableType.
      */
