@@ -14,64 +14,75 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.Date;
 import java.util.List;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
- * This is a simple example, which does two things: 1. Declare an "input-name" variable of type
- * String 2. Pass that variable into the execution of the "greet" task.
+ * This is a simple example, which does two things:
+ * 1. Declare an "input-name" variable of type String
+ * 2. Pass that variable into the execution of the "greet" task.
  */
 public class VariablesExample {
 
     private static final Logger log = LoggerFactory.getLogger(VariablesExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-variables", wf -> {
-            WfRunVariable inputText = wf
-                    .declareStr("input-text")
-                    .searchable()
-                    .masked();
-            WfRunVariable addLength = wf.declareBool("add-length").searchable();
-            WfRunVariable userId = wf.declareInt("user-id").searchable();
-            WfRunVariable sentimentScore = wf.declareDouble("sentiment-score").searchable();
-            WfRunVariable inputDate = wf
-                    .declareTimestamp("input-date")
-                    .withDefault(new Date(946684800L * 1000));
-            WfRunVariable processedResult = wf
-                    .declareJsonObj("processed-result")
+        return new WorkflowImpl(
+            "example-variables",
+            wf -> {
+                WfRunVariable inputText = wf.addVariable("input-text", VariableType.STR).searchable().masked();
+
+                WfRunVariable addLength = wf.addVariable(
+                    "add-length",
+                    VariableType.BOOL
+                ).searchable();
+
+                WfRunVariable userId = wf
+                    .addVariable("user-id", VariableType.INT).searchable();
+
+                WfRunVariable sentimentScore = wf
+                    .addVariable("sentiment-score", VariableType.DOUBLE).searchable();
+
+                WfRunVariable processedResult = wf
+                    .addVariable("processed-result", VariableType.JSON_OBJ)
                     .searchableOn("$.sentimentScore", VariableType.DOUBLE)
                     .masked();
 
-            NodeOutput sentimentAnalysisOutput = wf.execute("sentiment-analysis", inputText);
-            sentimentScore.assign(sentimentAnalysisOutput);
-            NodeOutput currentDate = wf.execute("get-current-date");
-            inputDate.assign(currentDate);
-            NodeOutput processedTextOutput =
-                    wf.execute(
-                            "process-text",
-                            inputText,
-                            sentimentScore,
-                            addLength,
-                            userId,
-                            inputDate);
-            wf.mutate(
+                NodeOutput sentimentAnalysisOutput = wf.execute(
+                    "sentiment-analysis",
+                    inputText
+                );
+                wf.mutate(
+                    sentimentScore,
+                    VariableMutationType.ASSIGN,
+                    sentimentAnalysisOutput
+                );
+                NodeOutput processedTextOutput = wf.execute(
+                    "process-text",
+                    inputText,
+                    sentimentScore,
+                    addLength,
+                    userId
+                );
+                wf.mutate(
                     processedResult,
                     VariableMutationType.ASSIGN,
-                    processedTextOutput);
-            wf.execute("send", processedResult);
-            wf.execute("print-timestamps", inputDate, inputDate, inputDate, inputDate, inputDate);
-        });
+                    processedTextOutput
+                );
+                wf.execute("send", processedResult);
+            }
+        );
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath =
-                Path.of(System.getProperty("user.home"), ".config/littlehorse.config").toFile();
-        if (configPath.exists()) {
+        File configPath = Path.of(
+            System.getProperty("user.home"),
+            ".config/littlehorse.config"
+        ).toFile();
+        if(configPath.exists()){
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -79,18 +90,22 @@ public class VariablesExample {
 
     public static List<LHTaskWorker> getTaskWorker(LHConfig config) {
         MyWorker executable = new MyWorker();
-        List<LHTaskWorker> workers =
-                List.of(new LHTaskWorker(executable, "sentiment-analysis", config),
-                        new LHTaskWorker(executable, "process-text", config),
-                        new LHTaskWorker(executable, "send", config),
-                        new LHTaskWorker(executable, "get-current-date", config),
-                        new LHTaskWorker(executable, "print-timestamps", config)
-                );
+        List<LHTaskWorker> workers = List.of(
+            new LHTaskWorker(executable, "sentiment-analysis", config),
+            new LHTaskWorker(executable, "process-text", config),
+            new LHTaskWorker(executable, "send", config)
+        );
         // Gracefully shutdown
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.forEach(worker -> {
-            log.debug("Closing {}", worker.getTaskDefName());
-            worker.close();
-        })));
+        Runtime
+            .getRuntime()
+            .addShutdownHook(
+                new Thread(() ->
+                    workers.forEach(worker -> {
+                        log.debug("Closing {}", worker.getTaskDefName());
+                        worker.close();
+                    })
+                )
+            );
         return workers;
     }
 
