@@ -114,7 +114,7 @@ enum VariableType {
   // communication or tracking dependencies between workflows.
   WF_RUN_ID = 7;
 
-  // Represents a time normalized to the central time (GMT).
+  // Represents a time normalized to Coordinated Universal Time (UTC).
   TIMESTAMP = 8;
 }
 
