@@ -35,7 +35,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     //
     // Confluent: https://docs.confluent.io/platform/current/streams/developer-guide/memory-mgmt.html
     // Rocksdb: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#indexes-and-filter-blocks
-    private static final long BLOCK_SIZE = 1024 * 16;
+    private static final long BLOCK_SIZE = 1024 * 8;
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
