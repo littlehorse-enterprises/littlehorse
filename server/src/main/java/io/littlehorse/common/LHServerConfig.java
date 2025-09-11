@@ -147,6 +147,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
     public static final String ROCKSDB_BLOCK_SIZE_KEY = "LHS_X_ROCKSDB_BLOCK_SIZE";
     public static final String ROCKSDB_USE_COMPRESSION_KEY = "LHS_X_ROCKSDB_USE_COMPRESSION";
+    public static final String ROCKSDB_PARTITION_INDEX_FILTERS_KEY = "LHS_X_ROCKSDB_PARTITION_INDEX_FILTERS";
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
@@ -766,6 +767,10 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean getRocksDBUseCompression() {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_COMPRESSION_KEY, "true"));
+    }
+
+    public boolean getRocksDBPartitionIndexFilters() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_PARTITION_INDEX_FILTERS_KEY, "true"));
     }
 
     // Timer Topology generally has smaller values that are written. The majority of them

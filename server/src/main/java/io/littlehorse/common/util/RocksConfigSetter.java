@@ -66,10 +66,10 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         tableConfig.setPinL0FilterAndIndexBlocksInCache(true);
         tableConfig.setCacheIndexAndFilterBlocks(true);
         tableConfig.setCacheIndexAndFilterBlocksWithHighPriority(true);
-        tableConfig.setPartitionFilters(true);
-        tableConfig.setIndexType(IndexType.kTwoLevelIndexSearch);
-        options.setAllowMmapReads(false);
-        options.setAllowMmapWrites(false);
+        if (serverConfig.getRocksDBPartitionIndexFilters()) {
+            tableConfig.setPartitionFilters(serverConfig.getRocksDBPartitionIndexFilters());
+            tableConfig.setIndexType(IndexType.kTwoLevelIndexSearch);
+        }
 
         // Memory limits
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
