@@ -53,6 +53,7 @@ import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
 import org.rocksdb.LRUCache;
 import org.rocksdb.RateLimiter;
+import org.rocksdb.RateLimiterMode;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
 
@@ -1149,7 +1150,7 @@ public class LHServerConfig extends ConfigBase {
                     rateLimit,
                     RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
                     RateLimiter.DEFAULT_FAIRNESS,
-                    RateLimiter.DEFAULT_MODE,
+                    RateLimiterMode.ALL_IO,
                     false);
         }
     }
