@@ -31,33 +31,39 @@ public class VariablesExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-variables", wf -> {
-            WfRunVariable inputText = wf.declareStr("input-text").searchable().masked();
-
+            WfRunVariable inputText = wf
+                    .declareStr("input-text")
+                    .searchable()
+                    .masked();
             WfRunVariable addLength = wf.declareBool("add-length").searchable();
-
             WfRunVariable userId = wf.declareInt("user-id").searchable();
-
             WfRunVariable sentimentScore = wf.declareDouble("sentiment-score").searchable();
-
-            WfRunVariable createdAt =
-                    wf.declareTimestamp("created-at").withDefault(new Date(946684800L * 1000));
-
-            WfRunVariable processedResult = wf.declareJsonObj("processed-result")
-                    .searchableOn("$.sentimentScore", VariableType.DOUBLE).masked();
-
+            WfRunVariable inputDate = wf
+                    .declareTimestamp("input-date")
+                    .withDefault(new Date(946684800L * 1000));
+            WfRunVariable processedResult = wf
+                    .declareJsonObj("processed-result")
+                    .searchableOn("$.sentimentScore", VariableType.DOUBLE)
+                    .masked();
 
             NodeOutput sentimentAnalysisOutput = wf.execute("sentiment-analysis", inputText);
             sentimentScore.assign(sentimentAnalysisOutput);
-
             NodeOutput currentDate = wf.execute("get-current-date");
+            inputDate.assign(currentDate);
             NodeOutput processedTextOutput =
-                    wf.execute("process-text", inputText, sentimentScore, addLength, userId, currentDate);
-            wf.execute("print-processed-text", processedTextOutput);
-            wf.mutate(processedResult, VariableMutationType.ASSIGN, processedTextOutput);
+                    wf.execute(
+                            "process-text",
+                            inputText,
+                            sentimentScore,
+                            addLength,
+                            userId,
+                            inputDate);
+            wf.mutate(
+                    processedResult,
+                    VariableMutationType.ASSIGN,
+                    processedTextOutput);
             wf.execute("send", processedResult);
-
-            wf.execute("print-timestamps", currentDate, currentDate, currentDate, currentDate, currentDate);
-            wf.execute("print-timestamps", createdAt, createdAt, createdAt, createdAt, createdAt);
+            wf.execute("print-timestamps", inputDate, inputDate, inputDate, inputDate, inputDate);
         });
     }
 
@@ -76,7 +82,6 @@ public class VariablesExample {
         List<LHTaskWorker> workers =
                 List.of(new LHTaskWorker(executable, "sentiment-analysis", config),
                         new LHTaskWorker(executable, "process-text", config),
-                        new LHTaskWorker(executable, "print-processed-text", config),
                         new LHTaskWorker(executable, "send", config),
                         new LHTaskWorker(executable, "get-current-date", config),
                         new LHTaskWorker(executable, "print-timestamps", config)

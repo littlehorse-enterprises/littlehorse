@@ -27,8 +27,13 @@ public class MyWorker {
 
     @LHTaskMethod("process-text")
     @LHType(masked = true)
-    public ProcessedText result(@LHType(masked = true) String text, Double sentimentScore,
-                                Boolean addLength, Integer userId, Instant instant) {
+    public ProcessedText result(
+            @LHType(masked = true) String text,
+            Double sentimentScore,
+            Boolean addLength,
+            Integer userId,
+            Instant instant
+    ) {
         log.debug("Executing task sentiment-analysis vars (%s, %s, %s, %s, %s)".formatted(text,
                 sentimentScore, addLength, userId, instant));
         ProcessedText processedText = new ProcessedText();
@@ -45,15 +50,9 @@ public class MyWorker {
         return processedText;
     }
 
-    @LHTaskMethod("print-processed-text")
-    public ProcessedText printProcessedText(ProcessedText processedText) {
-        log.info("ProcessedText: {}", processedText);
-        return processedText;
-    }
-
     @LHTaskMethod("send")
     public String result(@LHType(masked = true) ProcessedText processedText) {
-        log.debug("Executing task sentiment-analysis vars (%s)".formatted(processedText));
+        log.debug("Printing result (%s)".formatted(processedText));
         return "";
     }
 
@@ -74,7 +73,7 @@ public class MyWorker {
             LocalDateTime localDateTime,
             java.sql.Timestamp sqlTimestamp,
             Timestamp timestamp
-            ) {
+    ) {
         log.info("Instant: {}", instant);
         log.info("Date: {}", date);
         log.info("LocalDateTime: {}", localDateTime);
