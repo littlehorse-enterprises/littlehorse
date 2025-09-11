@@ -1596,7 +1596,7 @@ func (n *ExternalEventNodeOutput) ToPutExternalEventDefRequest() *lhproto.PutExt
 	}
 
 	if n.payloadType != nil {
-		req.ContentType = &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: *n.payloadType}}
+		req.ContentType = &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: *n.payloadType}}}}
 	}
 
 	if n.correlatedEventConfig != nil {
@@ -1608,7 +1608,7 @@ func (n *ExternalEventNodeOutput) ToPutExternalEventDefRequest() *lhproto.PutExt
 func (n *ThrowEventNodeOutput) toPutWorkflowEventDefRequest() *lhproto.PutWorkflowEventDefRequest {
 	return &lhproto.PutWorkflowEventDefRequest{
 		Name:        n.eventDefName,
-		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
+		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: n.payloadType}}},
 	}
 }
 
