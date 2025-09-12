@@ -236,6 +236,16 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     out.setWfRunId(wfRunId.toProto());
                 }
                 break;
+            case STRUCT:
+                if (struct != null) {
+                    out.setStruct(struct.toProto());
+                }
+                break;
+            case UTC_TIMESTAMP:
+                if (utcTimestampVal != null) {
+                    out.setUtcTimestamp(utcTimestampVal);
+                }
+                break;
             case VALUE_NOT_SET:
                 // nothing to do
                 break;
@@ -503,6 +513,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return this.bytesVal;
             case WF_RUN_ID:
                 return this.wfRunId;
+            case STRUCT:
+                return this.struct;
+            case UTC_TIMESTAMP:
+                return this.utcTimestampVal;
             case VALUE_NOT_SET:
             default:
                 break;
