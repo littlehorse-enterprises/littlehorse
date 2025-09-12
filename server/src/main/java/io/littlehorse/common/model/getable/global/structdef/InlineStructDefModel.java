@@ -62,7 +62,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         }
     }
 
-    public boolean validateAgainst(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager) {
+    public void validateAgainst(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager) {
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
             // If InlineStruct is missing required field...
             String fieldName = entry.getKey();
@@ -79,7 +79,16 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
             }
         }
 
-        return false;
+        for (Entry<String, StructFieldModel> entry : inlineStruct.getFields().entrySet()) {
+            // If InlineStruct has extra fields...
+            String fieldName = entry.getKey();
+
+            if (!this.fields.containsKey(fieldName)) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Struct does not match StructDef, includes unrecognized field %s".formatted(fieldName));
+            }
+        }
     }
 
     public Map<String, StructFieldDefModel> getRequiredFields() {

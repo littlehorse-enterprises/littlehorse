@@ -58,17 +58,11 @@ public class StructDefModel extends MetadataGetable<StructDef> {
         return out;
     }
 
-    public boolean validateAgainst(StructModel struct, ReadOnlyMetadataManager metadataManager) {
-        if (!struct.getStructDefId().getName().equals(this.id.getName())) {
-            return false;
-        }
-
+    public void validateAgainst(StructModel struct, ReadOnlyMetadataManager metadataManager) {
         InlineStructDefModel inlineStructDef = this.structDef;
         InlineStructModel inlineStruct = struct.getInlineStruct();
 
         inlineStructDef.validateAgainst(inlineStruct, metadataManager);
-
-        return true;
     }
 
     @Override

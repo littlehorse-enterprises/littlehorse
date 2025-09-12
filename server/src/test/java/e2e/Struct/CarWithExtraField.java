@@ -7,16 +7,18 @@ import lombok.Setter;
 @LHStructDef(name = "struct-car")
 @Getter
 @Setter
-public class Car {
+public class CarWithExtraField {
     public String brand;
     public String model;
     public int mileage;
+    public String color;
 
-    public Car() {}
+    public CarWithExtraField() {}
 
-    public Car(String brand, String model, int mileage) {
+    public CarWithExtraField(String brand, String model, int mileage, String color) {
         this.brand = brand;
         this.model = model;
         this.mileage = mileage;
+        this.color = color;
     }
 }

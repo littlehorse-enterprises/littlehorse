@@ -81,9 +81,9 @@ public class InputVarsTest {
 
         client.putStructDef(lhStructDefType.toPutStructDefRequest());
 
-        VariableValue originalStruct = LHLibUtil.objToVarVal(new Car("Obi-Wan", "Kenobi", 123));
-        VariableValue expectedStructFromTask1 = LHLibUtil.objToVarVal(new Car("Obi-Wan", "Kenobi", 124));
-        VariableValue expectedStructFromTask2 = LHLibUtil.objToVarVal(new Car("Colt", "McNealy", 123));
+        VariableValue originalStruct = LHLibUtil.objToVarVal(new Car("Ford", "Bronco", 123));
+        VariableValue expectedStructFromTask1 = LHLibUtil.objToVarVal(new Car("Ford", "Bronco", 124));
+        VariableValue expectedStructFromTask2 = LHLibUtil.objToVarVal(new Car("Mustang", "Mach-E", 123));
 
         workflowVerifier
                 .prepareRun(structWorkflow, Arg.of("struct-input", originalStruct))
@@ -124,8 +124,8 @@ public class InputVarsTest {
     public Workflow structWorkflow() {
         return new WorkflowImpl("struct-var-wf", thread -> {
             WfRunVariable structVar = thread.declareStruct("struct-input", Car.class);
-            thread.execute("increase-mileage", structVar);
-            thread.execute("change-owner", structVar, "Colt", "McNealy");
+            thread.execute("increment-mileage", structVar);
+            thread.execute("change-details", structVar, "Mustang", "Mach-E");
         });
     }
 
@@ -161,12 +161,12 @@ public class InputVarsTest {
         return first - second;
     }
 
-    @LHTaskMethod("increase-mileage")
+    @LHTaskMethod("increment-mileage")
     public Car increaseMileage(Car car) {
-        return new Car(car.getFirstName(), car.getLastName(), car.getMileage() + 1);
+        return new Car(car.getBrand(), car.getModel(), car.getMileage() + 1);
     }
 
-    @LHTaskMethod("change-owner")
+    @LHTaskMethod("change-details")
     public Car changeOwner(Car car, String firstName, String lastName) {
         return new Car(firstName, lastName, car.getMileage());
     }

@@ -7,16 +7,14 @@ import lombok.Setter;
 @LHStructDef(name = "struct-car")
 @Getter
 @Setter
-public class Car {
+public class CarWithMissingField {
     public String brand;
     public String model;
-    public int mileage;
 
-    public Car() {}
+    public CarWithMissingField() {}
 
-    public Car(String brand, String model, int mileage) {
+    public CarWithMissingField(String brand, String model) {
         this.brand = brand;
         this.model = model;
-        this.mileage = mileage;
     }
 }
