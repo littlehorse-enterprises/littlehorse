@@ -308,7 +308,7 @@ const (
 	// referencing specific workflow executions in various use cases, such as inter-workflow
 	// communication or tracking dependencies between workflows.
 	VariableType_WF_RUN_ID VariableType = 7
-	// Represents a time normalized to the central time (GMT).
+	// Represents a time normalized to Coordinated Universal Time (UTC).
 	VariableType_TIMESTAMP VariableType = 8
 )
 

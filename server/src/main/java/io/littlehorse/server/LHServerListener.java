@@ -418,7 +418,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ValidateStructDefEvolutionRequestModel reqModel =
                 LHSerializable.fromProto(req, ValidateStructDefEvolutionRequestModel.class, requestContext());
 
-        ctx.onNext(reqModel.validate(requestContext()));
+        ctx.onNext(reqModel.validate(requestContext().metadataManager()));
         ctx.onCompleted();
     }
 

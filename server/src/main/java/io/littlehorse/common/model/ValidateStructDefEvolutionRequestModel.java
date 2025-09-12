@@ -10,8 +10,9 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Set;
 
 public class ValidateStructDefEvolutionRequestModel extends LHSerializable<ValidateStructDefEvolutionRequest> {
@@ -40,10 +41,10 @@ public class ValidateStructDefEvolutionRequestModel extends LHSerializable<Valid
         structDef = InlineStructDefModel.fromProto(p.getStructDef(), context);
     }
 
-    public ValidateStructDefEvolutionResponse validate(RequestExecutionContext executionContext) {
-        structDef.validate();
+    public ValidateStructDefEvolutionResponse validate(ReadOnlyMetadataManager metadataManager) {
+        structDef.validate(metadataManager);
 
-        StructDefModel existingStructDef = executionContext.service().getStructDef(structDefId.getName(), null);
+        StructDefModel existingStructDef = new WfService(metadataManager).getStructDef(structDefId.getName(), null);
 
         if (existingStructDef == null) {
             return ValidateStructDefEvolutionResponse.newBuilder()

@@ -6,9 +6,15 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutStructDefRequest;
+import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
@@ -24,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -53,6 +60,7 @@ public class LHTaskWorker implements Closeable {
     private String taskDefName;
     private String lhTaskMethodAnnotationValue;
     private LittleHorseBlockingStub grpcClient;
+    private TaskDefBuilder tdb;
 
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
@@ -70,6 +78,7 @@ public class LHTaskWorker implements Closeable {
         this.taskDefName = taskDefName;
         this.lhTaskMethodAnnotationValue = taskDefName;
         this.grpcClient = config.getBlockingStub();
+        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     /**
@@ -95,6 +104,8 @@ public class LHTaskWorker implements Closeable {
         this.taskDefName = replacePlaceholdersInTaskDefName(taskDefNameTemplate, valuesForPlaceholders);
         this.lhTaskMethodAnnotationValue = taskDefNameTemplate;
         this.grpcClient = config.getBlockingStub();
+
+        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     public LHTaskWorker(
@@ -105,6 +116,7 @@ public class LHTaskWorker implements Closeable {
             LHServerConnectionManager manager) {
         this(executable, taskDefName, config, valuesForPlaceHolders);
         this.manager = manager;
+        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     /**
@@ -153,9 +165,61 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        TaskDefBuilder tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
+        validateStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+
         TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
         log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
+    }
+
+    /**
+     * Validates StructDef classes used in your Task Definitions against StructDefs on the server.
+     *
+     * @param compatibilityType The server will validate the given StructDef schema against
+     *                          the existing StructDef schema based on this compatibility type.
+     */
+    public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
+        if (tdb.getStructDefDependencies().isEmpty()) return;
+
+        List<String> invalidStructDefs = new ArrayList<>();
+        List<StructDef> structDefDependencies = tdb.getStructDefDependencies().stream()
+                .map(classType -> classType.toStructDef())
+                .collect(Collectors.toList());
+
+        for (StructDef structDef : structDefDependencies) {
+            ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
+                    ValidateStructDefEvolutionRequest.newBuilder();
+            validateStructDefRequest.setStructDefId(structDef.getId());
+            validateStructDefRequest.setStructDef(structDef.getStructDef());
+            validateStructDefRequest.setCompatibilityType(compatibilityType);
+
+            ValidateStructDefEvolutionResponse resp =
+                    grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
+
+            if (!resp.getIsValid()) {
+                invalidStructDefs.add(structDef.getId().getName());
+            }
+        }
+
+        if (!invalidStructDefs.isEmpty()) {
+            throw new RuntimeException("Invalid StructDefs: " + invalidStructDefs.toString());
+        }
+    }
+
+    public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
+        List<LHStructDefType> lhStructDefTypes = tdb.getStructDefDependencies();
+
+        if (lhStructDefTypes.isEmpty()) return;
+
+        for (LHStructDefType lhClassType : lhStructDefTypes) {
+            StructDef structDef = lhClassType.toStructDef();
+            PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
+            putStructDefRequest.setName(structDef.getId().getName());
+            putStructDefRequest.setDescription(structDef.getDescription());
+            putStructDefRequest.setStructDef(structDef.getStructDef());
+            putStructDefRequest.setAllowedUpdates(compatibilityType);
+
+            grpcClient.putStructDef(putStructDefRequest.build());
+        }
     }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {

@@ -41,6 +41,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -801,9 +802,18 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 // first, assign the format string
                 VariableValueModel formatStringVarVal =
                         assignVariable(assn.getFormatString().getFormat(), txnCache);
-                if (formatStringVarVal.getType() != VariableType.STR) {
+                // TODO: Decide how to support StructDefs
+                if (formatStringVarVal.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
                     throw new LHVarSubError(
-                            null, "Format String template isn't a STR; it's a " + formatStringVarVal.getType());
+                            null,
+                            "Format String template isn't a primitive; it's a "
+                                    + formatStringVarVal.getTypeDefinition());
+                }
+                if (formatStringVarVal.getTypeDefinition().getPrimitiveType() != VariableType.STR) {
+                    throw new LHVarSubError(
+                            null,
+                            "Format String template isn't a STR; it's a "
+                                    + formatStringVarVal.getTypeDefinition().getPrimitiveType());
                 }
 
                 List<Object> formatArgs = new ArrayList<>();
