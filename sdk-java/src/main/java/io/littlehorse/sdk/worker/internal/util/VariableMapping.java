@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.worker.internal.util;
 
+import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -17,6 +18,9 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.util.Optional;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -117,6 +121,11 @@ public class VariableMapping {
             case WF_RUN_ID:
                 if (!LHLibUtil.isWfRunId(type)) {
                     msg = "TaskDef provides WF_RUN_ID, func accepts " + type.getName();
+                }
+                break;
+            case TIMESTAMP:
+                if (!LHLibUtil.isTIMESTAMP(type)) {
+                    msg = "TaskDef provides a TIMESTAMP, func accepts " + type.getName();
                 }
                 break;
             case UNRECOGNIZED:

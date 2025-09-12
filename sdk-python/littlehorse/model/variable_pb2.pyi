@@ -8,7 +8,7 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class VariableValue(_message.Message):
-    __slots__ = ["json_obj", "json_arr", "double", "bool", "str", "int", "bytes", "wf_run_id", "struct"]
+    __slots__ = ["json_obj", "json_arr", "double", "bool", "str", "int", "bytes", "wf_run_id", "utc_timestamp", "struct"]
     JSON_OBJ_FIELD_NUMBER: _ClassVar[int]
     JSON_ARR_FIELD_NUMBER: _ClassVar[int]
     DOUBLE_FIELD_NUMBER: _ClassVar[int]
@@ -17,6 +17,7 @@ class VariableValue(_message.Message):
     INT_FIELD_NUMBER: _ClassVar[int]
     BYTES_FIELD_NUMBER: _ClassVar[int]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    UTC_TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     STRUCT_FIELD_NUMBER: _ClassVar[int]
     json_obj: str
     json_arr: str
@@ -26,8 +27,9 @@ class VariableValue(_message.Message):
     int: int
     bytes: bytes
     wf_run_id: _object_id_pb2.WfRunId
+    utc_timestamp: _timestamp_pb2.Timestamp
     struct: Struct
-    def __init__(self, json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: bool = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., struct: _Optional[_Union[Struct, _Mapping]] = ...) -> None: ...
+    def __init__(self, json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: bool = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., utc_timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., struct: _Optional[_Union[Struct, _Mapping]] = ...) -> None: ...
 
 class Variable(_message.Message):
     __slots__ = ["id", "value", "created_at", "wf_spec_id", "masked"]

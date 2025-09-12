@@ -138,6 +138,13 @@ public interface WorkflowThread {
     WfRunVariable declareBytes(String name);
 
     /**
+     * Creates a variable of type TIMESTAMP in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareTimestamp(String name);
+
+    /**
      * Creates a variable of type JSON_ARR in the ThreadSpec.
      * @param name is the name of the variable.
      * @return a WfRunVariable.

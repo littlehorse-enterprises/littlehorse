@@ -58,7 +58,8 @@ private static final long serialVersionUID = 0L;
     INT(7),
     BYTES(8),
     WF_RUN_ID(9),
-    STRUCT(10),
+    UTC_TIMESTAMP(10),
+    STRUCT(11),
     VALUE_NOT_SET(0);
     private final int value;
     private ValueCase(int value) {
@@ -84,7 +85,8 @@ private static final long serialVersionUID = 0L;
         case 7: return INT;
         case 8: return BYTES;
         case 9: return WF_RUN_ID;
-        case 10: return STRUCT;
+        case 10: return UTC_TIMESTAMP;
+        case 11: return STRUCT;
         case 0: return VALUE_NOT_SET;
         default: return null;
       }
@@ -453,30 +455,73 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance();
   }
 
-  public static final int STRUCT_FIELD_NUMBER = 10;
+  public static final int UTC_TIMESTAMP_FIELD_NUMBER = 10;
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return Whether the utcTimestamp field is set.
+   */
+  @java.lang.Override
+  public boolean hasUtcTimestamp() {
+    return valueCase_ == 10;
+  }
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return The utcTimestamp.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getUtcTimestamp() {
+    if (valueCase_ == 10) {
+       return (com.google.protobuf.Timestamp) value_;
+    }
+    return com.google.protobuf.Timestamp.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getUtcTimestampOrBuilder() {
+    if (valueCase_ == 10) {
+       return (com.google.protobuf.Timestamp) value_;
+    }
+    return com.google.protobuf.Timestamp.getDefaultInstance();
+  }
+
+  public static final int STRUCT_FIELD_NUMBER = 11;
   /**
    * <pre>
    * A Struct object.
    * </pre>
    *
-   * <code>.littlehorse.Struct struct = 10;</code>
+   * <code>.littlehorse.Struct struct = 11;</code>
    * @return Whether the struct field is set.
    */
   @java.lang.Override
   public boolean hasStruct() {
-    return valueCase_ == 10;
+    return valueCase_ == 11;
   }
   /**
    * <pre>
    * A Struct object.
    * </pre>
    *
-   * <code>.littlehorse.Struct struct = 10;</code>
+   * <code>.littlehorse.Struct struct = 11;</code>
    * @return The struct.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.Struct getStruct() {
-    if (valueCase_ == 10) {
+    if (valueCase_ == 11) {
        return (io.littlehorse.sdk.common.proto.Struct) value_;
     }
     return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
@@ -486,11 +531,11 @@ private static final long serialVersionUID = 0L;
    * A Struct object.
    * </pre>
    *
-   * <code>.littlehorse.Struct struct = 10;</code>
+   * <code>.littlehorse.Struct struct = 11;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder() {
-    if (valueCase_ == 10) {
+    if (valueCase_ == 11) {
        return (io.littlehorse.sdk.common.proto.Struct) value_;
     }
     return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
@@ -539,7 +584,10 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(9, (io.littlehorse.sdk.common.proto.WfRunId) value_);
     }
     if (valueCase_ == 10) {
-      output.writeMessage(10, (io.littlehorse.sdk.common.proto.Struct) value_);
+      output.writeMessage(10, (com.google.protobuf.Timestamp) value_);
+    }
+    if (valueCase_ == 11) {
+      output.writeMessage(11, (io.littlehorse.sdk.common.proto.Struct) value_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -585,7 +633,11 @@ private static final long serialVersionUID = 0L;
     }
     if (valueCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.Struct) value_);
+        .computeMessageSize(10, (com.google.protobuf.Timestamp) value_);
+    }
+    if (valueCase_ == 11) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, (io.littlehorse.sdk.common.proto.Struct) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -638,6 +690,10 @@ private static final long serialVersionUID = 0L;
             .equals(other.getWfRunId())) return false;
         break;
       case 10:
+        if (!getUtcTimestamp()
+            .equals(other.getUtcTimestamp())) return false;
+        break;
+      case 11:
         if (!getStruct()
             .equals(other.getStruct())) return false;
         break;
@@ -692,6 +748,10 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getWfRunId().hashCode();
         break;
       case 10:
+        hash = (37 * hash) + UTC_TIMESTAMP_FIELD_NUMBER;
+        hash = (53 * hash) + getUtcTimestamp().hashCode();
+        break;
+      case 11:
         hash = (37 * hash) + STRUCT_FIELD_NUMBER;
         hash = (53 * hash) + getStruct().hashCode();
         break;
@@ -838,6 +898,9 @@ private static final long serialVersionUID = 0L;
       if (wfRunIdBuilder_ != null) {
         wfRunIdBuilder_.clear();
       }
+      if (utcTimestampBuilder_ != null) {
+        utcTimestampBuilder_.clear();
+      }
       if (structBuilder_ != null) {
         structBuilder_.clear();
       }
@@ -887,6 +950,10 @@ private static final long serialVersionUID = 0L;
         result.value_ = wfRunIdBuilder_.build();
       }
       if (valueCase_ == 10 &&
+          utcTimestampBuilder_ != null) {
+        result.value_ = utcTimestampBuilder_.build();
+      }
+      if (valueCase_ == 11 &&
           structBuilder_ != null) {
         result.value_ = structBuilder_.build();
       }
@@ -975,6 +1042,10 @@ private static final long serialVersionUID = 0L;
           mergeWfRunId(other.getWfRunId());
           break;
         }
+        case UTC_TIMESTAMP: {
+          mergeUtcTimestamp(other.getUtcTimestamp());
+          break;
+        }
         case STRUCT: {
           mergeStruct(other.getStruct());
           break;
@@ -1056,11 +1127,18 @@ private static final long serialVersionUID = 0L;
             } // case 74
             case 82: {
               input.readMessage(
-                  getStructFieldBuilder().getBuilder(),
+                  getUtcTimestampFieldBuilder().getBuilder(),
                   extensionRegistry);
               valueCase_ = 10;
               break;
             } // case 82
+            case 90: {
+              input.readMessage(
+                  getStructFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              valueCase_ = 11;
+              break;
+            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1859,36 +1937,214 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> utcTimestampBuilder_;
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     * @return Whether the utcTimestamp field is set.
+     */
+    @java.lang.Override
+    public boolean hasUtcTimestamp() {
+      return valueCase_ == 10;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     * @return The utcTimestamp.
+     */
+    @java.lang.Override
+    public com.google.protobuf.Timestamp getUtcTimestamp() {
+      if (utcTimestampBuilder_ == null) {
+        if (valueCase_ == 10) {
+          return (com.google.protobuf.Timestamp) value_;
+        }
+        return com.google.protobuf.Timestamp.getDefaultInstance();
+      } else {
+        if (valueCase_ == 10) {
+          return utcTimestampBuilder_.getMessage();
+        }
+        return com.google.protobuf.Timestamp.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder setUtcTimestamp(com.google.protobuf.Timestamp value) {
+      if (utcTimestampBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        value_ = value;
+        onChanged();
+      } else {
+        utcTimestampBuilder_.setMessage(value);
+      }
+      valueCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder setUtcTimestamp(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (utcTimestampBuilder_ == null) {
+        value_ = builderForValue.build();
+        onChanged();
+      } else {
+        utcTimestampBuilder_.setMessage(builderForValue.build());
+      }
+      valueCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder mergeUtcTimestamp(com.google.protobuf.Timestamp value) {
+      if (utcTimestampBuilder_ == null) {
+        if (valueCase_ == 10 &&
+            value_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          value_ = com.google.protobuf.Timestamp.newBuilder((com.google.protobuf.Timestamp) value_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          value_ = value;
+        }
+        onChanged();
+      } else {
+        if (valueCase_ == 10) {
+          utcTimestampBuilder_.mergeFrom(value);
+        } else {
+          utcTimestampBuilder_.setMessage(value);
+        }
+      }
+      valueCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public Builder clearUtcTimestamp() {
+      if (utcTimestampBuilder_ == null) {
+        if (valueCase_ == 10) {
+          valueCase_ = 0;
+          value_ = null;
+          onChanged();
+        }
+      } else {
+        if (valueCase_ == 10) {
+          valueCase_ = 0;
+          value_ = null;
+        }
+        utcTimestampBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getUtcTimestampBuilder() {
+      return getUtcTimestampFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    @java.lang.Override
+    public com.google.protobuf.TimestampOrBuilder getUtcTimestampOrBuilder() {
+      if ((valueCase_ == 10) && (utcTimestampBuilder_ != null)) {
+        return utcTimestampBuilder_.getMessageOrBuilder();
+      } else {
+        if (valueCase_ == 10) {
+          return (com.google.protobuf.Timestamp) value_;
+        }
+        return com.google.protobuf.Timestamp.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A timestamp (UTC)
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getUtcTimestampFieldBuilder() {
+      if (utcTimestampBuilder_ == null) {
+        if (!(valueCase_ == 10)) {
+          value_ = com.google.protobuf.Timestamp.getDefaultInstance();
+        }
+        utcTimestampBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                (com.google.protobuf.Timestamp) value_,
+                getParentForChildren(),
+                isClean());
+        value_ = null;
+      }
+      valueCase_ = 10;
+      onChanged();
+      return utcTimestampBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.Struct, io.littlehorse.sdk.common.proto.Struct.Builder, io.littlehorse.sdk.common.proto.StructOrBuilder> structBuilder_;
     /**
      * <pre>
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      * @return Whether the struct field is set.
      */
     @java.lang.Override
     public boolean hasStruct() {
-      return valueCase_ == 10;
+      return valueCase_ == 11;
     }
     /**
      * <pre>
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      * @return The struct.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.Struct getStruct() {
       if (structBuilder_ == null) {
-        if (valueCase_ == 10) {
+        if (valueCase_ == 11) {
           return (io.littlehorse.sdk.common.proto.Struct) value_;
         }
         return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
       } else {
-        if (valueCase_ == 10) {
+        if (valueCase_ == 11) {
           return structBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
@@ -1899,7 +2155,7 @@ private static final long serialVersionUID = 0L;
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      */
     public Builder setStruct(io.littlehorse.sdk.common.proto.Struct value) {
       if (structBuilder_ == null) {
@@ -1911,7 +2167,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structBuilder_.setMessage(value);
       }
-      valueCase_ = 10;
+      valueCase_ = 11;
       return this;
     }
     /**
@@ -1919,7 +2175,7 @@ private static final long serialVersionUID = 0L;
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      */
     public Builder setStruct(
         io.littlehorse.sdk.common.proto.Struct.Builder builderForValue) {
@@ -1929,7 +2185,7 @@ private static final long serialVersionUID = 0L;
       } else {
         structBuilder_.setMessage(builderForValue.build());
       }
-      valueCase_ = 10;
+      valueCase_ = 11;
       return this;
     }
     /**
@@ -1937,11 +2193,11 @@ private static final long serialVersionUID = 0L;
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      */
     public Builder mergeStruct(io.littlehorse.sdk.common.proto.Struct value) {
       if (structBuilder_ == null) {
-        if (valueCase_ == 10 &&
+        if (valueCase_ == 11 &&
             value_ != io.littlehorse.sdk.common.proto.Struct.getDefaultInstance()) {
           value_ = io.littlehorse.sdk.common.proto.Struct.newBuilder((io.littlehorse.sdk.common.proto.Struct) value_)
               .mergeFrom(value).buildPartial();
@@ -1950,13 +2206,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (valueCase_ == 10) {
+        if (valueCase_ == 11) {
           structBuilder_.mergeFrom(value);
         } else {
           structBuilder_.setMessage(value);
         }
       }
-      valueCase_ = 10;
+      valueCase_ = 11;
       return this;
     }
     /**
@@ -1964,17 +2220,17 @@ private static final long serialVersionUID = 0L;
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      */
     public Builder clearStruct() {
       if (structBuilder_ == null) {
-        if (valueCase_ == 10) {
+        if (valueCase_ == 11) {
           valueCase_ = 0;
           value_ = null;
           onChanged();
         }
       } else {
-        if (valueCase_ == 10) {
+        if (valueCase_ == 11) {
           valueCase_ = 0;
           value_ = null;
         }
@@ -1987,7 +2243,7 @@ private static final long serialVersionUID = 0L;
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      */
     public io.littlehorse.sdk.common.proto.Struct.Builder getStructBuilder() {
       return getStructFieldBuilder().getBuilder();
@@ -1997,14 +2253,14 @@ private static final long serialVersionUID = 0L;
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder() {
-      if ((valueCase_ == 10) && (structBuilder_ != null)) {
+      if ((valueCase_ == 11) && (structBuilder_ != null)) {
         return structBuilder_.getMessageOrBuilder();
       } else {
-        if (valueCase_ == 10) {
+        if (valueCase_ == 11) {
           return (io.littlehorse.sdk.common.proto.Struct) value_;
         }
         return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
@@ -2015,13 +2271,13 @@ private static final long serialVersionUID = 0L;
      * A Struct object.
      * </pre>
      *
-     * <code>.littlehorse.Struct struct = 10;</code>
+     * <code>.littlehorse.Struct struct = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.Struct, io.littlehorse.sdk.common.proto.Struct.Builder, io.littlehorse.sdk.common.proto.StructOrBuilder> 
         getStructFieldBuilder() {
       if (structBuilder_ == null) {
-        if (!(valueCase_ == 10)) {
+        if (!(valueCase_ == 11)) {
           value_ = io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
         }
         structBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -2031,7 +2287,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         value_ = null;
       }
-      valueCase_ = 10;
+      valueCase_ = 11;
       onChanged();
       return structBuilder_;
     }

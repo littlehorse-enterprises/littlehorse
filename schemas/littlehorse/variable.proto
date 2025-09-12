@@ -44,11 +44,14 @@ message VariableValue {
     // Reference to a WfRunId
     WfRunId wf_run_id = 9;
 
+    // A timestamp (UTC)
+    google.protobuf.Timestamp utc_timestamp = 10;
+
     // A Struct object.
-    Struct struct = 10;
+    Struct struct = 11;
 
     // An Array object.
-    // Array array = 11;
+    // Array array = 12;
   }
 }
 

@@ -25,6 +25,7 @@ export interface VariableValue {
     | { $case: "int"; value: number }
     | { $case: "bytes"; value: Buffer }
     | { $case: "wfRunId"; value: WfRunId }
+    | { $case: "utcTimestamp"; value: string }
     | { $case: "struct"; value: Struct }
     | undefined;
 }
@@ -115,8 +116,11 @@ export const VariableValue = {
       case "wfRunId":
         WfRunId.encode(message.value.value, writer.uint32(74).fork()).ldelim();
         break;
+      case "utcTimestamp":
+        Timestamp.encode(toTimestamp(message.value.value), writer.uint32(82).fork()).ldelim();
+        break;
       case "struct":
-        Struct.encode(message.value.value, writer.uint32(82).fork()).ldelim();
+        Struct.encode(message.value.value, writer.uint32(90).fork()).ldelim();
         break;
     }
     return writer;
@@ -190,6 +194,13 @@ export const VariableValue = {
             break;
           }
 
+          message.value = { $case: "utcTimestamp", value: fromTimestamp(Timestamp.decode(reader, reader.uint32())) };
+          continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.value = { $case: "struct", value: Struct.decode(reader, reader.uint32()) };
           continue;
       }
@@ -219,6 +230,8 @@ export const VariableValue = {
         ? { $case: "bytes", value: Buffer.from(bytesFromBase64(object.bytes)) }
         : isSet(object.wfRunId)
         ? { $case: "wfRunId", value: WfRunId.fromJSON(object.wfRunId) }
+        : isSet(object.utcTimestamp)
+        ? { $case: "utcTimestamp", value: globalThis.String(object.utcTimestamp) }
         : isSet(object.struct)
         ? { $case: "struct", value: Struct.fromJSON(object.struct) }
         : undefined,
@@ -250,6 +263,9 @@ export const VariableValue = {
     }
     if (message.value?.$case === "wfRunId") {
       obj.wfRunId = WfRunId.toJSON(message.value.value);
+    }
+    if (message.value?.$case === "utcTimestamp") {
+      obj.utcTimestamp = message.value.value;
     }
     if (message.value?.$case === "struct") {
       obj.struct = Struct.toJSON(message.value.value);
@@ -285,6 +301,9 @@ export const VariableValue = {
     }
     if (object.value?.$case === "wfRunId" && object.value?.value !== undefined && object.value?.value !== null) {
       message.value = { $case: "wfRunId", value: WfRunId.fromPartial(object.value.value) };
+    }
+    if (object.value?.$case === "utcTimestamp" && object.value?.value !== undefined && object.value?.value !== null) {
+      message.value = { $case: "utcTimestamp", value: object.value.value };
     }
     if (object.value?.$case === "struct" && object.value?.value !== undefined && object.value?.value !== null) {
       message.value = { $case: "struct", value: Struct.fromPartial(object.value.value) };

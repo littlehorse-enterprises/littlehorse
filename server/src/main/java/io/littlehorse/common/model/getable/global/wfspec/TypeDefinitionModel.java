@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Jso
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StructReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -147,6 +148,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                         return new JsonArrReturnTypeStrategy();
                     case JSON_OBJ:
                         return new JsonObjReturnTypeStrategy();
+                    case TIMESTAMP:
+                        return new TimestampReturnTypeStrategy();
                     case UNRECOGNIZED:
                 }
                 break;

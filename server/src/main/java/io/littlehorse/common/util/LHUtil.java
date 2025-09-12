@@ -23,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +54,16 @@ public class LHUtil {
         }
 
         return out;
+    }
+
+    public static Optional<Timestamp> timestampFromString(String stringDate) {
+        if (stringDate == null) return Optional.empty();
+        try {
+            Instant instant = Instant.parse(stringDate);
+            return Optional.of(fromDate(Date.from(instant)));
+        } catch (DateTimeParseException exn) {
+            return Optional.empty();
+        }
     }
 
     public static StatusRuntimeException toGrpcError(Throwable exn) {
@@ -105,6 +116,12 @@ public class LHUtil {
 
     public static String toLhDbFormat(Date date) {
         return date == null ? "null" : String.valueOf(date.getTime());
+    }
+
+    public static String toLhDbFormat(Timestamp timestamp) {
+        return timestamp == null
+                ? "null"
+                : String.valueOf(timestamp.getSeconds() * 1000 + timestamp.getNanos() / 1_000_000);
     }
 
     public static Date getWindowStart(Date time, MetricsWindowLength type) {

@@ -201,10 +201,37 @@ public interface VariableValueOrBuilder extends
 
   /**
    * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return Whether the utcTimestamp field is set.
+   */
+  boolean hasUtcTimestamp();
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   * @return The utcTimestamp.
+   */
+  com.google.protobuf.Timestamp getUtcTimestamp();
+  /**
+   * <pre>
+   * A timestamp (UTC)
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp utc_timestamp = 10;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getUtcTimestampOrBuilder();
+
+  /**
+   * <pre>
    * A Struct object.
    * </pre>
    *
-   * <code>.littlehorse.Struct struct = 10;</code>
+   * <code>.littlehorse.Struct struct = 11;</code>
    * @return Whether the struct field is set.
    */
   boolean hasStruct();
@@ -213,7 +240,7 @@ public interface VariableValueOrBuilder extends
    * A Struct object.
    * </pre>
    *
-   * <code>.littlehorse.Struct struct = 10;</code>
+   * <code>.littlehorse.Struct struct = 11;</code>
    * @return The struct.
    */
   io.littlehorse.sdk.common.proto.Struct getStruct();
@@ -222,7 +249,7 @@ public interface VariableValueOrBuilder extends
    * A Struct object.
    * </pre>
    *
-   * <code>.littlehorse.Struct struct = 10;</code>
+   * <code>.littlehorse.Struct struct = 11;</code>
    */
   io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder();
 

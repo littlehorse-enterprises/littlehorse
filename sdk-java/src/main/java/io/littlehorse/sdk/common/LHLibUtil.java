@@ -4,7 +4,13 @@ import static com.google.protobuf.util.Timestamps.fromMillis;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.ToNumberPolicy;
 import com.google.protobuf.ByteString;
@@ -33,7 +39,11 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +63,14 @@ public class LHLibUtil {
     public static Timestamp fromDate(Date date) {
         if (date == null) return null;
         return fromMillis(date.getTime());
+    }
+
+    public static Timestamp fromInstant(Instant instant) {
+        if (instant == null) return null;
+        return Timestamp.newBuilder()
+                .setSeconds(instant.getEpochSecond())
+                .setNanos(instant.getNano())
+                .build();
     }
 
     public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeException {
@@ -82,6 +100,101 @@ public class LHLibUtil {
 
     public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+                @Override
+                public JsonElement serialize(Date value, Type type, JsonSerializationContext context) {
+                    return new JsonPrimitive(value.toInstant().toString());
+                }
+            })
+            .registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                @Override
+                public Date deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        Instant instant = Instant.parse(json.getAsString());
+                        return Date.from(instant);
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid ISO-8601 date: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            .registerTypeAdapter(Instant.class, new JsonSerializer<Instant>() {
+                @Override
+                public JsonElement serialize(Instant value, Type type, JsonSerializationContext context) {
+                    return new JsonPrimitive(value.toString());
+                }
+            })
+            .registerTypeAdapter(Instant.class, new JsonDeserializer<Instant>() {
+                @Override
+                public Instant deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        return Instant.parse(json.getAsString());
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid ISO-8601 instant: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            .registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+                @Override
+                public JsonElement serialize(LocalDateTime value, Type type, JsonSerializationContext context) {
+                    return new JsonPrimitive(value.toString());
+                }
+            })
+            .registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+                @Override
+                public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        String stringDate = json.getAsString();
+                        return LocalDateTime.parse(stringDate);
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid LocalDateTime: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            .registerTypeAdapter(java.sql.Timestamp.class, new JsonSerializer<java.sql.Timestamp>() {
+                @Override
+                public JsonElement serialize(java.sql.Timestamp value, Type type, JsonSerializationContext context) {
+                    if (value == null) return null;
+                    return new JsonPrimitive(value.toInstant().toString());
+                }
+            })
+            .registerTypeAdapter(java.sql.Timestamp.class, new JsonDeserializer<java.sql.Timestamp>() {
+                @Override
+                public java.sql.Timestamp deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        String stringDate = json.getAsString();
+                        Instant instant = Instant.parse(stringDate);
+                        return new java.sql.Timestamp(instant.toEpochMilli());
+                    } catch (Exception ex) {
+                        throw new JsonParseException("Invalid java.sql.Timestamp: " + json.getAsString(), ex);
+                    }
+                }
+            })
+            .registerTypeAdapter(Timestamp.class, new JsonSerializer<Timestamp>() {
+                @Override
+                public JsonElement serialize(Timestamp value, Type type, JsonSerializationContext context) {
+                    Instant instant = Instant.ofEpochSecond(value.getSeconds(), value.getNanos());
+                    return new JsonPrimitive(instant.toString());
+                }
+            })
+            .registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {
+                @Override
+                public Timestamp deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        Instant instant = Instant.parse(json.getAsString());
+                        return Timestamp.newBuilder()
+                                .setSeconds(instant.getEpochSecond())
+                                .setNanos(instant.getNano())
+                                .build();
+                    } catch (DateTimeParseException ex) {
+                        throw new JsonParseException("Invalid ISO-8601 protobuf timestamp: " + json.getAsString(), ex);
+                    }
+                }
+            })
             .create();
 
     public static JsonResult serializeToJson(Object o) {
@@ -188,6 +301,23 @@ public class LHLibUtil {
             case STRUCT:
                 Struct struct = val.getStruct();
                 return deserializeStructToObject(struct, targetClazz);
+            case UTC_TIMESTAMP:
+                Timestamp timestamp = val.getUtcTimestamp();
+                if (Timestamp.class.isAssignableFrom(targetClazz)) {
+                    return timestamp;
+                }
+                if (targetClazz == Instant.class) {
+                    return Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                }
+                if (targetClazz == LocalDateTime.class) {
+                    Instant inst = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                    return LocalDateTime.ofInstant(inst, ZoneId.systemDefault());
+                }
+                if (java.sql.Timestamp.class.isAssignableFrom(targetClazz)) {
+                    Instant inst = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                    return new java.sql.Timestamp(inst.toEpochMilli());
+                }
+                return LHLibUtil.fromProtoTs(timestamp);
             case VALUE_NOT_SET:
                 return null;
         }
@@ -265,6 +395,13 @@ public class LHLibUtil {
             out.setWfRunId((WfRunId) o);
         } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
             out.setStruct(serializeToStruct(o));
+        } else if (o instanceof Instant) {
+            out.setUtcTimestamp(fromInstant((Instant) o));
+        } else if (o instanceof LocalDateTime) {
+            Instant inst = ((LocalDateTime) o).atZone(ZoneId.systemDefault()).toInstant();
+            out.setUtcTimestamp(fromInstant(inst));
+        } else if (o instanceof Date) {
+            out.setUtcTimestamp(fromDate((Date) o));
         } else {
             // At this point, all we can do is try to make it a JSON type.
             JsonResult jsonResult = LHLibUtil.serializeToJson(o);
@@ -356,6 +493,8 @@ public class LHLibUtil {
                 return VariableType.BOOL;
             case WF_RUN_ID:
                 return VariableType.WF_RUN_ID;
+            case UTC_TIMESTAMP:
+                return VariableType.TIMESTAMP;
             case VALUE_NOT_SET:
             default:
                 return null;
@@ -396,6 +535,13 @@ public class LHLibUtil {
         return WfRunId.class.isAssignableFrom(cls);
     }
 
+    public static boolean isTIMESTAMP(Class<?> cls) {
+        return Instant.class.isAssignableFrom(cls)
+                || Date.class.isAssignableFrom(cls)
+                || Timestamp.class.isAssignableFrom(cls)
+                || LocalDateTime.class.isAssignableFrom(cls);
+    }
+
     public static VariableType javaClassToLHVarType(Class<?> cls) {
         if (isINT(cls)) return VariableType.INT;
 
@@ -410,6 +556,8 @@ public class LHLibUtil {
         if (isJSON_ARR(cls)) return VariableType.JSON_ARR;
 
         if (isWfRunId(cls)) return VariableType.WF_RUN_ID;
+
+        if (isTIMESTAMP(cls)) return VariableType.TIMESTAMP;
 
         return VariableType.JSON_OBJ;
     }
@@ -450,6 +598,8 @@ public class LHLibUtil {
                 return a.getBytes().equals(b.getBytes());
             case WF_RUN_ID:
                 return a.getWfRunId().equals(b.getWfRunId());
+            case UTC_TIMESTAMP:
+                return a.getUtcTimestamp().equals(b.getUtcTimestamp());
             case VALUE_NOT_SET:
                 return true;
             default:
