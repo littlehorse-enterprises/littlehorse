@@ -1,8 +1,8 @@
 package e2e;
 
+import com.google.protobuf.Timestamp;
 import e2e.Struct.Car;
 import io.littlehorse.sdk.common.LHLibUtil;
-import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -133,8 +133,6 @@ public class InputVarsTest {
                 .start();
     }
 
-
-
     @Test
     public void structVarInput() {
         LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
@@ -217,7 +215,7 @@ public class InputVarsTest {
     public Car changeOwner(Car car, String firstName, String lastName) {
         return new Car(firstName, lastName, car.getMileage());
     }
-    
+
     @LHTaskMethod("print-timestamps")
     public void printTimestamps(
             Instant instant,

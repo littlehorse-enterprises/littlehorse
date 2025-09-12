@@ -1,6 +1,5 @@
 package io.littlehorse.sdk.worker.internal.util;
 
-import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -18,9 +17,6 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.util.Optional;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
