@@ -102,14 +102,14 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setCompactionStyle(CompactionStyle.LEVEL);
 
             // Configure gradual slowdowns of writes
-            options.setLevel0FileNumCompactionTrigger(10); // Default 4. Larger compactions -> less WA.
+            options.setLevel0FileNumCompactionTrigger(8); // Default 4. Larger compactions -> less WA.
             options.setLevel0SlowdownWritesTrigger(15); // Default 20. We want to avoid saturation.
             options.setLevel0StopWritesTrigger(36); // Default 36.
 
             // Configure how levels grow.
             options.setTargetFileSizeBase(64 * 1024L * 1024L); // 64MB, default.
-            options.setMaxBytesForLevelBase(1024L * 1024L * 512L); // 512MB in L1
-            options.setMaxBytesForLevelMultiplier(20); // default 10; higher means lower Write Amp
+            options.setMaxBytesForLevelBase(1024L * 1024L * 128 * 10); // a little bigger than compaction trigger
+            options.setMaxBytesForLevelMultiplier(15); // default 10; higher means lower Write Amp
 
             options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
         }
