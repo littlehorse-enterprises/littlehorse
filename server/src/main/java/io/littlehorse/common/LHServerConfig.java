@@ -1148,7 +1148,10 @@ public class LHServerConfig extends ConfigBase {
         if (rateLimit > 0) {
             this.globalRocksdbRateLimiter = new RateLimiter(
                     rateLimit,
-                    RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
+                    // Worth spending a tad more CPU to make the rate limiter smoother. I notice
+                    // that GET's can sometimes be squished until the rate limiter kicks in in
+                    // those small windows.
+                    RateLimiter.DEFAULT_REFILL_PERIOD_MICROS / 2,
                     RateLimiter.DEFAULT_FAIRNESS,
                     RateLimiterMode.ALL_IO,
                     false);
