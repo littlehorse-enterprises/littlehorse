@@ -39,7 +39,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setMaxSubcompactions(3);
 
         // Configurations to avoid the "many small L0 files" problem
-        options.setMaxWriteBufferNumber(3);
+        options.setMaxWriteBufferNumber(4);
         options.setMinWriteBufferNumberToMerge(2);
 
         switch (serverConfig.getServerMetricLevel()) {
