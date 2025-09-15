@@ -39,7 +39,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setMaxSubcompactions(3);
 
         // Configurations to avoid the "many small L0 files" problem
-        options.setMaxWriteBufferNumber(4);
+        options.setMaxWriteBufferNumber(3);
         options.setMinWriteBufferNumberToMerge(2);
 
         switch (serverConfig.getServerMetricLevel()) {
@@ -102,7 +102,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setCompactionStyle(CompactionStyle.LEVEL);
 
             // Configure gradual slowdowns of writes
-            options.setLevel0FileNumCompactionTrigger(8); // Default 4. Larger compactions -> less WA.
+            options.setLevel0FileNumCompactionTrigger(4); // Default 4. Larger compactions -> less WA.
             options.setLevel0SlowdownWritesTrigger(15); // Default 20. We want to avoid saturation.
             options.setLevel0StopWritesTrigger(36); // Default 36.
 
