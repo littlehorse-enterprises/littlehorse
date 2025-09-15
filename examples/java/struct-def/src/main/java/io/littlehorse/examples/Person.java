@@ -8,7 +8,7 @@ public class Person {
     public String lastName;
     public Integer accountId;
 
-    public Person() {};
+    public Person() {}
 
     public Person(String firstName, String lastName, Integer accountId) {
         this.firstName = firstName;
@@ -20,12 +20,24 @@ public class Person {
         return this.firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public Integer getAccountId() {
         return accountId;
+    }
+
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     @Override

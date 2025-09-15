@@ -10,6 +10,7 @@ import io.littlehorse.sdk.worker.LHStructIgnore;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Objects;
 import lombok.Getter;
 
@@ -50,14 +51,14 @@ public class LHStructProperty {
     public void setValueTo(Object o, VariableValue v) throws LHSerdeException {
         if (pd.getWriteMethod() == null) {
             throw new IllegalStateException(
-                    "No write method for property " + this.fieldName + " found on object of type: " + o.getClass());
+                    "No write method for property [%s] found on object of type [%s]".formatted(this.fieldName, o.getClass()));
         }
 
         try {
-            pd.getWriteMethod().invoke(o, LHLibUtil.varValToObj(v, o.getClass()));
+            pd.getWriteMethod().invoke(o, LHLibUtil.varValToObj(v, pd.getPropertyType()));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
-                    e, "Failed setting value of property " + this.fieldName + "from object of type: " + o.getClass());
+                    e, "Failed setting value of property [%s] from object of type".formatted(this.fieldName, o.getClass()));
         }
     }
 

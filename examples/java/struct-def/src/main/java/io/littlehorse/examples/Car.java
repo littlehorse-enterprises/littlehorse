@@ -9,7 +9,6 @@ public class Car {
     public Person owner;
 
     public Car() {}
-    ;
 
     public Car(String name, String model, Person owner) {
         this.name = name;
@@ -21,12 +20,24 @@ public class Car {
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getModel() {
         return this.model;
     }
 
+    public void setModel(String model) {
+        this.model = model;
+    }
+
     public Person getOwner() {
         return this.owner;
+    }
+
+    public void setOwner(Person owner) {
+        this.owner = owner;
     }
 
     @Override
