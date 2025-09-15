@@ -85,6 +85,7 @@ signing {
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven {
         url = uri("https://packages.confluent.io/maven/")
     }
@@ -109,9 +110,9 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0'
 
     // Stuff for Kafka
-    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
-    implementation "org.apache.kafka:kafka-streams:${kafkaVersion}"
-    testImplementation "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
+    implementation "org.apache.kafka:kafka-clients:4.2.0-SNAPSHOT"
+    implementation "org.apache.kafka:kafka-streams:4.2.0-SNAPSHOT"
+    testImplementation "org.apache.kafka:kafka-streams-test-utils:4.0.0"
 
     // Auth
     implementation "com.nimbusds:oauth2-oidc-sdk:${nimbusVersion}"
