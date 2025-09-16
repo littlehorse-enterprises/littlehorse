@@ -49,8 +49,8 @@ public class LHStructProperty {
 
     public void setValueTo(Object o, VariableValue v) throws LHSerdeException {
         if (pd.getWriteMethod() == null) {
-            throw new IllegalStateException("No write method for property [%s] found on object of type [%s]"
-                    .formatted(this.fieldName, o.getClass()));
+            throw new IllegalStateException(String.format(
+                    "No write method for property [%s] found on object of type [%s]", this.fieldName, o.getClass()));
         }
 
         try {
@@ -58,8 +58,8 @@ public class LHStructProperty {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e,
-                    "Failed setting value of property [%s] from object of type"
-                            .formatted(this.fieldName, o.getClass()));
+                    String.format(
+                            "Failed setting value of property [%s] from object of type", this.fieldName, o.getClass()));
         }
     }
 

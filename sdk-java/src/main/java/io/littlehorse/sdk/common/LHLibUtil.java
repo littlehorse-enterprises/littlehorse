@@ -348,8 +348,9 @@ public class LHLibUtil {
                 if (!struct.getStruct().containsFields(fieldName)) {
                     throw new LHSerdeException(
                             null,
-                            "Failed deserializing VariableValue into Struct because no such field [%s] exists on class [%s]"
-                                    .formatted(fieldName, clazz.getName()));
+                            String.format(
+                                    "Failed deserializing VariableValue into Struct because no such field [%s] exists on class [%s]",
+                                    fieldName, clazz.getName()));
                 }
 
                 VariableValue fieldValue =
