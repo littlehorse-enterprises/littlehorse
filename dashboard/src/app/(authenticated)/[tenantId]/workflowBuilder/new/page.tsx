@@ -5,7 +5,7 @@ import { UIProvider } from '../contexts/ui/provider';
 export default function WorkflowBuilderPage() {  
   return (
     <>
-      <main className="bg-gray-700 w-full grow text-gray-300 p-4">
+      <main className="bg-gray-700 text-gray-300 h-[calc(100vh_-_80px)] w-screen fixed inset-x-0 -my-4">
         <WorkflowProvider>
           <UIProvider>
             <WfBuilderContainer />
