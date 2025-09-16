@@ -983,6 +983,8 @@ public class LHServerConfig extends ConfigBase {
         // Future work might allow this to be a separate config from the linger ms used for the GRPC server.
         props.put(StreamsConfig.producerPrefix("linger.ms"), getOrSetDefault(LINGER_MS_KEY, "0"));
 
+        props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, 0);
+
         return props;
     }
 
