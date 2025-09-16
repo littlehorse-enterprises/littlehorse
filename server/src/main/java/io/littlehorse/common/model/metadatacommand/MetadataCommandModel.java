@@ -192,8 +192,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                         p.getWorkflowEventDef(), PutWorkflowEventDefRequestModel.class, context);
                 break;
             case DELETE_STRUCT_DEF:
-                deleteStructDef = LHSerializable.fromProto(
-                    p.getDeleteStructDef(), DeleteStructDefRequestModel.class, context);
+                deleteStructDef =
+                        LHSerializable.fromProto(p.getDeleteStructDef(), DeleteStructDefRequestModel.class, context);
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
