@@ -124,6 +124,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
     public static final String HEALTH_PATH_METRICS_KEY = "LHS_HEALTH_PATH_METRICS";
     public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
+    public static final String HEALTH_PATH_READINESS_KEY = "LHS_HEALTH_PATH_READINESS";
     public static final String HEALTH_PATH_STATUS_KEY = "LHS_HEALTH_PATH_STATUS";
     public static final String HEALTH_PATH_DISK_USAGE_KEY = "LHS_HEALTH_PATH_DISK_USAGE";
     public static final String HEALTH_PATH_STANDBY_KEY = "HEALTH_PATH_STANDBY";
@@ -474,6 +475,10 @@ public class LHServerConfig extends ConfigBase {
 
     public String getLivenessPath() {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_LIVENESS_KEY, "/liveness");
+    }
+
+    public String getReadinessPath() {
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_READINESS_KEY, "/readiness");
     }
 
     public String getStatusPath() {

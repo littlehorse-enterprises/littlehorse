@@ -15,7 +15,7 @@ from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__
 import littlehorse.model.object_id_pb2 as object__id__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0evariable.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\"\xc2\x01\n\rVariableValue\x12\x12\n\x08json_obj\x18\x02 \x01(\tH\x00\x12\x12\n\x08json_arr\x18\x03 \x01(\tH\x00\x12\x10\n\x06\x64ouble\x18\x04 \x01(\x01H\x00\x12\x0e\n\x04\x62ool\x18\x05 \x01(\x08H\x00\x12\r\n\x03str\x18\x06 \x01(\tH\x00\x12\r\n\x03int\x18\x07 \x01(\x03H\x00\x12\x0f\n\x05\x62ytes\x18\x08 \x01(\x0cH\x00\x12)\n\twf_run_id\x18\t \x01(\x0b\x32\x14.littlehorse.WfRunIdH\x00\x42\x07\n\x05valueJ\x04\x08\x01\x10\x02\"\xc5\x01\n\x08Variable\x12#\n\x02id\x18\x01 \x01(\x0b\x32\x17.littlehorse.VariableId\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12)\n\nwf_spec_id\x18\x04 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x0e\n\x06masked\x18\x05 \x01(\x08\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0evariable.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\"\xf7\x01\n\rVariableValue\x12\x12\n\x08json_obj\x18\x02 \x01(\tH\x00\x12\x12\n\x08json_arr\x18\x03 \x01(\tH\x00\x12\x10\n\x06\x64ouble\x18\x04 \x01(\x01H\x00\x12\x0e\n\x04\x62ool\x18\x05 \x01(\x08H\x00\x12\r\n\x03str\x18\x06 \x01(\tH\x00\x12\r\n\x03int\x18\x07 \x01(\x03H\x00\x12\x0f\n\x05\x62ytes\x18\x08 \x01(\x0cH\x00\x12)\n\twf_run_id\x18\t \x01(\x0b\x32\x14.littlehorse.WfRunIdH\x00\x12\x33\n\rutc_timestamp\x18\n \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x42\x07\n\x05valueJ\x04\x08\x01\x10\x02\"\xc5\x01\n\x08Variable\x12#\n\x02id\x18\x01 \x01(\x0b\x32\x17.littlehorse.VariableId\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12)\n\nwf_spec_id\x18\x04 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x0e\n\x06masked\x18\x05 \x01(\x08\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -25,7 +25,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
   _globals['_VARIABLEVALUE']._serialized_start=82
-  _globals['_VARIABLEVALUE']._serialized_end=276
-  _globals['_VARIABLE']._serialized_start=279
-  _globals['_VARIABLE']._serialized_end=476
+  _globals['_VARIABLEVALUE']._serialized_end=329
+  _globals['_VARIABLE']._serialized_start=332
+  _globals['_VARIABLE']._serialized_end=529
 # @@protoc_insertion_point(module_scope)

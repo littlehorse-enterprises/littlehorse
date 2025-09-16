@@ -382,6 +382,8 @@ export enum VariableType {
    * communication or tracking dependencies between workflows.
    */
   WF_RUN_ID = "WF_RUN_ID",
+  /** TIMESTAMP - Represents a time normalized to the central time (GMT). */
+  TIMESTAMP = "TIMESTAMP",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -411,6 +413,9 @@ export function variableTypeFromJSON(object: any): VariableType {
     case 7:
     case "WF_RUN_ID":
       return VariableType.WF_RUN_ID;
+    case 8:
+    case "TIMESTAMP":
+      return VariableType.TIMESTAMP;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -436,6 +441,8 @@ export function variableTypeToJSON(object: VariableType): string {
       return "BYTES";
     case VariableType.WF_RUN_ID:
       return "WF_RUN_ID";
+    case VariableType.TIMESTAMP:
+      return "TIMESTAMP";
     case VariableType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -460,6 +467,8 @@ export function variableTypeToNumber(object: VariableType): number {
       return 6;
     case VariableType.WF_RUN_ID:
       return 7;
+    case VariableType.TIMESTAMP:
+      return 8;
     case VariableType.UNRECOGNIZED:
     default:
       return -1;

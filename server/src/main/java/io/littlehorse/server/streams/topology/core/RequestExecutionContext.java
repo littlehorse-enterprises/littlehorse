@@ -62,7 +62,7 @@ public class RequestExecutionContext implements ExecutionContext {
 
         this.readOnlyGetableManager = new ReadOnlyGetableManager(tenantCoreStore);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
-        this.service = new WfService(this.metadataManager, metadataCache, this);
+        this.service = new WfService(this.metadataManager);
         if (!tenantId.getId().equals(LHConstants.DEFAULT_TENANT)) {
             TenantModel storedTenant = metadataManager.get(tenantId);
             if (storedTenant == null) {
