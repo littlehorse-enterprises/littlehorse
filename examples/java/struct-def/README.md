@@ -16,14 +16,21 @@ LHS_X_ENABLE_STRUCT_DEFS=true
 
 ### Generating the `StructDef`
 
-In the `Person.java` file, you will fine a Java class `Person` with the `@LHStructDef` annotation.
+#### StructDef Classes
 
-In `MyWorker.java`, you will find a Task Method `greet` which takes in a `Person` as its first parameter.
+In this example, you will find three Java classes each representing their own StructDef: `Person`, `Address`, and `ParkingTicketReport`.
 
-Once initialized, your Task Worker will automatically recognize that a `StructDef` is being used in your task method, allowing you to perform additional operations like `register` or `validate` your `StructDef`s.
+Note that each class is a POJO (Plain Old Java Object) with a simple `@LHStructDef` annotation attached to it.
+
+#### Task Workers
+
+In `MyWorker.java`, you will find a Task Method `get-car-owner` which takes in a `ParkingTicketReport` as its first parameter and returns the `Person` who owns the car.
+
+You will alos find the Task Method `mail-ticket` which takes in a `Person` as its first parameter.
+
+Once initialized, your Task Worker will automatically recognize these `StructDef` classes in your task method definitions, allowing you to perform additional operations like `register` or `validate` your `StructDef`s.
 
 ### Running the example
-
 
 Let's run the `StructDefExample.java` application to:
 * Register your `StructDef`s

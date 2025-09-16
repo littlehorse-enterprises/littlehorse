@@ -1,7 +1,14 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.ExternalEvent;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -13,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -23,14 +31,13 @@ public class StructDefExample {
     private static final Logger log = LoggerFactory.getLogger(StructDefExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-struct-def", wf -> {
-            WfRunVariable structVar = wf.declareStruct("my-car", Car.class).required();
-            WfRunVariable ownerVar = wf.declareStruct("owner", Person.class);
+        return new WorkflowImpl("issue-parking-ticket", wf -> {
+            WfRunVariable carInput = wf.declareStruct("car-input", ParkingTicketReport.class).required();
+            WfRunVariable carOwner = wf.declareStruct("car-owner", Person.class);
 
-            ownerVar.assign(wf.execute("get-owner", structVar));
-            wf.execute("notify-owner", ownerVar);
+            carOwner.assign(wf.execute("get-car-owner", carInput));
 
-            ownerVar.assign(wf.waitForEvent("change-owner").registeredAs(Person.class));
+            wf.execute("mail-ticket", carOwner);
         });
     }
 
@@ -67,6 +74,14 @@ public class StructDefExample {
     }
 
     public static void main(String[] args) throws IOException {
+        if (args.length == 0) {
+            runWorkers();
+        } else if (args[0].equals("runWf")) {
+            runWf();
+        }
+    }
+
+    public static void runWorkers() throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
@@ -84,11 +99,28 @@ public class StructDefExample {
 
         // Register WfSpec
         workflow.registerWfSpec(config.getBlockingStub());
+        
 
         // Run the workers
         for (LHTaskWorker worker : workers) {
             log.debug("Starting {}", worker.getTaskDefName());
             worker.start();
         }
+    }
+
+    public static void runWf() throws IOException {
+        Properties props = getConfigProps();
+        LHConfig config = new LHConfig(props);
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        System.out.println("Running the workflow...");
+
+        client.runWf(RunWfRequest.newBuilder()
+                .setWfSpecName("issue-parking-ticket")
+                .putVariables(
+                        "car-input",
+                        LHLibUtil.objToVarVal(new ParkingTicketReport("BARC", "Speeder", "1HGCM82633A004352", new Date()))
+                )
+                .build());
     }
 }
