@@ -1,11 +1,16 @@
+import { getInheritedVariables } from '@/app/actions/getInheritedVariables'
 import { getVariableDefType, getVariableValue } from '@/app/utils'
-import { ThreadVarDef, Variable, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
-import { FC } from 'react'
+import { ThreadVarDef, Variable, WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { FC, useEffect } from 'react'
+import { toast } from 'sonner'
+import useSWR from 'swr'
 import { OverflowText } from '../../../../components/OverflowText'
 
 type VariablesProps = {
   variableDefs: ThreadVarDef[]
   variables: Variable[]
+  wfRunId: WfRunId
+  tenantId: string
 }
 
 const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
@@ -15,11 +20,22 @@ const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
   UNRECOGNIZED: '',
 }
 
-export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
+export const Variables: FC<VariablesProps> = ({ variableDefs, variables, wfRunId, tenantId }) => {
   if (variableDefs.length === 0) return <></>
 
+  const { data: inheritedVariables, error } = useSWR(['getInheritedVariables', tenantId, wfRunId], async () => {
+    return await getInheritedVariables(wfRunId, variableDefs, tenantId)
+  })
+
+  useEffect(() => {
+    if (error) {
+      const message = (error as any)?.message || 'Failed to load inherited variables'
+      toast.error(message)
+    }
+  }, [error])
+
   return (
-    <div className="">
+    <div>
       <h2 className="text-md mb-2 font-bold">Variables</h2>
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
@@ -31,7 +47,13 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
           <span>=</span>
           <span className="truncate">
-            <OverflowText className="max-w-96" text={getVariableValueForVariableDef(variable, variables)} />
+            <OverflowText
+              className="max-w-96"
+              text={getVariableValueForVariableDef(
+                variable,
+                inheritedVariables ? [...variables, ...inheritedVariables] : variables
+              )}
+            />
           </span>
         </div>
       ))}
