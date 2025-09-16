@@ -1,8 +1,7 @@
 package io.littlehorse.examples;
 
-import java.util.Date;
-
 import io.littlehorse.sdk.worker.LHStructDef;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +25,8 @@ public class ParkingTicketReport {
 
     @Override
     public String toString() {
-        return String.format("%s %s, Plate Number: %s, issued at %s", vehicleMake, vehicleModel, licensePlateNumber, createdAt.toString());
+        return String.format(
+                "%s %s, Plate Number: %s, issued at %s",
+                vehicleMake, vehicleModel, licensePlateNumber, createdAt.toString());
     }
 }

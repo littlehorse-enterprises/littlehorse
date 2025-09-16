@@ -1,9 +1,9 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.worker.LHTaskMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.littlehorse.sdk.worker.LHTaskMethod;
 public class MyWorker {
 
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
@@ -12,7 +12,7 @@ public class MyWorker {
     public Person getCarOwner(ParkingTicketReport report) {
         return lookupCarOwnerInDb(report.getLicensePlateNumber());
     }
-    
+
     @LHTaskMethod("mail-ticket")
     public String mailTicket(Person person) {
         log.debug("Notifying %s of parking ticket.".formatted(person.toString()));

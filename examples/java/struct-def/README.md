@@ -30,7 +30,7 @@ You will alos find the Task Method `mail-ticket` which takes in a `Person` as it
 
 Once initialized, your Task Worker will automatically recognize these `StructDef` classes in your task method definitions, allowing you to perform additional operations like `register` or `validate` your `StructDef`s.
 
-### Running the example
+### Register our `StructDef`s
 
 Let's run the `StructDefExample.java` application to:
 * Register your `StructDef`s
@@ -40,9 +40,43 @@ Let's run the `StructDefExample.java` application to:
 ./gradlew example-struct-def:run
 ```
 
-Now, you can see your `person` `StructDef` on the server by making an `RPC GetStructDef` call.
+In another terminal, call the following command to verify that the `Person` StructDef was created on the server:
 
-More functionality is coming soon, including:
-* `Struct` variables in Workflows
-* Receiving `Struct`s in your Task Methods
-* `lhctl` commands for interacting with `StructDef`s
+```
+lhctl get structdef person 0
+```
+
+> [!NOTE]
+> You can try this with any of the StructDefs we created, just make sure you use the name identified in the `@LHStructDef` annotation!
+
+### Running a workflow
+
+Let's run the `StructDefExample.java` application again to:
+* Run our workflow
+* Pass in a `Struct` object to the workflow as an input variable
+
+In a separate terminal, we'll run the same command again but this time with some arguments that we'll pass into our Workflow.
+
+```
+./gradlew example-struct-def:run --args 'BARC Speeder 1HGCM82633A004352'
+```
+
+You can check the results of this workflow run using `lhctl`:
+
+```
+# This call shows the result
+lhctl get wfRun <wf_run_id>
+
+# This will show you all nodes in the run
+lhctl list nodeRun <wf_run_id>
+
+# This shows the task run information
+lhctl get taskRun <wf_run_id> <task_run_global_id>
+```
+
+## Coming Soon
+
+Additional `StructDef` functionality and demos are coming soon, including:
+- Examples of `StructDef` evolution
+- Examples of `Struct` validation failures
+- `lhctl` support for passing Structs as input variables when running workflows

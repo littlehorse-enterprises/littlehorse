@@ -11,24 +11,30 @@ import (
 )
 
 var getStructDefCmd = &cobra.Command{
-	Use:   "structDef <name> <version>",
+	Use:   "structDef <name> [<version>]",
 	Short: "Get a StructDef by Name",
-	Args:  cobra.MaximumNArgs(2),
+	Args:  cobra.RangeArgs(1, 2),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
-		version, err := strconv.Atoi(args[1])
 
-		if err != nil {
-			log.Fatal("Couldn't convert version to int:\n", err)
+		structDefId := &lhproto.StructDefId{
+			Name: name,
+		}
+
+		if len(args) > 1 {
+			versionInt, err := strconv.Atoi(args[1])
+
+			if err != nil {
+				log.Fatal("Couldn't convert version to int:\n", err)
+			}
+
+			structDefId.Version = int32(versionInt)
 		}
 
 		littlehorse.PrintResp(
 			getGlobalClient(cmd).GetStructDef(
 				requestContext(cmd),
-				&lhproto.StructDefId{
-					Name:    name,
-					Version: int32(version),
-				},
+				structDefId,
 			),
 		)
 	},
