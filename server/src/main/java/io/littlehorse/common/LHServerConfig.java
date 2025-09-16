@@ -1146,17 +1146,12 @@ public class LHServerConfig extends ConfigBase {
 
         long rateLimit = Long.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
         if (rateLimit > 0) {
-            // Default fairness is 10; using 5 means we give more priority to flushing than to
-            // compaction
-            int fairness = 5;
-            boolean useAutoTune = true;
-
             this.globalRocksdbRateLimiter = new RateLimiter(
                     rateLimit,
                     RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
-                    fairness,
+                    RateLimiter.DEFAULT_FAIRNESS,
                     RateLimiterMode.ALL_IO,
-                    useAutoTune);
+                    RateLimiter.DEFAULT_AUTOTUNE);
         }
     }
 
