@@ -70,10 +70,11 @@ var getTaskDefCmd = &cobra.Command{
 }
 
 var searchTaskDefCmd = &cobra.Command{
-	Use:   "taskDef <prefix>",
+	Use:   "taskDef [<prefix>]",
 	Short: "Search for TaskDefs",
 	Long: `Search for TaskDefs.
-
+	
+You can search for all TaskDefs or may optionally provide a prefix for your search.
 	`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
