@@ -54,13 +54,10 @@ var deployTaskDefCmd = &cobra.Command{
 var getTaskDefCmd = &cobra.Command{
 	Use:   "taskDef <name>",
 	Short: "Get a TaskDef by Name",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the Name of TaskDef to get.")
-
-		}
-
 		name := args[0]
+
 		littlehorse.PrintResp(
 			getGlobalClient(cmd).GetTaskDef(
 				requestContext(cmd),
@@ -73,41 +70,40 @@ var getTaskDefCmd = &cobra.Command{
 }
 
 var searchTaskDefCmd = &cobra.Command{
-	Use:   "taskDef",
+	Use:   "taskDef <prefix>",
 	Short: "Search for TaskDefs",
 	Long: `Search for TaskDefs.
 
-No option groups for Search TaskDef are supported. Therefore, this command searches
-for all TaskDefs.
 	`,
+	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		prefix, _ := cmd.Flags().GetString("prefix")
+		search := &lhproto.SearchTaskDefRequest{
+			Bookmark: bookmark,
+			Limit:    &limit,
+		}
+
+		if len(args) > 0 {
+			search.Prefix = &args[0]
+		}
 
 		littlehorse.PrintResp(
 			getGlobalClient(cmd).SearchTaskDef(
 				requestContext(cmd),
-				&lhproto.SearchTaskDefRequest{
-					Bookmark: bookmark,
-					Limit:    &limit,
-					Prefix:   &prefix,
-				}),
+				search,
+			),
 		)
 	},
 }
 
 var deleteTaskDefCmd = &cobra.Command{
-	Use:   "taskDef <name> <version>",
+	Use:   "taskDef <name>",
 	Short: "Delete a TaskDef.",
 	Long: `Delete a TaskDef. You must provide the name and of the TaskDef to delete.
 	`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: Name of TaskDef to Delete")
-
-		}
-
 		name := args[0]
 
 		littlehorse.PrintResp(
@@ -127,7 +123,6 @@ func init() {
 	deployCmd.AddCommand(deployTaskDefCmd)
 
 	searchCmd.AddCommand(searchTaskDefCmd)
-	searchTaskDefCmd.Flags().String("prefix", "", "Prefix of name of TaskDefs to search for.")
 
 	deleteCmd.AddCommand(deleteTaskDefCmd)
 }
