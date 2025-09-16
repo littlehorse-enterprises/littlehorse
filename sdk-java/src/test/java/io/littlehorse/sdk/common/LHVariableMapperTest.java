@@ -5,6 +5,7 @@ import static io.littlehorse.sdk.common.LHVariableMapper.as;
 import static org.assertj.core.api.Assertions.*;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.util.Collection;
 import java.util.Objects;
@@ -102,5 +103,44 @@ public class LHVariableMapperTest {
     public static class Person {
         public String name, city;
         public int age;
+    }
+
+    @Test
+    void shouldVerifyUtcTimestampVariableTypeBehavior() {
+        Timestamp protoTs =
+                Timestamp.newBuilder().setSeconds(1690000000L).setNanos(0).build();
+        VariableValue tsVar =
+                VariableValue.newBuilder().setUtcTimestamp(protoTs).build();
+
+        assertThatThrownBy(() -> asString(tsVar))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not possible to convert variable type UTC_TIMESTAMP to String");
+
+        assertThatThrownBy(() -> asInt(tsVar))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not possible to convert variable type UTC_TIMESTAMP to Integer");
+
+        assertThatThrownBy(() -> asLong(tsVar))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not possible to convert variable type UTC_TIMESTAMP to Long");
+
+        assertThatThrownBy(() -> asDouble(tsVar))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not possible to convert variable type UTC_TIMESTAMP to Double");
+
+        assertThatThrownBy(() -> asBoolean(tsVar))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not possible to convert variable type UTC_TIMESTAMP to Boolean");
+
+        assertThatThrownBy(() -> asBytes(tsVar))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not possible to convert variable type UTC_TIMESTAMP to Byte");
+
+        assertThatThrownBy(() -> asList(tsVar, Person.class))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not possible to convert variable type UTC_TIMESTAMP to Collection");
+
+        // as(...) should return null since there's no json payload
+        assertThat(as(tsVar, Person.class)).isNull();
     }
 }

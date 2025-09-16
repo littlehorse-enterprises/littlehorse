@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.worker.internal.util;
 
+import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
@@ -10,6 +11,9 @@ import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -64,6 +68,11 @@ public class VariableMapping {
             case JSON_OBJ:
                 log.info("Info: Will use Gson to deserialize Json into {}", type.getName());
                 break;
+            case TIMESTAMP:
+                if (!LHLibUtil.isTIMESTAMP(type)) {
+                    msg = "TaskDef provides a TIMESTAMP, func accepts " + type.getName();
+                }
+                break;
             case UNRECOGNIZED:
                 throw new RuntimeException("Not possible");
         }
@@ -112,6 +121,23 @@ public class VariableMapping {
                 break;
             case WF_RUN_ID:
                 return val.getWfRunId();
+            case UTC_TIMESTAMP:
+                Timestamp timestamp = val.getUtcTimestamp();
+                if (Timestamp.class.isAssignableFrom(type)) {
+                    return timestamp;
+                }
+                if (type == Instant.class) {
+                    return Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                }
+                if (type == LocalDateTime.class) {
+                    Instant inst = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                    return LocalDateTime.ofInstant(inst, ZoneId.systemDefault());
+                }
+                if (java.sql.Timestamp.class.isAssignableFrom(type)) {
+                    Instant inst = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+                    return new java.sql.Timestamp(inst.toEpochMilli());
+                }
+                return LHLibUtil.fromProtoTs(timestamp);
             case VALUE_NOT_SET:
                 return null;
         }

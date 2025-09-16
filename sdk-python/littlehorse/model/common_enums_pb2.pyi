@@ -48,6 +48,7 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     INT: _ClassVar[VariableType]
     BYTES: _ClassVar[VariableType]
     WF_RUN_ID: _ClassVar[VariableType]
+    TIMESTAMP: _ClassVar[VariableType]
 
 class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -90,6 +91,7 @@ STR: VariableType
 INT: VariableType
 BYTES: VariableType
 WF_RUN_ID: VariableType
+TIMESTAMP: VariableType
 CHILD_FAILURE: LHErrorType
 VAR_SUB_ERROR: LHErrorType
 VAR_MUTATION_ERROR: LHErrorType

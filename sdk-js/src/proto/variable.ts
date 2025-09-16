@@ -25,6 +25,7 @@ export interface VariableValue {
     | { $case: "int"; value: number }
     | { $case: "bytes"; value: Buffer }
     | { $case: "wfRunId"; value: WfRunId }
+    | { $case: "utcTimestamp"; value: string }
     | undefined;
 }
 
@@ -83,6 +84,9 @@ export const VariableValue = {
         break;
       case "wfRunId":
         WfRunId.encode(message.value.value, writer.uint32(74).fork()).ldelim();
+        break;
+      case "utcTimestamp":
+        Timestamp.encode(toTimestamp(message.value.value), writer.uint32(82).fork()).ldelim();
         break;
     }
     return writer;
@@ -151,6 +155,13 @@ export const VariableValue = {
 
           message.value = { $case: "wfRunId", value: WfRunId.decode(reader, reader.uint32()) };
           continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.value = { $case: "utcTimestamp", value: fromTimestamp(Timestamp.decode(reader, reader.uint32())) };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -178,6 +189,8 @@ export const VariableValue = {
         ? { $case: "bytes", value: Buffer.from(bytesFromBase64(object.bytes)) }
         : isSet(object.wfRunId)
         ? { $case: "wfRunId", value: WfRunId.fromJSON(object.wfRunId) }
+        : isSet(object.utcTimestamp)
+        ? { $case: "utcTimestamp", value: globalThis.String(object.utcTimestamp) }
         : undefined,
     };
   },
@@ -207,6 +220,9 @@ export const VariableValue = {
     }
     if (message.value?.$case === "wfRunId") {
       obj.wfRunId = WfRunId.toJSON(message.value.value);
+    }
+    if (message.value?.$case === "utcTimestamp") {
+      obj.utcTimestamp = message.value.value;
     }
     return obj;
   },
@@ -239,6 +255,9 @@ export const VariableValue = {
     }
     if (object.value?.$case === "wfRunId" && object.value?.value !== undefined && object.value?.value !== null) {
       message.value = { $case: "wfRunId", value: WfRunId.fromPartial(object.value.value) };
+    }
+    if (object.value?.$case === "utcTimestamp" && object.value?.value !== undefined && object.value?.value !== null) {
+      message.value = { $case: "utcTimestamp", value: object.value.value };
     }
     return message;
   },

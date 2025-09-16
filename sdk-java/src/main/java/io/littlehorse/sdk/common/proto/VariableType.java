@@ -88,6 +88,14 @@ public enum VariableType
    * <code>WF_RUN_ID = 7;</code>
    */
   WF_RUN_ID(7),
+  /**
+   * <pre>
+   * Represents a time normalized to the central time (GMT).
+   * </pre>
+   *
+   * <code>TIMESTAMP = 8;</code>
+   */
+  TIMESTAMP(8),
   UNRECOGNIZED(-1),
   ;
 
@@ -167,6 +175,14 @@ public enum VariableType
    * <code>WF_RUN_ID = 7;</code>
    */
   public static final int WF_RUN_ID_VALUE = 7;
+  /**
+   * <pre>
+   * Represents a time normalized to the central time (GMT).
+   * </pre>
+   *
+   * <code>TIMESTAMP = 8;</code>
+   */
+  public static final int TIMESTAMP_VALUE = 8;
 
 
   public final int getNumber() {
@@ -201,6 +217,7 @@ public enum VariableType
       case 5: return INT;
       case 6: return BYTES;
       case 7: return WF_RUN_ID;
+      case 8: return TIMESTAMP;
       default: return null;
     }
   }
