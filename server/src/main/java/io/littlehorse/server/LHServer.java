@@ -174,13 +174,13 @@ public class LHServer {
     }
 
     public void start() throws IOException {
+        healthService.start();
         coreStreams.start();
         timerStreams.start();
         internalComms.start();
         for (LHServerListener listener : listeners) {
             listener.start();
         }
-        healthService.start();
     }
 
     public void close() {
