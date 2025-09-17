@@ -67,7 +67,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     // Designed to provide detailed feedback
     public static void validateStructDefFieldName(String name) throws InvalidStructDefFieldNameException {
         if (name == null) {
-            throw new InvalidStructDefFieldNameException("StructDef Field Names cannot be null");
+            throw new InvalidStructDefFieldNameException("illegal state, names cannot be null");
         }
 
         if (!Character.isLetter(name.charAt(0))) {
