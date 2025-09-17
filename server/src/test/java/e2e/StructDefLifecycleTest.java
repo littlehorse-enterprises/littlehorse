@@ -137,8 +137,6 @@ public class StructDefLifecycleTest {
     class NoSchemaUpdatesEvolutionTest {
         @Test
         void shouldThrowErrorWhenPuttingNewField() {
-            // TODO: Re-implement tests with StructDef builder helpers developed in
-            // following PR.
             client.putStructDef(PutStructDefRequest.newBuilder()
                     .setName("car")
                     .setStructDef(InlineStructDef.newBuilder()
@@ -249,8 +247,6 @@ public class StructDefLifecycleTest {
     class FullyCompatibleSchemaUpdatesEvolutionTest {
         @Test
         void shouldAllowCompatibleStructDefEvolution() {
-            // TODO: Re-implement tests with StructDef builder helpers developed in
-            // following PR.
             client.putStructDef(PutStructDefRequest.newBuilder()
                     .setName("car-2")
                     .setStructDef(InlineStructDef.newBuilder()
@@ -297,8 +293,6 @@ public class StructDefLifecycleTest {
 
         @Test
         void shouldThrowErrorWhenPuttingIncompatibleStructDefEvolutions() {
-            // TODO: Re-implement tests with StructDef builder helpers developed in
-            // following PR.
             client.putStructDef(PutStructDefRequest.newBuilder()
                     .setName("car-3")
                     .setStructDef(InlineStructDef.newBuilder()
