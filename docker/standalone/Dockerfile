@@ -1,8 +1,8 @@
-FROM ubuntu:24.10
+FROM ubuntu:24.04
 
 LABEL maintainer="engineering@littlehorse.io"
 
-ARG KAFKA_VERSION=3.8.1
+ARG KAFKA_VERSION=4.0.0
 
 ENV PATH=${PATH}:/kafka/bin:/lh
 ENV LHD_API_HOST=localhost
