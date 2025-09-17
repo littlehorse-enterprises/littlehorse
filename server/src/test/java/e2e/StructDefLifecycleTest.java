@@ -137,7 +137,6 @@ public class StructDefLifecycleTest {
     class NoSchemaUpdatesEvolutionTest {
         @Test
         void shouldThrowErrorWhenPuttingNewField() {
-            // TODO: Re-implement tests with StructDef builder helpers developed in following PR.
             client.putStructDef(PutStructDefRequest.newBuilder()
                     .setName("car")
                     .setStructDef(InlineStructDef.newBuilder()
@@ -248,7 +247,6 @@ public class StructDefLifecycleTest {
     class FullyCompatibleSchemaUpdatesEvolutionTest {
         @Test
         void shouldAllowCompatibleStructDefEvolution() {
-            // TODO: Re-implement tests with StructDef builder helpers developed in following PR.
             client.putStructDef(PutStructDefRequest.newBuilder()
                     .setName("car-2")
                     .setStructDef(InlineStructDef.newBuilder()
@@ -295,7 +293,6 @@ public class StructDefLifecycleTest {
 
         @Test
         void shouldThrowErrorWhenPuttingIncompatibleStructDefEvolutions() {
-            // TODO: Re-implement tests with StructDef builder helpers developed in following PR.
             client.putStructDef(PutStructDefRequest.newBuilder()
                     .setName("car-3")
                     .setStructDef(InlineStructDef.newBuilder()
@@ -306,7 +303,7 @@ public class StructDefLifecycleTest {
                                                     TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                             .build())
                             .putFields(
-                                    "is-sold",
+                                    "isSold",
                                     StructFieldDef.newBuilder()
                                             .setFieldType(
                                                     TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
@@ -334,7 +331,7 @@ public class StructDefLifecycleTest {
             assertThatThrownBy(() -> client.putStructDef(updatedStructDef))
                     .isInstanceOf(StatusRuntimeException.class)
                     .hasMessage(
-                            "INVALID_ARGUMENT: Incompatible StructDef evolution on field(s): [year, model, is-sold] using FULLY_COMPATIBLE_SCHEMA_UPDATES compatibility type");
+                            "INVALID_ARGUMENT: Incompatible StructDef evolution on field(s): [year, isSold, model] using FULLY_COMPATIBLE_SCHEMA_UPDATES compatibility type");
         }
 
         @Test
@@ -411,6 +408,95 @@ public class StructDefLifecycleTest {
                             .build());
 
             assertThat(resp.getIsValid()).isFalse();
+        }
+    }
+
+    @Nested
+    class StructDefFieldNameValidationTest {
+        @Test
+        public void shouldAcceptStructDefFieldWithCamelCase() {
+            client.putStructDef(PutStructDefRequest.newBuilder()
+                    .setName("car-67")
+                    .setStructDef(InlineStructDef.newBuilder()
+                            .putFields(
+                                    "brandName9734",
+                                    StructFieldDef.newBuilder()
+                                            .setFieldType(
+                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                            .build()))
+                    .build());
+        }
+
+        @Test
+        public void shouldRejectStructDefFieldWithUnderscore() {
+            assertThatThrownBy(() -> {
+                        client.putStructDef(PutStructDefRequest.newBuilder()
+                                .setName("car-68")
+                                .setStructDef(InlineStructDef.newBuilder()
+                                        .putFields(
+                                                "brand_name",
+                                                StructFieldDef.newBuilder()
+                                                        .setFieldType(TypeDefinition.newBuilder()
+                                                                .setPrimitiveType(VariableType.STR))
+                                                        .build()))
+                                .build());
+                    })
+                    .isInstanceOf(StatusRuntimeException.class)
+                    .hasMessageContaining("cannot include underscores");
+        }
+
+        @Test
+        public void shouldRejectStructDefFieldWithNumericFirstCharacter() {
+            assertThatThrownBy(() -> {
+                        client.putStructDef(PutStructDefRequest.newBuilder()
+                                .setName("car-70")
+                                .setStructDef(InlineStructDef.newBuilder()
+                                        .putFields(
+                                                "8D",
+                                                StructFieldDef.newBuilder()
+                                                        .setFieldType(TypeDefinition.newBuilder()
+                                                                .setPrimitiveType(VariableType.STR))
+                                                        .build()))
+                                .build());
+                    })
+                    .isInstanceOf(StatusRuntimeException.class)
+                    .hasMessageContaining("first character must be a letter");
+        }
+
+        @Test
+        public void shouldRejectStructDefFieldWithCapitalFirstLetter() {
+            assertThatThrownBy(() -> {
+                        client.putStructDef(PutStructDefRequest.newBuilder()
+                                .setName("car-71")
+                                .setStructDef(InlineStructDef.newBuilder()
+                                        .putFields(
+                                                "BrandName",
+                                                StructFieldDef.newBuilder()
+                                                        .setFieldType(TypeDefinition.newBuilder()
+                                                                .setPrimitiveType(VariableType.STR))
+                                                        .build()))
+                                .build());
+                    })
+                    .isInstanceOf(StatusRuntimeException.class)
+                    .hasMessageContaining("first letter must be lowercase");
+        }
+
+        @Test
+        public void shouldRejectStructDefFieldWithDollarSign() {
+            assertThatThrownBy(() -> {
+                        client.putStructDef(PutStructDefRequest.newBuilder()
+                                .setName("car-72")
+                                .setStructDef(InlineStructDef.newBuilder()
+                                        .putFields(
+                                                "brandName$",
+                                                StructFieldDef.newBuilder()
+                                                        .setFieldType(TypeDefinition.newBuilder()
+                                                                .setPrimitiveType(VariableType.STR))
+                                                        .build()))
+                                .build());
+                    })
+                    .isInstanceOf(StatusRuntimeException.class)
+                    .hasMessageContaining("cannot include special characters");
         }
     }
 
