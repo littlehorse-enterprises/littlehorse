@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
 import { XYPosition } from 'reactflow';
-import { NodeType } from '../../../types';
+import { NodeType } from '../../types';
 
 interface DraggableNodeProps {
   className?: string;

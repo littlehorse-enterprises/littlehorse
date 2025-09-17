@@ -33,8 +33,8 @@ export function useELKLayout(): UseELKLayoutResult {
           ...node,
           targetPosition: isHorizontal ? 'left' : 'top',
           sourcePosition: isHorizontal ? 'right' : 'bottom',
-          width: node.measured?.width ?? node.width ?? 150,
-          height: node.measured?.height ?? node.height ?? 50,
+          width: node.width ?? 150,
+          height: node.height ?? 50,
         })),
         edges: edges.map(edge => ({
           ...edge,
