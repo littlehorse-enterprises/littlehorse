@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,14 +52,38 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
 
     public void validate(ReadOnlyMetadataManager metadataManager) {
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
-            // TODO: Propose and agree upon Field Name validation technique!
-            // if (!LHUtil.isValidLHName(field.getKey())) {
-            //     throw new LHApiException(
-            //             Status.INVALID_ARGUMENT,
-            //             MessageFormat.format("StructField name [{0}] must be a valid hostname", field.getKey()));
-            // }
+            try {
+                validateStructDefFieldName(field.getKey());
+            } catch (InvalidStructDefFieldNameException e) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        MessageFormat.format("StructDef Field name [{0}] invalid: " + e.getMessage(), field.getKey()));
+            }
 
             field.getValue().validate(metadataManager);
+        }
+    }
+
+    // Designed to provide detailed feedback
+    public static void validateStructDefFieldName(String name) throws InvalidStructDefFieldNameException {
+        if (name == null) {
+            throw new InvalidStructDefFieldNameException("StructDef Field Names cannot be null");
+        }
+
+        if (!Character.isLetter(name.charAt(0))) {
+            throw new InvalidStructDefFieldNameException("first character must be a letter");
+        }
+
+        if (Character.isUpperCase(name.charAt(0))) {
+            throw new InvalidStructDefFieldNameException("first letter must be lowercase");
+        }
+
+        if (name.contains("_")) {
+            throw new InvalidStructDefFieldNameException("cannot include underscores, must follow camelCase");
+        }
+
+        if (!name.matches("^[a-zA-Z0-9]+$")) {
+            throw new InvalidStructDefFieldNameException("cannot include special characters, must be alphanumeric");
         }
     }
 
