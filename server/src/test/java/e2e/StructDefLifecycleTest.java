@@ -416,7 +416,7 @@ public class StructDefLifecycleTest {
         @Test
         public void shouldAcceptStructDefFieldWithCamelCase() {
             client.putStructDef(PutStructDefRequest.newBuilder()
-                    .setName("car-66")
+                    .setName("car-67")
                     .setStructDef(InlineStructDef.newBuilder()
                             .putFields(
                                     "brandName9734",
@@ -431,7 +431,7 @@ public class StructDefLifecycleTest {
         public void shouldRejectStructDefFieldWithUnderscore() {
             assertThatThrownBy(() -> {
                         client.putStructDef(PutStructDefRequest.newBuilder()
-                                .setName("car-67")
+                                .setName("car-68")
                                 .setStructDef(InlineStructDef.newBuilder()
                                         .putFields(
                                                 "brand_name",
@@ -449,7 +449,7 @@ public class StructDefLifecycleTest {
         public void shouldRejectStructDefFieldWithNumericFirstCharacter() {
             assertThatThrownBy(() -> {
                         client.putStructDef(PutStructDefRequest.newBuilder()
-                                .setName("car-67")
+                                .setName("car-70")
                                 .setStructDef(InlineStructDef.newBuilder()
                                         .putFields(
                                                 "8D",
@@ -467,7 +467,7 @@ public class StructDefLifecycleTest {
         public void shouldRejectStructDefFieldWithCapitalFirstLetter() {
             assertThatThrownBy(() -> {
                         client.putStructDef(PutStructDefRequest.newBuilder()
-                                .setName("car-67")
+                                .setName("car-71")
                                 .setStructDef(InlineStructDef.newBuilder()
                                         .putFields(
                                                 "BrandName",
@@ -485,7 +485,7 @@ public class StructDefLifecycleTest {
         public void shouldRejectStructDefFieldWithDollarSign() {
             assertThatThrownBy(() -> {
                         client.putStructDef(PutStructDefRequest.newBuilder()
-                                .setName("car-67")
+                                .setName("car-72")
                                 .setStructDef(InlineStructDef.newBuilder()
                                         .putFields(
                                                 "brandName$",
