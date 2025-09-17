@@ -23,6 +23,7 @@ import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +33,7 @@ public class WfService {
     private final ReadOnlyMetadataManager metadataManager;
 
     public WfService(ReadOnlyMetadataManager metadataManager) {
-        this.metadataManager = metadataManager;
+        this.metadataManager = Objects.requireNonNull(metadataManager);
     }
 
     public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {

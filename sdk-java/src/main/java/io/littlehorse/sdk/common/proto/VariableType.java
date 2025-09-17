@@ -90,7 +90,7 @@ public enum VariableType
   WF_RUN_ID(7),
   /**
    * <pre>
-   * Represents a time normalized to the central time (GMT).
+   * Represents a time normalized to Coordinated Universal Time (UTC).
    * </pre>
    *
    * <code>TIMESTAMP = 8;</code>
@@ -177,7 +177,7 @@ public enum VariableType
   public static final int WF_RUN_ID_VALUE = 7;
   /**
    * <pre>
-   * Represents a time normalized to the central time (GMT).
+   * Represents a time normalized to Coordinated Universal Time (UTC).
    * </pre>
    *
    * <code>TIMESTAMP = 8;</code>

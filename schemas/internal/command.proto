@@ -102,6 +102,8 @@ message MetadataCommand {
 
         DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;
         PutStructDefRequest put_struct_def = 17;
+
+        DeleteStructDefRequest delete_struct_def = 18;
     }
 }
 

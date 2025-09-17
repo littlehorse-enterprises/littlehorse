@@ -83,7 +83,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         // just use the Chulla Vida strategy.
         if (eed.getReturnType().isPresent()) {
             ReturnTypeModel type = eed.getReturnType().get();
-            if (!type.isCompatibleWith(content)) {
+            if (!type.isCompatibleWith(content, executionContext.metadataManager())) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Invalid type of content for event. Check the return type of ExternalEventDef "

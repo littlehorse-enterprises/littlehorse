@@ -21,7 +21,7 @@ public class WfRunVariableImplTest {
     void validateVariableAllowJsonPah() {
         WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
         WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
-        WfRunVariableImpl variable = new WfRunVariableImpl("my-var", VariableType.STR, wfThread);
+        WfRunVariableImpl variable = WfRunVariableImpl.createPrimitiveVar("my-var", VariableType.STR, wfThread);
 
         LHMisconfigurationException e =
                 assertThrows(LHMisconfigurationException.class, () -> variable.jsonPath("&.myPath"));
@@ -30,8 +30,9 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldThrowAnExceptionWhenVariableHaveNullParentThread() {
-        NullPointerException e =
-                assertThrows(NullPointerException.class, () -> new WfRunVariableImpl("my-var", VariableType.STR, null));
+        NullPointerException e = assertThrows(
+                NullPointerException.class,
+                () -> WfRunVariableImpl.createPrimitiveVar("my-var", VariableType.STR, null));
 
         assertEquals("Parent thread cannot be null.", e.getMessage());
     }

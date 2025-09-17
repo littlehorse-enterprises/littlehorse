@@ -39,6 +39,8 @@ message UserTaskField {
   // The name of the field. When a UserTaskRun is completed, the NodeOutput is a
   // single-level JSON_OBJ. Each key is the name of the field. Must be unique.
   string name = 1;
+  
+  // TODO: Support any TypeDefinition (including StructDefs)
 
   // The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
   VariableType type = 2;

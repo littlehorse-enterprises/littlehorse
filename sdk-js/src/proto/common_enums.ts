@@ -382,7 +382,7 @@ export enum VariableType {
    * communication or tracking dependencies between workflows.
    */
   WF_RUN_ID = "WF_RUN_ID",
-  /** TIMESTAMP - Represents a time normalized to the central time (GMT). */
+  /** TIMESTAMP - Represents a time normalized to Coordinated Universal Time (UTC). */
   TIMESTAMP = "TIMESTAMP",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
