@@ -39,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
+import org.apache.logging.log4j.LogManager;
 
 @Slf4j
 public class LHServer {
@@ -237,6 +238,7 @@ public class LHServer {
             listener.close();
         }
         log.info("Done closing all listeners");
+        LogManager.shutdown();
     }
 
     public Set<HostModel> getAllInternalHosts() {

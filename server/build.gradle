@@ -18,7 +18,8 @@ task javadocJar(type: Jar) {
 }
 
 def defaultJvmArgs = [
-    '-XX:+UseZGC'
+    '-XX:+UseZGC',
+    '-Dlog4j.shutdownHookEnabled=false'
 ]
 
 
