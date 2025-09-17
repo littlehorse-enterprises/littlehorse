@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '../../../components/ui/button';
+import { Button } from '@/components/ui/button';
 import { useCallback, useState } from 'react';
-import { useDeployWorkflow } from '../../../hooks/useDeployWorkflow';
+import { useDeployWorkflow } from '../../hooks/useDeployWorkflow';
 
 export function DeployButton() {
   const [isDeploying, setIsDeploying] = useState(false);

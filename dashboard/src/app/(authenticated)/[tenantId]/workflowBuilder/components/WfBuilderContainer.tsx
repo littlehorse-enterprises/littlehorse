@@ -9,13 +9,13 @@ import {
   MiniMap
 } from 'reactflow';
 
-import { Sidebar } from '../../components/wf-builder/sidebar/Sidebar';
-import { LayoutPanel } from '../../components/wf-builder/LayoutPanel';
-import { EntryPoint } from '../../components/wf-builder/nodes/EntryPoint';
-import { ExitPoint } from '../../components/wf-builder/nodes/ExitPoint';
-import { TaskNode } from '../../components/wf-builder/nodes/TaskNode';
-import { NodeType } from '../../types';
-import { useWorkflowBuilder } from '../../hooks/useWorkflowBuilder';
+import { Sidebar } from './sidebar/Sidebar';  
+import { LayoutPanel } from './LayoutPanel';
+import { EntryPoint } from './nodes/EntryPoint';
+import { ExitPoint } from './nodes/ExitPoint';
+import { TaskNode } from './nodes/TaskNode';
+import { NodeType } from '../types';
+import { useWorkflowBuilder } from '../hooks/useWorkflowBuilder';
 
 const nodeTypes = {
   [NodeType.ENTRY_POINT]: EntryPoint,

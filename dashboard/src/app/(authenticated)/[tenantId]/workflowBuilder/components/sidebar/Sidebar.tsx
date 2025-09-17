@@ -1,12 +1,12 @@
 'use client';
 
 import { DraggableNode } from './DraggableNode';
-import { useUI } from '../../../contexts/ui/provider';
+import { useUI } from '../../contexts/ui/provider';
 import { NodeDataPanel } from './NodeDataPanel';
 import { EdgeDataPanel } from './EdgeDataPanel';
 import { DeployButton } from './DeployButton';
-import { useNodeDrop } from '../../../hooks/useNodeDrop';
-import { NodeType } from '../../../types';
+import { useNodeDrop } from '../../hooks/useNodeDrop';
+import { NodeType } from '../../types';
 import { ResetButton } from './ResetButton';
 
 interface SidebarProps {

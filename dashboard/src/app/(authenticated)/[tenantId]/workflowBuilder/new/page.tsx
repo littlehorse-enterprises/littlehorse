@@ -1,4 +1,4 @@
-import { WfBuilderContainer } from '../components/wf-builder/WfBuilderContainer';
+import { WfBuilderContainer } from '../components/WfBuilderContainer';
 import { WorkflowProvider } from '../contexts/workflow/provider';
 import { UIProvider } from '../contexts/ui/provider';
 

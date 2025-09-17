@@ -1,9 +1,9 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Edge as ReactFlowEdge } from 'reactflow';
-import { useEdgeDataEditor } from '../../../hooks/useEdgeDataEditor';
+import { useEdgeDataEditor } from '../../hooks/useEdgeDataEditor';
 
 export function EdgeDataPanel({ edge }: { edge: ReactFlowEdge }) {
   const { handleDelete } = useEdgeDataEditor(edge.id);

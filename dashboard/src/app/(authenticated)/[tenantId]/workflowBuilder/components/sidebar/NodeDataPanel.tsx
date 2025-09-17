@@ -1,11 +1,11 @@
 'use client';
 
 import type { Node as ReactFlowNode } from 'reactflow';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Label } from '../../../components/ui/label';
-import { Input } from '../../../components/ui/input';
-import { Button } from '../../../components/ui/button';
-import { useNodeDataEditor } from '../../../hooks/useNodeDataEditor';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useNodeDataEditor } from '../../hooks/useNodeDataEditor';
 
 const inputClass = 'bg-gray-800 border-gray-600 text-white mt-2 mb-4 placeholder:text-gray-400 focus-visible:ring-0';
 

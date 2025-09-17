@@ -1,8 +1,8 @@
 'use client';
 
 import { Panel } from 'reactflow';
-import { Button } from '../../components/ui/button';
-import type { LayoutDirection } from '../../types';
+import { Button } from '@/components/ui/button';
+import type { LayoutDirection } from '../types';
 
 interface LayoutPanelProps {
   handleLayout: (direction: LayoutDirection) => void; 
