@@ -65,7 +65,7 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
         Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
         // Now we gotta forward the timer.
         Record<String, LHTimer> toSend =
-                new Record<String, LHTimer>(timer.key, timer, timer.maturationTime.getTime(), metadata);
+                new Record<String, LHTimer>(timer.partitionKey, timer, timer.maturationTime.getTime(), metadata);
         context.forward(toSend);
     }
 }

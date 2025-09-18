@@ -349,16 +349,17 @@ public final class CommandOuterClass {
       "tlehorse.VariableAssignmentH\001\210\001\001\022-\n\tuser" +
       "_task\030\004 \001(\0132\032.littlehorse.UserTaskRunId\022" +
       "\r\n\005epoch\030\005 \001(\003B\016\n\014_new_user_idB\021\n\017_new_u" +
-      "ser_group\"\360\001\n\tLHTimerPb\0223\n\017maturation_ti" +
-      "me\030\001 \001(\0132\032.google.protobuf.Timestamp\022\013\n\003" +
-      "key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004 \001(" +
-      "\014\022-\n\ttenant_id\030\005 \001(\0132\025.littlehorse.Tenan" +
-      "tIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\0132\030.littleh" +
-      "orse.PrincipalIdH\001\210\001\001B\014\n\n_tenant_idB\017\n\r_" +
-      "principal_id\"B\n\034DeleteTaskWorkerGroupReq" +
-      "uest\022\"\n\002id\030\001 \001(\0132\026.littlehorse.TaskDefId" +
-      "B\037\n\033io.littlehorse.common.protoP\001b\006proto" +
-      "3"
+      "ser_group\"\240\002\n\tLHTimerPb\0223\n\017maturation_ti" +
+      "me\030\001 \001(\0132\032.google.protobuf.Timestamp\022\025\n\r" +
+      "partition_key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007pa" +
+      "yload\030\004 \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.littleh" +
+      "orse.TenantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\013" +
+      "2\030.littlehorse.PrincipalIdH\001\210\001\001\022\026\n\tstore" +
+      "_key\030\007 \001(\tH\002\210\001\001B\014\n\n_tenant_idB\017\n\r_princi" +
+      "pal_idB\014\n\n_store_key\"B\n\034DeleteTaskWorker" +
+      "GroupRequest\022\"\n\002id\030\001 \001(\0132\026.littlehorse.T" +
+      "askDefIdB\037\n\033io.littlehorse.common.protoP" +
+      "\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -535,7 +536,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_LHTimerPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTimerPb_descriptor,
-        new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", "TenantId", "PrincipalId", "TenantId", "PrincipalId", });
+        new java.lang.String[] { "MaturationTime", "PartitionKey", "Topic", "Payload", "TenantId", "PrincipalId", "StoreKey", "TenantId", "PrincipalId", "StoreKey", });
     internal_static_littlehorse_DeleteTaskWorkerGroupRequest_descriptor =
       getDescriptor().getMessageTypes().get(24);
     internal_static_littlehorse_DeleteTaskWorkerGroupRequest_fieldAccessorTable = new

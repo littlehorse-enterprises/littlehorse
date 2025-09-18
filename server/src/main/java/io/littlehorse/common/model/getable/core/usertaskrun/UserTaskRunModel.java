@@ -103,7 +103,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             CoreProcessorContext processorContext) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRunModel.getObjectId();
-        this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
+        this.id = new UserTaskRunIdModel(nodeRunId);
         this.scheduledTime = new Date();
         this.epoch = 0;
         this.userTaskNode = userTaskNode;
