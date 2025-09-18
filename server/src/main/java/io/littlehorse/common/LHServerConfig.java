@@ -52,6 +52,8 @@ import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
 import org.rocksdb.LRUCache;
+import org.rocksdb.RateLimiter;
+import org.rocksdb.RateLimiterMode;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
 
@@ -145,6 +147,9 @@ public class LHServerConfig extends ConfigBase {
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
     public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
+    public static final String ROCKSDB_BLOCK_SIZE_KEY = "LHS_X_ROCKSDB_BLOCK_SIZE";
+    public static final String ROCKSDB_USE_COMPRESSION_KEY = "LHS_X_ROCKSDB_USE_COMPRESSION";
+    public static final String ROCKSDB_PARTITION_INDEX_FILTERS_KEY = "LHS_X_ROCKSDB_PARTITION_INDEX_FILTERS";
 
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
@@ -157,6 +162,9 @@ public class LHServerConfig extends ConfigBase {
 
     @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
+
+    @Getter
+    private RateLimiter globalRocksdbRateLimiter;
 
     public LHServerConfig() {
         super();
@@ -758,6 +766,19 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_DIRECT_IO_KEY, "false"));
     }
 
+    public long getRocksDBBlockSize() {
+        // Default block size: 8KB (8 * 1024 bytes)
+        return Long.valueOf(getOrSetDefault(ROCKSDB_BLOCK_SIZE_KEY, String.valueOf(1024L * 8)));
+    }
+
+    public boolean getRocksDBUseCompression() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_COMPRESSION_KEY, "true"));
+    }
+
+    public boolean getRocksDBPartitionIndexFilters() {
+        return Boolean.valueOf(getOrSetDefault(ROCKSDB_PARTITION_INDEX_FILTERS_KEY, "true"));
+    }
+
     // Timer Topology generally has smaller values that are written. The majority of them
     // are LHTimer's with short (i.e. 10-second) TTL's (i.e. TaskRun Timeout timers), so
     // we don't expect the timer memtable to overflow that quickly.
@@ -770,8 +791,7 @@ public class LHServerConfig extends ConfigBase {
         Properties conf = new Properties();
         conf.put("client.id", this.getClientId(component));
         conf.put(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG, "rebootstrap");
-        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "zstd");
-        props.put(ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG, 8);
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -968,14 +988,15 @@ public class LHServerConfig extends ConfigBase {
         // Future work might allow this to be a separate config from the linger ms used for the GRPC server.
         props.put(StreamsConfig.producerPrefix("linger.ms"), getOrSetDefault(LINGER_MS_KEY, "0"));
 
+        props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, 0);
+
         return props;
     }
 
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
 
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_TYPE_CONFIG), "zstd");
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG), 8);
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_TYPE_CONFIG), "lz4");
         props.put(StreamsConfig.producerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
         props.put(StreamsConfig.consumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
         props.put(
@@ -1128,6 +1149,16 @@ public class LHServerConfig extends ConfigBase {
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
                     new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
+        }
+
+        long rateLimit = Long.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
+        if (rateLimit > 0) {
+            this.globalRocksdbRateLimiter = new RateLimiter(
+                    rateLimit,
+                    RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
+                    RateLimiter.DEFAULT_FAIRNESS,
+                    RateLimiterMode.ALL_IO,
+                    RateLimiter.DEFAULT_AUTOTUNE);
         }
     }
 
