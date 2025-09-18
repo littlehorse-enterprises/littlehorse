@@ -220,9 +220,9 @@ const formatVariableExpression = (
   const { lhs, rhs, operation } = value
   const result =
     operation === VariableMutationType.REMOVE_IF_PRESENT ||
-      operation === VariableMutationType.REMOVE_INDEX ||
-      operation === VariableMutationType.REMOVE_KEY ||
-      operation === VariableMutationType.EXTEND
+    operation === VariableMutationType.REMOVE_INDEX ||
+    operation === VariableMutationType.REMOVE_KEY ||
+    operation === VariableMutationType.EXTEND
       ? `${getVariable(lhs!, depth + 1)}.${getExpressionSymbol(operation)}(${getVariable(rhs!, depth + 1)})` // Dot notation for these operations
       : `${getVariable(lhs!, depth + 1)} ${getExpressionSymbol(operation)} ${getVariable(rhs!, depth + 1)}` // Arithmetic operations
   return depth > 0 ? `(${result})` : result
