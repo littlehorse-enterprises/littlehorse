@@ -1,9 +1,6 @@
-import { getInheritedVariables } from '@/app/actions/getInheritedVariables'
 import { getVariableDefType, getVariableValue } from '@/app/utils'
 import { ThreadVarDef, Variable, WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
-import { FC, useEffect } from 'react'
-import { toast } from 'sonner'
-import useSWR from 'swr'
+import { FC } from 'react'
 import { OverflowText } from '../../../../components/OverflowText'
 
 type VariablesProps = {
@@ -20,19 +17,8 @@ const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
   UNRECOGNIZED: '',
 }
 
-export const Variables: FC<VariablesProps> = ({ variableDefs, variables, wfRunId, tenantId }) => {
+export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
   if (variableDefs.length === 0) return <></>
-
-  const { data: inheritedVariables, error } = useSWR(['getInheritedVariables', tenantId, wfRunId], async () => {
-    return await getInheritedVariables(wfRunId, variableDefs, tenantId)
-  })
-
-  useEffect(() => {
-    if (error) {
-      const message = (error as any)?.message || 'Failed to load inherited variables'
-      toast.error(message)
-    }
-  }, [error])
 
   return (
     <div>
@@ -47,13 +33,7 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables, wfRunId
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
           <span>=</span>
           <span className="truncate">
-            <OverflowText
-              className="max-w-96"
-              text={getVariableValueForVariableDef(
-                variable,
-                inheritedVariables ? [...variables, ...inheritedVariables] : variables
-              )}
-            />
+            <OverflowText className="max-w-96" text={getVariableValueForVariableDef(variable, variables)} />
           </span>
         </div>
       ))}
