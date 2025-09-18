@@ -72,7 +72,15 @@ public class LHUtil {
     }
 
     public static String generateGuid() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
+        UUID uuid = UUID.randomUUID();
+        byte[] bytes = new byte[16];
+        long msb = uuid.getMostSignificantBits();
+        long lsb = uuid.getLeastSignificantBits();
+
+        for (int i = 0; i < 8; i++) bytes[i] = (byte) (msb >>> (8 * (7 - i)));
+        for (int i = 8; i < 16; i++) bytes[i] = (byte) (lsb >>> (8 * (15 - i)));
+
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).replaceAll("_", "-");
     }
 
     /**
@@ -160,7 +168,7 @@ public class LHUtil {
     }
 
     public static boolean isValidLHName(String name) {
-        return name.matches("[a-z0-9]([-a-z0-9]*[a-z0-9])?");
+        return name.matches("[A-Za-z0-9]([-A-Za-z0-9]*[A-Za-z0-9])?");
     }
 
     public static String digestify(String str) {
