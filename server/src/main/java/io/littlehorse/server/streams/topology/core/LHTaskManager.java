@@ -103,9 +103,9 @@ public class LHTaskManager {
         timer.setTenantId(authContext.tenantId());
         timer.setPrincipalId(authContext.principalId());
         timer.topic = commandTopicName;
-        CommandProcessorOutput output = new CommandProcessorOutput(timerTopicName, timer, timer.key);
+        CommandProcessorOutput output = new CommandProcessorOutput(timerTopicName, timer, timer.partitionKey);
         Headers headers = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         log.trace("forwarding lh timer: {}", timer);
-        processorContext.forward(new Record<>(timer.key, output, System.currentTimeMillis(), headers));
+        processorContext.forward(new Record<>(timer.partitionKey, output, System.currentTimeMillis(), headers));
     }
 }
