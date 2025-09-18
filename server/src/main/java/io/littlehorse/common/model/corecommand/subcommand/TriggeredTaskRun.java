@@ -105,7 +105,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
 
         try {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread, executionContext);
-            TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId, executionContext);
+            TaskRunIdModel taskRunId = new TaskRunIdModel(userTaskRun, executionContext);
             TaskDefModel taskDef = taskToSchedule.getTaskDef(thread, executionContext);
             TaskDefIdModel id = taskDef.getId();
 

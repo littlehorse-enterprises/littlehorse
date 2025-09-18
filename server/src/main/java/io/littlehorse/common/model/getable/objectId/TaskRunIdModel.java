@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskRun;
@@ -25,8 +26,16 @@ public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunMode
         this.taskGuid = guid;
     }
 
-    public TaskRunIdModel(WfRunIdModel wfRunId, CoreProcessorContext processorContext) {
-        this(wfRunId, LHUtil.generateGuid());
+    public TaskRunIdModel(NodeRunIdModel nodeRunId, CoreProcessorContext processorContext) {
+        this(nodeRunId.getWfRunId(), nodeRunId.getThreadRunNumber() + "-" + nodeRunId.getPosition());
+    }
+
+    public TaskRunIdModel(UserTaskRunModel userTaskRun, CoreProcessorContext ctx) {
+        this(
+                userTaskRun.getId().getWfRunId(),
+                "ut-" + userTaskRun.getNodeRunId().getThreadRunNumber() + "-"
+                        + userTaskRun.getNodeRunId().getPosition() + "-"
+                        + userTaskRun.getEvents().size());
     }
 
     @Override

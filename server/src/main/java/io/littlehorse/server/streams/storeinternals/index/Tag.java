@@ -135,7 +135,7 @@ public class Tag extends Storeable<TagPb> {
         builder.append("/");
         builder.append(LHUtil.toLhDbFormat(createdAt));
         builder.append("/");
-        builder.append(describedObjectId);
+        // builder.append(describedObjectId);
         return builder.toString();
     }
 

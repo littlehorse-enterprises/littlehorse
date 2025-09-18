@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -31,7 +32,7 @@ public class TaskRunModelTest {
     void setTaskWorkerVersionAndIdToTaskRun() {
         // arrange. Complex because all the dependencies needed
         TaskRun taskRunProto = TaskRun.newBuilder()
-                .setId(new TaskRunIdModel(new WfRunIdModel("asdf"), processorContext).toProto())
+                .setId(new TaskRunIdModel(new NodeRunIdModel(new WfRunIdModel("asdf"), 0, 1), processorContext).toProto())
                 .addAttempts(TaskAttempt.newBuilder().setStatus(TaskStatus.TASK_PENDING))
                 .build();
         when(executionContext.castOnSupport(CoreProcessorContext.class)).thenReturn(processorContext);
