@@ -8,8 +8,7 @@ import { createNodeValue } from '../../lib/utils'
 
 // TODO: move this whole thing to utils and split into different node types for parametrization
 function createNode(nodeType: NodeType, taskName?: string, varName?: string): Node {
-  const nodeValue = createNodeValue(nodeType, taskName, varName)
-  console.log('Creating node:', { nodeType, taskName, varName, nodeValue })
+  const nodeValue = createNodeValue(nodeType, taskName, varName);
 
   const node = {
     outgoingEdges: [],
@@ -20,8 +19,7 @@ function createNode(nodeType: NodeType, taskName?: string, varName?: string): No
     } as Node['node']
   }
 
-  console.log('Created LH node:', node)
-  return node
+  return node;
 }
 
 function createVariableDef(varName: string): ThreadVarDef {
@@ -51,11 +49,11 @@ export function handleAddNode(
   action: Extract<WorkflowAction, { type: WorkflowActionType.ADD_NODE }>
 ): WorkflowState {
   const { nodeId, nodeType, taskName, varName } = action.payload
-  const newNode = createNode(nodeType, taskName, varName)
-  const newVarDef: ThreadVarDef | undefined = varName ? createVariableDef(varName) : undefined
+  const newNode = createNode(nodeType, taskName, varName);
+  const newVarDef: ThreadVarDef | undefined = varName ? createVariableDef(varName) : undefined;
 
   return produce(state, draft => {
-    draft.spec.threadSpecs.entrypoint.nodes[nodeId] = newNode
+    draft.spec.threadSpecs.entrypoint.nodes[nodeId] = newNode;
 
     if (newVarDef) {
       draft.spec.threadSpecs.entrypoint.variableDefs = [
@@ -71,7 +69,7 @@ export function handleRemoveNode(
   action: Extract<WorkflowAction, { type: WorkflowActionType.REMOVE_NODE }>
 ): WorkflowState {
   return produce(state, draft => {
-    delete draft.spec.threadSpecs.entrypoint.nodes[action.payload]
+    delete draft.spec.threadSpecs.entrypoint.nodes[action.payload];
 
     Object.values(draft.spec.threadSpecs.entrypoint.nodes).forEach(node => {
       if (node.outgoingEdges?.length > 0) {
@@ -85,11 +83,11 @@ export function handleUpdateNodeData(
   state: WorkflowState,
   action: Extract<WorkflowAction, { type: WorkflowActionType.UPDATE_NODE_DATA }>
 ): WorkflowState {
-  const { nodeId, taskName, varName } = action.payload
+  const { nodeId, taskName, varName } = action.payload;
 
   return produce(state, draft => {
-    const node = draft.spec.threadSpecs.entrypoint.nodes[nodeId].node
-    if (!node) return
+    const node = draft.spec.threadSpecs.entrypoint.nodes[nodeId].node;
+    if (!node) return;
 
     // TODO: ask Mijail about this (dynamic tasks)
     if (node.$case === 'task' && taskName) {
@@ -100,16 +98,13 @@ export function handleUpdateNodeData(
     }
 
     if (node.$case === 'task' && varName !== undefined) {
-      node.value.variables = varName
-        ? [
-            {
-              source: {
-                $case: 'variableName',
-                value: varName,
-              },
-            },
-          ]
-        : []
+      node.value.variables = varName ? [{
+        source: {
+          $case: 'variableName',
+          value: varName,
+        },
+      }]
+      : [];
     }
   })
 }
@@ -118,25 +113,23 @@ export function handleSetOutgoingEdges(
   state: WorkflowState,
   action: Extract<WorkflowAction, { type: WorkflowActionType.SET_OUTGOING_EDGES }>
 ): WorkflowState {
-  const { edges } = action.payload
+  const { edges } = action.payload;
 
   return produce(state, draft => {
-    const nodes = draft.spec.threadSpecs.entrypoint.nodes
+    const nodes = draft.spec.threadSpecs.entrypoint.nodes;
 
     Object.values(nodes).forEach(node => {
-      node.outgoingEdges = []
+      node.outgoingEdges = [];
     })
 
     edges.forEach(edge => {
-      const node = nodes[edge.source]
+      const node = nodes[edge.source];
       if (node) {
-        node.outgoingEdges = [
-          {
-            sinkNodeName: edge.target,
-            condition: undefined,
-            variableMutations: [],
-          },
-        ]
+        node.outgoingEdges = [{
+          sinkNodeName: edge.target,
+          condition: undefined,
+          variableMutations: [],
+        }]
       }
     })
   })

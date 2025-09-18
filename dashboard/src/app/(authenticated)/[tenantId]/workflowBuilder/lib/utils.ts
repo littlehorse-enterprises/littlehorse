@@ -205,8 +205,6 @@ const createReactFlowNodeData = (nodeType: NodeType, lhNode: Node, nodeId: strin
     nodeNeedsToBeHighlighted: false,
   }
 
-  console.log('createReactFlowNodeData called:', { nodeType, nodeId, lhNode })
-
   switch (nodeType) {
     case 'task':
       if (lhNode.node?.$case === 'task') {
@@ -221,7 +219,7 @@ const createReactFlowNodeData = (nodeType: NodeType, lhNode: Node, nodeId: strin
     case 'entrypoint':
     case 'exit':
     default:
-      return baseData
+      return baseData;
   }
 }
 
