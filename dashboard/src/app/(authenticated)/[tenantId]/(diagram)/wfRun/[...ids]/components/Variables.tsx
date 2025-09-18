@@ -1,13 +1,11 @@
 import { getVariableDefType, getVariableValue } from '@/app/utils'
-import { ThreadVarDef, Variable, WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { ThreadVarDef, Variable, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { OverflowText } from '../../../../components/OverflowText'
 
 type VariablesProps = {
   variableDefs: ThreadVarDef[]
   variables: Variable[]
-  wfRunId: WfRunId
-  tenantId: string
 }
 
 const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {

@@ -37,8 +37,6 @@ export const WfRun: FC<{ ids: string[]; tenantId: string }> = ({ ids, tenantId }
         <Variables
           variableDefs={variableDefs}
           variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
-          wfRunId={wfRun.id}
-          tenantId={tenantId}
         />
       )}
 
