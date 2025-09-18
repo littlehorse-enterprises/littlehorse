@@ -1,24 +1,160 @@
-import { ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { VariableType } from 'littlehorse-client/proto';
-import { NodeType } from '../types';
-import type { PutWfSpecRequest, PutTaskDefRequest, TaskDef } from 'littlehorse-client/proto';
-import type { WorkflowState } from '../types';
-import type { Node as ReactFlowNode } from 'reactflow';
+import { VariableType, Comparator } from 'littlehorse-client/proto'
+import { NodeType } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/extractNodes'
+import type {
+  PutWfSpecRequest,
+  PutTaskDefRequest,
+  TaskDef,
+  EntrypointNode,
+  ExitNode,
+  TaskNode,
+  ExternalEventNode,
+  StartThreadNode,
+  WaitForThreadsNode,
+  NopNode,
+  SleepNode,
+  UserTaskNode,
+  StartMultipleThreadsNode,
+  ThrowEventNode,
+  WaitForConditionNode,
+} from 'littlehorse-client/proto'
+import type { WorkflowState } from '../types'
+import type { Node as ReactFlowNode } from 'reactflow'
+import type { Node } from 'littlehorse-client/proto'
+import { TIMEOUT_SECONDS } from '../lib/constants'
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+export function createNodeValue(nodeType: NodeType, taskName?: string, varName?: string):
+  | EntrypointNode
+  | ExitNode
+  | TaskNode
+  | ExternalEventNode
+  | StartThreadNode
+  | WaitForThreadsNode
+  | NopNode
+  | SleepNode
+  | UserTaskNode
+  | StartMultipleThreadsNode
+  | ThrowEventNode
+  | WaitForConditionNode {
+  switch (nodeType) {
+    case 'entrypoint':
+      return {} as EntrypointNode
+
+    case 'exit':
+      return {} as ExitNode
+
+    case 'task':
+      return {
+        taskToExecute: {
+          $case: 'taskDefId',
+          value: { name: taskName ? taskName : '' },
+        },
+        timeoutSeconds: TIMEOUT_SECONDS,
+        retries: 0,
+        variables: varName ? [{
+          source: {
+            $case: 'variableName',
+            value: varName
+          }
+        }] : []
+      } as TaskNode
+
+    case 'externalEvent':
+      return {
+        externalEventDefId: { name: '' },
+        timeoutSeconds: {
+          $case: 'literalValue',
+          value: { int: TIMEOUT_SECONDS },
+        },
+        maskCorrelationKey: false,
+      } as ExternalEventNode
+
+    case 'startThread':
+      return {
+        threadSpecName: '',
+        variables: {},
+      } as StartThreadNode
+
+    case 'waitForThreads':
+      return {
+        threadsToWaitFor: {
+          $case: 'threads',
+          value: { threads: [] },
+        },
+        perThreadFailureHandlers: [],
+      } as WaitForThreadsNode
+
+    case 'nop':
+      return {} as NopNode
+
+    case 'sleep':
+      return {
+        rawSeconds: {
+          $case: 'literalValue',
+          value: { int: 1 },
+        },
+      } as SleepNode
+
+    case 'userTask':
+      return {
+        userTaskDefName: '',
+        userTaskDefVersion: 0,
+        userGroup: {
+          $case: 'literalValue',
+          value: { str: '' },
+        },
+        userIds: [],
+        actions: [],
+      } as UserTaskNode
+
+    case 'startMultipleThreads':
+      return {
+        threadSpecName: '',
+        variables: {},
+        iterable: {
+          $case: 'variable',
+          value: { variableName: '' },
+        },
+      } as StartMultipleThreadsNode
+
+    case 'throwEvent':
+      return {
+        eventDefId: { name: '' },
+        content: {
+          $case: 'literalValue',
+          value: { str: '' },
+        },
+      } as ThrowEventNode
+
+    case 'waitForCondition':
+      return {
+        condition: {
+          comparator: Comparator.EQUALS,
+          left: {
+            $case: 'literalValue',
+            value: { bool: true },
+          },
+          right: {
+            $case: 'literalValue',
+            value: { bool: true },
+          },
+        },
+      } as WaitForConditionNode
+
+    default:
+      throw new Error(`Unknown node type: ${nodeType}`)
+  }
 }
 
 export function extractTasksInfo(spec: PutWfSpecRequest): Array<TaskDef> {
-  const tasksMap = new Map<string, TaskDef>();
-  
+  const tasksMap = new Map<string, TaskDef>()
+
   Object.values(spec.threadSpecs).forEach(threadSpec => {
     Object.values(threadSpec.nodes).forEach(node => {
+      // TODO: consider dynamic tasks
       if (node.node?.$case === 'task' && node.node.value.taskToExecute?.$case === 'taskDefId') {
-        const taskName = node.node.value.taskToExecute.value.name;
-        const variables = node.node.value.variables || [];
-        
+        const taskName = node.node.value.taskToExecute.value.name
+        const variables = node.node.value.variables || []
+
         // TODO: ask Mijail about these type changes
         const inputVars = variables
           .filter(variable => variable.source?.$case === 'variableName')
@@ -26,22 +162,22 @@ export function extractTasksInfo(spec: PutWfSpecRequest): Array<TaskDef> {
             name: variable.source!.value as string,
             typeDef: {
               type: VariableType.STR,
-              masked: false
-            }
-          }));
-        
+              masked: false,
+            },
+          }))
+
         if (!tasksMap.has(taskName)) {
           tasksMap.set(taskName, {
             id: { name: taskName },
             inputVars,
-            createdAt: undefined
-          });
+            createdAt: undefined,
+          })
         }
       }
-    });
-  });
-  
-  return Array.from(tasksMap.values());
+    })
+  })
+
+  return Array.from(tasksMap.values())
 }
 
 export function createTaskDefRequest(taskInfo: TaskDef): PutTaskDefRequest {
@@ -51,82 +187,67 @@ export function createTaskDefRequest(taskInfo: TaskDef): PutTaskDefRequest {
     returnType: {
       returnType: {
         type: VariableType.STR,
-        masked: false
-      }
-    }
-  };
+        masked: false,
+      },
+    },
+  }
 }
 
 export function generateNodeId(): string {
-  return `node${Date.now()}${Math.floor(Math.random() * 1000)}`;
+  return `node${Date.now()}${Math.floor(Math.random() * 1000)}`
+}
+
+// TODO: check if there is a less manual way to do this
+const createReactFlowNodeData = (nodeType: NodeType, lhNode: Node, nodeId: string) => {
+  const baseData = {
+    nodeRunsList: [],
+    fade: false,
+    nodeNeedsToBeHighlighted: false,
+  }
+
+  console.log('createReactFlowNodeData called:', { nodeType, nodeId, lhNode })
+
+  switch (nodeType) {
+    case 'task':
+      if (lhNode.node?.$case === 'task') {
+        const taskNode = lhNode.node.value;
+        const reactFlowData = {
+          ...baseData,
+          taskToExecute: taskNode.taskToExecute,
+        }
+        return reactFlowData;
+      }
+    // TODO: add other node types
+    case 'entrypoint':
+    case 'exit':
+    default:
+      return baseData
+  }
 }
 
 export function convertNodes(workflowState: WorkflowState): ReactFlowNode[] {
-  const nodes: ReactFlowNode[] = [];
-  const workflowNodes = workflowState.spec.threadSpecs.entrypoint.nodes;
+  const nodes: ReactFlowNode[] = []
+  const workflowNodes = workflowState.spec.threadSpecs.entrypoint.nodes
 
-  if (workflowNodes.entrypoint) {
-    nodes.push({
-      id: 'entrypoint',
-      type: NodeType.ENTRY_POINT,
-      position: { x: 100, y: 100 },
-      data: {
-        label: 'Entry Point'
-      }
-    });
-  }
+  Object.entries(workflowNodes).forEach(([nodeId, lhNode], index) => {
+    if (!lhNode.node?.$case) return
 
-  /*Object.entries(workflowNodes).forEach(([nodeId, workflowNode], index) => {
-    if (nodeId !== 'entrypoint' && nodeId !== 'exit' && workflowNode.task) {
-      nodes.push({
-        id: nodeId,
-        type: NodeType.TASK_NODE,
-        position: { x: 100 + (index * 200), y: 200 },
-        data: {
-          label: workflowNode.task.taskDefId?.name || 'Unknown Task',
-          taskName: workflowNode.task.taskDefId?.name,
-          varName: workflowNode.task.variables?.[0]?.variableName
-        }
-      });
+    const nodeType = lhNode.node.$case as NodeType
+    let position = { x: 100 + index * 200, y: 200 }
+
+    if (nodeType === 'entrypoint') {
+      position = { x: 100, y: 100 }
+    } else if (nodeType === 'exit') {
+      position = { x: 300 + index * 200, y: 100 }
     }
-  });*/
-  Object.entries(workflowNodes).forEach(([nodeId, workflowNode], index) => {
-    if (nodeId !== 'entrypoint' && nodeId !== 'exit' && workflowNode.node?.$case === 'task') {
-      const taskNode = workflowNode.node.value;
-      const taskName = taskNode.taskToExecute?.$case === 'taskDefId' 
-        ? taskNode.taskToExecute.value.name 
-        : 'Unknown Task';
-      
-      const varName = taskNode.variables?.[0]?.source?.$case === 'variableName'
-        ? taskNode.variables[0].source.value
-        : undefined;
 
-      nodes.push({
-        id: nodeId,
-        type: NodeType.TASK_NODE,
-        position: { x: 100 + (index * 200), y: 200 },
-        data: {
-          label: taskName,
-          taskName: taskName,
-          varName: varName
-        }
-      });
-    }
-  });
-
-  if (workflowNodes.exit) {
-    const taskNodeCount = Object.keys(workflowNodes).filter(id => 
-      id !== 'entrypoint' && id !== 'exit'
-    ).length;
     nodes.push({
-      id: 'exit',
-      type: NodeType.EXIT_POINT,
-      position: { x: 300 + (taskNodeCount * 200), y: 100 },
-      data: {
-        label: 'Exit Point'
-      }
-    });
-  }
+      id: nodeId,
+      type: nodeType,
+      position,
+      data: createReactFlowNodeData(nodeType, lhNode, nodeId),
+    })
+  })
 
-  return nodes;
+  return nodes
 }

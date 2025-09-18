@@ -1,18 +1,18 @@
-import { useCallback } from 'react';
-import { useReactFlow, XYPosition } from 'reactflow';
-import { generateNodeId } from '../lib/utils';
-import { useUI } from '../contexts/ui/provider';
-import { useWorkflow } from '../contexts/workflow/provider';
-import { NodeType } from '../types';
+import { useCallback } from 'react'
+import { useReactFlow, XYPosition } from 'reactflow'
+import { generateNodeId } from '../lib/utils'
+import { useUI } from '../contexts/ui/provider'
+import { useWorkflow } from '../contexts/workflow/provider'
+import type { NodeType } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/extractNodes'
 
 interface UseNodeDropResult {
-  handleNodeDrop: (nodeType: NodeType, screenPosition: XYPosition) => void;
+  handleNodeDrop: (nodeType: NodeType, screenPosition: XYPosition) => void
 }
 
 export function useNodeDrop(): UseNodeDropResult {
-  const { setNodes, screenToFlowPosition } = useReactFlow();
-  const { actions: uiActions } = useUI();
-  const { actions: wfActions } = useWorkflow();
+  const { setNodes, screenToFlowPosition } = useReactFlow()
+  const { actions: uiActions } = useUI()
+  const { actions: wfActions } = useWorkflow()
 
   const handleNodeDrop = useCallback(
     (nodeType: NodeType, screenPosition: XYPosition) => {
@@ -28,26 +28,51 @@ export function useNodeDrop(): UseNodeDropResult {
       if (isInFlow) {
         const position = screenToFlowPosition(screenPosition);
         const nodeId = generateNodeId();
+        let taskName, varName;
+
+        const getNodeData = () => {
+          const baseData = {
+            nodeRunsList: [],
+            fade: false,
+            nodeNeedsToBeHighlighted: false,
+          }
+
+          switch (nodeType) {
+            case 'task':
+              taskName = `task-${nodeId}`;
+              varName = '';
+              return {
+                ...baseData,
+                taskToExecute: {
+                  $case: 'taskDefId' as const,
+                  value: { name: taskName },
+                },
+                variables: [],
+                retries: 0,
+                timeoutSeconds: 60,
+              }
+            case 'entrypoint':
+            case 'exit':
+            default:
+              return baseData
+          }
+        }
 
         const newNode = {
           id: nodeId,
           type: nodeType,
           position,
-          data: {
-            ...(nodeType === NodeType.TASK_NODE && {
-              taskName: `${nodeType.toLowerCase()}-node`,
-              varName: ''
-            })
-          },
-        };
+          data: getNodeData(),
+        }
 
-        setNodes((nodes) => nodes.concat(newNode));
-        uiActions.selectNode(newNode);
-        wfActions.addNode(nodeId, nodeType, newNode.data.taskName, newNode.data.varName);
+        setNodes(nodes => nodes.concat(newNode))
+        uiActions.selectNode(newNode)
+
+        wfActions.addNode(nodeId, nodeType, taskName, varName)
       }
     },
-    [setNodes, screenToFlowPosition, uiActions, wfActions],
-  );
+    [setNodes, screenToFlowPosition, uiActions, wfActions]
+  )
 
-  return { handleNodeDrop };
+  return { handleNodeDrop }
 }

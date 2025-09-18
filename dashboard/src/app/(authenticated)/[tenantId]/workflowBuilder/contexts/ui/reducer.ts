@@ -1,5 +1,5 @@
-import type { UIState, UIAction } from '../../types';
-import { UIActionType } from '../../types';
+import type { UIState, UIAction } from '../../types'
+import { UIActionType } from '../../types'
 
 export function dndUIReducer(state: UIState, action: UIAction): UIState {
   switch (action.type) {
@@ -7,23 +7,23 @@ export function dndUIReducer(state: UIState, action: UIAction): UIState {
       return {
         ...state,
         selectedNode: action.payload,
-        selectedEdge: null
-      };
+        selectedEdge: null,
+      }
 
     case UIActionType.SELECT_EDGE:
       return {
         ...state,
         selectedNode: null,
-        selectedEdge: action.payload
-      };
+        selectedEdge: action.payload,
+      }
 
     case UIActionType.SET_LOADING:
       return {
         ...state,
-        loading: action.payload
-      };
-      
+        loading: action.payload,
+      }
+
     default:
-      return state;
+      return state
   }
 }

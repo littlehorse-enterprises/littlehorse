@@ -17,10 +17,10 @@ export const Header: FC = () => {
             <span>LITTLE</span>
             <span>HORSE</span>
           </div>
-        </LinkWithTenant>        
+        </LinkWithTenant>
         <div className="flex items-center">
-          <LinkWithTenant 
-            href="/workflowBuilder/new" 
+          <LinkWithTenant
+            href="/workflowBuilder/new"
             className="mr-4 rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
           >
             Builder
