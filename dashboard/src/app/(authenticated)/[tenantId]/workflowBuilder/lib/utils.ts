@@ -155,7 +155,6 @@ export function extractTasksInfo(spec: PutWfSpecRequest): Array<TaskDef> {
         const taskName = node.node.value.taskToExecute.value.name
         const variables = node.node.value.variables || []
 
-        // TODO: ask Mijail about these type changes
         const inputVars = variables
           .filter(variable => variable.source?.$case === 'variableName')
           .map(variable => ({

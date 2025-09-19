@@ -23,7 +23,6 @@ export function useNodeDataEditor(nodeId: string): UseNodeDataEditorResult {
   const { actions: uiActions } = useUI()
   const { setNodes } = useReactFlow()
 
-  // TODO: ask Mijail about these type changes
   const currentNodeData = wfState.spec.threadSpecs.entrypoint.nodes[nodeId]
   const currentTaskName =
     currentNodeData?.node?.$case === 'task' && currentNodeData.node.value.taskToExecute?.$case === 'taskDefId'

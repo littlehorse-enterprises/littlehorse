@@ -89,7 +89,6 @@ export function handleUpdateNodeData(
     const node = draft.spec.threadSpecs.entrypoint.nodes[nodeId].node;
     if (!node) return;
 
-    // TODO: ask Mijail about this (dynamic tasks)
     if (node.$case === 'task' && taskName) {
       node.value.taskToExecute = {
         $case: 'taskDefId',
