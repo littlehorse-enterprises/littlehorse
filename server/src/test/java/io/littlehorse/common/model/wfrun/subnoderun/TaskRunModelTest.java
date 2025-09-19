@@ -32,7 +32,8 @@ public class TaskRunModelTest {
     void setTaskWorkerVersionAndIdToTaskRun() {
         // arrange. Complex because all the dependencies needed
         TaskRun taskRunProto = TaskRun.newBuilder()
-                .setId(new TaskRunIdModel(new NodeRunIdModel(new WfRunIdModel("asdf"), 0, 1), processorContext).toProto())
+                .setId(new TaskRunIdModel(new NodeRunIdModel(new WfRunIdModel("asdf"), 0, 1), processorContext)
+                        .toProto())
                 .addAttempts(TaskAttempt.newBuilder().setStatus(TaskStatus.TASK_PENDING))
                 .build();
         when(executionContext.castOnSupport(CoreProcessorContext.class)).thenReturn(processorContext);

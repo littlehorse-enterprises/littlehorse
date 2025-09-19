@@ -30,7 +30,7 @@ public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunMode
         this(nodeRunId.getWfRunId(), nodeRunId.getThreadRunNumber() + "-" + nodeRunId.getPosition());
     }
 
-    public TaskRunIdModel(UserTaskRunModel userTaskRun, CoreProcessorContext ctx) {
+    public TaskRunIdModel(UserTaskRunModel userTaskRun) {
         this(
                 userTaskRun.getId().getWfRunId(),
                 "ut-" + userTaskRun.getNodeRunId().getThreadRunNumber() + "-"
