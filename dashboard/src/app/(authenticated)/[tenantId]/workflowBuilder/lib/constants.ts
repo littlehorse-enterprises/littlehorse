@@ -6,4 +6,4 @@ export const DEFAULT_ELK_OPTIONS: ElkLayoutOptions = {
   'elk.spacing.nodeNode': '80',
 }
 
-export const TIMEOUT_SECONDS: number = 60
+export const DEFAULT_TIMEOUT_SECONDS: number = 60

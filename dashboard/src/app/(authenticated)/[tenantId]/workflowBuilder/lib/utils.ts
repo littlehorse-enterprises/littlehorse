@@ -20,7 +20,7 @@ import type {
 import type { WorkflowState } from '../types'
 import type { Node as ReactFlowNode } from 'reactflow'
 import type { Node } from 'littlehorse-client/proto'
-import { TIMEOUT_SECONDS } from '../lib/constants'
+import { DEFAULT_TIMEOUT_SECONDS } from '../lib/constants'
 
 export function createNodeValue(nodeType: NodeType, taskName?: string, varName?: string):
   | EntrypointNode
@@ -48,7 +48,7 @@ export function createNodeValue(nodeType: NodeType, taskName?: string, varName?:
           $case: 'taskDefId',
           value: { name: taskName ? taskName : '' },
         },
-        timeoutSeconds: TIMEOUT_SECONDS,
+        timeoutSeconds: DEFAULT_TIMEOUT_SECONDS,
         retries: 0,
         variables: varName ? [{
           source: {
@@ -63,7 +63,7 @@ export function createNodeValue(nodeType: NodeType, taskName?: string, varName?:
         externalEventDefId: { name: '' },
         timeoutSeconds: {
           $case: 'literalValue',
-          value: { int: TIMEOUT_SECONDS },
+          value: { int: DEFAULT_TIMEOUT_SECONDS },
         },
         maskCorrelationKey: false,
       } as ExternalEventNode
