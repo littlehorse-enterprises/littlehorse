@@ -34,7 +34,7 @@ export function useNodeDrop(): UseNodeDropResult {
 
         const getNodeData = () => {
           const baseData = {
-            nodeRunsList: [],
+            nodeRunsList: nodeType === 'waitForCondition' ? [{ status: null }] : [], // TODO: check how status works on wait for condition, I'm passing null just to get it to render
             fade: false,
             nodeNeedsToBeHighlighted: false,
           }
@@ -57,7 +57,7 @@ export function useNodeDrop(): UseNodeDropResult {
               return {
                 ...baseData,
                 taskToExecute: {
-                  $case: 'taskDefId' as const,
+                  $case: 'taskDefId' as const, // TODO: why as const?
                   value: { name: taskName },
                 },
                 variables: [],
@@ -134,7 +134,7 @@ export function useNodeDrop(): UseNodeDropResult {
             case 'throwEvent':
               return {
                 ...baseData,
-                eventDefId: { name: '' },
+                eventDefId: { name: `throw-event-${nodeId}` },
                 content: {
                   $case: 'literalValue',
                   value: { str: '' },
