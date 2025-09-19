@@ -174,9 +174,9 @@ public class TimerProcessorTest {
         Assertions.assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).hasSize(2);
         ImmutableList<KeyValue<String, LHTimer>> tasks = ImmutableList.copyOf(nativeInMemoryStore.all());
         Assertions.assertThat(tasks)
-                .map(stringLHTimerKeyValue -> stringLHTimerKeyValue.key)
-                .anyMatch(key -> key.contains("/tenant_tenantA"))
-                .anyMatch(key -> key.contains("/tenant_tenantB"))
+                .map(stringLHTimerKeyValue -> stringLHTimerKeyValue.value)
+                .anyMatch(value -> value.getTenantId().getId().equals("tenantA"))
+                .anyMatch(value -> value.getTenantId().getId().equals("tenantB"))
                 .hasSize(2);
     }
 

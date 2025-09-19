@@ -169,7 +169,7 @@ public class CoreProcessorContext implements ExecutionContext {
             command.time = new Date();
 
             LHTimer timer = new LHTimer(command);
-            timer.key = command.getPartitionKey();
+            timer.partitionKey = command.getPartitionKey();
             timer.setMaturationTime(command.time);
 
             getTaskManager().forwardTimer(timer);

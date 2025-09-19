@@ -168,7 +168,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             }
 
             LHTimer timer = new LHTimer();
-            timer.key = nodeRun.getPartitionKey().get();
+            timer.partitionKey = nodeRun.getPartitionKey().get();
             timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.getIntVal() * 1000));
 
             CommandModel cmd = new CommandModel();
@@ -201,7 +201,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             this.correlationKey = correlationIdVar.getStrVal();
 
             LHTimer timer = new LHTimer();
-            timer.key = correlationKey;
+            timer.partitionKey = correlationKey;
             timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
 
             UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
@@ -226,7 +226,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             throw new IllegalStateException("Not a correlated node. Code better!");
         }
         LHTimer timer = new LHTimer();
-        timer.key = correlationKey;
+        timer.partitionKey = correlationKey;
         timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
 
         UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();

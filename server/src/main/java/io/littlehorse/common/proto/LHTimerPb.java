@@ -21,9 +21,10 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private LHTimerPb() {
-    key_ = "";
+    partitionKey_ = "";
     topic_ = "";
     payload_ = com.google.protobuf.ByteString.EMPTY;
+    storeKey_ = "";
   }
 
   @java.lang.Override
@@ -73,39 +74,39 @@ private static final long serialVersionUID = 0L;
     return maturationTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : maturationTime_;
   }
 
-  public static final int KEY_FIELD_NUMBER = 2;
+  public static final int PARTITION_KEY_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object key_ = "";
+  private volatile java.lang.Object partitionKey_ = "";
   /**
-   * <code>string key = 2;</code>
-   * @return The key.
+   * <code>string partition_key = 2;</code>
+   * @return The partitionKey.
    */
   @java.lang.Override
-  public java.lang.String getKey() {
-    java.lang.Object ref = key_;
+  public java.lang.String getPartitionKey() {
+    java.lang.Object ref = partitionKey_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      key_ = s;
+      partitionKey_ = s;
       return s;
     }
   }
   /**
-   * <code>string key = 2;</code>
-   * @return The bytes for key.
+   * <code>string partition_key = 2;</code>
+   * @return The bytes for partitionKey.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getKeyBytes() {
-    java.lang.Object ref = key_;
+      getPartitionKeyBytes() {
+    java.lang.Object ref = partitionKey_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      key_ = b;
+      partitionKey_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -238,6 +239,65 @@ private static final long serialVersionUID = 0L;
     return principalId_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : principalId_;
   }
 
+  public static final int STORE_KEY_FIELD_NUMBER = 7;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object storeKey_ = "";
+  /**
+   * <pre>
+   * optional for backwards compatibility
+   * </pre>
+   *
+   * <code>optional string store_key = 7;</code>
+   * @return Whether the storeKey field is set.
+   */
+  @java.lang.Override
+  public boolean hasStoreKey() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <pre>
+   * optional for backwards compatibility
+   * </pre>
+   *
+   * <code>optional string store_key = 7;</code>
+   * @return The storeKey.
+   */
+  @java.lang.Override
+  public java.lang.String getStoreKey() {
+    java.lang.Object ref = storeKey_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      storeKey_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * optional for backwards compatibility
+   * </pre>
+   *
+   * <code>optional string store_key = 7;</code>
+   * @return The bytes for storeKey.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getStoreKeyBytes() {
+    java.lang.Object ref = storeKey_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      storeKey_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -255,8 +315,8 @@ private static final long serialVersionUID = 0L;
     if (maturationTime_ != null) {
       output.writeMessage(1, getMaturationTime());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, key_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(partitionKey_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, partitionKey_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
@@ -269,6 +329,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(6, getPrincipalId());
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, storeKey_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -283,8 +346,8 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getMaturationTime());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, key_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(partitionKey_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, partitionKey_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
@@ -300,6 +363,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getPrincipalId());
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, storeKey_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -321,8 +387,8 @@ private static final long serialVersionUID = 0L;
       if (!getMaturationTime()
           .equals(other.getMaturationTime())) return false;
     }
-    if (!getKey()
-        .equals(other.getKey())) return false;
+    if (!getPartitionKey()
+        .equals(other.getPartitionKey())) return false;
     if (!getTopic()
         .equals(other.getTopic())) return false;
     if (!getPayload()
@@ -336,6 +402,11 @@ private static final long serialVersionUID = 0L;
     if (hasPrincipalId()) {
       if (!getPrincipalId()
           .equals(other.getPrincipalId())) return false;
+    }
+    if (hasStoreKey() != other.hasStoreKey()) return false;
+    if (hasStoreKey()) {
+      if (!getStoreKey()
+          .equals(other.getStoreKey())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -352,8 +423,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + MATURATION_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getMaturationTime().hashCode();
     }
-    hash = (37 * hash) + KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getKey().hashCode();
+    hash = (37 * hash) + PARTITION_KEY_FIELD_NUMBER;
+    hash = (53 * hash) + getPartitionKey().hashCode();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
     hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
@@ -365,6 +436,10 @@ private static final long serialVersionUID = 0L;
     if (hasPrincipalId()) {
       hash = (37 * hash) + PRINCIPAL_ID_FIELD_NUMBER;
       hash = (53 * hash) + getPrincipalId().hashCode();
+    }
+    if (hasStoreKey()) {
+      hash = (37 * hash) + STORE_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getStoreKey().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -515,7 +590,7 @@ private static final long serialVersionUID = 0L;
         maturationTimeBuilder_.dispose();
         maturationTimeBuilder_ = null;
       }
-      key_ = "";
+      partitionKey_ = "";
       topic_ = "";
       payload_ = com.google.protobuf.ByteString.EMPTY;
       tenantId_ = null;
@@ -528,6 +603,7 @@ private static final long serialVersionUID = 0L;
         principalIdBuilder_.dispose();
         principalIdBuilder_ = null;
       }
+      storeKey_ = "";
       return this;
     }
 
@@ -567,7 +643,7 @@ private static final long serialVersionUID = 0L;
             : maturationTimeBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.key_ = key_;
+        result.partitionKey_ = partitionKey_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.topic_ = topic_;
@@ -587,6 +663,10 @@ private static final long serialVersionUID = 0L;
             ? principalId_
             : principalIdBuilder_.build();
         to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.storeKey_ = storeKey_;
+        to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -638,8 +718,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasMaturationTime()) {
         mergeMaturationTime(other.getMaturationTime());
       }
-      if (!other.getKey().isEmpty()) {
-        key_ = other.key_;
+      if (!other.getPartitionKey().isEmpty()) {
+        partitionKey_ = other.partitionKey_;
         bitField0_ |= 0x00000002;
         onChanged();
       }
@@ -656,6 +736,11 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasPrincipalId()) {
         mergePrincipalId(other.getPrincipalId());
+      }
+      if (other.hasStoreKey()) {
+        storeKey_ = other.storeKey_;
+        bitField0_ |= 0x00000040;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -691,7 +776,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              key_ = input.readStringRequireUtf8();
+              partitionKey_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000002;
               break;
             } // case 18
@@ -719,6 +804,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 50
+            case 58: {
+              storeKey_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -855,73 +945,73 @@ private static final long serialVersionUID = 0L;
       return maturationTimeBuilder_;
     }
 
-    private java.lang.Object key_ = "";
+    private java.lang.Object partitionKey_ = "";
     /**
-     * <code>string key = 2;</code>
-     * @return The key.
+     * <code>string partition_key = 2;</code>
+     * @return The partitionKey.
      */
-    public java.lang.String getKey() {
-      java.lang.Object ref = key_;
+    public java.lang.String getPartitionKey() {
+      java.lang.Object ref = partitionKey_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        key_ = s;
+        partitionKey_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string key = 2;</code>
-     * @return The bytes for key.
+     * <code>string partition_key = 2;</code>
+     * @return The bytes for partitionKey.
      */
     public com.google.protobuf.ByteString
-        getKeyBytes() {
-      java.lang.Object ref = key_;
+        getPartitionKeyBytes() {
+      java.lang.Object ref = partitionKey_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        key_ = b;
+        partitionKey_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string key = 2;</code>
-     * @param value The key to set.
+     * <code>string partition_key = 2;</code>
+     * @param value The partitionKey to set.
      * @return This builder for chaining.
      */
-    public Builder setKey(
+    public Builder setPartitionKey(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      key_ = value;
+      partitionKey_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>string key = 2;</code>
+     * <code>string partition_key = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearKey() {
-      key_ = getDefaultInstance().getKey();
+    public Builder clearPartitionKey() {
+      partitionKey_ = getDefaultInstance().getPartitionKey();
       bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
     /**
-     * <code>string key = 2;</code>
-     * @param value The bytes for key to set.
+     * <code>string partition_key = 2;</code>
+     * @param value The bytes for partitionKey to set.
      * @return This builder for chaining.
      */
-    public Builder setKeyBytes(
+    public Builder setPartitionKeyBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      key_ = value;
+      partitionKey_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
@@ -1339,6 +1429,109 @@ private static final long serialVersionUID = 0L;
         principalId_ = null;
       }
       return principalIdBuilder_;
+    }
+
+    private java.lang.Object storeKey_ = "";
+    /**
+     * <pre>
+     * optional for backwards compatibility
+     * </pre>
+     *
+     * <code>optional string store_key = 7;</code>
+     * @return Whether the storeKey field is set.
+     */
+    public boolean hasStoreKey() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <pre>
+     * optional for backwards compatibility
+     * </pre>
+     *
+     * <code>optional string store_key = 7;</code>
+     * @return The storeKey.
+     */
+    public java.lang.String getStoreKey() {
+      java.lang.Object ref = storeKey_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        storeKey_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * optional for backwards compatibility
+     * </pre>
+     *
+     * <code>optional string store_key = 7;</code>
+     * @return The bytes for storeKey.
+     */
+    public com.google.protobuf.ByteString
+        getStoreKeyBytes() {
+      java.lang.Object ref = storeKey_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        storeKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * optional for backwards compatibility
+     * </pre>
+     *
+     * <code>optional string store_key = 7;</code>
+     * @param value The storeKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStoreKey(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      storeKey_ = value;
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * optional for backwards compatibility
+     * </pre>
+     *
+     * <code>optional string store_key = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStoreKey() {
+      storeKey_ = getDefaultInstance().getStoreKey();
+      bitField0_ = (bitField0_ & ~0x00000040);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * optional for backwards compatibility
+     * </pre>
+     *
+     * <code>optional string store_key = 7;</code>
+     * @param value The bytes for storeKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStoreKeyBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      storeKey_ = value;
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
