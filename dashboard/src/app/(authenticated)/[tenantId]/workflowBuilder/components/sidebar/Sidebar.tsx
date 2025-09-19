@@ -6,13 +6,12 @@ import { NodeDataPanel } from './NodeDataPanel'
 import { EdgeDataPanel } from './EdgeDataPanel'
 import { DeployButton } from './DeployButton'
 import { ResetButton } from './ResetButton'
-import { FC } from 'react'
 
 interface SidebarProps {
   onReset: () => void
 }
 
-export const Sidebar: FC<SidebarProps> = ({ onReset }) => {
+export function Sidebar({ onReset }: SidebarProps) {
   const { state: uiState } = useUI();
 
   return (

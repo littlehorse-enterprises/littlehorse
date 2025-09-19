@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react'
+import { useMemo } from 'react'
 import { DraggableNode } from './DraggableNode'
 import type { NodeType } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/extractNodes'
 import nodeTypes from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes'
@@ -19,7 +19,7 @@ const nodeLabels: Record<NodeType, string> = {
   waitForThreads: 'Wait For Threads'
 }
 
-export const DraggableNodes: FC = () => {
+export function DraggableNodes() {
   const { handleNodeDrop } = useNodeDrop()
   
   const availableNodeTypes = useMemo(() => Object.keys(nodeTypes) as NodeType[], [])
