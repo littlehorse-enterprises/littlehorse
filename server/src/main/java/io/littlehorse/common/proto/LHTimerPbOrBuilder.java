@@ -23,16 +23,16 @@ public interface LHTimerPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder();
 
   /**
-   * <code>string key = 2;</code>
-   * @return The key.
+   * <code>string partition_key = 2;</code>
+   * @return The partitionKey.
    */
-  java.lang.String getKey();
+  java.lang.String getPartitionKey();
   /**
-   * <code>string key = 2;</code>
-   * @return The bytes for key.
+   * <code>string partition_key = 2;</code>
+   * @return The bytes for partitionKey.
    */
   com.google.protobuf.ByteString
-      getKeyBytes();
+      getPartitionKeyBytes();
 
   /**
    * <code>string topic = 3;</code>
@@ -105,4 +105,33 @@ public interface LHTimerPbOrBuilder extends
    * <code>optional .littlehorse.PrincipalId principal_id = 6;</code>
    */
   io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getPrincipalIdOrBuilder();
+
+  /**
+   * <pre>
+   * optional for backwards compatibility
+   * </pre>
+   *
+   * <code>optional string store_key = 7;</code>
+   * @return Whether the storeKey field is set.
+   */
+  boolean hasStoreKey();
+  /**
+   * <pre>
+   * optional for backwards compatibility
+   * </pre>
+   *
+   * <code>optional string store_key = 7;</code>
+   * @return The storeKey.
+   */
+  java.lang.String getStoreKey();
+  /**
+   * <pre>
+   * optional for backwards compatibility
+   * </pre>
+   *
+   * <code>optional string store_key = 7;</code>
+   * @return The bytes for storeKey.
+   */
+  com.google.protobuf.ByteString
+      getStoreKeyBytes();
 }
