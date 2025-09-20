@@ -24,6 +24,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     // passed into the setConfig() method.
     public static final String LH_SERVER_CONFIG_KEY = "obiwan.kenobi";
 
+    static final long KB = 1024L;
+    static final long MB = KB * KB;
+
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
         log.trace("Overriding rocksdb settings for store {}", storeName);
@@ -38,11 +41,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setEnv(rocksEnv);
         options.setMaxBackgroundJobs(threads); // Rocksdb tuning guide recommendation
         options.setMaxSubcompactions(3);
-        options.setAdviseRandomOnOpen(true);
-
-        // Configurations to avoid the "many small L0 files" problem
-        options.setMaxWriteBufferNumber(4);
-        options.setMinWriteBufferNumberToMerge(2);
 
         switch (serverConfig.getServerMetricLevel()) {
             case "TRACE":
@@ -64,20 +62,14 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
         tableConfig.setOptimizeFiltersForMemory(true);
-        // tableConfig.setBlockSize(serverConfig.getRocksDBBlockSize());
-        tableConfig.setBlockSize(64 * 1024L);
+        tableConfig.setBlockSize(64 * KB);
         tableConfig.setPinL0FilterAndIndexBlocksInCache(true);
         tableConfig.setCacheIndexAndFilterBlocks(true);
         tableConfig.setCacheIndexAndFilterBlocksWithHighPriority(true);
-        if (storeName.contains("timer")) {
-            tableConfig.setIndexShortening(IndexShorteningMode.kNoShortening);
-            tableConfig.setIndexType(IndexType.kBinarySearchWithFirstKey);
-            options.setWriteBufferSize(serverConfig.getTimerMemtableSize());
-        } else {
-            tableConfig.setIndexType(IndexType.kBinarySearch);
-            tableConfig.setIndexShortening(IndexShorteningMode.kShortenSeparatorsAndSuccessor);
-            options.setWriteBufferSize(serverConfig.getCoreMemtableSize());
-        }
+        tableConfig.setIndexType(IndexType.kBinarySearch);
+        tableConfig.setIndexShortening(IndexShorteningMode.kShortenSeparatorsAndSuccessor);
+        options.setOptimizeFiltersForHits(false);
+        options.setWriteBufferSize(serverConfig.getCoreMemtableSize());
 
         // Memory limits
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
@@ -93,28 +85,25 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         // Level compaction has higher write amplification and lower read amplification.
         // Therefore, we use other configs to attempt to reduce WA.
+        // Configurations to avoid the "many small L0 files" problem
         options.setCompactionStyle(CompactionStyle.LEVEL);
-        options.setTargetFileSizeBase(128 * 1024L * 1024L); // 64MB is default.
-        options.setMaxBytesForLevelBase(1024L * 1024L * 128 * 4); // Same as the compaction trigger
+        options.setMaxWriteBufferNumber(4);
+        options.setMinWriteBufferNumberToMerge(2);
+        options.setTargetFileSizeBase(128 * MB); // 64MB is default. We merge write buffers, so this is needed.
+        options.setLevel0FileNumCompactionTrigger(4);
+        options.setMaxBytesForLevelBase(128 * MB * 4); // Same as the compaction trigger
         options.setMaxBytesForLevelMultiplier(8); // default 10; higher means lower Write Amp but bigger compactions
-        options.setCompactionReadaheadSize(256_000); // max size for a single GP3 read on EBS
-        options.setCompactionPriority(CompactionPriority.MinOverlappingRatio); // lower write amp
-        options.setOptimizeFiltersForHits(false);
+        options.setCompactionPriority(CompactionPriority.ByCompensatedSize); // Good for deletes
         options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
 
         // I/O Configurations
+        options.setAdviseRandomOnOpen(true);
+        options.setCompactionReadaheadSize(256 * KB); // max size for a single GP3 read on EBS
         if (serverConfig.useDirectIOForRocksDB()) {
             options.setUseDirectIoForFlushAndCompaction(true);
             options.setUseDirectReads(true);
         } else {
-            // Periodically sync the bytes in the background. This reduces burstiness of the I/O, which
-            // reduces tail latency (and can also reduce overall page cache usage when buffered I/O is
-            // used).
-            //
-            // References:
-            // - https://github.com/facebook/rocksdb/wiki/Setup-Options-and-Basic-Tuning#other-general-options
-            // - https://github.com/facebook/rocksdb/wiki/IO#range-sync
-            options.setBytesPerSync(1024L * 1024L);
+            options.setBytesPerSync(1 * MB); // https://github.com/facebook/rocksdb/wiki/IO#range-sync
         }
 
         if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
