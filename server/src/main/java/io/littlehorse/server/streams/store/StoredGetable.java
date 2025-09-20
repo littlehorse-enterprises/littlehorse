@@ -12,6 +12,7 @@ import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,8 +64,25 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
         return StoredGetable.getStoreKey(storedObject.getObjectId());
     }
 
-    public static String getStoreKey(ObjectIdModel<?, ?, ?> id) {
+    public static String getLegacyStoreKey(ObjectIdModel<?, ?, ?> id) {
+        // See the comment in `getStoreKey()` below. That's a new optimization. We have this code
+        // here for a while in order to provide seamless backwards compatible migrations.
         return id.getType().getNumber() + "/" + id.toString();
+    }
+
+    public static String getStoreKey(ObjectIdModel<?, ?, ?> id) {
+        // We want the stuff related to a single `WfRun` to be grouped under the same prefix so that
+        // they end up on the same block (or on adjacent blocks) in rocksdb. This reduces the amount
+        // of storage I/O round trips that we have to make when reading multiple cold Getable's from
+        // the same WfRun.
+        Optional<String> partitionKey = id.getPartitionKey();
+        if (partitionKey.isPresent()) {
+            String idWithoutPartitionKey =
+                    id.toString().substring(partitionKey.get().length());
+            return partitionKey.get() + "/" + id.getType().getNumber() + "/" + idWithoutPartitionKey;
+        } else {
+            return id.getType().getNumber() + "/" + id.toString();
+        }
     }
 
     @SuppressWarnings("unchecked")
