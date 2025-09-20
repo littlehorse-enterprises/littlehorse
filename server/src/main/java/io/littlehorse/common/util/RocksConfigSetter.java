@@ -5,13 +5,17 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
+import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
+import org.rocksdb.CompactionPriority;
 import org.rocksdb.CompactionStyle;
-import org.rocksdb.CompressionOptions;
 import org.rocksdb.CompressionType;
+import org.rocksdb.Env;
+import org.rocksdb.IndexShorteningMode;
+import org.rocksdb.IndexType;
 import org.rocksdb.InfoLogLevel;
 import org.rocksdb.Options;
-import org.rocksdb.RateLimiter;
+import org.rocksdb.Priority;
 
 @Slf4j
 public class RocksConfigSetter implements RocksDBConfigSetter {
@@ -20,36 +24,23 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     // passed into the setConfig() method.
     public static final String LH_SERVER_CONFIG_KEY = "obiwan.kenobi";
 
-    // From RocksDB docs: default is 4kb, but Facebook tends to use 16-32kb in production.
-    // With longer keys (we have a lot of long keys), higher block size is recommended. We
-    // increase the block size to 32kb here.
-    //
-    // The danger here is that we don't have a "hard limit" on memory allocated by these
-    // blocks. To do that, we would need to investigate creating an LRUCache with a
-    // special index filter block ratio, and then do some math. For more context:
-    //
-    // NOTE: Increasing the Block Size makes the un-managed memory footprint SMALLER because
-    // there are fewer blocks to index. However, I think it makes reads a bit slower.
-    //
-    // Confluent: https://docs.confluent.io/platform/current/streams/developer-guide/memory-mgmt.html
-    // Rocksdb: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#indexes-and-filter-blocks
-    private static final long BLOCK_SIZE = 1024 * 32;
-
-    // From RocksDB docs: this allows better performance when using jemalloc
-    // https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#indexes-and-filter-blocks
-    private static final boolean OPTIMIZE_FILTERS_FOR_MEMORY = true;
-
-    // Most of the time, when we do a get() we end up finding an object. This config makes RocksDB
-    // NOT put a Bloom Filter on the last level of SST files. This reduces memory usage of the
-    // Bloom Filter by 90%, but it costs one IO operation on every get() for a missing key.
-    // In my opinion, it's a good trade-off.
-    private static final boolean OPTIMIZE_FILTERS_FOR_HITS = true;
+    static final long KB = 1024L;
+    static final long MB = KB * KB;
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
         log.trace("Overriding rocksdb settings for store {}", storeName);
 
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
+
+        // Parallelism for Compactions and Flushing
+        Env rocksEnv = Env.getDefault();
+        int threads = serverConfig.getRocksDBCompactionThreads();
+        rocksEnv.setBackgroundThreads(threads, Priority.LOW);
+        rocksEnv.setBackgroundThreads(threads, Priority.HIGH);
+        options.setEnv(rocksEnv);
+        options.setMaxBackgroundJobs(threads); // Rocksdb tuning guide recommendation
+        options.setMaxSubcompactions(3);
 
         switch (serverConfig.getServerMetricLevel()) {
             case "TRACE":
@@ -68,75 +59,60 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
+
+        tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
+        tableConfig.setOptimizeFiltersForMemory(true);
+        tableConfig.setBlockSize(64 * KB);
+        tableConfig.setPinL0FilterAndIndexBlocksInCache(true);
+        tableConfig.setCacheIndexAndFilterBlocks(true);
+        tableConfig.setCacheIndexAndFilterBlocksWithHighPriority(true);
+        tableConfig.setIndexType(IndexType.kBinarySearch);
+        tableConfig.setIndexShortening(IndexShorteningMode.kShortenSeparatorsAndSuccessor);
+        options.setOptimizeFiltersForHits(false);
+        options.setWriteBufferSize(serverConfig.getCoreMemtableSize());
+
+        // Memory limits
         if (serverConfig.getGlobalRocksdbBlockCache() != null) {
             // Streams provisions a *NON-shared* 50MB cache for every RocksDB instance. Need
             // to .close() it to avoid leaks so that we can provide a global one.
             Cache oldCache = tableConfig.blockCache();
             tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
-            tableConfig.setCacheIndexAndFilterBlocks(true);
             oldCache.close();
         }
-
-        tableConfig.setOptimizeFiltersForMemory(OPTIMIZE_FILTERS_FOR_MEMORY);
-        tableConfig.setBlockSize(BLOCK_SIZE);
-        options.setTableFormatConfig(tableConfig);
-
-        // Compress the bottom level only, which contains about 90% of the database,
-        // but shouldn't be involved in most of the write paths and I/O.
-        options.setBottommostCompressionType(CompressionType.ZSTD_COMPRESSION);
-        CompressionOptions compressionOptions = new CompressionOptions();
-        // Reduce ZSTD compression level to be faster at the cost of less disk savings.
-        compressionOptions.setLevel(1);
-        options.setCompressionOptions(compressionOptions);
-        compressionOptions.close();
-
-        options.setUseDirectIoForFlushAndCompaction(serverConfig.useDirectIOForRocksDB());
-        options.setUseDirectReads(serverConfig.useDirectIOForRocksDB());
-
-        options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
-
-        if (serverConfig.getRocksDBUseLevelCompaction()) {
-            options.setCompactionStyle(CompactionStyle.LEVEL);
-        } else {
-            options.setCompactionStyle(CompactionStyle.UNIVERSAL);
-        }
-
-        options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
-
-        // Memtable size
-        options.setWriteBufferSize(
-                isCoreStore(storeName) ? serverConfig.getCoreMemtableSize() : serverConfig.getTimerMemtableSize());
-
         if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
             options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
         }
-        // Streams default is 3
-        options.setMaxWriteBufferNumber(5);
-        //  Concurrent jobs for both flushes and compaction
-        options.setMaxBackgroundJobs(serverConfig.getRocksDBCompactionThreads());
-        // Speeds up compaction by deploying sub compactions.
-        // there may be max_background_jobs * max_subcompactions background threads running compaction
-        options.setMaxSubcompactions(3);
-        long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
-        if (rateLimit > 0) {
-            options.setRateLimiter(new RateLimiter(
-                    rateLimit,
-                    RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
-                    RateLimiter.DEFAULT_FAIRNESS,
-                    RateLimiter.DEFAULT_MODE,
-                    false));
+
+        // Level compaction has higher write amplification and lower read amplification.
+        // Therefore, we use other configs to attempt to reduce WA.
+        // Configurations to avoid the "many small L0 files" problem
+        options.setCompactionStyle(CompactionStyle.LEVEL);
+        options.setMaxWriteBufferNumber(4);
+        options.setMinWriteBufferNumberToMerge(2);
+        options.setTargetFileSizeBase(128 * MB); // 64MB is default. We merge write buffers, so this is needed.
+        options.setLevel0FileNumCompactionTrigger(4);
+        options.setMaxBytesForLevelBase(128 * MB * 4); // Same as the compaction trigger
+        options.setMaxBytesForLevelMultiplier(12); // default 10; higher means lower Write Amp but bigger compactions
+        options.setCompactionPriority(CompactionPriority.ByCompensatedSize); // Good for deletes / overwrites
+        options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+
+        // I/O Configurations
+        options.setAdviseRandomOnOpen(true);
+        options.setCompactionReadaheadSize(256 * KB); // max size for a single GP3 read on EBS
+        if (serverConfig.useDirectIOForRocksDB()) {
+            options.setUseDirectIoForFlushAndCompaction(true);
+            options.setUseDirectReads(true);
+        } else {
+            options.setBytesPerSync(1 * MB); // https://github.com/facebook/rocksdb/wiki/IO#range-sync
         }
-        // Future Work: Enable larger scaling by using Partitioned Index Filters
-        // https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters
-        //
-        // We should do scale testing with the LH Canary to determine whether that should be enabled
-        // by default or as a configuration.
+
+        if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
+            options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
+        }
+
+        options.setTableFormatConfig(tableConfig);
     }
 
     @Override
     public void close(final String storeName, final Options options) {}
-
-    private boolean isCoreStore(String storeName) {
-        return !storeName.contains("timer");
-    }
 }
