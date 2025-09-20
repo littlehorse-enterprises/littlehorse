@@ -1,12 +1,12 @@
-import { useCallback } from 'react'
-import { useReactFlow } from 'reactflow'
-import { useWorkflow } from '../contexts/workflow/provider'
-import { useELKLayout } from '../hooks/useELKLayout'
-import { useNodeEdgeState } from '../hooks/useNodeEdgeState'
-import { useWorkflowInteractions } from '../hooks/useWorkflowInteractions'
-import { toast } from 'sonner'
-import type { Node, Edge, Connection, NodeChange, EdgeChange } from 'reactflow'
-import type { LayoutDirection } from '../types'
+import { useCallback } from 'react';
+import { useReactFlow } from 'reactflow';
+import { useWorkflow } from '../contexts/workflow/provider';
+import { useELKLayout } from '../hooks/useELKLayout';
+import { useNodeEdgeState } from '../hooks/useNodeEdgeState';
+import { useWorkflowInteractions } from '../hooks/useWorkflowInteractions';
+import { toast } from 'sonner';
+import type { Node, Edge, Connection, NodeChange, EdgeChange } from 'reactflow';
+import type { LayoutDirection } from '../types';
 
 interface UseWorkflowBuilderResult {
   nodes: Node[]
@@ -22,38 +22,38 @@ interface UseWorkflowBuilderResult {
 }
 
 export function useWorkflowBuilder(): UseWorkflowBuilderResult {
-  const { actions: wfActions } = useWorkflow()
-  const { fitView } = useReactFlow()
+  const { actions: wfActions } = useWorkflow();
+  const { fitView } = useReactFlow();
 
   const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange, onConnect, resetState } = useNodeEdgeState(
     wfActions.setOutgoingEdges
-  )
+  );
 
-  const { getLayoutedElements } = useELKLayout()
-  const { onNodeClick, onEdgeClick, onPaneClick } = useWorkflowInteractions()
+  const { getLayoutedElements } = useELKLayout();
+  const { onNodeClick, onEdgeClick, onPaneClick } = useWorkflowInteractions();
 
   const handleLayout = useCallback(
     async (direction: LayoutDirection) => {
       try {
-        const result = await getLayoutedElements(nodes, edges, direction)
-        setNodes(result.nodes)
-        setEdges(result.edges)
+        const result = await getLayoutedElements(nodes, edges, direction);
+        setNodes(result.nodes);
+        setEdges(result.edges);
 
         requestAnimationFrame(() => {
-          fitView()
+          fitView();
         })
       } catch (error) {
-        console.error('Layout error:', error)
-        toast.error('Failed to apply layout')
+        console.error('Layout error:', error);
+        toast.error('Failed to apply layout');
       }
     },
     [nodes, edges, getLayoutedElements, setNodes, setEdges, fitView]
-  )
+  );
 
   const onReset = useCallback(() => {
-    wfActions.resetWorkflow()
-    resetState()
-  }, [wfActions, resetState])
+    wfActions.resetWorkflow();
+    resetState();
+  }, [wfActions, resetState]);
 
   return {
     nodes,
@@ -66,5 +66,5 @@ export function useWorkflowBuilder(): UseWorkflowBuilderResult {
     onPaneClick,
     onReset,
     handleLayout,
-  }
+  };
 }

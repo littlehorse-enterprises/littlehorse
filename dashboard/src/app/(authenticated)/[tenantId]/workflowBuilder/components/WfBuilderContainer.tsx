@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import 'reactflow/dist/style.css'
+import 'reactflow/dist/style.css';
 
-import { Background, ReactFlow, ReactFlowProvider, MiniMap } from 'reactflow'
+import { Background, ReactFlow, ReactFlowProvider, MiniMap } from 'reactflow';
 
-import { Sidebar } from './sidebar/Sidebar'
-import { LayoutPanel } from './LayoutPanel'
-import { useWorkflowBuilder } from '../hooks/useWorkflowBuilder'
-import nodeTypes from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes'
+import { Sidebar } from './sidebar/Sidebar';
+import { LayoutPanel } from './LayoutPanel';
+import { useWorkflowBuilder } from '../hooks/useWorkflowBuilder';
+import nodeTypes from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes';
 
 function WfBuilderFlow() {
   const {
@@ -21,7 +21,7 @@ function WfBuilderFlow() {
     onPaneClick,
     onReset,
     handleLayout,
-  } = useWorkflowBuilder()
+  } = useWorkflowBuilder();
 
   return (
     <div className="flex h-full grow flex-col md:flex-row">

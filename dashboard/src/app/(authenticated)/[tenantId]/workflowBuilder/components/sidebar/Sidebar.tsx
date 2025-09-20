@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { DraggableNodes } from './DraggableNodes'
-import { useUI } from '../../contexts/ui/provider'
-import { NodeDataPanel } from './NodeDataPanel'
-import { EdgeDataPanel } from './EdgeDataPanel'
-import { DeployButton } from './DeployButton'
-import { ResetButton } from './ResetButton'
+import { DraggableNodes } from './DraggableNodes';
+import { useUI } from '../../contexts/ui/provider';
+import { NodeDataPanel } from './NodeDataPanel';
+import { EdgeDataPanel } from './EdgeDataPanel';
+import { DeployButton } from './DeployButton';
+import { ResetButton } from './ResetButton';
 
 interface SidebarProps {
-  onReset: () => void
+  onReset: () => void;
 }
 
 export function Sidebar({ onReset }: SidebarProps) {

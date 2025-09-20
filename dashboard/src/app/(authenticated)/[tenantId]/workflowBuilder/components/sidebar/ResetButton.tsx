@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
-import { useCallback } from 'react'
+import { Button } from '@/components/ui/button';
+import { useCallback } from 'react';
 
 interface ResetButtonProps {
-  onReset: () => void
+  onReset: () => void;
 }
 
 export function ResetButton({ onReset }: ResetButtonProps) {
   const handleResetWorkflow = useCallback(async () => {
-    onReset()
+    onReset();
   }, [onReset])
 
   return (

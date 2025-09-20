@@ -1,26 +1,26 @@
-'use client'
+'use client';
 
-import { createContext, useContext, useReducer, useMemo } from 'react'
-import { createInitialUIState } from './helpers'
-import { dndUIReducer } from './reducer'
-import { createUIActions } from './actions'
-import type { UIContextValue } from '../../types'
+import { createContext, useContext, useReducer, useMemo } from 'react';
+import { createInitialUIState } from './helpers';
+import { dndUIReducer } from './reducer';
+import { createUIActions } from './actions';
+import type { UIContextValue } from '../../types';
 
-const UIContext = createContext<UIContextValue | undefined>(undefined)
+const UIContext = createContext<UIContextValue | undefined>(undefined);
 
 export function useUI() {
-  const context = useContext(UIContext)
+  const context = useContext(UIContext);
   if (!context) {
-    throw new Error('useUI must be used within a UIProvider')
+    throw new Error('useUI must be used within a UIProvider');
   }
-  return context
+  return context;
 }
 
 export function UIProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(dndUIReducer, createInitialUIState())
+  const [state, dispatch] = useReducer(dndUIReducer, createInitialUIState());
 
-  const actions = useMemo(() => createUIActions(dispatch), [dispatch])
-  const contextValue = useMemo(() => ({ state, actions }), [state, actions])
+  const actions = useMemo(() => createUIActions(dispatch), [dispatch]);
+  const contextValue = useMemo(() => ({ state, actions }), [state, actions]);
 
-  return <UIContext.Provider value={contextValue}>{children}</UIContext.Provider>
+  return <UIContext.Provider value={contextValue}>{children}</UIContext.Provider>;
 }

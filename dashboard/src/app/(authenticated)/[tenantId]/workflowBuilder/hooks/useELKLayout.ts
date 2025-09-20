@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from 'react'
-import ELK from 'elkjs/lib/elk.bundled.js'
-import type { Node as ReactFlowNode, Edge as ReactFlowEdge } from 'reactflow'
-import type { LayoutResult, LayoutDirection } from '../types'
-import { DEFAULT_ELK_OPTIONS } from '../lib/constants'
+import { useCallback, useMemo } from 'react';
+import ELK from 'elkjs/lib/elk.bundled.js';
+import type { Node as ReactFlowNode, Edge as ReactFlowEdge } from 'reactflow';
+import type { LayoutResult, LayoutDirection } from '../types';
+import { DEFAULT_ELK_OPTIONS } from '../lib/constants';
 
 interface UseELKLayoutResult {
   getLayoutedElements: (
@@ -12,8 +12,9 @@ interface UseELKLayoutResult {
   ) => Promise<LayoutResult>
 }
 
+// TODO: Move to Dagre
 export function useELKLayout(): UseELKLayoutResult {
-  const elk = useMemo(() => new ELK(), [])
+  const elk = useMemo(() => new ELK(), []);
 
   const getLayoutedElements = useCallback(
     async (
@@ -21,7 +22,7 @@ export function useELKLayout(): UseELKLayoutResult {
       edges: ReactFlowEdge[],
       direction: LayoutDirection = 'DOWN'
     ): Promise<LayoutResult> => {
-      const isHorizontal = direction === 'RIGHT'
+      const isHorizontal = direction === 'RIGHT';
 
       const graph = {
         id: 'root',
@@ -43,10 +44,10 @@ export function useELKLayout(): UseELKLayoutResult {
         })),
       }
 
-      const layoutedGraph = await elk.layout(graph)
+      const layoutedGraph = await elk.layout(graph);
 
       const layoutedNodes = (layoutedGraph.children ?? []).map(elkNode => {
-        const originalNode = nodes.find(n => n.id === elkNode.id)
+        const originalNode = nodes.find(n => n.id === elkNode.id);
 
         return {
           ...originalNode,
@@ -57,16 +58,16 @@ export function useELKLayout(): UseELKLayoutResult {
           },
           width: elkNode.width,
           height: elkNode.height,
-        } as ReactFlowNode
-      })
+        } as ReactFlowNode; 
+      });
 
       return {
         nodes: layoutedNodes,
         edges: layoutedGraph.edges ?? [],
-      }
+      };
     },
     [elk]
   )
 
-  return { getLayoutedElements }
+  return { getLayoutedElements };
 }

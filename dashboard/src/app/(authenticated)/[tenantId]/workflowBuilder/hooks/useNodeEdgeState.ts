@@ -1,6 +1,6 @@
-import { useCallback, useEffect } from 'react'
-import { addEdge, useEdgesState, useNodesState } from 'reactflow'
-import type { Connection, Edge, Node, NodeChange, EdgeChange } from 'reactflow'
+import { useCallback, useEffect } from 'react';
+import { addEdge, useEdgesState, useNodesState } from 'reactflow';
+import type { Connection, Edge, Node, NodeChange, EdgeChange } from 'reactflow';
 
 interface UseNodeEdgeStateResult {
   nodes: Node[]
@@ -14,18 +14,18 @@ interface UseNodeEdgeStateResult {
 }
 
 export function useNodeEdgeState(onEdgesUpdate?: (edges: Edge[]) => void): UseNodeEdgeStateResult {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  const onConnect = useCallback((params: Connection) => setEdges(edges => addEdge(params, edges)), [])
+  const onConnect = useCallback((params: Connection) => setEdges(edges => addEdge(params, edges)), []);
 
   const resetState = useCallback(() => {
-    setNodes([])
-    setEdges([])
+    setNodes([]);
+    setEdges([]);
   }, [setNodes, setEdges])
 
   useEffect(() => {
-    onEdgesUpdate?.(edges)
+    onEdgesUpdate?.(edges);
   }, [edges, onEdgesUpdate])
 
   return {
@@ -37,5 +37,5 @@ export function useNodeEdgeState(onEdgesUpdate?: (edges: Edge[]) => void): UseNo
     onEdgesChange,
     onConnect,
     resetState,
-  }
+  };
 }

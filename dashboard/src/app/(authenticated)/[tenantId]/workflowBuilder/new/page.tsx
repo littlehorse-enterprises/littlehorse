@@ -1,6 +1,6 @@
-import { WfBuilderContainer } from '../components/WfBuilderContainer'
-import { WorkflowProvider } from '../contexts/workflow/provider'
-import { UIProvider } from '../contexts/ui/provider'
+import { WfBuilderContainer } from '../components/WfBuilderContainer';
+import { WorkflowProvider } from '../contexts/workflow/provider';
+import { UIProvider } from '../contexts/ui/provider';
 
 export default function WorkflowBuilderPage() {
   return (
@@ -13,5 +13,5 @@ export default function WorkflowBuilderPage() {
         </WorkflowProvider>
       </main>
     </>
-  )
+  );
 }

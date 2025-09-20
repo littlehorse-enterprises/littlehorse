@@ -1,6 +1,6 @@
-import type { PutWfSpecRequest, WfSpecId } from 'littlehorse-client/proto'
-import type { Edge as ReactFlowEdge } from 'reactflow'
-import { NodeType } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/extractNodes'
+import type { PutWfSpecRequest, WfSpecId } from 'littlehorse-client/proto';
+import type { Edge as ReactFlowEdge } from 'reactflow';
+import { NodeType } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/extractNodes';
 
 export enum WorkflowActionType {
   SET_WORKFLOW_NAME = 'SET_WORKFLOW_NAME',

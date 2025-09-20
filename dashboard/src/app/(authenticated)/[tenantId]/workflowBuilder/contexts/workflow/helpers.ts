@@ -1,10 +1,10 @@
-import { produce } from 'immer'
-import type { WorkflowState, WorkflowAction } from '../../types'
-import { WorkflowActionType } from '../../types'
+import { produce } from 'immer';
+import type { WorkflowState, WorkflowAction } from '../../types';
+import { WorkflowActionType } from '../../types';
 import type { Node, ThreadVarDef } from 'littlehorse-client/proto'
-import { VariableType, WfRunVariableAccessLevel, AllowedUpdateType } from 'littlehorse-client/proto'
-import type { NodeType } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/extractNodes'
-import { createNodeValue } from '../../lib/utils'
+import { VariableType, WfRunVariableAccessLevel, AllowedUpdateType } from 'littlehorse-client/proto';
+import type { NodeType } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/extractNodes';
+import { createNodeValue } from '../../lib/utils';
 
 // TODO: move this whole thing to utils and split into different node types for parametrization
 function createNode(nodeType: NodeType, taskName?: string, varName?: string): Node {
@@ -40,7 +40,7 @@ export function handleSetWorkflowName(
   action: Extract<WorkflowAction, { type: WorkflowActionType.SET_WORKFLOW_NAME }>
 ): WorkflowState {
   return produce(state, draft => {
-    draft.spec.name = action.payload
+    draft.spec.name = action.payload;
   })
 }
 
@@ -48,7 +48,7 @@ export function handleAddNode(
   state: WorkflowState,
   action: Extract<WorkflowAction, { type: WorkflowActionType.ADD_NODE }>
 ): WorkflowState {
-  const { nodeId, nodeType, taskName, varName } = action.payload
+  const { nodeId, nodeType, taskName, varName } = action.payload;
   const newNode = createNode(nodeType, taskName, varName);
   const newVarDef: ThreadVarDef | undefined = varName ? createVariableDef(varName) : undefined;
 
@@ -59,7 +59,7 @@ export function handleAddNode(
       draft.spec.threadSpecs.entrypoint.variableDefs = [
         newVarDef,
         ...(draft.spec.threadSpecs.entrypoint.variableDefs || []),
-      ]
+      ];
     }
   })
 }
@@ -73,9 +73,9 @@ export function handleRemoveNode(
 
     Object.values(draft.spec.threadSpecs.entrypoint.nodes).forEach(node => {
       if (node.outgoingEdges?.length > 0) {
-        node.outgoingEdges = node.outgoingEdges.filter(edge => edge.sinkNodeName !== action.payload)
+        node.outgoingEdges = node.outgoingEdges.filter(edge => edge.sinkNodeName !== action.payload);
       }
-    })
+    });
   })
 }
 
@@ -93,7 +93,7 @@ export function handleUpdateNodeData(
       node.value.taskToExecute = {
         $case: 'taskDefId',
         value: { name: taskName },
-      }
+      };
     }
 
     if (node.$case === 'task' && varName !== undefined) {
@@ -119,7 +119,7 @@ export function handleSetOutgoingEdges(
 
     Object.values(nodes).forEach(node => {
       node.outgoingEdges = [];
-    })
+    });
 
     edges.forEach(edge => {
       const node = nodes[edge.source];
@@ -128,10 +128,10 @@ export function handleSetOutgoingEdges(
           sinkNodeName: edge.target,
           condition: undefined,
           variableMutations: [],
-        }]
+        }];
       }
     })
-  })
+  });
 }
 
 export function createInitialState(): WorkflowState {
@@ -148,5 +148,5 @@ export function createInitialState(): WorkflowState {
       entrypointThreadName: 'entrypoint',
       allowedUpdates: AllowedUpdateType.ALL_UPDATES,
     },
-  }
+  };
 }
