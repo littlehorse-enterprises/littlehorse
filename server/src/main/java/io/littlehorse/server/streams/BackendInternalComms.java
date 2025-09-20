@@ -391,6 +391,10 @@ public class BackendInternalComms implements Closeable {
                 getStore(partition, objectId.getStore().getStoreName());
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
+        // Support for objects created with versions prior to 0.15.0
+        if (storeResult == null) {
+            storeResult = (StoredGetable<U, T>) store.get(objectId.getLegacyStoreableKey(), StoredGetable.class);
+        }
         if (storeResult == null) {
             throw new LHApiException(Status.NOT_FOUND, "Requested object was not found.");
         }
