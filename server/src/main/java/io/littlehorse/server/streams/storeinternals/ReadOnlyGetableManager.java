@@ -78,6 +78,14 @@ public class ReadOnlyGetableManager {
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = (StoredGetable<U, T>) store.get(id.getStoreableKey(), StoredGetable.class);
 
+        // We need to support backwards compatibility here. This at first looks like it might hurt performance
+        // by doing missing get's, but I have an open PR that enables bloom filters on all levels and prevents
+        // disk I/O in 99% of missing Get cases.
+        if (storeResult == null) {
+            log.trace("checking legacy key for missing getable");
+            storeResult = (StoredGetable<U, T>) store.get(id.getLegacyStoreableKey(), StoredGetable.class);
+        }
+
         if (storeResult == null) return null;
 
         // If we got here, that means that:
