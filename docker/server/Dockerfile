@@ -1,4 +1,4 @@
-FROM amazoncorretto:21-alpine3.22
+FROM amazoncorretto:25-alpine3.22
 ENV LHS_STATE_DIR=/lh-data
 ENV LD_PRELOAD=/usr/lib64/libjemalloc.so.1
 RUN apk add --no-cache jemalloc bash

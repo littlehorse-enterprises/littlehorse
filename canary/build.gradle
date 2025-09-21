@@ -3,7 +3,6 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'com.diffplug.spotless'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'io.freefair.lombok' version '8.4'
     id 'com.google.protobuf' version '0.9.4'
     id 'maven-publish'
@@ -74,13 +73,9 @@ application {
     mainClass = 'io.littlehorse.canary.Main'
 }
 
-shadowJar {
-    mergeServiceFiles()
-}
-
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 compileJava {

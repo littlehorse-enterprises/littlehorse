@@ -1,4 +1,4 @@
-FROM amazoncorretto:21
+FROM amazoncorretto:25
 WORKDIR /lh
 COPY ./docker/canary/docker-entrypoint.sh /lh
 COPY ./canary/build/libs/canary-*-all.jar /lh/canary.jar
