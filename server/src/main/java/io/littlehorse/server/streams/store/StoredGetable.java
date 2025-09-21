@@ -5,6 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
@@ -96,6 +97,8 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     public static String getRocksDBKey(String key, GetableClassEnum objType) {
-        return objType.getNumber() + "/" + key;
+        Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objType);
+        ObjectIdModel<?, ?, ?> objectId = ObjectIdModel.fromString(key, idCls);
+        return StoredGetable.getStoreKey(objectId);
     }
 }
