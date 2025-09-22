@@ -2,7 +2,6 @@ package io.littlehorse.common;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessage;
-import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
