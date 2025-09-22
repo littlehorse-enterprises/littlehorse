@@ -23,7 +23,6 @@ interface UseWorkflowBuilderResult {
 
 export function useWorkflowBuilder(): UseWorkflowBuilderResult {
   const { actions: wfActions } = useWorkflow();
-  const { actions: uiActions } = useUI();
   const { fitView } = useReactFlow();
 
   const { 
