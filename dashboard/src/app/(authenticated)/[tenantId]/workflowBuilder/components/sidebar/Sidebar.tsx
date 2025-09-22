@@ -7,11 +7,7 @@ import { EdgeDataPanel } from './EdgeDataPanel';
 import { DeployButton } from './DeployButton';
 import { ResetButton } from './ResetButton';
 
-interface SidebarProps {
-  onReset: () => void;
-}
-
-export function Sidebar({ onReset }: SidebarProps) {
+export function Sidebar() {
   const { state: uiState } = useUI();
 
   return (
@@ -20,7 +16,7 @@ export function Sidebar({ onReset }: SidebarProps) {
       {uiState.selectedNode && <NodeDataPanel node={uiState.selectedNode} />}
       {uiState.selectedEdge && <EdgeDataPanel edge={uiState.selectedEdge} />}
       <DeployButton />
-      <ResetButton onReset={onReset} />
+      <ResetButton />
     </aside>
   )
 }

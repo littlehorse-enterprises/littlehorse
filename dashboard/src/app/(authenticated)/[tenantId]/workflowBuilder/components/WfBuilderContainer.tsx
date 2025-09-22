@@ -19,13 +19,12 @@ function WfBuilderFlow() {
     onNodeClick,
     onEdgeClick,
     onPaneClick,
-    onReset,
     handleLayout,
   } = useWorkflowBuilder();
 
   return (
     <div className="flex h-full grow flex-col md:flex-row">
-      <Sidebar onReset={onReset} />
+      <Sidebar />
       <div className="h-full w-full grow">
         <ReactFlow
           nodes={nodes}

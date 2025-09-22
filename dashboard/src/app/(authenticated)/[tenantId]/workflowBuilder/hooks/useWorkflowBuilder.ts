@@ -18,7 +18,6 @@ interface UseWorkflowBuilderResult {
   onNodeClick: (event: React.MouseEvent, node: Node) => void
   onEdgeClick: (event: React.MouseEvent, edge: Edge) => void
   onPaneClick: () => void
-  onReset: () => void
   handleLayout: (direction: LayoutDirection) => void
 }
 
@@ -35,7 +34,6 @@ export function useWorkflowBuilder(): UseWorkflowBuilderResult {
     onNodesChange, 
     onEdgesChange, 
     onConnect, 
-    resetState
   } = useReactFlowState(wfActions.setOutgoingEdges);
 
   const { getLayoutedElements } = useELKLayout();
@@ -59,12 +57,6 @@ export function useWorkflowBuilder(): UseWorkflowBuilderResult {
     [nodes, edges, getLayoutedElements, setNodes, setEdges, fitView]
   );
 
-  const onReset = useCallback(() => {
-    wfActions.resetWorkflow();
-    uiActions.resetUI();
-    resetState();
-  }, [wfActions, resetState]);
-
   return {
     nodes,
     edges,
@@ -74,7 +66,6 @@ export function useWorkflowBuilder(): UseWorkflowBuilderResult {
     onNodeClick,
     onEdgeClick,
     onPaneClick,
-    onReset,
     handleLayout,
   };
 }
