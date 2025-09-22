@@ -7,7 +7,6 @@ import { useWorkflowInteractions } from '../hooks/useWorkflowInteractions';
 import { toast } from 'sonner';
 import type { Node, Edge, Connection, NodeChange, EdgeChange } from 'reactflow';
 import type { LayoutDirection } from '../types';
-import { useUI } from '../contexts/ui/provider';
 
 interface UseWorkflowBuilderResult {
   nodes: Node[]
