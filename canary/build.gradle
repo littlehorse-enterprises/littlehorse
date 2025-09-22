@@ -17,6 +17,9 @@ dependencies {
     // LittleHorse
     implementation project(':sdk-java')
 
+    // Protobuf
+    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+
     // Tools
     implementation "com.google.guava:guava:${guavaVersion}"
 
@@ -81,11 +84,29 @@ java {
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-parameters'
+    dependsOn 'generateProto'
 }
 
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+
+    generateProtoTasks {
+        all().configureEach {
+            builtins {
+                java {}
+            }
+        }
+    }
+}
+
+// Ensure the generated sources are included in the main source set
+sourceSets {
+    main {
+        java {
+            srcDirs += 'build/generated/source/proto/main/java'
+        }
     }
 }
 
