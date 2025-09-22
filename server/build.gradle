@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id "com.gradleup.shadow" version "9.1.0"
     id 'java'
     id 'maven-publish'
     id 'signing'
@@ -214,6 +215,15 @@ task testJar(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
 }
 
+shadowJar {
+    mergeServiceFiles()
+    manifest {
+        attributes(
+            'Main-Class': 'io.littlehorse.App',
+            'JVM-Args': defaultJvmArgs.join(' ')
+        )
+    }
+}
 
 task staticVersion {
     doFirst {
