@@ -3,6 +3,7 @@ import type { Node as ReactFlowNode, Edge as ReactFlowEdge } from 'reactflow';
 export enum UIActionType {
   SELECT_NODE = 'SELECT_NODE',
   SELECT_EDGE = 'SELECT_EDGE',
+  RESET_UI = 'RESET_UI',
   SET_LOADING = 'SET_LOADING',
 }
 
@@ -15,6 +16,7 @@ export interface UIState {
 export type UIAction =
   | { type: UIActionType.SELECT_NODE; payload: ReactFlowNode | null }
   | { type: UIActionType.SELECT_EDGE; payload: ReactFlowEdge | null }
+  | { type: UIActionType.RESET_UI }
   | { type: UIActionType.SET_LOADING; payload: boolean };
 
 export interface UIContextValue {
@@ -23,5 +25,6 @@ export interface UIContextValue {
     selectNode: (node: ReactFlowNode | null) => void;
     selectEdge: (edge: ReactFlowEdge | null) => void;
     setLoading: (loading: boolean) => void;
+    resetUI: () => void;
   };
 }

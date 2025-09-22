@@ -21,4 +21,9 @@ export const createUIActions = (dispatch: React.Dispatch<UIAction>) => ({
       payload: loading,
     });
   },
+  resetUI: () => {
+    dispatch({
+      type: UIActionType.RESET_UI,
+    });
+  },
 })

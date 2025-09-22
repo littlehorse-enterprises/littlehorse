@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useReducer, useMemo } from 'react';
 import { createInitialUIState } from './helpers';
-import { dndUIReducer } from './reducer';
+import { UIReducer } from './reducer';
 import { createUIActions } from './actions';
 import type { UIContextValue } from '../../types';
 
@@ -17,7 +17,7 @@ export function useUI() {
 }
 
 export function UIProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(dndUIReducer, createInitialUIState());
+  const [state, dispatch] = useReducer(UIReducer, createInitialUIState());
 
   const actions = useMemo(() => createUIActions(dispatch), [dispatch]);
   const contextValue = useMemo(() => ({ state, actions }), [state, actions]);

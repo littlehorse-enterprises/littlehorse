@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { addEdge, useEdgesState, useNodesState } from 'reactflow';
 import type { Connection, Edge, Node, NodeChange, EdgeChange } from 'reactflow';
 
-interface UseNodeEdgeStateResult {
+interface UseReactFlowStateResult {
   nodes: Node[]
   edges: Edge[]
   setNodes: (nodes: Node[]) => void
@@ -13,7 +13,7 @@ interface UseNodeEdgeStateResult {
   resetState: () => void
 }
 
-export function useNodeEdgeState(onEdgesUpdate?: (edges: Edge[]) => void): UseNodeEdgeStateResult {
+export function useReactFlowState(onEdgesUpdate?: (edges: Edge[]) => void): UseReactFlowStateResult {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 

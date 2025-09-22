@@ -142,7 +142,7 @@ export function useCreateReactFlowNode(nodeType: NodeType, position: XYPosition)
     id: nodeId,
     type: nodeType,
     position,
-    data: setNodeData(),
+    data: setNodeData()
   }
 
   return newNode;

@@ -1,7 +1,8 @@
 import type { UIState, UIAction } from '../../types';
 import { UIActionType } from '../../types';
+import { createInitialUIState } from './helpers';
 
-export function dndUIReducer(state: UIState, action: UIAction): UIState {
+export function UIReducer(state: UIState, action: UIAction): UIState {
   switch (action.type) {
     case UIActionType.SELECT_NODE:
       return {
@@ -22,6 +23,9 @@ export function dndUIReducer(state: UIState, action: UIAction): UIState {
         ...state,
         loading: action.payload,
       };
+
+    case UIActionType.RESET_UI:
+      return createInitialUIState();
 
     default:
       return state;
