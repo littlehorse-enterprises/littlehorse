@@ -3,7 +3,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'com.diffplug.spotless'
-    id 'io.freefair.lombok' version '8.4'
+    id 'io.freefair.lombok' version '8.14'
     id 'com.google.protobuf' version '0.9.5'
     id 'maven-publish'
     id 'signing'
@@ -69,16 +69,6 @@ spotless {
     }
 }
 
-// Make protobuf work
-sourceSets {
-    main {
-        java {
-            srcDirs += ["$buildDir/generated/source/proto/main/java"]
-            srcDirs += ["$buildDir/generated/source/proto/main/grpc"]
-        }
-    }
-}
-
 application {
     mainClass = 'io.littlehorse.canary.Main'
 }
@@ -91,12 +81,21 @@ java {
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-parameters'
-    dependsOn 'generateProto'
+    dependsOn tasks.named('generateProto')
 }
 
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+}
+
+// Make protobuf work
+sourceSets {
+    main {
+        java {
+            srcDirs += ["$buildDir/generated/sources/proto/main/java"]
+        }
     }
 }
 
