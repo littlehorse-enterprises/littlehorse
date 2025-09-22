@@ -1,8 +1,7 @@
-import { FileArchive, Spline } from 'lucide-react'
-import { FC, useCallback } from 'react'
+import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
-import { SidebarSection } from '../SidebarSection'
 import { OutgoingEdges } from './OutgoingEdges'
+import { LabelContent } from '../Components'
 
 export const NodeInfo: FC = () => {
   const { selectedNode } = useDiagram()
@@ -11,18 +10,13 @@ export const NodeInfo: FC = () => {
     return null
   }
 
-
+  const { type, id, data } = selectedNode
 
   return (
-    <div className="flex flex-1 flex-col max-w-full">
-      <h2 className="text-lg font-semibold">Node Details</h2>
-      <p>
-        <strong>Node Type:</strong> {selectedNode.type}
-      </p>
-      <p>
-        <strong>Node Name:</strong> {selectedNode.id}
-      </p>
-      <OutgoingEdges outgoingEdges={selectedNode.data.outgoingEdges} />
+    <div className="flex max-w-full flex-1 flex-col">
+      <LabelContent label="Node Type" content={type} />
+      <LabelContent label="Node Name" content={id} />
+      <OutgoingEdges outgoingEdges={data.outgoingEdges} />
     </div>
   )
 }
