@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ["11", "17", "24"]
+        java-version: ["17", "21", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -125,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ["11", "17", "24"]
+        java-version: ["17", "21", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -147,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ["11", "17", "24"]
+        java-version: ["17", "21", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
