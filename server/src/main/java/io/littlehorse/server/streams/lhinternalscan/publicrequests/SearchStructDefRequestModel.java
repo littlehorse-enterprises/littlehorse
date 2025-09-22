@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
-import com.google.protobuf.GeneratedMessageV3.Builder;
+import com.google.protobuf.GeneratedMessage.Builder;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHStore;
