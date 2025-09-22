@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ["11", "17", "25"]
+        java-version: ["11", "17", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -96,7 +96,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 25
+          java-version: 24
 
       - name: Tests
         run: ./gradlew canary:spotlessCheck canary:test canary:build
@@ -112,7 +112,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 25
+          java-version: 24
 
       - name: Validate Indentations
         run: ./gradlew server:spotlessCheck
@@ -125,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ["11", "17", "25"]
+        java-version: ["11", "17", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -147,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ["11", "17", "25"]
+        java-version: ["11", "17", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
