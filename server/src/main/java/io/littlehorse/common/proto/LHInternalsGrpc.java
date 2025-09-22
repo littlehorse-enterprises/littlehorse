@@ -4,9 +4,6 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
  */
-@javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.57.2)",
-    comments = "Source: internal_server.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class LHInternalsGrpc {
 
@@ -185,6 +182,21 @@ public final class LHInternalsGrpc {
   }
 
   /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static LHInternalsBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<LHInternalsBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<LHInternalsBlockingV2Stub>() {
+        @java.lang.Override
+        public LHInternalsBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new LHInternalsBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return LHInternalsBlockingV2Stub.newStub(factory, channel);
+  }
+
+  /**
    * Creates a new blocking-style stub that supports unary and streaming output calls on the service
    */
   public static LHInternalsBlockingStub newBlockingStub(
@@ -324,6 +336,58 @@ public final class LHInternalsGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service LHInternals.
+   */
+  public static final class LHInternalsBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<LHInternalsBlockingV2Stub> {
+    private LHInternalsBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected LHInternalsBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new LHInternalsBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.GetObjectResponse getObject(io.littlehorse.common.proto.GetObjectRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetObjectMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.InternalScanResponse internalScan(io.littlehorse.common.proto.InternalScanPb request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getInternalScanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.WaitForCommandResponse waitForCommand(io.littlehorse.common.proto.WaitForCommandRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getWaitForCommandMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse getAdvertisedHosts(com.google.protobuf.Empty request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetAdvertisedHostsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEvent waitForWfEvent(io.littlehorse.common.proto.InternalWaitForWfEventRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getWaitForWfEventMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service LHInternals.
    */
   public static final class LHInternalsBlockingStub
       extends io.grpc.stub.AbstractBlockingStub<LHInternalsBlockingStub> {
