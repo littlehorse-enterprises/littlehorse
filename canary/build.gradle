@@ -48,8 +48,8 @@ dependencies {
     // Test utils
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
-    testImplementation 'org.mockito:mockito-core:5.11.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation 'net.datafaker:datafaker:2.1.0'
 }
 
