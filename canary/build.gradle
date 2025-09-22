@@ -69,6 +69,16 @@ spotless {
     }
 }
 
+// Make protobuf work
+sourceSets {
+    main {
+        java {
+            srcDirs += ["$buildDir/generated/source/proto/main/java"]
+            srcDirs += ["$buildDir/generated/source/proto/main/grpc"]
+        }
+    }
+}
+
 application {
     mainClass = 'io.littlehorse.canary.Main'
 }
