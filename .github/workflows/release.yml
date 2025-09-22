@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: "11"
+          java-version: "17"
 
       - name: Dump version
         env:
@@ -75,7 +75,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: "21"
+          java-version: "24"
 
       - name: Dump version
         env:

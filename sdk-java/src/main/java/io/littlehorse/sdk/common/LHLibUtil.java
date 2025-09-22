@@ -14,7 +14,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.ToNumberPolicy;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
@@ -65,7 +65,7 @@ public class LHLibUtil {
                 .build();
     }
 
-    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeException {
+    public static <T extends GeneratedMessage> T loadProto(byte[] data, Class<T> cls) throws LHSerdeException {
         try {
             return cls.cast(cls.getMethod("parseFrom", byte[].class).invoke(null, data));
         } catch (NoSuchMethodException | IllegalAccessException exn) {
@@ -86,7 +86,7 @@ public class LHLibUtil {
         }
     }
 
-    public static byte[] toProto(GeneratedMessageV3.Builder<?> builder) {
+    public static byte[] toProto(GeneratedMessage.Builder<?> builder) {
         return builder.build().toByteArray();
     }
 

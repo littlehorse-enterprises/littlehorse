@@ -1,3 +1,5 @@
+import datetime
+
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
@@ -5,12 +7,13 @@ from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from collections.abc import Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class StructDef(_message.Message):
-    __slots__ = ["id", "description", "created_at", "struct_def"]
+    __slots__ = ("id", "description", "created_at", "struct_def")
     ID_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
@@ -19,12 +22,12 @@ class StructDef(_message.Message):
     description: str
     created_at: _timestamp_pb2.Timestamp
     struct_def: InlineStructDef
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., description: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., struct_def: _Optional[_Union[InlineStructDef, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., description: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., struct_def: _Optional[_Union[InlineStructDef, _Mapping]] = ...) -> None: ...
 
 class InlineStructDef(_message.Message):
-    __slots__ = ["fields"]
+    __slots__ = ("fields",)
     class FieldsEntry(_message.Message):
-        __slots__ = ["key", "value"]
+        __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
@@ -35,7 +38,7 @@ class InlineStructDef(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
-    __slots__ = ["field_type", "default_value"]
+    __slots__ = ("field_type", "default_value")
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
     field_type: _common_wfspec_pb2.TypeDefinition
