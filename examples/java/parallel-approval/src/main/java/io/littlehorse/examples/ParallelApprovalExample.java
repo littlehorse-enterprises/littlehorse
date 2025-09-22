@@ -102,7 +102,7 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson3(WfRunVariable person3Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-3-response", VariableType.JSON_OBJ);
-            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-3-approves"));
+            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-3-approves").timeout(100));
             approvalThread.doIf(
                 approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
                 ifHandler -> {
@@ -119,7 +119,7 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson2(WfRunVariable person2Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-2-response", VariableType.JSON_OBJ);
-            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-2-approves"));
+            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-2-approves").timeout(300));
             approvalThread.doIf(
                 approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
                 ifHandler -> {
@@ -136,7 +136,7 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson1(WfRunVariable person1Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-1-response", VariableType.JSON_OBJ);
-            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-1-approves"));
+            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-1-approves").timeout(100));
             approvalThread.doIf(
                 approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
                 ifHandler -> {

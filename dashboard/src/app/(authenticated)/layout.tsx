@@ -1,12 +1,12 @@
 import { Toaster } from '@/components/ui/sonner'
 import { WhoAmIContext } from '@/contexts/WhoAmIContext'
+import { WithTenant } from '@/types'
+import { PropsWithChildren } from 'react'
 import { SWRConfig } from 'swr'
 import getWhoAmI from '../getWhoami'
 import '../globals.css'
 import { Header } from './[tenantId]/components/Header'
 import { QueryProvider } from './[tenantId]/components/QueryProvider'
-import { PropsWithChildren } from 'react'
-import { WithTenant } from '@/types'
 
 export default async function RootLayout({
   children,
