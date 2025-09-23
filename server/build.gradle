@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id "com.gradleup.shadow" version "9.1.0"
     id 'java'
     id 'maven-publish'
     id 'signing'
@@ -8,8 +8,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_24
+    targetCompatibility = JavaVersion.VERSION_24
 }
 
 task javadocJar(type: Jar) {
@@ -100,8 +100,8 @@ dependencies {
     // Test tools
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
-    testImplementation 'org.mockito:mockito-core:5.11.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation 'net.datafaker:datafaker:1.9.0'
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
 
@@ -156,16 +156,6 @@ application {
 
 compileJava {
     options.compilerArgs << '-parameters'
-}
-
-shadowJar {
-    mergeServiceFiles()
-    manifest {
-        attributes(
-            'Main-Class': 'io.littlehorse.App',
-            'JVM-Args': defaultJvmArgs.join(' ')
-        )
-    }
 }
 
 test {
@@ -225,6 +215,15 @@ task testJar(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
 }
 
+shadowJar {
+    mergeServiceFiles()
+    manifest {
+        attributes(
+            'Main-Class': 'io.littlehorse.App',
+            'JVM-Args': defaultJvmArgs.join(' ')
+        )
+    }
+}
 
 task staticVersion {
     doFirst {

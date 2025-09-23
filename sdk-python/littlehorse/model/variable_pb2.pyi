@@ -1,13 +1,16 @@
+import datetime
+
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from collections.abc import Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class VariableValue(_message.Message):
-    __slots__ = ["json_obj", "json_arr", "double", "bool", "str", "int", "bytes", "wf_run_id", "utc_timestamp"]
+    __slots__ = ("json_obj", "json_arr", "double", "bool", "str", "int", "bytes", "wf_run_id", "utc_timestamp")
     JSON_OBJ_FIELD_NUMBER: _ClassVar[int]
     JSON_ARR_FIELD_NUMBER: _ClassVar[int]
     DOUBLE_FIELD_NUMBER: _ClassVar[int]
@@ -26,10 +29,10 @@ class VariableValue(_message.Message):
     bytes: bytes
     wf_run_id: _object_id_pb2.WfRunId
     utc_timestamp: _timestamp_pb2.Timestamp
-    def __init__(self, json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: bool = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., utc_timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: _Optional[bool] = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., utc_timestamp: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class Variable(_message.Message):
-    __slots__ = ["id", "value", "created_at", "wf_spec_id", "masked"]
+    __slots__ = ("id", "value", "created_at", "wf_spec_id", "masked")
     ID_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
@@ -40,4 +43,4 @@ class Variable(_message.Message):
     created_at: _timestamp_pb2.Timestamp
     wf_spec_id: _object_id_pb2.WfSpecId
     masked: bool
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., masked: bool = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
