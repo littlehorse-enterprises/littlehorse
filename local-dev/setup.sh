@@ -11,7 +11,7 @@ services:
     ports:
       - "9092:9092"
     container_name: lh-server-kafka
-    image: apache/kafka:4.0.0
+    image: apache/kafka:4.1.0
 EOF
 )
 
