@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
 
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
@@ -43,7 +43,7 @@ public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implement
     }
 
     @Override
-    public Class<? extends GeneratedMessageV3> getProtoBaseClass() {
+    public Class<? extends GeneratedMessage> getProtoBaseClass() {
         return CreateRemoteTagPb.class;
     }
 }

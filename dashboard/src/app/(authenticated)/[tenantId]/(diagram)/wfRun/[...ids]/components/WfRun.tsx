@@ -33,10 +33,12 @@ export const WfRun: FC<{ ids: string[]; tenantId: string }> = ({ ids, tenantId }
       <Details {...wfRun} />
       <Diagram spec={wfSpec} wfRun={wfRun} nodeRuns={nodeRuns} />
 
-      <Variables
-        variableDefs={variableDefs}
-        variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
-      />
+      {wfRun.id && (
+        <Variables
+          variableDefs={variableDefs}
+          variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
+        />
+      )}
 
       {wfRun.id && (
         <>
