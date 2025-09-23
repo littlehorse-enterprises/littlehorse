@@ -86,7 +86,9 @@ public class ReadOnlyGetableManager {
         // we are getting the
         out = storeResult.getStoredObject();
 
-        uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
+        uncommittedChanges.put(
+                id.getStoreableKey(),
+                new GetableToStore<>(storeResult.getStoredObject(), storeResult.getIndexCache(), id.getObjectClass()));
         return out;
     }
 
@@ -240,7 +242,7 @@ public class ReadOnlyGetableManager {
                 LHIterKeyValue<? extends Storeable<?>> next = iterator.next();
 
                 StoredGetable<U, T> item = (StoredGetable<U, T>) next.getValue();
-                all.put(item.getStoreKey(), new GetableToStore<>(item, cls));
+                all.put(item.getStoreKey(), new GetableToStore<>(item.getStoredObject(), item, cls));
             }
         }
 

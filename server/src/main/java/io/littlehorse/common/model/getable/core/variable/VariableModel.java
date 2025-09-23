@@ -78,6 +78,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
             wfSpec = metadataManager.get(
                     new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
         }
+
         return wfSpec;
     }
 

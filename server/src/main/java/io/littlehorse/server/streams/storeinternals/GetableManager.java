@@ -104,12 +104,10 @@ public class GetableManager extends ReadOnlyGetableManager {
             @SuppressWarnings("unchecked")
             StoredGetable<U, T> previousValue =
                     (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
-            toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
+            toPut = new GetableToStore<>(getable, previousValue, (Class<T>) getable.getClass());
         } else {
-            toPut = new GetableToStore<>((Class<T>) getable.getClass());
+            toPut = new GetableToStore<>(getable, (StoredGetable<U, T>) null, (Class<T>) getable.getClass());
         }
-
-        toPut.setObjectToStore(getable);
         uncommittedChanges.put(getable.getObjectId().getStoreableKey(), toPut);
     }
 
@@ -162,7 +160,9 @@ public class GetableManager extends ReadOnlyGetableManager {
             throw new IllegalStateException("Impossible to get null buffer entry after successfull this#get()");
         }
         // Mark it for deletion
-        bufferEntry.setObjectToStore(null);
+        uncommittedChanges.put(
+                id.getStoreableKey(),
+                GetableToStore.deletion(bufferEntry.getCls(), bufferEntry.getTagsPresentBeforeUpdate()));
 
         return thingToDelete;
     }
@@ -177,7 +177,9 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         for (GetableToStore<U, T> itemToDelete : allItems) {
             // Marking the objectToStore as null causes the flush() to delete it.
-            itemToDelete.setObjectToStore(null);
+            uncommittedChanges.put(
+                    itemToDelete.getObjectToStore().getObjectId().getStoreableKey(),
+                    GetableToStore.deletion(itemToDelete.getCls(), itemToDelete.getTagsPresentBeforeUpdate()));
         }
     }
 
@@ -192,7 +194,11 @@ public class GetableManager extends ReadOnlyGetableManager {
 
     private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(
             String storeableKey, GetableToStore<U, T> entity) {
-        if (entity.containsUpdate()) {
+        if (entity.isDeletion()) {
+            // Do a deletion!
+            store.delete(storeableKey, StoreableType.STORED_GETABLE);
+            tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
+        } else if (entity.containsUpdate()) {
             T getable = entity.getObjectToStore();
             store.put(new StoredGetable<>(getable));
             tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
@@ -206,10 +212,6 @@ public class GetableManager extends ReadOnlyGetableManager {
                     return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
                 }
             }
-        } else if (entity.isDeletion()) {
-            // Do a deletion!
-            store.delete(storeableKey, StoreableType.STORED_GETABLE);
-            tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
         }
         return Optional.empty();
     }

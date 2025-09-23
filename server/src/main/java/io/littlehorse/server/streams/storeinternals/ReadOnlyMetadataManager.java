@@ -63,7 +63,9 @@ public class ReadOnlyMetadataManager {
         // we are getting the
         out = storeResult.getStoredObject();
 
-        uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
+        uncommittedChanges.put(
+                id.getStoreableKey(),
+                new GetableToStore<>(storeResult.getStoredObject(), storeResult, id.getObjectClass()));
         return out;
     }
 
@@ -99,7 +101,9 @@ public class ReadOnlyMetadataManager {
         // we are getting the
         out = storeResult.getStoredObject();
 
-        uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
+        uncommittedChanges.put(
+                id.getStoreableKey(),
+                new GetableToStore<>(storeResult.getStoredObject(), storeResult, id.getObjectClass()));
         return out;
     }
 
