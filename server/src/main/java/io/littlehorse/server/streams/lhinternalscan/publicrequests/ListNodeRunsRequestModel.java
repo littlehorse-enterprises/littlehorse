@@ -71,12 +71,13 @@ public class ListNodeRunsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        if (threadRunNumber == null) return ObjectIdScanBoundaryStrategy.from(wfRunId);
-        else
-            return new ObjectIdScanBoundaryStrategy(
-                    wfRunId.getPartitionKey().get(),
-                    wfRunId + "/" + threadRunNumber + "/",
-                    wfRunId + "/" + threadRunNumber + "/~");
+        if (threadRunNumber == null) {
+            return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.NODE_RUN);
+        } else {
+            String startKey = wfRunId + "/" + GetableClassEnum.NODE_RUN.getNumber() + "/" + threadRunNumber + "/";
+            String endKey = startKey + "~";
+            return new ObjectIdScanBoundaryStrategy(wfRunId.getPartitionKey().get(), startKey, endKey);
+        }
     }
 
     @Override

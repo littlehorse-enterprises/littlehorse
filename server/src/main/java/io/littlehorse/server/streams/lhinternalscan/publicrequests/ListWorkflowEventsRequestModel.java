@@ -53,7 +53,7 @@ public class ListWorkflowEventsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return ObjectIdScanBoundaryStrategy.from(wfRunId);
+        return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.WORKFLOW_EVENT);
     }
 
     @Override
