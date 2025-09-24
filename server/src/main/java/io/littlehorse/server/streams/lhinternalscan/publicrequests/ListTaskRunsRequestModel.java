@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
@@ -26,7 +26,7 @@ public class ListTaskRunsRequestModel
     private WfRunIdModel wfRunId;
 
     @Override
-    public GeneratedMessageV3.Builder<?> toProto() {
+    public GeneratedMessage.Builder<?> toProto() {
         return ListTaskRunsRequest.newBuilder().setWfRunId(wfRunId.toProto());
     }
 

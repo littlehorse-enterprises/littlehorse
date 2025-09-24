@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 21
+          java-version: 24
 
       - name: Tests and Build
         run: ./gradlew server:build server:installDist
@@ -58,7 +58,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 21
+          java-version: 24
 
       - name: Tests and Build
         run: ./gradlew canary:build

@@ -5,12 +5,13 @@ from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     ASSIGN: _ClassVar[VariableMutationType]
     ADD: _ClassVar[VariableMutationType]
     EXTEND: _ClassVar[VariableMutationType]
@@ -22,7 +23,7 @@ class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     REMOVE_KEY: _ClassVar[VariableMutationType]
 
 class Comparator(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     LESS_THAN: _ClassVar[Comparator]
     GREATER_THAN: _ClassVar[Comparator]
     LESS_THAN_EQ: _ClassVar[Comparator]
@@ -50,21 +51,21 @@ IN: Comparator
 NOT_IN: Comparator
 
 class VariableAssignment(_message.Message):
-    __slots__ = ["json_path", "variable_name", "literal_value", "format_string", "node_output", "expression"]
+    __slots__ = ("json_path", "variable_name", "literal_value", "format_string", "node_output", "expression")
     class FormatString(_message.Message):
-        __slots__ = ["format", "args"]
+        __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
         ARGS_FIELD_NUMBER: _ClassVar[int]
         format: VariableAssignment
         args: _containers.RepeatedCompositeFieldContainer[VariableAssignment]
         def __init__(self, format: _Optional[_Union[VariableAssignment, _Mapping]] = ..., args: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...
     class NodeOutputReference(_message.Message):
-        __slots__ = ["node_name"]
+        __slots__ = ("node_name",)
         NODE_NAME_FIELD_NUMBER: _ClassVar[int]
         node_name: str
         def __init__(self, node_name: _Optional[str] = ...) -> None: ...
     class Expression(_message.Message):
-        __slots__ = ["lhs", "operation", "rhs"]
+        __slots__ = ("lhs", "operation", "rhs")
         LHS_FIELD_NUMBER: _ClassVar[int]
         OPERATION_FIELD_NUMBER: _ClassVar[int]
         RHS_FIELD_NUMBER: _ClassVar[int]
@@ -87,9 +88,9 @@ class VariableAssignment(_message.Message):
     def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
-    __slots__ = ["lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output"]
+    __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")
     class NodeOutputSource(_message.Message):
-        __slots__ = ["jsonpath"]
+        __slots__ = ("jsonpath",)
         JSONPATH_FIELD_NUMBER: _ClassVar[int]
         jsonpath: str
         def __init__(self, jsonpath: _Optional[str] = ...) -> None: ...
@@ -108,7 +109,7 @@ class VariableMutation(_message.Message):
     def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs_assignment: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
-    __slots__ = ["type", "name", "default_value", "masked_value", "type_def"]
+    __slots__ = ("type", "name", "default_value", "masked_value", "type_def")
     TYPE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
@@ -119,10 +120,10 @@ class VariableDef(_message.Message):
     default_value: _variable_pb2.VariableValue
     masked_value: bool
     type_def: TypeDefinition
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
-    __slots__ = ["primitive_type", "struct_def_id", "inline_array_def", "masked"]
+    __slots__ = ("primitive_type", "struct_def_id", "inline_array_def", "masked")
     PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     INLINE_ARRAY_DEF_FIELD_NUMBER: _ClassVar[int]
@@ -131,34 +132,34 @@ class TypeDefinition(_message.Message):
     struct_def_id: _object_id_pb2.StructDefId
     inline_array_def: InlineArrayDef
     masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array_def: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: bool = ...) -> None: ...
+    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array_def: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
 
 class ReturnType(_message.Message):
-    __slots__ = ["return_type"]
+    __slots__ = ("return_type",)
     RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
     return_type: TypeDefinition
     def __init__(self, return_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class UTActionTrigger(_message.Message):
-    __slots__ = ["task", "cancel", "reassign", "delay_seconds", "hook"]
+    __slots__ = ("task", "cancel", "reassign", "delay_seconds", "hook")
     class UTHook(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = []
+        __slots__ = ()
         ON_ARRIVAL: _ClassVar[UTActionTrigger.UTHook]
         ON_TASK_ASSIGNED: _ClassVar[UTActionTrigger.UTHook]
     ON_ARRIVAL: UTActionTrigger.UTHook
     ON_TASK_ASSIGNED: UTActionTrigger.UTHook
     class UTACancel(_message.Message):
-        __slots__ = []
+        __slots__ = ()
         def __init__(self) -> None: ...
     class UTATask(_message.Message):
-        __slots__ = ["task", "mutations"]
+        __slots__ = ("task", "mutations")
         TASK_FIELD_NUMBER: _ClassVar[int]
         MUTATIONS_FIELD_NUMBER: _ClassVar[int]
         task: TaskNode
         mutations: _containers.RepeatedCompositeFieldContainer[VariableMutation]
         def __init__(self, task: _Optional[_Union[TaskNode, _Mapping]] = ..., mutations: _Optional[_Iterable[_Union[VariableMutation, _Mapping]]] = ...) -> None: ...
     class UTAReassign(_message.Message):
-        __slots__ = ["user_id", "user_group"]
+        __slots__ = ("user_id", "user_group")
         USER_ID_FIELD_NUMBER: _ClassVar[int]
         USER_GROUP_FIELD_NUMBER: _ClassVar[int]
         user_id: VariableAssignment
@@ -177,7 +178,7 @@ class UTActionTrigger(_message.Message):
     def __init__(self, task: _Optional[_Union[UTActionTrigger.UTATask, _Mapping]] = ..., cancel: _Optional[_Union[UTActionTrigger.UTACancel, _Mapping]] = ..., reassign: _Optional[_Union[UTActionTrigger.UTAReassign, _Mapping]] = ..., delay_seconds: _Optional[_Union[VariableAssignment, _Mapping]] = ..., hook: _Optional[_Union[UTActionTrigger.UTHook, str]] = ...) -> None: ...
 
 class ExponentialBackoffRetryPolicy(_message.Message):
-    __slots__ = ["base_interval_ms", "max_delay_ms", "multiplier"]
+    __slots__ = ("base_interval_ms", "max_delay_ms", "multiplier")
     BASE_INTERVAL_MS_FIELD_NUMBER: _ClassVar[int]
     MAX_DELAY_MS_FIELD_NUMBER: _ClassVar[int]
     MULTIPLIER_FIELD_NUMBER: _ClassVar[int]
@@ -187,7 +188,7 @@ class ExponentialBackoffRetryPolicy(_message.Message):
     def __init__(self, base_interval_ms: _Optional[int] = ..., max_delay_ms: _Optional[int] = ..., multiplier: _Optional[float] = ...) -> None: ...
 
 class TaskNode(_message.Message):
-    __slots__ = ["task_def_id", "dynamic_task", "timeout_seconds", "retries", "exponential_backoff", "variables"]
+    __slots__ = ("task_def_id", "dynamic_task", "timeout_seconds", "retries", "exponential_backoff", "variables")
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     DYNAMIC_TASK_FIELD_NUMBER: _ClassVar[int]
     TIMEOUT_SECONDS_FIELD_NUMBER: _ClassVar[int]
@@ -203,9 +204,9 @@ class TaskNode(_message.Message):
     def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., dynamic_task: _Optional[_Union[VariableAssignment, _Mapping]] = ..., timeout_seconds: _Optional[int] = ..., retries: _Optional[int] = ..., exponential_backoff: _Optional[_Union[ExponentialBackoffRetryPolicy, _Mapping]] = ..., variables: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...
 
 class InlineStructDef(_message.Message):
-    __slots__ = ["fields"]
+    __slots__ = ("fields",)
     class FieldsEntry(_message.Message):
-        __slots__ = ["key", "value"]
+        __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
@@ -216,13 +217,13 @@ class InlineStructDef(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
 
 class InlineArrayDef(_message.Message):
-    __slots__ = ["element_type"]
+    __slots__ = ("element_type",)
     ELEMENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     element_type: TypeDefinition
     def __init__(self, element_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
-    __slots__ = ["field_type", "default_value"]
+    __slots__ = ("field_type", "default_value")
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
     field_type: TypeDefinition

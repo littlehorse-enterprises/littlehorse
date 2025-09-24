@@ -43,9 +43,12 @@ class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
                 try {
                     SimpleResponse response = registry.getResponse(httpRequest.uri());
                     writeResponse(ctx, response);
+                } catch (LHHttpException lhExn) {
+                    log.debug("Failed processsing http request: {}", lhExn);
+                    writeInternalErrorResponse(ctx, lhExn.getMessage());
                 } catch (Exception e) {
                     log.error("Error processing http request", e);
-                    writeInternalErrorResponse(ctx);
+                    writeInternalErrorResponse(ctx, "Internal server error");
                 }
             }
         } else if (request instanceof LastHttpContent trailer) {
@@ -69,8 +72,8 @@ class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
     }
 
     // Any exception from the handler
-    private void writeInternalErrorResponse(ChannelHandlerContext ctx) {
-        ByteBuf responseBody = Unpooled.copiedBuffer("Internal server error", StandardCharsets.UTF_8);
+    private void writeInternalErrorResponse(ChannelHandlerContext ctx, String message) {
+        ByteBuf responseBody = Unpooled.copiedBuffer(message, StandardCharsets.UTF_8);
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR, responseBody);
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);

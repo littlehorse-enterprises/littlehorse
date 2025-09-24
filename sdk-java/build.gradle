@@ -6,8 +6,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 task javadocJar(type: Jar) {
@@ -81,7 +81,7 @@ dependencies {
     testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
     testImplementation 'net.datafaker:datafaker:1.9.0'
     testImplementation 'org.slf4j:slf4j-log4j12:2.0.7'
-    testImplementation 'org.mockito:mockito-core:5.11.0'
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
 
     // Logging interface
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -110,9 +110,6 @@ dependencies {
     api "com.google.protobuf:protobuf-java:${protobufVersion}"
     api "com.google.protobuf:protobuf-java-util:${protobufVersion}"
     api 'org.apache.tomcat:annotations-api:6.0.53'
-
-    // Mocking
-    testImplementation 'org.mockito:mockito-core:5.11.0'
 
     // Tests
     testImplementation "org.awaitility:awaitility:${awaitilityVersion}"

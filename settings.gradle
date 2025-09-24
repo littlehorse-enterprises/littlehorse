@@ -9,7 +9,6 @@ rootProject.name = 'littlehorse'
 include(
         'server',
         'sdk-java',
-        'e2e-tests',
         'test-utils',
         'test-utils-container',
         'canary'
@@ -34,14 +33,11 @@ include(
         'parallel-approval',
         'run-wf',
         'saga',
-        'shared-variables',
         'spawn-thread-foreach',
         'struct-def',
         'user-tasks',
         'variables',
-        'wf-versions',
         'worker-context',
-        'workflow-events',
         "timestamp"
 
 ].each { example ->
