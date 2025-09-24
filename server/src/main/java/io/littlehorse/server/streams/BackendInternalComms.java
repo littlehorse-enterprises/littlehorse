@@ -714,17 +714,16 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyTenantScopedStore store = getStore(partition, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
-        String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
+        String endKey = req.boundedObjectIdScan.getEndObjectId();
         String startKey;
         if (partBookmark == null) {
-            startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());
+            startKey = req.getBoundedObjectIdScan().getStartObjectId();
         } else {
             startKey = partBookmark.getLastKey();
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
-        try (LHKeyValueIterator<?> iter =
-                store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
