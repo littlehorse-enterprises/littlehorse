@@ -5,6 +5,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.http.ContentType;
+import io.littlehorse.server.monitoring.http.LHHttpException;
 import io.littlehorse.server.monitoring.http.StatusServer;
 import io.littlehorse.server.monitoring.metrics.InstanceState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
@@ -138,7 +139,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         if (isReady.test(coreState.getCurrentState())) {
             return "OK!";
         } else {
-            throw new RuntimeException("Core topology is not ready to receive traffic");
+            throw new LHHttpException("Core topology is not ready to receive traffic");
         }
     }
 
@@ -160,7 +161,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         if (isAlive.test(coreState.getCurrentState()) && isAlive.test(timerState)) {
             return "OK!";
         } else {
-            throw new RuntimeException("Core topology or Timer Topology has an error");
+            throw new LHHttpException("Core topology or Timer Topology has an error");
         }
     }
 
