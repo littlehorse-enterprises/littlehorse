@@ -25,13 +25,14 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
 
     private final Class<T> cls;
 
+    private final boolean containsUpdate;
+
     public boolean isDeletion() {
         return objectToStore == null;
     }
 
     public boolean containsUpdate() {
-        return (previouslyStoredProto == null)
-                || (objectToStore != null && !objectToStore.toProto().build().equals(previouslyStoredProto));
+        return this.containsUpdate;
     }
 
     @SuppressWarnings("unchecked")
@@ -44,9 +45,11 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
             this.tagsPresentBeforeUpdate = thingInStore.getIndexCache();
             this.previouslyStoredProto =
                     (U) (thingInStore.getStoredObject().toProto().build());
+            this.containsUpdate = !objectToStore.toProto().build().equals(previouslyStoredProto);
         } else {
             this.tagsPresentBeforeUpdate = new TagsCache();
             this.previouslyStoredProto = null;
+            this.containsUpdate = true;
         }
     }
 
@@ -58,6 +61,7 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
         this.objectToStore = objectToStore;
         this.tagsPresentBeforeUpdate = indexCache;
         this.previouslyStoredProto = null;
+        this.containsUpdate = false;
     }
 
     private GetableToStore(Class<T> cls, TagsCache tagsPresent) {
@@ -66,6 +70,7 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
         this.objectType = AbstractGetable.getTypeEnum(cls);
         this.objectToStore = null;
         this.previouslyStoredProto = null;
+        this.containsUpdate = true;
     }
 
     public static <U extends Message, T extends AbstractGetable<U>> GetableToStore<U, T> deletion(

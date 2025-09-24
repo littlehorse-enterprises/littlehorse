@@ -566,6 +566,7 @@ public class GetableManagerTest {
         VariableModel variableDuringProcess = getableManager.get(actualVariable.getObjectId());
         variableDuringProcess.setWfSpec(actualVariable.getWfSpec());
         variableDuringProcess.setValue(new VariableValueModel(valueAfterModify));
+        getableManager.put(variableDuringProcess);
 
         // bypass the security of the test by corrupting it
         StoredGetable fakeOne = new StoredGetable(anotherVariable);

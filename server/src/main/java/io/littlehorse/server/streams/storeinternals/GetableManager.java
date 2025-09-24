@@ -60,20 +60,6 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         log.trace("Putting {} with key {}", getable.getClass(), getable.getObjectId());
 
-        @SuppressWarnings("unchecked")
-        GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>)
-                uncommittedChanges.get(getable.getObjectId().getStoreableKey());
-
-        if (bufferedResult != null) {
-            if (bufferedResult.getObjectToStore() != getable) {
-                throw new IllegalStateException(
-                        "Appears that Getable " + getable.getObjectId() + " was re-instantiated");
-            }
-            // We know that the buffer already has a pointer to the thing
-            // we are storing. We can safely return now.
-            return;
-        }
-
         if (getable instanceof ExternalEventModel) {
             WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(
                     ((ExternalEventModel) getable).getId().getWfRunId());
