@@ -7,17 +7,16 @@ import io.grpc.netty.shaded.io.netty.channel.EventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel;
 import io.grpc.netty.shaded.io.netty.util.concurrent.DefaultThreadFactory;
-
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-public class InternalNettyChannel implements AutoCloseable{
+public class InternalNettyChannel implements AutoCloseable {
 
     private static final int MAX_NUMBER_IO_THREADS = 3;
     private static final String THREAD_NAME_PREFIX = "lh-grpc-internal";
 
-    private final ThreadFactory namedFactory =  new DefaultThreadFactory(THREAD_NAME_PREFIX);
+    private final ThreadFactory namedFactory = new DefaultThreadFactory(THREAD_NAME_PREFIX);
     private final EventLoopGroup nioEventLoopGroup = new NioEventLoopGroup(MAX_NUMBER_IO_THREADS, namedFactory);
     private final ManagedChannel grpcChannel;
 
@@ -45,7 +44,6 @@ public class InternalNettyChannel implements AutoCloseable{
     public ManagedChannel getChannel() {
         return grpcChannel;
     }
-
 
     @Override
     public void close() {
