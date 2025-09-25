@@ -34,9 +34,6 @@ public class InternalNettyChannel implements AutoCloseable {
         Objects.requireNonNull(host);
         Objects.requireNonNull(credentials);
         this.grpcChannel = NettyChannelBuilder.forAddress(host, port, credentials)
-                .eventLoopGroup(nioEventLoopGroup)
-                .channelType(NioSocketChannel.class)
-                .usePlaintext()
                 .executor(Executors.newVirtualThreadPerTaskExecutor())
                 .build();
     }
