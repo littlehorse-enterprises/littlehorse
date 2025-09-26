@@ -6,9 +6,11 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
 public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
 
+    @Getter
     private TypeDefinitionModel elementType;
 
     @Override

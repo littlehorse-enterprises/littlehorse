@@ -11,7 +11,7 @@ public abstract class LHClassType {
 
     public static LHClassType fromJavaClass(Class<?> classType) {
         if (classType == null) {
-            return null;
+            throw new IllegalArgumentException("Class type should not be null");
         } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
             return new LHPrimitiveType(classType);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {

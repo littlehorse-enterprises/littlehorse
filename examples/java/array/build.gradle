@@ -25,5 +25,5 @@ dependencies {
 }
 
 application {
-    mainClass = 'io.littlehorse.examples.StructDefExample'
+    mainClass = 'io.littlehorse.examples.ArrayExample'
 }

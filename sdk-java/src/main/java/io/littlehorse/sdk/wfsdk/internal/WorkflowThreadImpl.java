@@ -51,6 +51,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -449,6 +450,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
+    private WfRunVariableImpl addArrayVariable(String name, LHArrayDefType elementType) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createArrayDefVar(name, elementType, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
     @Override
     public WfRunVariable declareBool(String name) {
         return addVariable(name, VariableType.BOOL);
@@ -492,6 +501,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
         return addStructVariable(name, new LHStructDefType(clazz));
+    }
+
+    @Override
+    public WfRunVariable declareArray(String name, Class<?> elementType) {
+        return addArrayVariable(name, new LHArrayDefType(elementType));
     }
 
     @Override
