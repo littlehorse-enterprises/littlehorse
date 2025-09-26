@@ -16,6 +16,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -34,6 +35,7 @@ import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 
@@ -96,6 +98,23 @@ public class CommandSender {
         return producer.send(
                         command.getPartitionKey(), command, command.getTopic(serverConfig), commandMetadata.toArray())
                 .thenCompose((recordMetadata) -> waitForCommand(command, responseCls, context));
+    }
+
+    public CompletableFuture<Message> doSend(
+            Command command,
+            String partitionKey,
+            Class<?> responseCls,
+            PrincipalIdModel principalId,
+            TenantIdModel tenantId,
+            RequestExecutionContext context) {
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+        return commandProducer
+                .send(
+                        partitionKey,
+                        new Bytes(command.toByteArray()),
+                        serverConfig.getCoreCmdTopicName(),
+                        commandMetadata.toArray())
+                .thenCompose((recordMetadata) -> waitForCommand(partitionKey, partitionKey, responseCls, context));
     }
 
     @SuppressWarnings("unchecked")
@@ -171,6 +190,38 @@ public class CommandSender {
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(commandId.get())
+                    .setPartition(meta.partition())
+                    .build();
+            LHInternalsGrpc.LHInternalsFutureStub internalClient = internalComms.getInternalFutureClient(
+                    meta.activeHost(), InternalCallCredentials.forContext(context));
+            ListenableFuture<WaitForCommandResponse> futureResponse = internalClient.waitForCommand(req);
+            CompletableFuture<Message> out = new CompletableFuture<>();
+            futureResponse.addListener(
+                    () -> {
+                        try {
+                            WaitForCommandResponse response = futureResponse.get();
+                            out.complete(buildRespFromBytes(response.getResult(), responseCls));
+                        } catch (ExecutionException e) {
+                            out.completeExceptionally(e.getCause());
+                        } catch (InterruptedException e) {
+                            log.error("Unexpected interrupted exception", e);
+                            out.completeExceptionally(new StatusRuntimeException(Status.INTERNAL));
+                        }
+                    },
+                    Runnable::run);
+            return out;
+        }
+    }
+
+    private CompletableFuture<Message> waitForCommand(
+            String partitionKey, String commandId, Class<?> responseCls, RequestExecutionContext context) {
+        String storeName = ServerTopology.CORE_STORE;
+        KeyQueryMetadata meta = internalComms.lookupPartitionKey(storeName, partitionKey);
+        if (meta.activeHost().equals(thisHost)) {
+            return asyncWaiters.getOrRegisterFuture(commandId, Message.class, new CompletableFuture<>());
+        } else {
+            WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
+                    .setCommandId(commandId)
                     .setPartition(meta.partition())
                     .build();
             LHInternalsGrpc.LHInternalsFutureStub internalClient = internalComms.getInternalFutureClient(

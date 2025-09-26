@@ -5,12 +5,16 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Context;
-import io.grpc.Grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+import io.grpc.netty.shaded.io.netty.channel.EventLoopGroup;
+import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
+import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.grpc.netty.shaded.io.netty.util.concurrent.DefaultThreadFactory;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -71,6 +75,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
@@ -147,6 +152,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
@@ -172,6 +178,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final Duration successDurationTimeout;
     private final AsyncWaiters asyncWaiters;
     private final LHInternalClient lhInternalClient;
+    private final ThreadFactory workerFactory;
+    private final ThreadFactory bossFactory;
+    private final EventLoopGroup workerEventLoopGroup;
+    private final EventLoopGroup bossEventLoopGroup;
 
     private Server grpcListener;
 
@@ -191,6 +201,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CommandSender commandSender,
             AsyncWaiters asyncWaiters,
             LHInternalClient lhInternalClient) {
+        this.workerFactory = new DefaultThreadFactory("listener-worker-" + listenerConfig.getName());
+        this.bossFactory = new DefaultThreadFactory("listener-boss-" + listenerConfig.getName());
+        this.workerEventLoopGroup = new NioEventLoopGroup(1, workerFactory);
+        this.bossEventLoopGroup = new NioEventLoopGroup(1, bossFactory);
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
@@ -208,8 +222,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
         this.grpcListener = null;
 
-        ServerBuilder<?> builder = Grpc.newServerBuilderForPort(
-                        listenerConfig.getPort(), listenerConfig.getCredentials())
+        ServerBuilder<?> builder = NettyServerBuilder.forPort(listenerConfig.getPort(), listenerConfig.getCredentials())
+                .workerEventLoopGroup(workerEventLoopGroup)
+                .bossEventLoopGroup(bossEventLoopGroup)
+                .channelType(NioServerSocketChannel.class)
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
@@ -590,8 +606,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             }
         }
 
-        RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx, WfRun.class);
+        Command cmd = Command.newBuilder()
+                .setCommandId(LHUtil.generateGuid())
+                .setRunWf(req)
+                .build();
+        processCommand(cmd, ctx, WfRun.class);
     }
 
     @Override
@@ -1155,6 +1174,40 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             }
         } finally {
             command.getCommandId().ifPresent(asyncWaiters::removeCommand);
+        }
+    }
+
+    private <AC extends Message, RC extends Message> void processCommand(
+            Command cmd, StreamObserver<RC> responseObserver, Class<RC> responseCls) {
+        RequestExecutionContext requestContext = requestContext();
+        Future<Message> futureResponse = commandSender.doSend(
+                cmd,
+                cmd.getCommandId(),
+                responseCls,
+                requestContext.authorization().principalId(),
+                requestContext.authorization().tenantId(),
+                requestContext);
+        try {
+            Message response =
+                    futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
+            responseObserver.onNext((RC) response);
+            responseObserver.onCompleted();
+        } catch (InterruptedException e) {
+            responseObserver.onError(new StatusRuntimeException(
+                    Status.UNAVAILABLE.withDescription("This Server instance shutting down")));
+        } catch (TimeoutException e) {
+            responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                    "Could not process command in time id: %s".formatted(cmd.getCommandId()))));
+        } catch (Throwable e) {
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            if (cause instanceof StatusRuntimeException) {
+                responseObserver.onError(cause);
+            } else {
+                responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
+                log.error("Failed processing command", e);
+            }
+        } finally {
+            asyncWaiters.removeCommand(cmd.getCommandId());
         }
     }
 
