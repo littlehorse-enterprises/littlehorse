@@ -89,9 +89,9 @@ class PutStructDefRequest(_message.Message):
     ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
     name: str
     description: str
-    struct_def: _struct_def_pb2.InlineStructDef
+    struct_def: _common_wfspec_pb2.InlineStructDef
     allowed_updates: StructDefCompatibilityType
-    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_common_wfspec_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
 
 class ValidateStructDefEvolutionRequest(_message.Message):
     __slots__ = ("struct_def_id", "struct_def", "compatibility_type")
@@ -99,9 +99,9 @@ class ValidateStructDefEvolutionRequest(_message.Message):
     STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
     COMPATIBILITY_TYPE_FIELD_NUMBER: _ClassVar[int]
     struct_def_id: _object_id_pb2.StructDefId
-    struct_def: _struct_def_pb2.InlineStructDef
+    struct_def: _common_wfspec_pb2.InlineStructDef
     compatibility_type: StructDefCompatibilityType
-    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., struct_def: _Optional[_Union[_struct_def_pb2.InlineStructDef, _Mapping]] = ..., compatibility_type: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., struct_def: _Optional[_Union[_common_wfspec_pb2.InlineStructDef, _Mapping]] = ..., compatibility_type: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
 
 class ValidateStructDefEvolutionResponse(_message.Message):
     __slots__ = ("is_valid",)

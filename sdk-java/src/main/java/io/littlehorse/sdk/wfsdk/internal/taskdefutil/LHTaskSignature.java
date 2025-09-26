@@ -1,25 +1,31 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LHTaskSignature {
 
-    List<VariableType> paramTypes;
-    List<String> varNames;
-    List<Boolean> maskedParams;
+    @Getter
+    List<VariableDef> variableDefs;
+
+    LinkedHashSet<LHStructDefType> structDefClasses;
+
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
     String taskDefName;
@@ -29,13 +35,12 @@ public class LHTaskSignature {
 
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
-        paramTypes = new ArrayList<>();
-        varNames = new ArrayList<>();
-        maskedParams = new ArrayList<>();
+        variableDefs = new ArrayList<>();
         hasWorkerContextAtEnd = false;
         this.taskDefName = taskDefName;
         this.executable = executable;
         this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
+        this.structDefClasses = new LinkedHashSet<>();
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
@@ -71,22 +76,35 @@ public class LHTaskSignature {
                     continue; // could also be `break;`
                 }
             }
-            VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
-            paramTypes.add(paramLHType);
-            if (param.isAnnotationPresent(LHType.class)) {
-                LHType type = param.getAnnotation(LHType.class);
-                maskedParams.add(type.masked());
-                if (!type.name().isEmpty() && !type.name().isBlank()) {
-                    varNames.add(type.name());
-                } else {
-                    varNames.add(varNameFromParameterName(param));
-                }
-            } else {
-                maskedParams.add(false);
-                varNames.add(varNameFromParameterName(param));
-            }
+
+            variableDefs.add(buildVariableDef(param));
         }
         outputSchema = buildReturnType(taskMethod.getReturnType());
+    }
+
+    private VariableDef buildVariableDef(Parameter param) {
+        VariableDef.Builder varDef = VariableDef.newBuilder();
+        LHClassType lhClassType = LHClassType.fromJavaClass(param.getType());
+
+        if (lhClassType instanceof LHStructDefType) {
+            LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
+            structDefClasses.addAll(lhStructDefType.getDependencyClasses());
+        }
+
+        TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
+
+        // If param has `LHType` annotation...
+        if (param.isAnnotationPresent(LHType.class)) {
+            LHType lhTypeAnnotation = param.getAnnotation(LHType.class);
+
+            varDef.setName(lhTypeAnnotation.name());
+            typeDef.setMasked(lhTypeAnnotation.masked());
+        } else {
+            varDef.setName(varNameFromParameterName(param));
+        }
+
+        varDef.setTypeDef(typeDef);
+        return varDef.build();
     }
 
     private ReturnType buildReturnType(Class<?> classReturnType) {
@@ -94,18 +112,21 @@ public class LHTaskSignature {
             // Empty `type` field signifies that it's void.
             return ReturnType.newBuilder().build();
         } else {
-            VariableType returnType = LHLibUtil.javaClassToLHVarType(classReturnType);
-            boolean maskedValue = false;
+            LHClassType lhClassType = LHClassType.fromJavaClass(classReturnType);
+
+            if (lhClassType instanceof LHStructDefType) {
+                LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
+                structDefClasses.addAll(lhStructDefType.getDependencyClasses());
+            }
+
+            TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
+
             if (taskMethod.isAnnotationPresent(LHType.class)) {
                 LHType type = taskMethod.getAnnotation(LHType.class);
-                maskedValue = type.masked();
+                typeDef.setMasked(type.masked());
             }
-            return ReturnType.newBuilder()
-                    .setReturnType(TypeDefinition.newBuilder()
-                            .setType(returnType)
-                            .setMasked(maskedValue)
-                            .build())
-                    .build();
+
+            return ReturnType.newBuilder().setReturnType(typeDef).build();
         }
     }
 
@@ -123,14 +144,6 @@ public class LHTaskSignature {
         return hasWorkerContextAtEnd;
     }
 
-    public List<VariableType> getParamTypes() {
-        return paramTypes;
-    }
-
-    public List<Boolean> getMaskedParams() {
-        return maskedParams;
-    }
-
     public String getTaskDefName() {
         return taskDefName;
     }
@@ -143,12 +156,12 @@ public class LHTaskSignature {
         return taskMethod;
     }
 
-    public List<String> getVarNames() {
-        return varNames;
-    }
-
     public ReturnType getReturnType() {
         return outputSchema;
+    }
+
+    public List<LHStructDefType> getStructDefDependencies() {
+        return Collections.unmodifiableList(new ArrayList<>(structDefClasses));
     }
 
     @Override
@@ -156,12 +169,7 @@ public class LHTaskSignature {
         if (!(other instanceof LHTaskSignature)) return false;
         LHTaskSignature o = (LHTaskSignature) other;
 
-        List<VariableType> otherTypes = o.getParamTypes();
-        if (otherTypes.size() != paramTypes.size()) return false;
-
-        for (int i = 0; i < otherTypes.size(); i++) {
-            if (!otherTypes.get(i).equals(paramTypes.get(i))) return false;
-        }
+        // TODO: Improve TaskSignature equals!
 
         return true;
     }

@@ -66,10 +66,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
         VariableValueModel lhsVal = variableFinder.assign(lhs);
         VariableValueModel rhsVal = variableFinder.assign(rhs);
 
-        VariableType typeToCoerceTo = lhsVal.getType();
+        TypeDefinitionModel typeToCoerceTo = lhsVal.getTypeDefinition();
 
-        if (lhsVal.getType() == VariableType.INT && rhsVal.getType() == VariableType.DOUBLE) {
-            typeToCoerceTo = VariableType.DOUBLE;
+        if (lhsVal.getTypeDefinition().getPrimitiveType() == VariableType.INT
+                && rhsVal.getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
+            typeToCoerceTo = new TypeDefinitionModel(VariableType.DOUBLE);
         }
 
         return lhsVal.operate(operation, rhsVal, typeToCoerceTo);

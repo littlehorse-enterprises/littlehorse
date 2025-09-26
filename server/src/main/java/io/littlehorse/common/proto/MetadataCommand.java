@@ -69,6 +69,7 @@ private static final long serialVersionUID = 0L;
     WORKFLOW_EVENT_DEF(15),
     DELETE_WORKFLOW_EVENT_DEF(16),
     PUT_STRUCT_DEF(17),
+    DELETE_STRUCT_DEF(18),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -100,6 +101,7 @@ private static final long serialVersionUID = 0L;
         case 15: return WORKFLOW_EVENT_DEF;
         case 16: return DELETE_WORKFLOW_EVENT_DEF;
         case 17: return PUT_STRUCT_DEF;
+        case 18: return DELETE_STRUCT_DEF;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -634,6 +636,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutStructDefRequest.getDefaultInstance();
   }
 
+  public static final int DELETE_STRUCT_DEF_FIELD_NUMBER = 18;
+  /**
+   * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+   * @return Whether the deleteStructDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteStructDef() {
+    return metadataCommandCase_ == 18;
+  }
+  /**
+   * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+   * @return The deleteStructDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteStructDefRequest getDeleteStructDef() {
+    if (metadataCommandCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder getDeleteStructDefOrBuilder() {
+    if (metadataCommandCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -695,6 +728,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 17) {
       output.writeMessage(17, (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 18) {
+      output.writeMessage(18, (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -767,6 +803,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 17) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(17, (io.littlehorse.sdk.common.proto.PutStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 18) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(18, (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -851,6 +891,10 @@ private static final long serialVersionUID = 0L;
         if (!getPutStructDef()
             .equals(other.getPutStructDef())) return false;
         break;
+      case 18:
+        if (!getDeleteStructDef()
+            .equals(other.getDeleteStructDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -929,6 +973,10 @@ private static final long serialVersionUID = 0L;
       case 17:
         hash = (37 * hash) + PUT_STRUCT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getPutStructDef().hashCode();
+        break;
+      case 18:
+        hash = (37 * hash) + DELETE_STRUCT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteStructDef().hashCode();
         break;
       case 0:
       default:
@@ -1122,6 +1170,9 @@ private static final long serialVersionUID = 0L;
       if (putStructDefBuilder_ != null) {
         putStructDefBuilder_.clear();
       }
+      if (deleteStructDefBuilder_ != null) {
+        deleteStructDefBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1231,6 +1282,10 @@ private static final long serialVersionUID = 0L;
           putStructDefBuilder_ != null) {
         result.metadataCommand_ = putStructDefBuilder_.build();
       }
+      if (metadataCommandCase_ == 18 &&
+          deleteStructDefBuilder_ != null) {
+        result.metadataCommand_ = deleteStructDefBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -1308,6 +1363,10 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_STRUCT_DEF: {
           mergePutStructDef(other.getPutStructDef());
+          break;
+        }
+        case DELETE_STRUCT_DEF: {
+          mergeDeleteStructDef(other.getDeleteStructDef());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1450,6 +1509,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 17;
               break;
             } // case 138
+            case 146: {
+              input.readMessage(
+                  internalGetDeleteStructDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 18;
+              break;
+            } // case 146
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3704,6 +3770,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 17;
       onChanged();
       return putStructDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteStructDefRequest, io.littlehorse.sdk.common.proto.DeleteStructDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder> deleteStructDefBuilder_;
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     * @return Whether the deleteStructDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteStructDef() {
+      return metadataCommandCase_ == 18;
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     * @return The deleteStructDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteStructDefRequest getDeleteStructDef() {
+      if (deleteStructDefBuilder_ == null) {
+        if (metadataCommandCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 18) {
+          return deleteStructDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     */
+    public Builder setDeleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest value) {
+      if (deleteStructDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        deleteStructDefBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     */
+    public Builder setDeleteStructDef(
+        io.littlehorse.sdk.common.proto.DeleteStructDefRequest.Builder builderForValue) {
+      if (deleteStructDefBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteStructDefBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     */
+    public Builder mergeDeleteStructDef(io.littlehorse.sdk.common.proto.DeleteStructDefRequest value) {
+      if (deleteStructDefBuilder_ == null) {
+        if (metadataCommandCase_ == 18 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteStructDefRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 18) {
+          deleteStructDefBuilder_.mergeFrom(value);
+        } else {
+          deleteStructDefBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     */
+    public Builder clearDeleteStructDef() {
+      if (deleteStructDefBuilder_ == null) {
+        if (metadataCommandCase_ == 18) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 18) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        deleteStructDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     */
+    public io.littlehorse.sdk.common.proto.DeleteStructDefRequest.Builder getDeleteStructDefBuilder() {
+      return internalGetDeleteStructDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder getDeleteStructDefOrBuilder() {
+      if ((metadataCommandCase_ == 18) && (deleteStructDefBuilder_ != null)) {
+        return deleteStructDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteStructDefRequest, io.littlehorse.sdk.common.proto.DeleteStructDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder> 
+        internalGetDeleteStructDefFieldBuilder() {
+      if (deleteStructDefBuilder_ == null) {
+        if (!(metadataCommandCase_ == 18)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
+        }
+        deleteStructDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.DeleteStructDefRequest, io.littlehorse.sdk.common.proto.DeleteStructDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 18;
+      onChanged();
+      return deleteStructDefBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataCommand)
