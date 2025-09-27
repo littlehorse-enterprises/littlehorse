@@ -391,6 +391,10 @@ public class BackendInternalComms implements Closeable {
                 getStore(partition, objectId.getStore().getStoreName());
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
+        // Support for objects created with versions prior to 0.15.0
+        if (storeResult == null) {
+            storeResult = (StoredGetable<U, T>) store.get(objectId.getLegacyStoreableKey(), StoredGetable.class);
+        }
         if (storeResult == null) {
             throw new LHApiException(Status.NOT_FOUND, "Requested object was not found.");
         }
@@ -710,17 +714,16 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyTenantScopedStore store = getStore(partition, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
-        String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
+        String endKey = req.boundedObjectIdScan.getEndObjectId();
         String startKey;
         if (partBookmark == null) {
-            startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());
+            startKey = req.getBoundedObjectIdScan().getStartObjectId();
         } else {
             startKey = partBookmark.getLastKey();
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
-        try (LHKeyValueIterator<?> iter =
-                store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
+        try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();

@@ -23,6 +23,10 @@ public abstract class ObjectIdModel<T extends Message, U extends Message, V exte
         return StoredGetable.getStoreKey(this);
     }
 
+    public final String getLegacyStoreableKey() {
+        return StoredGetable.getLegacyStoreKey(this);
+    }
+
     // This can be overriden by CoreObjectId and RepartitionObjectId.
     // Note that MetadataId's will never have a partition key.
     public Optional<String> getPartitionKey() {

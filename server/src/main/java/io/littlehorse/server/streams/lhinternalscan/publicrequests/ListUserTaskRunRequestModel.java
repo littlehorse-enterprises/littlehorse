@@ -64,6 +64,6 @@ public class ListUserTaskRunRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
-        return ObjectIdScanBoundaryStrategy.from(wfRunId);
+        return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.USER_TASK_RUN);
     }
 }
