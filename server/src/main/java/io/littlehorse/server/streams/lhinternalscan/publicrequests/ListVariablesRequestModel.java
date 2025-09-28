@@ -53,7 +53,7 @@ public class ListVariablesRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return ObjectIdScanBoundaryStrategy.from(wfRunId, GetableClassEnum.VARIABLE);
+        return ObjectIdScanBoundaryStrategy.from(wfRunId);
     }
 
     @Override
