@@ -176,7 +176,7 @@ task e2e(type: Test, dependsOn: [compileJava, compileTestJava]){
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
     filter {
-        includeTestsMatching "e2e.*"
+        includeTestsMatching "e2e.**"
         excludeTestsMatching "io.littlehorse.**"
     }
     testLogging {
