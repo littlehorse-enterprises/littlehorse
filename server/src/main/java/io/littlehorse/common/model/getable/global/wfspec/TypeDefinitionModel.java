@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Int
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.NullReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -70,6 +71,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public LHTypeStrategy getTypeStrategy() {
+        if (this.type == null) {
+            return new NullReturnTypeStrategy();
+        }
+
         // TODO: Support StructDefs
         switch (type) {
             case INT:
@@ -140,6 +145,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * exact match for now. In the future we'll support casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
+        if (type == null || other.getType() == null) {
+            return true;
+        }
         if (type == VariableType.INT || type == VariableType.DOUBLE) {
             return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
         }
