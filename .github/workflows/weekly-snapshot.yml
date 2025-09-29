@@ -1,0 +1,34 @@
+name: release
+run-name: Snaptshot ${{ github.ref_name }}
+on:
+  push:
+    branches:
+      - "master"
+      - "publish-snapshots"
+      - "v[0-9]+.[0-9]+"
+
+permissions:
+      packages: write
+      contents: write
+jobs:
+  publish-java-libraries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "17"
+
+      - name: Snapshot version
+        run: sed -i 's/^\(version=.*\)$/\1-SNAPSHOT/' gradle.properties
+
+      - name: Tests
+        run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
+
+      - name: Print version
+        run: >
+          ./gradlew properties
