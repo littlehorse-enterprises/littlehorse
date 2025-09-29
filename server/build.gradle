@@ -171,10 +171,12 @@ test {
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 }
 
-task e2e(type: Test, dependsOn: compileJava){
+task e2e(type: Test, dependsOn: [compileJava, compileTestJava]){
     useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
     filter {
-        includeTestsMatching "e2e.**"
+        includeTestsMatching "e2e.*"
         excludeTestsMatching "io.littlehorse.**"
     }
     testLogging {
