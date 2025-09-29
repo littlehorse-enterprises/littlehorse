@@ -36,7 +36,22 @@ public class VariablesTest {
     @LHWorkflow("wf-run-id")
     private Workflow wfRunIdWf;
 
+    @LHWorkflow("assign-null-wf")
+    private Workflow assignNullWorkflow;
+
     private WorkflowVerifier workflowVerifier;
+
+    @Test
+    public void shouldAllowAssigningNullToVariable() {
+        workflowVerifier
+                .prepareRun(assignNullWorkflow)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "some-json-obj", variableValue -> {
+                    Assertions.assertThat(variableValue)
+                            .isEqualTo(VariableValue.newBuilder().build());
+                })
+                .start();
+    }
 
     @Test
     public void shouldMaskVariableValues() {
@@ -133,6 +148,14 @@ public class VariablesTest {
                             .isNotNull();
                 })
                 .start();
+    }
+
+    @LHWorkflow("assign-null-wf")
+    public Workflow assignNullVariable() {
+        return new WorkflowImpl("assign-null-wf", thread -> {
+            WfRunVariable myVar = thread.declareJsonObj("some-json-obj");
+            myVar.assign(null);
+        });
     }
 
     @LHWorkflow("masked-variables-wf")
