@@ -37,4 +37,6 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
         run: >
           ./gradlew
+          sdk-java:publishToSonatype
+          test-utils:publishToSonatype
           test-utils-container:publishToSonatype
