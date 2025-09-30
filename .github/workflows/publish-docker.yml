@@ -72,12 +72,7 @@ jobs:
           java-version: 24
 
       - name: Tests and Build
-        run: ./gradlew canary:build
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: canary-jar
-          path: canary/build/libs/canary-*-all.jar
+        run: ./gradlew canary:installDist
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
