@@ -658,8 +658,8 @@ func (w *WfRunVariable) withDefaultImpl(defaultValue interface{}) *WfRunVariable
 		if err != nil {
 			log.Fatal(err)
 		}
-		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.TypeDef.Type {
-			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.TypeDef.Type.String())
+		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.TypeDef.GetPrimitiveType() {
+			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.TypeDef.GetPrimitiveType().String())
 		}
 		w.threadVarDef.VarDef.DefaultValue = defaultVarVal
 	}
@@ -844,8 +844,12 @@ func (t *WorkflowThread) addVariable(
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &lhproto.VariableDef{
-		TypeDef: &lhproto.TypeDefinition{Type: varType},
-		Name:    name,
+		TypeDef: &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{
+				PrimitiveType: varType,
+			},
+		},
+		Name: name,
 	}
 
 	threadVarDef := &lhproto.ThreadVarDef{
@@ -1592,7 +1596,7 @@ func (n *ExternalEventNodeOutput) ToPutExternalEventDefRequest() *lhproto.PutExt
 	}
 
 	if n.payloadType != nil {
-		req.ContentType = &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: *n.payloadType}}
+		req.ContentType = &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: *n.payloadType}}}
 	}
 
 	if n.correlatedEventConfig != nil {
@@ -1604,7 +1608,7 @@ func (n *ExternalEventNodeOutput) ToPutExternalEventDefRequest() *lhproto.PutExt
 func (n *ThrowEventNodeOutput) toPutWorkflowEventDefRequest() *lhproto.PutWorkflowEventDefRequest {
 	return &lhproto.PutWorkflowEventDefRequest{
 		Name:        n.eventDefName,
-		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{Type: n.payloadType}},
+		ContentType: &lhproto.ReturnType{ReturnType: &lhproto.TypeDefinition{DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: n.payloadType}}},
 	}
 }
 

@@ -26,6 +26,7 @@ import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
@@ -50,6 +51,8 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayDefType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -366,18 +369,20 @@ final class WorkflowThreadImpl implements WorkflowThread {
             if (WfRunVariableImpl.class.isAssignableFrom(arg.getClass())) {
                 WfRunVariableImpl wfVar = ((WfRunVariableImpl) arg);
 
-                if ((wfVar.type == VariableType.JSON_ARR || wfVar.type == VariableType.JSON_OBJ)
+                if (wfVar.getDefinedType() == DefinedTypeCase.PRIMITIVE_TYPE
+                        && (wfVar.typeDef.getPrimitiveType() == VariableType.JSON_ARR
+                                || wfVar.typeDef.getPrimitiveType() == VariableType.JSON_OBJ)
                         && wfVar.jsonPath != null) {
                     log.info("There is a jsonpath, so not checking value because Json schema isn't"
                             + " yet implemented");
                     continue;
                 }
-                argType = wfVar.type;
+                argType = wfVar.typeDef.getPrimitiveType();
             } else {
                 argType = LHLibUtil.javaClassToLHVarType(arg.getClass());
             }
 
-            if (!argType.equals(taskDefInputVars.get(i).getTypeDef())) {
+            if (!argType.equals(taskDefInputVars.get(i).getTypeDef().getPrimitiveType())) {
                 throw new TaskSchemaMismatchError("Mismatch var type for param "
                         + i
                         + "on taskdef "
@@ -432,7 +437,23 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
-        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal, this);
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createPrimitiveVar(name, typeOrDefaultVal, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    private WfRunVariableImpl addStructVariable(String name, LHStructDefType clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    private WfRunVariableImpl addArrayVariable(String name, LHArrayDefType elementType) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createArrayDefVar(name, elementType, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
@@ -476,6 +497,17 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public WfRunVariable declareJsonObj(String name) {
         return addVariable(name, VariableType.JSON_OBJ);
     }
+
+    @Override
+    public WfRunVariable declareStruct(String name, Class<?> clazz) {
+        return addStructVariable(name, new LHStructDefType(clazz));
+    }
+
+    // TODO: Complete Arrays implementation
+    // @Override
+    // public WfRunVariable declareArray(String name, Class<?> elementType) {
+    //     return addArrayVariable(name, new LHArrayDefType(elementType));
+    // }
 
     @Override
     public WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody ifBody) {

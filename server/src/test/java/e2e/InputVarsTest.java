@@ -1,7 +1,10 @@
 package e2e;
 
 import com.google.protobuf.Timestamp;
+import e2e.Struct.Car;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -12,6 +15,7 @@ import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -29,12 +33,16 @@ import org.junit.jupiter.api.Test;
 public class InputVarsTest {
 
     private WorkflowVerifier workflowVerifier;
+    private LittleHorseBlockingStub client;
 
     @LHWorkflow("input-vars-wf")
     private Workflow workflow;
 
     @LHWorkflow("json-input-vars-wf")
     private Workflow jsonWorkflow;
+
+    @LHWorkflow("struct-var-wf")
+    private Workflow structWorkflow;
 
     @LHWorkflow("input-vars-wf")
     public Workflow buildWorkflow() {
@@ -45,6 +53,15 @@ public class InputVarsTest {
             thread.execute("ab-double-it", myVar);
             thread.execute("ab-subtract", 10, 8);
             thread.execute("print-timestamps", tsVar, tsVar, tsVar, tsVar, tsVar);
+        });
+    }
+
+    @LHWorkflow("struct-var-wf")
+    public Workflow structWorkflow() {
+        return new WorkflowImpl("struct-var-wf", thread -> {
+            WfRunVariable structVar = thread.declareStruct("struct-input", Car.class);
+            thread.execute("increment-mileage", structVar);
+            thread.execute("change-details", structVar, "Mustang", "Mach-E");
         });
     }
 
@@ -117,6 +134,27 @@ public class InputVarsTest {
     }
 
     @Test
+    public void structVarInput() {
+        LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
+
+        client.putStructDef(lhStructDefType.toPutStructDefRequest());
+
+        VariableValue originalStruct = LHLibUtil.objToVarVal(new Car("Ford", "Bronco", 123));
+        VariableValue expectedStructFromTask1 = LHLibUtil.objToVarVal(new Car("Ford", "Bronco", 124));
+        VariableValue expectedStructFromTask2 = LHLibUtil.objToVarVal(new Car("Mustang", "Mach-E", 123));
+
+        workflowVerifier
+                .prepareRun(structWorkflow, Arg.of("struct-input", originalStruct))
+                .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
+                .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
+                .thenVerifyTaskRunResult(
+                        0, 1, variableValue -> Assertions.assertEquals(expectedStructFromTask1, variableValue))
+                .thenVerifyTaskRunResult(
+                        0, 2, variableValue -> Assertions.assertEquals(expectedStructFromTask2, variableValue))
+                .start();
+    }
+
+    @Test
     public void timestampVarInput() {
         long epochMs = 1690000000000L;
         Date dt = new Date(epochMs);
@@ -168,6 +206,16 @@ public class InputVarsTest {
         return first - second;
     }
 
+    @LHTaskMethod("increment-mileage")
+    public Car increaseMileage(Car car) {
+        return new Car(car.getBrand(), car.getModel(), car.getMileage() + 1);
+    }
+
+    @LHTaskMethod("change-details")
+    public Car changeOwner(Car car, String firstName, String lastName) {
+        return new Car(firstName, lastName, car.getMileage());
+    }
+
     @LHTaskMethod("print-timestamps")
     public void printTimestamps(
             Instant instant,
@@ -184,7 +232,6 @@ public class InputVarsTest {
 }
 
 class TestJsonObject {
-
     public int baz;
     public TestSubJsonObject subObject;
     public Instant creationInstant;

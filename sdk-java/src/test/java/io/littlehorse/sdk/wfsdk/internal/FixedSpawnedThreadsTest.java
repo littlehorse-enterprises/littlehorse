@@ -27,8 +27,10 @@ public class FixedSpawnedThreadsTest {
         WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
         workflowThread = new WorkflowThreadImpl("my-thread", workflow, threadFunction);
 
-        when(spawnedThread1.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-1", 1, workflowThread));
-        when(spawnedThread2.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-2", 2, workflowThread));
+        when(spawnedThread1.getThreadNumberVariable())
+                .thenReturn(WfRunVariableImpl.createPrimitiveVar("thread-1", 1, workflowThread));
+        when(spawnedThread2.getThreadNumberVariable())
+                .thenReturn(WfRunVariableImpl.createPrimitiveVar("thread-2", 2, workflowThread));
     }
 
     @Test
@@ -39,7 +41,7 @@ public class FixedSpawnedThreadsTest {
 
     @Test
     void shouldThrowIllegalArgumentExceptionIfThereIsANonIntegerVar() {
-        doReturn(new WfRunVariableImpl("thread-2", "2", workflowThread))
+        doReturn(WfRunVariableImpl.createPrimitiveVar("thread-2", "2", workflowThread))
                 .when(spawnedThread2)
                 .getThreadNumberVariable();
         Throwable exception = catchThrowable(fixedSpawnedThreads::buildNode);
