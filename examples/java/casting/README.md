@@ -27,7 +27,13 @@ For more details on casting and type system proposals, see the [proposals direct
 
 The workflow demonstrates these casting behaviors through task chaining, variable assignments, and different scenarios where casting occurs.
 
-### Running the Example
+
+## Build lhctl from the root of the project
+```bash
+ cd ./lhctl && go build -o lhctl
+```
+
+### Running the Example from the root of the project
 
 ```bash
 ./gradlew example-casting:run
@@ -40,8 +46,6 @@ In another terminal, use `lhctl` to run the workflow:
 # Run the casting workflow with default values
 lhctl run casting-workflow
 
-# Run with custom input values (matching the workflow's variable names)
-lhctl run casting-workflow string-number "3.15" string-bool "true" json-input '{"int": "42", "string": "hi"}'
 ```
 
 ### Inspecting the Results
@@ -51,9 +55,6 @@ You can inspect how casting works by examining the workflow specification and ex
 ```bash
 # Get the WfSpec to see casting information
 lhctl get wfSpec casting-workflow
-
-# Look for "cast_to" fields in variable assignments (requires jq)
-lhctl get wfSpec casting-workflow | jq '.threadSpecs.entrypoint.nodes[] | select(.task) | .task.variables[]? | select(.castTo != null)'
 
 # Get workflow run details to see casting in action
 lhctl get wfRun <wf_run_id>
