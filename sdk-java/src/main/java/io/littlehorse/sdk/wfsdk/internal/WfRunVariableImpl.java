@@ -136,19 +136,6 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public WfRunVariableImpl get(String property) {
-        if (typeDef.getDefinedTypeCase() != DefinedTypeCase.STRUCT_DEF_ID) {
-            throw new LHMisconfigurationException(
-                    String.format("Get not allowed in a %s variable", typeDef.getDefinedTypeCase()));
-        }
-        WfRunVariableImpl out = WfRunVariableImpl.createStructDefVar(
-                name, this.typeDef.getStructDefId().getName(), parent);
-        out.structPath.add(property);
-
-        return out;
-    }
-
-    @Override
     public WfRunVariable searchable() {
         this.searchable = true;
         return this;

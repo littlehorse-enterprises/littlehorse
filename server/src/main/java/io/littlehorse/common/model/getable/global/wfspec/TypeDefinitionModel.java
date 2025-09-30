@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Int
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.NullReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StructReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
@@ -142,6 +143,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public LHTypeStrategy getTypeStrategy() {
+        if (this.isNull()) {
+            return new NullReturnTypeStrategy();
+        }
+
         switch (this.definedTypeCase) {
             case PRIMITIVE_TYPE:
                 switch (primitiveType) {
@@ -244,6 +249,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * exact match for now. In the future we'll support casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
+        if (this.isNull() || other.isNull()) {
+            return true;
+        }
+
         if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
             return false;
         }
