@@ -65,6 +65,6 @@ if [[ ${standalone} = true ]]; then
     npm install
     npm run build
     cd ..
-    ./gradlew server:shadowJar -x test -x spotlessJavaCheck
+    ./gradlew server:installDist -x test -x spotlessJavaCheck
     docker build -t littlehorse/lh-standalone:latest -f docker/standalone/Dockerfile .
 fi
