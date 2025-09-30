@@ -15,7 +15,6 @@ include(
 )
 
 [
-        'array',
         'await-workflow-event',
         'basic',
         'child-thread',

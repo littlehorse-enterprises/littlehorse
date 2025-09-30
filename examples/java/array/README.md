@@ -1,1 +1,0 @@
-## Running Array Example [Experimental]
