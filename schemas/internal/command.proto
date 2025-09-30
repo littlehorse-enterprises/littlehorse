@@ -259,11 +259,14 @@ message DeadlineReassignUserTask {
 // anyways.
 message LHTimerPb {
     google.protobuf.Timestamp maturation_time = 1;
-    string key = 2;
+    string partition_key = 2;
     string topic = 3;
     bytes payload = 4;
     optional TenantId tenant_id = 5; // default if not set
     optional PrincipalId principal_id = 6; // anonymous if not set
+
+    // optional for backwards compatibility
+    optional string store_key = 7;
 }
 
 message DeleteTaskWorkerGroupRequest {

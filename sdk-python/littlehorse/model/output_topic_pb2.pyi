@@ -1,3 +1,5 @@
+import datetime
+
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
@@ -10,12 +12,13 @@ import littlehorse.model.struct_def_pb2 as _struct_def_pb2
 import littlehorse.model.external_event_pb2 as _external_event_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from collections.abc import Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class OutputTopicRecord(_message.Message):
-    __slots__ = ["timestamp", "task_run", "workflow_event", "wf_run", "user_task_run", "variable", "external_event", "correlated_event"]
+    __slots__ = ("timestamp", "task_run", "workflow_event", "wf_run", "user_task_run", "variable", "external_event", "correlated_event")
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     TASK_RUN_FIELD_NUMBER: _ClassVar[int]
     WORKFLOW_EVENT_FIELD_NUMBER: _ClassVar[int]
@@ -32,10 +35,10 @@ class OutputTopicRecord(_message.Message):
     variable: _variable_pb2.Variable
     external_event: _external_event_pb2.ExternalEvent
     correlated_event: _external_event_pb2.CorrelatedEvent
-    def __init__(self, timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_run: _Optional[_Union[_task_run_pb2.TaskRun, _Mapping]] = ..., workflow_event: _Optional[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]] = ..., wf_run: _Optional[_Union[_wf_run_pb2.WfRun, _Mapping]] = ..., user_task_run: _Optional[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]] = ..., variable: _Optional[_Union[_variable_pb2.Variable, _Mapping]] = ..., external_event: _Optional[_Union[_external_event_pb2.ExternalEvent, _Mapping]] = ..., correlated_event: _Optional[_Union[_external_event_pb2.CorrelatedEvent, _Mapping]] = ...) -> None: ...
+    def __init__(self, timestamp: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., task_run: _Optional[_Union[_task_run_pb2.TaskRun, _Mapping]] = ..., workflow_event: _Optional[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]] = ..., wf_run: _Optional[_Union[_wf_run_pb2.WfRun, _Mapping]] = ..., user_task_run: _Optional[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]] = ..., variable: _Optional[_Union[_variable_pb2.Variable, _Mapping]] = ..., external_event: _Optional[_Union[_external_event_pb2.ExternalEvent, _Mapping]] = ..., correlated_event: _Optional[_Union[_external_event_pb2.CorrelatedEvent, _Mapping]] = ...) -> None: ...
 
 class MetadataOutputTopicRecord(_message.Message):
-    __slots__ = ["wf_spec", "task_def", "external_event_def", "workflow_event_def", "user_task_def", "struct_def"]
+    __slots__ = ("wf_spec", "task_def", "external_event_def", "workflow_event_def", "user_task_def", "struct_def")
     WF_SPEC_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_FIELD_NUMBER: _ClassVar[int]
     EXTERNAL_EVENT_DEF_FIELD_NUMBER: _ClassVar[int]

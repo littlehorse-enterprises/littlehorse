@@ -20,6 +20,7 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   jsonArr: 'JSON Array',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
+  utcTimestamp: 'UTC Timestamp',
 }
 
 /**
@@ -115,7 +116,9 @@ export const getTypedVariableValue = (
                   ? { bytes: Buffer.from(value) }
                   : type === 'wfRunId'
                     ? { wfRunId: wfRunIdFromFlattenedId(value) }
-                    : undefined
+                    : type === 'utcTimestamp'
+                      ? { utcTimestamp: new Date(value) }
+                      : undefined
   return VariableValue.fromJSON(variable)
 }
 
@@ -160,6 +163,8 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
       return 'wfRunId'
     case VariableType.BYTES:
       return 'bytes'
+    case VariableType.TIMESTAMP:
+      return 'utcTimestamp'
     default:
       throw new Error(`Unknown variable type: ${type}`)
   }

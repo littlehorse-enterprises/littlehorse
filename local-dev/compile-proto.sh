@@ -14,8 +14,8 @@ docker build -q --tag lh-protoc:$PROTOC_VERSION -f - "${SCRIPT_DIR}" <<EOF
 
 FROM ubuntu:24.04
 
-ENV PROTOC_VERSION           23.4
-ENV PROTO_GEN_JAVA           1.57.2
+ENV PROTOC_VERSION           32.1
+ENV PROTO_GEN_JAVA           1.75.0
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
 ENV PROTO_GEN_PYTHON         1.69.0

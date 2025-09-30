@@ -2,9 +2,11 @@
 import { Diagram } from '@/app/(authenticated)/[tenantId]/(diagram)/components/Diagram'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { useWfRun } from '@/app/hooks/useWfRun'
+import { Separator } from '@/components/ui/separator'
 import { WfRunId } from 'littlehorse-client/proto'
 import { useSearchParams } from 'next/navigation'
 import { FC } from 'react'
+import { ChildWorkflows } from './ChildWorkflows'
 import { Details } from './Details'
 import { Variables } from './Variables'
 
@@ -31,10 +33,19 @@ export const WfRun: FC<{ ids: string[]; tenantId: string }> = ({ ids, tenantId }
       <Details {...wfRun} />
       <Diagram spec={wfSpec} wfRun={wfRun} nodeRuns={nodeRuns} />
 
-      <Variables
-        variableDefs={variableDefs}
-        variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
-      />
+      {wfRun.id && (
+        <Variables
+          variableDefs={variableDefs}
+          variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
+        />
+      )}
+
+      {wfRun.id && (
+        <>
+          <Separator className="mb-4 mt-4" />
+          <ChildWorkflows parentWfRunId={wfRun.id} spec={wfSpec} />
+        </>
+      )}
     </div>
   )
 }

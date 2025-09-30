@@ -30,7 +30,6 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -47,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -338,14 +336,8 @@ public class GetableManagerTest {
 
     @ParameterizedTest
     @MethodSource("provideNodeRunObjects")
-    void storeNodeRun(
-            NodeRunModel nodeRunModel, List<Pair<String, TagStorageType>> expectedTagKeys, String expectedStoreKey) {
-
-        List<String> expectedLocalTagKeys = expectedTagKeys.stream()
-                .filter(stringTagStorageTypePbPair -> stringTagStorageTypePbPair.getValue() == TagStorageType.LOCAL)
-                .map(Pair::getKey)
-                .toList();
-
+    void storeNodeRun(NodeRunModel nodeRunModel, String expectedStoreKey) {
+        List<String> expectedLocalTagKeys = List.of();
         List<String> expectedRemoteStoreKeys = List.of();
 
         getableManager.put(nodeRunModel);
@@ -353,8 +345,6 @@ public class GetableManagerTest {
 
         final var storedKeys = getAllKeys(store);
         assertThat(storedKeys).hasSize(expectedLocalTagKeys.size() + 1).anyMatch(key -> key.contains(expectedStoreKey));
-        expectedLocalTagKeys.forEach(
-                expectedTagKey -> assertThat(storedKeys).anyMatch(key -> key.contains(expectedStoreKey)));
 
         List<String> remoteTags = remoteTagsCreated().stream()
                 .map(RepartitionCommand::getSubCommand)
@@ -455,10 +445,7 @@ public class GetableManagerTest {
     private static Stream<Arguments> provideNodeRunObjects() {
         NodeRunModel nodeRunModel = TestUtil.nodeRun();
         nodeRunModel.setType(NodeRun.NodeTypeCase.TASK);
-        return Stream.of(Arguments.of(
-                nodeRunModel,
-                List.of(Pair.of("4/__status_RUNNING__type_TASK", TagStorageType.LOCAL)),
-                "4/0000000/1/0"));
+        return Stream.of(Arguments.of(nodeRunModel, "4/0000000/1/0"));
     }
 
     private static Stream<Arguments> provideGetableObjectsAndIds() {
@@ -608,12 +595,10 @@ public class GetableManagerTest {
         getableManager.commit();
 
         List<String> storedKeys = getAllKeys(store);
-        assertThat(storedKeys).hasSize(3);
+        assertThat(storedKeys).hasSize(2);
         assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/4/0000000/1/0"));
-        assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/5/4/__status_RUNNING__type_EXTERNAL\\_EVENT"));
         assertThat(storedKeys)
-                .anyMatch(key -> key.contains(
-                        "myTenant/5/4/__status_RUNNING__type_EXTERNAL\\_EVENT__extEvtDefName_" + eventName));
+                .anyMatch(key -> key.contains("myTenant/5/4/__status_RUNNING__extEvtDefName_" + eventName));
     }
 
     @Test

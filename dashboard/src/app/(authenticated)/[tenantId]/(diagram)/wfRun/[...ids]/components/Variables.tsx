@@ -19,7 +19,7 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
   if (variableDefs.length === 0) return <></>
 
   return (
-    <div className="">
+    <div>
       <h2 className="text-md mb-2 font-bold">Variables</h2>
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">

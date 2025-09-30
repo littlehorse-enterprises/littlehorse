@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.variable;
 import com.google.gson.JsonSyntaxException;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -45,6 +46,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private Long intVal;
     private byte[] bytesVal;
     private WfRunIdModel wfRunId;
+    private Timestamp utcTimestampVal;
 
     private ExecutionContext context;
 
@@ -107,6 +109,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case BYTES:
                 bytesVal = p.getBytes().toByteArray();
                 break;
+            case UTC_TIMESTAMP:
+                utcTimestampVal = p.getUtcTimestamp();
+                break;
             case WF_RUN_ID:
                 wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
                 break;
@@ -138,17 +143,29 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     private static VariableType fromValueCase(ValueCase valueCase) {
-        return switch (valueCase) {
-            case STR -> VariableType.STR;
-            case BYTES -> VariableType.BYTES;
-            case INT -> VariableType.INT;
-            case DOUBLE -> VariableType.DOUBLE;
-            case JSON_ARR -> VariableType.JSON_ARR;
-            case JSON_OBJ -> VariableType.JSON_OBJ;
-            case BOOL -> VariableType.BOOL;
-            case WF_RUN_ID -> VariableType.WF_RUN_ID;
-            default -> null;
-        };
+        switch (valueCase) {
+            case STR:
+                return VariableType.STR;
+            case BYTES:
+                return VariableType.BYTES;
+            case INT:
+                return VariableType.INT;
+            case DOUBLE:
+                return VariableType.DOUBLE;
+            case JSON_ARR:
+                return VariableType.JSON_ARR;
+            case JSON_OBJ:
+                return VariableType.JSON_OBJ;
+            case BOOL:
+                return VariableType.BOOL;
+            case WF_RUN_ID:
+                return VariableType.WF_RUN_ID;
+            case UTC_TIMESTAMP:
+                return VariableType.TIMESTAMP;
+            case VALUE_NOT_SET:
+            default:
+                return null;
+        }
     }
 
     public void updateJsonViaJsonPath(String jsonPath, Object toPut) throws LHVarSubError {
@@ -210,6 +227,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case WF_RUN_ID:
                 if (wfRunId != null) {
                     out.setWfRunId(wfRunId.toProto());
+                }
+                break;
+            case UTC_TIMESTAMP:
+                if (utcTimestampVal != null) {
+                    out.setUtcTimestamp(utcTimestampVal);
                 }
                 break;
             case VALUE_NOT_SET:
@@ -465,6 +487,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return this.bytesVal;
             case WF_RUN_ID:
                 return this.wfRunId;
+            case UTC_TIMESTAMP:
+                return this.utcTimestampVal;
             case VALUE_NOT_SET:
         }
         return null;
@@ -491,6 +515,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return asBytes();
         } else if (otherType == VariableType.WF_RUN_ID) {
             return asWfRunId();
+        } else if (otherType == VariableType.TIMESTAMP) {
+            return asTimestamp();
         } else {
             throw new LHVarSubError(null, "Unsupported type for coersion: " + otherType);
         }
@@ -605,6 +631,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return new VariableValueModel(b);
     }
 
+    public VariableValueModel asTimestamp() throws LHVarSubError {
+        if (getType() == VariableType.TIMESTAMP) {
+            return new VariableValueModel(utcTimestampVal);
+        }
+        throw new LHVarSubError(null, "Cant convert " + type + " to TIMESTAMP");
+    }
+
     public VariableValueModel() {
         type = ValueCase.VALUE_NOT_SET;
     }
@@ -637,6 +670,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public VariableValueModel(Map<String, Object> val) {
         jsonObjVal = val;
         type = ValueCase.JSON_OBJ;
+    }
+
+    public VariableValueModel(Timestamp val) {
+        utcTimestampVal = val;
+        type = ValueCase.UTC_TIMESTAMP;
     }
 
     public VariableValueModel(boolean val) {
@@ -677,6 +715,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case JSON_OBJ:
                 valuePair = Pair.of("jsonObj", String.valueOf(jsonObjVal.toString()));
+                break;
+            case UTC_TIMESTAMP:
+                valuePair = Pair.of("utcTimestamp", LHUtil.toLhDbFormat(utcTimestampVal));
                 break;
             case BYTES:
             case JSON_ARR:

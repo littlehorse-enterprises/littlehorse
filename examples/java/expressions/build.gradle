@@ -3,9 +3,6 @@ plugins {
     id 'com.diffplug.spotless'
 }
 
-sourceCompatibility=17
-targetCompatibility=17
-
 repositories {
     mavenCentral()
     mavenLocal()

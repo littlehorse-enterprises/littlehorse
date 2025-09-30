@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Int
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.NullReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.util.TypeCastingUtils;
@@ -71,6 +72,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public LHTypeStrategy getTypeStrategy() {
+        if (this.type == null) {
+            return new NullReturnTypeStrategy();
+        }
+
         // TODO: Support StructDefs
         switch (type) {
             case INT:
@@ -89,6 +94,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 return new JsonArrReturnTypeStrategy();
             case JSON_OBJ:
                 return new JsonObjReturnTypeStrategy();
+            case TIMESTAMP:
+                return new io.littlehorse.common.model.getable.global.wfspec.variable.expression
+                        .TimestampReturnTypeStrategy();
             case UNRECOGNIZED:
         }
         throw new IllegalStateException();
