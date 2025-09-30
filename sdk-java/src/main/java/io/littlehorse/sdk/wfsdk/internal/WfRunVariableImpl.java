@@ -127,7 +127,7 @@ class WfRunVariableImpl implements WfRunVariable {
         if (!typeDef.getPrimitiveType().equals(VariableType.JSON_OBJ)
                 && !typeDef.getPrimitiveType().equals(VariableType.JSON_ARR)) {
             throw new LHMisconfigurationException(String.format(
-                    "JsonPath not allowed in a %s primitive type variable",
+                    "JsonPath not allowed in a %s variable",
                     typeDef.getPrimitiveType().name()));
         }
         WfRunVariableImpl out = WfRunVariableImpl.createPrimitiveVar(name, typeOrDefaultVal, parent);
