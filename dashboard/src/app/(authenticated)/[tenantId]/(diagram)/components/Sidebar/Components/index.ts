@@ -1,2 +1,2 @@
 export * from './LabelContent'
-export * from './VariableAssigment'
+export * from './VariableAssignment'

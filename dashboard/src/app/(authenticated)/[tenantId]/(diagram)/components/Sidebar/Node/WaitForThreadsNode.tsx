@@ -1,0 +1,41 @@
+import { WaitForThreadsNode as WaitForThreadsNodeProto } from 'littlehorse-client/proto'
+import { FC } from 'react'
+import { useDiagram } from '../../../hooks/useDiagram'
+import { VariableAssignment } from '../Components'
+
+export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node }) => {
+  const { threadsToWaitFor, perThreadFailureHandlers } = node
+  const { setThread } = useDiagram()
+  if (!threadsToWaitFor) return
+
+  // const threadClickHandler = useCallback((name: string) => {
+  //   setThread({ name, number: 0 })
+  // }, [])
+
+  return (
+    <div className="flex max-w-full flex-1 flex-col gap-2">
+      {threadsToWaitFor.$case === 'threads' && (
+        <>
+          <small className="text-[0.75em] text-slate-400">Threads</small>
+          <div className="mb-2 flex items-center">
+            {threadsToWaitFor.value.threads.map((thread, key) => (
+              <div key={JSON.stringify(thread)} className="flex">
+                <span className="flex-1 truncate bg-gray-200 px-2 font-mono">{key}</span>
+                <VariableAssignment variableAssigment={thread.threadRunNumber!} />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {threadsToWaitFor.$case === 'threadList' && (
+        <>
+          <small className="text-[0.75em] text-slate-400">Threads List</small>
+          <div className="mb-2 flex items-center">
+            <VariableAssignment variableAssigment={threadsToWaitFor.value} />
+          </div>
+        </>
+      )}
+      {/* TODO: handle perThreadFailureHandlers when greater than 0 */}
+    </div>
+  )
+}

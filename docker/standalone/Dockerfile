@@ -24,6 +24,7 @@ COPY ./docker/standalone/dashboard-entrypoint.sh /lh
 COPY ./docker/standalone/docker-entrypoint.sh /lh
 COPY ./dashboard/.next/standalone /lh/dashboard
 COPY ./dashboard/.next/static /lh/dashboard/.next/static
-COPY ./server/build/libs/server-*-all.jar /lh/server.jar
+COPY ./server/build/install/server/lib /lh/lib
+COPY ./server/build/install/server/server /lh/bin
 
 ENTRYPOINT ["/lh/docker-entrypoint.sh"]
