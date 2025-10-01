@@ -76,7 +76,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
         String threadSpecName = nodeRun.getNode().getStartThreadNode().getThreadSpecName();
         ThreadSpecModel threadSpec = getWfSpec().getThreadSpecs().get(threadSpecName);
         try {
-            threadSpec.validateStartVariables(variables);
+            threadSpec.validateStartVariables(variables, processorContext.metadataManager());
         } catch (LHValidationException exn) {
             throw new NodeFailureException(new FailureModel(
                     "Invalid input variables for child thread: %s".formatted(exn.getMessage()),

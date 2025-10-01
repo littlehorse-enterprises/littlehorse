@@ -2,6 +2,8 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 
 public class TypeCastingUtils {
@@ -62,6 +64,14 @@ public class TypeCastingUtils {
         return sourceType == VariableType.INT && targetType == VariableType.DOUBLE;
     }
 
+    public static boolean canBeType(TypeDefinitionModel sourceTypeDef, TypeDefinitionModel targetType) {
+        if (sourceTypeDef.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
+                || targetType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            return sourceTypeDef.equals(targetType);
+        }
+        return canBeType(sourceTypeDef.getPrimitiveType(), targetType.getPrimitiveType());
+    }
+
     /**
      * Validates if a value of sourceType can be assigned to targetType, regardless of explicit cast.
      * Throws InvalidMutationException if the assignment is not possible by any means (with or without cast).
@@ -94,10 +104,11 @@ public class TypeCastingUtils {
 
     public static VariableValueModel applyCast(VariableValueModel sourceValue, VariableType targetType) {
 
-        if (sourceValue == null) {
-            return null;
+        DefinedTypeCase sourceDefinedType = sourceValue.getTypeDefinition().getDefinedTypeCase();
+        if (sourceDefinedType != DefinedTypeCase.PRIMITIVE_TYPE) {
+            return sourceValue;
         }
-        VariableType sourceType = sourceValue.getTypeDefinition().getType();
+        VariableType sourceType = sourceValue.getTypeDefinition().getPrimitiveType();
         if (sourceType == null) {
             return sourceValue;
         }

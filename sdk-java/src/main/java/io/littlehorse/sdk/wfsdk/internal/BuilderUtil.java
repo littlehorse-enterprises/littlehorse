@@ -7,10 +7,8 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import java.util.List;
-import java.util.Map;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 
 class BuilderUtil {
 
@@ -75,7 +73,7 @@ class BuilderUtil {
         VariableAssignment sourceAssignment = assignVariable(castingExpresion.getSource());
         return sourceAssignment.toBuilder()
                 .setTargetType(TypeDefinition.newBuilder()
-                        .setType(castingExpresion.getTargetType())
+                        .setPrimitiveType(castingExpresion.getTargetType())
                         .setMasked(false)
                         .build())
                 .build();
@@ -100,31 +98,16 @@ class BuilderUtil {
         }
     }
 
-    private static final ReturnType STRING_TYPE = buildReturnType(VariableType.STR);
-    private static final ReturnType DOUBLE_TYPE = buildReturnType(VariableType.DOUBLE);
-    private static final ReturnType INT_TYPE = buildReturnType(VariableType.INT);
-    private static final ReturnType BOOL_TYPE = buildReturnType(VariableType.BOOL);
-    private static final ReturnType JSON_OBJ_TYPE = buildReturnType(VariableType.JSON_OBJ);
-    private static final ReturnType JSON_ARR_TYPE = buildReturnType(VariableType.JSON_ARR);
-    private static final ReturnType EMPTY_RETURN_TYPE = ReturnType.newBuilder().build();
-
     static ReturnType javaTypeToReturnType(Class<?> payloadClass) {
-        if (payloadClass == null) return EMPTY_RETURN_TYPE;
+        if (payloadClass == null) {
+            // We don't set the typeDef: the event has no payload
+            return ReturnType.newBuilder().build();
+        }
 
-        if (String.class.isAssignableFrom(payloadClass)) return STRING_TYPE;
-        if (Double.class.isAssignableFrom(payloadClass)) return DOUBLE_TYPE;
-        if (Integer.class.isAssignableFrom(payloadClass)) return INT_TYPE;
-        if (Boolean.class.isAssignableFrom(payloadClass)) return BOOL_TYPE;
-        if (Map.class.isAssignableFrom(payloadClass)) return JSON_OBJ_TYPE;
-        if (List.class.isAssignableFrom(payloadClass)) return JSON_ARR_TYPE;
+        LHClassType lhClassType = LHClassType.fromJavaClass(payloadClass);
 
-        throw new IllegalArgumentException("Unsupported payload type: " + payloadClass.getName()
-                + ". Must be one of String, Double, Integer, Boolean, Map, or List");
-    }
-
-    private static ReturnType buildReturnType(VariableType type) {
         return ReturnType.newBuilder()
-                .setReturnType(TypeDefinition.newBuilder().setType(type))
+                .setReturnType(lhClassType.getTypeDefinition())
                 .build();
     }
 }

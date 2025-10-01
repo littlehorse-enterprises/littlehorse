@@ -163,13 +163,13 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             node.getThreadSpec().getWfSpec(),
                             node.getThreadSpec().getName());
                     VariableType sourceVariableType = sourceVariableTypeOpt
-                            .map(TypeDefinitionModel::getType)
+                            .map(TypeDefinitionModel::getPrimitiveType)
                             .orElse(null);
-                    VariableType taskInputType = taskDefVar.getTypeDef().getType();
+                    VariableType taskInputType = taskDefVar.getTypeDef().getPrimitiveType();
 
                     if (assn.getTargetType() != null) {
                         // If explicit cast, validate the cast itself (original type -> cast target)
-                        VariableType castTargetType = assn.getTargetType().getType();
+                        VariableType castTargetType = assn.getTargetType().getPrimitiveType();
                         if (!TypeCastingUtils.canCastTo(sourceVariableType, castTargetType)) {
                             throw new InvalidNodeException(
                                     "Cannot cast from " + sourceVariableType + " to " + castTargetType
@@ -276,7 +276,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             } else {
                 throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
-            out.add(requiredVarDef.assignValue(val));
+            out.add(requiredVarDef.assignValue(val, processorContext.metadataManager()));
         }
 
         return out;

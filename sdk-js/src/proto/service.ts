@@ -23,7 +23,7 @@ import {
   taskStatusToJSON,
   taskStatusToNumber,
 } from "./common_enums";
-import { ReturnType, VariableDef } from "./common_wfspec";
+import { InlineStructDef, ReturnType, VariableDef } from "./common_wfspec";
 import {
   CorrelatedEvent,
   CorrelatedEventConfig,
@@ -55,7 +55,7 @@ import {
   WorkflowEventId,
 } from "./object_id";
 import { ScheduledWfRun } from "./scheduled_wf_run";
-import { InlineStructDef, StructDef } from "./struct_def";
+import { StructDef } from "./struct_def";
 import { TaskDef } from "./task_def";
 import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
 import {

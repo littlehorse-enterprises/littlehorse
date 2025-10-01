@@ -37,6 +37,7 @@ include(
         'workflow-events',
         'casting',
         'spawn-thread-foreach',
+        'struct-def',
         'user-tasks',
         'variables',
         'worker-context',

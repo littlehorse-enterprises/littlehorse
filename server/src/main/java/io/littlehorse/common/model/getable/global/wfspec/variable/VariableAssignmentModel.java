@@ -122,11 +122,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return out;
     }
 
-    public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
-        // TODO: extend this to support Struct and StructDef when we implement that.
-        return canBeType(type.getType(), tspec);
-    }
-
     public Optional<TypeDefinitionModel> resolveType(
             ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
@@ -136,28 +131,29 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return getSourceType(manager, wfSpec, threadSpecName);
     }
 
-    public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
-
+    public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
 
-        VariableType baseType = null;
+        TypeDefinitionModel baseType = null;
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
 
                 // This will need to be refactored once we introduce Structs and StructDefs.
-                baseType = varDef.getTypeDef().getType();
+                baseType = varDef.getTypeDef();
                 break;
             case LITERAL_VALUE:
-                baseType = rhsLiteralValue.getTypeDefinition().getType();
+                baseType = rhsLiteralValue.getTypeDefinition();
                 break;
             case FORMAT_STRING:
-                baseType = VariableType.STR;
+                baseType = new TypeDefinitionModel(VariableType.STR);
                 break;
             case NODE_OUTPUT:
             case EXPRESSION:
+                // TODO (#1124): look at the node to determine if the output of the node
+                // can be a given type.
                 return true;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
@@ -169,7 +165,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
-
         return TypeCastingUtils.canBeType(baseType, type);
     }
 
@@ -189,7 +184,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         try {
             return targetType.applyCast(sourceValue);
         } catch (IllegalArgumentException e) {
-            throw new LHVarSubError(e, "Failed to cast value to " + targetType.getType() + ": " + e.getMessage());
+            throw new LHVarSubError(e, "Failed to cast value to " + targetType + ": " + e.getMessage());
         }
     }
 
@@ -249,5 +244,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
 
         return Optional.empty();
+    }
+
+    public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
+        return canBeType(new TypeDefinitionModel(type), tspec);
     }
 }

@@ -16,9 +16,9 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -129,7 +129,7 @@ public class SearchVariableRequestModel
         // ONLY do this check if the Variable is a PRIMITIVE type.
         // TODO: Extend this when implementing Struct and StructDef.
         TypeDefinitionModel varType = varDef.getVarDef().getTypeDef();
-        if (isTypeSearchable(varType.getType()) && !varType.isCompatibleWith(value)) {
+        if (isTypeSearchable(varType) && !varType.isCompatibleWith(value, null)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "Specified Variable has type " + varDef.getVarDef().getTypeDef());
@@ -193,8 +193,10 @@ public class SearchVariableRequestModel
         return List.of("name", "value", "wfSpecName", "wfSpecVersion");
     }
 
-    private static boolean isTypeSearchable(VariableType type) {
-        switch (type) {
+    private static boolean isTypeSearchable(TypeDefinitionModel type) {
+        if (type.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) return false;
+
+        switch (type.getPrimitiveType()) {
             case INT:
             case BOOL:
             case DOUBLE:

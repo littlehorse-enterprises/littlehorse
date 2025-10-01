@@ -144,30 +144,28 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         VariableValueModel rhsVal = getRhsValue(thread, txnCache, nodeOutput);
 
         // This will need to be refactored once we introduce Structs.
-        VariableType lhsRealType = thread.getThreadSpec()
-                .getVarDef(lhsName)
-                .getVarDef()
-                .getTypeDef()
-                .getType();
+        TypeDefinitionModel lhsRealType =
+                thread.getThreadSpec().getVarDef(lhsName).getVarDef().getTypeDef();
 
         try {
             // NOTE Part 2: see below
             if (lhsJsonPath != null) {
                 VariableValueModel lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
-                VariableType typeToCoerceTo = lhsJsonPathed.getType();
+                TypeDefinitionModel typeToCoerceTo = lhsJsonPathed.getTypeDefinition();
 
                 // If the key does not exist in the LHS, we just plop the RHS there. Otherwise, we want to coerce the
                 // type to the rhs.
-                VariableValueModel thingToPut = lhsJsonPathed.getType() == null
-                        ? rhsVal
-                        : lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
+                VariableValueModel thingToPut =
+                        lhsJsonPathed.getTypeDefinition().isNull()
+                                ? rhsVal
+                                : lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
 
                 VariableValueModel currentLhs = getVarValFromThreadInTxn(lhsName, thread, txnCache);
 
                 currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
                 txnCache.put(lhsName, currentLhs);
             } else {
-                VariableType typeToCoerceTo = lhsRealType;
+                TypeDefinitionModel typeToCoerceTo = lhsRealType;
                 txnCache.put(lhsName, lhsVal.operate(operation, rhsVal, typeToCoerceTo));
             }
         } catch (LHVarSubError exn) {
@@ -208,10 +206,11 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                     // Step 1: Validate the explicit cast (original type -> cast target)
                     Optional<TypeDefinitionModel> sourceTypeOpt =
                             rhsRhsAssignment.getSourceType(manager, threadSpec.getWfSpec(), threadSpec.getName());
-                    VariableType originalType =
-                            sourceTypeOpt.map(TypeDefinitionModel::getType).orElse(null);
+                    VariableType originalType = sourceTypeOpt
+                            .map(TypeDefinitionModel::getPrimitiveType)
+                            .orElse(null);
                     VariableType castTargetType = rhsRhsAssignment.getTargetType() != null
-                            ? rhsRhsAssignment.getTargetType().getType()
+                            ? rhsRhsAssignment.getTargetType().getPrimitiveType()
                             : null;
                     if (!TypeCastingUtils.canCastTo(originalType, castTargetType)) {
                         throw new InvalidMutationException("Cannot cast from " + originalType + " to " + castTargetType
@@ -220,11 +219,11 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                     TypeCastingUtils.validateTypeCompatibility(originalType, castTargetType);
 
                     // Step 2: Validate assignment (cast target type -> lhs type)
-                    TypeCastingUtils.validateTypeCompatibility(castTargetType, lhsType.getType());
+                    TypeCastingUtils.validateTypeCompatibility(castTargetType, lhsType.getPrimitiveType());
                 } else {
                     // No explicit cast, only allow assignment if possible without cast
-                    VariableType rhsActualType = rhsType.get().getType();
-                    VariableType lhsActualType = lhsType.getType();
+                    VariableType rhsActualType = rhsType.get().getPrimitiveType();
+                    VariableType lhsActualType = lhsType.getPrimitiveType();
                     if (!TypeCastingUtils.canBeType(rhsActualType, lhsActualType)) {
                         throw new InvalidMutationException("Cannot assign " + rhsActualType + " to " + lhsActualType
                                 + " without explicit casting.");
