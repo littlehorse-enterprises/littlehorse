@@ -38,7 +38,7 @@ public class VarSubErrorTest {
     @LHWorkflow("var-type-validations")
     private Workflow varTypeValidationsWf;
 
-    //    @Test
+    @Test
     void shouldThrowInvalidArgumentIfRequiredVarMissing() {
         // The RunWf RPC would throw an error, and currently the test framework doesn't have
         // a way to test this. So we first run a simple test with the framework to ensure
@@ -95,7 +95,7 @@ public class VarSubErrorTest {
                 });
     }
 
-    //    @Test
+    @Test
     void shouldFindVarSubErrorOnFirstNodeRun() {
         verifier.prepareRun(
                         varTypeValidationsWf,
@@ -129,7 +129,7 @@ public class VarSubErrorTest {
                 .start();
     }
 
-    //    @Test
+    @Test
     void shouldAllowPrimitiveToString() {
         verifier.prepareRun(
                         varTypeValidationsWf,
@@ -144,7 +144,7 @@ public class VarSubErrorTest {
                 .start();
     }
 
-    //    @Test
+    @Test
     void shouldNotCastDoubleToInt() {
         verifier.prepareRun(
                         varTypeValidationsWf,
