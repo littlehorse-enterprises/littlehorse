@@ -1,9 +1,9 @@
 import { getVariable } from '@/app/utils'
-import { VariableAssignment as VariableAssigmentProto } from 'littlehorse-client/proto'
+import { VariableAssignment as VariableAssignmentProto } from 'littlehorse-client/proto'
 import { FC, useCallback } from 'react'
 import { useModal } from '../../../hooks/useModal'
 
-export const VariableAssignment: FC<{ variableAssigment: VariableAssigmentProto }> = ({ variableAssigment }) => {
+export const VariableAssignment: FC<{ variableAssigment: VariableAssignmentProto }> = ({ variableAssigment }) => {
   const variable = getVariable(variableAssigment)
   const { setModal, setShowModal } = useModal()
 
