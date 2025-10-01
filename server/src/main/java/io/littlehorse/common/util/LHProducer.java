@@ -35,6 +35,13 @@ public class LHProducer implements Closeable {
     }
 
     /**
+     * Sends a Command asynchronously to the underlying producer without blocking the caller's thread.
+     */
+    public CompletableFuture<RecordMetadata> send(String key, Bytes t, String topic, Header... headers) {
+        return sendRecord(new ProducerRecord<>(topic, null, key, t, List.of(headers)));
+    }
+
+    /**
      * Sends a record asynchronously to the underlying producer without blocking the caller's thread.
      * The task is executed in the ForkJoin pool to ensure non-blocking behavior, and the result
      * is encapsulated in a CompletableFuture for easier chaining and error handling.

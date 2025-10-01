@@ -7,12 +7,13 @@ import io.grpc.ChannelCredentials;
 import io.grpc.Context;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerCredentials;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.netty.shaded.io.netty.channel.EventLoopGroup;
+import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -123,7 +124,7 @@ public class BackendInternalComms implements Closeable {
 
     private final ChannelCredentials clientCreds;
 
-    private final Map<String, ManagedChannel> channels;
+    private final Map<String, InternalNettyChannel> channels;
 
     @Getter
     private final AsyncWaiters asyncWaiters;
@@ -183,8 +184,8 @@ public class BackendInternalComms implements Closeable {
 
     public void close() {
         log.info("Closing backend internal comms");
-        for (ManagedChannel channel : channels.values()) {
-            channel.shutdown();
+        for (InternalNettyChannel channel : channels.values()) {
+            channel.close();
         }
         internalGrpcServer.shutdownNow();
         try {
@@ -366,21 +367,18 @@ public class BackendInternalComms implements Closeable {
 
     private ManagedChannel getChannel(HostInfo host) {
         String key = host.host() + ":" + host.port();
-        ManagedChannel channel = channels.get(key);
+        InternalNettyChannel channel = channels.get(key);
         if (channel == null) {
+            EventLoopGroup nioEventLoopGroup = new NioEventLoopGroup();
+            nioEventLoopGroup.close();
             if (clientCreds == null) {
-                channel = ManagedChannelBuilder.forAddress(host.host(), host.port())
-                        .usePlaintext()
-                        .executor(Executors.newVirtualThreadPerTaskExecutor())
-                        .build();
+                channel = new InternalNettyChannel(host.host(), host.port());
             } else {
-                channel = Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
-                        .executor(Executors.newVirtualThreadPerTaskExecutor())
-                        .build();
+                channel = new InternalNettyChannel(host.host(), host.port(), clientCreds);
             }
             channels.put(key, channel);
         }
-        return channel;
+        return channel.getChannel();
     }
 
     @SuppressWarnings("unchecked")
