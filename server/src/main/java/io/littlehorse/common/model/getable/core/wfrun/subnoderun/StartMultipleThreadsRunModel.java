@@ -92,7 +92,7 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                 }
 
                 // Throws LHValidationError if variables not valid
-                threadSpec.validateStartVariables(inputs);
+                threadSpec.validateStartVariables(inputs, processorContext.metadataManager());
 
                 ThreadRunModel child = nodeRun.getThreadRun()
                         .getWfRun()

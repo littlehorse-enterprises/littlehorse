@@ -64,9 +64,9 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             throw new LHApiException(Status.INVALID_ARGUMENT, "StructDef name must be a valid hostname");
         }
 
-        structDef.validate();
+        structDef.validate(context.metadataManager());
 
-        StructDefModel spec = new StructDefModel(context);
+        StructDefModel spec = new StructDefModel();
         spec.setStructDef(structDef);
         spec.setCreatedAt(new Date());
 

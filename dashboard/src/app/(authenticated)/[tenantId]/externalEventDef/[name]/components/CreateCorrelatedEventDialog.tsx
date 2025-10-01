@@ -1,5 +1,5 @@
 'use client'
-import { getTypedVariableValue, getVariableCaseFromType, VARIABLE_CASE_LABELS } from '@/app/utils/variables'
+import { getTypedVariableValue, getVariableCaseFromTypeDef, VARIABLE_CASE_LABELS } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -37,8 +37,8 @@ export default function CreateCorrelatedEventDialog({
   const [key, setKey] = useState('')
 
   // Get the expected content type from ExternalEventDef typeInformation
-  const expectedType = spec.typeInformation?.returnType?.type
-    ? getVariableCaseFromType(spec.typeInformation.returnType.type)
+  const expectedType = spec.typeInformation?.returnType
+    ? getVariableCaseFromTypeDef(spec.typeInformation.returnType)
     : 'str'
   const [contentType, setContentType] = useState<NonNullable<VariableValue['value']>['$case']>(expectedType)
   const [contentValue, setContentValue] = useState('')
@@ -136,7 +136,7 @@ export default function CreateCorrelatedEventDialog({
             <Input id="key" value={key} onChange={e => setKey(e.target.value)} placeholder="Enter correlation key" />
           </div>
 
-          {!spec.typeInformation?.returnType?.type && (
+          {!spec.typeInformation?.returnType && (
             <div className="grid gap-2">
               <Label htmlFor="content-type">Content Type</Label>
               <Select
@@ -163,7 +163,7 @@ export default function CreateCorrelatedEventDialog({
             </div>
           )}
 
-          {spec.typeInformation?.returnType?.type && (
+          {spec.typeInformation?.returnType && (
             <div className="grid gap-2">
               <Label htmlFor="content-type">Content Type</Label>
               <div className="flex items-center px-1 py-2 text-sm font-medium text-foreground">

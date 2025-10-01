@@ -205,6 +205,7 @@ public class LHUtil {
         }
         return str;
     }
+
     /**
      * TODO: THis needs more thought. We want the double to be searchable both
      * positive and

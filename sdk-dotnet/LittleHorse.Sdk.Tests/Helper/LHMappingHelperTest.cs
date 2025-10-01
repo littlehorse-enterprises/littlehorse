@@ -303,7 +303,7 @@ public class LHMappingHelperTest
 
         Assert.NotNull(result);
         Assert.NotNull(result.ReturnType_);
-        Assert.Equal(VariableType.Int, result.ReturnType_.Type);
+        Assert.Equal(VariableType.Int, result.ReturnType_.PrimitiveType);
     }
 
     [Fact]

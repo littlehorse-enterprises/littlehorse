@@ -108,7 +108,8 @@ odd total number of args. See 'lhctl run --help' for details.`)
 
 				vType := varDef.Type
 				if vType == nil {
-					vType = &varDef.TypeDef.Type
+					primitiveType := varDef.TypeDef.GetPrimitiveType()
+					vType = &primitiveType
 				}
 
 				runReq.Variables[varName], err = littlehorse.StrToVarVal(

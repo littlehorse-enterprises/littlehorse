@@ -77,7 +77,7 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
         }
         if (externalEventDef.getReturnType().isPresent()) {
             ReturnTypeModel type = externalEventDef.getReturnType().get();
-            if (!type.isCompatibleWith(content)) {
+            if (!type.isCompatibleWith(content, context.metadataManager())) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Invalid type of content for event. Check the return type of ExternalEventDef "
