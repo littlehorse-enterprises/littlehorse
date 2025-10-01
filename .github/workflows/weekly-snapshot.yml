@@ -1,17 +1,34 @@
 name: release
 run-name: Snaptshot ${{ github.ref_name }}
 on:
-  push:
-    branches:
-      - "master"
-      - "publish-snapshots"
-      - "v[0-9]+.[0-9]+"
+  schedule:
+    - cron: "0 0 * * 5"
 
 permissions:
       packages: write
       contents: write
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      snapshot-version: ${{ steps.gradle_version.outputs.snapshot-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "17"
+      - name: Get Gradle version
+        id: gradle_version
+        run: |
+          ./gradlew clean
+          version=$(./gradlew version | head -n 1)
+          echo "snapshot-version=$version" >> $GITHUB_OUTPUT
+
   publish-java-libraries:
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,9 +39,14 @@ jobs:
         with:
           distribution: "corretto"
           java-version: "17"
-
-      - name: Snapshot version
-        run: sed -i 's/^\(version=.*\)$/\1-SNAPSHOT/' gradle.properties
+      - name: Validate snapshot format
+        env:
+          VERSION: ${{ needs.prepare.outputs.snapshot-version }}
+        run: |
+          if ! printf '%s' "$VERSION" | grep -i -- '-SNAPSHOT$' >/dev/null; then
+              echo "ERROR: version does not end with -SNAPSHOT" >&2
+              exit 1
+          fi
 
       - name: Tests
         run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
