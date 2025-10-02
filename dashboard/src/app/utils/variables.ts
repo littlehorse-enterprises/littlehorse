@@ -56,7 +56,6 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
     case 'formatString':
       return getValueFromFormatString(variable.source)
     case 'literalValue':
-      if (Object.keys(variable.source.value).length === 0) return 'null'
       return getVariableValue(variable.source.value)
     case 'nodeOutput':
       return variable.source.value.nodeName
@@ -75,7 +74,7 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
  * @returns A string representation of the value.
  */
 export const getVariableValue = ({ value }: VariableValue): string => {
-  if (!value) return ''
+  if (!value || Object.keys(value).length === 0) return 'NULL'
 
   switch (value.$case) {
     case 'bytes':
@@ -150,10 +149,11 @@ export const getTypedVariableValue = (
  * determines which typing strategy a Variable uses.
  */
 export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
-  if (varDef.typeDef) {
-    switch (varDef.typeDef?.definedType?.$case) {
+  if (varDef.typeDef && varDef.typeDef.definedType) {
+    const {$case, value} = varDef.typeDef.definedType
+    switch ($case) {
       case 'primitiveType':
-        return getVariableCaseFromType(varDef.typeDef.definedType.value)
+        return getVariableCaseFromType(value)
       case 'structDefId':
         return 'struct'
       case 'inlineArrayDef':
