@@ -23,29 +23,29 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
             String restOfKey = wgo.getKeySuffix();
             return getGroupedStoreKey(groupingId, getType(), restOfKey);
         } else {
-            return getFullStoreKey(getType(), getStoreKey());
+            return getUngroupedStoreKey(getType(), getStoreKey());
         }
     }
 
-    public String getLegacyUngroupedFuullStoreKey() {
-        return getFullStoreKey(getType(), getStoreKey());
+    public String legacyGetFulllStoreKey() {
+        return getUngroupedStoreKey(getType(), getStoreKey());
     }
 
-    private static String getSubstorePrefix(StoreableType storeableType) {
+    private static String getUngroupedSubstorePrefix(StoreableType storeableType) {
         return String.valueOf(storeableType.getNumber()) + "/";
     }
 
-    public static String getFullStoreKey(StoreableType type, String storeKey) {
-        return getSubstorePrefix(type) + storeKey;
+    public static String getUngroupedStoreKey(StoreableType type, String storeKey) {
+        return getUngroupedSubstorePrefix(type) + storeKey;
     }
 
     public static String getGroupedStoreKey(WfRunIdModel wfRunId, StoreableType type, String restOfKey) {
         return "wrg_/" + wfRunId.toString() + "/" + type.getNumber() + "/" + restOfKey;
     }
 
-    public static String getFullStoreKey(Class<? extends Storeable<?>> cls, String storeKey) {
-        return getSubstorePrefix(getStoreableType(cls)) + storeKey;
-    }
+    // public static String getFullStoreKey(Class<? extends Storeable<?>> cls, String storeKey) {
+    //     return getUngroupedSubstorePrefix(getStoreableType(cls)) + storeKey;
+    // }
 
     public abstract String getStoreKey();
 

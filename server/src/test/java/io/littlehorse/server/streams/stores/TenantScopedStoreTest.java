@@ -142,7 +142,7 @@ public class TenantScopedStoreTest {
     @Test
     public void shouldDeleteSpecificStoreKey() {
         String otherTenant = "otherTenant";
-        String objectFullKey = Storeable.getFullStoreKey(StoreableType.TAG, "123");
+        String objectFullKey = Storeable.getUngroupedStoreKey(StoreableType.TAG, "123");
         String roomerKey = "%s/%s".formatted(tenantA, objectFullKey);
         String outsiderKey = "%s/%s".formatted(otherTenant, objectFullKey);
         nativeInMemoryStore.put(roomerKey, new Bytes(roomerKey.getBytes()));
