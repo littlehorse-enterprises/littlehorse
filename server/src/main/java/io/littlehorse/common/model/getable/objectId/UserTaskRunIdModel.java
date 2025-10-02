@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
+public class UserTaskRunIdModel extends WfRunGroupedObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
 
     private WfRunIdModel wfRunId;
     private String userTaskGuid;
@@ -54,6 +54,11 @@ public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun,
         UserTaskRunId.Builder out =
                 UserTaskRunId.newBuilder().setWfRunId(wfRunId.toProto()).setUserTaskGuid(userTaskGuid);
         return out;
+    }
+
+    @Override
+    public WfRunIdModel getGroupingWfRunId() {
+        return wfRunId;
     }
 
     @Override

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
+public class WfRunIdModel extends WfRunGroupedObjectId<WfRunId, WfRun, WfRunModel> {
 
     private String id;
 
@@ -70,6 +70,11 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
             return parentWfRunId + "_" + id;
         }
         return id;
+    }
+
+    @Override
+    public WfRunIdModel getGroupingWfRunId() {
+        return this;
     }
 
     @Override

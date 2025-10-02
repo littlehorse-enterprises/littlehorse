@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -14,7 +14,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
-public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunModel> {
+public class TaskRunIdModel extends WfRunGroupedObjectId<TaskRunId, TaskRun, TaskRunModel> {
 
     public WfRunIdModel wfRunId;
     public String taskGuid;
@@ -60,6 +60,11 @@ public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunMode
         TaskRunId.Builder out =
                 TaskRunId.newBuilder().setWfRunId(wfRunId.toProto()).setTaskGuid(taskGuid);
         return out;
+    }
+
+    @Override
+    public WfRunIdModel getGroupingWfRunId() {
+        return wfRunId;
     }
 
     @Override

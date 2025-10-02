@@ -67,6 +67,20 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
         return id.getType().getNumber() + "/" + id.toString();
     }
 
+    /**
+     * See Proposal #9
+     */
+    public String getLegacyStoreKey() {
+        return StoredGetable.getLegacyStoreKey(storedObject.getObjectId());
+    }
+
+    /**
+     * See Proposal #9
+     */
+    public static String getLegacyStoreKey(ObjectIdModel<?, ?, ?> id) {
+        return id.getType().getNumber() + "/" + id.toString();
+    }
+
     @SuppressWarnings("unchecked")
     public Class<T> getStoredClass() {
         return (Class<T>) AbstractGetable.getCls(objectType);
