@@ -81,7 +81,6 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
 
     public void validateValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
             throws InvalidVariableDefException {
-        System.out.println("Validating " + value + " against " + typeDef);
         if (value.isNull()) return;
 
         if (typeDef.isCompatibleWith(value, metadataManager)) {
