@@ -70,7 +70,7 @@ public class VarMutationsNumbersTest {
 
             // ensure that we can cast from double to int, and that the
             // original type is respected
-            thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble);
+            thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble.castToInt());
 
             // Do some math, and divide by zero to show that failures work
             thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);

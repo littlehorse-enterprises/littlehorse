@@ -51,7 +51,7 @@ IN: Comparator
 NOT_IN: Comparator
 
 class VariableAssignment(_message.Message):
-    __slots__ = ("json_path", "variable_name", "literal_value", "format_string", "node_output", "expression")
+    __slots__ = ("json_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
     class FormatString(_message.Message):
         __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -79,13 +79,15 @@ class VariableAssignment(_message.Message):
     FORMAT_STRING_FIELD_NUMBER: _ClassVar[int]
     NODE_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     EXPRESSION_FIELD_NUMBER: _ClassVar[int]
+    TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
     json_path: str
     variable_name: str
     literal_value: _variable_pb2.VariableValue
     format_string: VariableAssignment.FormatString
     node_output: VariableAssignment.NodeOutputReference
     expression: VariableAssignment.Expression
-    def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ...) -> None: ...
+    target_type: TypeDefinition
+    def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")

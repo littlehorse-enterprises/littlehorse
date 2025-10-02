@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
@@ -12,49 +13,89 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 class BuilderUtil {
 
     static VariableAssignment assignVariable(Object variable) {
-        VariableAssignment.Builder builder = VariableAssignment.newBuilder();
-
         if (variable == null) {
-            builder.setLiteralValue(VariableValue.newBuilder());
-        } else if (variable.getClass().equals(WfRunVariableImpl.class)) {
-            WfRunVariableImpl wrv = (WfRunVariableImpl) variable;
-            if (wrv.jsonPath != null) {
-                builder.setJsonPath(wrv.jsonPath);
-            }
-            builder.setVariableName(wrv.name);
-        } else if (NodeOutputImpl.class.isAssignableFrom(variable.getClass())) {
-            // We can use the new `VariableAssignment` feature: NodeOutputReference
-            NodeOutputImpl nodeReference = (NodeOutputImpl) variable;
-
-            builder.setNodeOutput(NodeOutputReference.newBuilder()
-                    .setNodeName(nodeReference.nodeName)
-                    .build());
-
-            if (nodeReference.jsonPath != null) {
-                builder.setJsonPath(nodeReference.jsonPath);
-            }
-        } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
-            LHFormatStringImpl format = (LHFormatStringImpl) variable;
-            builder.setFormatString(VariableAssignment.FormatString.newBuilder()
-                    .setFormat(assignVariable(format.getFormat()))
-                    .addAllArgs(format.getArgs()));
-
-        } else if (variable instanceof LHExpressionImpl) {
-            LHExpressionImpl expr = (LHExpressionImpl) variable;
-            builder.setExpression(Expression.newBuilder()
-                    .setLhs(assignVariable(expr.getLhs()))
-                    .setOperation(expr.getOperation())
-                    .setRhs(assignVariable(expr.getRhs())));
-        } else {
-            try {
-                VariableValue defVal = LHLibUtil.objToVarVal(variable);
-                builder.setLiteralValue(defVal);
-            } catch (LHSerdeException exn) {
-                throw new RuntimeException(exn);
-            }
+            return buildNullAssignment();
         }
 
+        if (WfRunVariableImpl.class.equals(variable.getClass())) {
+            return buildFromWfRunVariable((WfRunVariableImpl) variable);
+        }
+        if (NodeOutputImpl.class.isAssignableFrom(variable.getClass())) {
+            return buildFromNodeOutput((NodeOutputImpl) variable);
+        }
+        if (LHFormatStringImpl.class.equals(variable.getClass())) {
+            return buildFromFormatString((LHFormatStringImpl) variable);
+        }
+        if (variable instanceof CastExpressionImpl) {
+            return buildFromCastExpression((CastExpressionImpl) variable);
+        }
+        if (variable instanceof LHExpressionImpl) {
+            return buildFromLHExpression((LHExpressionImpl) variable);
+        }
+
+        return buildFromLiteral(variable);
+    }
+
+    private static VariableAssignment buildNullAssignment() {
+        return VariableAssignment.newBuilder()
+                .setLiteralValue(VariableValue.newBuilder())
+                .build();
+    }
+
+    private static VariableAssignment buildFromWfRunVariable(WfRunVariableImpl wfRunVariable) {
+        VariableAssignment.Builder builder = VariableAssignment.newBuilder().setVariableName(wfRunVariable.name);
+        if (wfRunVariable.jsonPath != null) {
+            builder.setJsonPath(wfRunVariable.jsonPath);
+        }
         return builder.build();
+    }
+
+    private static VariableAssignment buildFromNodeOutput(NodeOutputImpl nodeOutput) {
+        VariableAssignment.Builder builder = VariableAssignment.newBuilder()
+                .setNodeOutput(NodeOutputReference.newBuilder()
+                        .setNodeName(nodeOutput.nodeName)
+                        .build());
+        if (nodeOutput.jsonPath != null) {
+            builder.setJsonPath(nodeOutput.jsonPath);
+        }
+        return builder.build();
+    }
+
+    private static VariableAssignment buildFromFormatString(LHFormatStringImpl inputFormat) {
+        return VariableAssignment.newBuilder()
+                .setFormatString(VariableAssignment.FormatString.newBuilder()
+                        .setFormat(assignVariable(inputFormat.getFormat()))
+                        .addAllArgs(inputFormat.getArgs()))
+                .build();
+    }
+
+    private static VariableAssignment buildFromCastExpression(CastExpressionImpl castingExpresion) {
+        VariableAssignment sourceAssignment = assignVariable(castingExpresion.getSource());
+        return sourceAssignment.toBuilder()
+                .setTargetType(TypeDefinition.newBuilder()
+                        .setPrimitiveType(castingExpresion.getTargetType())
+                        .setMasked(false)
+                        .build())
+                .build();
+    }
+
+    private static VariableAssignment buildFromLHExpression(LHExpressionImpl expresion) {
+        return VariableAssignment.newBuilder()
+                .setExpression(Expression.newBuilder()
+                        .setLhs(assignVariable(expresion.getLhs()))
+                        .setOperation(expresion.getOperation())
+                        .setRhs(assignVariable(expresion.getRhs())))
+                .build();
+    }
+
+    private static VariableAssignment buildFromLiteral(Object variable) {
+        try {
+            VariableValue defVal = LHLibUtil.objToVarVal(variable);
+            return VariableAssignment.newBuilder().setLiteralValue(defVal).build();
+        } catch (LHSerdeException exn) {
+            throw new IllegalArgumentException(
+                    "Failed to convert literal to VariableAssignment for variable: " + variable, exn);
+        }
     }
 
     static ReturnType javaTypeToReturnType(Class<?> payloadClass) {

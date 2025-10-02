@@ -1,7 +1,9 @@
 plugins {
     id 'application'
-    id 'com.diffplug.spotless'
 }
+
+sourceCompatibility=17
+targetCompatibility=17
 
 repositories {
     mavenCentral()
@@ -15,13 +17,5 @@ dependencies {
 }
 
 application {
-    mainClass = 'io.littlehorse.examples.ExpressionsExample'
+    mainClass = 'io.littlehorse.examples.CastingExample'
 }
-
-spotless {
-    java {
-        target('**/*.java')
-        palantirJavaFormat()
-    }
-}
-

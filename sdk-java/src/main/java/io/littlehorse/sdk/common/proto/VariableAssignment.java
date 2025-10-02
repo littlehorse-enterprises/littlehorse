@@ -3145,6 +3145,53 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
   }
 
+  public static final int TARGET_TYPE_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return Whether the targetType field is set.
+   */
+  @java.lang.Override
+  public boolean hasTargetType() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return The targetType.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinition getTargetType() {
+    return targetType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
+  }
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTargetTypeOrBuilder() {
+    return targetType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -3177,6 +3224,9 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(7, getTargetType());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -3208,6 +3258,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getTargetType());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -3227,6 +3281,11 @@ private static final long serialVersionUID = 0L;
     if (hasJsonPath()) {
       if (!getJsonPath()
           .equals(other.getJsonPath())) return false;
+    }
+    if (hasTargetType() != other.hasTargetType()) return false;
+    if (hasTargetType()) {
+      if (!getTargetType()
+          .equals(other.getTargetType())) return false;
     }
     if (!getSourceCase().equals(other.getSourceCase())) return false;
     switch (sourceCase_) {
@@ -3267,6 +3326,10 @@ private static final long serialVersionUID = 0L;
     if (hasJsonPath()) {
       hash = (37 * hash) + JSON_PATH_FIELD_NUMBER;
       hash = (53 * hash) + getJsonPath().hashCode();
+    }
+    if (hasTargetType()) {
+      hash = (37 * hash) + TARGET_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getTargetType().hashCode();
     }
     switch (sourceCase_) {
       case 2:
@@ -3421,13 +3484,19 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessage
+              .alwaysUseFieldBuilders) {
+        internalGetTargetTypeFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -3445,6 +3514,11 @@ private static final long serialVersionUID = 0L;
       }
       if (expressionBuilder_ != null) {
         expressionBuilder_.clear();
+      }
+      targetType_ = null;
+      if (targetTypeBuilder_ != null) {
+        targetTypeBuilder_.dispose();
+        targetTypeBuilder_ = null;
       }
       sourceCase_ = 0;
       source_ = null;
@@ -3487,6 +3561,12 @@ private static final long serialVersionUID = 0L;
         result.jsonPath_ = jsonPath_;
         to_bitField0_ |= 0x00000001;
       }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.targetType_ = targetTypeBuilder_ == null
+            ? targetType_
+            : targetTypeBuilder_.build();
+        to_bitField0_ |= 0x00000002;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -3527,6 +3607,9 @@ private static final long serialVersionUID = 0L;
         jsonPath_ = other.jsonPath_;
         bitField0_ |= 0x00000001;
         onChanged();
+      }
+      if (other.hasTargetType()) {
+        mergeTargetType(other.getTargetType());
       }
       switch (other.getSourceCase()) {
         case VARIABLE_NAME: {
@@ -3620,6 +3703,13 @@ private static final long serialVersionUID = 0L;
               sourceCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  internalGetTargetTypeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4594,6 +4684,190 @@ private static final long serialVersionUID = 0L;
       sourceCase_ = 6;
       onChanged();
       return expressionBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> targetTypeBuilder_;
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     * @return Whether the targetType field is set.
+     */
+    public boolean hasTargetType() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     * @return The targetType.
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition getTargetType() {
+      if (targetTypeBuilder_ == null) {
+        return targetType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
+      } else {
+        return targetTypeBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     */
+    public Builder setTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (targetTypeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        targetType_ = value;
+      } else {
+        targetTypeBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     */
+    public Builder setTargetType(
+        io.littlehorse.sdk.common.proto.TypeDefinition.Builder builderForValue) {
+      if (targetTypeBuilder_ == null) {
+        targetType_ = builderForValue.build();
+      } else {
+        targetTypeBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     */
+    public Builder mergeTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (targetTypeBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          targetType_ != null &&
+          targetType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
+          getTargetTypeBuilder().mergeFrom(value);
+        } else {
+          targetType_ = value;
+        }
+      } else {
+        targetTypeBuilder_.mergeFrom(value);
+      }
+      if (targetType_ != null) {
+        bitField0_ |= 0x00000040;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     */
+    public Builder clearTargetType() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      targetType_ = null;
+      if (targetTypeBuilder_ != null) {
+        targetTypeBuilder_.dispose();
+        targetTypeBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTargetTypeBuilder() {
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return internalGetTargetTypeFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTargetTypeOrBuilder() {
+      if (targetTypeBuilder_ != null) {
+        return targetTypeBuilder_.getMessageOrBuilder();
+      } else {
+        return targetType_ == null ?
+            io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : targetType_;
+      }
+    }
+    /**
+     * <pre>
+     * If specified, the resolved value will be cast to this type before being used.
+     * This allows explicit type conversions anywhere VariableAssignment is used.
+     * The cast operation is non-mutating: original values remain unchanged.
+     * Note: Only primitive type conversions are supported.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> 
+        internalGetTargetTypeFieldBuilder() {
+      if (targetTypeBuilder_ == null) {
+        targetTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder>(
+                getTargetType(),
+                getParentForChildren(),
+                isClean());
+        targetType_ = null;
+      }
+      return targetTypeBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignment)
