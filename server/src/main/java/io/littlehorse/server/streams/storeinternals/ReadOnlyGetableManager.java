@@ -83,9 +83,11 @@ public class ReadOnlyGetableManager {
         if (storeResult == null) {
             // See Proposal #9. This part here is just for backwards compatibility.
             if (WfRunGroupedObjectId.class.isAssignableFrom(id.getClass())) {
-                log.trace("Looking for legacy key {}", id);
+                log.warn("Looking for legacy key {}", id);
                 storeResult = (StoredGetable<U, T>) store.get(id.getLegacyStoreableKey(), StoredGetable.class);
                 needsToMigrateToNewKey = true;
+            } else {
+                log.warn("Not a compatible class: {}", id);
             }
         }
 
