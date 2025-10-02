@@ -7,6 +7,7 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
@@ -63,21 +64,32 @@ public class ReadOnlyGetableManager {
      * @param id  is the ObjectId to look for.
      * @return the specified AbstractGetable, or null if it doesn't exist.
      */
+    @SuppressWarnings("unchecked")
     public <U extends Message, T extends CoreGetable<U>> T get(CoreObjectId<?, U, T> id) {
         log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
 
         // First check the cache.
-        @SuppressWarnings("unchecked")
         GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>) uncommittedChanges.get(id.getStoreableKey());
         if (bufferedResult != null) {
             return bufferedResult.getObjectToStore();
         }
 
         // Next check the store.
-        @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = (StoredGetable<U, T>) store.get(id.getStoreableKey(), StoredGetable.class);
 
+        boolean needsToMigrateToNewKey = false;
+
+        if (storeResult == null) {
+            // See Proposal #9. This part here is just for backwards compatibility.
+            if (WfRunGroupedObjectId.class.isAssignableFrom(id.getClass())) {
+                log.trace("Looking for legacy key {}", id);
+                storeResult = (StoredGetable<U, T>) store.get(id.getLegacyStoreableKey(), StoredGetable.class);
+                needsToMigrateToNewKey = true;
+            }
+        }
+
+        // if storeResult still== null
         if (storeResult == null) return null;
 
         // If we got here, that means that:
@@ -86,7 +98,10 @@ public class ReadOnlyGetableManager {
         // we are getting the
         out = storeResult.getStoredObject();
 
-        uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
+        GetableToStore uncommittedObject = new GetableToStore<>(storeResult, id.getObjectClass());
+        uncommittedObject.setNeedsMigrationToNewStoreKey(needsToMigrateToNewKey);
+
+        uncommittedChanges.put(id.getStoreableKey(), uncommittedObject);
         return out;
     }
 

@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.StoredGetablePb;
@@ -64,6 +65,21 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     public static String getStoreKey(ObjectIdModel<?, ?, ?> id) {
+        if (WfRunGroupedObjectId.class.isAssignableFrom(id.getClass())) {
+            WfRunGroupedObjectId<?, ?, ?> groupedId = (WfRunGroupedObjectId<?, ?, ?>) id;
+
+            String wfRunId = groupedId.getGroupingWfRunId().toString();
+            String legacyKey = groupedId.toString();
+            String restOfKey = legacyKey.substring(wfRunId.length());
+
+            // The "wrg/" signifies that this is a modern, grouped key according to Proposal #9
+            return "wrg/" + wfRunId + "/" + id.getType().getNumber() + "/" + restOfKey;
+        } else {
+            return getUngroupedStoreKey(id);
+        }
+    }
+
+    public static String getUngroupedStoreKey(ObjectIdModel<?, ?, ?> id) {
         return id.getType().getNumber() + "/" + id.toString();
     }
 
@@ -71,14 +87,7 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
      * See Proposal #9
      */
     public String getLegacyStoreKey() {
-        return StoredGetable.getLegacyStoreKey(storedObject.getObjectId());
-    }
-
-    /**
-     * See Proposal #9
-     */
-    public static String getLegacyStoreKey(ObjectIdModel<?, ?, ?> id) {
-        return id.getType().getNumber() + "/" + id.toString();
+        return StoredGetable.getUngroupedStoreKey(storedObject.getObjectId());
     }
 
     @SuppressWarnings("unchecked")

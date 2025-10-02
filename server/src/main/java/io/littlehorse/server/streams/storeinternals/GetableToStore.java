@@ -22,8 +22,10 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
     private final GetableClassEnum objectType;
 
     private T objectToStore;
-
     private U previouslyStoredProto;
+
+    // See Proposal #9
+    private boolean needsMigrationToNewStoreKey;
 
     public boolean isDeletion() {
         return objectToStore == null;

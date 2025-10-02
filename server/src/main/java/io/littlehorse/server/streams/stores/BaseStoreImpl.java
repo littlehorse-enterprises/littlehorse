@@ -1,8 +1,11 @@
 package io.littlehorse.server.streams.stores;
 
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.server.streams.storeinternals.WfRunStoredInventoryModel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
@@ -42,5 +45,25 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
             metadataCache.evictCache(fullKey);
         }
         nativeStore.delete(fullKey);
+    }
+
+    /**
+     * See Proposal #9. The WFRunStoredInventory was moved into the StoredGetable prefix folder.
+     */
+    @Override
+    public WfRunStoredInventoryModel getWfRunInventoryFromLegacyKey(WfRunIdModel wfRunId) {
+        String keyToLookFor = maybeAddTenantPrefix(Storeable.getLegacyWfRunStoredInventoryModelKey(wfRunId));
+        Bytes rawBytes = nativeStore.get(keyToLookFor);
+
+        if (rawBytes == null) return null;
+
+        WfRunStoredInventoryModel result =
+                LHSerializable.fromBytes(rawBytes.get(), WfRunStoredInventoryModel.class, executionContext);
+
+        // Now delete the old key and put it in the new one.
+        nativeStore.delete(maybeAddTenantPrefix(keyToLookFor));
+        put(result);
+
+        return result;
     }
 }

@@ -116,6 +116,9 @@ public class GetableManager extends ReadOnlyGetableManager {
     private WfRunStoredInventoryModel getOrCreateStoredInventory(WfRunIdModel wfRunId) {
         WfRunStoredInventoryModel result = store.get(wfRunId.getStoreableKey(), WfRunStoredInventoryModel.class);
         if (result == null) {
+            result = store.getWfRunInventoryFromLegacyKey(wfRunId);
+        }
+        if (result == null) {
             result = new WfRunStoredInventoryModel();
             result.setWfRunId(wfRunId);
         }
@@ -210,6 +213,11 @@ public class GetableManager extends ReadOnlyGetableManager {
             // Do a deletion!
             store.delete(storeableKey, StoreableType.STORED_GETABLE);
             tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
+        }
+        if (entity.isNeedsMigrationToNewStoreKey()) {
+            String legacyKey =
+                    StoredGetable.getUngroupedStoreKey(entity.getObjectToStore().getObjectId());
+            store.delete(legacyKey, StoreableType.STORED_GETABLE);
         }
         return Optional.empty();
     }

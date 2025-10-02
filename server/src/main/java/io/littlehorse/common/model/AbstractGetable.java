@@ -3,6 +3,7 @@ package io.littlehorse.common.model;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -207,6 +208,10 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
+    }
+
+    public static boolean isWfRunGrouped(GetableClassEnum getableCls) {
+        return WfRunGroupedObjectId.class.isAssignableFrom(getIdCls(getableCls));
     }
 
     public abstract List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations();
