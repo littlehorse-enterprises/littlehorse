@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.StoredGetablePb;
@@ -60,11 +61,19 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
 
     @Override
     public String getStoreKey() {
-        return StoredGetable.getStoreKey(storedObject.getObjectId());
+        ObjectIdModel<?, ?, ?> objectId = storedObject.getObjectId();
+        if (objectId.getGroupingWfRunId().isPresent()) {
+            return StoredGetable.getGroupedFullStoreKey(objectId.getGroupingWfRunId().get(), getType(), objectId.getType(), objectId.getRestOfKeyAfterWfRunId());
+        } else {
+            return StoredGetable.getStoreKey(storedObject.getObjectId());
+        }
     }
 
     public static String getStoreKey(ObjectIdModel<?, ?, ?> id) {
-        return id.getType().getNumber() + "/" + id.toString();
+        if (id.getGroupingWfRunId().isEmpty()) {
+            return id.getType().getNumber() + "/" + id.toString();
+        }
+        return id.getType().getNumber() + "/" + id.getRestOfKeyAfterWfRunId();
     }
 
     @SuppressWarnings("unchecked")
