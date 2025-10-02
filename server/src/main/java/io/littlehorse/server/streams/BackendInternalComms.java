@@ -21,7 +21,6 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -62,7 +61,6 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.Sc
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
@@ -391,19 +389,13 @@ public class BackendInternalComms implements Closeable {
 
         ReadOnlyTenantScopedStore store =
                 getStore(partition, objectId.getStore().getStoreName());
-
-        // There's logic in the ReadOnlyGetableManager that makes things compatible with Proposal #9
-        if (CoreObjectId.class.isAssignableFrom(objectId.getClass())) {
-
-        } else {
-            StoredGetable<U, T> storeResult =
-                    (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
-            if (storeResult == null) {
-                throw new LHApiException(Status.NOT_FOUND, "Requested object was not found.");
-            }
-    
-            return storeResult.getStoredObject();
+        StoredGetable<U, T> storeResult =
+                (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
+        if (storeResult == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Requested object was not found.");
         }
+
+        return storeResult.getStoredObject();
     }
 
     public void handleRebalance(Set<TaskId> taskIds) {

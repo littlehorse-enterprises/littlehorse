@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import lombok.Getter;
 
 @Getter
-public class WorkflowEventIdModel extends WfRunGroupedObjectId<WorkflowEventId, WorkflowEvent, WorkflowEventModel> {
+public class WorkflowEventIdModel extends CoreObjectId<WorkflowEventId, WorkflowEvent, WorkflowEventModel> {
     private WfRunIdModel wfRunId;
     private WorkflowEventDefIdModel workflowEventDefId;
     private int id;
@@ -47,11 +47,6 @@ public class WorkflowEventIdModel extends WfRunGroupedObjectId<WorkflowEventId, 
     @Override
     public Class<WorkflowEventId> getProtoBaseClass() {
         return WorkflowEventId.class;
-    }
-
-    @Override
-    public WfRunIdModel getGroupingWfRunId() {
-        return wfRunId;
     }
 
     @Override

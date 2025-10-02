@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class NodeRunIdModel extends WfRunGroupedObjectId<NodeRunId, NodeRun, NodeRunModel> {
+public class NodeRunIdModel extends CoreObjectId<NodeRunId, NodeRun, NodeRunModel> {
 
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
@@ -61,11 +61,6 @@ public class NodeRunIdModel extends WfRunGroupedObjectId<NodeRunId, NodeRun, Nod
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(position);
         return out;
-    }
-
-    @Override
-    public WfRunIdModel getGroupingWfRunId() {
-        return wfRunId;
     }
 
     @Override

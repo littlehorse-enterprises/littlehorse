@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.common.model.getable.WfRunGroupedObjectId;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
-public class ExternalEventIdModel extends WfRunGroupedObjectId<ExternalEventId, ExternalEvent, ExternalEventModel> {
+public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, ExternalEvent, ExternalEventModel> {
 
     private WfRunIdModel wfRunId;
     private ExternalEventDefIdModel externalEventDefId;
@@ -32,11 +32,6 @@ public class ExternalEventIdModel extends WfRunGroupedObjectId<ExternalEventId, 
 
     public ExternalEventIdModel(String wfRunId, String externalEventDefName, String guid) {
         this(new WfRunIdModel(wfRunId), new ExternalEventDefIdModel(externalEventDefName), guid);
-    }
-
-    @Override
-    public WfRunIdModel getGroupingWfRunId() {
-        return wfRunId;
     }
 
     @Override
