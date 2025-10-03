@@ -4,6 +4,7 @@ import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
 import { getTaskName } from '../../NodeTypes/Task/TaskDetails'
 import { VariableAssignment } from '../Components'
+import { TaskNodeMetric } from '../Components/TaskNodeMetric'
 
 export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
   const { taskToExecute, exponentialBackoff, retries, timeoutSeconds, variables } = node
@@ -19,42 +20,15 @@ export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
         )}
       </div>
       <div className="flex gap-4">
-        <div className="flex flex-1 flex-col">
-          <small className="text-[0.75em] text-slate-400">Retries</small>
-          <p className="text-lg font-medium">{retries}</p>
-        </div>
-        <div className="flex flex-1 flex-col">
-          <small className="text-[0.75em] text-slate-400">Timeout</small>
-          <p className="text-lg font-medium">
-            {timeoutSeconds}
-            <span className="text-sm text-slate-400">ms</span>
-          </p>
-        </div>
+        <TaskNodeMetric title="Retries" value={retries} />
+        <TaskNodeMetric title="Timeout" value={timeoutSeconds} measure="ms" />
       </div>
 
       {exponentialBackoff && (
         <div className="flex gap-4">
-          <div className="flex flex-1 flex-col">
-            <small className="text-[0.75em] text-slate-400">Retry Interval</small>
-            <p className="text-lg font-medium">
-              {exponentialBackoff.baseIntervalMs}
-              <span className="text-sm text-slate-400">ms</span>
-            </p>
-          </div>
-          <div className="flex flex-1 flex-col">
-            <small className="text-[0.75em] text-slate-400">Max Wait</small>
-            <p className="text-lg font-medium">
-              {exponentialBackoff.maxDelayMs}
-              <span className="text-sm text-slate-400">ms</span>
-            </p>
-          </div>
-          <div className="flex flex-1 flex-col">
-            <small className="text-[0.75em] text-slate-400">Multiplier</small>
-            <p className="text-lg font-medium">
-              {exponentialBackoff.multiplier}
-              <span className="text-sm text-slate-400">x</span>
-            </p>
-          </div>
+          <TaskNodeMetric title="Retry Interval" value={exponentialBackoff.baseIntervalMs} measure="ms" />
+          <TaskNodeMetric title="Max Wait" value={exponentialBackoff.maxDelayMs} measure="ms" />
+          <TaskNodeMetric title="Multiplier" value={exponentialBackoff.multiplier} measure="x" />
         </div>
       )}
 
