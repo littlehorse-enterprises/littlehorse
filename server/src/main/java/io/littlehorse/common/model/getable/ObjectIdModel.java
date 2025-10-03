@@ -4,7 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.StoredGetable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -19,7 +21,24 @@ public abstract class ObjectIdModel<T extends Message, U extends Message, V exte
 
     public abstract GetableClassEnum getType();
 
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.empty();
+    }
+
+    public String getRestOfKeyAfterWfRunId() {
+        if (getGroupingWfRunId().isEmpty()) {
+            throw new IllegalStateException();
+        }
+        WfRunIdModel wfRunId = getGroupingWfRunId().get();
+        String key = toString();
+        String result = key.substring(wfRunId.toString().length());
+        return result.startsWith("/") ? result.substring(1) : result;
+    }
+
     public final String getStoreableKey() {
+        if (getGroupingWfRunId().isPresent()) {
+            return StoredGetable.getGroupedFullStoreKey(getGroupingWfRunId().get(), StoreableType.STORED_GETABLE, getType(), getRestOfKeyAfterWfRunId());
+        }
         return StoredGetable.getStoreKey(this);
     }
 

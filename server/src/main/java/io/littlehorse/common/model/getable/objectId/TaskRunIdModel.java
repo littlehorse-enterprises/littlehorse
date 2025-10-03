@@ -63,6 +63,11 @@ public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunMode
     }
 
     @Override
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.of(wfRunId);
+    }
+
+    @Override
     public String toString() {
         return LHUtil.getCompositeId(wfRunId.toString(), taskGuid);
     }
