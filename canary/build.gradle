@@ -114,6 +114,10 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
+shadowJar {
+    mergeServiceFiles()
+}
+
 task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
     from sourceSets.main.allSource
