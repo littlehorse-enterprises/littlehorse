@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -65,8 +66,16 @@ public class UTATaskModel extends LHSerializable<UTATask> {
         // Next, figure out when the task should be scheduled.
         VariableValueModel delaySeconds = nodeRunModel.getThreadRun().assignVariable(trigger.delaySeconds);
 
-        if (delaySeconds.getType() != VariableType.INT) {
-            throw new LHVarSubError(null, "Delay for User Task Action was not an INT, got a " + delaySeconds.getType());
+        // TODO: Decide how to support StructDefs
+        if (delaySeconds.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            throw new LHVarSubError(
+                    null, "Delay for User Task Action was not an INT, got a " + delaySeconds.getTypeDefinition());
+        }
+        if (delaySeconds.getTypeDefinition().getPrimitiveType() != VariableType.INT) {
+            throw new LHVarSubError(
+                    null,
+                    "Delay for User Task Action was not an INT, got a "
+                            + delaySeconds.getTypeDefinition().getPrimitiveType());
         }
 
         Date maturationTime = new Date(System.currentTimeMillis() + (1000 * delaySeconds.getIntVal()));

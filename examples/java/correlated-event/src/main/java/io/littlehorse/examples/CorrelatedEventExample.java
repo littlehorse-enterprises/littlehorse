@@ -67,7 +67,7 @@ public class CorrelatedEventExample {
         client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
                 .setName(EVENT_NAME)
                 .setContentType(ReturnType.newBuilder().setReturnType(
-                            TypeDefinition.newBuilder().setType(VariableType.BOOL)))
+                            TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL)))
                 .setCorrelatedEventConfig(CorrelatedEventConfig.newBuilder().setDeleteAfterFirstCorrelation(false))
                 .build());
 

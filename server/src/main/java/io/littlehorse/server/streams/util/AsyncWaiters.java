@@ -81,11 +81,15 @@ public class AsyncWaiters {
     private FutureResponseAndWaitingClient createFuture(String commandId, CompletableFuture<Message> completable) {
         Objects.requireNonNull(commandId);
         Objects.requireNonNull(completable);
-        CompletableFuture<FutureResponseAndWaitingClient> waitingClient = new CompletableFuture<>()
-                .orTimeout(removeCompletedAfter, timeUnit)
-                .handle((o, throwable) -> {
-                    return responses.remove(commandId);
-                });
+        CompletableFuture<FutureResponseAndWaitingClient> waitingClient =
+                new CompletableFuture<FutureResponseAndWaitingClient>().orTimeout(removeCompletedAfter, timeUnit);
+        waitingClient.whenComplete((o, throwable) -> {
+            FutureResponseAndWaitingClient removed = responses.remove(commandId);
+            if (removed == null) {
+                throw new IllegalStateException(
+                        "Command " + commandId + " was not registered. This indicates a bug in the code");
+            }
+        });
         return new FutureResponseAndWaitingClient(completable, waitingClient);
     }
 

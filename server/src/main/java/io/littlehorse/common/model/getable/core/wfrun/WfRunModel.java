@@ -638,7 +638,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
             if (terminationTime != null) {
                 LHTimer timer = new LHTimer();
-                timer.key = id.getPartitionKey().get();
+                timer.partitionKey = id.getPartitionKey().get();
                 timer.maturationTime = terminationTime;
                 DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
                 deleteWfRun.wfRunId = id;

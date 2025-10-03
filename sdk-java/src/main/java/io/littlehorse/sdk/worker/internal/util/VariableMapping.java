@@ -2,14 +2,21 @@ package io.littlehorse.sdk.worker.internal.util;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
-import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
-import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayDefType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,11 +37,54 @@ public class VariableMapping {
             throw new TaskSchemaMismatchError("Provided Java function has more parameters than the TaskDef.");
         }
         this.name = javaParamName;
-        VariableDef input = taskDef.getInputVars(position);
+        TypeDefinition inputType = taskDef.getInputVars(position).getTypeDef();
 
+        Optional<String> msg = null;
+
+        switch (inputType.getDefinedTypeCase()) {
+            case DEFINEDTYPE_NOT_SET:
+                break;
+            case INLINE_ARRAY_DEF:
+                msg = validateInlineArrayDefType(inputType.getInlineArrayDef(), type);
+                break;
+            case PRIMITIVE_TYPE:
+                msg = validatePrimitiveType(inputType.getPrimitiveType(), type);
+                break;
+            case STRUCT_DEF_ID:
+                msg = validateStructDefType(inputType.getStructDefId(), type);
+                break;
+            default:
+                break;
+        }
+
+        if (msg.isPresent()) {
+            throw new TaskSchemaMismatchError("Invalid assignment for var " + name + ": " + msg.get());
+        }
+    }
+
+    private Optional<String> validateStructDefType(StructDefId input, Class<?> type) {
         String msg = null;
 
-        switch (input.getTypeDef().getType()) {
+        LHClassType lhClassType = LHClassType.fromJavaClass(type);
+
+        if (!(lhClassType instanceof LHStructDefType)) {
+            msg = "TaskDef provides StructDef, func accepts non-StructDef type " + type;
+        }
+
+        LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
+
+        if (!input.equals(lhStructDefType.getStructDefId())) {
+            msg = String.format(
+                    "TaskDef provides StructDef <%s>, func accepts StructDef <%s>",
+                    input, lhStructDefType.getStructDefId());
+        }
+
+        return Optional.ofNullable(msg);
+    }
+
+    private Optional<String> validatePrimitiveType(VariableType input, Class<?> type) {
+        String msg = null;
+        switch (input) {
             case INT:
                 if (!LHLibUtil.isINT(type)) {
                     msg = "TaskDef provides INT, func accepts " + type.getName();
@@ -64,13 +114,42 @@ public class VariableMapping {
             case JSON_OBJ:
                 log.info("Info: Will use Gson to deserialize Json into {}", type.getName());
                 break;
+            case WF_RUN_ID:
+                if (!LHLibUtil.isWfRunId(type)) {
+                    msg = "TaskDef provides WF_RUN_ID, func accepts " + type.getName();
+                }
+                break;
+            case TIMESTAMP:
+                if (!LHLibUtil.isTIMESTAMP(type)) {
+                    msg = "TaskDef provides a TIMESTAMP, func accepts " + type.getName();
+                }
+                break;
             case UNRECOGNIZED:
                 throw new RuntimeException("Not possible");
+            default:
+                break;
+        }
+        return Optional.ofNullable(msg);
+    }
+
+    private Optional<String> validateInlineArrayDefType(InlineArrayDef input, Class<?> type) {
+        String msg = null;
+
+        LHClassType lhClassType = LHClassType.fromJavaClass(type);
+
+        if (!(lhClassType instanceof LHArrayDefType)) {
+            msg = "TaskDef provides InlineArrayDef, func accepts " + type;
         }
 
-        if (msg != null) {
-            throw new TaskSchemaMismatchError("Invalid assignment for var " + name + ": " + msg);
+        LHArrayDefType lhArrayDefType = (LHArrayDefType) lhClassType;
+
+        if (!input.equals(lhArrayDefType.getTypeDefinition().getInlineArrayDef())) {
+            msg = String.format(
+                    "TaskDef provides InlineArrayDef <%s>, func accepts InlineArrayDef <%s>",
+                    input, lhArrayDefType.getTypeDefinition().getInlineArrayDef());
         }
+
+        return Optional.ofNullable(msg);
     }
 
     public Object assign(ScheduledTask taskInstance, WorkerContext context) throws InputVarSubstitutionException {
@@ -80,47 +159,14 @@ public class VariableMapping {
 
         VarNameAndVal assignment = taskInstance.getVariables(position);
         String taskDefParamName = assignment.getVarName();
+
         VariableValue val = assignment.getValue();
 
-        String jsonStr = null;
-
-        // We've already done validation for the
-        switch (val.getValueCase()) {
-            case INT:
-                if (type == Long.class || type == long.class) {
-                    return val.getInt();
-                } else {
-                    return (int) val.getInt();
-                }
-            case DOUBLE:
-                if (type == Double.class || type == double.class) {
-                    return val.getDouble();
-                } else {
-                    return (float) val.getDouble();
-                }
-            case STR:
-                return val.getStr();
-            case BYTES:
-                return val.getBytes().toByteArray();
-            case BOOL:
-                return val.getBool();
-            case JSON_ARR:
-                jsonStr = val.getJsonArr();
-                break;
-            case JSON_OBJ:
-                jsonStr = val.getJsonObj();
-                break;
-            case WF_RUN_ID:
-                return val.getWfRunId();
-            case VALUE_NOT_SET:
-                return null;
-        }
-
         try {
-            return LHLibUtil.deserializeFromjson(jsonStr, type);
-        } catch (LHJsonProcessingException exn) {
+            return LHLibUtil.varValToObj(val, this.type);
+        } catch (LHSerdeException e) {
             throw new InputVarSubstitutionException(
-                    "Failed deserializing the Java object for variable " + taskDefParamName, exn);
+                    "Failed serializing Java object for variable: " + taskDefParamName, e);
         }
     }
 }

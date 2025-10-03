@@ -43,6 +43,15 @@ message VariableValue {
 
     // Reference to a WfRunId
     WfRunId wf_run_id = 9;
+
+    // A timestamp (UTC)
+    google.protobuf.Timestamp utc_timestamp = 10;
+
+    // A Struct object.
+    Struct struct = 11;
+
+    // An Array object.
+    // Array array = 12;
   }
 }
 
@@ -63,4 +72,61 @@ message Variable {
 
   // Marks a variable to show masked values
   bool masked = 5;
+}
+
+// A Struct is a strongly-typed structure containing fields. The Struct is defined
+// according to the `Schema` object.
+message Struct {
+  // The id of the schema.
+  StructDefId struct_def_id = 1;
+  // The content of the Struct
+  InlineStruct struct = 2;
+}
+
+// An Array is a repeated list of values
+// message Array {
+//   oneof value {
+//     // A String representing a serialized json object.
+//     repeated string json_obj = 2;
+
+//     // A String representing a serialized json list.
+//     repeated string json_arr = 3;
+
+//     // A 64-bit floating point number.
+//     repeated double double = 4;
+
+//     // A boolean.
+//     repeated bool bool = 5;
+
+//     // A string.
+//     repeated string str = 6;
+
+//     // The `INT` variable type is stored as a 64-bit integer. The
+//     // `INT` can be cast to a `DOUBLE`.
+//     repeated int64 int = 7;
+
+//     // An arbitrary String of bytes.
+//     repeated bytes bytes = 8;
+
+//     // Reference to a WfRunId
+//     repeated WfRunId wf_run_id = 9;
+
+//     // A Struct object.
+//     repeated Struct struct = 10;
+
+//     // An Array object.
+//     repeated Array array = 11;
+//   }
+// }
+
+// An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
+message InlineStruct {
+  // The fields in the inline struct.
+  map<string, StructField> fields = 1;
+}
+
+// A StructField represents the value for a single field in a struct.
+message StructField {
+  // The `value` of the field is an untyped `VariableValue`.
+  VariableValue value = 1;
 }

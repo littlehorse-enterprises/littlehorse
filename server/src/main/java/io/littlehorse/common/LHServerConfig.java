@@ -52,6 +52,7 @@ import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
 import org.rocksdb.LRUCache;
+import org.rocksdb.RateLimiter;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
 
@@ -76,7 +77,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String CORE_STREAMS_COMMIT_INTERVAL_KEY = "LHS_CORE_STREAMS_COMMIT_INTERVAL";
     public static final String TIMER_STREAMS_COMMIT_INTERVAL_KEY = "LHS_TIMER_STREAMS_COMMIT_INTERVAL";
     public static final String CORE_MEMTABLE_SIZE_BYTES_KEY = "LHS_CORE_MEMTABLE_SIZE_BYTES";
-    public static final String TIMER_MEMTABLE_SIZE_BYTES_KEY = "LHS_TIMER_MEMTABLE_SIZE_BYTES";
     public static final String CORE_STATESTORE_CACHE_BYTES_KEY = "LHS_CORE_STATESTORE_CACHE_BYTES";
     public static final String TIMER_STATESTORE_CACHE_BYTES_KEY = "LHS_TIMER_STATESTORE_CACHE_BYTES";
     public static final String ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES";
@@ -90,7 +90,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
-    public static final String TRANSACTION_TIMEOUT_MS_KEY = "LHS_STREAMS_TRANSACTION_TIMEOUT_MS";
     public static final String STATE_CLEANUP_DELAY_MS_KEY = "LHS_STREAMS_STATE_CLEANUP_DELAY_MS";
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
@@ -123,6 +122,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
     public static final String HEALTH_PATH_METRICS_KEY = "LHS_HEALTH_PATH_METRICS";
     public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
+    public static final String HEALTH_PATH_READINESS_KEY = "LHS_HEALTH_PATH_READINESS";
     public static final String HEALTH_PATH_STATUS_KEY = "LHS_HEALTH_PATH_STATUS";
     public static final String HEALTH_PATH_DISK_USAGE_KEY = "LHS_HEALTH_PATH_DISK_USAGE";
     public static final String HEALTH_PATH_STANDBY_KEY = "HEALTH_PATH_STANDBY";
@@ -144,8 +144,6 @@ public class LHServerConfig extends ConfigBase {
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
-    public static final String ROCKSDB_USE_LEVEL_COMPACTION_KEY = "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION";
-
     public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
 
     // Instance configs
@@ -157,6 +155,9 @@ public class LHServerConfig extends ConfigBase {
 
     @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
+
+    @Getter
+    private RateLimiter globalRocksdbRateLimiter;
 
     public LHServerConfig() {
         super();
@@ -188,7 +189,12 @@ public class LHServerConfig extends ConfigBase {
 
     @Override
     protected List<String> deprecatedConfigs() {
-        return List.of("LHS_STREAMS_METRICS_LEVEL", "LHS_X_ROCKSDB_LOG_LEVEL");
+        return List.of(
+                "LHS_STREAMS_METRICS_LEVEL",
+                "LHS_X_ROCKSDB_LOG_LEVEL",
+                "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION",
+                "LHS_STREAMS_TRANSACTION_TIMEOUT_MS",
+                "LHS_TIMER_MEMTABLE_SIZE_BYTES");
     }
 
     @Override
@@ -469,6 +475,10 @@ public class LHServerConfig extends ConfigBase {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_LIVENESS_KEY, "/liveness");
     }
 
+    public String getReadinessPath() {
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_READINESS_KEY, "/readiness");
+    }
+
     public String getStatusPath() {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_STATUS_KEY, "/status");
     }
@@ -741,10 +751,6 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
     }
 
-    public boolean getRocksDBUseLevelCompaction() {
-        return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_LEVEL_COMPACTION_KEY, "false"));
-    }
-
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -754,20 +760,11 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_DIRECT_IO_KEY, "false"));
     }
 
-    // Timer Topology generally has smaller values that are written. The majority of them
-    // are LHTimer's with short (i.e. 10-second) TTL's (i.e. TaskRun Timeout timers), so
-    // we don't expect the timer memtable to overflow that quickly.
-    public long getTimerMemtableSize() {
-        // 32MB default
-        return Long.valueOf(getOrSetDefault(TIMER_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 32)));
-    }
-
     public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
         conf.put("client.id", this.getClientId(component));
         conf.put(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG, "rebootstrap");
-        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "zstd");
-        props.put(ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG, 8);
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -970,8 +967,7 @@ public class LHServerConfig extends ConfigBase {
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
 
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_TYPE_CONFIG), "zstd");
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_ZSTD_LEVEL_CONFIG), 8);
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_TYPE_CONFIG), "lz4");
         props.put(StreamsConfig.producerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
         props.put(StreamsConfig.consumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
         props.put(
@@ -998,14 +994,17 @@ public class LHServerConfig extends ConfigBase {
 
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("state.dir", getStateDirectory());
-        props.put("request.timeout.ms", 1000 * 60);
+
+        // We want a request to be able to fail and be handled (if non-fatal) before a transaction times out.
+        // Therefore, request timeout should be less than transaction timeout / session timeout.
+        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.75));
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
         props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
         props.put("probing.rebalance.interval.ms", 60 * 1000);
         props.put("metrics.recording.level", getServerMetricLevel());
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getTransactionTimeoutMs());
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getStreamsSessionTimeout());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
@@ -1037,14 +1036,6 @@ public class LHServerConfig extends ConfigBase {
         props.put(RocksConfigSetter.LH_SERVER_CONFIG_KEY, this);
         props.put("rocksdb.config.setter", RocksConfigSetter.class);
 
-        // Until KIP-924 is implemented, for cluster stability it is best to avoid rebalances.
-        // 30 seconds of startup is enough time for LH to shut down and be re-spawned during a
-        // rolling restart.
-        //
-        // It also gives enough time for the new server to come up, meaning that
-        // in the case of a server failure while a request is being processed, the resulting
-        // `Command` should be processed on a new server within a minute. Issue #479
-        // should verify this behavior
         props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
 
         // The delay before the state cleanup thread runs. This is used to clean up state stores
@@ -1056,21 +1047,24 @@ public class LHServerConfig extends ConfigBase {
         return props;
     }
 
-    private int getTransactionTimeoutMs() {
-        // Default 60 second transaction timeout.
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.TRANSACTION_TIMEOUT_MS_KEY, "60000"));
-    }
-
     private String getClientId(String component) {
         return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
     }
 
     public int getStreamsSessionTimeout() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
+        // Default 45-second timeout. This is shared for kafka transaction and for consumer rebalance.
+        // Unfortunately, even if the consumer group rebalances, we have to wait for the transaction
+        // timeout to expire anyways before we can take over the forfeited partitions, so there's no
+        // need to allow users to configure a shorter session timeout than transaction timeout. This
+        // may one day be fixed by KIP-1071 follow up.
+        //
+        // We use a 60-second default timeout.
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "60000"));
     }
 
     public int getStreamsStateCleanupDelayMs() {
-        return Integer.valueOf(getOrSetDefault(LHServerConfig.STATE_CLEANUP_DELAY_MS_KEY, "600000"));
+        // 20 minutes before cleaning up
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.STATE_CLEANUP_DELAY_MS_KEY, "1200000"));
     }
 
     public boolean areStructDefsEnabled() {
@@ -1126,6 +1120,11 @@ public class LHServerConfig extends ConfigBase {
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
                     new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
+        }
+
+        long rateLimit = Long.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
+        if (rateLimit > 0) {
+            this.globalRocksdbRateLimiter = new RateLimiter(rateLimit);
         }
     }
 

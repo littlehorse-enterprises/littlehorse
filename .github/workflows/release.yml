@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: "11"
+          java-version: "17"
 
       - name: Dump version
         env:
@@ -75,7 +75,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: "21"
+          java-version: "24"
 
       - name: Dump version
         env:
@@ -241,7 +241,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate a changelog
-        uses: orhun/git-cliff-action@v3
+        uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
           config: cliff.toml

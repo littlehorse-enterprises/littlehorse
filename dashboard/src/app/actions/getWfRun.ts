@@ -2,6 +2,7 @@
 
 import { lhClient } from '@/app/lhClient'
 import { NodeRun, ThreadRun, Variable, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
+import { getInheritedVariables } from './getInheritedVariables'
 
 type Props = {
   wfRunId: WfRunId
@@ -29,8 +30,14 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
     }),
   ])
 
+  const inheritedVariables = await getInheritedVariables(
+    wfRunId,
+    wfSpec.threadSpecs[wfRun.threadRuns[0].threadSpecName].variableDefs,
+    tenantId
+  )
+
   const threadRuns = wfRun.threadRuns.map(threadRun => mergeThreadRunsWithNodeRuns(threadRun, nodeRuns))
-  return { wfRun: { ...wfRun, threadRuns }, wfSpec, nodeRuns, variables }
+  return { wfRun: { ...wfRun, threadRuns }, wfSpec, nodeRuns, variables: [...variables, ...inheritedVariables] }
 }
 
 const mergeThreadRunsWithNodeRuns = (threadRun: ThreadRun, nodeRuns: NodeRun[]): ThreadRunWithNodeRuns => {

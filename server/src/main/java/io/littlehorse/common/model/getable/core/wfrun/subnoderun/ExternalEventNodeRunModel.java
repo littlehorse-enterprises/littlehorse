@@ -23,6 +23,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -162,13 +163,22 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         try {
             VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
                     .assignVariable(getNode().externalEventNode.getTimeoutSeconds());
-            if (timeoutSeconds.getType() != VariableType.INT) {
+
+            // TODO: Decide how to StructDefs
+            if (timeoutSeconds.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
                 throw new LHVarSubError(
-                        null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.getType() + " not INT!");
+                        null,
+                        "Resulting TimeoutSeconds was of type " + timeoutSeconds.getTypeDefinition() + " not INT!");
+            }
+            if (timeoutSeconds.getTypeDefinition().getPrimitiveType() != VariableType.INT) {
+                throw new LHVarSubError(
+                        null,
+                        "Resulting TimeoutSeconds was of type "
+                                + timeoutSeconds.getTypeDefinition().getPrimitiveType() + " not INT!");
             }
 
             LHTimer timer = new LHTimer();
-            timer.key = nodeRun.getPartitionKey().get();
+            timer.partitionKey = nodeRun.getPartitionKey().get();
             timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.getIntVal() * 1000));
 
             CommandModel cmd = new CommandModel();
@@ -194,14 +204,16 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         if (correlationIdAssn == null) return;
         try {
             VariableValueModel correlationIdVar = nodeRun.getThreadRun().assignVariable(correlationIdAssn);
-            if (correlationIdVar.getType() != VariableType.STR) {
+            if (correlationIdVar.getTypeDefinition().getPrimitiveType() != VariableType.STR) {
                 throw new LHVarSubError(
-                        null, "Resulting correlation id was of type " + correlationIdVar.getType() + " not STR!");
+                        null,
+                        "Resulting correlation id was of type "
+                                + correlationIdVar.getTypeDefinition().getPrimitiveType() + " not STR!");
             }
             this.correlationKey = correlationIdVar.getStrVal();
 
             LHTimer timer = new LHTimer();
-            timer.key = correlationKey;
+            timer.partitionKey = correlationKey;
             timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
 
             UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
@@ -226,7 +238,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             throw new IllegalStateException("Not a correlated node. Code better!");
         }
         LHTimer timer = new LHTimer();
-        timer.key = correlationKey;
+        timer.partitionKey = correlationKey;
         timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
 
         UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();

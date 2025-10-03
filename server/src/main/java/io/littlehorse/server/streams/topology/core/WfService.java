@@ -21,9 +21,9 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
-import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,14 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
-    private final MetadataCache metadataCache;
-    private final ExecutionContext executionContext;
 
-    public WfService(
-            ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache, ExecutionContext executionContext) {
-        this.metadataCache = metadataCache;
-        this.metadataManager = metadataManager;
-        this.executionContext = executionContext;
+    public WfService(ReadOnlyMetadataManager metadataManager) {
+        this.metadataManager = Objects.requireNonNull(metadataManager);
     }
 
     public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
@@ -56,7 +51,6 @@ public class WfService {
 
             return storedResult;
         };
-        // return metadataCache.getOrCache(name, majorVersion, findWfSpec);
         return findWfSpec.get();
     }
 
@@ -109,26 +103,6 @@ public class WfService {
     }
 
     public TaskDefModel getTaskDef(String name) {
-        /*TaskDefIdModel id = new TaskDefIdModel(name);
-        Supplier<TaskDef> findTaskDef = () -> {
-            TaskDefModel result = metadataManager.get(id);
-            if (result != null) {
-                return result.toProto().build();
-            }
-            return null;
-        };
-        StoredGetablePb result = (StoredGetablePb) metadataCache.getOrCache(id.toProto().build(), findTaskDef::get);
-
-        if(result != null) {
-            try {
-                TaskDef taskDef = TaskDef.parseFrom(result.getGetablePayload());
-                return LHSerializable.fromProto(taskDef, TaskDefModel.class, executionContext);
-            } catch (Exception ex){
-                return null;
-            }
-        }else {
-            return null;
-        }*/
         TaskDefIdModel id = new TaskDefIdModel(name);
         return metadataManager.get(id);
     }

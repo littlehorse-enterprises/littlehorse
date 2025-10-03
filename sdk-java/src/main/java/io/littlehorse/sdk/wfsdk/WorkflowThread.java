@@ -146,6 +146,13 @@ public interface WorkflowThread {
     WfRunVariable declareBytes(String name);
 
     /**
+     * Creates a variable of type TIMESTAMP in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareTimestamp(String name);
+
+    /**
      * Creates a variable of type JSON_ARR in the ThreadSpec.
      * @param name is the name of the variable.
      * @return a WfRunVariable.
@@ -165,6 +172,23 @@ public interface WorkflowThread {
      * @return a WfRunVariable.
      */
     WfRunVariable declareBool(String name);
+
+    /**
+     * Creates a Struct variable based on your Struct clazz parameter.
+     * @param name is the name of the variable.
+     * @param clazz is the Struct class that defines your StructDef.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareStruct(String name, Class<?> clazz);
+
+    /**
+     * Creates an Array based on a Java class parameter.
+     * @param name is the name of the variable.
+     * @param elementType is the Java class matching the type of elements stored in your Array.
+     * @return a WfRunVariable.
+     */
+    // TODO: Complete Array's implementation
+    // WfRunVariable declareArray(String name, Class<?> elementType);
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
