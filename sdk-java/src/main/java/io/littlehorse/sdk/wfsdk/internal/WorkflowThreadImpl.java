@@ -342,7 +342,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         checkIfIsActive();
         // TODO: handle workflow versioning
         RunChildWfNode.Builder node =
-                RunChildWfNode.newBuilder().setMajorVersion(0).setWfSpecName(wfSpecName);
+                RunChildWfNode.newBuilder().setMajorVersion(-1).setWfSpecName(wfSpecName);
         for (Map.Entry<String, Serializable> input : inputs.entrySet()) {
             node.putInputs(input.getKey(), assignVariable(input.getValue()));
         }

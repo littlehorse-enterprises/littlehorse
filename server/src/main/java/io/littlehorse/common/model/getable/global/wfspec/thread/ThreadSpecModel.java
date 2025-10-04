@@ -279,6 +279,23 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         validateExitNodeReturnTypes(ctx);
     }
 
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        // Exit node validation requires that every ExitNode returns the same type, so we only need one.
+        try {
+            return nodes.values().stream()
+                    .filter(node -> node.getType() == NodeCase.EXIT)
+                    // ignore nodes that throw exceptions
+                    .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
+                    .map(NodeModel::getExitNode)
+                    .findFirst()
+                    .get()
+                    .getOutputType(manager);
+        } catch (InvalidExpressionException exn) {
+            throw new IllegalStateException(
+                    "Should not be possible to catch this during this method as it should have been validated");
+        }
+    }
+
     private void validateExitNodeReturnTypes(MetadataProcessorContext ctx) throws InvalidThreadSpecException {
         List<ExitNodeModel> exitNodes = nodes.values().stream()
                 .filter(node -> node.getType() == NodeCase.EXIT)
@@ -419,6 +436,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars)
+            throws InvalidThreadSpecException {
+        validateStartVariablesByType(vars, this);
+    }
+
+    public void validateStartVariablesByType(
+            Map<String, VariableAssignmentModel> vars, ThreadSpecModel variableAssignorThread)
             throws InvalidThreadSpecException {
         Map<String, ThreadVarDefModel> inputVarDefs = getInputVariableDefs();
 

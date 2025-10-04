@@ -3,9 +3,12 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
+import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.RunChildWfNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.RunChildWfNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
@@ -13,6 +16,7 @@ import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,13 +62,34 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
 
     @Override
     public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
-        // TODO: later.
+        WfSpecModel childWfSpec = ctx.service().getWfSpec(wfSpecName, majorVersion == -1 ? null : majorVersion, null);
+        if (childWfSpec == null) {
+            String message = "Could not find WfSpec " + wfSpecName;
+            if (majorVersion != -1) {
+                message += " with version " + majorVersion;
+            }
+            throw new InvalidNodeException(message, this.node);
+        }
+
+        ThreadSpecModel childEntrypoint = childWfSpec.getEntrypointThread();
+        try {
+            childEntrypoint.validateStartVariablesByType(inputs, node.getThreadSpec());
+        } catch (InvalidThreadSpecException exn) {
+            throw new InvalidNodeException(exn, node);
+        }
+
+        // Pin major version to the latest available right now.
+        if (majorVersion == -1) {
+            this.majorVersion = childWfSpec.getId().getMajorVersion();
+        }
     }
 
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
-        // TODO: later.
-        return Optional.empty();
+        WfService service = new WfService(manager);
+        WfSpecModel childWfSpec = service.getWfSpec(wfSpecName, majorVersion == -1 ? null : majorVersion, null);
+
+        return childWfSpec.getOutputType(manager);
     }
 
     @Override

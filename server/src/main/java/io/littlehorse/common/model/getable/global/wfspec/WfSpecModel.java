@@ -30,6 +30,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -369,6 +370,10 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 frozenVariables.put(tvd.getVarDef().getName(), tvd);
             }
         }
+    }
+
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        return getEntrypointThread().getOutputType(manager);
     }
 
     /**
