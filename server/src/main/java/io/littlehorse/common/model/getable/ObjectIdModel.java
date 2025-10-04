@@ -37,7 +37,8 @@ public abstract class ObjectIdModel<T extends Message, U extends Message, V exte
 
     public final String getStoreableKey() {
         if (getGroupingWfRunId().isPresent()) {
-            return StoredGetable.getGroupedFullStoreKey(getGroupingWfRunId().get(), StoreableType.STORED_GETABLE, getType(), getRestOfKeyAfterWfRunId());
+            return StoredGetable.getGroupedFullStoreKey(
+                    getGroupingWfRunId().get(), StoreableType.STORED_GETABLE, getType(), getRestOfKeyAfterWfRunId());
         }
         return StoredGetable.getStoreKey(this);
     }

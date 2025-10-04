@@ -6,7 +6,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.StoredGetablePb;
@@ -63,7 +62,11 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     public String getStoreKey() {
         ObjectIdModel<?, ?, ?> objectId = storedObject.getObjectId();
         if (objectId.getGroupingWfRunId().isPresent()) {
-            return StoredGetable.getGroupedFullStoreKey(objectId.getGroupingWfRunId().get(), getType(), objectId.getType(), objectId.getRestOfKeyAfterWfRunId());
+            return StoredGetable.getGroupedFullStoreKey(
+                    objectId.getGroupingWfRunId().get(),
+                    getType(),
+                    objectId.getType(),
+                    objectId.getRestOfKeyAfterWfRunId());
         } else {
             return StoredGetable.getStoreKey(storedObject.getObjectId());
         }
