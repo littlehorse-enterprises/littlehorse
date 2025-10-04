@@ -86,6 +86,10 @@ message NodeRun {
     // A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
     // evaluates to True.
     WaitForConditionRun wait_for_condition = 23;
+
+    // A RUN_CHILD_WF_NODE starts a WfRun as a child and blocks the ThreadRun until
+    // the started WfRun completes or fails.
+    RunChildWfNodeRun run_child_wf = 24;
   }
 }
 
@@ -142,6 +146,15 @@ message StartMultipleThreadsRun {
 
   // The list of all created child ThreadRun's
   repeated int32 child_thread_ids = 2;
+}
+
+// The RunChildWfNodeRun starts a Child `WfRun` and waits for its completion.
+message RunChildWfNodeRun {
+  // The id of the created `WfRun`.
+  WfRunId child_wf_run_id = 1;
+
+  // A record of the variables which were used to start the `WfRun`.
+  map<string, VariableValue> inputs = 2;
 }
 
 // The sub-node structure for a WAIT_FOR_THREADS NodeRun.

@@ -67,6 +67,7 @@ private static final long serialVersionUID = 0L;
     START_MULTIPLE_THREADS(15),
     THROW_EVENT(16),
     WAIT_FOR_CONDITION(17),
+    RUN_CHILD_WF(18),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -96,6 +97,7 @@ private static final long serialVersionUID = 0L;
         case 15: return START_MULTIPLE_THREADS;
         case 16: return THROW_EVENT;
         case 17: return WAIT_FOR_CONDITION;
+        case 18: return RUN_CHILD_WF;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -769,6 +771,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
   }
 
+  public static final int RUN_CHILD_WF_FIELD_NUMBER = 18;
+  /**
+   * <pre>
+   * Synchronously runs a child workflow
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   * @return Whether the runChildWf field is set.
+   */
+  @java.lang.Override
+  public boolean hasRunChildWf() {
+    return nodeCase_ == 18;
+  }
+  /**
+   * <pre>
+   * Synchronously runs a child workflow
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   * @return The runChildWf.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.RunChildWfNode getRunChildWf() {
+    if (nodeCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.RunChildWfNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Synchronously runs a child workflow
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.RunChildWfNodeOrBuilder getRunChildWfOrBuilder() {
+    if (nodeCase_ == 18) {
+       return (io.littlehorse.sdk.common.proto.RunChildWfNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -824,6 +869,9 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 17) {
       output.writeMessage(17, (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_);
+    }
+    if (nodeCase_ == 18) {
+      output.writeMessage(18, (io.littlehorse.sdk.common.proto.RunChildWfNode) node_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -889,6 +937,10 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 17) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(17, (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_);
+    }
+    if (nodeCase_ == 18) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(18, (io.littlehorse.sdk.common.proto.RunChildWfNode) node_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -958,6 +1010,10 @@ private static final long serialVersionUID = 0L;
       case 17:
         if (!getWaitForCondition()
             .equals(other.getWaitForCondition())) return false;
+        break;
+      case 18:
+        if (!getRunChildWf()
+            .equals(other.getRunChildWf())) return false;
         break;
       case 0:
       default:
@@ -1029,6 +1085,10 @@ private static final long serialVersionUID = 0L;
       case 17:
         hash = (37 * hash) + WAIT_FOR_CONDITION_FIELD_NUMBER;
         hash = (53 * hash) + getWaitForCondition().hashCode();
+        break;
+      case 18:
+        hash = (37 * hash) + RUN_CHILD_WF_FIELD_NUMBER;
+        hash = (53 * hash) + getRunChildWf().hashCode();
         break;
       case 0:
       default:
@@ -1218,6 +1278,9 @@ private static final long serialVersionUID = 0L;
       if (waitForConditionBuilder_ != null) {
         waitForConditionBuilder_.clear();
       }
+      if (runChildWfBuilder_ != null) {
+        runChildWfBuilder_.clear();
+      }
       nodeCase_ = 0;
       node_ = null;
       return this;
@@ -1328,6 +1391,10 @@ private static final long serialVersionUID = 0L;
       if (nodeCase_ == 17 &&
           waitForConditionBuilder_ != null) {
         result.node_ = waitForConditionBuilder_.build();
+      }
+      if (nodeCase_ == 18 &&
+          runChildWfBuilder_ != null) {
+        result.node_ = runChildWfBuilder_.build();
       }
     }
 
@@ -1442,6 +1509,10 @@ private static final long serialVersionUID = 0L;
         }
         case WAIT_FOR_CONDITION: {
           mergeWaitForCondition(other.getWaitForCondition());
+          break;
+        }
+        case RUN_CHILD_WF: {
+          mergeRunChildWf(other.getRunChildWf());
           break;
         }
         case NODE_NOT_SET: {
@@ -1584,6 +1655,13 @@ private static final long serialVersionUID = 0L;
               nodeCase_ = 17;
               break;
             } // case 138
+            case 146: {
+              input.readMessage(
+                  internalGetRunChildWfFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              nodeCase_ = 18;
+              break;
+            } // case 146
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4446,6 +4524,184 @@ private static final long serialVersionUID = 0L;
       nodeCase_ = 17;
       onChanged();
       return waitForConditionBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.RunChildWfNode, io.littlehorse.sdk.common.proto.RunChildWfNode.Builder, io.littlehorse.sdk.common.proto.RunChildWfNodeOrBuilder> runChildWfBuilder_;
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     * @return Whether the runChildWf field is set.
+     */
+    @java.lang.Override
+    public boolean hasRunChildWf() {
+      return nodeCase_ == 18;
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     * @return The runChildWf.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.RunChildWfNode getRunChildWf() {
+      if (runChildWfBuilder_ == null) {
+        if (nodeCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.RunChildWfNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 18) {
+          return runChildWfBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     */
+    public Builder setRunChildWf(io.littlehorse.sdk.common.proto.RunChildWfNode value) {
+      if (runChildWfBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        runChildWfBuilder_.setMessage(value);
+      }
+      nodeCase_ = 18;
+      return this;
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     */
+    public Builder setRunChildWf(
+        io.littlehorse.sdk.common.proto.RunChildWfNode.Builder builderForValue) {
+      if (runChildWfBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        runChildWfBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 18;
+      return this;
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     */
+    public Builder mergeRunChildWf(io.littlehorse.sdk.common.proto.RunChildWfNode value) {
+      if (runChildWfBuilder_ == null) {
+        if (nodeCase_ == 18 &&
+            node_ != io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.RunChildWfNode.newBuilder((io.littlehorse.sdk.common.proto.RunChildWfNode) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 18) {
+          runChildWfBuilder_.mergeFrom(value);
+        } else {
+          runChildWfBuilder_.setMessage(value);
+        }
+      }
+      nodeCase_ = 18;
+      return this;
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     */
+    public Builder clearRunChildWf() {
+      if (runChildWfBuilder_ == null) {
+        if (nodeCase_ == 18) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 18) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        runChildWfBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     */
+    public io.littlehorse.sdk.common.proto.RunChildWfNode.Builder getRunChildWfBuilder() {
+      return internalGetRunChildWfFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.RunChildWfNodeOrBuilder getRunChildWfOrBuilder() {
+      if ((nodeCase_ == 18) && (runChildWfBuilder_ != null)) {
+        return runChildWfBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 18) {
+          return (io.littlehorse.sdk.common.proto.RunChildWfNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Synchronously runs a child workflow
+     * </pre>
+     *
+     * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.RunChildWfNode, io.littlehorse.sdk.common.proto.RunChildWfNode.Builder, io.littlehorse.sdk.common.proto.RunChildWfNodeOrBuilder> 
+        internalGetRunChildWfFieldBuilder() {
+      if (runChildWfBuilder_ == null) {
+        if (!(nodeCase_ == 18)) {
+          node_ = io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance();
+        }
+        runChildWfBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.RunChildWfNode, io.littlehorse.sdk.common.proto.RunChildWfNode.Builder, io.littlehorse.sdk.common.proto.RunChildWfNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.RunChildWfNode) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 18;
+      onChanged();
+      return runChildWfBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Node)
