@@ -775,9 +775,13 @@ public class LHServerConfig extends ConfigBase {
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
-        conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
+        conf.put(ProducerConfig.LINGER_MS_CONFIG, getLingerMs());
         addKafkaSecuritySettings(conf);
         return conf;
+    }
+
+    private int getLingerMs() {
+        return Integer.valueOf(getOrSetDefault(LINGER_MS_KEY, "0"));
     }
 
     /*
@@ -1043,6 +1047,9 @@ public class LHServerConfig extends ConfigBase {
 
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
+
+        props.put(StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MIN_BYTES_CONFIG), 1024 * 100);
+        props.put(StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG), Math.max(getLingerMs(), 30));
 
         return props;
     }
