@@ -452,7 +452,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 continue;
             }
 
-            if (!assn.canBeType(e.getValue().getVarDef().getTypeDef(), this)) {
+            if (!assn.canBeType(e.getValue().getVarDef().getTypeDef(), variableAssignorThread)) {
                 throw new InvalidThreadSpecException(
                         this,
                         "Var " + e.getKey() + " should be "
@@ -463,7 +463,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (Map.Entry<String, VariableAssignmentModel> e : vars.entrySet()) {
             if (localGetVarDef(e.getKey()) == null) {
                 throw new InvalidThreadSpecException(
-                        this, "Var " + e.getKey() + " provided but not needed for thread " + name);
+                        variableAssignorThread, "Var " + e.getKey() + " provided but not needed for thread " + name);
             }
         }
     }
