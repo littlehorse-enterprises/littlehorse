@@ -49,7 +49,7 @@ fi
 
 if [[ ${canary} = true ]]; then
     echo "Building lh-canary"
-    ./gradlew canary:shadowJar -x test -x spotlessJavaCheck
+    ./gradlew canary:installDist -x test -x spotlessJavaCheck
     docker build -t littlehorse/lh-canary:latest -f docker/canary/Dockerfile .
 fi
 
@@ -65,6 +65,6 @@ if [[ ${standalone} = true ]]; then
     npm install
     npm run build
     cd ..
-    ./gradlew server:shadowJar -x test -x spotlessJavaCheck
+    ./gradlew server:installDist -x test -x spotlessJavaCheck
     docker build -t littlehorse/lh-standalone:latest -f docker/standalone/Dockerfile .
 fi

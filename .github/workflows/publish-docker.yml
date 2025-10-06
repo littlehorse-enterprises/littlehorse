@@ -32,11 +32,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: server-jar
-          path: server/build/libs/server-*-all.jar
-
-      - uses: actions/upload-artifact@v4
-        with:
           name: server-dist
           path: server/build/install/server
 
@@ -77,12 +72,7 @@ jobs:
           java-version: 24
 
       - name: Tests and Build
-        run: ./gradlew canary:build
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: canary-jar
-          path: canary/build/libs/canary-*-all.jar
+        run: ./gradlew canary:installDist
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
@@ -181,11 +171,11 @@ jobs:
           npm ci
           npm run build
 
-      - name: Dowload Server Jar artifact
+      - name: Download Server dist artifact
         uses: actions/download-artifact@v4
         with:
-          name: server-jar
-          path: server/build/libs/
+          name: server-dist
+          path: server/build/install/server/
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
@@ -196,4 +186,3 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
-
