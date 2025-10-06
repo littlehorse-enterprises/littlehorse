@@ -17,6 +17,7 @@ import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -226,11 +227,12 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
 
         // Current behavior is that null variables are NOT indexed. This may change in future
         // releases, but it will be a backwards-compatible change.
-        if (value.getType() == null) {
+        if (value.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            log.warn("Tags unimplemented for variable type definition: {}", value.getTypeDefinition());
             return List.of();
         }
 
-        switch (value.getType()) {
+        switch (value.getTypeDefinition().getPrimitiveType()) {
             case STR -> {
                 return List.of(new IndexedField(this.getName(), value.getStrVal(), indexType));
             }
@@ -259,7 +261,9 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
                 return jsonArrTagValues(threadVarDef);
             }
             default -> {
-                log.warn("Tags unimplemented for variable type: {}", value.getType());
+                log.warn(
+                        "Tags unimplemented for variable type: {}",
+                        value.getTypeDefinition().getPrimitiveType());
                 return List.of();
             }
         }

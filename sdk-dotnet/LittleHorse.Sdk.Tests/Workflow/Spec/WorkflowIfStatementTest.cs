@@ -520,7 +520,7 @@ public class WorkflowIfStatementTest
             VarDef = new VariableDef
             {
                 Name = "test",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };

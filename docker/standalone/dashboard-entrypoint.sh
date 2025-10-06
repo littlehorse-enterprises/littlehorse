@@ -38,7 +38,7 @@ if [ "${LHD_OAUTH_ENABLED}" == "true" ]; then
   export AUTH_SECRET=${LHD_OAUTH_ENCRYPT_SECRET}
   export NEXTAUTH_SECRET=${AUTH_SECRET}
 else
-  export AUTH_SECRET=$(uuidgen)
+  export AUTH_SECRET=$(head -c24 /dev/urandom | base64 | tr -d '\n' | cut -c1-32)
   export NEXTAUTH_SECRET=${AUTH_SECRET}
 fi
 

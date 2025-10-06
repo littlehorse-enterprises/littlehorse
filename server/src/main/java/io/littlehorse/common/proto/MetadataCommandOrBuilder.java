@@ -264,5 +264,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PutStructDefRequestOrBuilder getPutStructDefOrBuilder();
 
+  /**
+   * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+   * @return Whether the deleteStructDef field is set.
+   */
+  boolean hasDeleteStructDef();
+  /**
+   * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+   * @return The deleteStructDef.
+   */
+  io.littlehorse.sdk.common.proto.DeleteStructDefRequest getDeleteStructDef();
+  /**
+   * <code>.littlehorse.DeleteStructDefRequest delete_struct_def = 18;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder getDeleteStructDefOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }
