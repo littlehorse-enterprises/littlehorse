@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,9 +45,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         // was post-1.0, we would not modify the stored proto.
         if (p.hasType()) {
             log.debug("Detected a `VariableDef` from before 0.13.2!");
-            this.typeDef = new TypeDefinitionModel();
-            this.typeDef.setMasked(p.getMaskedValue());
-            this.typeDef.setType(p.getType());
+            this.typeDef = new TypeDefinitionModel(p.getType(), p.getMaskedValue());
         } else {
             // This means the proto is up-to-date, so we're all good.
             this.typeDef = LHSerializable.fromProto(p.getTypeDef(), TypeDefinitionModel.class, context);
@@ -80,16 +79,22 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return typeDef.isMasked();
     }
 
-    public void validateValue(VariableValueModel value) throws InvalidVariableDefException {
-        if (value.getType() == null || value.getType() == typeDef.getType()) {
+    public void validateValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
+            throws InvalidVariableDefException {
+        if (value.isNull()) return;
+
+        if (typeDef.isCompatibleWith(value, metadataManager)) {
             return;
         }
-        throw new InvalidVariableDefException(this, "should be " + typeDef + " but is of type " + value.getType());
+
+        throw new InvalidVariableDefException(
+                this, "should be " + typeDef + " but is of type " + value.getTypeDefinition());
     }
 
-    public VarNameAndValModel assignValue(VariableValueModel value) throws LHVarSubError {
+    public VarNameAndValModel assignValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
+            throws LHVarSubError {
         try {
-            validateValue(value);
+            validateValue(value, metadataManager);
         } catch (LHValidationException e) {
             throw new LHVarSubError(e, e.getMessage());
         }

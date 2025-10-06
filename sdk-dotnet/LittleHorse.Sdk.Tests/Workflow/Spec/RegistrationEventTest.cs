@@ -90,9 +90,9 @@ namespace LittleHorse.Sdk.Tests.Workflow.Spec
             Assert.NotNull(intRequest.ContentType.ReturnType_);
             Assert.NotNull(strRequest.ContentType.ReturnType_);
             Assert.NotNull(boolRequest.ContentType.ReturnType_);
-            Assert.Equal(VariableType.Int, intRequest.ContentType.ReturnType_.Type);
-            Assert.Equal(VariableType.Str, strRequest.ContentType.ReturnType_.Type);
-            Assert.Equal(VariableType.Bool, boolRequest.ContentType.ReturnType_.Type);
+            Assert.Equal(VariableType.Int, intRequest.ContentType.ReturnType_.PrimitiveType);
+            Assert.Equal(VariableType.Str, strRequest.ContentType.ReturnType_.PrimitiveType);
+            Assert.Equal(VariableType.Bool, boolRequest.ContentType.ReturnType_.PrimitiveType);
         }
         
         [Fact]

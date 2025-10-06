@@ -118,7 +118,7 @@ public class WorkflowThreadChildThreadsTest
             VarDef = new VariableDef
             {
                 Name = "parent-var",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -128,7 +128,7 @@ public class WorkflowThreadChildThreadsTest
             VarDef = new VariableDef
             {
                 Name = "2-spawned-thread-START_THREAD",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -226,7 +226,7 @@ public class WorkflowThreadChildThreadsTest
             VarDef = new VariableDef
             {
                 Name = "2-spawned-thread-START_THREAD",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -317,7 +317,7 @@ public class WorkflowThreadChildThreadsTest
                 Name = "options-available",
                 TypeDef = new TypeDefinition
                 {
-                    Type = VariableType.JsonArr
+                    PrimitiveType = VariableType.JsonArr
                 }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
@@ -329,7 +329,7 @@ public class WorkflowThreadChildThreadsTest
                 Name = "1-spawn-threads-START_MULTIPLE_THREADS",
                 TypeDef = new TypeDefinition
                 {
-                    Type = VariableType.JsonArr
+                    PrimitiveType = VariableType.JsonArr
                 }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar

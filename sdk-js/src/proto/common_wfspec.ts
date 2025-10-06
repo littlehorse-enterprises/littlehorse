@@ -8,7 +8,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
-import { TaskDefId } from "./object_id";
+import { StructDefId, TaskDefId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /** Enumerates the available operations to mutate a variable in a WfRun. */
@@ -375,11 +375,11 @@ export interface VariableDef {
  * Task return types, External Event types, ThreadSpec variables, etc.
  */
 export interface TypeDefinition {
-  /**
-   * The basic type of the value. Will become a `oneof` once StructDef's and Struct's
-   * are implemented according to issue #880.
-   */
-  type: VariableType;
+  definedType?:
+    | { $case: "primitiveType"; value: VariableType }
+    | { $case: "structDefId"; value: StructDefId }
+    | { $case: "inlineArrayDef"; value: InlineArrayDef }
+    | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
   masked: boolean;
 }
@@ -566,6 +566,34 @@ export interface TaskNode {
     | undefined;
   /** Input variables into the TaskDef. */
   variables: VariableAssignment[];
+}
+
+/** An `InlineStructDef` is the actual representation of the Schema. */
+export interface InlineStructDef {
+  /** The fields in this schema. */
+  fields: { [key: string]: StructFieldDef };
+}
+
+export interface InlineStructDef_FieldsEntry {
+  key: string;
+  value: StructFieldDef | undefined;
+}
+
+export interface InlineArrayDef {
+  elementType: TypeDefinition | undefined;
+}
+
+/** A `SchemaFieldDef` defines a field inside a `StructDef`. */
+export interface StructFieldDef {
+  /** The type of the field. */
+  fieldType:
+    | TypeDefinition
+    | undefined;
+  /**
+   * The default value of the field, which should match the Field Type. If not
+   * provided, then the field is treated as required.
+   */
+  defaultValue?: VariableValue | undefined;
 }
 
 function createBaseVariableAssignment(): VariableAssignment {
@@ -1310,13 +1338,21 @@ export const VariableDef = {
 };
 
 function createBaseTypeDefinition(): TypeDefinition {
-  return { type: VariableType.JSON_OBJ, masked: false };
+  return { definedType: undefined, masked: false };
 }
 
 export const TypeDefinition = {
   encode(message: TypeDefinition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(8).int32(variableTypeToNumber(message.type));
+    switch (message.definedType?.$case) {
+      case "primitiveType":
+        writer.uint32(8).int32(variableTypeToNumber(message.definedType.value));
+        break;
+      case "structDefId":
+        StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
+        break;
+      case "inlineArrayDef":
+        InlineArrayDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
+        break;
     }
     if (message.masked !== false) {
       writer.uint32(32).bool(message.masked);
@@ -1336,7 +1372,21 @@ export const TypeDefinition = {
             break;
           }
 
-          message.type = variableTypeFromJSON(reader.int32());
+          message.definedType = { $case: "primitiveType", value: variableTypeFromJSON(reader.int32()) };
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.definedType = { $case: "structDefId", value: StructDefId.decode(reader, reader.uint32()) };
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.decode(reader, reader.uint32()) };
           continue;
         case 4:
           if (tag !== 32) {
@@ -1356,15 +1406,27 @@ export const TypeDefinition = {
 
   fromJSON(object: any): TypeDefinition {
     return {
-      type: isSet(object.type) ? variableTypeFromJSON(object.type) : VariableType.JSON_OBJ,
+      definedType: isSet(object.primitiveType)
+        ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
+        : isSet(object.structDefId)
+        ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
+        : isSet(object.inlineArrayDef)
+        ? { $case: "inlineArrayDef", value: InlineArrayDef.fromJSON(object.inlineArrayDef) }
+        : undefined,
       masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
     };
   },
 
   toJSON(message: TypeDefinition): unknown {
     const obj: any = {};
-    if (message.type !== VariableType.JSON_OBJ) {
-      obj.type = variableTypeToJSON(message.type);
+    if (message.definedType?.$case === "primitiveType") {
+      obj.primitiveType = variableTypeToJSON(message.definedType.value);
+    }
+    if (message.definedType?.$case === "structDefId") {
+      obj.structDefId = StructDefId.toJSON(message.definedType.value);
+    }
+    if (message.definedType?.$case === "inlineArrayDef") {
+      obj.inlineArrayDef = InlineArrayDef.toJSON(message.definedType.value);
     }
     if (message.masked !== false) {
       obj.masked = message.masked;
@@ -1377,7 +1439,27 @@ export const TypeDefinition = {
   },
   fromPartial(object: DeepPartial<TypeDefinition>): TypeDefinition {
     const message = createBaseTypeDefinition();
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    if (
+      object.definedType?.$case === "primitiveType" &&
+      object.definedType?.value !== undefined &&
+      object.definedType?.value !== null
+    ) {
+      message.definedType = { $case: "primitiveType", value: object.definedType.value };
+    }
+    if (
+      object.definedType?.$case === "structDefId" &&
+      object.definedType?.value !== undefined &&
+      object.definedType?.value !== null
+    ) {
+      message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
+    }
+    if (
+      object.definedType?.$case === "inlineArrayDef" &&
+      object.definedType?.value !== undefined &&
+      object.definedType?.value !== null
+    ) {
+      message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.fromPartial(object.definedType.value) };
+    }
     message.masked = object.masked ?? false;
     return message;
   },
@@ -2021,6 +2103,300 @@ export const TaskNode = {
   },
 };
 
+function createBaseInlineStructDef(): InlineStructDef {
+  return { fields: {} };
+}
+
+export const InlineStructDef = {
+  encode(message: InlineStructDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    Object.entries(message.fields).forEach(([key, value]) => {
+      InlineStructDef_FieldsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructDef {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructDef();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = InlineStructDef_FieldsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.fields[entry1.key] = entry1.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructDef {
+    return {
+      fields: isObject(object.fields)
+        ? Object.entries(object.fields).reduce<{ [key: string]: StructFieldDef }>((acc, [key, value]) => {
+          acc[key] = StructFieldDef.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: InlineStructDef): unknown {
+    const obj: any = {};
+    if (message.fields) {
+      const entries = Object.entries(message.fields);
+      if (entries.length > 0) {
+        obj.fields = {};
+        entries.forEach(([k, v]) => {
+          obj.fields[k] = StructFieldDef.toJSON(v);
+        });
+      }
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructDef>): InlineStructDef {
+    return InlineStructDef.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructDef>): InlineStructDef {
+    const message = createBaseInlineStructDef();
+    message.fields = Object.entries(object.fields ?? {}).reduce<{ [key: string]: StructFieldDef }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = StructFieldDef.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseInlineStructDef_FieldsEntry(): InlineStructDef_FieldsEntry {
+  return { key: "", value: undefined };
+}
+
+export const InlineStructDef_FieldsEntry = {
+  encode(message: InlineStructDef_FieldsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      StructFieldDef.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructDef_FieldsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructDef_FieldsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = StructFieldDef.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructDef_FieldsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? StructFieldDef.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: InlineStructDef_FieldsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = StructFieldDef.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructDef_FieldsEntry>): InlineStructDef_FieldsEntry {
+    return InlineStructDef_FieldsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructDef_FieldsEntry>): InlineStructDef_FieldsEntry {
+    const message = createBaseInlineStructDef_FieldsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? StructFieldDef.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineArrayDef(): InlineArrayDef {
+  return { elementType: undefined };
+}
+
+export const InlineArrayDef = {
+  encode(message: InlineArrayDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.elementType !== undefined) {
+      TypeDefinition.encode(message.elementType, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineArrayDef {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineArrayDef();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.elementType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineArrayDef {
+    return { elementType: isSet(object.elementType) ? TypeDefinition.fromJSON(object.elementType) : undefined };
+  },
+
+  toJSON(message: InlineArrayDef): unknown {
+    const obj: any = {};
+    if (message.elementType !== undefined) {
+      obj.elementType = TypeDefinition.toJSON(message.elementType);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineArrayDef>): InlineArrayDef {
+    return InlineArrayDef.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineArrayDef>): InlineArrayDef {
+    const message = createBaseInlineArrayDef();
+    message.elementType = (object.elementType !== undefined && object.elementType !== null)
+      ? TypeDefinition.fromPartial(object.elementType)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseStructFieldDef(): StructFieldDef {
+  return { fieldType: undefined, defaultValue: undefined };
+}
+
+export const StructFieldDef = {
+  encode(message: StructFieldDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fieldType !== undefined) {
+      TypeDefinition.encode(message.fieldType, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.defaultValue !== undefined) {
+      VariableValue.encode(message.defaultValue, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StructFieldDef {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStructFieldDef();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fieldType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.defaultValue = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StructFieldDef {
+    return {
+      fieldType: isSet(object.fieldType) ? TypeDefinition.fromJSON(object.fieldType) : undefined,
+      defaultValue: isSet(object.defaultValue) ? VariableValue.fromJSON(object.defaultValue) : undefined,
+    };
+  },
+
+  toJSON(message: StructFieldDef): unknown {
+    const obj: any = {};
+    if (message.fieldType !== undefined) {
+      obj.fieldType = TypeDefinition.toJSON(message.fieldType);
+    }
+    if (message.defaultValue !== undefined) {
+      obj.defaultValue = VariableValue.toJSON(message.defaultValue);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<StructFieldDef>): StructFieldDef {
+    return StructFieldDef.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StructFieldDef>): StructFieldDef {
+    const message = createBaseStructFieldDef();
+    message.fieldType = (object.fieldType !== undefined && object.fieldType !== null)
+      ? TypeDefinition.fromPartial(object.fieldType)
+      : undefined;
+    message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
+      ? VariableValue.fromPartial(object.defaultValue)
+      : undefined;
+    return message;
+  },
+};
+
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 type DeepPartial<T> = T extends Builtin ? T
@@ -2043,6 +2419,10 @@ function longToNumber(long: Long): number {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

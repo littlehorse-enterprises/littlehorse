@@ -228,7 +228,7 @@ namespace LittleHorse.Sdk.Helper
             }
             var typeDef = new TypeDefinition
             {
-                Type = DotNetTypeToLHVariableType(type!)
+                PrimitiveType = DotNetTypeToLHVariableType(type!)
             };
             return new ReturnType { ReturnType_ = typeDef };
         }
