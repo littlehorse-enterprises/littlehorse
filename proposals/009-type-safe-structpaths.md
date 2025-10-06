@@ -7,9 +7,10 @@
     - [Method Chaining](#method-chaining)
   - [Protobuf Changes](#protobuf-changes)
     - [`StructPath` Type](#structpath-type)
-    - [`VariableAssignment`](#variableassignment)
-    - [`VariableMutation`](#variablemutation)
-    - [`JsonIndex`](#jsonindex)
+      - [`StructPath` Example](#structpath-example)
+    - [`VariableAssignment` Changes](#variableassignment-changes)
+    - [`VariableMutation` Changes](#variablemutation-changes)
+    - [`JsonIndex` Changes](#jsonindex-changes)
   - [Server-Side Changes](#server-side-changes)
   - [Overview](#overview)
 
@@ -60,9 +61,38 @@ message StructPath {
 }
 ```
 
+#### `StructPath` Example
+
+Take a look at how chaining multiple `get()` methods resolves into a `StructPath`:
+
+**Java Code**
+```java
+WfRunVariable inputPerson = wf.declareStruct("input-person", Person.class);
+wf.execute("greet", inputPerson.get("address").get("city"));
+```
+
+**ProtoJSON**
+```json
+"task": {
+  "taskDefId": {
+    "name": "greet"
+  },
+  "timeoutSeconds": 0,
+  "retries": 0,
+  "variables": [{
+    "struct_path": {
+      "path": ["address", "city"]
+    },
+    "variableName": "person"
+  }]
+}
+```
+
 This new type will be used in all messages where `json_path` was previously used:
 
-### `VariableAssignment`
+### `VariableAssignment` Changes
+
+We will add `StructPath` to a oneof for the `path`. We will deprecate the `json_path` option but preserve it for backwards compatibility.
 
 ```proto
 message VariableAssignment {
@@ -82,7 +112,9 @@ message VariableAssignment {
 }
 ```
 
-### `VariableMutation`
+### `VariableMutation` Changes
+
+We will add `StructPath` as as a oneof for the `lhs_path` and the `NodeOutputSource` `path`. We will deprecate the `json_path` options but preserve them for backwards compatibility.
 
 ```proto
 message VariableMutation {
@@ -110,9 +142,9 @@ message VariableMutation {
 }
 ```
 
-### `JsonIndex`
+### `JsonIndex` Changes
 
-We will change the name of `JsonIndex` to `Index` and add support for `StructPath`s and `TypeDefinition`s:
+We will change the name of `JsonIndex` to `Index` and add support for `StructPath`s and `TypeDefinition`s. We will deprecate the `field_path` JSONPath support but preserve the field for backwards compatibility.
 
 ```proto
 // Defines an index to make a Struct, Array, JSON_OBJ or JSON_ARR variable searchable over a path to a field.
