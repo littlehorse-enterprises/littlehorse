@@ -1,7 +1,9 @@
-# Proposal: Type Safe `StructPath`s in `WfSpec`s
+# Proposal: Type Safe Field Access in `WfSpec`s
 
-- [Proposal: Type Safe `StructPath`s in `WfSpec`s](#proposal-type-safe-structpaths-in-wfspecs)
+- [Proposal: Type Safe Field Access in `WfSpec`s](#proposal-type-safe-field-access-in-wfspecs)
   - [Background](#background)
+    - [`JSON_OBJ` vs `StructDef`/`Struct`](#json_obj-vs-structdefstruct)
+    - [`JSON_ARR` vs `InlineArrayDef`/`Array`](#json_arr-vs-inlinearraydefarray)
   - [Client-Side Changes](#client-side-changes)
     - [The `get()` Method](#the-get-method)
     - [Method Chaining](#method-chaining)
@@ -16,32 +18,47 @@
 
 Author: Jacob Snarr
 
-This proposal will introduce a type safe way for accessing fields from `Struct` and `Array` variables within `WfSpec`s.
+This proposal will introduce a `get()` method for accessing fields from `Struct` and `Array` variables within `WfSpec`s. This new `get()` method will be backwards compatible with the `JSON_OBJ` and `JSON_ARR` types. Behind this new method, we will also introduce type safe field access for `Struct`s and `Array`s, ensuring that the field accessed exists and matches your source/destination type.
 
 ## Background
 
 After the implementation of Proposal #000 "`StructDef` and `Struct`", we now have strongly typed structures in LittleHorse.
 
+### `JSON_OBJ` vs `StructDef`/`Struct`
+
 With the `JSON_OBJ` primitive type, we support loosely typed structures that can take on any form. This means that we can't guarantee the structure of a `JSON_OBJ` when compiling a `WfSpec`—only at runtime do we know what keys will be inside the `JSON_OBJ`.
 
 `StructDef`s give the LittleHorse Server a rigid structure to validate `Struct` values against. If a `Struct` value doesn't match a `StructDef`'s format, the server rejects the `Struct` as soon as it reaches the server. This means any `Struct` that makes it into a workflow will be guaranteed to have all of the fields its `StructDef` requires. We can leverage this guarantee to provide compile-time type safety when accessing `Struct` fields in a `WfSpec`.
+
+### `JSON_ARR` vs `InlineArrayDef`/`Array`
+
+With the `JSON_ARR` primitive type, we support loosely typed arrays where each element can be a different type. This means that we can't guarantee the type of a `JSON_ARR` item when compiling a `WfSpec`.
+
+`InlineArrayDef`s give the LittleHorse Server native Array support and the ability to constrain Array items to a single type. We can leverage this to provide compile-time type safety when accessing `Array` items in `WfSpec`.
 
 ## Client-Side Changes
 
 ### The `get()` Method
 
-We will introduce a `WfRunVariable#get()` method in `WfSpec`s for accessing fields within a `Struct` variable.
+We will introduce a `WfRunVariable#get()` method in `WfSpec`s for accessing items within `Struct` and `Array` variables.
 
 Take the following `WfSpec` for example, where we access the `"name"` field on a `Struct` variable:
 
 ```java
-WfRunVariable inputPerson = wf.declareStruct("input-person", Person.class);
-wf.execute("greet", inputPerson.get("name"));
+WfRunVariable customer = wf.declareStruct("input-customer", Customer.class);
+wf.execute("greet", customer.get("name"));
+```
+
+Take this other `WfSpec`, where we greet the first customer in an Array of `Customers`s:
+
+```java
+WfRunVariable customers = wf.declareStruct("input-customers", Customer[].class);
+wf.execute("greet", customer.get(0).get("name"));
 ```
 
 ### Method Chaining
 
-This new `get()` method will be designed to support method chaining, meaning you can call it multiple times to get fields from nested `Struct`s:
+This new `get()` method will be designed to support method chaining, meaning you can call it multiple times to get fields from nested `Struct`s or `Array`s:
 
 ```java
 WfRunVariable inputPerson = wf.declareStruct("input-person", Person.class);
