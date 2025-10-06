@@ -15,6 +15,10 @@
     - [`JsonIndex` Changes](#jsonindex-changes)
   - [Server-Side Changes](#server-side-changes)
   - [Overview](#overview)
+  - [Alternatives](#alternatives)
+    - [(Server): Adapt JSONPath to support `Struct`s and `Array`s](#server-adapt-jsonpath-to-support-structs-and-arrays)
+    - [(Server+Clients)): Also translate `get()` methods to `jsonPath`](#serverclients-also-translate-get-methods-to-jsonpath)
+    - [Analysis](#analysis)
 
 Author: Jacob Snarr
 
@@ -205,3 +209,41 @@ With the introduction of `StructPath`s , we will add the following functionality
 - Format-agnostic way for accessing fields from `JSON_OBJ` and `JSON_ARR`, an improvement upon `json_path` which depended on the `JSONPath` format of the Java Flyway library
 
 We will deprecate `json_path` and dedicate all future `path` development towards `StructPath` functionality. We will maintain support for old WfSpecs that depend on `json_path`.
+
+## Alternatives
+
+This proposal paves the way for the full removal of our JSONPath support and introduces a more LittleHorse DSL friendly way for accessing fields from objects. But what if we didn't remove JSONPath at all, and instead adapted around it to support `Struct`s and `Array`s? Below you'll find a few ideas for doing so:
+
+### (Server): Adapt JSONPath to support `Struct`s and `Array`s
+
+The simplest alternative to this proposal would be adapting our existing JSONPath implementation to support `Structs` and `Array`s at the server level.
+
+Pros:
+- No changes at the SDK level
+- No room for new SDK implementations to diverge
+- Makes the transition from `JSON_OBJ` to `Struct`s easy for existing LH users
+
+Cons:
+- No support for method chaining
+- Server stays dependent on the JSONPath format
+- Introduces complexity at the server level as we have to adapt `jsonPath`s to access information from `Struct`s and `Array`s 
+
+This is by far the least complex option we have for adding type safe field access to `Struct`s and `Array`s. It also provides the least amount of UX improvements for users, as it maintains a full dependency on `jsonPath` and requires users to research and understand the JSONPath format for working with `Struct`s and `Arrays`.
+
+### (Server+Clients)): Also translate `get()` methods to `jsonPath`
+
+Adding onto the last alternative, we can design a `get()` method that translates to JSONPath under the hood.
+
+Pros:
+- Translating chained `get()` methods to JSONPath is trivial, as `jsonPath` is not a hard format to follow.
+- Reduces complexity in protobuf/server implementation
+  
+Cons:
+- Introduces complexity to our SDKs
+  - Various SDK impelementations could diverge if implemented incorrectly.
+- Server stays dependent on JSONPath format
+- Still introduces complexity at the server level as we have to adapt JSONPaths to access information from `Struct`s and `Array`s 
+
+### Analysis
+
+Both of these alternatives reduce the complexity for adding type safe field access to `WfSpec`s by preserving our dependency on JSONPath. Whichever option we choose depends on how much we want to work in our own domain and eliminate our dependency on external formats like JSONPath.
