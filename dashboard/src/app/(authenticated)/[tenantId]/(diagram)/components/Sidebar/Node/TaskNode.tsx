@@ -5,12 +5,13 @@ import { FC } from 'react'
 import { getTaskName } from '../../NodeTypes/Task/TaskDetails'
 import { VariableAssignment } from '../Components'
 import { TaskNodeMetric } from '../Components/TaskNodeMetric'
+import "./node.css"
 
 export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
   const { taskToExecute, exponentialBackoff, retries, timeoutSeconds, variables } = node
   return (
     <div className="flex max-w-full flex-1 flex-col">
-      <small className="text-[0.75em] text-slate-400">Task</small>
+      <small className="node-title">Task</small>
       <div className="mb-2 flex items-center">
         <p className="flex-grow truncate text-lg font-medium">{getTaskName(node.taskToExecute)}</p>
         {taskToExecute?.$case === 'taskDefId' && (
@@ -34,7 +35,7 @@ export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
 
       {variables && variables.length > 0 && (
         <div className="flex flex-col gap-2">
-          <small className="text-[0.75em] text-slate-400">Inputs</small>
+          <small className="node-title">Inputs</small>
           {variables.map((v, i) => (
             <div key={JSON.stringify(v)} className="flex">
               <span className="bg-gray-200 px-2 font-mono">{i}</span>

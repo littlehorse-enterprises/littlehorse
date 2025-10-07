@@ -2,6 +2,7 @@ import { WaitForThreadsNode as WaitForThreadsNodeProto } from 'littlehorse-clien
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { VariableAssignment } from '../Components'
+import "./node.css"
 
 export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node }) => {
   const { threadsToWaitFor, perThreadFailureHandlers } = node
@@ -16,7 +17,7 @@ export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node
     <div className="flex max-w-full flex-1 flex-col gap-2">
       {threadsToWaitFor.$case === 'threads' && (
         <>
-          <small className="text-[0.75em] text-slate-400">Threads</small>
+          <small className="node-title">Threads</small>
           <div className="mb-2 flex items-center">
             {threadsToWaitFor.value.threads.map((thread, key) => (
               <div key={JSON.stringify(thread)} className="flex">
@@ -29,7 +30,7 @@ export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node
       )}
       {threadsToWaitFor.$case === 'threadList' && (
         <>
-          <small className="text-[0.75em] text-slate-400">Threads List</small>
+          <small className="node-title">Threads List</small>
           <div className="mb-2 flex items-center">
             <VariableAssignment variableAssigment={threadsToWaitFor.value} />
           </div>
