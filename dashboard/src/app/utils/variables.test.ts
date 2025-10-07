@@ -4,8 +4,9 @@ import {
   VariableDef,
   VariableMutationType,
   VariableType,
+  VariableValue,
 } from 'littlehorse-client/proto'
-import { getTypedVariableValue, getVariable, getVariableCaseFromTypeDef, getVariableDefType } from './variables'
+import { getTypedVariableValue, getVariable, getVariableCaseFromTypeDef, getVariableDefType, getVariableValue } from './variables'
 
 describe('getVariable', () => {
   it('should return from literalValue str', () => {
@@ -289,7 +290,7 @@ describe('getVariable', () => {
         value: {},
       },
     }
-    expect(getVariable(variable)).toEqual('null')
+    expect(getVariable(variable)).toEqual('NULL')
   })
 })
 
@@ -427,5 +428,12 @@ describe('getVariableCaseFromTypeDef', () => {
   it('should throw on unknown type', () => {
     const typeDef = {} as TypeDefinition
     expect(() => getVariableCaseFromTypeDef(typeDef)).toThrow('Unknown variable type.')
+  })
+})
+
+describe('getVariableValue', () => {
+
+  it('should return NULL for empty value', () => {
+    expect(getVariableValue({ value: {} } as VariableValue)).toEqual('NULL')
   })
 })
