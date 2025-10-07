@@ -60,13 +60,11 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
     public void arrive(Date time, CoreProcessorContext ctx) throws NodeFailureException {
         RunChildWfNodeModel runWfNode = getNode().getRunChildWfNode();
 
-        Map<String, VariableValueModel> variables = new HashMap<>();
-
         // First make sure we can construct the input variables.
         try {
             for (Map.Entry<String, VariableAssignmentModel> e :
                     runWfNode.getInputs().entrySet()) {
-                variables.put(e.getKey(), nodeRun.getThreadRun().assignVariable(e.getValue()));
+                inputs.put(e.getKey(), nodeRun.getThreadRun().assignVariable(e.getValue()));
             }
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel();
