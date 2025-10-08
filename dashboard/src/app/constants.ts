@@ -13,6 +13,7 @@ export const VARIABLE_TYPES = {
   int: 'Integer',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
+  struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
 } as const
 

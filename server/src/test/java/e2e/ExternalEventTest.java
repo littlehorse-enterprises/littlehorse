@@ -1,5 +1,6 @@
 package e2e;
 
+import e2e.Struct.Car;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
@@ -14,6 +15,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -25,6 +27,7 @@ import org.junit.jupiter.api.Test;
 public class ExternalEventTest {
 
     public static final String EVT_NAME = "basic-test-event";
+    public static final String STRUCT_EVT_NAME = "struct-test-event";
     public static final String IGNORED_EVT_NAME = "not-a-real-event-kenobi";
 
     @LHWorkflow("external-event-timeout")
@@ -32,6 +35,9 @@ public class ExternalEventTest {
 
     @LHWorkflow("basic-external-event")
     public Workflow basicExternalEvent;
+
+    @LHWorkflow("struct-external-event")
+    public Workflow structExternalEvent;
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
@@ -45,6 +51,18 @@ public class ExternalEventTest {
                     VariableMutationType.ASSIGN,
                     thread.waitForEvent(EVT_NAME).registeredAs(String.class));
             thread.execute("basic-external-event-task", evtOutput);
+        });
+    }
+
+    @LHWorkflow("struct-external-event")
+    public Workflow getStructExternalEventWorkflow() {
+        return Workflow.newWorkflow("struct-external-event", thread -> {
+            WfRunVariable evtOutput = thread.declareStruct("struct-evt-output", Car.class);
+            thread.mutate(
+                    evtOutput,
+                    VariableMutationType.ASSIGN,
+                    thread.waitForEvent(STRUCT_EVT_NAME).registeredAs(Car.class));
+            thread.execute("struct-external-event-task", evtOutput);
         });
     }
 
@@ -96,6 +114,25 @@ public class ExternalEventTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRunResult(0, 2, variableValue -> {
                     Assertions.assertThat(variableValue.getStr()).isEqualTo("hello there");
+                })
+                .start(id);
+    }
+
+    @Test
+    void shouldCompleteWhenWeSendStructEvent() {
+        WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
+
+        // TODO: Refactor if we add `registeredAs` for Struct Variables
+        LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
+        client.putStructDef(lhStructDefType.toPutStructDefRequest());
+
+        Car car = new Car("brand", "model", 1000);
+
+        verifier.prepareRun(structExternalEvent)
+                .thenSendExternalEventWithContent(STRUCT_EVT_NAME, car)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRunResult(0, 2, variableValue -> {
+                    Assertions.assertThat(variableValue).isEqualTo(LHLibUtil.objToVarVal(car));
                 })
                 .start(id);
     }
@@ -174,6 +211,11 @@ public class ExternalEventTest {
 
     @LHTaskMethod("basic-external-event-task")
     public String doThing(String input) {
+        return input;
+    }
+
+    @LHTaskMethod("struct-external-event-task")
+    public Car doThing(Car input) {
         return input;
     }
 }

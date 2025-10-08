@@ -34,11 +34,12 @@ include(
         'run-wf',
         'saga',
         'spawn-thread-foreach',
+        'struct-def',
+        'timestamp',
         'user-tasks',
         'variables',
+        'wait-for-condition',
         'worker-context',
-        "timestamp"
-
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/java/$example")

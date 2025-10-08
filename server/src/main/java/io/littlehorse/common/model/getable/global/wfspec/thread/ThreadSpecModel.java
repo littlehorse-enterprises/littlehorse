@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public List<InterruptDefModel> interruptDefs;
 
     private ThreadRetentionPolicyModel retentionPolicy;
-    private ExecutionContext executionContext;
 
     public ThreadSpecModel() {
         nodes = new HashMap<>();
@@ -114,7 +114,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), ThreadRetentionPolicyModel.class, context);
         }
-        this.executionContext = context;
     }
 
     // Below is Implementation
@@ -358,7 +357,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // TODO: check input variables.
-    public void validateStartVariables(Map<String, VariableValueModel> inputVariables)
+    public void validateStartVariables(
+            Map<String, VariableValueModel> inputVariables, ReadOnlyMetadataManager metadataManager)
             throws InvalidThreadSpecException {
         for (Map.Entry<String, ThreadVarDefModel> e : getInputVariableDefs().entrySet()) {
             String varName = e.getKey();
@@ -376,7 +376,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 continue;
             }
             try {
-                varDef.validateValue(inputVariableValue);
+                varDef.validateValue(inputVariableValue, metadataManager);
             } catch (InvalidVariableDefException exn) {
                 throw new InvalidThreadSpecException(this, exn);
             }
