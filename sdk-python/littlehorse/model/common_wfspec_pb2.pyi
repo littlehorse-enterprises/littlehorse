@@ -51,7 +51,7 @@ IN: Comparator
 NOT_IN: Comparator
 
 class VariableAssignment(_message.Message):
-    __slots__ = ("json_path", "variable_name", "literal_value", "format_string", "node_output", "expression")
+    __slots__ = ("json_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
     class FormatString(_message.Message):
         __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -79,13 +79,15 @@ class VariableAssignment(_message.Message):
     FORMAT_STRING_FIELD_NUMBER: _ClassVar[int]
     NODE_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     EXPRESSION_FIELD_NUMBER: _ClassVar[int]
+    TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
     json_path: str
     variable_name: str
     literal_value: _variable_pb2.VariableValue
     format_string: VariableAssignment.FormatString
     node_output: VariableAssignment.NodeOutputReference
     expression: VariableAssignment.Expression
-    def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ...) -> None: ...
+    target_type: TypeDefinition
+    def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")
@@ -123,16 +125,14 @@ class VariableDef(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
-    __slots__ = ("primitive_type", "struct_def_id", "inline_array_def", "masked")
+    __slots__ = ("primitive_type", "struct_def_id", "masked")
     PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    INLINE_ARRAY_DEF_FIELD_NUMBER: _ClassVar[int]
     MASKED_FIELD_NUMBER: _ClassVar[int]
     primitive_type: _common_enums_pb2.VariableType
     struct_def_id: _object_id_pb2.StructDefId
-    inline_array_def: InlineArrayDef
     masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array_def: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
+    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
 
 class ReturnType(_message.Message):
     __slots__ = ("return_type",)
@@ -215,12 +215,6 @@ class InlineStructDef(_message.Message):
     FIELDS_FIELD_NUMBER: _ClassVar[int]
     fields: _containers.MessageMap[str, StructFieldDef]
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
-
-class InlineArrayDef(_message.Message):
-    __slots__ = ("element_type",)
-    ELEMENT_TYPE_FIELD_NUMBER: _ClassVar[int]
-    element_type: TypeDefinition
-    def __init__(self, element_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
     __slots__ = ("field_type", "default_value")

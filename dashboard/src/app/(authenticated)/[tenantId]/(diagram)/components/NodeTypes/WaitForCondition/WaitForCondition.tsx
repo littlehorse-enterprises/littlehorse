@@ -14,8 +14,9 @@ import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 import { Condition } from './Condition'
 const Node: FC<NodeProps<'waitForCondition', WaitForConditionNode>> = ({ data }) => {
-  const { fade, nodeNeedsToBeHighlighted, condition } = data
+  const { fade, nodeNeedsToBeHighlighted, condition, nodeRunsList } = data
   if (!condition) return null
+  const nodeRun = nodeRunsList?.[0]
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
@@ -44,7 +45,7 @@ const Node: FC<NodeProps<'waitForCondition', WaitForConditionNode>> = ({ data })
           <NodeRunsList nodeRuns={data.nodeRunsList} />
         </DiagramDataGroup>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRunsList[data.nodeRunsList.length - 1].status}>
+      <Fade fade={fade} status={nodeRun?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={

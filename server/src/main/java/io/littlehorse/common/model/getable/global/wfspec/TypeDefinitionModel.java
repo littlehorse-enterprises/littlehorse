@@ -4,8 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
@@ -19,6 +17,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Str
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -41,7 +40,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private VariableType primitiveType;
     private StructDefIdModel structDefId;
-    private InlineArrayDefModel inlineArrayDef;
 
     public TypeDefinitionModel() {
         this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
@@ -71,18 +69,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.masked = masked;
     }
 
-    public TypeDefinitionModel(InlineArrayDefModel inlineArrayDef) {
-        this.definedTypeCase = DefinedTypeCase.INLINE_ARRAY_DEF;
-        this.inlineArrayDef = Objects.requireNonNull(inlineArrayDef);
-        this.masked = false;
-    }
-
-    public TypeDefinitionModel(InlineArrayDefModel inlineArrayDef, boolean masked) {
-        this.definedTypeCase = DefinedTypeCase.INLINE_ARRAY_DEF;
-        this.inlineArrayDef = Objects.requireNonNull(inlineArrayDef);
-        this.masked = masked;
-    }
-
     @Override
     public Class<TypeDefinition> getProtoBaseClass() {
         return TypeDefinition.class;
@@ -98,9 +84,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 out.setStructDefId(structDefId.toProto());
-                break;
-            case INLINE_ARRAY_DEF:
-                out.setInlineArrayDef(inlineArrayDef.toProto());
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
@@ -122,9 +105,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
-                break;
-            case INLINE_ARRAY_DEF:
-                this.inlineArrayDef = InlineArrayDefModel.fromProto(p.getInlineArrayDef(), ctx);
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
@@ -173,8 +153,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 return new StructReturnTypeStrategy(this.structDefId);
-            case INLINE_ARRAY_DEF:
-                return new ArrayReturnTypeStrategy(this.inlineArrayDef);
             default:
         }
         throw new IllegalStateException();
@@ -231,11 +209,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                return this.primitiveType.equals(other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.primitiveType);
             case STRUCT_DEF_ID:
                 return this.structDefId.equals(other.getStructDefId());
-            case INLINE_ARRAY_DEF:
-                return this.inlineArrayDef.equals(other.getInlineArrayDef());
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -245,8 +221,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the other type is compatible with this type. Note that it requires
-     * exact match for now. In the future we'll support casting.
+     * Returns true if this type can be assigned from the other type, without casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
         if (this.isNull() || other.isNull()) {
@@ -259,15 +234,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                if (this.primitiveType == VariableType.INT || this.primitiveType == VariableType.DOUBLE) {
-                    return other.getPrimitiveType() == VariableType.INT
-                            || other.getPrimitiveType() == VariableType.DOUBLE;
-                }
-                return this.getPrimitiveType().equals(other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(this.primitiveType, other.getPrimitiveType());
             case STRUCT_DEF_ID:
                 return this.getStructDefId().equals(other.getStructDefId());
-            case INLINE_ARRAY_DEF:
-                return this.inlineArrayDef.equals(other.getInlineArrayDef());
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -287,9 +256,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case STRUCT_DEF_ID:
                 result = String.format("Struct<%s,v%d>", structDefId.getName(), structDefId.getVersion());
                 break;
-            case INLINE_ARRAY_DEF:
-                result = String.format("Array<%s>", inlineArrayDef.getElementType());
-                break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 result = this.definedTypeCase.toString();
@@ -297,5 +263,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         }
         if (masked) result += " MASKED";
         return result;
+    }
+
+    /**
+     * Performs casting of a VariableValueModel to this type.
+     *
+     * @param sourceValue The value to cast
+     * @return A new VariableValueModel with the target type, or the original if no casting is needed
+     * @throws IllegalArgumentException if casting is not supported for this type combination
+     */
+    public VariableValueModel applyCast(VariableValueModel sourceValue) {
+        return TypeCastingUtils.applyCast(sourceValue, this.primitiveType);
     }
 }
