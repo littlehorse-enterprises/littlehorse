@@ -171,9 +171,6 @@ message TypeDefinition {
     VariableType primitive_type = 1;
 
     StructDefId struct_def_id = 5;
-
-    // Array Def
-    InlineArrayDef inline_array_def = 6;
   }
 
   // For compatibility purposes.
@@ -346,10 +343,6 @@ message TaskNode {
 message InlineStructDef {
   // The fields in this schema.
   map<string, StructFieldDef> fields = 1;
-}
-
-message InlineArrayDef {
-  TypeDefinition element_type = 1;
 }
 
 // A `SchemaFieldDef` defines a field inside a `StructDef`.

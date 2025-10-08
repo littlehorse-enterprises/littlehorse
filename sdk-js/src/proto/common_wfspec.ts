@@ -378,7 +378,6 @@ export interface TypeDefinition {
   definedType?:
     | { $case: "primitiveType"; value: VariableType }
     | { $case: "structDefId"; value: StructDefId }
-    | { $case: "inlineArrayDef"; value: InlineArrayDef }
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
   masked: boolean;
@@ -577,10 +576,6 @@ export interface InlineStructDef {
 export interface InlineStructDef_FieldsEntry {
   key: string;
   value: StructFieldDef | undefined;
-}
-
-export interface InlineArrayDef {
-  elementType: TypeDefinition | undefined;
 }
 
 /** A `SchemaFieldDef` defines a field inside a `StructDef`. */
@@ -1350,9 +1345,6 @@ export const TypeDefinition = {
       case "structDefId":
         StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
         break;
-      case "inlineArrayDef":
-        InlineArrayDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
-        break;
     }
     if (message.masked !== false) {
       writer.uint32(32).bool(message.masked);
@@ -1381,13 +1373,6 @@ export const TypeDefinition = {
 
           message.definedType = { $case: "structDefId", value: StructDefId.decode(reader, reader.uint32()) };
           continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.decode(reader, reader.uint32()) };
-          continue;
         case 4:
           if (tag !== 32) {
             break;
@@ -1410,8 +1395,6 @@ export const TypeDefinition = {
         ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
         : isSet(object.structDefId)
         ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
-        : isSet(object.inlineArrayDef)
-        ? { $case: "inlineArrayDef", value: InlineArrayDef.fromJSON(object.inlineArrayDef) }
         : undefined,
       masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
     };
@@ -1424,9 +1407,6 @@ export const TypeDefinition = {
     }
     if (message.definedType?.$case === "structDefId") {
       obj.structDefId = StructDefId.toJSON(message.definedType.value);
-    }
-    if (message.definedType?.$case === "inlineArrayDef") {
-      obj.inlineArrayDef = InlineArrayDef.toJSON(message.definedType.value);
     }
     if (message.masked !== false) {
       obj.masked = message.masked;
@@ -1452,13 +1432,6 @@ export const TypeDefinition = {
       object.definedType?.value !== null
     ) {
       message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
-    }
-    if (
-      object.definedType?.$case === "inlineArrayDef" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.fromPartial(object.definedType.value) };
     }
     message.masked = object.masked ?? false;
     return message;
@@ -2255,65 +2228,6 @@ export const InlineStructDef_FieldsEntry = {
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? StructFieldDef.fromPartial(object.value)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseInlineArrayDef(): InlineArrayDef {
-  return { elementType: undefined };
-}
-
-export const InlineArrayDef = {
-  encode(message: InlineArrayDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.elementType !== undefined) {
-      TypeDefinition.encode(message.elementType, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): InlineArrayDef {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseInlineArrayDef();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.elementType = TypeDefinition.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): InlineArrayDef {
-    return { elementType: isSet(object.elementType) ? TypeDefinition.fromJSON(object.elementType) : undefined };
-  },
-
-  toJSON(message: InlineArrayDef): unknown {
-    const obj: any = {};
-    if (message.elementType !== undefined) {
-      obj.elementType = TypeDefinition.toJSON(message.elementType);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<InlineArrayDef>): InlineArrayDef {
-    return InlineArrayDef.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<InlineArrayDef>): InlineArrayDef {
-    const message = createBaseInlineArrayDef();
-    message.elementType = (object.elementType !== undefined && object.elementType !== null)
-      ? TypeDefinition.fromPartial(object.elementType)
       : undefined;
     return message;
   },
