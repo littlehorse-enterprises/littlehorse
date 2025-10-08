@@ -316,6 +316,7 @@ public class CorrelatedEventTest {
         client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                 .setExternalEventDefId(evtId)
                 .setKey(randomStr)
+                .setContent(LHLibUtil.objToVarVal(12345))
                 .build());
 
         CorrelatedEventId id = CorrelatedEventId.newBuilder()
