@@ -11,7 +11,7 @@ export const SleepNode: FC<{ node: SleepNodeProp }> = ({ node }) => {
       <div className="mb-2 flex flex-col gap-2">
         <p className="text-[0.75em] text-slate-400">Sleep</p>
         <div className='flex'>
-          <p className="flex-none truncate bg-[#4A4DEE] px-2 font-mono text-gray-200">timestamp</p>
+          <p className="flex-none truncate bg-blue-500 px-2 font-mono text-gray-200">{sleepLength.$case}</p>
            <VariableAssignment variableAssigment={sleepLength.value} />
         </div>
       </div>

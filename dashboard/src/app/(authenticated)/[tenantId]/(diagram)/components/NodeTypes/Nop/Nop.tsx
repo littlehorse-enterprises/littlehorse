@@ -6,9 +6,7 @@ import { Fade } from '../Fade'
 import { SelectedNode } from '../SelectedNode'
 
 const NopNode: FC<NodeProps<'entrypoint', Node>> = props => {
-  const {
-    data,
-  } = props
+  const { data } = props
 
   const { fade, nodeRunsList } = data
   const nodeRun = nodeRunsList?.[0]
