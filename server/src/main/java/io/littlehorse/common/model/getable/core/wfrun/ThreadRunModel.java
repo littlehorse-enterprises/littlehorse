@@ -730,13 +730,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (interruptTriggerId != null) {
             // then we're an interrupt thread and need to fail the parent. Parent is guaranteed to
             // to be not-null in this case
-            getParent()
-                    .failWithoutGrace(
-                            new FailureModel(
-                                    "Interrupt thread with id " + number + " failed!",
-                                    failure.getFailureName(),
-                                    failure.getContent()), // propagate failure content
-                            time);
+            FailureModel interruptFail = new FailureModel(
+                    "Interrupt thread with id " + number + " failed!", failure.getFailureName(), failure.getContent());
+            getParent().failWithoutGrace(interruptFail, time, interruptTriggerId);
         } else if (failureBeingHandled != null) {
             // Then it's a FailureHandler thread, so we want the parent ThreadRun to fail without
             // grace.
@@ -744,6 +740,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         wfRun.handleThreadStatus(number, new Date(), status);
+    }
+
+    private void failWithoutGrace(FailureModel failure, Date time, ExternalEventIdModel failedInterruptEventId) {
+        getCurrentNodeRun().fail(new NodeFailureException(failure));
+        failWithoutGrace(failure, time);
     }
 
     public void activateNode(NodeModel node) throws NodeFailureException {

@@ -7,7 +7,6 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
-import io.littlehorse.common.model.getable.core.wfrun.ThreadHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
@@ -140,23 +139,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
             } else if (childThreadRun.getStatus() == LHStatus.EXCEPTION
                     || childThreadRun.getStatus() == LHStatus.ERROR) {
-                FailureModel failureFromInterrupt = null;
-                if (!childThreadRun.getHaltReasons().isEmpty()) {
-                    for (ThreadHaltReasonModel haltReason : childThreadRun.getHaltReasons()) {
-                        if (haltReason.getInterrupted() != null) {
-                            ThreadRunModel threadRun =
-                                    wfRun.getThreadRun(haltReason.getInterrupted().interruptThreadId);
-                            failureFromInterrupt = threadRun
-                                    .getCurrentNodeRun()
-                                    .getLatestFailure()
-                                    .get();
-                            break;
-                        }
-                    }
-                }
-                FailureModel latestFailure = failureFromInterrupt != null
-                        ? failureFromInterrupt
-                        : childThreadRun.getCurrentNodeRun().getLatestFailure().get();
+                FailureModel latestFailure =
+                        childThreadRun.getCurrentNodeRun().getLatestFailure().get();
 
                 FailureHandlerDefModel handler = getHandlerFor(latestFailure);
                 if (handler != null) {
