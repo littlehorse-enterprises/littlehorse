@@ -405,7 +405,7 @@ public class LHServerConfig extends ConfigBase {
 
         return Pair.of(
                 new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
-                new NewTopic(executionTopicName, getClusterPartitions(), getReplicationFactor()));
+                new NewTopic(executionTopicName, getOutputToppicPartitions(), getReplicationFactor()));
     }
 
     public String getKafkaGroupId(String component) {
