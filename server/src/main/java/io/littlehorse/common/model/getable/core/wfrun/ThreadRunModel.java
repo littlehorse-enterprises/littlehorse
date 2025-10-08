@@ -78,7 +78,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public Integer parentThreadId;
 
     public List<ThreadHaltReasonModel> haltReasons = new ArrayList<>();
-    public ExternalEventIdModel interruptTriggerId;
+    private ExternalEventIdModel interruptTriggerId;
     public FailureBeingHandledModel failureBeingHandled;
     public List<Integer> handledFailedChildren = new ArrayList<>();
     private VariableValueModel output;
@@ -724,7 +724,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
         }
         this.errorMessage = failure.message;
-        this.status = failure.getStatus();
+        setStatus(failure.getStatus());
         this.endTime = time;
 
         if (interruptTriggerId != null) {
