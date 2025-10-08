@@ -573,7 +573,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 }
                 break;
             case DEFINEDTYPE_NOT_SET:
-            case INLINE_ARRAY_DEF:
             default:
         }
 
