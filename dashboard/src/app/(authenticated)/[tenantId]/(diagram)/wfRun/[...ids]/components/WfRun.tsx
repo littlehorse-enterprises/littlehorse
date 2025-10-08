@@ -5,8 +5,9 @@ import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { wfRunIdToPath } from '@/app/utils'
 import { Separator } from '@/components/ui/separator'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import useSWR from 'swr'
+import { useDiagram } from '../../../hooks/useDiagram'
 import { ChildWorkflows } from './ChildWorkflows'
 import { Details } from './Details'
 import { Variables } from './Variables'
@@ -14,6 +15,7 @@ import { Variables } from './Variables'
 export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { tenantId } = useWhoAmI()
   const wfRunId = wfRunData.wfRun.id
+  const { thread } = useDiagram()
   if (!wfRunId) return
 
   const { data } = useSWR(
@@ -26,7 +28,11 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
 
   const { wfSpec, wfRun, variables } = data
 
-  const variableDefs = wfSpec.threadSpecs[wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName].variableDefs
+  const variableDefs = useMemo(() => {
+    if (!wfSpec) return []
+    const { threadSpecName } = wfRun.threadRuns[wfRun.greatestThreadrunNumber]
+    return wfSpec.threadSpecs[threadSpecName].variableDefs
+  }, [data])
 
   return (
     <div className="mb-16">
@@ -38,14 +44,8 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
       <Diagram spec={wfSpec} wfRun={wfRun} />
 
       {wfRun.id && (
-        <Variables
-          variableDefs={variableDefs}
-          variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
-        />
-      )}
-
-      {wfRun.id && (
         <>
+          <Variables variableDefs={variableDefs} variables={variables} />
           <Separator className="mb-4 mt-4" />
           <ChildWorkflows parentWfRunId={wfRun.id} spec={wfSpec} />
         </>
