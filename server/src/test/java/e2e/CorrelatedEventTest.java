@@ -311,7 +311,7 @@ public class CorrelatedEventTest {
         verifier.prepareRun(correlationWithTtl, Arg.of("key", randomStr)).start();
 
         ExternalEventDefId evtId =
-                ExternalEventDefId.newBuilder().setName("correllated-with-ttl").build();
+                ExternalEventDefId.newBuilder().setName("correlated-with-ttl").build();
 
         client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                 .setExternalEventDefId(evtId)
