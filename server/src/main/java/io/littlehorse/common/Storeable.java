@@ -6,14 +6,12 @@ import io.littlehorse.common.proto.GetableClassEnum;
 // import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.StoredGetable;
-
 import java.util.Optional;
-
 import org.apache.commons.lang3.NotImplementedException;
 
 public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
-    static final String GROUPED_WF_RUN_PREFIX = "wrg";
+    public static final String GROUPED_WF_RUN_PREFIX = "wrg";
 
     public String getFullStoreKey() {
         if (getGroupingWfRunId().isPresent()) {
@@ -40,8 +38,10 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
         return getSubstorePrefix(type) + storeKey;
     }
 
-    public static String getGroupedFullStoreKey(WfRunIdModel wfRunId, StoreableType type, GetableClassEnum getableType, String storeKey) {
-        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + getableType + "/" + storeKey;
+    public static String getGroupedFullStoreKey(
+            WfRunIdModel wfRunId, StoreableType type, GetableClassEnum getableType, String storeKey) {
+        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + getableType.getNumber() + "/"
+                + storeKey;
     }
 
     public static String getFullStoreKey(Class<? extends Storeable<?>> cls, String storeKey) {
