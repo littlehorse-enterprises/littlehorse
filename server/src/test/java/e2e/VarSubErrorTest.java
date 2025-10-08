@@ -83,6 +83,7 @@ public class VarSubErrorTest {
                             .setWfSpecName("var-type-validations")
                             .setId(wfRunId)
                             .putVariables("input-int", LHLibUtil.objToVarVal("not-an-int"))
+                            .putVariables("input-json", LHLibUtil.objToVarVal(Map.of("int", 1, "string", "hello")))
                             .build());
                 })
                 .matches(exn -> {
@@ -129,21 +130,17 @@ public class VarSubErrorTest {
     }
 
     @Test
-    void shouldNotCastStuffToString() {
+    void shouldAllowPrimitiveToString() {
         verifier.prepareRun(
                         varTypeValidationsWf,
                         Arg.of("input-int", 123),
                         Arg.of("input-json", Map.of("int", 1234, "string", 5432)))
-                .waitForStatus(LHStatus.ERROR)
-                .thenVerifyWfRun(wfRun -> {
-                    assertThat(wfRun.getThreadRuns(0).getCurrentNodePosition()).isEqualTo(3);
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRun(0, 3, taskRun -> {
+                    assertThat(taskRun.getInputVariables(0).getValue().getStr()).isEqualTo("5432");
                 })
-                .thenVerifyNodeRun(0, 3, nodeRun -> {
-                    assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
-                    Failure failure = nodeRun.getFailures(0);
-                    assertThat(failure.getFailureName()).isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
-                    assertThat(failure.getMessage()).contains("STR");
-                })
+                .thenVerifyTaskRunResult(
+                        0, 3, result -> assertThat(result.getStr()).isEqualTo("5432!"))
                 .start();
     }
 

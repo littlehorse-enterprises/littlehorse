@@ -62,4 +62,9 @@ public class LHExpressionImpl implements LHExpression {
     public LHExpression removeKey(Serializable key) {
         return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
     }
+
+    @Override
+    public LHExpression castTo(io.littlehorse.sdk.common.proto.VariableType targetType) {
+        return new CastExpressionImpl(this, targetType);
+    }
 }
