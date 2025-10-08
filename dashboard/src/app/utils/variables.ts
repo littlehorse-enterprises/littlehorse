@@ -154,6 +154,7 @@ export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableVal
         return getVariableCaseFromType(value)
       case 'structDefId':
         return 'struct'
+        // test
       default:
         throw new Error('Unknown variable type.')
     }
