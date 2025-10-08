@@ -10,8 +10,6 @@ import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpRequestDecoder;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseEncoder;
-import io.grpc.netty.shaded.io.netty.util.concurrent.Future;
-
 import java.io.Closeable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
