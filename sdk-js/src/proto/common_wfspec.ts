@@ -259,6 +259,13 @@ export interface VariableAssignment {
     | { $case: "nodeOutput"; value: VariableAssignment_NodeOutputReference }
     | { $case: "expression"; value: VariableAssignment_Expression }
     | undefined;
+  /**
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   */
+  targetType?: TypeDefinition | undefined;
 }
 
 /** A FormatString formats a template String with values from the WfRun. */
@@ -592,7 +599,7 @@ export interface StructFieldDef {
 }
 
 function createBaseVariableAssignment(): VariableAssignment {
-  return { jsonPath: undefined, source: undefined };
+  return { jsonPath: undefined, source: undefined, targetType: undefined };
 }
 
 export const VariableAssignment = {
@@ -616,6 +623,9 @@ export const VariableAssignment = {
       case "expression":
         VariableAssignment_Expression.encode(message.source.value, writer.uint32(50).fork()).ldelim();
         break;
+    }
+    if (message.targetType !== undefined) {
+      TypeDefinition.encode(message.targetType, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -678,6 +688,13 @@ export const VariableAssignment = {
             value: VariableAssignment_Expression.decode(reader, reader.uint32()),
           };
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.targetType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -701,6 +718,7 @@ export const VariableAssignment = {
         : isSet(object.expression)
         ? { $case: "expression", value: VariableAssignment_Expression.fromJSON(object.expression) }
         : undefined,
+      targetType: isSet(object.targetType) ? TypeDefinition.fromJSON(object.targetType) : undefined,
     };
   },
 
@@ -723,6 +741,9 @@ export const VariableAssignment = {
     }
     if (message.source?.$case === "expression") {
       obj.expression = VariableAssignment_Expression.toJSON(message.source.value);
+    }
+    if (message.targetType !== undefined) {
+      obj.targetType = TypeDefinition.toJSON(message.targetType);
     }
     return obj;
   },
@@ -760,6 +781,9 @@ export const VariableAssignment = {
     if (object.source?.$case === "expression" && object.source?.value !== undefined && object.source?.value !== null) {
       message.source = { $case: "expression", value: VariableAssignment_Expression.fromPartial(object.source.value) };
     }
+    message.targetType = (object.targetType !== undefined && object.targetType !== null)
+      ? TypeDefinition.fromPartial(object.targetType)
+      : undefined;
     return message;
   },
 };

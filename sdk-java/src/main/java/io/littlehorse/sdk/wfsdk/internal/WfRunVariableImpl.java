@@ -313,4 +313,9 @@ class WfRunVariableImpl implements WfRunVariable {
     public WfRunVariable asInherited() {
         return this.withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
     }
+
+    @Override
+    public LHExpression castTo(VariableType targetType) {
+        return new CastExpressionImpl(this, targetType);
+    }
 }

@@ -346,7 +346,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         if (Long.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((long) val);
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
-            return new VariableValueModel(Long.valueOf((long) ((Integer) val)));
+            return new VariableValueModel((long) ((Integer) val));
         } else if (String.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((String) val);
         } else if (Boolean.class.isAssignableFrom(val.getClass())) {
@@ -581,62 +581,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 "Coercing from " + getTypeDefinition().getDefinedTypeCase() + "to " + otherType + " not supported.");
     }
 
-    public VariableValueModel asInt() throws LHVarSubError {
-        Long out = null;
-
-        if (getTypeDefinition().getPrimitiveType() == VariableType.INT) {
-            out = intVal;
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
-            out = doubleVal == null ? null : doubleVal.longValue();
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
-            try {
-                out = strVal == null ? null : Long.valueOf(strVal);
-            } catch (Exception exn) {
-                throw new LHVarSubError(exn, "Couldn't convert strVal to INT");
-            }
-        } else {
-            String typeDescription = valueType == ValueCase.VALUE_NOT_SET ? "NULL" : valueType.toString();
-            throw new LHVarSubError(null, "Cant convert " + typeDescription + " to INT");
-        }
-
-        if (out == null) {
-            // If this happens, then there is a seriously impossible bug.
-            throw new IllegalStateException("Should be impossible for out to be null");
-        }
-
-        return new VariableValueModel(out);
-    }
-
-    public VariableValueModel asDouble() throws LHVarSubError {
-        if (getTypeDefinition().getPrimitiveType() == VariableType.INT) {
-            return new VariableValueModel(Double.valueOf(intVal));
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
-            return new VariableValueModel(doubleVal);
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
-            try {
-                return new VariableValueModel(Double.parseDouble(strVal));
-            } catch (Exception exn) {
-                throw new LHVarSubError(exn, "Couldn't convert STR to DOUBLE");
-            }
-        } else {
-            throw new LHVarSubError(null, "Cant convert " + valueType + " to DOUBLE");
-        }
-    }
-
-    public VariableValueModel asWfRunId() throws LHVarSubError {
-        if (getTypeDefinition().getPrimitiveType() == VariableType.WF_RUN_ID) {
-            return new VariableValueModel(wfRunId);
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
-            return new VariableValueModel(new WfRunIdModel(String.valueOf(doubleVal)));
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.INT) {
-            return new VariableValueModel(new WfRunIdModel(String.valueOf(intVal)));
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
-            return new VariableValueModel((WfRunIdModel) WfRunIdModel.fromString(strVal, WfRunIdModel.class));
-        } else {
-            throw new LHVarSubError(null, "Cant convert " + valueType + " to WF_RUN_ID");
-        }
-    }
-
     public VariableValueModel asStruct() throws LHVarSubError {
         if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
             return new VariableValueModel(struct);
@@ -645,11 +589,83 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         }
     }
 
-    public VariableValueModel asBool() throws LHVarSubError {
-        if (getTypeDefinition().getPrimitiveType() != VariableType.BOOL) {
-            throw new LHVarSubError(null, "Unsupported converting to bool");
+    public VariableValueModel asInt() throws LHVarSubError {
+        if (getTypeDefinition().getPrimitiveType() == VariableType.INT) {
+            return new VariableValueModel(intVal);
         }
-        return getCopy();
+        if (getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
+            if (doubleVal == null) {
+                throw new IllegalStateException("DOUBLE value is null");
+            }
+            return new VariableValueModel(doubleVal.longValue());
+        }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
+            if (strVal == null) {
+                throw new LHVarSubError(null, "Cannot convert null string to INT");
+            }
+            try {
+                return new VariableValueModel(Long.valueOf(strVal));
+            } catch (NumberFormatException exn) {
+                throw new LHVarSubError(exn, "Couldn't convert STR '" + strVal + "' to INT");
+            }
+        }
+        throw new LHVarSubError(null, "Cant convert " + getTypeDefinition() + " to INT");
+    }
+
+    public VariableValueModel asDouble() throws LHVarSubError {
+        if (getTypeDefinition().getPrimitiveType() == VariableType.INT) {
+            return new VariableValueModel(Double.valueOf(intVal));
+        }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
+            return new VariableValueModel(doubleVal);
+        }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
+            if (strVal == null) {
+                throw new LHVarSubError(null, "Cannot convert null string to DOUBLE");
+            }
+            try {
+                return new VariableValueModel(Double.parseDouble(strVal));
+            } catch (Exception exn) {
+                throw new LHVarSubError(exn, "Couldn't convert STR '" + strVal + "' to DOUBLE");
+            }
+        }
+        throw new LHVarSubError(null, "Cant convert " + getTypeDefinition() + " to DOUBLE");
+    }
+
+    public VariableValueModel asWfRunId() throws LHVarSubError {
+        if (getTypeDefinition().getPrimitiveType() == VariableType.WF_RUN_ID) {
+            return new VariableValueModel(wfRunId);
+        }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
+            return new VariableValueModel(new WfRunIdModel(String.valueOf(doubleVal)));
+        }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.INT) {
+            return new VariableValueModel(new WfRunIdModel(String.valueOf(intVal)));
+        }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
+            return new VariableValueModel((WfRunIdModel) WfRunIdModel.fromString(strVal, WfRunIdModel.class));
+        }
+        throw new LHVarSubError(null, "Cant convert " + getTypeDefinition() + " to WF_RUN_ID");
+    }
+
+    public VariableValueModel asBool() throws LHVarSubError {
+        if (getTypeDefinition().getPrimitiveType() == VariableType.BOOL) {
+            return getCopy();
+        }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
+            if (strVal == null) {
+                throw new LHVarSubError(null, "Cannot convert null string to BOOL");
+            }
+            String lowerStr = strVal.toLowerCase().trim();
+            if ("true".equals(lowerStr)) {
+                return new VariableValueModel(true);
+            }
+            if ("false".equals(lowerStr)) {
+                return new VariableValueModel(false);
+            }
+            throw new LHVarSubError(null, "Cannot parse '" + strVal + "' as BOOL (use 'true'/'false')");
+        }
+        throw new LHVarSubError(null, "Cannot convert " + getTypeDefinition() + " to BOOL");
     }
 
     public VariableValueModel asStr() throws LHVarSubError {

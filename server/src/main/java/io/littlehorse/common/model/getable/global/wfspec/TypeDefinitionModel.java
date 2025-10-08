@@ -17,6 +17,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Str
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -208,7 +209,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                return this.primitiveType.equals(other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.primitiveType);
             case STRUCT_DEF_ID:
                 return this.structDefId.equals(other.getStructDefId());
             case DEFINEDTYPE_NOT_SET:
@@ -220,8 +221,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the other type is compatible with this type. Note that it requires
-     * exact match for now. In the future we'll support casting.
+     * Returns true if this type can be assigned from the other type, without casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
         if (this.isNull() || other.isNull()) {
@@ -234,11 +234,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                if (this.primitiveType == VariableType.INT || this.primitiveType == VariableType.DOUBLE) {
-                    return other.getPrimitiveType() == VariableType.INT
-                            || other.getPrimitiveType() == VariableType.DOUBLE;
-                }
-                return this.getPrimitiveType().equals(other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(this.primitiveType, other.getPrimitiveType());
             case STRUCT_DEF_ID:
                 return this.getStructDefId().equals(other.getStructDefId());
             case DEFINEDTYPE_NOT_SET:
@@ -267,5 +263,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         }
         if (masked) result += " MASKED";
         return result;
+    }
+
+    /**
+     * Performs casting of a VariableValueModel to this type.
+     *
+     * @param sourceValue The value to cast
+     * @return A new VariableValueModel with the target type, or the original if no casting is needed
+     * @throws IllegalArgumentException if casting is not supported for this type combination
+     */
+    public VariableValueModel applyCast(VariableValueModel sourceValue) {
+        return TypeCastingUtils.applyCast(sourceValue, this.primitiveType);
     }
 }
