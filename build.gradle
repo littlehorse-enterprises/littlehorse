@@ -7,6 +7,10 @@ allprojects {
     version "${version}"
 }
 
+tasks.register('version') {
+    println "${version}"
+}
+
 nexusPublishing {
     repositories {
         sonatype {
