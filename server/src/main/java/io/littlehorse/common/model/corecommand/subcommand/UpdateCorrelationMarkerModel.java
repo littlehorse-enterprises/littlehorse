@@ -70,7 +70,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
         }
         manager.saveCorrelationMarker(marker);
         log.trace("Saved correleation marker {}", marker);
-        context.maybeCorrelateEventPedros(marker);
+        context.maybeCorrelateEventToWfRuns(marker);
 
         return Empty.getDefaultInstance();
     }
