@@ -1415,6 +1415,10 @@ message ReportTaskRun {
     // Business exception
     LHTaskException exception = 8;
   }
+
+  // The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+  // each checkpoint.
+  int32 total_checkpoints = 9;
 }
 
 // Message to HALT a WfRun.

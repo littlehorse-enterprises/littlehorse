@@ -1443,10 +1443,16 @@ export interface ReportTaskRun {
     | undefined;
   /** Attempt number of the TaskRun */
   attemptNumber: number;
-  result?: { $case: "output"; value: VariableValue } | { $case: "error"; value: LHTaskError } | {
-    $case: "exception";
-    value: LHTaskException;
-  } | undefined;
+  result?:
+    | { $case: "output"; value: VariableValue }
+    | { $case: "error"; value: LHTaskError }
+    | { $case: "exception"; value: LHTaskException }
+    | undefined;
+  /**
+   * The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+   * each checkpoint.
+   */
+  totalCheckpoints: number;
 }
 
 /** Message to HALT a WfRun. */
@@ -8877,6 +8883,7 @@ function createBaseReportTaskRun(): ReportTaskRun {
     logOutput: undefined,
     attemptNumber: 0,
     result: undefined,
+    totalCheckpoints: 0,
   };
 }
 
@@ -8907,6 +8914,9 @@ export const ReportTaskRun = {
       case "exception":
         LHTaskException.encode(message.result.value, writer.uint32(66).fork()).ldelim();
         break;
+    }
+    if (message.totalCheckpoints !== 0) {
+      writer.uint32(72).int32(message.totalCheckpoints);
     }
     return writer;
   },
@@ -8974,6 +8984,13 @@ export const ReportTaskRun = {
 
           message.result = { $case: "exception", value: LHTaskException.decode(reader, reader.uint32()) };
           continue;
+        case 9:
+          if (tag !== 72) {
+            break;
+          }
+
+          message.totalCheckpoints = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8997,6 +9014,7 @@ export const ReportTaskRun = {
         : isSet(object.exception)
         ? { $case: "exception", value: LHTaskException.fromJSON(object.exception) }
         : undefined,
+      totalCheckpoints: isSet(object.totalCheckpoints) ? globalThis.Number(object.totalCheckpoints) : 0,
     };
   },
 
@@ -9026,6 +9044,9 @@ export const ReportTaskRun = {
     if (message.result?.$case === "exception") {
       obj.exception = LHTaskException.toJSON(message.result.value);
     }
+    if (message.totalCheckpoints !== 0) {
+      obj.totalCheckpoints = Math.round(message.totalCheckpoints);
+    }
     return obj;
   },
 
@@ -9052,6 +9073,7 @@ export const ReportTaskRun = {
     if (object.result?.$case === "exception" && object.result?.value !== undefined && object.result?.value !== null) {
       message.result = { $case: "exception", value: LHTaskException.fromPartial(object.result.value) };
     }
+    message.totalCheckpoints = object.totalCheckpoints ?? 0;
     return message;
   },
 };
