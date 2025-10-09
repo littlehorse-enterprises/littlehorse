@@ -119,13 +119,14 @@ public final class TaskRunOuterClass extends com.google.protobuf.GeneratedFile {
       "\n\004type\030\001 \001(\0162\030.littlehorse.LHErrorType\022\017" +
       "\n\007message\030\002 \001(\t\"]\n\017LHTaskException\022\014\n\004na" +
       "me\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\022+\n\007content\030\003 \001" +
-      "(\0132\032.littlehorse.VariableValue\"z\n\nCheckp" +
-      "oint\022%\n\002id\030\001 \001(\0132\031.littlehorse.Checkpoin" +
-      "tId\022)\n\005value\030\002 \001(\0132\032.littlehorse.Variabl" +
-      "eValue\022\021\n\004logs\030\003 \001(\tH\000\210\001\001B\007\n\005_logsBM\n\037io" +
-      ".littlehorse.sdk.common.protoP\001Z\t.;lhpro" +
-      "to\252\002\034LittleHorse.Sdk.Common.Protob\006proto" +
-      "3"
+      "(\0132\032.littlehorse.VariableValue\"\252\001\n\nCheck" +
+      "point\022%\n\002id\030\001 \001(\0132\031.littlehorse.Checkpoi" +
+      "ntId\022)\n\005value\030\002 \001(\0132\032.littlehorse.Variab" +
+      "leValue\022\021\n\004logs\030\003 \001(\tH\000\210\001\001\022.\n\ncreated_at" +
+      "\030\004 \001(\0132\032.google.protobuf.TimestampB\007\n\005_l" +
+      "ogsBM\n\037io.littlehorse.sdk.common.protoP\001" +
+      "Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Pro" +
+      "tob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -184,7 +185,7 @@ public final class TaskRunOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_Checkpoint_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Checkpoint_descriptor,
-        new java.lang.String[] { "Id", "Value", "Logs", });
+        new java.lang.String[] { "Id", "Value", "Logs", "CreatedAt", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();

@@ -111,11 +111,13 @@ class LHTaskException(_message.Message):
     def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class Checkpoint(_message.Message):
-    __slots__ = ("id", "value", "logs")
+    __slots__ = ("id", "value", "logs", "created_at")
     ID_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     LOGS_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.CheckpointId
     value: _variable_pb2.VariableValue
     logs: str
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.CheckpointId, _Mapping]] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ...) -> None: ...
+    created_at: _timestamp_pb2.Timestamp
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.CheckpointId, _Mapping]] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

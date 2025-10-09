@@ -186,7 +186,11 @@ export interface Checkpoint {
    * Any logs that the author of the Task Worker wants to send back to the Server
    * for visibility and debugging purposes. Does not affect workflow execution.
    */
-  logs?: string | undefined;
+  logs?:
+    | string
+    | undefined;
+  /** When the checkpoint was created. */
+  createdAt: string | undefined;
 }
 
 function createBaseTaskRun(): TaskRun {
@@ -1085,7 +1089,7 @@ export const LHTaskException = {
 };
 
 function createBaseCheckpoint(): Checkpoint {
-  return { id: undefined, value: undefined, logs: undefined };
+  return { id: undefined, value: undefined, logs: undefined, createdAt: undefined };
 }
 
 export const Checkpoint = {
@@ -1098,6 +1102,9 @@ export const Checkpoint = {
     }
     if (message.logs !== undefined) {
       writer.uint32(26).string(message.logs);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -1130,6 +1137,13 @@ export const Checkpoint = {
 
           message.logs = reader.string();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1144,6 +1158,7 @@ export const Checkpoint = {
       id: isSet(object.id) ? CheckpointId.fromJSON(object.id) : undefined,
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
       logs: isSet(object.logs) ? globalThis.String(object.logs) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
     };
   },
 
@@ -1158,6 +1173,9 @@ export const Checkpoint = {
     if (message.logs !== undefined) {
       obj.logs = message.logs;
     }
+    if (message.createdAt !== undefined) {
+      obj.createdAt = message.createdAt;
+    }
     return obj;
   },
 
@@ -1171,6 +1189,7 @@ export const Checkpoint = {
       ? VariableValue.fromPartial(object.value)
       : undefined;
     message.logs = object.logs ?? undefined;
+    message.createdAt = object.createdAt ?? undefined;
     return message;
   },
 };

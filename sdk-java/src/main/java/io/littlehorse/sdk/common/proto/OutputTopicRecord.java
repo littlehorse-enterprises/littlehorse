@@ -62,6 +62,7 @@ private static final long serialVersionUID = 0L;
     VARIABLE(6),
     EXTERNAL_EVENT(7),
     CORRELATED_EVENT(8),
+    TASK_CHECKPOINT(9),
     PAYLOAD_NOT_SET(0);
     private final int value;
     private PayloadCase(int value) {
@@ -86,6 +87,7 @@ private static final long serialVersionUID = 0L;
         case 6: return VARIABLE;
         case 7: return EXTERNAL_EVENT;
         case 8: return CORRELATED_EVENT;
+        case 9: return TASK_CHECKPOINT;
         case 0: return PAYLOAD_NOT_SET;
         default: return null;
       }
@@ -443,6 +445,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.CorrelatedEvent.getDefaultInstance();
   }
 
+  public static final int TASK_CHECKPOINT_FIELD_NUMBER = 9;
+  /**
+   * <pre>
+   * Updates about a `Checkpoint` being created.
+   * </pre>
+   *
+   * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+   * @return Whether the taskCheckpoint field is set.
+   */
+  @java.lang.Override
+  public boolean hasTaskCheckpoint() {
+    return payloadCase_ == 9;
+  }
+  /**
+   * <pre>
+   * Updates about a `Checkpoint` being created.
+   * </pre>
+   *
+   * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+   * @return The taskCheckpoint.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.Checkpoint getTaskCheckpoint() {
+    if (payloadCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.Checkpoint) payload_;
+    }
+    return io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Updates about a `Checkpoint` being created.
+   * </pre>
+   *
+   * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CheckpointOrBuilder getTaskCheckpointOrBuilder() {
+    if (payloadCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.Checkpoint) payload_;
+    }
+    return io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -480,6 +525,9 @@ private static final long serialVersionUID = 0L;
     }
     if (payloadCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_);
+    }
+    if (payloadCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.Checkpoint) payload_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -521,6 +569,10 @@ private static final long serialVersionUID = 0L;
     if (payloadCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (io.littlehorse.sdk.common.proto.CorrelatedEvent) payload_);
+    }
+    if (payloadCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.Checkpoint) payload_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -572,6 +624,10 @@ private static final long serialVersionUID = 0L;
         if (!getCorrelatedEvent()
             .equals(other.getCorrelatedEvent())) return false;
         break;
+      case 9:
+        if (!getTaskCheckpoint()
+            .equals(other.getTaskCheckpoint())) return false;
+        break;
       case 0:
       default:
     }
@@ -618,6 +674,10 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + CORRELATED_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getCorrelatedEvent().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + TASK_CHECKPOINT_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskCheckpoint().hashCode();
         break;
       case 0:
       default:
@@ -790,6 +850,9 @@ private static final long serialVersionUID = 0L;
       if (correlatedEventBuilder_ != null) {
         correlatedEventBuilder_.clear();
       }
+      if (taskCheckpointBuilder_ != null) {
+        taskCheckpointBuilder_.clear();
+      }
       payloadCase_ = 0;
       payload_ = null;
       return this;
@@ -867,6 +930,10 @@ private static final long serialVersionUID = 0L;
           correlatedEventBuilder_ != null) {
         result.payload_ = correlatedEventBuilder_.build();
       }
+      if (payloadCase_ == 9 &&
+          taskCheckpointBuilder_ != null) {
+        result.payload_ = taskCheckpointBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -911,6 +978,10 @@ private static final long serialVersionUID = 0L;
         }
         case CORRELATED_EVENT: {
           mergeCorrelatedEvent(other.getCorrelatedEvent());
+          break;
+        }
+        case TASK_CHECKPOINT: {
+          mergeTaskCheckpoint(other.getTaskCheckpoint());
           break;
         }
         case PAYLOAD_NOT_SET: {
@@ -999,6 +1070,13 @@ private static final long serialVersionUID = 0L;
               payloadCase_ = 8;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  internalGetTaskCheckpointFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              payloadCase_ = 9;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2441,6 +2519,184 @@ private static final long serialVersionUID = 0L;
       payloadCase_ = 8;
       onChanged();
       return correlatedEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Checkpoint, io.littlehorse.sdk.common.proto.Checkpoint.Builder, io.littlehorse.sdk.common.proto.CheckpointOrBuilder> taskCheckpointBuilder_;
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     * @return Whether the taskCheckpoint field is set.
+     */
+    @java.lang.Override
+    public boolean hasTaskCheckpoint() {
+      return payloadCase_ == 9;
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     * @return The taskCheckpoint.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.Checkpoint getTaskCheckpoint() {
+      if (taskCheckpointBuilder_ == null) {
+        if (payloadCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.Checkpoint) payload_;
+        }
+        return io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance();
+      } else {
+        if (payloadCase_ == 9) {
+          return taskCheckpointBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     */
+    public Builder setTaskCheckpoint(io.littlehorse.sdk.common.proto.Checkpoint value) {
+      if (taskCheckpointBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        payload_ = value;
+        onChanged();
+      } else {
+        taskCheckpointBuilder_.setMessage(value);
+      }
+      payloadCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     */
+    public Builder setTaskCheckpoint(
+        io.littlehorse.sdk.common.proto.Checkpoint.Builder builderForValue) {
+      if (taskCheckpointBuilder_ == null) {
+        payload_ = builderForValue.build();
+        onChanged();
+      } else {
+        taskCheckpointBuilder_.setMessage(builderForValue.build());
+      }
+      payloadCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     */
+    public Builder mergeTaskCheckpoint(io.littlehorse.sdk.common.proto.Checkpoint value) {
+      if (taskCheckpointBuilder_ == null) {
+        if (payloadCase_ == 9 &&
+            payload_ != io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance()) {
+          payload_ = io.littlehorse.sdk.common.proto.Checkpoint.newBuilder((io.littlehorse.sdk.common.proto.Checkpoint) payload_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          payload_ = value;
+        }
+        onChanged();
+      } else {
+        if (payloadCase_ == 9) {
+          taskCheckpointBuilder_.mergeFrom(value);
+        } else {
+          taskCheckpointBuilder_.setMessage(value);
+        }
+      }
+      payloadCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     */
+    public Builder clearTaskCheckpoint() {
+      if (taskCheckpointBuilder_ == null) {
+        if (payloadCase_ == 9) {
+          payloadCase_ = 0;
+          payload_ = null;
+          onChanged();
+        }
+      } else {
+        if (payloadCase_ == 9) {
+          payloadCase_ = 0;
+          payload_ = null;
+        }
+        taskCheckpointBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.Checkpoint.Builder getTaskCheckpointBuilder() {
+      return internalGetTaskCheckpointFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CheckpointOrBuilder getTaskCheckpointOrBuilder() {
+      if ((payloadCase_ == 9) && (taskCheckpointBuilder_ != null)) {
+        return taskCheckpointBuilder_.getMessageOrBuilder();
+      } else {
+        if (payloadCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.Checkpoint) payload_;
+        }
+        return io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Updates about a `Checkpoint` being created.
+     * </pre>
+     *
+     * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Checkpoint, io.littlehorse.sdk.common.proto.Checkpoint.Builder, io.littlehorse.sdk.common.proto.CheckpointOrBuilder> 
+        internalGetTaskCheckpointFieldBuilder() {
+      if (taskCheckpointBuilder_ == null) {
+        if (!(payloadCase_ == 9)) {
+          payload_ = io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance();
+        }
+        taskCheckpointBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.Checkpoint, io.littlehorse.sdk.common.proto.Checkpoint.Builder, io.littlehorse.sdk.common.proto.CheckpointOrBuilder>(
+                (io.littlehorse.sdk.common.proto.Checkpoint) payload_,
+                getParentForChildren(),
+                isClean());
+        payload_ = null;
+      }
+      payloadCase_ = 9;
+      onChanged();
+      return taskCheckpointBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.OutputTopicRecord)

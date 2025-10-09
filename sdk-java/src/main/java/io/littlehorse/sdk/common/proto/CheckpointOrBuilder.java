@@ -95,4 +95,31 @@ public interface CheckpointOrBuilder extends
    */
   com.google.protobuf.ByteString
       getLogsBytes();
+
+  /**
+   * <pre>
+   * When the checkpoint was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 4;</code>
+   * @return Whether the createdAt field is set.
+   */
+  boolean hasCreatedAt();
+  /**
+   * <pre>
+   * When the checkpoint was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 4;</code>
+   * @return The createdAt.
+   */
+  com.google.protobuf.Timestamp getCreatedAt();
+  /**
+   * <pre>
+   * When the checkpoint was created.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 4;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 }
