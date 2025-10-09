@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -12,7 +11,6 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -43,9 +41,6 @@ public class VariableMapping {
 
         switch (inputType.getDefinedTypeCase()) {
             case DEFINEDTYPE_NOT_SET:
-                break;
-            case INLINE_ARRAY_DEF:
-                msg = validateInlineArrayDefType(inputType.getInlineArrayDef(), type);
                 break;
             case PRIMITIVE_TYPE:
                 msg = validatePrimitiveType(inputType.getPrimitiveType(), type);
@@ -129,26 +124,6 @@ public class VariableMapping {
             default:
                 break;
         }
-        return Optional.ofNullable(msg);
-    }
-
-    private Optional<String> validateInlineArrayDefType(InlineArrayDef input, Class<?> type) {
-        String msg = null;
-
-        LHClassType lhClassType = LHClassType.fromJavaClass(type);
-
-        if (!(lhClassType instanceof LHArrayDefType)) {
-            msg = "TaskDef provides InlineArrayDef, func accepts " + type;
-        }
-
-        LHArrayDefType lhArrayDefType = (LHArrayDefType) lhClassType;
-
-        if (!input.equals(lhArrayDefType.getTypeDefinition().getInlineArrayDef())) {
-            msg = String.format(
-                    "TaskDef provides InlineArrayDef <%s>, func accepts InlineArrayDef <%s>",
-                    input, lhArrayDefType.getTypeDefinition().getInlineArrayDef());
-        }
-
         return Optional.ofNullable(msg);
     }
 

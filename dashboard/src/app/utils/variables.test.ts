@@ -411,20 +411,6 @@ describe('getVariableCaseFromTypeDef', () => {
     expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
   })
 
-  it('should return jsonArr for inlineArrayDef', () => {
-    const typeDef: TypeDefinition = {
-      definedType: {
-        $case: 'inlineArrayDef',
-        value: {
-          // minimal stub; fields are not used by the function
-        } as any,
-      },
-      masked: false,
-    }
-
-    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('jsonArr')
-  })
-
   it('should throw on unknown type', () => {
     const typeDef = {} as TypeDefinition
     expect(() => getVariableCaseFromTypeDef(typeDef)).toThrow('Unknown variable type.')
