@@ -18,7 +18,7 @@ import {
 } from "./common_enums";
 import { ExponentialBackoffRetryPolicy } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { NodeRunId, TaskDefId, TaskRunId, WfSpecId } from "./object_id";
+import { CheckpointId, NodeRunId, TaskDefId, TaskRunId, WfSpecId } from "./object_id";
 import { UserTaskTriggerReference } from "./user_tasks";
 import { VariableValue } from "./variable";
 
@@ -66,7 +66,11 @@ export interface TaskRun {
    */
   totalAttempts: number;
   /** Optional backoff policy . */
-  exponentialBackoff?: ExponentialBackoffRetryPolicy | undefined;
+  exponentialBackoff?:
+    | ExponentialBackoffRetryPolicy
+    | undefined;
+  /** Total number of `Checkpoint`s created for this `TaskRun`. */
+  totalCheckpoints: number;
 }
 
 /** A key-value pair of variable name and value. */
@@ -165,6 +169,26 @@ export interface LHTaskException {
   content: VariableValue | undefined;
 }
 
+/**
+ * A Checkpoint is a top-level Getable that is used by the Task Worker Protocol
+ * to enable durable execution at a more granular level within a TaskRun.
+ */
+export interface Checkpoint {
+  /** The ID of the Checkpoint. Includes TaskRunId. */
+  id:
+    | CheckpointId
+    | undefined;
+  /** The value of the Checkpoint. */
+  value:
+    | VariableValue
+    | undefined;
+  /**
+   * Any logs that the author of the Task Worker wants to send back to the Server
+   * for visibility and debugging purposes. Does not affect workflow execution.
+   */
+  logs?: string | undefined;
+}
+
 function createBaseTaskRun(): TaskRun {
   return {
     id: undefined,
@@ -177,6 +201,7 @@ function createBaseTaskRun(): TaskRun {
     timeoutSeconds: 0,
     totalAttempts: 0,
     exponentialBackoff: undefined,
+    totalCheckpoints: 0,
   };
 }
 
@@ -211,6 +236,9 @@ export const TaskRun = {
     }
     if (message.exponentialBackoff !== undefined) {
       ExponentialBackoffRetryPolicy.encode(message.exponentialBackoff, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.totalCheckpoints !== 0) {
+      writer.uint32(88).int32(message.totalCheckpoints);
     }
     return writer;
   },
@@ -292,6 +320,13 @@ export const TaskRun = {
 
           message.exponentialBackoff = ExponentialBackoffRetryPolicy.decode(reader, reader.uint32());
           continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.totalCheckpoints = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -319,6 +354,7 @@ export const TaskRun = {
       exponentialBackoff: isSet(object.exponentialBackoff)
         ? ExponentialBackoffRetryPolicy.fromJSON(object.exponentialBackoff)
         : undefined,
+      totalCheckpoints: isSet(object.totalCheckpoints) ? globalThis.Number(object.totalCheckpoints) : 0,
     };
   },
 
@@ -354,6 +390,9 @@ export const TaskRun = {
     if (message.exponentialBackoff !== undefined) {
       obj.exponentialBackoff = ExponentialBackoffRetryPolicy.toJSON(message.exponentialBackoff);
     }
+    if (message.totalCheckpoints !== 0) {
+      obj.totalCheckpoints = Math.round(message.totalCheckpoints);
+    }
     return obj;
   },
 
@@ -378,6 +417,7 @@ export const TaskRun = {
     message.exponentialBackoff = (object.exponentialBackoff !== undefined && object.exponentialBackoff !== null)
       ? ExponentialBackoffRetryPolicy.fromPartial(object.exponentialBackoff)
       : undefined;
+    message.totalCheckpoints = object.totalCheckpoints ?? 0;
     return message;
   },
 };
@@ -1040,6 +1080,97 @@ export const LHTaskException = {
     message.content = (object.content !== undefined && object.content !== null)
       ? VariableValue.fromPartial(object.content)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseCheckpoint(): Checkpoint {
+  return { id: undefined, value: undefined, logs: undefined };
+}
+
+export const Checkpoint = {
+  encode(message: Checkpoint, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      CheckpointId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.logs !== undefined) {
+      writer.uint32(26).string(message.logs);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Checkpoint {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCheckpoint();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = CheckpointId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.logs = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Checkpoint {
+    return {
+      id: isSet(object.id) ? CheckpointId.fromJSON(object.id) : undefined,
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+      logs: isSet(object.logs) ? globalThis.String(object.logs) : undefined,
+    };
+  },
+
+  toJSON(message: Checkpoint): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = CheckpointId.toJSON(message.id);
+    }
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
+    }
+    if (message.logs !== undefined) {
+      obj.logs = message.logs;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Checkpoint>): Checkpoint {
+    return Checkpoint.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Checkpoint>): Checkpoint {
+    const message = createBaseCheckpoint();
+    message.id = (object.id !== undefined && object.id !== null) ? CheckpointId.fromPartial(object.id) : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
+    message.logs = object.logs ?? undefined;
     return message;
   },
 };

@@ -753,6 +753,32 @@ class PollTaskRequest(_message.Message):
     task_worker_version: str
     def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., client_id: _Optional[str] = ..., task_worker_version: _Optional[str] = ...) -> None: ...
 
+class PutCheckpointRequest(_message.Message):
+    __slots__ = ("task_run_id", "task_attempt", "value", "logs")
+    TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    TASK_ATTEMPT_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    LOGS_FIELD_NUMBER: _ClassVar[int]
+    task_run_id: _object_id_pb2.TaskRunId
+    task_attempt: int
+    value: _variable_pb2.VariableValue
+    logs: str
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_attempt: _Optional[int] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ...) -> None: ...
+
+class PutCheckpointResponse(_message.Message):
+    __slots__ = ("flow_control_continue_type", "created_checkpoint")
+    class FlowControlContinue(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = ()
+        CONTINUE_TASK: _ClassVar[PutCheckpointResponse.FlowControlContinue]
+        STOP_TASK: _ClassVar[PutCheckpointResponse.FlowControlContinue]
+    CONTINUE_TASK: PutCheckpointResponse.FlowControlContinue
+    STOP_TASK: PutCheckpointResponse.FlowControlContinue
+    FLOW_CONTROL_CONTINUE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    CREATED_CHECKPOINT_FIELD_NUMBER: _ClassVar[int]
+    flow_control_continue_type: PutCheckpointResponse.FlowControlContinue
+    created_checkpoint: _task_run_pb2.Checkpoint
+    def __init__(self, flow_control_continue_type: _Optional[_Union[PutCheckpointResponse.FlowControlContinue, str]] = ..., created_checkpoint: _Optional[_Union[_task_run_pb2.Checkpoint, _Mapping]] = ...) -> None: ...
+
 class ScheduledTask(_message.Message):
     __slots__ = ("task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source")
     TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
