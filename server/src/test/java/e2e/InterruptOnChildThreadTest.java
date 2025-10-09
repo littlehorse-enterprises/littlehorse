@@ -263,7 +263,7 @@ public class InterruptOnChildThreadTest {
 
     @LHWorkflow("handle-failure-on-interrupt")
     public Workflow getHandleFailureOnInterruptThreadWf() {
-        return Workflow.newWorkflow("interrupt-and-child-thread", parent -> {
+        return Workflow.newWorkflow("handle-failure-on-interrupt", parent -> {
             SpawnedThread childHandle = parent.spawnThread(
                     child -> {
                         child.sleepSeconds(1);
