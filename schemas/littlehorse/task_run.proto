@@ -52,6 +52,9 @@ message TaskRun {
 
   // Optional backoff policy .
   optional ExponentialBackoffRetryPolicy exponential_backoff = 10;
+
+  // Total number of `Checkpoint`s created for this `TaskRun`.
+  int32 total_checkpoints = 11;
 }
 
 // A key-value pair of variable name and value.
@@ -152,4 +155,18 @@ message LHTaskException {
   string message = 2;
 
   VariableValue content = 3;
+}
+
+// A Checkpoint is a top-level Getable that is used by the Task Worker Protocol
+// to enable durable execution at a more granular level within a TaskRun.
+message Checkpoint {
+  // The ID of the Checkpoint. Includes TaskRunId.
+  CheckpointId id = 1;
+
+  // The value of the Checkpoint.
+  VariableValue value = 2;
+
+  // Any logs that the author of the Task Worker wants to send back to the Server
+  // for visibility and debugging purposes. Does not affect workflow execution.
+  optional string logs = 3;
 }
