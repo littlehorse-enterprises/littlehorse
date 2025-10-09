@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
@@ -60,11 +59,6 @@ class WfRunVariableImpl implements WfRunVariable {
         return new WfRunVariableImpl(name, null, null, structDefName, null, parent);
     }
 
-    public static WfRunVariableImpl createArrayDefVar(
-            String name, LHArrayDefType elementType, WorkflowThreadImpl parent) {
-        return new WfRunVariableImpl(name, null, null, null, elementType, parent);
-    }
-
     private WfRunVariableImpl(
             String name,
             Object typeOrDefaultVal,
@@ -103,9 +97,6 @@ class WfRunVariableImpl implements WfRunVariable {
                         .setStructDefId(StructDefId.newBuilder().setName(structDefName))
                         .build();
             }
-        } else if (arrayElementType != null) {
-            this.definedType = DefinedTypeCase.INLINE_ARRAY_DEF;
-            this.typeDef = arrayElementType.getTypeDefinition();
         }
     }
 
@@ -321,5 +312,10 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public WfRunVariable asInherited() {
         return this.withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+    }
+
+    @Override
+    public LHExpression castTo(VariableType targetType) {
+        return new CastExpressionImpl(this, targetType);
     }
 }

@@ -12,6 +12,7 @@ import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpRequestDecoder;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseEncoder;
 import java.io.Closeable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 public class StatusServer implements Closeable {
@@ -52,6 +53,8 @@ public class StatusServer implements Closeable {
 
     @Override
     public void close() {
+        workerGroup.shutdownGracefully().awaitUninterruptibly(10, TimeUnit.SECONDS);
+        bossGroup.shutdownGracefully().awaitUninterruptibly(10, TimeUnit.SECONDS);
         workerGroup.close();
         bossGroup.close();
     }

@@ -5,6 +5,8 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -17,6 +19,7 @@ import io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -97,11 +100,17 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
         correlatedEvent.setCreatedAt(context.currentCommand().getTime());
         correlatedEvent.setContent(content);
 
-        // TODO (#1583): Check for CorrelationMarkers and send ExternalEvent's through Timer/Boomerang topology
         manager.put(correlatedEvent);
+        context.maybeCorrelateEventToWfRuns(correlatedEvent);
 
-        log.trace("About to correlate pedros: {}", correlatedEvent);
-        context.maybeCorrelateEventPedros(correlatedEvent);
+        if (externalEventDef.getCorrelatedEventConfig().getTtlSeconds() != null) {
+            DeleteCorrelatedEventRequestModel deleteRequest = new DeleteCorrelatedEventRequestModel();
+            deleteRequest.setId(id);
+            CommandModel command = new CommandModel(deleteRequest);
+            command.setTime(new Date(System.currentTimeMillis()
+                    + (1000 * externalEventDef.getCorrelatedEventConfig().getTtlSeconds())));
+            context.getTaskManager().scheduleTimer(new LHTimer(command));
+        }
 
         return correlatedEvent.toProto().build();
     }

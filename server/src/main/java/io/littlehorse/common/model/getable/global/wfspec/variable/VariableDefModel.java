@@ -81,7 +81,6 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
 
     public void validateValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
             throws InvalidVariableDefException {
-        System.out.println("Validating " + value + " against " + typeDef);
         if (value.isNull()) return;
 
         if (typeDef.isCompatibleWith(value, metadataManager)) {
@@ -96,12 +95,13 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
             throws LHVarSubError {
         try {
             validateValue(value, metadataManager);
+            VariableValueModel finalValue = typeDef.applyCast(value);
+            if (typeDef.isMasked()) {
+                return new VarNameAndValModel(name, finalValue, true);
+            }
+            return new VarNameAndValModel(name, finalValue, false);
         } catch (LHValidationException e) {
             throw new LHVarSubError(e, e.getMessage());
         }
-        if (typeDef.isMasked()) {
-            return new VarNameAndValModel(name, value, true);
-        }
-        return new VarNameAndValModel(name, value, false);
     }
 }
