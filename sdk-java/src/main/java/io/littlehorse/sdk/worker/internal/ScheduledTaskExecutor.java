@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.InvocationTargetException;
@@ -28,9 +29,11 @@ public class ScheduledTaskExecutor {
 
     private final int MAX_RETRY_ATTEMPTS = 5;
     private final LittleHorseGrpc.LittleHorseStub retriesStub;
+    private final LittleHorseGrpc.LittleHorseBlockingStub blockingStub;
 
-    public ScheduledTaskExecutor(final LittleHorseGrpc.LittleHorseStub retriesStub) {
+    public ScheduledTaskExecutor(final LittleHorseGrpc.LittleHorseStub retriesStub, final LittleHorseBlockingStub blockingStub) {
         this.retriesStub = retriesStub;
+        this.blockingStub = blockingStub;
     }
 
     public void doTask(
@@ -62,7 +65,7 @@ public class ScheduledTaskExecutor {
                 .setTaskRunId(scheduledTask.getTaskRunId())
                 .setAttemptNumber(scheduledTask.getAttemptNumber());
 
-        WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime);
+        WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime, blockingStub);
 
         try {
             Object rawResult = invoke(scheduledTask, wc, mappings, executable, taskMethod);
