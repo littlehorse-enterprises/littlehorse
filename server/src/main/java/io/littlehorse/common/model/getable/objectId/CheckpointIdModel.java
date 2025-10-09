@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.getable.objectId;
 
-import java.util.Optional;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.CoreObjectId;
@@ -9,11 +8,23 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.Checkpoint;
 import io.littlehorse.sdk.common.proto.CheckpointId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CheckpointIdModel extends CoreObjectId<CheckpointId, Checkpoint, CheckpointModel> {
 
     private TaskRunIdModel taskRun;
     private int checkpointNumber;
+
+    public CheckpointIdModel() {}
+
+    public CheckpointIdModel(TaskRunIdModel taskRun, int checkpointNumber) {
+        this.taskRun = taskRun;
+        this.checkpointNumber = checkpointNumber;
+    }
 
     @Override
     public Class<CheckpointId> getProtoBaseClass() {

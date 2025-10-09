@@ -56,6 +56,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
     private Date scheduledAt;
     private int timeoutSeconds;
     private TaskStatus status;
+    private int totalCheckpoints;
 
     private int simpleTotalAttempts;
     private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
@@ -122,6 +123,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                     p.getExponentialBackoff(), ExponentialBackoffRetryPolicyModel.class, context);
         }
 
+        this.totalCheckpoints = p.getTotalCheckpoints();
         this.executionContext = context;
         this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
@@ -135,7 +137,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 .setSource(taskRunSource.toProto())
                 .setTimeoutSeconds(timeoutSeconds)
                 .setId(id.toProto())
-                .setTotalAttempts(simpleTotalAttempts);
+                .setTotalAttempts(simpleTotalAttempts)
+                .setTotalCheckpoints(totalCheckpoints);
 
         for (VarNameAndValModel v : inputVariables) {
             out.addInputVariables(v.toProto());
@@ -257,13 +260,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         transitionTo(TaskStatus.TASK_RUNNING);
 
         // create a timer to mark the task is timeout if it does not finish
-        ReportTaskRunModel taskResult = new ReportTaskRunModel();
-        taskResult.setTaskRunId(id);
-        taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
-        taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
-        CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
-        LHTimer timer = new LHTimer(timerCommand);
-        processorContext.getTaskManager().scheduleTimer(timer);
+        sendUpdatedTimeoutTimerCommand(processorContext);
 
         // Now that that's out of the way, we can mark the TaskRun as running.
         // Also we need to save the task worker version and client id.
@@ -274,9 +271,29 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
+    public void sendUpdatedTimeoutTimerCommand(CoreProcessorContext context) {
+        ReportTaskRunModel taskResult = new ReportTaskRunModel();
+        taskResult.setTaskRunId(id);
+        taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
+        taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
+        taskResult.setTotalCheckpoints(totalCheckpoints);
+        CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
+        LHTimer timer = new LHTimer(timerCommand);
+        processorContext.getTaskManager().scheduleTimer(timer);
+    }
+
+    public void observeNewCheckpointAndUpdateTimeouts(CoreProcessorContext context) {
+        totalCheckpoints++;
+        sendUpdatedTimeoutTimerCommand(context);
+    }
+
     public void onTaskAttemptResultReported(ReportTaskRunModel taskRunReport) {
         if (taskRunReport.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
+        }
+
+        if (totalCheckpoints != taskRunReport.getTotalCheckpoints()) {
+            log.trace("Ignoring stale ReportTaskRun from previous observed generation.");
         }
 
         TaskAttemptModel attempt = attempts.get(taskRunReport.getAttemptNumber());

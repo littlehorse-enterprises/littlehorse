@@ -135,11 +135,14 @@ The `Checkpoint` will be enabled to be sent to the Output Topic as it is a top-l
 
 ## Future Work
 
+The following can all be done in a backwards-compatible way.
+
 ### Non-Controversial
 
 * Creating an `rpc ListCheckpoint` which returns all of the Checkpoints in a single request. This is tricky because of pagination; however, it will improve performance.
 * Some way to track failed checkpoints in the dashboard (For example, fenced workers).
 * Metrics about checkpoints. But we still need the metrics ADR.
+* Enhanced timeouts, which allow timeouts for the whole end-to-end `TaskRun` and also timeouts between the `Checkpoint`s.
 
 ### Controversial
 
@@ -147,5 +150,6 @@ The following require discussion and may or may not make sense to implement, but
 
 * Running a `TaskRun` outside of a `WfSpec` via a new RPC: `rpc RunTask`.
 * Calling other `WfSpec` functionality from within a `TaskRun`.
+* Using `TaskWorkerHeartbeat`s to keep track of and fence long-running `TaskRun`s that have a long time between `Checkpoint`s.
 
 I could see a future in which we evaluate both proposals and decide against both of them; however, in my travels with customers I have seen use-cases for them already.

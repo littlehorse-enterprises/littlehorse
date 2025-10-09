@@ -1,8 +1,5 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.CoreGetable;
@@ -15,7 +12,14 @@ import io.littlehorse.sdk.common.proto.Checkpoint;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CheckpointModel extends CoreGetable<Checkpoint> implements CoreOutputTopicGetable<Checkpoint> {
 
     private CheckpointIdModel id;
@@ -34,7 +38,10 @@ public class CheckpointModel extends CoreGetable<Checkpoint> implements CoreOutp
 
     @Override
     public Checkpoint.Builder toProto() {
-        Checkpoint.Builder out = Checkpoint.newBuilder().setId(id.toProto()).setValue(value.toProto()).setCreatedAt(LHLibUtil.fromDate(createdAt));
+        Checkpoint.Builder out = Checkpoint.newBuilder()
+                .setId(id.toProto())
+                .setValue(value.toProto())
+                .setCreatedAt(LHLibUtil.fromDate(createdAt));
         if (logs != null) {
             out.setLogs(logs);
         }
