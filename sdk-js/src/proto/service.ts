@@ -1416,7 +1416,11 @@ export interface ScheduledTask {
    * 1. A TASK node
    * 2. A reminder task scheduled by a trigger on a User Task.
    */
-  source: TaskRunSource | undefined;
+  source:
+    | TaskRunSource
+    | undefined;
+  /** The total number of checkpoints previously created by prior `TaskAttempt`s. */
+  totalObservedCheckpoints: number;
 }
 
 /** Response from the server for PollTaskRequest. */
@@ -8675,6 +8679,7 @@ function createBaseScheduledTask(): ScheduledTask {
     variables: [],
     createdAt: undefined,
     source: undefined,
+    totalObservedCheckpoints: 0,
   };
 }
 
@@ -8697,6 +8702,9 @@ export const ScheduledTask = {
     }
     if (message.source !== undefined) {
       TaskRunSource.encode(message.source, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.totalObservedCheckpoints !== 0) {
+      writer.uint32(56).int32(message.totalObservedCheckpoints);
     }
     return writer;
   },
@@ -8750,6 +8758,13 @@ export const ScheduledTask = {
 
           message.source = TaskRunSource.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.totalObservedCheckpoints = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8769,6 +8784,9 @@ export const ScheduledTask = {
         : [],
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       source: isSet(object.source) ? TaskRunSource.fromJSON(object.source) : undefined,
+      totalObservedCheckpoints: isSet(object.totalObservedCheckpoints)
+        ? globalThis.Number(object.totalObservedCheckpoints)
+        : 0,
     };
   },
 
@@ -8792,6 +8810,9 @@ export const ScheduledTask = {
     if (message.source !== undefined) {
       obj.source = TaskRunSource.toJSON(message.source);
     }
+    if (message.totalObservedCheckpoints !== 0) {
+      obj.totalObservedCheckpoints = Math.round(message.totalObservedCheckpoints);
+    }
     return obj;
   },
 
@@ -8812,6 +8833,7 @@ export const ScheduledTask = {
     message.source = (object.source !== undefined && object.source !== null)
       ? TaskRunSource.fromPartial(object.source)
       : undefined;
+    message.totalObservedCheckpoints = object.totalObservedCheckpoints ?? 0;
     return message;
   },
 };

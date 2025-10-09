@@ -780,20 +780,22 @@ class PutCheckpointResponse(_message.Message):
     def __init__(self, flow_control_continue_type: _Optional[_Union[PutCheckpointResponse.FlowControlContinue, str]] = ..., created_checkpoint: _Optional[_Union[_task_run_pb2.Checkpoint, _Mapping]] = ...) -> None: ...
 
 class ScheduledTask(_message.Message):
-    __slots__ = ("task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source")
+    __slots__ = ("task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source", "total_observed_checkpoints")
     TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     ATTEMPT_NUMBER_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     SOURCE_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_OBSERVED_CHECKPOINTS_FIELD_NUMBER: _ClassVar[int]
     task_run_id: _object_id_pb2.TaskRunId
     task_def_id: _object_id_pb2.TaskDefId
     attempt_number: int
     variables: _containers.RepeatedCompositeFieldContainer[_task_run_pb2.VarNameAndVal]
     created_at: _timestamp_pb2.Timestamp
     source: _task_run_pb2.TaskRunSource
-    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempt_number: _Optional[int] = ..., variables: _Optional[_Iterable[_Union[_task_run_pb2.VarNameAndVal, _Mapping]]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., source: _Optional[_Union[_task_run_pb2.TaskRunSource, _Mapping]] = ...) -> None: ...
+    total_observed_checkpoints: int
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempt_number: _Optional[int] = ..., variables: _Optional[_Iterable[_Union[_task_run_pb2.VarNameAndVal, _Mapping]]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., source: _Optional[_Union[_task_run_pb2.TaskRunSource, _Mapping]] = ..., total_observed_checkpoints: _Optional[int] = ...) -> None: ...
 
 class PollTaskResponse(_message.Message):
     __slots__ = ("result",)

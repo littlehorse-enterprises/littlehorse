@@ -1377,6 +1377,7 @@ message ScheduledTask {
   TaskRunSource source = 6;
 
   // The total number of checkpoints previously created by prior `TaskAttempt`s.
+  int32 total_observed_checkpoints = 7;
 }
 
 // Response from the server for PollTaskRequest.
