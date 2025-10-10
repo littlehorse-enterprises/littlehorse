@@ -18,7 +18,7 @@ public class WfRunVariableImplTest {
     };
 
     @Test
-    void validateVariableAllowJsonPah() {
+    void validateVariableAllowJsonPath() {
         WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
         WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
         WfRunVariableImpl variable = WfRunVariableImpl.createPrimitiveVar("my-var", VariableType.STR, wfThread);
@@ -26,6 +26,25 @@ public class WfRunVariableImplTest {
         LHMisconfigurationException e =
                 assertThrows(LHMisconfigurationException.class, () -> variable.jsonPath("&.myPath"));
         assertThat(e.getMessage()).isEqualTo("JsonPath not allowed in a STR variable");
+    }
+
+    @Test
+    void validateStructVarAllowGet() {
+        WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
+        WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
+        WfRunVariableImpl variable = WfRunVariableImpl.createStructDefVar("struct-var", "car", wfThread);
+
+        variable.get("model");
+    }
+
+    @Test
+    void validateStringVarDoesNotAllowGet() {
+        WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
+        WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
+        WfRunVariableImpl variable = WfRunVariableImpl.createPrimitiveVar("str-var", VariableType.STR, wfThread);
+
+        LHMisconfigurationException e = assertThrows(LHMisconfigurationException.class, () -> variable.get("model"));
+        assertThat(e.getMessage()).isEqualTo("Can only use get() on JSON_OBJ or Struct variables");
     }
 
     @Test

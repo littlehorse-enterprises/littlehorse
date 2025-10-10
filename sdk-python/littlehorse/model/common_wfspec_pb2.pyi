@@ -51,7 +51,7 @@ IN: Comparator
 NOT_IN: Comparator
 
 class VariableAssignment(_message.Message):
-    __slots__ = ("json_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
+    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
     class FormatString(_message.Message):
         __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -74,6 +74,7 @@ class VariableAssignment(_message.Message):
         rhs: VariableAssignment
         def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
     JSON_PATH_FIELD_NUMBER: _ClassVar[int]
+    LH_PATH_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_NAME_FIELD_NUMBER: _ClassVar[int]
     LITERAL_VALUE_FIELD_NUMBER: _ClassVar[int]
     FORMAT_STRING_FIELD_NUMBER: _ClassVar[int]
@@ -81,13 +82,14 @@ class VariableAssignment(_message.Message):
     EXPRESSION_FIELD_NUMBER: _ClassVar[int]
     TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
     json_path: str
+    lh_path: LHPath
     variable_name: str
     literal_value: _variable_pb2.VariableValue
     format_string: VariableAssignment.FormatString
     node_output: VariableAssignment.NodeOutputReference
     expression: VariableAssignment.Expression
     target_type: TypeDefinition
-    def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")
@@ -223,3 +225,14 @@ class StructFieldDef(_message.Message):
     field_type: TypeDefinition
     default_value: _variable_pb2.VariableValue
     def __init__(self, field_type: _Optional[_Union[TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+
+class LHPath(_message.Message):
+    __slots__ = ("path",)
+    class Selector(_message.Message):
+        __slots__ = ("key",)
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        def __init__(self, key: _Optional[str] = ...) -> None: ...
+    PATH_FIELD_NUMBER: _ClassVar[int]
+    path: _containers.RepeatedCompositeFieldContainer[LHPath.Selector]
+    def __init__(self, path: _Optional[_Iterable[_Union[LHPath.Selector, _Mapping]]] = ...) -> None: ...

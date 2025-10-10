@@ -12,38 +12,59 @@ public interface VariableAssignmentOrBuilder extends
 
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return Whether the jsonPath field is set.
    */
   boolean hasJsonPath();
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return The jsonPath.
    */
   java.lang.String getJsonPath();
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return The bytes for jsonPath.
    */
   com.google.protobuf.ByteString
       getJsonPathBytes();
+
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   * @return Whether the lhPath field is set.
+   */
+  boolean hasLhPath();
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   * @return The lhPath.
+   */
+  io.littlehorse.sdk.common.proto.LHPath getLhPath();
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhPathOrBuilder();
 
   /**
    * <pre>
@@ -217,6 +238,8 @@ public interface VariableAssignmentOrBuilder extends
    * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
    */
   io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTargetTypeOrBuilder();
+
+  io.littlehorse.sdk.common.proto.VariableAssignment.PathCase getPathCase();
 
   io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }
