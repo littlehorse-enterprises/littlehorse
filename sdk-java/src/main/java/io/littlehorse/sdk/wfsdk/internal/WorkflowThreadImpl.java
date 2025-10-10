@@ -368,7 +368,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             if (WfRunVariableImpl.class.isAssignableFrom(arg.getClass())) {
                 WfRunVariableImpl wfVar = ((WfRunVariableImpl) arg);
 
-                if (wfVar.getDefinedType() == DefinedTypeCase.PRIMITIVE_TYPE
+                if (wfVar.typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
                         && (wfVar.typeDef.getPrimitiveType() == VariableType.JSON_ARR
                                 || wfVar.typeDef.getPrimitiveType() == VariableType.JSON_OBJ)
                         && wfVar.jsonPath != null) {
