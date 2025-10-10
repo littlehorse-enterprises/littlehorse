@@ -14,7 +14,7 @@ The `grand-child` `WfSpec` extends this hierarchy further by:
 
 First, run the application. This creates all three `WfSpec`s (`parent`, `child`, and `grand-child`) and registers a Task Worker.
 ```
-./gradlew example-child-workflow:run
+./gradlew example-hierarchical-workflow:run
 ```
 
 In another terminal, use `lhctl` to run the parent workflow:

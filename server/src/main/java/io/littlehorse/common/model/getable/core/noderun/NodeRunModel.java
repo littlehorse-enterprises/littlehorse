@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExitRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.RunChildWfNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartMultipleThreadsRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
@@ -76,6 +77,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private UserTaskNodeRunModel userTaskRun;
     private ThrowEventNodeRunModel throwEventNodeRun;
     private WaitForConditionNodeRunModel waitForConditionNodeRun;
+    private RunChildWfNodeRunModel runChildWfNodeRun;
 
     private ExecutionContext executionContext;
 
@@ -149,6 +151,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case WAIT_FOR_CONDITION:
                 waitForConditionNodeRun = LHSerializable.fromProto(
                         proto.getWaitForCondition(), WaitForConditionNodeRunModel.class, context);
+                break;
+            case RUN_CHILD_WF:
+                this.runChildWfNodeRun =
+                        LHSerializable.fromProto(proto.getRunChildWf(), RunChildWfNodeRunModel.class, context);
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -248,6 +254,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case WAIT_FOR_CONDITION:
                 out.setWaitForCondition(waitForConditionNodeRun.toProto());
                 break;
+            case RUN_CHILD_WF:
+                out.setRunChildWf(runChildWfNodeRun.toProto());
+                break;
             case NODETYPE_NOT_SET:
         }
 
@@ -297,6 +306,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 return throwEventNodeRun;
             case WAIT_FOR_CONDITION:
                 return waitForConditionNodeRun;
+            case RUN_CHILD_WF:
+                return runChildWfNodeRun;
             case NODETYPE_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -346,6 +357,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         } else if (cls.equals(WaitForConditionNodeRunModel.class)) {
             type = NodeTypeCase.WAIT_FOR_CONDITION;
             waitForConditionNodeRun = (WaitForConditionNodeRunModel) subNodeRun;
+        } else if (cls.equals(RunChildWfNodeRunModel.class)) {
+            type = NodeTypeCase.RUN_CHILD_WF;
+            this.runChildWfNodeRun = (RunChildWfNodeRunModel) subNodeRun;
         } else {
             throw new RuntimeException("Didn't recognize " + subNodeRun.getClass());
         }

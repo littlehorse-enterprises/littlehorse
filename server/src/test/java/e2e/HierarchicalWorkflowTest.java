@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest(externalEventNames = {"child-workflow-event"})
-public class ChildWorkflowTest {
+public class HierarchicalWorkflowTest {
 
     private static final String EVENT_NAME = "child-workflow-event";
     private LittleHorseBlockingStub client;
