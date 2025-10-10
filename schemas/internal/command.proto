@@ -52,6 +52,7 @@ message Command {
         PutUserTaskRunCommentRequest put_user_task_run_comment = 31;
         EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;
         DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
+        PutCheckpointRequest put_checkpoint = 34;
     }
 }
 

@@ -50,7 +50,7 @@ public final class OutputTopic extends com.google.protobuf.GeneratedFile {
       "nt.proto\032\020user_tasks.proto\032\016task_run.pro" +
       "to\032\016task_def.proto\032\rwf_spec.proto\032\014wf_ru" +
       "n.proto\032\016variable.proto\032\020struct_def.prot" +
-      "o\032\024external_event.proto\"\241\003\n\021OutputTopicR" +
+      "o\032\024external_event.proto\"\325\003\n\021OutputTopicR" +
       "ecord\022-\n\ttimestamp\030\001 \001(\0132\032.google.protob" +
       "uf.Timestamp\022(\n\010task_run\030\002 \001(\0132\024.littleh" +
       "orse.TaskRunH\000\0224\n\016workflow_event\030\003 \001(\0132\032" +
@@ -60,18 +60,20 @@ public final class OutputTopic extends com.google.protobuf.GeneratedFile {
       "\010variable\030\006 \001(\0132\025.littlehorse.VariableH\000" +
       "\0224\n\016external_event\030\007 \001(\0132\032.littlehorse.E" +
       "xternalEventH\000\0228\n\020correlated_event\030\010 \001(\013" +
-      "2\034.littlehorse.CorrelatedEventH\000B\t\n\007payl" +
-      "oad\"\333\002\n\031MetadataOutputTopicRecord\022&\n\007wf_" +
-      "spec\030\001 \001(\0132\023.littlehorse.WfSpecH\000\022(\n\010tas" +
-      "k_def\030\002 \001(\0132\024.littlehorse.TaskDefH\000\022;\n\022e" +
-      "xternal_event_def\030\003 \001(\0132\035.littlehorse.Ex" +
-      "ternalEventDefH\000\022;\n\022workflow_event_def\030\004" +
-      " \001(\0132\035.littlehorse.WorkflowEventDefH\000\0221\n" +
-      "\ruser_task_def\030\005 \001(\0132\030.littlehorse.UserT" +
-      "askDefH\000\022,\n\nstruct_def\030\006 \001(\0132\026.littlehor" +
-      "se.StructDefH\000B\021\n\017metadata_recordBM\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
-      "o\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "2\034.littlehorse.CorrelatedEventH\000\0222\n\017task" +
+      "_checkpoint\030\t \001(\0132\027.littlehorse.Checkpoi" +
+      "ntH\000B\t\n\007payload\"\333\002\n\031MetadataOutputTopicR" +
+      "ecord\022&\n\007wf_spec\030\001 \001(\0132\023.littlehorse.WfS" +
+      "pecH\000\022(\n\010task_def\030\002 \001(\0132\024.littlehorse.Ta" +
+      "skDefH\000\022;\n\022external_event_def\030\003 \001(\0132\035.li" +
+      "ttlehorse.ExternalEventDefH\000\022;\n\022workflow" +
+      "_event_def\030\004 \001(\0132\035.littlehorse.WorkflowE" +
+      "ventDefH\000\0221\n\ruser_task_def\030\005 \001(\0132\030.littl" +
+      "ehorse.UserTaskDefH\000\022,\n\nstruct_def\030\006 \001(\013" +
+      "2\026.littlehorse.StructDefH\000B\021\n\017metadata_r" +
+      "ecordBM\n\037io.littlehorse.sdk.common.proto" +
+      "P\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.P" +
+      "rotob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -92,7 +94,7 @@ public final class OutputTopic extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_OutputTopicRecord_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_OutputTopicRecord_descriptor,
-        new java.lang.String[] { "Timestamp", "TaskRun", "WorkflowEvent", "WfRun", "UserTaskRun", "Variable", "ExternalEvent", "CorrelatedEvent", "Payload", });
+        new java.lang.String[] { "Timestamp", "TaskRun", "WorkflowEvent", "WfRun", "UserTaskRun", "Variable", "ExternalEvent", "CorrelatedEvent", "TaskCheckpoint", "Payload", });
     internal_static_littlehorse_MetadataOutputTopicRecord_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_MetadataOutputTopicRecord_fieldAccessorTable = new

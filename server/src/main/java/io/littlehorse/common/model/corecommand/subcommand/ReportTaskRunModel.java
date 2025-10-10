@@ -33,6 +33,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     private int attemptNumber; // this is CRUCIAL to set properly.
     private LHTaskErrorModel error;
     private LHTaskExceptionModel exception;
+    private int totalCheckpoints;
 
     @Override
     public String getPartitionKey() {
@@ -61,7 +62,8 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
                 .setTaskRunId(taskRunId.toProto())
                 .setTime(LHUtil.fromDate(time))
                 .setStatus(status)
-                .setAttemptNumber(attemptNumber);
+                .setAttemptNumber(attemptNumber)
+                .setTotalCheckpoints(totalCheckpoints);
 
         if (output != null) b.setOutput(output.toProto());
         if (logOutput != null) b.setLogOutput(logOutput.toProto());
@@ -78,6 +80,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         this.time = LHUtil.fromProtoTs(p.getTime());
         this.status = p.getStatus();
         this.attemptNumber = p.getAttemptNumber();
+        this.totalCheckpoints = p.getTotalCheckpoints();
 
         if (p.hasOutput()) {
             this.output = VariableValueModel.fromProto(p.getOutput(), context);

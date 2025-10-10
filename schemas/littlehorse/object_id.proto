@@ -162,6 +162,16 @@ message TaskRunId {
   string task_guid = 2;
 }
 
+// The ID for a Checkpoint (part of a TaskRun)
+message CheckpointId {
+  // The TaskRun with which this Checkpoint is associated.
+  TaskRunId task_run = 1;
+
+  // An auto-incremented counter starting at 0 which distinguishes checkpoints (in
+  // order) for each TaskRun
+  int32 checkpoint_number = 2;
+}
+
 // ID for a UserTaskRun
 message UserTaskRunId {
   // WfRunId for this UserTaskRun. Note that every UserTaskRun is associated

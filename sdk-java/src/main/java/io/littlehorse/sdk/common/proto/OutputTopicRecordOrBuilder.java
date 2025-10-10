@@ -229,5 +229,32 @@ public interface OutputTopicRecordOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.CorrelatedEventOrBuilder getCorrelatedEventOrBuilder();
 
+  /**
+   * <pre>
+   * Updates about a `Checkpoint` being created.
+   * </pre>
+   *
+   * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+   * @return Whether the taskCheckpoint field is set.
+   */
+  boolean hasTaskCheckpoint();
+  /**
+   * <pre>
+   * Updates about a `Checkpoint` being created.
+   * </pre>
+   *
+   * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+   * @return The taskCheckpoint.
+   */
+  io.littlehorse.sdk.common.proto.Checkpoint getTaskCheckpoint();
+  /**
+   * <pre>
+   * Updates about a `Checkpoint` being created.
+   * </pre>
+   *
+   * <code>.littlehorse.Checkpoint task_checkpoint = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.CheckpointOrBuilder getTaskCheckpointOrBuilder();
+
   io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase getPayloadCase();
 }

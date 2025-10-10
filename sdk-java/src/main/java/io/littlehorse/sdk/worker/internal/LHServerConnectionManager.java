@@ -39,7 +39,7 @@ public class LHServerConnectionManager {
                         mappings,
                         executable,
                         taskMethod,
-                        new ScheduledTaskExecutor(bootstrapStub)));
+                        new ScheduledTaskExecutor(bootstrapStub, config.getBlockingStub())));
         this.livenessController = livenessController;
         this.taskDef = taskDef;
     }

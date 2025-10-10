@@ -298,4 +298,14 @@ public interface TaskRunOrBuilder extends
    * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 10;</code>
    */
   io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder();
+
+  /**
+   * <pre>
+   * Total number of `Checkpoint`s created for this `TaskRun`.
+   * </pre>
+   *
+   * <code>int32 total_checkpoints = 11;</code>
+   * @return The totalCheckpoints.
+   */
+  int getTotalCheckpoints();
 }

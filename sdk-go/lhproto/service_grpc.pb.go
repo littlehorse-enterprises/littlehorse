@@ -84,6 +84,8 @@ const (
 	LittleHorse_RegisterTaskWorker_FullMethodName         = "/littlehorse.LittleHorse/RegisterTaskWorker"
 	LittleHorse_PollTask_FullMethodName                   = "/littlehorse.LittleHorse/PollTask"
 	LittleHorse_ReportTask_FullMethodName                 = "/littlehorse.LittleHorse/ReportTask"
+	LittleHorse_PutCheckpoint_FullMethodName              = "/littlehorse.LittleHorse/PutCheckpoint"
+	LittleHorse_GetCheckpoint_FullMethodName              = "/littlehorse.LittleHorse/GetCheckpoint"
 	LittleHorse_StopWfRun_FullMethodName                  = "/littlehorse.LittleHorse/StopWfRun"
 	LittleHorse_ResumeWfRun_FullMethodName                = "/littlehorse.LittleHorse/ResumeWfRun"
 	LittleHorse_RescueThreadRun_FullMethodName            = "/littlehorse.LittleHorse/RescueThreadRun"
@@ -291,6 +293,17 @@ type LittleHorseClient interface {
 	// Used by Task Workers to report the result of a TaskRun. Generally, you won't use
 	// this rpc manually.
 	ReportTask(ctx context.Context, in *ReportTaskRun, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Used internally by Task Workers to create a `Checkpoint` during the execution of
+	// a `TaskRun`.
+	//
+	// Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+	// `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+	// state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+	// then the request returns code `OK` and a `STOP_TASK` value for the field
+	// `flow_control_continue_type`.
+	PutCheckpoint(ctx context.Context, in *PutCheckpointRequest, opts ...grpc.CallOption) (*PutCheckpointResponse, error)
+	// Gets a Checkpoint.
+	GetCheckpoint(ctx context.Context, in *CheckpointId, opts ...grpc.CallOption) (*Checkpoint, error)
 	// Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
 	StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
@@ -956,6 +969,24 @@ func (c *littleHorseClient) ReportTask(ctx context.Context, in *ReportTaskRun, o
 	return out, nil
 }
 
+func (c *littleHorseClient) PutCheckpoint(ctx context.Context, in *PutCheckpointRequest, opts ...grpc.CallOption) (*PutCheckpointResponse, error) {
+	out := new(PutCheckpointResponse)
+	err := c.cc.Invoke(ctx, LittleHorse_PutCheckpoint_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetCheckpoint(ctx context.Context, in *CheckpointId, opts ...grpc.CallOption) (*Checkpoint, error) {
+	out := new(Checkpoint)
+	err := c.cc.Invoke(ctx, LittleHorse_GetCheckpoint_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_StopWfRun_FullMethodName, in, out, opts...)
@@ -1345,6 +1376,17 @@ type LittleHorseServer interface {
 	// Used by Task Workers to report the result of a TaskRun. Generally, you won't use
 	// this rpc manually.
 	ReportTask(context.Context, *ReportTaskRun) (*emptypb.Empty, error)
+	// Used internally by Task Workers to create a `Checkpoint` during the execution of
+	// a `TaskRun`.
+	//
+	// Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+	// `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+	// state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+	// then the request returns code `OK` and a `STOP_TASK` value for the field
+	// `flow_control_continue_type`.
+	PutCheckpoint(context.Context, *PutCheckpointRequest) (*PutCheckpointResponse, error)
+	// Gets a Checkpoint.
+	GetCheckpoint(context.Context, *CheckpointId) (*Checkpoint, error)
 	// Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
 	StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
@@ -1600,6 +1642,12 @@ func (UnimplementedLittleHorseServer) PollTask(LittleHorse_PollTaskServer) error
 }
 func (UnimplementedLittleHorseServer) ReportTask(context.Context, *ReportTaskRun) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportTask not implemented")
+}
+func (UnimplementedLittleHorseServer) PutCheckpoint(context.Context, *PutCheckpointRequest) (*PutCheckpointResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutCheckpoint not implemented")
+}
+func (UnimplementedLittleHorseServer) GetCheckpoint(context.Context, *CheckpointId) (*Checkpoint, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCheckpoint not implemented")
 }
 func (UnimplementedLittleHorseServer) StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StopWfRun not implemented")
@@ -2843,6 +2891,42 @@ func _LittleHorse_ReportTask_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_PutCheckpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutCheckpointRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutCheckpoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutCheckpoint_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutCheckpoint(ctx, req.(*PutCheckpointRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetCheckpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckpointId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetCheckpoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetCheckpoint_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetCheckpoint(ctx, req.(*CheckpointId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_StopWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StopWfRunRequest)
 	if err := dec(in); err != nil {
@@ -3515,6 +3599,14 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReportTask",
 			Handler:    _LittleHorse_ReportTask_Handler,
+		},
+		{
+			MethodName: "PutCheckpoint",
+			Handler:    _LittleHorse_PutCheckpoint_Handler,
+		},
+		{
+			MethodName: "GetCheckpoint",
+			Handler:    _LittleHorse_GetCheckpoint_Handler,
 		},
 		{
 			MethodName: "StopWfRun",

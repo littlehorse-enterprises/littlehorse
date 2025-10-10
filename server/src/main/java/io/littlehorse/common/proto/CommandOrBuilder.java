@@ -492,5 +492,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequestOrBuilder getDeleteUserTaskRunCommentOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+   * @return Whether the putCheckpoint field is set.
+   */
+  boolean hasPutCheckpoint();
+  /**
+   * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+   * @return The putCheckpoint.
+   */
+  io.littlehorse.sdk.common.proto.PutCheckpointRequest getPutCheckpoint();
+  /**
+   * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder getPutCheckpointOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

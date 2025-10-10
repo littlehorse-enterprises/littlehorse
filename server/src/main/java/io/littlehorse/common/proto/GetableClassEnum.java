@@ -91,6 +91,10 @@ public enum GetableClassEnum
    * <code>CORRELATED_EVENT = 19;</code>
    */
   CORRELATED_EVENT(19),
+  /**
+   * <code>CHECKPOINT = 20;</code>
+   */
+  CHECKPOINT(20),
   UNRECOGNIZED(-1),
   ;
 
@@ -183,6 +187,10 @@ public enum GetableClassEnum
    * <code>CORRELATED_EVENT = 19;</code>
    */
   public static final int CORRELATED_EVENT_VALUE = 19;
+  /**
+   * <code>CHECKPOINT = 20;</code>
+   */
+  public static final int CHECKPOINT_VALUE = 20;
 
 
   public final int getNumber() {
@@ -229,6 +237,7 @@ public enum GetableClassEnum
       case 17: return SCHEDULED_WF_RUN;
       case 18: return STRUCT_DEF;
       case 19: return CORRELATED_EVENT;
+      case 20: return CHECKPOINT;
       default: return null;
     }
   }

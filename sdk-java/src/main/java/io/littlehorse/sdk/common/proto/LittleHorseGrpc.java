@@ -1996,6 +1996,68 @@ public final class LittleHorseGrpc {
     return getReportTaskMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCheckpointRequest,
+      io.littlehorse.sdk.common.proto.PutCheckpointResponse> getPutCheckpointMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutCheckpoint",
+      requestType = io.littlehorse.sdk.common.proto.PutCheckpointRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.PutCheckpointResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCheckpointRequest,
+      io.littlehorse.sdk.common.proto.PutCheckpointResponse> getPutCheckpointMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutCheckpointRequest, io.littlehorse.sdk.common.proto.PutCheckpointResponse> getPutCheckpointMethod;
+    if ((getPutCheckpointMethod = LittleHorseGrpc.getPutCheckpointMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutCheckpointMethod = LittleHorseGrpc.getPutCheckpointMethod) == null) {
+          LittleHorseGrpc.getPutCheckpointMethod = getPutCheckpointMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutCheckpointRequest, io.littlehorse.sdk.common.proto.PutCheckpointResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutCheckpoint"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutCheckpointResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutCheckpoint"))
+              .build();
+        }
+      }
+    }
+    return getPutCheckpointMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CheckpointId,
+      io.littlehorse.sdk.common.proto.Checkpoint> getGetCheckpointMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetCheckpoint",
+      requestType = io.littlehorse.sdk.common.proto.CheckpointId.class,
+      responseType = io.littlehorse.sdk.common.proto.Checkpoint.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CheckpointId,
+      io.littlehorse.sdk.common.proto.Checkpoint> getGetCheckpointMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CheckpointId, io.littlehorse.sdk.common.proto.Checkpoint> getGetCheckpointMethod;
+    if ((getGetCheckpointMethod = LittleHorseGrpc.getGetCheckpointMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetCheckpointMethod = LittleHorseGrpc.getGetCheckpointMethod) == null) {
+          LittleHorseGrpc.getGetCheckpointMethod = getGetCheckpointMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CheckpointId, io.littlehorse.sdk.common.proto.Checkpoint>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetCheckpoint"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CheckpointId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.Checkpoint.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetCheckpoint"))
+              .build();
+        }
+      }
+    }
+    return getGetCheckpointMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StopWfRunRequest,
       com.google.protobuf.Empty> getStopWfRunMethod;
 
@@ -3455,6 +3517,32 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Used internally by Task Workers to create a `Checkpoint` during the execution of
+     * a `TaskRun`.
+     * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+     * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+     * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+     * then the request returns code `OK` and a `STOP_TASK` value for the field
+     * `flow_control_continue_type`.
+     * </pre>
+     */
+    default void putCheckpoint(io.littlehorse.sdk.common.proto.PutCheckpointRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PutCheckpointResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutCheckpointMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a Checkpoint.
+     * </pre>
+     */
+    default void getCheckpoint(io.littlehorse.sdk.common.proto.CheckpointId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Checkpoint> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetCheckpointMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
      * </pre>
      */
@@ -4463,6 +4551,34 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Used internally by Task Workers to create a `Checkpoint` during the execution of
+     * a `TaskRun`.
+     * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+     * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+     * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+     * then the request returns code `OK` and a `STOP_TASK` value for the field
+     * `flow_control_continue_type`.
+     * </pre>
+     */
+    public void putCheckpoint(io.littlehorse.sdk.common.proto.PutCheckpointRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PutCheckpointResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutCheckpointMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a Checkpoint.
+     * </pre>
+     */
+    public void getCheckpoint(io.littlehorse.sdk.common.proto.CheckpointId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Checkpoint> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetCheckpointMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
      * </pre>
      */
@@ -5421,6 +5537,32 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Used internally by Task Workers to create a `Checkpoint` during the execution of
+     * a `TaskRun`.
+     * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+     * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+     * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+     * then the request returns code `OK` and a `STOP_TASK` value for the field
+     * `flow_control_continue_type`.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.PutCheckpointResponse putCheckpoint(io.littlehorse.sdk.common.proto.PutCheckpointRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPutCheckpointMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a Checkpoint.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Checkpoint getCheckpoint(io.littlehorse.sdk.common.proto.CheckpointId request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetCheckpointMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
      * </pre>
      */
@@ -6339,6 +6481,32 @@ public final class LittleHorseGrpc {
     public com.google.protobuf.Empty reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getReportTaskMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Used internally by Task Workers to create a `Checkpoint` during the execution of
+     * a `TaskRun`.
+     * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+     * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+     * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+     * then the request returns code `OK` and a `STOP_TASK` value for the field
+     * `flow_control_continue_type`.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.PutCheckpointResponse putCheckpoint(io.littlehorse.sdk.common.proto.PutCheckpointRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutCheckpointMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a Checkpoint.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Checkpoint getCheckpoint(io.littlehorse.sdk.common.proto.CheckpointId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetCheckpointMethod(), getCallOptions(), request);
     }
 
     /**
@@ -7328,6 +7496,34 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Used internally by Task Workers to create a `Checkpoint` during the execution of
+     * a `TaskRun`.
+     * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+     * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+     * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+     * then the request returns code `OK` and a `STOP_TASK` value for the field
+     * `flow_control_continue_type`.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.PutCheckpointResponse> putCheckpoint(
+        io.littlehorse.sdk.common.proto.PutCheckpointRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutCheckpointMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a Checkpoint.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Checkpoint> getCheckpoint(
+        io.littlehorse.sdk.common.proto.CheckpointId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetCheckpointMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
      * </pre>
      */
@@ -7648,30 +7844,32 @@ public final class LittleHorseGrpc {
   private static final int METHODID_SEARCH_STRUCT_DEF = 60;
   private static final int METHODID_REGISTER_TASK_WORKER = 61;
   private static final int METHODID_REPORT_TASK = 62;
-  private static final int METHODID_STOP_WF_RUN = 63;
-  private static final int METHODID_RESUME_WF_RUN = 64;
-  private static final int METHODID_RESCUE_THREAD_RUN = 65;
-  private static final int METHODID_DELETE_WF_RUN = 66;
-  private static final int METHODID_DELETE_TASK_DEF = 67;
-  private static final int METHODID_DELETE_STRUCT_DEF = 68;
-  private static final int METHODID_DELETE_WF_SPEC = 69;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 70;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 71;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 72;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 73;
-  private static final int METHODID_DELETE_PRINCIPAL = 74;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 75;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 76;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 77;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 78;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 79;
-  private static final int METHODID_PUT_TENANT = 80;
-  private static final int METHODID_GET_TENANT = 81;
-  private static final int METHODID_PUT_PRINCIPAL = 82;
-  private static final int METHODID_GET_PRINCIPAL = 83;
-  private static final int METHODID_WHOAMI = 84;
-  private static final int METHODID_GET_SERVER_VERSION = 85;
-  private static final int METHODID_POLL_TASK = 86;
+  private static final int METHODID_PUT_CHECKPOINT = 63;
+  private static final int METHODID_GET_CHECKPOINT = 64;
+  private static final int METHODID_STOP_WF_RUN = 65;
+  private static final int METHODID_RESUME_WF_RUN = 66;
+  private static final int METHODID_RESCUE_THREAD_RUN = 67;
+  private static final int METHODID_DELETE_WF_RUN = 68;
+  private static final int METHODID_DELETE_TASK_DEF = 69;
+  private static final int METHODID_DELETE_STRUCT_DEF = 70;
+  private static final int METHODID_DELETE_WF_SPEC = 71;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 72;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 73;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 74;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 75;
+  private static final int METHODID_DELETE_PRINCIPAL = 76;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 77;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 78;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 79;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 80;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 81;
+  private static final int METHODID_PUT_TENANT = 82;
+  private static final int METHODID_GET_TENANT = 83;
+  private static final int METHODID_PUT_PRINCIPAL = 84;
+  private static final int METHODID_GET_PRINCIPAL = 85;
+  private static final int METHODID_WHOAMI = 86;
+  private static final int METHODID_GET_SERVER_VERSION = 87;
+  private static final int METHODID_POLL_TASK = 88;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -7941,6 +8139,14 @@ public final class LittleHorseGrpc {
         case METHODID_REPORT_TASK:
           serviceImpl.reportTask((io.littlehorse.sdk.common.proto.ReportTaskRun) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_PUT_CHECKPOINT:
+          serviceImpl.putCheckpoint((io.littlehorse.sdk.common.proto.PutCheckpointRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PutCheckpointResponse>) responseObserver);
+          break;
+        case METHODID_GET_CHECKPOINT:
+          serviceImpl.getCheckpoint((io.littlehorse.sdk.common.proto.CheckpointId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Checkpoint>) responseObserver);
           break;
         case METHODID_STOP_WF_RUN:
           serviceImpl.stopWfRun((io.littlehorse.sdk.common.proto.StopWfRunRequest) request,
@@ -8504,6 +8710,20 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_REPORT_TASK)))
         .addMethod(
+          getPutCheckpointMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutCheckpointRequest,
+              io.littlehorse.sdk.common.proto.PutCheckpointResponse>(
+                service, METHODID_PUT_CHECKPOINT)))
+        .addMethod(
+          getGetCheckpointMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CheckpointId,
+              io.littlehorse.sdk.common.proto.Checkpoint>(
+                service, METHODID_GET_CHECKPOINT)))
+        .addMethod(
           getStopWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -8776,6 +8996,8 @@ public final class LittleHorseGrpc {
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
+              .addMethod(getPutCheckpointMethod())
+              .addMethod(getGetCheckpointMethod())
               .addMethod(getStopWfRunMethod())
               .addMethod(getResumeWfRunMethod())
               .addMethod(getRescueThreadRunMethod())

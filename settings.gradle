@@ -17,6 +17,7 @@ include(
 [
         'await-workflow-event',
         'basic',
+        'checkpoint-tasks',
         'child-thread',
         'child-workflow',
         'conditionals-while',
@@ -33,7 +34,6 @@ include(
         'parallel-approval',
         'run-wf',
         'saga',
-        'shared-variables',
         'workflow-events',
         'casting',
         'spawn-thread-foreach',

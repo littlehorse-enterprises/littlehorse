@@ -35,6 +35,7 @@ import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
+  CheckpointId,
   CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
@@ -57,7 +58,7 @@ import {
 import { ScheduledWfRun } from "./scheduled_wf_run";
 import { StructDef } from "./struct_def";
 import { TaskDef } from "./task_def";
-import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
+import { Checkpoint, LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
 import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
@@ -1297,6 +1298,96 @@ export interface PollTaskRequest {
   taskWorkerVersion?: string | undefined;
 }
 
+/** Message to create a Checkpoint. */
+export interface PutCheckpointRequest {
+  /** The id of the `TaskRun` that this `Checkpoint` is associated with. */
+  taskRunId:
+    | TaskRunId
+    | undefined;
+  /**
+   * The `TaskAttempt` that this checkpoint originates from. This is used to fence
+   * zombies. If the checkpointed `TaskAttempt` is not `TASK_RUNNING`, the RPC will
+   * return a `STOP_TASK` response.
+   */
+  taskAttempt: number;
+  /** The value of the checkpoint. */
+  value:
+    | VariableValue
+    | undefined;
+  /** Any user-friendly logs which can be used for debugging. */
+  logs?: string | undefined;
+}
+
+/** The response for creating a Checkpoint. Used internally by the Task Worker. */
+export interface PutCheckpointResponse {
+  /**
+   * Instructions to the Task Worker SDK determining whether to continue or stop
+   * execution of the task.
+   */
+  flowControlContinueType: PutCheckpointResponse_FlowControlContinue;
+  /** The checkpoint (if created). */
+  createdCheckpoint?: Checkpoint | undefined;
+}
+
+/**
+ * Enum used to affect control flow of the Task Worker to either allow it to continue
+ * executing the Task or to stop execution. Execution may be stopped for several reasons
+ * including fencing zombies and also allowing to enforce limits on total Checkpoints
+ * for a TaskRun.
+ */
+export enum PutCheckpointResponse_FlowControlContinue {
+  /** CONTINUE_TASK - Continue executing the TaskRun. */
+  CONTINUE_TASK = "CONTINUE_TASK",
+  /** STOP_TASK - Stopp executing the TaskRun. */
+  STOP_TASK = "STOP_TASK",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function putCheckpointResponse_FlowControlContinueFromJSON(
+  object: any,
+): PutCheckpointResponse_FlowControlContinue {
+  switch (object) {
+    case 0:
+    case "CONTINUE_TASK":
+      return PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK;
+    case 1:
+    case "STOP_TASK":
+      return PutCheckpointResponse_FlowControlContinue.STOP_TASK;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return PutCheckpointResponse_FlowControlContinue.UNRECOGNIZED;
+  }
+}
+
+export function putCheckpointResponse_FlowControlContinueToJSON(
+  object: PutCheckpointResponse_FlowControlContinue,
+): string {
+  switch (object) {
+    case PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK:
+      return "CONTINUE_TASK";
+    case PutCheckpointResponse_FlowControlContinue.STOP_TASK:
+      return "STOP_TASK";
+    case PutCheckpointResponse_FlowControlContinue.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function putCheckpointResponse_FlowControlContinueToNumber(
+  object: PutCheckpointResponse_FlowControlContinue,
+): number {
+  switch (object) {
+    case PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK:
+      return 0;
+    case PutCheckpointResponse_FlowControlContinue.STOP_TASK:
+      return 1;
+    case PutCheckpointResponse_FlowControlContinue.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /**
  * Message sent by server to Task Worker SDK specifying a specific TaskRun to be executed.
  * This is used and handled internally by the Task Worker SDK.
@@ -1325,7 +1416,11 @@ export interface ScheduledTask {
    * 1. A TASK node
    * 2. A reminder task scheduled by a trigger on a User Task.
    */
-  source: TaskRunSource | undefined;
+  source:
+    | TaskRunSource
+    | undefined;
+  /** The total number of checkpoints previously created by prior `TaskAttempt`s. */
+  totalObservedCheckpoints: number;
 }
 
 /** Response from the server for PollTaskRequest. */
@@ -1352,10 +1447,16 @@ export interface ReportTaskRun {
     | undefined;
   /** Attempt number of the TaskRun */
   attemptNumber: number;
-  result?: { $case: "output"; value: VariableValue } | { $case: "error"; value: LHTaskError } | {
-    $case: "exception";
-    value: LHTaskException;
-  } | undefined;
+  result?:
+    | { $case: "output"; value: VariableValue }
+    | { $case: "error"; value: LHTaskError }
+    | { $case: "exception"; value: LHTaskException }
+    | undefined;
+  /**
+   * The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+   * each checkpoint.
+   */
+  totalCheckpoints: number;
 }
 
 /** Message to HALT a WfRun. */
@@ -8380,6 +8481,196 @@ export const PollTaskRequest = {
   },
 };
 
+function createBasePutCheckpointRequest(): PutCheckpointRequest {
+  return { taskRunId: undefined, taskAttempt: 0, value: undefined, logs: undefined };
+}
+
+export const PutCheckpointRequest = {
+  encode(message: PutCheckpointRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskRunId !== undefined) {
+      TaskRunId.encode(message.taskRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.taskAttempt !== 0) {
+      writer.uint32(16).int32(message.taskAttempt);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.logs !== undefined) {
+      writer.uint32(34).string(message.logs);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutCheckpointRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutCheckpointRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskRunId = TaskRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.taskAttempt = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.logs = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutCheckpointRequest {
+    return {
+      taskRunId: isSet(object.taskRunId) ? TaskRunId.fromJSON(object.taskRunId) : undefined,
+      taskAttempt: isSet(object.taskAttempt) ? globalThis.Number(object.taskAttempt) : 0,
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+      logs: isSet(object.logs) ? globalThis.String(object.logs) : undefined,
+    };
+  },
+
+  toJSON(message: PutCheckpointRequest): unknown {
+    const obj: any = {};
+    if (message.taskRunId !== undefined) {
+      obj.taskRunId = TaskRunId.toJSON(message.taskRunId);
+    }
+    if (message.taskAttempt !== 0) {
+      obj.taskAttempt = Math.round(message.taskAttempt);
+    }
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
+    }
+    if (message.logs !== undefined) {
+      obj.logs = message.logs;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PutCheckpointRequest>): PutCheckpointRequest {
+    return PutCheckpointRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutCheckpointRequest>): PutCheckpointRequest {
+    const message = createBasePutCheckpointRequest();
+    message.taskRunId = (object.taskRunId !== undefined && object.taskRunId !== null)
+      ? TaskRunId.fromPartial(object.taskRunId)
+      : undefined;
+    message.taskAttempt = object.taskAttempt ?? 0;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
+    message.logs = object.logs ?? undefined;
+    return message;
+  },
+};
+
+function createBasePutCheckpointResponse(): PutCheckpointResponse {
+  return {
+    flowControlContinueType: PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK,
+    createdCheckpoint: undefined,
+  };
+}
+
+export const PutCheckpointResponse = {
+  encode(message: PutCheckpointResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.flowControlContinueType !== PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK) {
+      writer.uint32(8).int32(putCheckpointResponse_FlowControlContinueToNumber(message.flowControlContinueType));
+    }
+    if (message.createdCheckpoint !== undefined) {
+      Checkpoint.encode(message.createdCheckpoint, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutCheckpointResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutCheckpointResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.flowControlContinueType = putCheckpointResponse_FlowControlContinueFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdCheckpoint = Checkpoint.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutCheckpointResponse {
+    return {
+      flowControlContinueType: isSet(object.flowControlContinueType)
+        ? putCheckpointResponse_FlowControlContinueFromJSON(object.flowControlContinueType)
+        : PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK,
+      createdCheckpoint: isSet(object.createdCheckpoint) ? Checkpoint.fromJSON(object.createdCheckpoint) : undefined,
+    };
+  },
+
+  toJSON(message: PutCheckpointResponse): unknown {
+    const obj: any = {};
+    if (message.flowControlContinueType !== PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK) {
+      obj.flowControlContinueType = putCheckpointResponse_FlowControlContinueToJSON(message.flowControlContinueType);
+    }
+    if (message.createdCheckpoint !== undefined) {
+      obj.createdCheckpoint = Checkpoint.toJSON(message.createdCheckpoint);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PutCheckpointResponse>): PutCheckpointResponse {
+    return PutCheckpointResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutCheckpointResponse>): PutCheckpointResponse {
+    const message = createBasePutCheckpointResponse();
+    message.flowControlContinueType = object.flowControlContinueType ??
+      PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK;
+    message.createdCheckpoint = (object.createdCheckpoint !== undefined && object.createdCheckpoint !== null)
+      ? Checkpoint.fromPartial(object.createdCheckpoint)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseScheduledTask(): ScheduledTask {
   return {
     taskRunId: undefined,
@@ -8388,6 +8679,7 @@ function createBaseScheduledTask(): ScheduledTask {
     variables: [],
     createdAt: undefined,
     source: undefined,
+    totalObservedCheckpoints: 0,
   };
 }
 
@@ -8410,6 +8702,9 @@ export const ScheduledTask = {
     }
     if (message.source !== undefined) {
       TaskRunSource.encode(message.source, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.totalObservedCheckpoints !== 0) {
+      writer.uint32(56).int32(message.totalObservedCheckpoints);
     }
     return writer;
   },
@@ -8463,6 +8758,13 @@ export const ScheduledTask = {
 
           message.source = TaskRunSource.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.totalObservedCheckpoints = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8482,6 +8784,9 @@ export const ScheduledTask = {
         : [],
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       source: isSet(object.source) ? TaskRunSource.fromJSON(object.source) : undefined,
+      totalObservedCheckpoints: isSet(object.totalObservedCheckpoints)
+        ? globalThis.Number(object.totalObservedCheckpoints)
+        : 0,
     };
   },
 
@@ -8505,6 +8810,9 @@ export const ScheduledTask = {
     if (message.source !== undefined) {
       obj.source = TaskRunSource.toJSON(message.source);
     }
+    if (message.totalObservedCheckpoints !== 0) {
+      obj.totalObservedCheckpoints = Math.round(message.totalObservedCheckpoints);
+    }
     return obj;
   },
 
@@ -8525,6 +8833,7 @@ export const ScheduledTask = {
     message.source = (object.source !== undefined && object.source !== null)
       ? TaskRunSource.fromPartial(object.source)
       : undefined;
+    message.totalObservedCheckpoints = object.totalObservedCheckpoints ?? 0;
     return message;
   },
 };
@@ -8596,6 +8905,7 @@ function createBaseReportTaskRun(): ReportTaskRun {
     logOutput: undefined,
     attemptNumber: 0,
     result: undefined,
+    totalCheckpoints: 0,
   };
 }
 
@@ -8626,6 +8936,9 @@ export const ReportTaskRun = {
       case "exception":
         LHTaskException.encode(message.result.value, writer.uint32(66).fork()).ldelim();
         break;
+    }
+    if (message.totalCheckpoints !== 0) {
+      writer.uint32(72).int32(message.totalCheckpoints);
     }
     return writer;
   },
@@ -8693,6 +9006,13 @@ export const ReportTaskRun = {
 
           message.result = { $case: "exception", value: LHTaskException.decode(reader, reader.uint32()) };
           continue;
+        case 9:
+          if (tag !== 72) {
+            break;
+          }
+
+          message.totalCheckpoints = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8716,6 +9036,7 @@ export const ReportTaskRun = {
         : isSet(object.exception)
         ? { $case: "exception", value: LHTaskException.fromJSON(object.exception) }
         : undefined,
+      totalCheckpoints: isSet(object.totalCheckpoints) ? globalThis.Number(object.totalCheckpoints) : 0,
     };
   },
 
@@ -8745,6 +9066,9 @@ export const ReportTaskRun = {
     if (message.result?.$case === "exception") {
       obj.exception = LHTaskException.toJSON(message.result.value);
     }
+    if (message.totalCheckpoints !== 0) {
+      obj.totalCheckpoints = Math.round(message.totalCheckpoints);
+    }
     return obj;
   },
 
@@ -8771,6 +9095,7 @@ export const ReportTaskRun = {
     if (object.result?.$case === "exception" && object.result?.value !== undefined && object.result?.value !== null) {
       message.result = { $case: "exception", value: LHTaskException.fromPartial(object.result.value) };
     }
+    message.totalCheckpoints = object.totalCheckpoints ?? 0;
     return message;
   },
 };
@@ -11538,6 +11863,33 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * Used internally by Task Workers to create a `Checkpoint` during the execution of
+     * a `TaskRun`.
+     *
+     * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+     * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+     * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+     * then the request returns code `OK` and a `STOP_TASK` value for the field
+     * `flow_control_continue_type`.
+     */
+    putCheckpoint: {
+      name: "PutCheckpoint",
+      requestType: PutCheckpointRequest,
+      requestStream: false,
+      responseType: PutCheckpointResponse,
+      responseStream: false,
+      options: {},
+    },
+    /** Gets a Checkpoint. */
+    getCheckpoint: {
+      name: "GetCheckpoint",
+      requestType: CheckpointId,
+      requestStream: false,
+      responseType: Checkpoint,
+      responseStream: false,
+      options: {},
+    },
     /** Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. */
     stopWfRun: {
       name: "StopWfRun",
@@ -12104,6 +12456,22 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * this rpc manually.
    */
   reportTask(request: ReportTaskRun, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /**
+   * Used internally by Task Workers to create a `Checkpoint` during the execution of
+   * a `TaskRun`.
+   *
+   * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+   * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+   * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+   * then the request returns code `OK` and a `STOP_TASK` value for the field
+   * `flow_control_continue_type`.
+   */
+  putCheckpoint(
+    request: PutCheckpointRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<PutCheckpointResponse>>;
+  /** Gets a Checkpoint. */
+  getCheckpoint(request: CheckpointId, context: CallContext & CallContextExt): Promise<DeepPartial<Checkpoint>>;
   /** Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. */
   stopWfRun(request: StopWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Resumes a WfRun or a specific ThreadRun of a WfRun. */
@@ -12544,6 +12912,22 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * this rpc manually.
    */
   reportTask(request: DeepPartial<ReportTaskRun>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /**
+   * Used internally by Task Workers to create a `Checkpoint` during the execution of
+   * a `TaskRun`.
+   *
+   * Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+   * `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+   * state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+   * then the request returns code `OK` and a `STOP_TASK` value for the field
+   * `flow_control_continue_type`.
+   */
+  putCheckpoint(
+    request: DeepPartial<PutCheckpointRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<PutCheckpointResponse>;
+  /** Gets a Checkpoint. */
+  getCheckpoint(request: DeepPartial<CheckpointId>, options?: CallOptions & CallOptionsExt): Promise<Checkpoint>;
   /** Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. */
   stopWfRun(request: DeepPartial<StopWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Resumes a WfRun or a specific ThreadRun of a WfRun. */

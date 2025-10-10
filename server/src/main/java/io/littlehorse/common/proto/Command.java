@@ -85,6 +85,7 @@ private static final long serialVersionUID = 0L;
     PUT_USER_TASK_RUN_COMMENT(31),
     EDIT_USER_TASK_RUN_COMMENT(32),
     DELETE_USER_TASK_RUN_COMMENT(33),
+    PUT_CHECKPOINT(34),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -132,6 +133,7 @@ private static final long serialVersionUID = 0L;
         case 31: return PUT_USER_TASK_RUN_COMMENT;
         case 32: return EDIT_USER_TASK_RUN_COMMENT;
         case 33: return DELETE_USER_TASK_RUN_COMMENT;
+        case 34: return PUT_CHECKPOINT;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -1150,6 +1152,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest.getDefaultInstance();
   }
 
+  public static final int PUT_CHECKPOINT_FIELD_NUMBER = 34;
+  /**
+   * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+   * @return Whether the putCheckpoint field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutCheckpoint() {
+    return commandCase_ == 34;
+  }
+  /**
+   * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+   * @return The putCheckpoint.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutCheckpointRequest getPutCheckpoint() {
+    if (commandCase_ == 34) {
+       return (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder getPutCheckpointOrBuilder() {
+    if (commandCase_ == 34) {
+       return (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1259,6 +1292,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 33) {
       output.writeMessage(33, (io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest) command_);
+    }
+    if (commandCase_ == 34) {
+      output.writeMessage(34, (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1395,6 +1431,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 33) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(33, (io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest) command_);
+    }
+    if (commandCase_ == 34) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(34, (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1543,6 +1583,10 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteUserTaskRunComment()
             .equals(other.getDeleteUserTaskRunComment())) return false;
         break;
+      case 34:
+        if (!getPutCheckpoint()
+            .equals(other.getPutCheckpoint())) return false;
+        break;
       case 0:
       default:
     }
@@ -1685,6 +1729,10 @@ private static final long serialVersionUID = 0L;
       case 33:
         hash = (37 * hash) + DELETE_USER_TASK_RUN_COMMENT_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteUserTaskRunComment().hashCode();
+        break;
+      case 34:
+        hash = (37 * hash) + PUT_CHECKPOINT_FIELD_NUMBER;
+        hash = (53 * hash) + getPutCheckpoint().hashCode();
         break;
       case 0:
       default:
@@ -1830,6 +1878,7 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
+      bitField1_ = 0;
       time_ = null;
       if (timeBuilder_ != null) {
         timeBuilder_.dispose();
@@ -1926,6 +1975,9 @@ private static final long serialVersionUID = 0L;
       if (deleteUserTaskRunCommentBuilder_ != null) {
         deleteUserTaskRunCommentBuilder_.clear();
       }
+      if (putCheckpointBuilder_ != null) {
+        putCheckpointBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1955,6 +2007,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.Command buildPartial() {
       io.littlehorse.common.proto.Command result = new io.littlehorse.common.proto.Command(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      if (bitField1_ != 0) { buildPartial1(result); }
       buildPartialOneofs(result);
       onBuilt();
       return result;
@@ -1974,6 +2027,10 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartial1(io.littlehorse.common.proto.Command result) {
+      int from_bitField1_ = bitField1_;
     }
 
     private void buildPartialOneofs(io.littlehorse.common.proto.Command result) {
@@ -2098,6 +2155,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 33 &&
           deleteUserTaskRunCommentBuilder_ != null) {
         result.command_ = deleteUserTaskRunCommentBuilder_.build();
+      }
+      if (commandCase_ == 34 &&
+          putCheckpointBuilder_ != null) {
+        result.command_ = putCheckpointBuilder_.build();
       }
     }
 
@@ -2240,6 +2301,10 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_USER_TASK_RUN_COMMENT: {
           mergeDeleteUserTaskRunComment(other.getDeleteUserTaskRunComment());
+          break;
+        }
+        case PUT_CHECKPOINT: {
+          mergePutCheckpoint(other.getPutCheckpoint());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2494,6 +2559,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 33;
               break;
             } // case 266
+            case 274: {
+              input.readMessage(
+                  internalGetPutCheckpointFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 34;
+              break;
+            } // case 274
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2525,6 +2597,7 @@ private static final long serialVersionUID = 0L;
     }
 
     private int bitField0_;
+    private int bitField1_;
 
     private com.google.protobuf.Timestamp time_;
     private com.google.protobuf.SingleFieldBuilder<
@@ -6984,6 +7057,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 33;
       onChanged();
       return deleteUserTaskRunCommentBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutCheckpointRequest, io.littlehorse.sdk.common.proto.PutCheckpointRequest.Builder, io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder> putCheckpointBuilder_;
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     * @return Whether the putCheckpoint field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutCheckpoint() {
+      return commandCase_ == 34;
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     * @return The putCheckpoint.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutCheckpointRequest getPutCheckpoint() {
+      if (putCheckpointBuilder_ == null) {
+        if (commandCase_ == 34) {
+          return (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 34) {
+          return putCheckpointBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     */
+    public Builder setPutCheckpoint(io.littlehorse.sdk.common.proto.PutCheckpointRequest value) {
+      if (putCheckpointBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        putCheckpointBuilder_.setMessage(value);
+      }
+      commandCase_ = 34;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     */
+    public Builder setPutCheckpoint(
+        io.littlehorse.sdk.common.proto.PutCheckpointRequest.Builder builderForValue) {
+      if (putCheckpointBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        putCheckpointBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 34;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     */
+    public Builder mergePutCheckpoint(io.littlehorse.sdk.common.proto.PutCheckpointRequest value) {
+      if (putCheckpointBuilder_ == null) {
+        if (commandCase_ == 34 &&
+            command_ != io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutCheckpointRequest.newBuilder((io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 34) {
+          putCheckpointBuilder_.mergeFrom(value);
+        } else {
+          putCheckpointBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 34;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     */
+    public Builder clearPutCheckpoint() {
+      if (putCheckpointBuilder_ == null) {
+        if (commandCase_ == 34) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 34) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        putCheckpointBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutCheckpointRequest.Builder getPutCheckpointBuilder() {
+      return internalGetPutCheckpointFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder getPutCheckpointOrBuilder() {
+      if ((commandCase_ == 34) && (putCheckpointBuilder_ != null)) {
+        return putCheckpointBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 34) {
+          return (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutCheckpointRequest put_checkpoint = 34;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutCheckpointRequest, io.littlehorse.sdk.common.proto.PutCheckpointRequest.Builder, io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder> 
+        internalGetPutCheckpointFieldBuilder() {
+      if (putCheckpointBuilder_ == null) {
+        if (!(commandCase_ == 34)) {
+          command_ = io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
+        }
+        putCheckpointBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.PutCheckpointRequest, io.littlehorse.sdk.common.proto.PutCheckpointRequest.Builder, io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 34;
+      onChanged();
+      return putCheckpointBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)

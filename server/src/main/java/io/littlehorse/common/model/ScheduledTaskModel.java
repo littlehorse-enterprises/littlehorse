@@ -28,6 +28,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     private TaskRunIdModel taskRunId;
     private TaskDefIdModel taskDefId;
     private int attemptNumber;
+    private int totalCheckpoints;
 
     private List<VarNameAndValModel> variables;
     private Date createdAt;
@@ -71,7 +72,8 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
                 .setTaskDefId(taskDefId.toProto())
                 .setAttemptNumber(attemptNumber)
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-                .setSource(source.toProto());
+                .setSource(source.toProto())
+                .setTotalObservedCheckpoints(totalCheckpoints);
         for (VarNameAndValModel v : variables) {
             out.addVariables(v.toProto());
         }
@@ -96,6 +98,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class, context);
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         attemptNumber = p.getAttemptNumber();
+        this.totalCheckpoints = p.getTotalObservedCheckpoints();
 
         for (VarNameAndVal v : p.getVariablesList()) {
             variables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
