@@ -384,6 +384,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         scheduledTask.setSource(taskRunSource);
         scheduledTask.setTaskDefId(taskDefId);
         scheduledTask.setTaskRunId(id);
+        scheduledTask.setTotalCheckpoints(totalCheckpoints);
 
         processorContext.getTaskManager().scheduleTask(scheduledTask);
     }

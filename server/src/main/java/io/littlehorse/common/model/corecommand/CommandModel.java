@@ -80,6 +80,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private PutCorrelatedEventRequestModel putCorrelatedEvent;
     private UpdateCorrelationMarkerModel updateCorrellationMarker;
     private DeleteCorrelatedEventRequestModel deleteCorrelatedEvent;
+    private PutCheckpointRequestModel putCheckpoint;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -195,6 +196,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case DELETE_CORRELATED_EVENT:
                 out.setDeleteCorrelatedEvent(deleteCorrelatedEvent.toProto());
+                break;
+            case PUT_CHECKPOINT:
+                out.setPutCheckpoint(putCheckpoint.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -320,6 +324,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteCorrelatedEvent = LHSerializable.fromProto(
                         p.getDeleteCorrelatedEvent(), DeleteCorrelatedEventRequestModel.class, context);
                 break;
+            case PUT_CHECKPOINT:
+                putCheckpoint = LHSerializable.fromProto(p.getPutCheckpoint(), PutCheckpointRequestModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -387,6 +394,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return updateCorrellationMarker;
             case DELETE_CORRELATED_EVENT:
                 return deleteCorrelatedEvent;
+            case PUT_CHECKPOINT:
+                return putCheckpoint;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -484,6 +493,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteCorrelatedEventRequestModel.class)) {
             type = CommandCase.DELETE_CORRELATED_EVENT;
             deleteCorrelatedEvent = (DeleteCorrelatedEventRequestModel) cmd;
+        } else if (cls.equals(PutCheckpointRequestModel.class)) {
+            type = CommandCase.PUT_CHECKPOINT;
+            putCheckpoint = (PutCheckpointRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

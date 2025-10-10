@@ -67,7 +67,7 @@ public class PutCheckpointRequestModel extends CoreSubCommand<PutCheckpointReque
             throw new LHApiException(Status.INVALID_ARGUMENT, "Could not find specified TaskRun");
         }
 
-        int currentAttemptNumber = taskRun.getAttempts().size();
+        int currentAttemptNumber = taskRun.getAttempts().size() - 1;
         if (currentAttemptNumber != taskAttempt) {
             // We need to fence the Task Worker.
             return PutCheckpointResponse.newBuilder()
