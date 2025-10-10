@@ -10,11 +10,11 @@ import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +31,8 @@ public class ScheduledTaskExecutor {
     private final LittleHorseGrpc.LittleHorseStub retriesStub;
     private final LittleHorseGrpc.LittleHorseBlockingStub blockingStub;
 
-    public ScheduledTaskExecutor(final LittleHorseGrpc.LittleHorseStub retriesStub, final LittleHorseBlockingStub blockingStub) {
+    public ScheduledTaskExecutor(
+            final LittleHorseGrpc.LittleHorseStub retriesStub, final LittleHorseBlockingStub blockingStub) {
         this.retriesStub = retriesStub;
         this.blockingStub = blockingStub;
     }

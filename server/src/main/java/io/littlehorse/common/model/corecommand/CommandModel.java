@@ -325,7 +325,8 @@ public class CommandModel extends AbstractCommand<Command> {
                         p.getDeleteCorrelatedEvent(), DeleteCorrelatedEventRequestModel.class, context);
                 break;
             case PUT_CHECKPOINT:
-                putCheckpoint = LHSerializable.fromProto(p.getPutCheckpoint(), PutCheckpointRequestModel.class, context);
+                putCheckpoint =
+                        LHSerializable.fromProto(p.getPutCheckpoint(), PutCheckpointRequestModel.class, context);
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
