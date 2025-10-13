@@ -18,22 +18,6 @@ public interface WfRunVariable extends LHExpression {
     WfRunVariable jsonPath(String path);
 
     /**
-     * Valid only for output of JSON_OBJ or Struct types. Returns a new WfRunVariable handle
-     * which points to the sub-element referred to by the field.
-     * @param field is the name of the field to access.
-     * @return a WfRunVariable.
-     */
-    // WfRunVariable get(String field);
-
-    /**
-     * Valid only for output of JSON_ARR or Array types. Returns a new WfRunVariable handle
-     * which points to the sub-element referred to by the index.
-     * @param index is the index of the item to access.
-     * @return a WfRunVariable.
-     */
-    // WfRunVariable get(int index);
-
-    /**
      * Marks the variable as "Required", meaning that the ThreadSpec cannot be
      * started without this variable being provided as input. For Entrypoint
      * ThreadSpec's, this also triggers the WfSpec Required Variable Compatibiltiy

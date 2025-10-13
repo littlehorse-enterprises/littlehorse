@@ -29,16 +29,6 @@ public class WfRunVariableImplTest {
     }
 
     @Test
-    void validateStringVarDoesNotAllowGet() {
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
-        WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
-        WfRunVariableImpl variable = WfRunVariableImpl.createPrimitiveVar("str-var", VariableType.STR, wfThread);
-
-        LHMisconfigurationException e = assertThrows(LHMisconfigurationException.class, () -> variable.get("model"));
-        assertThat(e.getMessage()).isEqualTo("Can only use get() on JSON_OBJ or Struct variables");
-    }
-
-    @Test
     void shouldThrowAnExceptionWhenVariableHaveNullParentThread() {
         NullPointerException e = assertThrows(
                 NullPointerException.class,
