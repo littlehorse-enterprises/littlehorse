@@ -78,7 +78,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public Integer parentThreadId;
 
     public List<ThreadHaltReasonModel> haltReasons = new ArrayList<>();
-    public ExternalEventIdModel interruptTriggerId;
+    private ExternalEventIdModel interruptTriggerId;
     public FailureBeingHandledModel failureBeingHandled;
     public List<Integer> handledFailedChildren = new ArrayList<>();
     private VariableValueModel output;
@@ -724,19 +724,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
         }
         this.errorMessage = failure.message;
-        this.status = failure.getStatus();
+        setStatus(failure.getStatus());
         this.endTime = time;
 
         if (interruptTriggerId != null) {
             // then we're an interrupt thread and need to fail the parent. Parent is guaranteed to
             // to be not-null in this case
-            getParent()
-                    .failWithoutGrace(
-                            new FailureModel(
-                                    "Interrupt thread with id " + number + " failed!",
-                                    failure.getFailureName(),
-                                    failure.getContent()), // propagate failure content
-                            time);
+            FailureModel interruptFail = new FailureModel(
+                    "Interrupt thread with id " + number + " failed!", failure.getFailureName(), failure.getContent());
+            getParent().failWithoutGrace(interruptFail, time, interruptTriggerId);
         } else if (failureBeingHandled != null) {
             // Then it's a FailureHandler thread, so we want the parent ThreadRun to fail without
             // grace.
@@ -744,6 +740,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         wfRun.handleThreadStatus(number, new Date(), status);
+    }
+
+    private void failWithoutGrace(FailureModel failure, Date time, ExternalEventIdModel failedInterruptEventId) {
+        getCurrentNodeRun().fail(new NodeFailureException(failure));
+        failWithoutGrace(failure, time);
     }
 
     public void activateNode(NodeModel node) throws NodeFailureException {
@@ -857,6 +858,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             val = val.jsonPath(assn.getJsonPath());
         }
 
+        val = assn.applyCast(val);
         return val;
     }
 

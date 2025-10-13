@@ -51,7 +51,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -446,14 +445,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         checkIfIsActive();
 
         WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, clazz, this);
-        wfRunVariables.add(wfRunVariable);
-        return wfRunVariable;
-    }
-
-    private WfRunVariableImpl addArrayVariable(String name, LHArrayDefType elementType) {
-        checkIfIsActive();
-
-        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createArrayDefVar(name, elementType, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }

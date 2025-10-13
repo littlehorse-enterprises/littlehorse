@@ -18,4 +18,17 @@ public interface NodeOutput extends LHExpression {
      * @return a NodeOutput.
      */
     public NodeOutput jsonPath(String path);
+
+    /**
+     * Returns a new LHExpression that represents this node output cast to the specified type.
+     * This enables manual type conversions that are not automatic, such as:
+     * - STR → INT/DOUBLE/BOOL (manual casting required)
+     * - DOUBLE → INT (manual casting required)
+     *
+     * The cast operation is non-mutating: the original node output remains unchanged.
+     *
+     * @param targetType the type to cast this node output to
+     * @return a new LHExpression representing the cast value
+     */
+    // cast methods are provided by LHExpression
 }

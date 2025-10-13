@@ -11,9 +11,11 @@ import io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Setter
 public class DeleteCorrelatedEventRequestModel extends CoreSubCommand<DeleteCorrelatedEventRequest> {
 
     private CorrelatedEventIdModel id;

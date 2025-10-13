@@ -67,6 +67,12 @@ message VariableAssignment {
     // Assign the value of an Expression.
     Expression expression = 6;
   }
+
+  // If specified, the resolved value will be cast to this type before being used.
+  // This allows explicit type conversions anywhere VariableAssignment is used.
+  // The cast operation is non-mutating: original values remain unchanged.
+  // Note: Only primitive type conversions are supported.
+  optional TypeDefinition target_type = 7;
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.
@@ -171,9 +177,6 @@ message TypeDefinition {
     VariableType primitive_type = 1;
 
     StructDefId struct_def_id = 5;
-
-    // Array Def
-    InlineArrayDef inline_array_def = 6;
   }
 
   // For compatibility purposes.
@@ -346,10 +349,6 @@ message TaskNode {
 message InlineStructDef {
   // The fields in this schema.
   map<string, StructFieldDef> fields = 1;
-}
-
-message InlineArrayDef {
-  TypeDefinition element_type = 1;
 }
 
 // A `SchemaFieldDef` defines a field inside a `StructDef`.

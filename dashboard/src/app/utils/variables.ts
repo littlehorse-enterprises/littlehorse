@@ -15,8 +15,6 @@ export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable
       return getVariableCaseFromType(typeDef.definedType.value)
     case 'structDefId':
       return 'struct'
-    case 'inlineArrayDef':
-      return 'jsonArr'
     default:
       throw new Error('Unknown variable type.')
   }
@@ -156,8 +154,6 @@ export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableVal
         return getVariableCaseFromType(value)
       case 'structDefId':
         return 'struct'
-      case 'inlineArrayDef':
-        return 'jsonArr'
       default:
         throw new Error('Unknown variable type.')
     }
