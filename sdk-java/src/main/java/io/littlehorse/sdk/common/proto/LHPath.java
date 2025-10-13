@@ -81,7 +81,7 @@ private static final long serialVersionUID = 0L;
     com.google.protobuf.ByteString
         getKeyBytes();
 
-    io.littlehorse.sdk.common.proto.LHPath.Selector.TypeCase getTypeCase();
+    io.littlehorse.sdk.common.proto.LHPath.Selector.SelectorTypeCase getSelectorTypeCase();
   }
   /**
    * Protobuf type {@code littlehorse.LHPath.Selector}
@@ -120,16 +120,16 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.sdk.common.proto.LHPath.Selector.class, io.littlehorse.sdk.common.proto.LHPath.Selector.Builder.class);
     }
 
-    private int typeCase_ = 0;
+    private int selectorTypeCase_ = 0;
     @SuppressWarnings("serial")
-    private java.lang.Object type_;
-    public enum TypeCase
+    private java.lang.Object selectorType_;
+    public enum SelectorTypeCase
         implements com.google.protobuf.Internal.EnumLite,
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
       KEY(1),
-      TYPE_NOT_SET(0);
+      SELECTORTYPE_NOT_SET(0);
       private final int value;
-      private TypeCase(int value) {
+      private SelectorTypeCase(int value) {
         this.value = value;
       }
       /**
@@ -138,14 +138,14 @@ private static final long serialVersionUID = 0L;
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
-      public static TypeCase valueOf(int value) {
+      public static SelectorTypeCase valueOf(int value) {
         return forNumber(value);
       }
 
-      public static TypeCase forNumber(int value) {
+      public static SelectorTypeCase forNumber(int value) {
         switch (value) {
           case 1: return KEY;
-          case 0: return TYPE_NOT_SET;
+          case 0: return SELECTORTYPE_NOT_SET;
           default: return null;
         }
       }
@@ -154,10 +154,10 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public TypeCase
-    getTypeCase() {
-      return TypeCase.forNumber(
-          typeCase_);
+    public SelectorTypeCase
+    getSelectorTypeCase() {
+      return SelectorTypeCase.forNumber(
+          selectorTypeCase_);
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
@@ -170,7 +170,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the key field is set.
      */
     public boolean hasKey() {
-      return typeCase_ == 1;
+      return selectorTypeCase_ == 1;
     }
     /**
      * <pre>
@@ -182,8 +182,8 @@ private static final long serialVersionUID = 0L;
      */
     public java.lang.String getKey() {
       java.lang.Object ref = "";
-      if (typeCase_ == 1) {
-        ref = type_;
+      if (selectorTypeCase_ == 1) {
+        ref = selectorType_;
       }
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
@@ -191,8 +191,8 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (typeCase_ == 1) {
-          type_ = s;
+        if (selectorTypeCase_ == 1) {
+          selectorType_ = s;
         }
         return s;
       }
@@ -208,15 +208,15 @@ private static final long serialVersionUID = 0L;
     public com.google.protobuf.ByteString
         getKeyBytes() {
       java.lang.Object ref = "";
-      if (typeCase_ == 1) {
-        ref = type_;
+      if (selectorTypeCase_ == 1) {
+        ref = selectorType_;
       }
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        if (typeCase_ == 1) {
-          type_ = b;
+        if (selectorTypeCase_ == 1) {
+          selectorType_ = b;
         }
         return b;
       } else {
@@ -238,8 +238,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (typeCase_ == 1) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, type_);
+      if (selectorTypeCase_ == 1) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, selectorType_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -250,8 +250,8 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (typeCase_ == 1) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, type_);
+      if (selectorTypeCase_ == 1) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, selectorType_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -268,8 +268,8 @@ private static final long serialVersionUID = 0L;
       }
       io.littlehorse.sdk.common.proto.LHPath.Selector other = (io.littlehorse.sdk.common.proto.LHPath.Selector) obj;
 
-      if (!getTypeCase().equals(other.getTypeCase())) return false;
-      switch (typeCase_) {
+      if (!getSelectorTypeCase().equals(other.getSelectorTypeCase())) return false;
+      switch (selectorTypeCase_) {
         case 1:
           if (!getKey()
               .equals(other.getKey())) return false;
@@ -288,7 +288,7 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      switch (typeCase_) {
+      switch (selectorTypeCase_) {
         case 1:
           hash = (37 * hash) + KEY_FIELD_NUMBER;
           hash = (53 * hash) + getKey().hashCode();
@@ -427,8 +427,8 @@ private static final long serialVersionUID = 0L;
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        typeCase_ = 0;
-        type_ = null;
+        selectorTypeCase_ = 0;
+        selectorType_ = null;
         return this;
       }
 
@@ -466,8 +466,8 @@ private static final long serialVersionUID = 0L;
       }
 
       private void buildPartialOneofs(io.littlehorse.sdk.common.proto.LHPath.Selector result) {
-        result.typeCase_ = typeCase_;
-        result.type_ = this.type_;
+        result.selectorTypeCase_ = selectorTypeCase_;
+        result.selectorType_ = this.selectorType_;
       }
 
       @java.lang.Override
@@ -482,14 +482,14 @@ private static final long serialVersionUID = 0L;
 
       public Builder mergeFrom(io.littlehorse.sdk.common.proto.LHPath.Selector other) {
         if (other == io.littlehorse.sdk.common.proto.LHPath.Selector.getDefaultInstance()) return this;
-        switch (other.getTypeCase()) {
+        switch (other.getSelectorTypeCase()) {
           case KEY: {
-            typeCase_ = 1;
-            type_ = other.type_;
+            selectorTypeCase_ = 1;
+            selectorType_ = other.selectorType_;
             onChanged();
             break;
           }
-          case TYPE_NOT_SET: {
+          case SELECTORTYPE_NOT_SET: {
             break;
           }
         }
@@ -521,8 +521,8 @@ private static final long serialVersionUID = 0L;
                 break;
               case 10: {
                 java.lang.String s = input.readStringRequireUtf8();
-                typeCase_ = 1;
-                type_ = s;
+                selectorTypeCase_ = 1;
+                selectorType_ = s;
                 break;
               } // case 10
               default: {
@@ -540,17 +540,17 @@ private static final long serialVersionUID = 0L;
         } // finally
         return this;
       }
-      private int typeCase_ = 0;
-      private java.lang.Object type_;
-      public TypeCase
-          getTypeCase() {
-        return TypeCase.forNumber(
-            typeCase_);
+      private int selectorTypeCase_ = 0;
+      private java.lang.Object selectorType_;
+      public SelectorTypeCase
+          getSelectorTypeCase() {
+        return SelectorTypeCase.forNumber(
+            selectorTypeCase_);
       }
 
-      public Builder clearType() {
-        typeCase_ = 0;
-        type_ = null;
+      public Builder clearSelectorType() {
+        selectorTypeCase_ = 0;
+        selectorType_ = null;
         onChanged();
         return this;
       }
@@ -567,7 +567,7 @@ private static final long serialVersionUID = 0L;
        */
       @java.lang.Override
       public boolean hasKey() {
-        return typeCase_ == 1;
+        return selectorTypeCase_ == 1;
       }
       /**
        * <pre>
@@ -580,15 +580,15 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public java.lang.String getKey() {
         java.lang.Object ref = "";
-        if (typeCase_ == 1) {
-          ref = type_;
+        if (selectorTypeCase_ == 1) {
+          ref = selectorType_;
         }
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (typeCase_ == 1) {
-            type_ = s;
+          if (selectorTypeCase_ == 1) {
+            selectorType_ = s;
           }
           return s;
         } else {
@@ -607,15 +607,15 @@ private static final long serialVersionUID = 0L;
       public com.google.protobuf.ByteString
           getKeyBytes() {
         java.lang.Object ref = "";
-        if (typeCase_ == 1) {
-          ref = type_;
+        if (selectorTypeCase_ == 1) {
+          ref = selectorType_;
         }
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          if (typeCase_ == 1) {
-            type_ = b;
+          if (selectorTypeCase_ == 1) {
+            selectorType_ = b;
           }
           return b;
         } else {
@@ -634,8 +634,8 @@ private static final long serialVersionUID = 0L;
       public Builder setKey(
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
-        typeCase_ = 1;
-        type_ = value;
+        selectorTypeCase_ = 1;
+        selectorType_ = value;
         onChanged();
         return this;
       }
@@ -648,9 +648,9 @@ private static final long serialVersionUID = 0L;
        * @return This builder for chaining.
        */
       public Builder clearKey() {
-        if (typeCase_ == 1) {
-          typeCase_ = 0;
-          type_ = null;
+        if (selectorTypeCase_ == 1) {
+          selectorTypeCase_ = 0;
+          selectorType_ = null;
           onChanged();
         }
         return this;
@@ -668,8 +668,8 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
-        typeCase_ = 1;
-        type_ = value;
+        selectorTypeCase_ = 1;
+        selectorType_ = value;
         onChanged();
         return this;
       }

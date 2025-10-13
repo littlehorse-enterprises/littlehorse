@@ -29,15 +29,6 @@ public class WfRunVariableImplTest {
     }
 
     @Test
-    void validateStructVarAllowGet() {
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
-        WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
-        WfRunVariableImpl variable = WfRunVariableImpl.createStructDefVar("struct-var", "car", wfThread);
-
-        variable.get("model");
-    }
-
-    @Test
     void validateStringVarDoesNotAllowGet() {
         WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
         WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);

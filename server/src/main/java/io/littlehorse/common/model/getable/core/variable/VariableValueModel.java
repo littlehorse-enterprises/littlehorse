@@ -13,8 +13,10 @@ import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -314,6 +316,24 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public boolean isNull() {
         return valueType == ValueCase.VALUE_NOT_SET;
+    }
+
+    public VariableValueModel get(LHPathModel path) throws LHVarSubError {
+        VariableValueModel val = this;
+
+        for (Selector selector : path.getPath()) {
+            if (val.valueType != ValueCase.STRUCT) {
+                throw new LHVarSubError(null, "Cannot 'get' on " + valueType);
+            }
+
+            val = val.getStruct()
+                    .getInlineStruct()
+                    .getFields()
+                    .get(selector.getKey())
+                    .getValue();
+        }
+
+        return val;
     }
 
     public VariableValueModel jsonPath(String path) throws LHVarSubError {

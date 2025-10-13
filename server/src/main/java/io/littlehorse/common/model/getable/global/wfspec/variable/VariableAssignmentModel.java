@@ -15,6 +15,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -31,7 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = false)
 public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
 
+    private PathCase pathCase;
     private String jsonPath;
+    private LHPathModel lhPath;
+
     private SourceCase rhsSourceType;
     private String variableName;
     private VariableValueModel rhsLiteralValue;
@@ -47,8 +51,19 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
-        if (p.hasJsonPath()) jsonPath = p.getJsonPath();
         if (p.hasTargetType()) targetType = TypeDefinitionModel.fromProto(p.getTargetType(), context);
+
+        pathCase = p.getPathCase();
+
+        switch (pathCase) {
+            case JSON_PATH:
+                jsonPath = p.getJsonPath();
+                break;
+            case LH_PATH:
+                lhPath = LHPathModel.fromProto(p.getLhPath(), context);
+                break;
+            case PATH_NOT_SET:
+        }
 
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
@@ -78,6 +93,16 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
         if (jsonPath != null) out.setJsonPath(jsonPath);
         if (targetType != null) out.setTargetType(targetType.toProto());
+
+        switch (pathCase) {
+            case JSON_PATH:
+                out.setJsonPath(jsonPath);
+                break;
+            case LH_PATH:
+                out.setLhPath(lhPath.toProto());
+                break;
+            case PATH_NOT_SET:
+        }
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:

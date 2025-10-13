@@ -6,10 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.LHPath;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
+import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -149,5 +156,60 @@ public class VariableValueModelTest {
         VariableValueModel strVarVal = valueWfRunId.asStr();
         assertThat(strVarVal.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(strVarVal.getStrVal()).isEqualTo("parent_child");
+    }
+
+    @Test
+    void shouldGetPathOnStruct() throws LHVarSubError {
+        Struct struct = Struct.newBuilder()
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "make",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Ford"))
+                                        .build()))
+                .build();
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("make"))
+                .build();
+
+        VariableValueModel structVarVal =
+                new VariableValueModel(StructModel.fromProto(struct, StructModel.class, mock()));
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Ford");
+    }
+
+    @Test
+    void shouldGetPathOnNestedStruct() throws LHVarSubError {
+        Struct struct = Struct.newBuilder()
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "owner",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder()
+                                                .setStruct(Struct.newBuilder()
+                                                        .setStruct(InlineStruct.newBuilder()
+                                                                .putFields(
+                                                                        "firstName",
+                                                                        StructField.newBuilder()
+                                                                                .setValue(VariableValue.newBuilder()
+                                                                                        .setStr("Obi-Wan"))
+                                                                                .build()))))
+                                        .build()))
+                .build();
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("owner"))
+                .addPath(Selector.newBuilder().setKey("firstName"))
+                .build();
+
+        VariableValueModel structVarVal =
+                new VariableValueModel(StructModel.fromProto(struct, StructModel.class, mock()));
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Obi-Wan");
     }
 }

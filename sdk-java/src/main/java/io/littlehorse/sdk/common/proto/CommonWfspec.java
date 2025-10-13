@@ -213,18 +213,19 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "tFieldDef\022/\n\nfield_type\030\001 \001(\0132\033.littleho" +
       "rse.TypeDefinition\0226\n\rdefault_value\030\002 \001(" +
       "\0132\032.littlehorse.VariableValueH\000\210\001\001B\020\n\016_d" +
-      "efault_value\"W\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.l" +
-      "ittlehorse.LHPath.Selector\032!\n\010Selector\022\r" +
-      "\n\003key\030\001 \001(\tH\000B\006\n\004type*\230\001\n\024VariableMutati" +
-      "onType\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022" +
-      "\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022" +
-      "\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007" +
-      "\022\016\n\nREMOVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_" +
-      "THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ" +
-      "\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nN" +
-      "OT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.li" +
-      "ttlehorse.sdk.common.protoP\001Z\t.;lhproto\252" +
-      "\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "efault_value\"`\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.l" +
+      "ittlehorse.LHPath.Selector\032*\n\010Selector\022\r" +
+      "\n\003key\030\001 \001(\tH\000B\017\n\rselector_type*\230\001\n\024Varia" +
+      "bleMutationType\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006" +
+      "EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006" +
+      "DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOV" +
+      "E_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010*\204\001\n\nComparator" +
+      "\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LES" +
+      "S_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUA" +
+      "LS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007" +
+      "BM\n\037io.littlehorse.sdk.common.protoP\001Z\t." +
+      ";lhproto\252\002\034LittleHorse.Sdk.Common.Protob" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -352,7 +353,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_LHPath_Selector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_LHPath_Selector_descriptor,
-        new java.lang.String[] { "Key", "Type", });
+        new java.lang.String[] { "Key", "SelectorType", });
     descriptor.resolveAllFeaturesImmutable();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();

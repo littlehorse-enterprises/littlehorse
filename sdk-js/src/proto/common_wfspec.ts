@@ -599,7 +599,7 @@ export interface LHPath {
 }
 
 export interface LHPath_Selector {
-  type?: { $case: "key"; value: string } | undefined;
+  selectorType?: { $case: "key"; value: string } | undefined;
 }
 
 function createBaseVariableAssignment(): VariableAssignment {
@@ -2423,14 +2423,14 @@ export const LHPath = {
 };
 
 function createBaseLHPath_Selector(): LHPath_Selector {
-  return { type: undefined };
+  return { selectorType: undefined };
 }
 
 export const LHPath_Selector = {
   encode(message: LHPath_Selector, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.type?.$case) {
+    switch (message.selectorType?.$case) {
       case "key":
-        writer.uint32(10).string(message.type.value);
+        writer.uint32(10).string(message.selectorType.value);
         break;
     }
     return writer;
@@ -2448,7 +2448,7 @@ export const LHPath_Selector = {
             break;
           }
 
-          message.type = { $case: "key", value: reader.string() };
+          message.selectorType = { $case: "key", value: reader.string() };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2460,13 +2460,13 @@ export const LHPath_Selector = {
   },
 
   fromJSON(object: any): LHPath_Selector {
-    return { type: isSet(object.key) ? { $case: "key", value: globalThis.String(object.key) } : undefined };
+    return { selectorType: isSet(object.key) ? { $case: "key", value: globalThis.String(object.key) } : undefined };
   },
 
   toJSON(message: LHPath_Selector): unknown {
     const obj: any = {};
-    if (message.type?.$case === "key") {
-      obj.key = message.type.value;
+    if (message.selectorType?.$case === "key") {
+      obj.key = message.selectorType.value;
     }
     return obj;
   },
@@ -2476,8 +2476,12 @@ export const LHPath_Selector = {
   },
   fromPartial(object: DeepPartial<LHPath_Selector>): LHPath_Selector {
     const message = createBaseLHPath_Selector();
-    if (object.type?.$case === "key" && object.type?.value !== undefined && object.type?.value !== null) {
-      message.type = { $case: "key", value: object.type.value };
+    if (
+      object.selectorType?.$case === "key" &&
+      object.selectorType?.value !== undefined &&
+      object.selectorType?.value !== null
+    ) {
+      message.selectorType = { $case: "key", value: object.selectorType.value };
     }
     return message;
   },
