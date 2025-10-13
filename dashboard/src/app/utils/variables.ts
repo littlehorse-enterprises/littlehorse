@@ -58,7 +58,11 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
     case 'nodeOutput':
       return variable.source.value.nodeName
     case 'variableName':
-      return getValueFromVariableName(variable.source, variable.jsonPath)
+      // TODO: Support `LHPath` case
+      if (variable.path?.$case == "lhPath") {
+        throw new Error('Unsupported path type.')
+      }
+      return getValueFromVariableName(variable.source, variable.path?.value)
     default:
       return ''
   }
