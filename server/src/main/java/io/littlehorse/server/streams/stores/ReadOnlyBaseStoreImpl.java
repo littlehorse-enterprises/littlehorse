@@ -56,23 +56,27 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
-        String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+        String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+
         if (metadataCache != null) {
-            return getMetadataObject(keyToLookFor, cls);
-        } else {
-            // time to get things from the store
-            GeneratedMessage stored = getFromNativeStore(keyToLookFor, cls);
+            return getMetadataObject(fullKey, cls);
+        }
+
+        GeneratedMessage stored = getFromNativeStore(fullKey, cls);
+        if (stored != null) {
+            return LHSerializable.fromProto(stored, cls, executionContext);
+        }
+
+        String legacyKey = toLegacyFormat(storeKey);
+        if (legacyKey != null) {
+            String fullLegacyKey = maybeAddTenantPrefix(legacyKey);
+            stored = getFromNativeStore(fullLegacyKey, cls);
             if (stored != null) {
                 return LHSerializable.fromProto(stored, cls, executionContext);
             }
-
-            // Delete this when we remove support for the old key format
-            if (cls.equals(StoredGetable.class)) {
-                return tryLegacyFormat(storeKey, cls);
-            }
-
-            return null;
         }
+
+        return null;
     }
 
     private <U extends Message, T extends Storeable<U>> T getMetadataObject(String keyToLookFor, Class<T> clazz) {
@@ -177,41 +181,23 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     protected String maybeAddTenantPrefix(String key) {
         return tenantId == null ? key : tenantId.toString() + "/" + key;
     }
+
     // Delete this when we remove support for the old key format
-    private <U extends Message, T extends Storeable<U>> T tryLegacyFormat(String storeKey, Class<T> cls) {
-        if (!cls.equals(StoredGetable.class)) {
+    private String toLegacyFormat(String storeKey) {
+        if (!storeKey.startsWith(Storeable.GROUPED_WF_RUN_PREFIX + "/")) {
             return null;
         }
 
-        if (storeKey.startsWith(Storeable.GROUPED_WF_RUN_PREFIX + "/")) {
-            // Parse: wrg/{wfRunId}/{storeableType}/{getableType}/{restOfKey}
-            String[] parts = storeKey.split("/");
-            if (parts.length >= 4) {
-                String wfRunId = parts[1];
-                String storeableType = parts[2];
-                String getableType = parts[3];
-
-                // For WfRun objects, the legacy key is: {storeableType}/{getableType}/{wfRunId}
-                String legacyStoreKey = getableType + "/" + wfRunId;
-                String legacyFullKey = storeableType + "/" + legacyStoreKey;
-                String keyToLookFor = maybeAddTenantPrefix(legacyFullKey);
-
-                GeneratedMessage stored = getFromNativeStore(keyToLookFor, cls);
-                if (stored != null) {
-                    return LHSerializable.fromProto(stored, cls, executionContext);
-                }
-            }
+        // Parse: wrg/{wfRunId}/{storeableType}/{getableType}/{restOfKey}
+        String[] parts = storeKey.split("/");
+        if (parts.length >= 4) {
+            String wfRunId = parts[1];
+            String storeableType = parts[2];
+            String getableType = parts[3];
+            // For WfRun objects, the legacy key is: {storeableType}/{getableType}/{wfRunId}
+            return storeableType + "/" + getableType + "/" + wfRunId;
         }
 
-        return null;
-    }
-
-    /**
-     * Try to find a StoredGetable using legacy format from cache.
-     */
-    private <U extends Message, T extends Storeable<U>> T tryLegacyFormatFromCache(String storeKey, Class<T> cls) {
-        // For cached metadata objects, we would need to implement similar logic
-        // For now, let's skip this and focus on the non-cached path
         return null;
     }
 }
