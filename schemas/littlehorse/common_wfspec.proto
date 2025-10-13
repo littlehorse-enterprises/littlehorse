@@ -53,9 +53,11 @@ message VariableAssignment {
   // StructDef type, then you may provide a `path` for querying data within your object.
   oneof path {
     // DEPRECATED: A String path formatted in the `JSONPath` format.
+    // Supported on JSON_OBJ and JSON_ARR.
     string json_path = 1;
 
     // A path resolving to a field in your object.
+    // Supported on Struct and JSON_OBJ.
     LHPath lh_path = 8;
   }
 
@@ -111,8 +113,16 @@ enum VariableMutationType {
 message VariableMutation {
   // Specifies to use the output of a NodeRun as the RHS.
   message NodeOutputSource {
-    // Use this specific field from a JSON output
-    optional string jsonpath = 10;
+    // Use this specific field from a Struct, JSON_OBJ, or JSON_ARR output
+    oneof path {
+      // A String path formatted in the `JSONPath` format.
+      // Supported on JSON_OBJ and JSON_ARR.
+      string jsonpath = 10;
+
+      // A path resolving to a field in your object.
+      // Supported on Struct and JSON_OBJ.
+      LHPath lh_path = 11;
+    }
   }
 
   // The name of the variable to mutate

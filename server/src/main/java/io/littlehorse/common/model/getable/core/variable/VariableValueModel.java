@@ -321,16 +321,22 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public VariableValueModel get(LHPathModel path) throws LHVarSubError {
         VariableValueModel val = this;
 
+        if (val.getValueType() == ValueCase.JSON_OBJ) {
+            return this.jsonPath(path.toJsonStr());
+        }
+
         for (Selector selector : path.getPath()) {
-            if (val.valueType != ValueCase.STRUCT) {
+            if (val.valueType == ValueCase.JSON_OBJ) {
+                val = val.jsonPath("$." + selector.getKey());
+            } else if (val.valueType == ValueCase.STRUCT) {
+                val = val.getStruct()
+                        .getInlineStruct()
+                        .getFields()
+                        .get(selector.getKey())
+                        .getValue();
+            } else {
                 throw new LHVarSubError(null, "Cannot 'get' on " + valueType);
             }
-
-            val = val.getStruct()
-                    .getInlineStruct()
-                    .getFields()
-                    .get(selector.getKey())
-                    .getValue();
         }
 
         return val;

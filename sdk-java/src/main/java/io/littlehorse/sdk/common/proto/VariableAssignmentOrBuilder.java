@@ -13,6 +13,7 @@ public interface VariableAssignmentOrBuilder extends
   /**
    * <pre>
    * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
    * <code>string json_path = 1;</code>
@@ -22,6 +23,7 @@ public interface VariableAssignmentOrBuilder extends
   /**
    * <pre>
    * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
    * <code>string json_path = 1;</code>
@@ -31,6 +33,7 @@ public interface VariableAssignmentOrBuilder extends
   /**
    * <pre>
    * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
    * <code>string json_path = 1;</code>
@@ -42,6 +45,7 @@ public interface VariableAssignmentOrBuilder extends
   /**
    * <pre>
    * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
    * </pre>
    *
    * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -51,6 +55,7 @@ public interface VariableAssignmentOrBuilder extends
   /**
    * <pre>
    * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
    * </pre>
    *
    * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -60,6 +65,7 @@ public interface VariableAssignmentOrBuilder extends
   /**
    * <pre>
    * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
    * </pre>
    *
    * <code>.littlehorse.LHPath lh_path = 8;</code>

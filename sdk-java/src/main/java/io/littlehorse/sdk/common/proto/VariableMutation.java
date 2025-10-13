@@ -61,32 +61,67 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * Use this specific field from a JSON output
+     * A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string jsonpath = 10;</code>
+     * <code>string jsonpath = 10;</code>
      * @return Whether the jsonpath field is set.
      */
     boolean hasJsonpath();
     /**
      * <pre>
-     * Use this specific field from a JSON output
+     * A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string jsonpath = 10;</code>
+     * <code>string jsonpath = 10;</code>
      * @return The jsonpath.
      */
     java.lang.String getJsonpath();
     /**
      * <pre>
-     * Use this specific field from a JSON output
+     * A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string jsonpath = 10;</code>
+     * <code>string jsonpath = 10;</code>
      * @return The bytes for jsonpath.
      */
     com.google.protobuf.ByteString
         getJsonpathBytes();
+
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 11;</code>
+     * @return Whether the lhPath field is set.
+     */
+    boolean hasLhPath();
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 11;</code>
+     * @return The lhPath.
+     */
+    io.littlehorse.sdk.common.proto.LHPath getLhPath();
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 11;</code>
+     */
+    io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhPathOrBuilder();
+
+    io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.PathCase getPathCase();
   }
   /**
    * <pre>
@@ -114,7 +149,6 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private NodeOutputSource() {
-      jsonpath_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -130,64 +164,159 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.class, io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.Builder.class);
     }
 
-    private int bitField0_;
-    public static final int JSONPATH_FIELD_NUMBER = 10;
+    private int pathCase_ = 0;
     @SuppressWarnings("serial")
-    private volatile java.lang.Object jsonpath_ = "";
+    private java.lang.Object path_;
+    public enum PathCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      JSONPATH(10),
+      LH_PATH(11),
+      PATH_NOT_SET(0);
+      private final int value;
+      private PathCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static PathCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static PathCase forNumber(int value) {
+        switch (value) {
+          case 10: return JSONPATH;
+          case 11: return LH_PATH;
+          case 0: return PATH_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public PathCase
+    getPathCase() {
+      return PathCase.forNumber(
+          pathCase_);
+    }
+
+    public static final int JSONPATH_FIELD_NUMBER = 10;
     /**
      * <pre>
-     * Use this specific field from a JSON output
+     * A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string jsonpath = 10;</code>
+     * <code>string jsonpath = 10;</code>
      * @return Whether the jsonpath field is set.
      */
-    @java.lang.Override
     public boolean hasJsonpath() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return pathCase_ == 10;
     }
     /**
      * <pre>
-     * Use this specific field from a JSON output
+     * A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string jsonpath = 10;</code>
+     * <code>string jsonpath = 10;</code>
      * @return The jsonpath.
      */
-    @java.lang.Override
     public java.lang.String getJsonpath() {
-      java.lang.Object ref = jsonpath_;
+      java.lang.Object ref = "";
+      if (pathCase_ == 10) {
+        ref = path_;
+      }
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        jsonpath_ = s;
+        if (pathCase_ == 10) {
+          path_ = s;
+        }
         return s;
       }
     }
     /**
      * <pre>
-     * Use this specific field from a JSON output
+     * A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string jsonpath = 10;</code>
+     * <code>string jsonpath = 10;</code>
      * @return The bytes for jsonpath.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getJsonpathBytes() {
-      java.lang.Object ref = jsonpath_;
+      java.lang.Object ref = "";
+      if (pathCase_ == 10) {
+        ref = path_;
+      }
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        jsonpath_ = b;
+        if (pathCase_ == 10) {
+          path_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
+    }
+
+    public static final int LH_PATH_FIELD_NUMBER = 11;
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 11;</code>
+     * @return Whether the lhPath field is set.
+     */
+    @java.lang.Override
+    public boolean hasLhPath() {
+      return pathCase_ == 11;
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 11;</code>
+     * @return The lhPath.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHPath getLhPath() {
+      if (pathCase_ == 11) {
+         return (io.littlehorse.sdk.common.proto.LHPath) path_;
+      }
+      return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 11;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhPathOrBuilder() {
+      if (pathCase_ == 11) {
+         return (io.littlehorse.sdk.common.proto.LHPath) path_;
+      }
+      return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -204,8 +333,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 10, jsonpath_);
+      if (pathCase_ == 10) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 10, path_);
+      }
+      if (pathCase_ == 11) {
+        output.writeMessage(11, (io.littlehorse.sdk.common.proto.LHPath) path_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -216,8 +348,12 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(10, jsonpath_);
+      if (pathCase_ == 10) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(10, path_);
+      }
+      if (pathCase_ == 11) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, (io.littlehorse.sdk.common.proto.LHPath) path_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -234,10 +370,18 @@ private static final long serialVersionUID = 0L;
       }
       io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource other = (io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource) obj;
 
-      if (hasJsonpath() != other.hasJsonpath()) return false;
-      if (hasJsonpath()) {
-        if (!getJsonpath()
-            .equals(other.getJsonpath())) return false;
+      if (!getPathCase().equals(other.getPathCase())) return false;
+      switch (pathCase_) {
+        case 10:
+          if (!getJsonpath()
+              .equals(other.getJsonpath())) return false;
+          break;
+        case 11:
+          if (!getLhPath()
+              .equals(other.getLhPath())) return false;
+          break;
+        case 0:
+        default:
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -250,9 +394,17 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasJsonpath()) {
-        hash = (37 * hash) + JSONPATH_FIELD_NUMBER;
-        hash = (53 * hash) + getJsonpath().hashCode();
+      switch (pathCase_) {
+        case 10:
+          hash = (37 * hash) + JSONPATH_FIELD_NUMBER;
+          hash = (53 * hash) + getJsonpath().hashCode();
+          break;
+        case 11:
+          hash = (37 * hash) + LH_PATH_FIELD_NUMBER;
+          hash = (53 * hash) + getLhPath().hashCode();
+          break;
+        case 0:
+        default:
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -389,7 +541,11 @@ private static final long serialVersionUID = 0L;
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        jsonpath_ = "";
+        if (lhPathBuilder_ != null) {
+          lhPathBuilder_.clear();
+        }
+        pathCase_ = 0;
+        path_ = null;
         return this;
       }
 
@@ -417,18 +573,22 @@ private static final long serialVersionUID = 0L;
       public io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource buildPartial() {
         io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource result = new io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource(this);
         if (bitField0_ != 0) { buildPartial0(result); }
+        buildPartialOneofs(result);
         onBuilt();
         return result;
       }
 
       private void buildPartial0(io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource result) {
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.jsonpath_ = jsonpath_;
-          to_bitField0_ |= 0x00000001;
+      }
+
+      private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource result) {
+        result.pathCase_ = pathCase_;
+        result.path_ = this.path_;
+        if (pathCase_ == 11 &&
+            lhPathBuilder_ != null) {
+          result.path_ = lhPathBuilder_.build();
         }
-        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -443,10 +603,20 @@ private static final long serialVersionUID = 0L;
 
       public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource other) {
         if (other == io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.getDefaultInstance()) return this;
-        if (other.hasJsonpath()) {
-          jsonpath_ = other.jsonpath_;
-          bitField0_ |= 0x00000001;
-          onChanged();
+        switch (other.getPathCase()) {
+          case JSONPATH: {
+            pathCase_ = 10;
+            path_ = other.path_;
+            onChanged();
+            break;
+          }
+          case LH_PATH: {
+            mergeLhPath(other.getLhPath());
+            break;
+          }
+          case PATH_NOT_SET: {
+            break;
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -475,10 +645,18 @@ private static final long serialVersionUID = 0L;
                 done = true;
                 break;
               case 82: {
-                jsonpath_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
+                java.lang.String s = input.readStringRequireUtf8();
+                pathCase_ = 10;
+                path_ = s;
                 break;
               } // case 82
+              case 90: {
+                input.readMessage(
+                    internalGetLhPathFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                pathCase_ = 11;
+                break;
+              } // case 90
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -494,35 +672,58 @@ private static final long serialVersionUID = 0L;
         } // finally
         return this;
       }
+      private int pathCase_ = 0;
+      private java.lang.Object path_;
+      public PathCase
+          getPathCase() {
+        return PathCase.forNumber(
+            pathCase_);
+      }
+
+      public Builder clearPath() {
+        pathCase_ = 0;
+        path_ = null;
+        onChanged();
+        return this;
+      }
+
       private int bitField0_;
 
-      private java.lang.Object jsonpath_ = "";
       /**
        * <pre>
-       * Use this specific field from a JSON output
+       * A String path formatted in the `JSONPath` format.
+       * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
-       * <code>optional string jsonpath = 10;</code>
+       * <code>string jsonpath = 10;</code>
        * @return Whether the jsonpath field is set.
        */
+      @java.lang.Override
       public boolean hasJsonpath() {
-        return ((bitField0_ & 0x00000001) != 0);
+        return pathCase_ == 10;
       }
       /**
        * <pre>
-       * Use this specific field from a JSON output
+       * A String path formatted in the `JSONPath` format.
+       * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
-       * <code>optional string jsonpath = 10;</code>
+       * <code>string jsonpath = 10;</code>
        * @return The jsonpath.
        */
+      @java.lang.Override
       public java.lang.String getJsonpath() {
-        java.lang.Object ref = jsonpath_;
+        java.lang.Object ref = "";
+        if (pathCase_ == 10) {
+          ref = path_;
+        }
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          jsonpath_ = s;
+          if (pathCase_ == 10) {
+            path_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -530,20 +731,27 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * Use this specific field from a JSON output
+       * A String path formatted in the `JSONPath` format.
+       * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
-       * <code>optional string jsonpath = 10;</code>
+       * <code>string jsonpath = 10;</code>
        * @return The bytes for jsonpath.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString
           getJsonpathBytes() {
-        java.lang.Object ref = jsonpath_;
+        java.lang.Object ref = "";
+        if (pathCase_ == 10) {
+          ref = path_;
+        }
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          jsonpath_ = b;
+          if (pathCase_ == 10) {
+            path_ = b;
+          }
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
@@ -551,41 +759,46 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * Use this specific field from a JSON output
+       * A String path formatted in the `JSONPath` format.
+       * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
-       * <code>optional string jsonpath = 10;</code>
+       * <code>string jsonpath = 10;</code>
        * @param value The jsonpath to set.
        * @return This builder for chaining.
        */
       public Builder setJsonpath(
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
-        jsonpath_ = value;
-        bitField0_ |= 0x00000001;
+        pathCase_ = 10;
+        path_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * Use this specific field from a JSON output
+       * A String path formatted in the `JSONPath` format.
+       * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
-       * <code>optional string jsonpath = 10;</code>
+       * <code>string jsonpath = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearJsonpath() {
-        jsonpath_ = getDefaultInstance().getJsonpath();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
+        if (pathCase_ == 10) {
+          pathCase_ = 0;
+          path_ = null;
+          onChanged();
+        }
         return this;
       }
       /**
        * <pre>
-       * Use this specific field from a JSON output
+       * A String path formatted in the `JSONPath` format.
+       * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
-       * <code>optional string jsonpath = 10;</code>
+       * <code>string jsonpath = 10;</code>
        * @param value The bytes for jsonpath to set.
        * @return This builder for chaining.
        */
@@ -593,10 +806,197 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
-        jsonpath_ = value;
-        bitField0_ |= 0x00000001;
+        pathCase_ = 10;
+        path_ = value;
         onChanged();
         return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder> lhPathBuilder_;
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       * @return Whether the lhPath field is set.
+       */
+      @java.lang.Override
+      public boolean hasLhPath() {
+        return pathCase_ == 11;
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       * @return The lhPath.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.LHPath getLhPath() {
+        if (lhPathBuilder_ == null) {
+          if (pathCase_ == 11) {
+            return (io.littlehorse.sdk.common.proto.LHPath) path_;
+          }
+          return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+        } else {
+          if (pathCase_ == 11) {
+            return lhPathBuilder_.getMessage();
+          }
+          return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+        }
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       */
+      public Builder setLhPath(io.littlehorse.sdk.common.proto.LHPath value) {
+        if (lhPathBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          path_ = value;
+          onChanged();
+        } else {
+          lhPathBuilder_.setMessage(value);
+        }
+        pathCase_ = 11;
+        return this;
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       */
+      public Builder setLhPath(
+          io.littlehorse.sdk.common.proto.LHPath.Builder builderForValue) {
+        if (lhPathBuilder_ == null) {
+          path_ = builderForValue.build();
+          onChanged();
+        } else {
+          lhPathBuilder_.setMessage(builderForValue.build());
+        }
+        pathCase_ = 11;
+        return this;
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       */
+      public Builder mergeLhPath(io.littlehorse.sdk.common.proto.LHPath value) {
+        if (lhPathBuilder_ == null) {
+          if (pathCase_ == 11 &&
+              path_ != io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance()) {
+            path_ = io.littlehorse.sdk.common.proto.LHPath.newBuilder((io.littlehorse.sdk.common.proto.LHPath) path_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            path_ = value;
+          }
+          onChanged();
+        } else {
+          if (pathCase_ == 11) {
+            lhPathBuilder_.mergeFrom(value);
+          } else {
+            lhPathBuilder_.setMessage(value);
+          }
+        }
+        pathCase_ = 11;
+        return this;
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       */
+      public Builder clearLhPath() {
+        if (lhPathBuilder_ == null) {
+          if (pathCase_ == 11) {
+            pathCase_ = 0;
+            path_ = null;
+            onChanged();
+          }
+        } else {
+          if (pathCase_ == 11) {
+            pathCase_ = 0;
+            path_ = null;
+          }
+          lhPathBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       */
+      public io.littlehorse.sdk.common.proto.LHPath.Builder getLhPathBuilder() {
+        return internalGetLhPathFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhPathOrBuilder() {
+        if ((pathCase_ == 11) && (lhPathBuilder_ != null)) {
+          return lhPathBuilder_.getMessageOrBuilder();
+        } else {
+          if (pathCase_ == 11) {
+            return (io.littlehorse.sdk.common.proto.LHPath) path_;
+          }
+          return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+        }
+      }
+      /**
+       * <pre>
+       * A path resolving to a field in your object.
+       * Supported on Struct and JSON_OBJ.
+       * </pre>
+       *
+       * <code>.littlehorse.LHPath lh_path = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder> 
+          internalGetLhPathFieldBuilder() {
+        if (lhPathBuilder_ == null) {
+          if (!(pathCase_ == 11)) {
+            path_ = io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+          }
+          lhPathBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.LHPath) path_,
+                  getParentForChildren(),
+                  isClean());
+          path_ = null;
+        }
+        pathCase_ = 11;
+        onChanged();
+        return lhPathBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:littlehorse.VariableMutation.NodeOutputSource)

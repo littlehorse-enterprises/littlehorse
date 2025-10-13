@@ -3,7 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.StructModel;
@@ -197,6 +197,30 @@ public class VariableValueModelTest {
                                                                                 .setValue(VariableValue.newBuilder()
                                                                                         .setStr("Obi-Wan"))
                                                                                 .build()))))
+                                        .build()))
+                .build();
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("owner"))
+                .addPath(Selector.newBuilder().setKey("firstName"))
+                .build();
+
+        VariableValueModel structVarVal =
+                new VariableValueModel(StructModel.fromProto(struct, StructModel.class, mock()));
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Obi-Wan");
+    }
+
+    @Test
+    void shouldGetPathOnJsonObjNestedInStruct() throws LHVarSubError {
+        Struct struct = Struct.newBuilder()
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "owner",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setJsonObj("{\"firstName\":\"Obi-Wan\"}"))
                                         .build()))
                 .build();
 

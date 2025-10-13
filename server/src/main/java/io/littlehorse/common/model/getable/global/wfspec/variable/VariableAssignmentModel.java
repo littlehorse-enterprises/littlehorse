@@ -91,7 +91,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public VariableAssignment.Builder toProto() {
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
 
-        if (jsonPath != null) out.setJsonPath(jsonPath);
         if (targetType != null) out.setTargetType(targetType.toProto());
 
         switch (pathCase) {

@@ -129,8 +129,14 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             out = thread.assignVariable(rhsRhsAssignment, txnCache);
         } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
             out = nodeOutput;
-            if (nodeOutputSource.jsonPath != null) {
-                out = out.jsonPath(nodeOutputSource.jsonPath);
+            switch (nodeOutputSource.getPathCase()) {
+                case JSONPATH:
+                    out = out.jsonPath(nodeOutputSource.getJsonPath());
+                    break;
+                case LH_PATH:
+                    out = out.get(nodeOutputSource.getLhPath());
+                    break;
+                case PATH_NOT_SET:
             }
         } else {
             throw new RuntimeException("Unsupported RHS Value type: " + rhsValueType);
@@ -153,7 +159,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 VariableValueModel lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
                 TypeDefinitionModel typeToCoerceTo = lhsJsonPathed.getTypeDefinition();
 
-                // If the key does not exist in the LHS, we just plop the RHS there. Otherwise, we want to coerce the
+                // If the key does not exist in the LHS, we just plop the RHS there. Otherwise,
+                // we want to coerce the
                 // type to the rhs.
                 VariableValueModel thingToPut =
                         lhsJsonPathed.getTypeDefinition().isNull()

@@ -327,8 +327,7 @@ export interface VariableMutation {
 
 /** Specifies to use the output of a NodeRun as the RHS. */
 export interface VariableMutation_NodeOutputSource {
-  /** Use this specific field from a JSON output */
-  jsonpath?: string | undefined;
+  path?: { $case: "jsonpath"; value: string } | { $case: "lhPath"; value: LHPath } | undefined;
 }
 
 /** Declares a Variable; used in a ThreadSpec and a TaskDef. */
@@ -1205,13 +1204,18 @@ export const VariableMutation = {
 };
 
 function createBaseVariableMutation_NodeOutputSource(): VariableMutation_NodeOutputSource {
-  return { jsonpath: undefined };
+  return { path: undefined };
 }
 
 export const VariableMutation_NodeOutputSource = {
   encode(message: VariableMutation_NodeOutputSource, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.jsonpath !== undefined) {
-      writer.uint32(82).string(message.jsonpath);
+    switch (message.path?.$case) {
+      case "jsonpath":
+        writer.uint32(82).string(message.path.value);
+        break;
+      case "lhPath":
+        LHPath.encode(message.path.value, writer.uint32(90).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -1228,7 +1232,14 @@ export const VariableMutation_NodeOutputSource = {
             break;
           }
 
-          message.jsonpath = reader.string();
+          message.path = { $case: "jsonpath", value: reader.string() };
+          continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.path = { $case: "lhPath", value: LHPath.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1240,13 +1251,22 @@ export const VariableMutation_NodeOutputSource = {
   },
 
   fromJSON(object: any): VariableMutation_NodeOutputSource {
-    return { jsonpath: isSet(object.jsonpath) ? globalThis.String(object.jsonpath) : undefined };
+    return {
+      path: isSet(object.jsonpath)
+        ? { $case: "jsonpath", value: globalThis.String(object.jsonpath) }
+        : isSet(object.lhPath)
+        ? { $case: "lhPath", value: LHPath.fromJSON(object.lhPath) }
+        : undefined,
+    };
   },
 
   toJSON(message: VariableMutation_NodeOutputSource): unknown {
     const obj: any = {};
-    if (message.jsonpath !== undefined) {
-      obj.jsonpath = message.jsonpath;
+    if (message.path?.$case === "jsonpath") {
+      obj.jsonpath = message.path.value;
+    }
+    if (message.path?.$case === "lhPath") {
+      obj.lhPath = LHPath.toJSON(message.path.value);
     }
     return obj;
   },
@@ -1256,7 +1276,12 @@ export const VariableMutation_NodeOutputSource = {
   },
   fromPartial(object: DeepPartial<VariableMutation_NodeOutputSource>): VariableMutation_NodeOutputSource {
     const message = createBaseVariableMutation_NodeOutputSource();
-    message.jsonpath = object.jsonpath ?? undefined;
+    if (object.path?.$case === "jsonpath" && object.path?.value !== undefined && object.path?.value !== null) {
+      message.path = { $case: "jsonpath", value: object.path.value };
+    }
+    if (object.path?.$case === "lhPath" && object.path?.value !== undefined && object.path?.value !== null) {
+      message.path = { $case: "lhPath", value: LHPath.fromPartial(object.path.value) };
+    }
     return message;
   },
 };

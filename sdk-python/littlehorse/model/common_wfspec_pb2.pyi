@@ -94,10 +94,12 @@ class VariableAssignment(_message.Message):
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")
     class NodeOutputSource(_message.Message):
-        __slots__ = ("jsonpath",)
+        __slots__ = ("jsonpath", "lh_path")
         JSONPATH_FIELD_NUMBER: _ClassVar[int]
+        LH_PATH_FIELD_NUMBER: _ClassVar[int]
         jsonpath: str
-        def __init__(self, jsonpath: _Optional[str] = ...) -> None: ...
+        lh_path: LHPath
+        def __init__(self, jsonpath: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ...) -> None: ...
     LHS_NAME_FIELD_NUMBER: _ClassVar[int]
     LHS_JSON_PATH_FIELD_NUMBER: _ClassVar[int]
     OPERATION_FIELD_NUMBER: _ClassVar[int]
