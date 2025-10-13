@@ -58,8 +58,8 @@ describe('getVariable', () => {
   it('should return variableName with jsonPath', () => {
     const variable: VariableAssignment = {
       path: {
-        '$case': "jsonPath",
-        "value": '$.path'
+        $case: 'jsonPath',
+        value: '$.path',
       },
       source: {
         $case: 'variableName',
