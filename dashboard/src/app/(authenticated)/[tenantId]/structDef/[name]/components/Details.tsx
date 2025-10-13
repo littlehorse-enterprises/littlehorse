@@ -1,6 +1,6 @@
 'use client'
 import { FC } from 'react'
-import { StructDef } from '../../../../../../../../sdk-js/dist/proto/struct_def'
+import { StructDef } from 'littlehorse-client/proto'
 
 type DetailsProps = Pick<StructDef, 'id' | 'description'>
 

@@ -148,7 +148,7 @@ export const getTypedVariableValue = (
  */
 export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
   if (varDef.typeDef && varDef.typeDef.definedType) {
-    const {$case, value} = varDef.typeDef.definedType
+    const { $case, value } = varDef.typeDef.definedType
     switch ($case) {
       case 'primitiveType':
         return getVariableCaseFromType(value)

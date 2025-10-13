@@ -1,16 +1,16 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { Separator } from '@/components/ui/separator'
+import { StructDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { StructDef as StructDefProto } from '../../../../../../../../sdk-js/dist/proto/struct_def'
 import { Details } from './Details'
 import { Fields } from './Fields'
 
 type Props = {
-  structDef: StructDefProto
+  structDef: StructDef
 }
 
-export const StructDef: FC<Props> = ({ structDef }) => {
+export const StructDefClient: FC<Props> = ({ structDef }) => {
   if (!structDef.structDef?.fields) return
 
   return (
