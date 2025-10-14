@@ -88,7 +88,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // Configurations to avoid the "many small L0 files" problem
         options.setCompactionStyle(CompactionStyle.LEVEL);
         options.setMaxWriteBufferNumber(3);
-        options.setTargetFileSizeBase(64 * MB); // 64MB is default. We merge write buffers, so this is needed.
+        options.setTargetFileSizeBase(128 * MB); // 64MB is default. We merge write buffers, so this is needed.
         options.setLevel0FileNumCompactionTrigger(12);
         options.setLevel0SlowdownWritesTrigger(24);
         options.setMaxBytesForLevelBase(64 * MB * 12); // Same as the compaction trigger
