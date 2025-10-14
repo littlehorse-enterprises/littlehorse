@@ -25,7 +25,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <>
             <div className="flex items-center gap-1">
               <small className="node-title">User Group </small>
-              <InfoIcon size={16} color="gray" />
+              {/* <InfoIcon size={16} color="gray" />   TODO: add information about the variable*/}
             </div>
             <VariableAssignment variableAssigment={userGroup} />
           </>
@@ -44,7 +44,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <>
             <div className="flex items-center gap-1">
               <small className="node-title">User Task Definition Version</small>
-              <InfoIcon size={16} color="gray" />
+              {/* <InfoIcon size={16} color="gray" /> */}
             </div>
             <p>{userTaskDefVersion}</p>
           </>
@@ -53,7 +53,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <>
             <div className="flex items-center gap-1">
               <small className="node-title">Notes </small>
-              <InfoIcon size={16} color="gray" />
+              {/* <InfoIcon size={16} color="gray" /> */}
             </div>
             <VariableAssignment variableAssigment={notes} />
           </>
@@ -62,7 +62,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <>
             <div className="flex items-center gap-1">
               <small className="node-title">Cancel Exception </small>
-              <InfoIcon size={16} color="gray" />
+              {/* <InfoIcon size={16} color="gray" /> */}
             </div>
             <VariableAssignment variableAssigment={onCancellationExceptionName} />
           </>

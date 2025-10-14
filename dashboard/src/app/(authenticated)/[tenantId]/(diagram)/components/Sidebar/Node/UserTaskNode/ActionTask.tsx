@@ -6,6 +6,7 @@ import { useModal } from '../../../../hooks/useModal'
 
 export const ActionTask: FC<{ node: UTActionTrigger_UTATask }> = ({ node }) => {
   const { task, mutations } = node
+
   const { setShowModal } = useModal()
   const onClick = () => {
     setShowModal(true)
@@ -19,7 +20,7 @@ export const ActionTask: FC<{ node: UTActionTrigger_UTATask }> = ({ node }) => {
             {mutations.map((mutation, i) => (
               <div key={`mutation-content-${i}`}>
                 <MutationModal data={mutation} type={'edge'}></MutationModal>
-                <span className='bg-gray-200 px-2 font-mono rounded p-1' onClick={onClick}>{mutation.lhsName}</span>
+                <span className='text-blue-500 py2 font-mono rounded  cursor-pointer' onClick={onClick}>{mutation.lhsName}</span>
               </div>
             ))}
           </div>
