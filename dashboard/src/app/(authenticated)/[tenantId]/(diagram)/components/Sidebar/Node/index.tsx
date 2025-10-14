@@ -8,6 +8,7 @@ import { ThrowEventNode } from './ThrowEventNode'
 import { WaitForThreadsNode } from './WaitForThreadsNode'
 import { SleepNode } from './SleepNode'
 import { WaitForCondition } from './WaitForConditionNode'
+import { UserTaskNode } from './UserTaskNode/UserTaskNode'
 
 export const Node: FC = () => {
   const { selectedNode } = useDiagram()
@@ -24,6 +25,7 @@ export const Node: FC = () => {
   if ($case === 'throwEvent') return <ThrowEventNode node={value} />
   if ($case === 'sleep') return <SleepNode node={value} />
   if ($case === 'waitForCondition') return <WaitForCondition node={value} />
+  if ($case === 'userTask') return <UserTaskNode node={value} />
 
   return <></>
 }
