@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
@@ -182,22 +183,36 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         return tenantId == null ? key : tenantId.toString() + "/" + key;
     }
 
-    // Delete this when we remove support for the old key format
+    // TO DO, Delete this method after when we deprecate legacy key
     private String toLegacyFormat(String storeKey) {
-        if (!storeKey.startsWith(Storeable.GROUPED_WF_RUN_PREFIX + "/")) {
+        final String prefix = Storeable.GROUPED_WF_RUN_PREFIX + "/";
+        if (!storeKey.startsWith(prefix)) {
             return null;
         }
 
-        // Parse: wrg/{wfRunId}/{storeableType}/{getableType}/{restOfKey}
-        String[] parts = storeKey.split("/");
-        if (parts.length >= 4) {
-            String wfRunId = parts[1];
-            String storeableType = parts[2];
-            String getableType = parts[3];
-            // For WfRun objects, the legacy key is: {storeableType}/{getableType}/{wfRunId}
-            return storeableType + "/" + getableType + "/" + wfRunId;
+        // Expected at least: wrg/{wfRunId}/{storeableType}/{getableType}
+        final String[] parts = storeKey.split("/");
+        if (parts.length < 4) {
+            return null;
         }
 
-        return null;
+        final String wfRunId = parts[1];
+        final String storeableType = parts[2];
+        final String getableType = parts[3];
+
+        StringBuilder legacyKey = new StringBuilder()
+                .append(storeableType)
+                .append("/")
+                .append(getableType)
+                .append("/")
+                .append(wfRunId);
+
+        if (parts.length > 4) {
+            String[] remainingParts = Arrays.copyOfRange(parts, 4, parts.length);
+            String restOfKey = String.join("/", remainingParts);
+            legacyKey.append("/").append(restOfKey);
+        }
+
+        return legacyKey.toString();
     }
 }
