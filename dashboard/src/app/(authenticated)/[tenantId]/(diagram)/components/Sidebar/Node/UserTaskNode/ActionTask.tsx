@@ -1,4 +1,4 @@
-import { UTActionTrigger_UTATask, VariableMutationType } from 'littlehorse-client/proto'
+import { UTActionTrigger_UTATask } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { TaskNode as TaskNodeComponent } from '../TaskNode'
 import { MutationModal } from '../../../Modals/MutationModal'

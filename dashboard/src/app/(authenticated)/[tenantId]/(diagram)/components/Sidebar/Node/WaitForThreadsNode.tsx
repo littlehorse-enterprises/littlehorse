@@ -2,7 +2,7 @@ import { WaitForThreadsNode as WaitForThreadsNodeProto } from 'littlehorse-clien
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { VariableAssignment } from '../Components'
-import "./node.css"
+import './node.css'
 
 export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node }) => {
   const { threadsToWaitFor, perThreadFailureHandlers } = node
@@ -36,7 +36,16 @@ export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node
           </div>
         </>
       )}
-      {/* TODO: handle perThreadFailureHandlers when greater than 0 */}
+      {perThreadFailureHandlers.length > 0 && (
+        <div>
+          <small className="node-title">Failure Handlers List</small>
+          {perThreadFailureHandlers.map((handler, index) => (
+            <div key={index} className=" bg-gray-200  mt-2">
+              <div className="truncate">{handler.handlerSpecName}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
