@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
@@ -56,17 +57,27 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
-        String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+        String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+
         if (metadataCache != null) {
-            return getMetadataObject(keyToLookFor, cls);
-        } else {
-            // time to get things from the store
-            GeneratedMessage stored = getFromNativeStore(keyToLookFor, cls);
-            if (stored == null) {
-                return null;
-            }
+            return getMetadataObject(fullKey, cls);
+        }
+
+        GeneratedMessage stored = getFromNativeStore(fullKey, cls);
+        if (stored != null) {
             return LHSerializable.fromProto(stored, cls, executionContext);
         }
+
+        String legacyKey = toLegacyFormat(storeKey);
+        if (legacyKey != null) {
+            String fullLegacyKey = maybeAddTenantPrefix(legacyKey);
+            stored = getFromNativeStore(fullLegacyKey, cls);
+            if (stored != null) {
+                return LHSerializable.fromProto(stored, cls, executionContext);
+            }
+        }
+
+        return null;
     }
 
     private <U extends Message, T extends Storeable<U>> T getMetadataObject(String keyToLookFor, Class<T> clazz) {
@@ -170,5 +181,38 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     protected String maybeAddTenantPrefix(String key) {
         return tenantId == null ? key : tenantId.toString() + "/" + key;
+    }
+
+    // TO DO, Delete this method after when we deprecate legacy key
+    private String toLegacyFormat(String storeKey) {
+        final String prefix = Storeable.GROUPED_WF_RUN_PREFIX + "/";
+        if (!storeKey.startsWith(prefix)) {
+            return null;
+        }
+
+        // Expected at least: wrg/{wfRunId}/{storeableType}/{getableType}
+        final String[] parts = storeKey.split("/");
+        if (parts.length < 4) {
+            return null;
+        }
+
+        final String wfRunId = parts[1];
+        final String storeableType = parts[2];
+        final String getableType = parts[3];
+
+        StringBuilder legacyKey = new StringBuilder()
+                .append(storeableType)
+                .append("/")
+                .append(getableType)
+                .append("/")
+                .append(wfRunId);
+
+        if (parts.length > 4) {
+            String[] remainingParts = Arrays.copyOfRange(parts, 4, parts.length);
+            String restOfKey = String.join("/", remainingParts);
+            legacyKey.append("/").append(restOfKey);
+        }
+
+        return legacyKey.toString();
     }
 }
