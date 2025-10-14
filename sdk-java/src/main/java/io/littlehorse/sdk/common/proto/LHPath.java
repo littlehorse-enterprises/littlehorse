@@ -81,6 +81,25 @@ private static final long serialVersionUID = 0L;
     com.google.protobuf.ByteString
         getKeyBytes();
 
+    /**
+     * <pre>
+     * The index of the item you want to access from a JSON_ARR or Array
+     * </pre>
+     *
+     * <code>int32 index = 2;</code>
+     * @return Whether the index field is set.
+     */
+    boolean hasIndex();
+    /**
+     * <pre>
+     * The index of the item you want to access from a JSON_ARR or Array
+     * </pre>
+     *
+     * <code>int32 index = 2;</code>
+     * @return The index.
+     */
+    int getIndex();
+
     io.littlehorse.sdk.common.proto.LHPath.Selector.SelectorTypeCase getSelectorTypeCase();
   }
   /**
@@ -127,6 +146,7 @@ private static final long serialVersionUID = 0L;
         implements com.google.protobuf.Internal.EnumLite,
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
       KEY(1),
+      INDEX(2),
       SELECTORTYPE_NOT_SET(0);
       private final int value;
       private SelectorTypeCase(int value) {
@@ -145,6 +165,7 @@ private static final long serialVersionUID = 0L;
       public static SelectorTypeCase forNumber(int value) {
         switch (value) {
           case 1: return KEY;
+          case 2: return INDEX;
           case 0: return SELECTORTYPE_NOT_SET;
           default: return null;
         }
@@ -224,6 +245,35 @@ private static final long serialVersionUID = 0L;
       }
     }
 
+    public static final int INDEX_FIELD_NUMBER = 2;
+    /**
+     * <pre>
+     * The index of the item you want to access from a JSON_ARR or Array
+     * </pre>
+     *
+     * <code>int32 index = 2;</code>
+     * @return Whether the index field is set.
+     */
+    @java.lang.Override
+    public boolean hasIndex() {
+      return selectorTypeCase_ == 2;
+    }
+    /**
+     * <pre>
+     * The index of the item you want to access from a JSON_ARR or Array
+     * </pre>
+     *
+     * <code>int32 index = 2;</code>
+     * @return The index.
+     */
+    @java.lang.Override
+    public int getIndex() {
+      if (selectorTypeCase_ == 2) {
+        return (java.lang.Integer) selectorType_;
+      }
+      return 0;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -241,6 +291,10 @@ private static final long serialVersionUID = 0L;
       if (selectorTypeCase_ == 1) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, selectorType_);
       }
+      if (selectorTypeCase_ == 2) {
+        output.writeInt32(
+            2, (int)((java.lang.Integer) selectorType_));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -252,6 +306,11 @@ private static final long serialVersionUID = 0L;
       size = 0;
       if (selectorTypeCase_ == 1) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, selectorType_);
+      }
+      if (selectorTypeCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(
+              2, (int)((java.lang.Integer) selectorType_));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -274,6 +333,10 @@ private static final long serialVersionUID = 0L;
           if (!getKey()
               .equals(other.getKey())) return false;
           break;
+        case 2:
+          if (getIndex()
+              != other.getIndex()) return false;
+          break;
         case 0:
         default:
       }
@@ -292,6 +355,10 @@ private static final long serialVersionUID = 0L;
         case 1:
           hash = (37 * hash) + KEY_FIELD_NUMBER;
           hash = (53 * hash) + getKey().hashCode();
+          break;
+        case 2:
+          hash = (37 * hash) + INDEX_FIELD_NUMBER;
+          hash = (53 * hash) + getIndex();
           break;
         case 0:
         default:
@@ -489,6 +556,10 @@ private static final long serialVersionUID = 0L;
             onChanged();
             break;
           }
+          case INDEX: {
+            setIndex(other.getIndex());
+            break;
+          }
           case SELECTORTYPE_NOT_SET: {
             break;
           }
@@ -525,6 +596,11 @@ private static final long serialVersionUID = 0L;
                 selectorType_ = s;
                 break;
               } // case 10
+              case 16: {
+                selectorType_ = input.readInt32();
+                selectorTypeCase_ = 2;
+                break;
+              } // case 16
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -671,6 +747,64 @@ private static final long serialVersionUID = 0L;
         selectorTypeCase_ = 1;
         selectorType_ = value;
         onChanged();
+        return this;
+      }
+
+      /**
+       * <pre>
+       * The index of the item you want to access from a JSON_ARR or Array
+       * </pre>
+       *
+       * <code>int32 index = 2;</code>
+       * @return Whether the index field is set.
+       */
+      public boolean hasIndex() {
+        return selectorTypeCase_ == 2;
+      }
+      /**
+       * <pre>
+       * The index of the item you want to access from a JSON_ARR or Array
+       * </pre>
+       *
+       * <code>int32 index = 2;</code>
+       * @return The index.
+       */
+      public int getIndex() {
+        if (selectorTypeCase_ == 2) {
+          return (java.lang.Integer) selectorType_;
+        }
+        return 0;
+      }
+      /**
+       * <pre>
+       * The index of the item you want to access from a JSON_ARR or Array
+       * </pre>
+       *
+       * <code>int32 index = 2;</code>
+       * @param value The index to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIndex(int value) {
+
+        selectorTypeCase_ = 2;
+        selectorType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The index of the item you want to access from a JSON_ARR or Array
+       * </pre>
+       *
+       * <code>int32 index = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIndex() {
+        if (selectorTypeCase_ == 2) {
+          selectorTypeCase_ = 0;
+          selectorType_ = null;
+          onChanged();
+        }
         return this;
       }
 

@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -37,7 +38,8 @@ class WfRunVariableImpl implements WfRunVariable {
     private List<JsonIndex> jsonIndexes = new ArrayList<>();
     private WfRunVariableAccessLevel accessLevel;
 
-    public String jsonPath;
+    private String jsonPath;
+    private List<Selector> lhPath;
 
     private final WorkflowThreadImpl parent;
 
@@ -47,6 +49,8 @@ class WfRunVariableImpl implements WfRunVariable {
 
         // As per GH Issue #582, the default is now PRIVATE_VAR.
         this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
+
+        this.lhPath = new ArrayList<>();
     }
 
     public static WfRunVariableImpl createPrimitiveVar(
@@ -118,6 +122,36 @@ class WfRunVariableImpl implements WfRunVariable {
         }
         WfRunVariableImpl out = this.clone();
         out.setJsonPath(path);
+        return out;
+    }
+
+    @Override
+    public WfRunVariableImpl get(String field) {
+        if (jsonPath != null) {
+            throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
+        }
+        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                && (typeDef.getPrimitiveType() != VariableType.JSON_OBJ
+                        && typeDef.getPrimitiveType() != VariableType.JSON_ARR)) {
+            throw new LHMisconfigurationException("Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
+        }
+        WfRunVariableImpl out = this.clone();
+        out.getLhPath().add(Selector.newBuilder().setKey(field).build());
+        return out;
+    }
+
+    @Override
+    public WfRunVariableImpl get(int index) {
+        if (jsonPath != null) {
+            throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
+        }
+        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                && (typeDef.getPrimitiveType() != VariableType.JSON_OBJ
+                        && typeDef.getPrimitiveType() != VariableType.JSON_ARR)) {
+            throw new LHMisconfigurationException("Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
+        }
+        WfRunVariableImpl out = this.clone();
+        out.getLhPath().add(Selector.newBuilder().setIndex(index).build());
         return out;
     }
 
@@ -322,7 +356,13 @@ class WfRunVariableImpl implements WfRunVariable {
         out.setJsonIndexes(new ArrayList<>(this.getJsonIndexes()));
         out.setAccessLevel(this.getAccessLevel());
         out.setTypeDef(this.getTypeDef());
-        out.setJsonPath(this.getJsonPath());
+
+        if (jsonPath != null) {
+            out.setJsonPath(this.getJsonPath());
+        } else if (lhPath != null) {
+            out.setLhPath(new ArrayList<>(lhPath));
+        }
+
         return out;
     }
 }

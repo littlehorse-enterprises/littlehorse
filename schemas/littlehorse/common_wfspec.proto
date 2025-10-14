@@ -384,7 +384,7 @@ message LHPath {
       string key = 1;
 
       // The index of the item you want to access from a JSON_ARR or Array
-      // int32 index = 2;
+      int32 index = 2;
     }
   }
 

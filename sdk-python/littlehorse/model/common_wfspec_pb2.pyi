@@ -231,10 +231,12 @@ class StructFieldDef(_message.Message):
 class LHPath(_message.Message):
     __slots__ = ("path",)
     class Selector(_message.Message):
-        __slots__ = ("key",)
+        __slots__ = ("key", "index")
         KEY_FIELD_NUMBER: _ClassVar[int]
+        INDEX_FIELD_NUMBER: _ClassVar[int]
         key: str
-        def __init__(self, key: _Optional[str] = ...) -> None: ...
+        index: int
+        def __init__(self, key: _Optional[str] = ..., index: _Optional[int] = ...) -> None: ...
     PATH_FIELD_NUMBER: _ClassVar[int]
     path: _containers.RepeatedCompositeFieldContainer[LHPath.Selector]
     def __init__(self, path: _Optional[_Iterable[_Union[LHPath.Selector, _Mapping]]] = ...) -> None: ...

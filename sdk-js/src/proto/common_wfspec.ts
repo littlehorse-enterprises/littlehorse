@@ -598,7 +598,7 @@ export interface LHPath {
 }
 
 export interface LHPath_Selector {
-  selectorType?: { $case: "key"; value: string } | undefined;
+  selectorType?: { $case: "key"; value: string } | { $case: "index"; value: number } | undefined;
 }
 
 function createBaseVariableAssignment(): VariableAssignment {
@@ -2457,6 +2457,9 @@ export const LHPath_Selector = {
       case "key":
         writer.uint32(10).string(message.selectorType.value);
         break;
+      case "index":
+        writer.uint32(16).int32(message.selectorType.value);
+        break;
     }
     return writer;
   },
@@ -2475,6 +2478,13 @@ export const LHPath_Selector = {
 
           message.selectorType = { $case: "key", value: reader.string() };
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.selectorType = { $case: "index", value: reader.int32() };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2485,13 +2495,22 @@ export const LHPath_Selector = {
   },
 
   fromJSON(object: any): LHPath_Selector {
-    return { selectorType: isSet(object.key) ? { $case: "key", value: globalThis.String(object.key) } : undefined };
+    return {
+      selectorType: isSet(object.key)
+        ? { $case: "key", value: globalThis.String(object.key) }
+        : isSet(object.index)
+        ? { $case: "index", value: globalThis.Number(object.index) }
+        : undefined,
+    };
   },
 
   toJSON(message: LHPath_Selector): unknown {
     const obj: any = {};
     if (message.selectorType?.$case === "key") {
       obj.key = message.selectorType.value;
+    }
+    if (message.selectorType?.$case === "index") {
+      obj.index = Math.round(message.selectorType.value);
     }
     return obj;
   },
@@ -2507,6 +2526,13 @@ export const LHPath_Selector = {
       object.selectorType?.value !== null
     ) {
       message.selectorType = { $case: "key", value: object.selectorType.value };
+    }
+    if (
+      object.selectorType?.$case === "index" &&
+      object.selectorType?.value !== undefined &&
+      object.selectorType?.value !== null
+    ) {
+      message.selectorType = { $case: "index", value: object.selectorType.value };
     }
     return message;
   },

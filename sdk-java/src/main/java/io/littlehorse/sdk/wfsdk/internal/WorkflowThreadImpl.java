@@ -371,7 +371,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 if (wfVar.typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
                         && (wfVar.typeDef.getPrimitiveType() == VariableType.JSON_ARR
                                 || wfVar.typeDef.getPrimitiveType() == VariableType.JSON_OBJ)
-                        && wfVar.jsonPath != null) {
+                        && wfVar.getJsonPath() != null) {
                     log.info("There is a jsonpath, so not checking value because Json schema isn't"
                             + " yet implemented");
                     continue;
@@ -810,8 +810,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         VariableMutation.Builder mutation =
                 VariableMutation.newBuilder().setLhsName(lhs.name).setOperation(type);
 
-        if (lhs.jsonPath != null) {
-            mutation.setLhsJsonPath(lhs.jsonPath);
+        if (lhs.getJsonPath() != null) {
+            mutation.setLhsJsonPath(lhs.getJsonPath());
         }
 
         mutation.setRhsAssignment(assignVariable(rhs));

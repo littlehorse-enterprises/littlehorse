@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
@@ -44,8 +45,11 @@ class BuilderUtil {
 
     private static VariableAssignment buildFromWfRunVariable(WfRunVariableImpl wfRunVariable) {
         VariableAssignment.Builder builder = VariableAssignment.newBuilder().setVariableName(wfRunVariable.name);
-        if (wfRunVariable.jsonPath != null) {
-            builder.setJsonPath(wfRunVariable.jsonPath);
+        if (wfRunVariable.getJsonPath() != null) {
+            builder.setJsonPath(wfRunVariable.getJsonPath());
+        } else if (wfRunVariable.getLhPath() != null) {
+            builder.setLhPath(
+                    LHPath.newBuilder().addAllPath(wfRunVariable.getLhPath()).build());
         }
         return builder.build();
     }
@@ -55,8 +59,11 @@ class BuilderUtil {
                 .setNodeOutput(NodeOutputReference.newBuilder()
                         .setNodeName(nodeOutput.nodeName)
                         .build());
-        if (nodeOutput.jsonPath != null) {
-            builder.setJsonPath(nodeOutput.jsonPath);
+        if (nodeOutput.getJsonPath() != null) {
+            builder.setJsonPath(nodeOutput.getJsonPath());
+        } else if (nodeOutput.getLhPath() != null) {
+            builder.setLhPath(
+                    LHPath.newBuilder().addAllPath(nodeOutput.getLhPath()).build());
         }
         return builder.build();
     }

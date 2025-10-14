@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 
 public class LHPathModel extends LHSerializable<LHPath> {
@@ -41,7 +40,21 @@ public class LHPathModel extends LHSerializable<LHPath> {
     }
 
     public String toJsonStr() {
-        // TODO: Support Array indexing once we support Array Index in Selectors
-        return "$." + path.stream().map(s -> s.getKey()).collect(Collectors.joining("."));
+        StringBuilder pathBuilder = new StringBuilder("$");
+
+        for (Selector selector : path) {
+            switch (selector.getSelectorTypeCase()) {
+                case INDEX:
+                    pathBuilder.append(String.format("[%d]", selector.getIndex()));
+                    break;
+                case KEY:
+                    pathBuilder.append('.');
+                    pathBuilder.append(String.format(selector.getKey()));
+                    break;
+                case SELECTORTYPE_NOT_SET:
+            }
+        }
+
+        return pathBuilder.toString();
     }
 }
