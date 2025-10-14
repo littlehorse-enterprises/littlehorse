@@ -47,7 +47,7 @@ class BuilderUtil {
         VariableAssignment.Builder builder = VariableAssignment.newBuilder().setVariableName(wfRunVariable.name);
         if (wfRunVariable.getJsonPath() != null) {
             builder.setJsonPath(wfRunVariable.getJsonPath());
-        } else if (wfRunVariable.getLhPath() != null) {
+        } else if (wfRunVariable.getLhPath() != null && !wfRunVariable.getLhPath().isEmpty()) {
             builder.setLhPath(
                     LHPath.newBuilder().addAllPath(wfRunVariable.getLhPath()).build());
         }
@@ -61,7 +61,7 @@ class BuilderUtil {
                         .build());
         if (nodeOutput.getJsonPath() != null) {
             builder.setJsonPath(nodeOutput.getJsonPath());
-        } else if (nodeOutput.getLhPath() != null) {
+        } else if (nodeOutput.getLhPath() != null && !nodeOutput.getLhPath().isEmpty()) {
             builder.setLhPath(
                     LHPath.newBuilder().addAllPath(nodeOutput.getLhPath()).build());
         }

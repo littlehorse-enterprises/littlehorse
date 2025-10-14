@@ -322,7 +322,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         VariableValueModel val = this;
 
         if (val.getValueType() == ValueCase.JSON_OBJ) {
-            return this.jsonPath(path.toJsonStr());
+            return this.jsonPath(path.toJsonPathStr());
         }
 
         for (Selector selector : path.getPath()) {

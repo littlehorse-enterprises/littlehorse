@@ -39,7 +39,11 @@ public class LHPathModel extends LHSerializable<LHPath> {
         return out;
     }
 
-    public String toJsonStr() {
+    /**
+     * Converts this LHPath to a JSONPath String.
+     * @return a JSONPath String.
+     */
+    public String toJsonPathStr() {
         StringBuilder pathBuilder = new StringBuilder("$");
 
         for (Selector selector : path) {
