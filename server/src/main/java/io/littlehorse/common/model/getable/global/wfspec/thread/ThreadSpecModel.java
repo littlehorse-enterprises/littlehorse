@@ -282,14 +282,15 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         // Exit node validation requires that every ExitNode returns the same type, so we only need one.
         try {
-            return nodes.values().stream()
+            Optional<ExitNodeModel> nonErrorExitNode = nodes.values().stream()
                     .filter(node -> node.getType() == NodeCase.EXIT)
                     // ignore nodes that throw exceptions
                     .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
                     .map(NodeModel::getExitNode)
-                    .findFirst()
-                    .get()
-                    .getOutputType(manager);
+                    .findFirst();
+
+            if (nonErrorExitNode.isEmpty()) return Optional.of(new ReturnTypeModel());
+            return nonErrorExitNode.get().getOutputType(manager);
         } catch (InvalidExpressionException exn) {
             throw new IllegalStateException(
                     "Should not be possible to catch this during this method as it should have been validated");
@@ -461,9 +462,17 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
 
         for (Map.Entry<String, VariableAssignmentModel> e : vars.entrySet()) {
-            if (localGetVarDef(e.getKey()) == null) {
+            if (this.localGetVarDef(e.getKey()) == null) {
                 throw new InvalidThreadSpecException(
                         variableAssignorThread, "Var " + e.getKey() + " provided but not needed for thread " + name);
+            }
+        }
+
+        for (ThreadVarDefModel tvdm : getRequiredVarDefs()) {
+            if (!vars.containsKey(tvdm.getVarDef().getName())) {
+                throw new InvalidThreadSpecException(
+                        variableAssignorThread,
+                        "Missing required variable " + tvdm.getVarDef().getName());
             }
         }
     }

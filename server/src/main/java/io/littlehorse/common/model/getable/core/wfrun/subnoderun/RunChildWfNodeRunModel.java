@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.RunChildWf
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunChildWfNodeRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
@@ -94,8 +95,8 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
                 null,
                 inputs,
                 ThreadType.ENTRYPOINT);
-        out.advance(time);
         ctx.getableManager().put(out);
+        out.advance(time);
     }
 
     @Override
@@ -112,9 +113,14 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
             case COMPLETED:
                 return true;
             case ERROR:
-                // TODO: throw node failure
+                throw new NodeFailureException(new FailureModel(
+                        "Child WfRun " + childWfRunId + " failed", LHErrorType.CHILD_FAILURE.toString()));
             case EXCEPTION:
-                // TODO: Throw node failure
+                FailureModel childFailure = childWf.getThreadRun(0)
+                        .getCurrentNodeRun()
+                        .getLatestFailure()
+                        .get();
+                throw new NodeFailureException(childFailure.copyWithPrefix("Child WfRun failed: "));
             case UNRECOGNIZED:
         }
         throw new IllegalStateException("unrecognized proto enum value");
@@ -122,7 +128,7 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
 
     @Override
     public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
-        // TODO: later.
-        return Optional.empty();
+        WfRunModel childWfRun = processorContext.getableManager().get(childWfRunId);
+        return Optional.ofNullable(childWfRun.getThreadRun(0).getOutput());
     }
 }
