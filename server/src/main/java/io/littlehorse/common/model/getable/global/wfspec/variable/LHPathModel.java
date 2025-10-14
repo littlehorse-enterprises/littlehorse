@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 
@@ -14,6 +15,12 @@ public class LHPathModel extends LHSerializable<LHPath> {
 
     @Getter
     private List<Selector> path;
+
+    public LHPathModel() {}
+
+    public LHPathModel(List<Selector> path) {
+        this.path = new ArrayList<>(path);
+    }
 
     @Override
     public LHPath.Builder toProto() {
@@ -25,7 +32,7 @@ public class LHPathModel extends LHSerializable<LHPath> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         LHPath p = (LHPath) proto;
-        this.path = new ArrayList<>(p.getPathList());
+        this.path = Collections.unmodifiableList(p.getPathList());
     }
 
     @Override
@@ -52,8 +59,7 @@ public class LHPathModel extends LHSerializable<LHPath> {
                     pathBuilder.append(String.format("[%d]", selector.getIndex()));
                     break;
                 case KEY:
-                    pathBuilder.append('.');
-                    pathBuilder.append(String.format(selector.getKey()));
+                    pathBuilder.append("." + selector.getKey());
                     break;
                 case SELECTORTYPE_NOT_SET:
             }

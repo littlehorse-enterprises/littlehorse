@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -156,6 +157,50 @@ public class VariableValueModelTest {
         VariableValueModel strVarVal = valueWfRunId.asStr();
         assertThat(strVarVal.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(strVarVal.getStrVal()).isEqualTo("parent_child");
+    }
+
+    @Test
+    void shouldGetPathOnJsonObj() throws LHVarSubError {
+        Map<String, Object> jsonObj = new HashMap<>();
+        jsonObj.put("make", "Ford");
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("make"))
+                .build();
+
+        VariableValueModel structVarVal = new VariableValueModel(jsonObj);
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Ford");
+    }
+
+    @Test
+    void shouldGetPathOnJsonArr() throws LHVarSubError {
+        List<Object> jsonArr = List.of("apple", "banana", "orange");
+
+        LHPath lhPath =
+                LHPath.newBuilder().addPath(Selector.newBuilder().setIndex(1)).build();
+
+        VariableValueModel structVarVal = new VariableValueModel(jsonArr);
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("banana");
+    }
+
+    @Test
+    void shouldGetPathOnJsonArrWithNegativeIndex() throws LHVarSubError {
+        List<Object> jsonArr = List.of("apple", "banana", "orange");
+
+        LHPath lhPath =
+                LHPath.newBuilder().addPath(Selector.newBuilder().setIndex(-1)).build();
+
+        VariableValueModel structVarVal = new VariableValueModel(jsonArr);
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("orange");
     }
 
     @Test

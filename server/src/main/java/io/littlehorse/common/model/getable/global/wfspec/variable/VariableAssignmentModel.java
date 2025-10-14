@@ -7,7 +7,6 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -15,14 +14,12 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
-import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -282,31 +279,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
 
         if (lhPath != null) {
-            for (Selector selector : lhPath.getPath()) {
-                switch (typeDef.getDefinedTypeCase()) {
-                    case PRIMITIVE_TYPE:
-                        if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
-                                && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
-                            throw new InvalidExpressionException("Cannot use an LHPath on type " + typeDef);
-                        } else {
-                            return Optional.empty();
-                        }
-                    case STRUCT_DEF_ID:
-                        StructDefModel structDef = new WfService(manager).getStructDef(typeDef.getStructDefId());
-                        if (!structDef.getStructDef().getFields().containsKey(selector.getKey())) {
-                            throw new InvalidExpressionException(
-                                    String.format("Cannot find field '%s' on type %s", selector.getKey(), typeDef));
-                        }
-                        typeDef = structDef
-                                .getStructDef()
-                                .getFields()
-                                .get(selector.getKey())
-                                .getFieldType();
-                        break;
-                    case DEFINEDTYPE_NOT_SET:
-                        break;
-                }
-            }
+            return typeDef.getNestedType(lhPath, manager);
         }
 
         return Optional.ofNullable(typeDef);
