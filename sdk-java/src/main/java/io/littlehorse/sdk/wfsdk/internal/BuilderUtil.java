@@ -47,7 +47,8 @@ class BuilderUtil {
         VariableAssignment.Builder builder = VariableAssignment.newBuilder().setVariableName(wfRunVariable.name);
         if (wfRunVariable.getJsonPath() != null) {
             builder.setJsonPath(wfRunVariable.getJsonPath());
-        } else if (wfRunVariable.getLhPath() != null && !wfRunVariable.getLhPath().isEmpty()) {
+        } else if (wfRunVariable.getLhPath() != null
+                && !wfRunVariable.getLhPath().isEmpty()) {
             builder.setLhPath(
                     LHPath.newBuilder().addAllPath(wfRunVariable.getLhPath()).build());
         }
