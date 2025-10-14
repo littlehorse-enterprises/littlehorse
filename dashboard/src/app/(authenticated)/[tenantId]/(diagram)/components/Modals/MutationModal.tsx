@@ -8,7 +8,6 @@ import { MutationRhS } from '../../wfSpec/[...props]/components/Mutations'
 export const MutationModal: FC<Modal<VariableMutation>> = ({ data }) => {
   const { lhsName, lhsJsonPath, operation, rhsValue } = data
   const { showModal, setShowModal } = useModal()
-
   return (
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
       <DialogContent>

@@ -1,21 +1,25 @@
-import { UTActionTrigger_UTATask } from 'littlehorse-client/proto'
+import { UTActionTrigger_UTATask, VariableMutationType } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { TaskNode as TaskNodeComponent } from '../TaskNode'
-// import { Edge } from '../../../Modals/Edge'
+import { MutationModal } from '../../../Modals/MutationModal'
+import { useModal } from '../../../../hooks/useModal'
 
 export const ActionTask: FC<{ node: UTActionTrigger_UTATask }> = ({ node }) => {
   const { task, mutations } = node
-  console.log(mutations)
+  const { setShowModal } = useModal()
+  const onClick = () => {
+    setShowModal(true)
+  }
   return (
-    <div className="mt-1 ">
+    <div className="mt-2">
       {mutations && mutations.length > 0 && (
         <div>
           <small className="node-title">Mutations</small>
-          <div className="mt-1">
+          <div className="my-2 ">
             {mutations.map((mutation, i) => (
-              <div key={i} className="flex">
-                {/* <Edge data={{ variableMutations: [mutation], sinkNodeName: '' }} type={'edge'}></Edge> */}
-                <span className="bg-gray-200 px-2 font-mono">{mutation.lhsName}</span>
+              <div key={`mutation-content-${i}`}>
+                <MutationModal data={mutation} type={'edge'}></MutationModal>
+                <span className='bg-gray-200 px-2 font-mono rounded p-1' onClick={onClick}>{mutation.lhsName}</span>
               </div>
             ))}
           </div>

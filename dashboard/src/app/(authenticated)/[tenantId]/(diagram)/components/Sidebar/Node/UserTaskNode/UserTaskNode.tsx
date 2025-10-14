@@ -1,13 +1,18 @@
-import { UserTaskNode as UserTaskNodeProto, UTActionTrigger_UTATask } from 'littlehorse-client/proto'
+import {
+  TaskDefId,
+  UserTaskNode as UserTaskNodeProto,
+  UTActionTrigger_UTACancel,
+  UTActionTrigger_UTAReassign,
+  UTActionTrigger_UTATask,
+} from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { VariableAssignment } from '../../Components'
 import '../node.css'
 import { InfoIcon } from 'lucide-react'
 import { ActionTask } from './ActionTask'
-import { Accordion, Content, Header, Item, Trigger } from '@radix-ui/react-accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
   const { userTaskDefName, userGroup, userId, notes, onCancellationExceptionName, userTaskDefVersion, actions } = node
-
   if (!node) return
   return (
     <div className="flex max-w-full flex-1 flex-col gap-2">
@@ -62,36 +67,59 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
             <VariableAssignment variableAssigment={onCancellationExceptionName} />
           </>
         )}
-        <div>
+        <div className="pb-4">
           <small className="node-title"> Actions</small>
           <div>
-            {actions.map((action, index) => (
-              <>
-                <Accordion type="single" collapsible>
-                  <Item value={`action-${index}`}>
-                    <Header>
-                      <Trigger>{action.action?.$case.toString()}</Trigger>
-                    </Header>
-                    <Content>
-                      <div className="flex" key={`hook-content-${index}`}>
-                        <p className="flex-none truncate bg-blue-500 px-2 font-mono text-gray-200">Hook</p>
-                        <p className=" flex-grow truncate bg-black pl-2 font-mono text-gray-200">{action.hook}</p>
-                      </div>
-                      {action.delaySeconds && (
-                        <div className="mt-1 flex" key={`action-content-${index}`}>
-                          <p className="flex-none truncate bg-blue-500 px-2 font-mono text-gray-200">Delay</p>
-                          <VariableAssignment variableAssigment={action.delaySeconds} />
+            {actions.map((action, index) => {
+              const nodeType = action.action?.$case ?? ''
+              return (
+                <>
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value={`action-${index}`}>
+                      <AccordionTrigger>
+                        <NodeTitleComponent title={nodeType} action={action.action?.value} />
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex mt-2"  key={`hook-content-${index}`}>
+                          <p className="flex-none truncate bg-blue-500 px-2 font-mono text-gray-200">Hook</p>
+                          <p className=" flex-grow truncate bg-black pl-2 font-mono text-gray-200">{action.hook}</p>
                         </div>
-                      )}
-                      {action.action?.$case.toString() === 'task' && <ActionTask node={action.action?.value as UTActionTrigger_UTATask} />}
-                    </Content>
-                  </Item>
-                </Accordion>
-              </>
-            ))}
+                        {action.delaySeconds && (
+                          <div className="mt-2 flex" key={`action-content-${index}`}>
+                            <p className="flex-none truncate bg-blue-500 px-2 font-mono text-gray-200">Delay</p>
+                            <VariableAssignment variableAssigment={action.delaySeconds} />
+                          </div>
+                        )}
+                        {nodeType === 'task' && <ActionTask node={action.action?.value as UTActionTrigger_UTATask} />}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </>
+              )
+            })}
           </div>
         </div>
       </>
+    </div>
+  )
+}
+
+export const NodeTitleComponent: FC<{
+  title: string
+  action: UTActionTrigger_UTATask | UTActionTrigger_UTACancel | UTActionTrigger_UTAReassign | undefined
+}> = ({ title, action }) => {
+  let summaryNodeTitle = ''
+  if (title === 'task' && action && 'task' in action) {
+    const value = action?.task?.taskToExecute?.value
+    if (value && 'name' in value) {
+      summaryNodeTitle = (value as TaskDefId).name ?? ''
+    }
+  }
+
+  return (
+    <div className="flex flex-1 items-center flex-start">
+      <span className='truncate pl-1'>{title}</span>
+      <span className="text-xs text-gray-500 ml-6">{summaryNodeTitle}</span>
     </div>
   )
 }
