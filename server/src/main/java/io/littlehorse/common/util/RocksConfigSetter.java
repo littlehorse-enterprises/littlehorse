@@ -87,12 +87,12 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // Therefore, we use other configs to attempt to reduce WA.
         // Configurations to avoid the "many small L0 files" problem
         options.setCompactionStyle(CompactionStyle.LEVEL);
-        options.setMaxWriteBufferNumber(4);
-        options.setMinWriteBufferNumberToMerge(2);
-        options.setTargetFileSizeBase(128 * MB); // 64MB is default. We merge write buffers, so this is needed.
-        options.setLevel0FileNumCompactionTrigger(4);
-        options.setMaxBytesForLevelBase(128 * MB * 4); // Same as the compaction trigger
-        options.setMaxBytesForLevelMultiplier(12); // default 10; higher means lower Write Amp but bigger compactions
+        options.setMaxWriteBufferNumber(3);
+        options.setTargetFileSizeBase(64 * MB); // 64MB is default. We merge write buffers, so this is needed.
+        options.setLevel0FileNumCompactionTrigger(12);
+        options.setLevel0SlowdownWritesTrigger(24);
+        options.setMaxBytesForLevelBase(64 * MB * 12); // Same as the compaction trigger
+        options.setMaxBytesForLevelMultiplier(15); // default 10; higher means lower Write Amp but bigger compactions
         options.setCompactionPriority(CompactionPriority.ByCompensatedSize); // Good for deletes / overwrites
         options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
 
