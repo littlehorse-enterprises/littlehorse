@@ -139,7 +139,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
             } else if (childThreadRun.getStatus() == LHStatus.EXCEPTION
                     || childThreadRun.getStatus() == LHStatus.ERROR) {
-
                 FailureModel latestFailure =
                         childThreadRun.getCurrentNodeRun().getLatestFailure().get();
 

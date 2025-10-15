@@ -384,7 +384,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
             ThreadRunModel interruptor =
                     startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
-            interruptor.interruptTriggerId = pi.externalEventId;
+            interruptor.setInterruptTriggerId(pi.externalEventId);
 
             if (interruptor.status == LHStatus.ERROR) {
                 putFailureOnThreadRun(

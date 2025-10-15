@@ -511,10 +511,14 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             getSubNodeRun().arrive(time, processorContext);
             setStatus(LHStatus.RUNNING);
         } catch (NodeFailureException exn) {
-            failures.add(exn.getFailure());
-            setStatus(exn.getFailure().getStatus());
+            fail(exn);
             throw exn;
         }
+    }
+
+    public void fail(NodeFailureException exn) {
+        failures.add(exn.getFailure());
+        setStatus(exn.getFailure().getStatus());
     }
 
     /**
