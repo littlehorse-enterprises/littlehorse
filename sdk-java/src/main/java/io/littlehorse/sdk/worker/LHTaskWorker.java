@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -180,45 +179,83 @@ public class LHTaskWorker implements Closeable {
     public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
         if (tdb.getStructDefDependencies().isEmpty()) return;
 
-        List<String> invalidStructDefs = new ArrayList<>();
-        List<StructDef> structDefDependencies = tdb.getStructDefDependencies().stream()
-                .map(classType -> classType.toStructDef())
-                .collect(Collectors.toList());
-
-        for (StructDef structDef : structDefDependencies) {
-            ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
-                    ValidateStructDefEvolutionRequest.newBuilder();
-            validateStructDefRequest.setStructDefId(structDef.getId());
-            validateStructDefRequest.setStructDef(structDef.getStructDef());
-            validateStructDefRequest.setCompatibilityType(compatibilityType);
-
-            ValidateStructDefEvolutionResponse resp =
-                    grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
-
-            if (!resp.getIsValid()) {
-                invalidStructDefs.add(structDef.getId().getName());
-            }
-        }
-
-        if (!invalidStructDefs.isEmpty()) {
-            throw new RuntimeException("Invalid StructDefs: " + invalidStructDefs.toString());
+        for (LHStructDefType lhStructDefType : tdb.getStructDefDependencies()) {
+            validateStructDef(lhStructDefType, compatibilityType);
         }
     }
 
+    /**
+     * Validates whether or not you can evolve your StructDef with the selected compatibility type
+     *
+     * @param structClass       The class for your StructDef
+     * @param compatibilityType The server will validate the given StructDef schemas against
+     *                          their existing StructDef schemas based on this compatibility type.
+     */
+    public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+
+        validateStructDef(lhStructDefType, compatibilityType);
+    }
+
+    private void validateStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
+
+        ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
+                ValidateStructDefEvolutionRequest.newBuilder();
+        validateStructDefRequest.setStructDefId(structDef.getId());
+        validateStructDefRequest.setStructDef(structDef.getStructDef());
+        validateStructDefRequest.setCompatibilityType(compatibilityType);
+
+        ValidateStructDefEvolutionResponse resp =
+                grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
+
+        if (!resp.getIsValid()) {
+            throw new IllegalArgumentException(String.format(
+                    "Unable to evolve StructDef %s using StructDefCompatibilityType %s",
+                    structDef.getId().getName(), compatibilityType));
+        }
+    }
+
+    private void registerStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
+        PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
+        putStructDefRequest.setName(structDef.getId().getName());
+        putStructDefRequest.setDescription(structDef.getDescription());
+        putStructDefRequest.setStructDef(structDef.getStructDef());
+        putStructDefRequest.setAllowedUpdates(compatibilityType);
+
+        grpcClient.putStructDef(putStructDefRequest.build());
+    }
+
+    /**
+     * Registers a single StructDef based on the StructDef class
+     *
+     * Note: If your StructDef depends on other StructDefs, ensure you register them
+     * in the right order. This method does not handle registering StructDef dependencies.
+     *
+     * @param structClass       The class for your StructDef
+     * @param compatibilityType The server will try to register the given StructDef
+     *                          according to this compatibility type.
+     */
+    public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+
+        registerStructDef(lhStructDefType, compatibilityType);
+    }
+
+    /**
+     * Validates StructDef classes used in your Task Definitions against StructDefs on the server.
+     *
+     * @param compatibilityType The server will try to register the given StructDefs
+     *                          according to this compatibility type.
+     */
     public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
         List<LHStructDefType> lhStructDefTypes = tdb.getStructDefDependencies();
 
         if (lhStructDefTypes.isEmpty()) return;
 
-        for (LHStructDefType lhClassType : lhStructDefTypes) {
-            StructDef structDef = lhClassType.toStructDef();
-            PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
-            putStructDefRequest.setName(structDef.getId().getName());
-            putStructDefRequest.setDescription(structDef.getDescription());
-            putStructDefRequest.setStructDef(structDef.getStructDef());
-            putStructDefRequest.setAllowedUpdates(compatibilityType);
-
-            grpcClient.putStructDef(putStructDefRequest.build());
+        for (LHStructDefType lhStructDefType : lhStructDefTypes) {
+            registerStructDef(lhStructDefType, compatibilityType);
         }
     }
 
