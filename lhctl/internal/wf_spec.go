@@ -14,7 +14,7 @@ import (
 )
 
 var getWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <name> [<majorVersion>] [<revision>]",
+	Use:   "wfSpec <name>",
 	Short: "Get a WfSpec by Name and optionally Major Version and Revision.",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

@@ -81,4 +81,8 @@ public class FailureModel extends LHSerializable<Failure> {
     public LHStatus getStatus() {
         return isUserDefinedFailure() ? LHStatus.EXCEPTION : LHStatus.ERROR;
     }
+
+    public FailureModel copyWithPrefix(String prefix) {
+        return new FailureModel(prefix + message, failureName, content);
+    }
 }

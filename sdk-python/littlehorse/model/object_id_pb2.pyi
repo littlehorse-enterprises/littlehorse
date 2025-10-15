@@ -123,6 +123,14 @@ class TaskRunId(_message.Message):
     task_guid: str
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., task_guid: _Optional[str] = ...) -> None: ...
 
+class CheckpointId(_message.Message):
+    __slots__ = ("task_run", "checkpoint_number")
+    TASK_RUN_FIELD_NUMBER: _ClassVar[int]
+    CHECKPOINT_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    task_run: TaskRunId
+    checkpoint_number: int
+    def __init__(self, task_run: _Optional[_Union[TaskRunId, _Mapping]] = ..., checkpoint_number: _Optional[int] = ...) -> None: ...
+
 class UserTaskRunId(_message.Message):
     __slots__ = ("wf_run_id", "user_task_guid")
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
