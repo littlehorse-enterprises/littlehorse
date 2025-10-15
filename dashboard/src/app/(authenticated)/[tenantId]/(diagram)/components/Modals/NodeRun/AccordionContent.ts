@@ -37,6 +37,8 @@ export const AccordionComponents: AccordionNodes = {
   entrypoint: () => null,
   exit: () => null,
   startMultipleThreads: () => null,
+  waitForChildWf: () => null,
+  runChildWf: () => null,
 } as const
 
 export type AccordionConentType = keyof typeof AccordionComponents
