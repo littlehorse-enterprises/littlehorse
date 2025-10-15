@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import e2e.Struct.Person;
 import e2e.Struct.PersonPojo;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
@@ -17,6 +19,9 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.List;
 import java.util.Map;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -48,6 +53,28 @@ public class LHPathTest {
                 .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getStr())
                         .isEqualTo("Calling 111-222-3344"))
                 .start();
+    }
+
+    @Test
+    void shouldFailGetOnStructWithInvalidField() {
+        client.putStructDef(new LHStructDefType(Person.class).toPutStructDefRequest());
+
+        Workflow invalid = Workflow.newWorkflow("fail-get-on-struct", wf -> {
+            WfRunVariable person = wf.declareStruct("person", Person.class);
+            wf.execute("greet", person.get("age"));
+        });
+
+        Assertions.assertThatThrownBy(() -> {
+                    invalid.registerWfSpec(client);
+                })
+                .matches(exn -> {
+                    return exn instanceof StatusRuntimeException;
+                })
+                .matches(exn -> {
+                    StatusRuntimeException sre = (StatusRuntimeException) exn;
+                    return sre.getStatus().getCode() == Code.INVALID_ARGUMENT
+                            && sre.getMessage().toLowerCase().contains("could not find field 'age'");
+                });
     }
 
     @LHWorkflow("lh-path-structs")
