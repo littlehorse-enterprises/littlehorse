@@ -187,7 +187,7 @@ public class LHTaskWorker implements Closeable {
     /**
      * Validates whether or not you can evolve your StructDef with the selected compatibility type
      *
-     * @param structClass       the class for your StructDef
+     * @param structClass       The class for your StructDef
      * @param compatibilityType The server will validate the given StructDef schemas against
      *                          their existing StructDef schemas based on this compatibility type.
      */
@@ -233,7 +233,7 @@ public class LHTaskWorker implements Closeable {
      * Note: If your StructDef depends on other StructDefs, ensure you register them
      * in the right order. This method does not handle registering StructDef dependencies.
      *
-     * @param structClass       the class for your StructDef
+     * @param structClass       The class for your StructDef
      * @param compatibilityType The server will try to register the given StructDef
      *                          according to this compatibility type.
      */
