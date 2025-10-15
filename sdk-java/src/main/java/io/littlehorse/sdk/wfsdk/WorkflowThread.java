@@ -71,7 +71,7 @@ public interface WorkflowThread {
     /**
      * Adds a WAIT_FOR_CHILD_WF node which waits for a specified WfRun to complete and
      * returns its output. As of 0.15 the SpawnedChildWf must come from the same ThreadSpec.
-     * @param childWfRun is a handle to the child WfRun to wait for.
+     * @param childToWaitFor is a handle to the child WfRun to wait for.
      * @return a NodeOutput that logically represents the output of the child WfRun.
      */
     NodeOutput waitForChildWf(SpawnedChildWf childToWaitFor);
