@@ -14,7 +14,7 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class NodeRun(_message.Message):
-    __slots__ = ("id", "wf_spec_id", "failure_handler_ids", "status", "arrival_time", "end_time", "thread_spec_name", "node_name", "error_message", "failures", "task", "external_event", "entrypoint", "exit", "start_thread", "wait_for_threads", "sleep", "user_task", "start_multiple_threads", "throw_event", "wait_for_condition")
+    __slots__ = ("id", "wf_spec_id", "failure_handler_ids", "status", "arrival_time", "end_time", "thread_spec_name", "node_name", "error_message", "failures", "task", "external_event", "entrypoint", "exit", "start_thread", "wait_for_threads", "sleep", "user_task", "start_multiple_threads", "throw_event", "wait_for_condition", "run_child_wf", "wait_for_child_wf")
     ID_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     FAILURE_HANDLER_IDS_FIELD_NUMBER: _ClassVar[int]
@@ -36,6 +36,8 @@ class NodeRun(_message.Message):
     START_MULTIPLE_THREADS_FIELD_NUMBER: _ClassVar[int]
     THROW_EVENT_FIELD_NUMBER: _ClassVar[int]
     WAIT_FOR_CONDITION_FIELD_NUMBER: _ClassVar[int]
+    RUN_CHILD_WF_FIELD_NUMBER: _ClassVar[int]
+    WAIT_FOR_CHILD_WF_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.NodeRunId
     wf_spec_id: _object_id_pb2.WfSpecId
     failure_handler_ids: _containers.RepeatedScalarFieldContainer[int]
@@ -57,7 +59,9 @@ class NodeRun(_message.Message):
     start_multiple_threads: StartMultipleThreadsRun
     throw_event: ThrowEventNodeRun
     wait_for_condition: WaitForConditionRun
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNodeRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNodeRun, _Mapping]] = ..., wait_for_condition: _Optional[_Union[WaitForConditionRun, _Mapping]] = ...) -> None: ...
+    run_child_wf: RunChildWfNodeRun
+    wait_for_child_wf: WaitForChildWfNodeRun
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNodeRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNodeRun, _Mapping]] = ..., wait_for_condition: _Optional[_Union[WaitForConditionRun, _Mapping]] = ..., run_child_wf: _Optional[_Union[RunChildWfNodeRun, _Mapping]] = ..., wait_for_child_wf: _Optional[_Union[WaitForChildWfNodeRun, _Mapping]] = ...) -> None: ...
 
 class TaskNodeRun(_message.Message):
     __slots__ = ("task_run_id",)
@@ -104,6 +108,27 @@ class StartMultipleThreadsRun(_message.Message):
     thread_spec_name: str
     child_thread_ids: _containers.RepeatedScalarFieldContainer[int]
     def __init__(self, thread_spec_name: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ...) -> None: ...
+
+class RunChildWfNodeRun(_message.Message):
+    __slots__ = ("child_wf_run_id", "inputs")
+    class InputsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _variable_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    CHILD_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    INPUTS_FIELD_NUMBER: _ClassVar[int]
+    child_wf_run_id: _object_id_pb2.WfRunId
+    inputs: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    def __init__(self, child_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., inputs: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...
+
+class WaitForChildWfNodeRun(_message.Message):
+    __slots__ = ("child_wf_run_id",)
+    CHILD_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    child_wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, child_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class WaitForThreadsRun(_message.Message):
     __slots__ = ("threads",)

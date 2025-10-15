@@ -8,12 +8,16 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.time.Duration;
+import java.util.UUID;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -87,5 +91,45 @@ public class ThreadRunReturnTest {
                     assertEquals("asdf", wfRun.getThreadRuns(0).getOutput().getStr());
                 })
                 .start();
+    }
+
+    @Test
+    void changingReturnTypeOfEntrypointCausesMajorVersion() {
+        // random so as to not have competing test runs conflict
+        String wfSpecName = UUID.randomUUID().toString();
+
+        Workflow first = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.declareStr("unused");
+        });
+        first.registerWfSpec(client);
+
+        Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
+            client.getWfSpec(WfSpecId.newBuilder().setName(wfSpecName).build());
+            return true;
+        });
+
+        Workflow.newWorkflow(wfSpecName, wf -> {
+                    wf.declareInt("unused");
+                })
+                .registerWfSpec(client);
+        Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
+            client.getWfSpec(
+                    WfSpecId.newBuilder().setName(wfSpecName).setRevision(1).build());
+            return true;
+        });
+
+        Workflow.newWorkflow(wfSpecName, wf -> {
+                    wf.declareInt("unused");
+                    wf.complete("some-output");
+                })
+                .registerWfSpec(client);
+        Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
+            client.getWfSpec(WfSpecId.newBuilder()
+                    .setName(wfSpecName)
+                    .setRevision(0)
+                    .setMajorVersion(1)
+                    .build());
+            return true;
+        });
     }
 }

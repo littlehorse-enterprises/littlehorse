@@ -18,6 +18,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.sdk.common.proto.RunChildWfNode;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
@@ -31,11 +32,13 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WaitForChildWfNode;
 import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
@@ -43,6 +46,7 @@ import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
+import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -333,6 +337,36 @@ final class WorkflowThreadImpl implements WorkflowThread {
         TaskNode taskNode = createTaskNode(TaskNode.newBuilder().setDynamicTask(assignVariable(taskName)), args);
         String nodeName = addNode(((LHFormatStringImpl) taskName).getFormat(), NodeCase.TASK, taskNode);
         return new TaskNodeOutputImpl(nodeName, this);
+    }
+
+    @Override
+    public SpawnedChildWfImpl runWf(String wfSpecName, Map<String, Serializable> inputs) {
+        checkIfIsActive();
+        // TODO: handle workflow versioning
+        RunChildWfNode.Builder node =
+                RunChildWfNode.newBuilder().setMajorVersion(-1).setWfSpecName(wfSpecName);
+        for (Map.Entry<String, Serializable> input : inputs.entrySet()) {
+            node.putInputs(input.getKey(), assignVariable(input.getValue()));
+        }
+        String nodeName = addNode("run-" + wfSpecName, NodeCase.RUN_CHILD_WF, node.build());
+        return new SpawnedChildWfImpl(nodeName, this);
+    }
+
+    @Override
+    public NodeOutput waitForChildWf(SpawnedChildWf childWf) {
+        checkIfIsActive();
+        SpawnedChildWfImpl scwf = (SpawnedChildWfImpl) childWf;
+        if (scwf.getThread() != this) {
+            throw new IllegalArgumentException("Currently cannot wait for WfRun started in other thread");
+        }
+
+        WaitForChildWfNode.Builder node = WaitForChildWfNode.newBuilder()
+                .setChildWfRunId(VariableAssignment.newBuilder()
+                        .setNodeOutput(NodeOutputReference.newBuilder().setNodeName(scwf.getSourceNodeName())))
+                .setChildWfRunSourceNode(scwf.getSourceNodeName());
+
+        String nodeName = addNode("wait", NodeCase.WAIT_FOR_CHILD_WF, node.build());
+        return new NodeOutputImpl(nodeName, this);
     }
 
     private TaskNode createTaskNode(TaskNode.Builder taskNode, Serializable... args) {
@@ -1043,7 +1077,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
             case WAIT_FOR_CONDITION:
                 node.setWaitForCondition((WaitForConditionNode) subNode);
                 break;
+            case RUN_CHILD_WF:
+                node.setRunChildWf((RunChildWfNode) subNode);
+                break;
+            case WAIT_FOR_CHILD_WF:
+                node.setWaitForChildWf((WaitForChildWfNode) subNode);
+                break;
             case NODE_NOT_SET:
+            default:
                 // not possible
                 throw new RuntimeException("Not possible");
         }

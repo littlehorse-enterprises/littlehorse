@@ -45,6 +45,9 @@ message OutputTopicRecord {
 
         // Updates about a `CorrelatedEvent` changing.
         CorrelatedEvent correlated_event = 8;
+
+        // Updates about a `Checkpoint` being created.
+        Checkpoint task_checkpoint = 9;
     }
 }
 
