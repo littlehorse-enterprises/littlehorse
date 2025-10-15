@@ -1,9 +1,8 @@
 package io.littlehorse.sdk.wfsdk;
 
-import java.io.Serializable;
-
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import java.io.Serializable;
 
 /** A WfRunVariable is a handle on a Variable in a WfSpec. */
 public interface WfRunVariable extends LHExpression {
@@ -21,9 +20,9 @@ public interface WfRunVariable extends LHExpression {
     /**
      * Valid only for output of JSON_OBJ or Struct types. Returns a new WfRunVariable handle
      * which points to the sub-element referred to by the field.
-     * 
+     *
      * Note: You can call this method consecutively to get values from nested objects.
-     * 
+     *
      * @param field is the name of the field to access.
      * @return a WfRunVariable.
      */
@@ -32,9 +31,9 @@ public interface WfRunVariable extends LHExpression {
     /**
      * Valid only for output of JSON_ARRs. Returns a new WfRunVariable handle
      * which points to the sub-element referred to by the index.
-     * 
+     *
      * Note: You can call this method consecutively to get values from nested objects.
-     * 
+     *
      * @param index is the index of the item to access.
      * @return a WfRunVariable.
      */
