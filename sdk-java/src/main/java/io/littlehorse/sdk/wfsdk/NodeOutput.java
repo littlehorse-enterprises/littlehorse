@@ -20,6 +20,15 @@ public interface NodeOutput extends LHExpression {
     public NodeOutput jsonPath(String path);
 
     /**
+     * Valid only for output of JSON_OBJ or Struct types. Returns a new NodeOutput handle
+     * which points to the sub-element referred to by the field.
+     *
+     * @param field is the name of the field to access.
+     * @return a NodeOutput.
+     */
+    public NodeOutput get(String field);
+
+    /**
      * Returns a new LHExpression that represents this node output cast to the specified type.
      * This enables manual type conversions that are not automatic, such as:
      * - STR → INT/DOUBLE/BOOL (manual casting required)

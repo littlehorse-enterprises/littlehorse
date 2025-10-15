@@ -58,7 +58,8 @@ public class StructDefModel extends MetadataGetable<StructDef> {
         return out;
     }
 
-    public void validateAgainst(StructModel struct, ReadOnlyMetadataManager metadataManager) {
+    public void validateAgainst(StructModel struct, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
         InlineStructDefModel inlineStructDef = this.structDef;
         InlineStructModel inlineStruct = struct.getInlineStruct();
 

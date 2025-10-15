@@ -44,12 +44,11 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         }
     }
 
-    public void validateAgainst(StructFieldModel structField, ReadOnlyMetadataManager metadataManager) {
+    public void validateAgainst(StructFieldModel structField, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
         if (!fieldType.isCompatibleWith(structField.getValue(), metadataManager)) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    "StructField value %s is incompatible with StructFieldDef type %s"
-                            .formatted(structField.getValue().getVal(), fieldType));
+            throw new StructValidationException("Value of '%s' was provided, but field's type definition is %s"
+                    .formatted(structField.getValue().getVal(), fieldType));
         }
     }
 

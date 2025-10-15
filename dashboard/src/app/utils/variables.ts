@@ -58,7 +58,11 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
     case 'nodeOutput':
       return variable.source.value.nodeName
     case 'variableName':
-      return getValueFromVariableName(variable.source, variable.jsonPath)
+      // TODO: Support `LHPath` case
+      if (variable.path?.$case == 'lhPath') {
+        throw new Error('Unsupported path type.')
+      }
+      return getValueFromVariableName(variable.source, variable.path?.value)
     default:
       return ''
   }
@@ -148,7 +152,7 @@ export const getTypedVariableValue = (
  */
 export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
   if (varDef.typeDef && varDef.typeDef.definedType) {
-    const {$case, value} = varDef.typeDef.definedType
+    const { $case, value } = varDef.typeDef.definedType
     switch ($case) {
       case 'primitiveType':
         return getVariableCaseFromType(value)

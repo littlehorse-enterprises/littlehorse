@@ -6,7 +6,13 @@ import {
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
-import { getTypedVariableValue, getVariable, getVariableCaseFromTypeDef, getVariableDefType, getVariableValue } from './variables'
+import {
+  getTypedVariableValue,
+  getVariable,
+  getVariableCaseFromTypeDef,
+  getVariableDefType,
+  getVariableValue,
+} from './variables'
 
 describe('getVariable', () => {
   it('should return from literalValue str', () => {
@@ -51,7 +57,10 @@ describe('getVariable', () => {
 
   it('should return variableName with jsonPath', () => {
     const variable: VariableAssignment = {
-      jsonPath: '$.path',
+      path: {
+        $case: 'jsonPath',
+        value: '$.path',
+      },
       source: {
         $case: 'variableName',
         value: 'variable',
@@ -418,7 +427,6 @@ describe('getVariableCaseFromTypeDef', () => {
 })
 
 describe('getVariableValue', () => {
-
   it('should return NULL for empty value', () => {
     expect(getVariableValue({ value: {} } as VariableValue)).toEqual('NULL')
   })

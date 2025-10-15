@@ -15,6 +15,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -31,7 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = false)
 public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
 
+    private PathCase pathCase;
     private String jsonPath;
+    private LHPathModel lhPath;
+
     private SourceCase rhsSourceType;
     private String variableName;
     private VariableValueModel rhsLiteralValue;
@@ -47,8 +51,19 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
-        if (p.hasJsonPath()) jsonPath = p.getJsonPath();
         if (p.hasTargetType()) targetType = TypeDefinitionModel.fromProto(p.getTargetType(), context);
+
+        pathCase = p.getPathCase();
+
+        switch (pathCase) {
+            case JSON_PATH:
+                jsonPath = p.getJsonPath();
+                break;
+            case LH_PATH:
+                lhPath = LHPathModel.fromProto(p.getLhPath(), context);
+                break;
+            case PATH_NOT_SET:
+        }
 
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
@@ -76,8 +91,17 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public VariableAssignment.Builder toProto() {
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
 
-        if (jsonPath != null) out.setJsonPath(jsonPath);
         if (targetType != null) out.setTargetType(targetType.toProto());
+
+        switch (pathCase) {
+            case JSON_PATH:
+                out.setJsonPath(jsonPath);
+                break;
+            case LH_PATH:
+                out.setLhPath(lhPath.toProto());
+                break;
+            case PATH_NOT_SET:
+        }
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
@@ -165,6 +189,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
+
         return TypeCastingUtils.canBeType(baseType, type);
     }
 
@@ -206,16 +231,21 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             return Optional.empty();
         }
 
+        TypeDefinitionModel typeDef = null;
+
         switch (rhsSourceType) {
             case VARIABLE_NAME:
-                return Optional.of(wfSpec.fetchThreadSpec(threadSpecName)
+                typeDef = wfSpec.fetchThreadSpec(threadSpecName)
                         .getVarDef(variableName)
                         .getVarDef()
-                        .getTypeDef());
+                        .getTypeDef();
+                break;
             case LITERAL_VALUE:
-                return Optional.of(rhsLiteralValue.getTypeDefinition());
+                typeDef = rhsLiteralValue.getTypeDefinition();
+                break;
             case FORMAT_STRING:
-                return Optional.of(new TypeDefinitionModel(VariableType.STR));
+                typeDef = new TypeDefinitionModel(VariableType.STR);
+                break;
             case NODE_OUTPUT:
                 // TODO: handle here if nodeOutputType is a STRUCT and we access a field on it.
                 NodeModel node = wfSpec.fetchThreadSpec(threadSpecName).getNode(nodeOutputReference.getNodeName());
@@ -224,14 +254,19 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                             + " not present in threadspec " + threadSpecName);
                 }
                 Optional<ReturnTypeModel> returnTypeOption = node.getOutputType(manager);
-                if (returnTypeOption.isPresent()) {
-                    return returnTypeOption.get().getOutputType();
-                } else {
-                    return Optional.empty();
+                if (returnTypeOption.isPresent()
+                        && returnTypeOption.get().getOutputType().isPresent()) {
+                    typeDef = returnTypeOption.get().getOutputType().get();
                 }
+                break;
             case EXPRESSION:
                 // can be a given type.
-                return expression.resolveTypeDefinition(manager, wfSpec, threadSpecName);
+                Optional<TypeDefinitionModel> expressionTypeDef =
+                        expression.resolveTypeDefinition(manager, wfSpec, threadSpecName);
+                if (expressionTypeDef.isPresent()) {
+                    typeDef = expressionTypeDef.get();
+                }
+                break;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException
@@ -243,7 +278,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 throw new InvalidExpressionException("VariableAssignment passed with missing source");
         }
 
-        return Optional.empty();
+        if (lhPath != null) {
+            return typeDef.getNestedType(lhPath, manager);
+        }
+
+        return Optional.ofNullable(typeDef);
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {

@@ -13,8 +13,10 @@ import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -261,7 +263,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     /**
-     * Returns true if the value is empty, which is the LittleHorse equivalent of `null`.
+     * Returns true if the value is empty, which is the LittleHorse equivalent of
+     * `null`.
      */
     public boolean isEmpty() {
         return valueType == ValueCase.VALUE_NOT_SET;
@@ -316,6 +319,50 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return valueType == ValueCase.VALUE_NOT_SET;
     }
 
+    public VariableValueModel get(LHPathModel path) throws LHVarSubError {
+        if (path == null || path.getPath().isEmpty()) {
+            return this;
+        }
+
+        VariableValueModel val = this;
+        List<Selector> selectors = new ArrayList<>(path.getPath());
+
+        // Non-recursively iterates over the LHPath until it has reached the end
+        while (!selectors.isEmpty()) {
+            Selector currentSelector = selectors.get(0);
+
+            switch (val.valueType) {
+                case STRUCT:
+                    val = val.getStruct()
+                            .getInlineStruct()
+                            .getFields()
+                            .get(currentSelector.getKey())
+                            .getValue();
+
+                    selectors.remove(0);
+                    break;
+                case JSON_ARR:
+                    // Once we find a JSON_ARR, we can use JSONPath for the rest of our queries
+                    return val.jsonPath(new LHPathModel(selectors).toJsonPathStr());
+                case JSON_OBJ:
+                    // Once we find a JSON_OBJ, we can use JSONPath for the rest of our queries
+                    return val.jsonPath(new LHPathModel(selectors).toJsonPathStr());
+                case BOOL:
+                case BYTES:
+                case DOUBLE:
+                case INT:
+                case STR:
+                case UTC_TIMESTAMP:
+                case WF_RUN_ID:
+                case VALUE_NOT_SET:
+                default:
+                    throw new LHVarSubError(null, "Cannot 'get' on " + val.valueType);
+            }
+        }
+
+        return val;
+    }
+
     public VariableValueModel jsonPath(String path) throws LHVarSubError {
         Object val;
         String jsonStr;
@@ -338,7 +385,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         }
 
         if (val == null) {
-            // We do not differentiate between the key not being there and the key being explicitly
+            // We do not differentiate between the key not being there and the key being
+            // explicitly
             // set to the value of null.
             return new VariableValueModel();
         }

@@ -38,7 +38,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private VariableAssignment() {
-    jsonPath_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -2796,6 +2795,48 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int pathCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object path_;
+  public enum PathCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    JSON_PATH(1),
+    LH_PATH(8),
+    PATH_NOT_SET(0);
+    private final int value;
+    private PathCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static PathCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static PathCase forNumber(int value) {
+      switch (value) {
+        case 1: return JSON_PATH;
+        case 8: return LH_PATH;
+        case 0: return PATH_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public PathCase
+  getPathCase() {
+    return PathCase.forNumber(
+        pathCase_);
+  }
+
   private int sourceCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object source_;
@@ -2845,68 +2886,116 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int JSON_PATH_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object jsonPath_ = "";
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return Whether the jsonPath field is set.
    */
-  @java.lang.Override
   public boolean hasJsonPath() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return pathCase_ == 1;
   }
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return The jsonPath.
    */
-  @java.lang.Override
   public java.lang.String getJsonPath() {
-    java.lang.Object ref = jsonPath_;
+    java.lang.Object ref = "";
+    if (pathCase_ == 1) {
+      ref = path_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      jsonPath_ = s;
+      if (pathCase_ == 1) {
+        path_ = s;
+      }
       return s;
     }
   }
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return The bytes for jsonPath.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getJsonPathBytes() {
-    java.lang.Object ref = jsonPath_;
+    java.lang.Object ref = "";
+    if (pathCase_ == 1) {
+      ref = path_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      jsonPath_ = b;
+      if (pathCase_ == 1) {
+        path_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
+  }
+
+  public static final int LH_PATH_FIELD_NUMBER = 8;
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   * @return Whether the lhPath field is set.
+   */
+  @java.lang.Override
+  public boolean hasLhPath() {
+    return pathCase_ == 8;
+  }
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   * @return The lhPath.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHPath getLhPath() {
+    if (pathCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.LHPath) path_;
+    }
+    return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhPathOrBuilder() {
+    if (pathCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.LHPath) path_;
+    }
+    return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
   }
 
   public static final int VARIABLE_NAME_FIELD_NUMBER = 2;
@@ -3160,7 +3249,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasTargetType() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
@@ -3206,8 +3295,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 1, jsonPath_);
+    if (pathCase_ == 1) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, path_);
     }
     if (sourceCase_ == 2) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, source_);
@@ -3224,8 +3313,11 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(7, getTargetType());
+    }
+    if (pathCase_ == 8) {
+      output.writeMessage(8, (io.littlehorse.sdk.common.proto.LHPath) path_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -3236,8 +3328,8 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, jsonPath_);
+    if (pathCase_ == 1) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, path_);
     }
     if (sourceCase_ == 2) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, source_);
@@ -3258,9 +3350,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getTargetType());
+    }
+    if (pathCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.LHPath) path_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3277,15 +3373,23 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.VariableAssignment other = (io.littlehorse.sdk.common.proto.VariableAssignment) obj;
 
-    if (hasJsonPath() != other.hasJsonPath()) return false;
-    if (hasJsonPath()) {
-      if (!getJsonPath()
-          .equals(other.getJsonPath())) return false;
-    }
     if (hasTargetType() != other.hasTargetType()) return false;
     if (hasTargetType()) {
       if (!getTargetType()
           .equals(other.getTargetType())) return false;
+    }
+    if (!getPathCase().equals(other.getPathCase())) return false;
+    switch (pathCase_) {
+      case 1:
+        if (!getJsonPath()
+            .equals(other.getJsonPath())) return false;
+        break;
+      case 8:
+        if (!getLhPath()
+            .equals(other.getLhPath())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getSourceCase().equals(other.getSourceCase())) return false;
     switch (sourceCase_) {
@@ -3323,13 +3427,21 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasJsonPath()) {
-      hash = (37 * hash) + JSON_PATH_FIELD_NUMBER;
-      hash = (53 * hash) + getJsonPath().hashCode();
-    }
     if (hasTargetType()) {
       hash = (37 * hash) + TARGET_TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getTargetType().hashCode();
+    }
+    switch (pathCase_) {
+      case 1:
+        hash = (37 * hash) + JSON_PATH_FIELD_NUMBER;
+        hash = (53 * hash) + getJsonPath().hashCode();
+        break;
+      case 8:
+        hash = (37 * hash) + LH_PATH_FIELD_NUMBER;
+        hash = (53 * hash) + getLhPath().hashCode();
+        break;
+      case 0:
+      default:
     }
     switch (sourceCase_) {
       case 2:
@@ -3502,7 +3614,9 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      jsonPath_ = "";
+      if (lhPathBuilder_ != null) {
+        lhPathBuilder_.clear();
+      }
       if (literalValueBuilder_ != null) {
         literalValueBuilder_.clear();
       }
@@ -3520,6 +3634,8 @@ private static final long serialVersionUID = 0L;
         targetTypeBuilder_.dispose();
         targetTypeBuilder_ = null;
       }
+      pathCase_ = 0;
+      path_ = null;
       sourceCase_ = 0;
       source_ = null;
       return this;
@@ -3557,20 +3673,22 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.jsonPath_ = jsonPath_;
-        to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000080) != 0)) {
         result.targetType_ = targetTypeBuilder_ == null
             ? targetType_
             : targetTypeBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableAssignment result) {
+      result.pathCase_ = pathCase_;
+      result.path_ = this.path_;
+      if (pathCase_ == 8 &&
+          lhPathBuilder_ != null) {
+        result.path_ = lhPathBuilder_.build();
+      }
       result.sourceCase_ = sourceCase_;
       result.source_ = this.source_;
       if (sourceCase_ == 3 &&
@@ -3603,13 +3721,23 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignment other) {
       if (other == io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) return this;
-      if (other.hasJsonPath()) {
-        jsonPath_ = other.jsonPath_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
       if (other.hasTargetType()) {
         mergeTargetType(other.getTargetType());
+      }
+      switch (other.getPathCase()) {
+        case JSON_PATH: {
+          pathCase_ = 1;
+          path_ = other.path_;
+          onChanged();
+          break;
+        }
+        case LH_PATH: {
+          mergeLhPath(other.getLhPath());
+          break;
+        }
+        case PATH_NOT_SET: {
+          break;
+        }
       }
       switch (other.getSourceCase()) {
         case VARIABLE_NAME: {
@@ -3665,8 +3793,9 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              jsonPath_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+              java.lang.String s = input.readStringRequireUtf8();
+              pathCase_ = 1;
+              path_ = s;
               break;
             } // case 10
             case 18: {
@@ -3707,9 +3836,16 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   internalGetTargetTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000080;
               break;
             } // case 58
+            case 66: {
+              input.readMessage(
+                  internalGetLhPathFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              pathCase_ = 8;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3725,6 +3861,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int pathCase_ = 0;
+    private java.lang.Object path_;
+    public PathCase
+        getPathCase() {
+      return PathCase.forNumber(
+          pathCase_);
+    }
+
+    public Builder clearPath() {
+      pathCase_ = 0;
+      path_ = null;
+      onChanged();
+      return this;
+    }
+
     private int sourceCase_ = 0;
     private java.lang.Object source_;
     public SourceCase
@@ -3742,37 +3893,41 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    private java.lang.Object jsonPath_ = "";
     /**
      * <pre>
-     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-     * resolve to the specified field.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string json_path = 1;</code>
+     * <code>string json_path = 1;</code>
      * @return Whether the jsonPath field is set.
      */
+    @java.lang.Override
     public boolean hasJsonPath() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return pathCase_ == 1;
     }
     /**
      * <pre>
-     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-     * resolve to the specified field.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string json_path = 1;</code>
+     * <code>string json_path = 1;</code>
      * @return The jsonPath.
      */
+    @java.lang.Override
     public java.lang.String getJsonPath() {
-      java.lang.Object ref = jsonPath_;
+      java.lang.Object ref = "";
+      if (pathCase_ == 1) {
+        ref = path_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        jsonPath_ = s;
+        if (pathCase_ == 1) {
+          path_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
@@ -3780,22 +3935,27 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-     * resolve to the specified field.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string json_path = 1;</code>
+     * <code>string json_path = 1;</code>
      * @return The bytes for jsonPath.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getJsonPathBytes() {
-      java.lang.Object ref = jsonPath_;
+      java.lang.Object ref = "";
+      if (pathCase_ == 1) {
+        ref = path_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        jsonPath_ = b;
+        if (pathCase_ == 1) {
+          path_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -3803,47 +3963,46 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-     * resolve to the specified field.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string json_path = 1;</code>
+     * <code>string json_path = 1;</code>
      * @param value The jsonPath to set.
      * @return This builder for chaining.
      */
     public Builder setJsonPath(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      jsonPath_ = value;
-      bitField0_ |= 0x00000001;
+      pathCase_ = 1;
+      path_ = value;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-     * resolve to the specified field.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string json_path = 1;</code>
+     * <code>string json_path = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearJsonPath() {
-      jsonPath_ = getDefaultInstance().getJsonPath();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
+      if (pathCase_ == 1) {
+        pathCase_ = 0;
+        path_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
      * <pre>
-     * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-     * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-     * resolve to the specified field.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
+     * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
-     * <code>optional string json_path = 1;</code>
+     * <code>string json_path = 1;</code>
      * @param value The bytes for jsonPath to set.
      * @return This builder for chaining.
      */
@@ -3851,10 +4010,197 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      jsonPath_ = value;
-      bitField0_ |= 0x00000001;
+      pathCase_ = 1;
+      path_ = value;
       onChanged();
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder> lhPathBuilder_;
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     * @return Whether the lhPath field is set.
+     */
+    @java.lang.Override
+    public boolean hasLhPath() {
+      return pathCase_ == 8;
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     * @return The lhPath.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHPath getLhPath() {
+      if (lhPathBuilder_ == null) {
+        if (pathCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.LHPath) path_;
+        }
+        return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+      } else {
+        if (pathCase_ == 8) {
+          return lhPathBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     */
+    public Builder setLhPath(io.littlehorse.sdk.common.proto.LHPath value) {
+      if (lhPathBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        path_ = value;
+        onChanged();
+      } else {
+        lhPathBuilder_.setMessage(value);
+      }
+      pathCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     */
+    public Builder setLhPath(
+        io.littlehorse.sdk.common.proto.LHPath.Builder builderForValue) {
+      if (lhPathBuilder_ == null) {
+        path_ = builderForValue.build();
+        onChanged();
+      } else {
+        lhPathBuilder_.setMessage(builderForValue.build());
+      }
+      pathCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     */
+    public Builder mergeLhPath(io.littlehorse.sdk.common.proto.LHPath value) {
+      if (lhPathBuilder_ == null) {
+        if (pathCase_ == 8 &&
+            path_ != io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance()) {
+          path_ = io.littlehorse.sdk.common.proto.LHPath.newBuilder((io.littlehorse.sdk.common.proto.LHPath) path_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          path_ = value;
+        }
+        onChanged();
+      } else {
+        if (pathCase_ == 8) {
+          lhPathBuilder_.mergeFrom(value);
+        } else {
+          lhPathBuilder_.setMessage(value);
+        }
+      }
+      pathCase_ = 8;
+      return this;
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     */
+    public Builder clearLhPath() {
+      if (lhPathBuilder_ == null) {
+        if (pathCase_ == 8) {
+          pathCase_ = 0;
+          path_ = null;
+          onChanged();
+        }
+      } else {
+        if (pathCase_ == 8) {
+          pathCase_ = 0;
+          path_ = null;
+        }
+        lhPathBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHPath.Builder getLhPathBuilder() {
+      return internalGetLhPathFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhPathOrBuilder() {
+      if ((pathCase_ == 8) && (lhPathBuilder_ != null)) {
+        return lhPathBuilder_.getMessageOrBuilder();
+      } else {
+        if (pathCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.LHPath) path_;
+        }
+        return io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A path resolving to a field in your object.
+     * Supported on Struct and JSON_OBJ.
+     * </pre>
+     *
+     * <code>.littlehorse.LHPath lh_path = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder> 
+        internalGetLhPathFieldBuilder() {
+      if (lhPathBuilder_ == null) {
+        if (!(pathCase_ == 8)) {
+          path_ = io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance();
+        }
+        lhPathBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder>(
+                (io.littlehorse.sdk.common.proto.LHPath) path_,
+                getParentForChildren(),
+                isClean());
+        path_ = null;
+      }
+      pathCase_ = 8;
+      onChanged();
+      return lhPathBuilder_;
     }
 
     /**
@@ -4701,7 +5047,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the targetType field is set.
      */
     public boolean hasTargetType() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <pre>
@@ -4740,7 +5086,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -4761,7 +5107,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -4777,7 +5123,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
       if (targetTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000080) != 0) &&
           targetType_ != null &&
           targetType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
           getTargetTypeBuilder().mergeFrom(value);
@@ -4788,7 +5134,7 @@ private static final long serialVersionUID = 0L;
         targetTypeBuilder_.mergeFrom(value);
       }
       if (targetType_ != null) {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
       }
       return this;
@@ -4804,7 +5150,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public Builder clearTargetType() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000080);
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -4824,7 +5170,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTargetTypeBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return internalGetTargetTypeFieldBuilder().getBuilder();
     }

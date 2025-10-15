@@ -498,17 +498,25 @@ func (t *WorkflowThread) assignVariable(
 	switch v := val.(type) {
 	case *WfRunVariable:
 		out = &lhproto.VariableAssignment{
-			JsonPath: v.jsonPath,
 			Source: &lhproto.VariableAssignment_VariableName{
 				VariableName: v.Name,
 			},
 		}
+		if v.jsonPath != nil {
+			out.Path = &lhproto.VariableAssignment_JsonPath{
+				JsonPath: *v.jsonPath,
+			}
+		}
 	case WfRunVariable:
 		out = &lhproto.VariableAssignment{
-			JsonPath: v.jsonPath,
 			Source: &lhproto.VariableAssignment_VariableName{
 				VariableName: v.Name,
 			},
+		}
+		if v.jsonPath != nil {
+			out.Path = &lhproto.VariableAssignment_JsonPath{
+				JsonPath: *v.jsonPath,
+			}
 		}
 	case *LHFormatString:
 		formatAssignment, _ := t.assignVariable(v.format)
@@ -531,21 +539,29 @@ func (t *WorkflowThread) assignVariable(
 		}
 	case *NodeOutput:
 		out = &lhproto.VariableAssignment{
-			JsonPath: (*v).getJsonPath(),
 			Source: &lhproto.VariableAssignment_NodeOutput{
 				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
 					NodeName: (*v).getNodeName(),
 				},
 			},
 		}
+		if (*v).getJsonPath() != nil {
+			out.Path = &lhproto.VariableAssignment_JsonPath{
+				JsonPath: *(*v).getJsonPath(),
+			}
+		}
 	case NodeOutput:
 		out = &lhproto.VariableAssignment{
-			JsonPath: v.getJsonPath(),
 			Source: &lhproto.VariableAssignment_NodeOutput{
 				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
 					NodeName: v.getNodeName(),
 				},
 			},
+		}
+		if v.getJsonPath() != nil {
+			out.Path = &lhproto.VariableAssignment_JsonPath{
+				JsonPath: *v.getJsonPath(),
+			}
 		}
 	case *lhExpression:
 		lhs, lhsErr := t.assignVariable(v.lhs)
@@ -561,7 +577,7 @@ func (t *WorkflowThread) assignVariable(
 		}
 
 		out = &lhproto.VariableAssignment{
-			JsonPath: nil,
+			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
 					Lhs:       lhs,
@@ -584,7 +600,7 @@ func (t *WorkflowThread) assignVariable(
 		}
 
 		out = &lhproto.VariableAssignment{
-			JsonPath: nil,
+			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
 					Lhs:       lhs,
@@ -1232,7 +1248,7 @@ func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNo
 
 	node := t.spec.Nodes[extEvNodeOutput.nodeName]
 	node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
-		JsonPath: nil,
+		Path: nil,
 		Source: &lhproto.VariableAssignment_LiteralValue{
 			LiteralValue: &lhproto.VariableValue{
 				Value: &lhproto.VariableValue_Int{

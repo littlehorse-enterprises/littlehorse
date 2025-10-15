@@ -1,4 +1,5 @@
 import { getVariable, getVariableValue } from '@/app/utils'
+import { lhPathToString } from '@/app/utils/lhPath'
 import { ThreadSpec, VariableMutation } from 'littlehorse-client/proto'
 import { FC, useMemo } from 'react'
 
@@ -50,8 +51,13 @@ const NodeOutput: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'no
   return (
     <>
       <span className="rounded bg-gray-200 p-1 text-xs">Node Output</span>
-      {nodeOutput.jsonpath && (
-        <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{nodeOutput.jsonpath}</span>
+      {nodeOutput.path && nodeOutput.path.$case == 'jsonpath' && (
+        <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{nodeOutput.path.value}</span>
+      )}
+      {nodeOutput.path && nodeOutput.path.$case == 'lhPath' && (
+        <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">
+          {lhPathToString(nodeOutput.path.value)}
+        </span>
       )}
     </>
   )

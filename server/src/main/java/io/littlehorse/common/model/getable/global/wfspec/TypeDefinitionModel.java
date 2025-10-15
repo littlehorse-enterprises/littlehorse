@@ -1,9 +1,15 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
+import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
@@ -18,6 +24,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Tim
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.util.TypeCastingUtils;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -25,6 +32,8 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -194,11 +203,67 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
+     * Gets the nested type in this TypeDefinition according to an LHPath
+     * @param lhPath an LHPath to a nested type
+     * @param metadataManager a metadata manager for fetching additional StructDefs
+     * @return an Optional with you
+     * @throws InvalidExpressionException
+     */
+    public Optional<TypeDefinitionModel> getNestedType(LHPathModel lhPath, ReadOnlyMetadataManager metadataManager)
+            throws InvalidExpressionException {
+        TypeDefinitionModel currentTypeDef = this;
+
+        for (Selector selector : lhPath.getPath()) {
+            switch (currentTypeDef.getDefinedTypeCase()) {
+                case PRIMITIVE_TYPE:
+                    switch (currentTypeDef.getPrimitiveType()) {
+                        case JSON_ARR:
+                        case JSON_OBJ:
+                            return Optional.empty();
+                        default:
+                            throw new InvalidExpressionException(String.format(
+                                    "Failed fetching LHPath to '%s' on Type '%s'",
+                                    lhPath.toJsonPathStr(), currentTypeDef));
+                    }
+                case STRUCT_DEF_ID:
+                    StructDefModel structDef =
+                            new WfService(metadataManager).getStructDef(currentTypeDef.getStructDefId());
+
+                    if (structDef == null) {
+                        throw new InvalidExpressionException("StructDef not found: " + currentTypeDef);
+                    }
+
+                    Map<String, StructFieldDefModel> fieldDefs =
+                            structDef.getStructDef().getFields();
+
+                    if (!fieldDefs.containsKey(selector.getKey())) {
+                        throw new InvalidExpressionException(String.format(
+                                "could not find field '%s' on type %s", selector.getKey(), currentTypeDef));
+                    }
+
+                    currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
+                    break;
+                case DEFINEDTYPE_NOT_SET:
+                    break;
+            }
+        }
+
+        return Optional.of(currentTypeDef);
+    }
+
+    /**
      * Returns true if the VariableValueModel matches this type.
+     * @throws StructValidationException
      */
     public boolean isCompatibleWith(VariableValueModel value, ReadOnlyMetadataManager readOnlyMetadataManager) {
         if (value.getValueType() == ValueCase.STRUCT) {
-            value.getStruct().validateAgainstStructDefId(readOnlyMetadataManager);
+            try {
+                value.getStruct().validateAgainstStructDefId(readOnlyMetadataManager);
+            } catch (StructValidationException e) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        String.format("Provided Struct incompatible with type %s: %s", this, e.getMessage()));
+            }
         }
 
         TypeDefinitionModel other = value.getTypeDefinition();
