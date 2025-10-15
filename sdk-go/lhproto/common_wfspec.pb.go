@@ -1550,7 +1550,7 @@ type isVariableMutation_NodeOutputSource_Path interface {
 }
 
 type VariableMutation_NodeOutputSource_Jsonpath struct {
-	// A String path formatted in the `JSONPath` format.
+	// DEPRECATED: A String path formatted in the `JSONPath` format.
 	// Supported on JSON_OBJ and JSON_ARR.
 	Jsonpath string `protobuf:"bytes,10,opt,name=jsonpath,proto3,oneof"`
 }

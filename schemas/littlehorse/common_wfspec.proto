@@ -115,7 +115,7 @@ message VariableMutation {
   message NodeOutputSource {
     // Use this specific field from a Struct, JSON_OBJ, or JSON_ARR output
     oneof path {
-      // A String path formatted in the `JSONPath` format.
+      // DEPRECATED: A String path formatted in the `JSONPath` format.
       // Supported on JSON_OBJ and JSON_ARR.
       string jsonpath = 10;
 

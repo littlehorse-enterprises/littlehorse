@@ -61,7 +61,7 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * A String path formatted in the `JSONPath` format.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
      * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
@@ -71,7 +71,7 @@ private static final long serialVersionUID = 0L;
     boolean hasJsonpath();
     /**
      * <pre>
-     * A String path formatted in the `JSONPath` format.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
      * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
@@ -81,7 +81,7 @@ private static final long serialVersionUID = 0L;
     java.lang.String getJsonpath();
     /**
      * <pre>
-     * A String path formatted in the `JSONPath` format.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
      * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
@@ -209,7 +209,7 @@ private static final long serialVersionUID = 0L;
     public static final int JSONPATH_FIELD_NUMBER = 10;
     /**
      * <pre>
-     * A String path formatted in the `JSONPath` format.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
      * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
@@ -221,7 +221,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * A String path formatted in the `JSONPath` format.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
      * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
@@ -247,7 +247,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * A String path formatted in the `JSONPath` format.
+     * DEPRECATED: A String path formatted in the `JSONPath` format.
      * Supported on JSON_OBJ and JSON_ARR.
      * </pre>
      *
@@ -691,7 +691,7 @@ private static final long serialVersionUID = 0L;
 
       /**
        * <pre>
-       * A String path formatted in the `JSONPath` format.
+       * DEPRECATED: A String path formatted in the `JSONPath` format.
        * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
@@ -704,7 +704,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * A String path formatted in the `JSONPath` format.
+       * DEPRECATED: A String path formatted in the `JSONPath` format.
        * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
@@ -731,7 +731,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * A String path formatted in the `JSONPath` format.
+       * DEPRECATED: A String path formatted in the `JSONPath` format.
        * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
@@ -759,7 +759,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * A String path formatted in the `JSONPath` format.
+       * DEPRECATED: A String path formatted in the `JSONPath` format.
        * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
@@ -777,7 +777,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * A String path formatted in the `JSONPath` format.
+       * DEPRECATED: A String path formatted in the `JSONPath` format.
        * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
@@ -794,7 +794,7 @@ private static final long serialVersionUID = 0L;
       }
       /**
        * <pre>
-       * A String path formatted in the `JSONPath` format.
+       * DEPRECATED: A String path formatted in the `JSONPath` format.
        * Supported on JSON_OBJ and JSON_ARR.
        * </pre>
        *
