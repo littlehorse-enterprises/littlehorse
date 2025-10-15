@@ -462,11 +462,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     public void advance(Date time) {
-        // startXnHandlersAndInterrupts(time);
-        // for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
-        //     threadRunsUseMeCarefully.get(i).advance(time);
-        // }
-
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
         // WfRun is static, meaning that there are no more advances that can be made

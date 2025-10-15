@@ -80,7 +80,6 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
 
         WfRunModel out = new WfRunModel(ctx);
         out.setId(childWfRunId);
-        // TODO: validate paren wfSpec
 
         out.setWfSpec(childSpec);
         out.setWfSpecId(childSpec.getId());

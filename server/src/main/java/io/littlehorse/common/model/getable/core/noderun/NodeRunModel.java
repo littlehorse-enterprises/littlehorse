@@ -508,8 +508,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         try {
-            getSubNodeRun().arrive(time, processorContext);
             setStatus(LHStatus.RUNNING);
+            getSubNodeRun().arrive(time, processorContext);
         } catch (NodeFailureException exn) {
             fail(exn);
             throw exn;
