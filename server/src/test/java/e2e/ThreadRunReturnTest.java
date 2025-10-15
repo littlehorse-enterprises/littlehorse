@@ -6,16 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.time.Duration;
 import java.util.UUID;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -101,60 +103,33 @@ public class ThreadRunReturnTest {
         });
         first.registerWfSpec(client);
 
-        assertEquals(
-                client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
-                                .setName(wfSpecName)
-                                .build())
-                        .getId()
-                        .getRevision(),
-                0);
-        assertEquals(
-                client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
-                                .setName(wfSpecName)
-                                .build())
-                        .getId()
-                        .getMajorVersion(),
-                0);
+        Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
+            client.getWfSpec(WfSpecId.newBuilder().setName(wfSpecName).build());
+            return true;
+        });
 
         Workflow.newWorkflow(wfSpecName, wf -> {
                     wf.declareInt("unused");
                 })
                 .registerWfSpec(client);
-
-        assertEquals(
-                client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
-                                .setName(wfSpecName)
-                                .build())
-                        .getId()
-                        .getRevision(),
-                1);
-        assertEquals(
-                client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
-                                .setName(wfSpecName)
-                                .build())
-                        .getId()
-                        .getMajorVersion(),
-                0);
+        Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
+            client.getWfSpec(
+                    WfSpecId.newBuilder().setName(wfSpecName).setRevision(1).build());
+            return true;
+        });
 
         Workflow.newWorkflow(wfSpecName, wf -> {
                     wf.declareInt("unused");
                     wf.complete("some-output");
                 })
                 .registerWfSpec(client);
-
-        assertEquals(
-                client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
-                                .setName(wfSpecName)
-                                .build())
-                        .getId()
-                        .getRevision(),
-                0);
-        assertEquals(
-                client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
-                                .setName(wfSpecName)
-                                .build())
-                        .getId()
-                        .getMajorVersion(),
-                1);
+        Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
+            client.getWfSpec(WfSpecId.newBuilder()
+                    .setName(wfSpecName)
+                    .setRevision(0)
+                    .setMajorVersion(1)
+                    .build());
+            return true;
+        });
     }
 }
