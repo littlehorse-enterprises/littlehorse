@@ -1,7 +1,13 @@
 package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.Checkpoint;
+import io.littlehorse.sdk.common.proto.CheckpointId;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.PutCheckpointRequest;
+import io.littlehorse.sdk.common.proto.PutCheckpointResponse;
+import io.littlehorse.sdk.common.proto.PutCheckpointResponse.FlowControlContinue;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
@@ -20,6 +26,8 @@ public class WorkerContext {
 
     private Date scheduleTime;
     private String logOutput;
+    private int checkpointsSoFarInThisRun;
+    private LittleHorseBlockingStub client;
 
     /**
      * Constructor for internal use by the Task Worker Library.
@@ -27,10 +35,12 @@ public class WorkerContext {
      * @param scheduledTask is the raw payload for the scheduled task.
      * @param scheduleTime is the time that the task was actually scheduled.
      */
-    public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime) {
+    public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime, LittleHorseBlockingStub client) {
         this.scheduledTask = scheduledTask;
         this.scheduleTime = scheduleTime;
         this.logOutput = "";
+        checkpointsSoFarInThisRun = 0;
+        this.client = client;
     }
 
     /**
@@ -158,5 +168,38 @@ public class WorkerContext {
      */
     public String getIdempotencyKey() {
         return LHLibUtil.taskRunIdToString(getTaskRunId());
+    }
+
+    public <T> T executeAndCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
+        if (checkpointsSoFarInThisRun < scheduledTask.getTotalObservedCheckpoints()) {
+            return (T) fetchCheckpoint(checkpointsSoFarInThisRun++, clazz);
+        } else {
+            return saveCheckpoint(runnable, clazz);
+        }
+    }
+
+    private <T> T fetchCheckpoint(int checkpointNumber, Class<T> clazz) {
+        CheckpointId id = CheckpointId.newBuilder()
+                .setTaskRun(scheduledTask.getTaskRunId())
+                .setCheckpointNumber(checkpointNumber)
+                .build();
+        Checkpoint checkpoint = client.getCheckpoint(id);
+        return (T) LHLibUtil.varValToObj(checkpoint.getValue(), clazz);
+    }
+
+    private <T> T saveCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
+        T result = runnable.run();
+        PutCheckpointResponse response = client.putCheckpoint(PutCheckpointRequest.newBuilder()
+                .setTaskAttempt(scheduledTask.getAttemptNumber())
+                .setTaskRunId(scheduledTask.getTaskRunId())
+                .setValue(LHLibUtil.objToVarVal(result))
+                .build());
+
+        checkpointsSoFarInThisRun++;
+
+        if (response.getFlowControlContinueType() != FlowControlContinue.CONTINUE_TASK) {
+            throw new RuntimeException("Halting execution because the server told us to.");
+        }
+        return result;
     }
 }

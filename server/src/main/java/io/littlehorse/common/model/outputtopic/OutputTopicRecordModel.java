@@ -8,6 +8,7 @@ import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -36,6 +37,7 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
     private VariableModel variable;
     private TaskRunModel taskRun;
     private CorrelatedEventModel correlatedEvent;
+    private CheckpointModel checkpoint;
 
     public OutputTopicRecordModel() {
         this.timestamp = LHLibUtil.fromDate(new Date());
@@ -76,6 +78,9 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
                 break;
             case CORRELATED_EVENT:
                 out.setCorrelatedEvent(correlatedEvent.toProto());
+                break;
+            case TASK_CHECKPOINT:
+                out.setTaskCheckpoint(checkpoint.toProto());
                 break;
             case PAYLOAD_NOT_SET:
         }
