@@ -70,10 +70,10 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
         <div className="pb-4 ">
           <small className="node-title"> Actions</small>
           <div>
-            {actions.map((action, index) => {
-              const { action: trigger, delaySeconds, hook } = action
-              if (!trigger) return
-              const { value, $case } = trigger
+            {actions.map((trigger, index) => {
+              const { action, delaySeconds, hook } = trigger
+              if (!action) return
+              const { value, $case } = action
               return (
                 <div className="border-t-2 border-slate-100 ">
                   <Accordion type="single" collapsible>
