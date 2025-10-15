@@ -160,6 +160,19 @@ public class VariableValueModelTest {
     }
 
     @Test
+    void shouldThrowErrorWhenGetOnPrimitive() throws LHVarSubError {
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("make"))
+                .build();
+
+        VariableValueModel strVarVal = new VariableValueModel("myStr");
+
+        assertThrows(LHVarSubError.class, () -> {
+                strVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+        });
+    }
+
+    @Test
     void shouldGetPathOnJsonObj() throws LHVarSubError {
         Map<String, Object> jsonObj = new HashMap<>();
         jsonObj.put("make", "Ford");
