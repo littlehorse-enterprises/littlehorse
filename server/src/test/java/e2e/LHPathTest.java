@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import e2e.Struct.Person;
+import e2e.Struct.PersonPojo;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
@@ -20,8 +21,11 @@ import org.junit.jupiter.api.Test;
 
 @LHTest
 public class LHPathTest {
-    @LHWorkflow("test-lh-path")
-    private Workflow lhPathWf;
+    @LHWorkflow("lh-path-structs")
+    private Workflow lhPathStructsWf;
+
+    @LHWorkflow("lh-path-json-obj")
+    private Workflow lhPathJsonObjWf;
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
@@ -35,7 +39,7 @@ public class LHPathTest {
                 List.of("Yoda", "Anakin Skywalker"),
                 Map.of("home", "111-222-3344", "work", "555-667-7788"));
 
-        verifier.prepareRun(lhPathWf, Arg.of("person", person))
+        verifier.prepareRun(lhPathStructsWf, Arg.of("person", person))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getStr())
                         .isEqualTo("Greetings Obi-Wan Kenobi"))
@@ -46,15 +50,44 @@ public class LHPathTest {
                 .start();
     }
 
-    @LHWorkflow("test-lh-path")
-    public Workflow testLhPathWorkflow() {
-        return new WorkflowImpl("test-basic", wf -> {
+    @LHWorkflow("lh-path-structs")
+    public Workflow testLhPathWorkflowOnStructs() {
+        return new WorkflowImpl("lh-path-structs", wf -> {
             WfRunVariable personStruct =
                     wf.declareStruct("person", Person.class).required();
 
             wf.execute("greet", personStruct.get("name"));
             wf.execute("lookup-friend", personStruct.get("friends").get(0));
             wf.execute("call-phone", personStruct.get("phoneNumbers").get("home"));
+        });
+    }
+
+    @Test
+    public void shouldPerformGetOnJsonObj() {
+        PersonPojo person = new PersonPojo(
+                "Obi-Wan Kenobi",
+                List.of("Yoda", "Anakin Skywalker"),
+                Map.of("home", "111-222-3344", "work", "555-667-7788"));
+
+        verifier.prepareRun(lhPathJsonObjWf, Arg.of("person", person))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getStr())
+                        .isEqualTo("Greetings Obi-Wan Kenobi"))
+                .thenVerifyTaskRunResult(0, 2, variableValue -> assertThat(variableValue.getStr())
+                        .isEqualTo("Looking up Yoda"))
+                .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getStr())
+                        .isEqualTo("Calling 111-222-3344"))
+                .start();
+    }
+
+    @LHWorkflow("lh-path-json-obj")
+    public Workflow testLhPathWorkflowOnJSONObj() {
+        return new WorkflowImpl("lh-path-json-obj", wf -> {
+            WfRunVariable personJsonObj = wf.declareJsonObj("person").required();
+
+            wf.execute("greet", personJsonObj.get("name"));
+            wf.execute("lookup-friend", personJsonObj.get("friends").get(0));
+            wf.execute("call-phone", personJsonObj.get("phoneNumbers").get("home"));
         });
     }
 
