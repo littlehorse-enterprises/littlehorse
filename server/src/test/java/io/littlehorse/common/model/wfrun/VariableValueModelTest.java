@@ -168,7 +168,7 @@ public class VariableValueModelTest {
         VariableValueModel strVarVal = new VariableValueModel("myStr");
 
         assertThrows(LHVarSubError.class, () -> {
-                strVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+            strVarVal.get(LHPathModel.fromProto(lhPath, mock()));
         });
     }
 
