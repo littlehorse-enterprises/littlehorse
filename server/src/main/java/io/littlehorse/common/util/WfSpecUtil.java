@@ -1,13 +1,16 @@
 package io.littlehorse.common.util;
 
 import com.google.protobuf.Timestamp;
+import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 public class WfSpecUtil {
     private WfSpecUtil() {}
@@ -41,7 +44,7 @@ public class WfSpecUtil {
      * @param right WfSpecModel compared against
      * @return true when there is a breaking change, false otherwise
      */
-    public static boolean hasBreakingChanges(WfSpecModel left, WfSpecModel right) {
+    public static boolean hasBreakingChanges(WfSpecModel left, WfSpecModel right, ReadOnlyMetadataManager manager) {
         Collection<ThreadVarDefModel> leftPublicVars = left.getPublicVars();
         Collection<ThreadVarDefModel> rightPublicVars = right.getPublicVars();
 
@@ -54,6 +57,21 @@ public class WfSpecUtil {
         Collection<ThreadVarDefModel> leftRequiredVars =
                 left.getEntrypointThread().getRequiredVarDefs();
 
-        return leftRequiredVars.size() != rightRequiredVars.size() || !leftRequiredVars.containsAll(rightRequiredVars);
+        if (leftRequiredVars.size() != rightRequiredVars.size() || !leftRequiredVars.containsAll(rightRequiredVars)) {
+            return true;
+        }
+
+        // check output type
+        Optional<ReturnTypeModel> firstOutputType = left.getOutputType(manager);
+        Optional<ReturnTypeModel> secondOutputType = right.getOutputType(manager);
+        if (firstOutputType.isPresent() && secondOutputType.isEmpty()
+                || firstOutputType.isEmpty() && secondOutputType.isPresent()) {
+            return true;
+        }
+        if (!firstOutputType.get().equals(secondOutputType.get())) {
+            return true;
+        }
+
+        return false;
     }
 }

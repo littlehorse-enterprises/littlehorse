@@ -384,7 +384,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
             ThreadRunModel interruptor =
                     startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
-            interruptor.interruptTriggerId = pi.externalEventId;
+            interruptor.setInterruptTriggerId(pi.externalEventId);
 
             if (interruptor.status == LHStatus.ERROR) {
                 putFailureOnThreadRun(
@@ -462,11 +462,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     public void advance(Date time) {
-        // startXnHandlersAndInterrupts(time);
-        // for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
-        //     threadRunsUseMeCarefully.get(i).advance(time);
-        // }
-
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
         // WfRun is static, meaning that there are no more advances that can be made
@@ -687,6 +682,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             } else {
                 // The WfRun's status must always match the entrypoint ThreadRun.
                 transitionTo(newStatus);
+            }
+        }
+
+        if (endTime != null) {
+            // wake up parent if parent exists
+            if (id.getParentWfRunId() != null) {
+                WfRunModel parent = executionContext
+                        .castOnSupport(CoreProcessorContext.class)
+                        .getableManager()
+                        .get(id.getParentWfRunId());
+                if (parent != null) parent.advance(time);
             }
         }
 

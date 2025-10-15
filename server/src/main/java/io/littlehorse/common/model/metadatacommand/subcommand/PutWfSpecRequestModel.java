@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
@@ -118,15 +119,19 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             return optWfSpec.get().toProto().build();
         }
 
-        verifyUpdateType(allowedUpdateType, spec, optWfSpec);
+        verifyUpdateType(allowedUpdateType, spec, optWfSpec, executionContext.metadataManager());
         metadataManager.put(spec);
         return spec.toProto().build();
     }
 
-    private void verifyUpdateType(AllowedUpdateType updateType, WfSpecModel spec, Optional<WfSpecModel> oldSpec) {
+    private void verifyUpdateType(
+            AllowedUpdateType updateType,
+            WfSpecModel spec,
+            Optional<WfSpecModel> oldSpec,
+            ReadOnlyMetadataManager manager) {
         switch (updateType) {
             case MINOR_REVISION_UPDATES:
-                if (oldSpec.isPresent() && WfSpecUtil.hasBreakingChanges(spec, oldSpec.get())) {
+                if (oldSpec.isPresent() && WfSpecUtil.hasBreakingChanges(spec, oldSpec.get(), manager)) {
                     throw new LHApiException(Status.FAILED_PRECONDITION, "The resulting WfSpec has a breaking change.");
                 }
                 break;
