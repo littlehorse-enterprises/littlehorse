@@ -78,6 +78,7 @@ export interface NodeRun {
     | { $case: "throwEvent"; value: ThrowEventNodeRun }
     | { $case: "waitForCondition"; value: WaitForConditionRun }
     | { $case: "runChildWf"; value: RunChildWfNodeRun }
+    | { $case: "waitForChildWf"; value: WaitForChildWfNodeRun }
     | undefined;
 }
 
@@ -159,6 +160,12 @@ export interface RunChildWfNodeRun {
 export interface RunChildWfNodeRun_InputsEntry {
   key: string;
   value: VariableValue | undefined;
+}
+
+/** The WaitForChildWfNodeRun waits for a specified child WfRun to complete. */
+export interface WaitForChildWfNodeRun {
+  /** The id of the `WfRun` we are waiting for. */
+  childWfRunId?: WfRunId | undefined;
 }
 
 /** The sub-node structure for a WAIT_FOR_THREADS NodeRun. */
@@ -434,6 +441,9 @@ export const NodeRun = {
       case "runChildWf":
         RunChildWfNodeRun.encode(message.nodeType.value, writer.uint32(194).fork()).ldelim();
         break;
+      case "waitForChildWf":
+        WaitForChildWfNodeRun.encode(message.nodeType.value, writer.uint32(202).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -612,6 +622,13 @@ export const NodeRun = {
 
           message.nodeType = { $case: "runChildWf", value: RunChildWfNodeRun.decode(reader, reader.uint32()) };
           continue;
+        case 25:
+          if (tag !== 202) {
+            break;
+          }
+
+          message.nodeType = { $case: "waitForChildWf", value: WaitForChildWfNodeRun.decode(reader, reader.uint32()) };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -659,6 +676,8 @@ export const NodeRun = {
         ? { $case: "waitForCondition", value: WaitForConditionRun.fromJSON(object.waitForCondition) }
         : isSet(object.runChildWf)
         ? { $case: "runChildWf", value: RunChildWfNodeRun.fromJSON(object.runChildWf) }
+        : isSet(object.waitForChildWf)
+        ? { $case: "waitForChildWf", value: WaitForChildWfNodeRun.fromJSON(object.waitForChildWf) }
         : undefined,
     };
   },
@@ -730,6 +749,9 @@ export const NodeRun = {
     }
     if (message.nodeType?.$case === "runChildWf") {
       obj.runChildWf = RunChildWfNodeRun.toJSON(message.nodeType.value);
+    }
+    if (message.nodeType?.$case === "waitForChildWf") {
+      obj.waitForChildWf = WaitForChildWfNodeRun.toJSON(message.nodeType.value);
     }
     return obj;
   },
@@ -817,6 +839,13 @@ export const NodeRun = {
       object.nodeType?.$case === "runChildWf" && object.nodeType?.value !== undefined && object.nodeType?.value !== null
     ) {
       message.nodeType = { $case: "runChildWf", value: RunChildWfNodeRun.fromPartial(object.nodeType.value) };
+    }
+    if (
+      object.nodeType?.$case === "waitForChildWf" &&
+      object.nodeType?.value !== undefined &&
+      object.nodeType?.value !== null
+    ) {
+      message.nodeType = { $case: "waitForChildWf", value: WaitForChildWfNodeRun.fromPartial(object.nodeType.value) };
     }
     return message;
   },
@@ -1461,6 +1490,65 @@ export const RunChildWfNodeRun_InputsEntry = {
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWaitForChildWfNodeRun(): WaitForChildWfNodeRun {
+  return { childWfRunId: undefined };
+}
+
+export const WaitForChildWfNodeRun = {
+  encode(message: WaitForChildWfNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.childWfRunId !== undefined) {
+      WfRunId.encode(message.childWfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WaitForChildWfNodeRun {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWaitForChildWfNodeRun();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.childWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WaitForChildWfNodeRun {
+    return { childWfRunId: isSet(object.childWfRunId) ? WfRunId.fromJSON(object.childWfRunId) : undefined };
+  },
+
+  toJSON(message: WaitForChildWfNodeRun): unknown {
+    const obj: any = {};
+    if (message.childWfRunId !== undefined) {
+      obj.childWfRunId = WfRunId.toJSON(message.childWfRunId);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WaitForChildWfNodeRun>): WaitForChildWfNodeRun {
+    return WaitForChildWfNodeRun.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WaitForChildWfNodeRun>): WaitForChildWfNodeRun {
+    const message = createBaseWaitForChildWfNodeRun();
+    message.childWfRunId = (object.childWfRunId !== undefined && object.childWfRunId !== null)
+      ? WfRunId.fromPartial(object.childWfRunId)
       : undefined;
     return message;
   },

@@ -1,9 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -24,8 +22,8 @@ public class ChildWorkflowExample {
             wf -> {
                 // In the `hierarchical-workflow` example, we require the variable to be INHERITED;
                 // however, here the variable is an input.
-                WfRunVariable childInputName = wf.addVariable("child-input-name", VariableType.STR).required();
-                wf.execute("greet", childInputName);
+                WfRunVariable childInputName = wf.declareStr("child-input-name").required();
+                wf.complete(wf.execute("greet", childInputName));
             }
         );
     }
@@ -34,9 +32,13 @@ public class ChildWorkflowExample {
         WorkflowImpl out = new WorkflowImpl(
             "my-parent",
             wf -> {
-                WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).required();
+                WfRunVariable theName = wf.declareStr("input-name").required();
+                WfRunVariable childOutput = wf.declareStr("child-output");
 
-                wf.runWf("some-other-wfspec", Map.of("child-input-name", theName));
+                SpawnedChildWf child = wf.runWf("some-other-wfspec", Map.of("child-input-name", theName));
+                wf.execute("greet", "hi from parent");
+
+                childOutput.assign(wf.waitForChildWf(child));
             }
         );
         return out;

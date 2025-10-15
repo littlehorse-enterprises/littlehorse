@@ -20,6 +20,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartThrea
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ThrowEventNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForChildWfNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForConditionNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -63,6 +64,7 @@ public class NodeModel extends LHSerializable<Node> {
     private ThrowEventNodeModel throwEventNode;
     private WaitForConditionNodeModel waitForConditionNode;
     private RunChildWfNodeModel runChildWfNode;
+    private WaitForChildWfNodeModel waitForChildWfNode;
     public List<FailureHandlerDefModel> failureHandlers;
 
     public Class<Node> getProtoBaseClass() {
@@ -119,6 +121,9 @@ public class NodeModel extends LHSerializable<Node> {
                 break;
             case RUN_CHILD_WF:
                 out.setRunChildWf(runChildWfNode.toProto());
+                break;
+            case WAIT_FOR_CHILD_WF:
+                out.setWaitForChildWf(waitForChildWfNode.toProto());
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -191,6 +196,10 @@ public class NodeModel extends LHSerializable<Node> {
             case RUN_CHILD_WF:
                 this.runChildWfNode =
                         LHSerializable.fromProto(proto.getRunChildWf(), RunChildWfNodeModel.class, context);
+                break;
+            case WAIT_FOR_CHILD_WF:
+                this.waitForChildWfNode =
+                        LHSerializable.fromProto(proto.getWaitForChildWf(), WaitForChildWfNodeModel.class, context);
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Node " + name + " on thread " + threadSpec.name + " is unset!");
@@ -280,6 +289,8 @@ public class NodeModel extends LHSerializable<Node> {
                 return waitForConditionNode;
             case RUN_CHILD_WF:
                 return runChildWfNode;
+            case WAIT_FOR_CHILD_WF:
+                return waitForChildWfNode;
             case NODE_NOT_SET:
         }
         throw new RuntimeException("incomplete switch statement");

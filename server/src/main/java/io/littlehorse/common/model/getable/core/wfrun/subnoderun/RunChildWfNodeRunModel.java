@@ -14,12 +14,10 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.RunChildWf
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunChildWfNodeRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
@@ -101,34 +99,11 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
 
     @Override
     public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
-        GetableManager manager = processorContext.getableManager();
-        WfRunModel childWf = manager.get(this.childWfRunId);
-
-        switch (childWf.getStatus()) {
-            case STARTING:
-            case RUNNING:
-            case HALTED:
-            case HALTING:
-                return false;
-            case COMPLETED:
-                return true;
-            case ERROR:
-                throw new NodeFailureException(new FailureModel(
-                        "Child WfRun " + childWfRunId + " failed", LHErrorType.CHILD_FAILURE.toString()));
-            case EXCEPTION:
-                FailureModel childFailure = childWf.getThreadRun(0)
-                        .getCurrentNodeRun()
-                        .getLatestFailure()
-                        .get();
-                throw new NodeFailureException(childFailure.copyWithPrefix("Child WfRun failed: "));
-            case UNRECOGNIZED:
-        }
-        throw new IllegalStateException("unrecognized proto enum value");
+        return true;
     }
 
     @Override
     public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
-        WfRunModel childWfRun = processorContext.getableManager().get(childWfRunId);
-        return Optional.ofNullable(childWfRun.getThreadRun(0).getOutput());
+        return Optional.of(new VariableValueModel(childWfRunId));
     }
 }

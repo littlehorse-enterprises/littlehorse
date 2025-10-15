@@ -192,11 +192,7 @@ message StartMultipleThreadsNode {
   VariableAssignment iterable = 3;
 }
 
-// This node spawns a child `WfRun` and waits for the child `WfRun` to terminate
-// before completing.
-//
-// The output of the `RunChildWfNode` is the output of the entrypoint ThreadRun
-// of the child `WfRun`.
+// This node spawns a child `WfRun` and returns the associated WfRunId.
 message RunChildWfNode {
   // The name of the WfSpec to spawn.
   string wf_spec_name = 1;
@@ -206,6 +202,19 @@ message RunChildWfNode {
 
   // The input variables to pass into the Child ThreadRun.
   map<string, VariableAssignment> inputs = 3;
+}
+
+// This node acceptss a WfRunId and waits for the specified WfRun to complete.
+//
+// The output of this NodeRun is the output of the entrypoint ThreadRun on the
+// waited-for Child WfRun.
+message WaitForChildWfNode {
+  // Assignment that resolves to the WfRunId of the WfRun we are waiting for.
+  VariableAssignment child_wf_run_id = 1;
+
+  // The name of the Node that started the child `WfRun`. Used to validate the
+  // output type of the NodeRun.
+  string child_wf_run_source_node = 2;
 }
 
 // Specifies a Failure Handler which can run in case of a certain Failure to allow
@@ -387,8 +396,11 @@ message Node {
     // Creates a WaitForConditionRun
     WaitForConditionNode wait_for_condition = 17;
 
-    // Synchronously runs a child workflow
+    // Runs a child workflow and returns the resulting WfRunId
     RunChildWfNode run_child_wf = 18;
+
+    // Waits for a specified Child WfRun to complete
+    WaitForChildWfNode wait_for_child_wf = 19;
   }
 }
 

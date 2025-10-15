@@ -7,11 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * This node spawns a child `WfRun` and waits for the child `WfRun` to terminate
- * before completing.
- *
- * The output of the `RunChildWfNode` is the output of the entrypoint ThreadRun
- * of the child `WfRun`.
+ * This node spawns a child `WfRun` and returns the associated WfRunId.
  * </pre>
  *
  * Protobuf type {@code littlehorse.RunChildWfNode}
@@ -412,11 +408,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
   }
   /**
    * <pre>
-   * This node spawns a child `WfRun` and waits for the child `WfRun` to terminate
-   * before completing.
-   *
-   * The output of the `RunChildWfNode` is the output of the entrypoint ThreadRun
-   * of the child `WfRun`.
+   * This node spawns a child `WfRun` and returns the associated WfRunId.
    * </pre>
    *
    * Protobuf type {@code littlehorse.RunChildWfNode}

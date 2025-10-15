@@ -142,7 +142,7 @@ public class RunChildWfTest {
                 .registerWfSpec(client);
 
         Workflow.newWorkflow(parent, wf -> {
-                    wf.runWf(child, Map.of());
+                    wf.waitForChildWf(wf.runWf(child, Map.of()));
                 })
                 .registerWfSpec(client);
 
@@ -155,18 +155,13 @@ public class RunChildWfTest {
                         RunWfRequest.newBuilder().setWfSpecName(parent).build())
                 .getId();
         NodeRun failedNode = client.getNodeRun(
-                NodeRunId.newBuilder().setPosition(1).setWfRunId(parentId).build());
+                NodeRunId.newBuilder().setPosition(2).setWfRunId(parentId).build());
 
         Assertions.assertThat(failedNode.getFailuresCount()).isEqualTo(1);
 
         Failure failure = failedNode.getFailures(0);
 
         Assertions.assertThat(failure.getFailureName()).isEqualTo("some-exn");
-    }
-
-    @Test
-    void childErrorPropagatesToParentAsChildFailed() {
-        // TODO
     }
 
     @Test
@@ -181,7 +176,7 @@ public class RunChildWfTest {
 
         Workflow.newWorkflow(parent, wf -> {
                     WfRunVariable resultFromChild = wf.declareStr("result-from-child");
-                    resultFromChild.assign(wf.runWf(child, Map.of()));
+                    resultFromChild.assign(wf.waitForChildWf(wf.runWf(child, Map.of())));
                 })
                 .registerWfSpec(client);
 

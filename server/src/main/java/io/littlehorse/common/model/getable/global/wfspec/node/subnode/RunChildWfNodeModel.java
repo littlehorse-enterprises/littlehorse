@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.RunChildWfNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -86,10 +87,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
 
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
-        WfService service = new WfService(manager);
-        WfSpecModel childWfSpec = service.getWfSpec(wfSpecName, majorVersion == -1 ? null : majorVersion, null);
-
-        return childWfSpec.getOutputType(manager);
+        return Optional.of(new ReturnTypeModel(VariableType.WF_RUN_ID));
     }
 
     @Override
@@ -104,5 +102,10 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
             out.addAll(assn.getRequiredWfRunVarNames());
         }
         return out;
+    }
+
+    public WfSpecModel getWfSpecToRun(ReadOnlyMetadataManager manager) {
+        WfService service = new WfService(manager);
+        return service.getWfSpec(wfSpecName, majorVersion == -1 ? null : majorVersion, null);
     }
 }

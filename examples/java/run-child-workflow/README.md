@@ -60,7 +60,11 @@ You can see the result of the `RunChildWfNode` by looking at the `NodeRun`:
 You can fetch the resulting child `WfRun` as follows (`lhctl get wfRun {parent-wf-run-id}_{child-wf-run-id}`):
 
 ```
--> lhctl get wfRun 9b90f870e8044fa7b47ae4b3b2b6ab9b_fea26bfe03474ef3b8d487cffe5f1a3d
+lhctl search wfRun byParent 9b90f870e8044fa7b47ae4b3b2b6ab9b
+```
+
+```
+lhctl get wfRun 9b90f870e8044fa7b47ae4b3b2b6ab9b_fea26bfe03474ef3b8d487cffe5f1a3d
 ```
 
 ## Compare to Hierarchical Workflows

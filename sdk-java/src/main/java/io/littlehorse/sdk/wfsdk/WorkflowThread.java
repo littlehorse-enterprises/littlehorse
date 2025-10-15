@@ -61,12 +61,20 @@ public interface WorkflowThread {
     TaskNodeOutput execute(LHFormatString taskName, Serializable... args);
 
     /**
-     * Adds a RUN_CHILD_WF node to the ThreadSpec, which runs a child WfRun and waits for it to complete.
+     * Adds a RUN_CHILD_WF node to the ThreadSpec, starts a child WfRun and waits for it to complete.
      * @param wfSpecName is the name of the WfSpec we will run.
      * @param inputs are the inputs that we will pass into the entrypoint ThreadRun.
-     * @return a NodeOutput handle which refers to the output of the child WfRun.
+     * @return a SpawnedChildWf which allows us to later wait for the child WfRun.
      */
-    NodeOutput runWf(String wfSpecName, Map<String, Serializable> inputs);
+    SpawnedChildWf runWf(String wfSpecName, Map<String, Serializable> inputs);
+
+    /**
+     * Adds a WAIT_FOR_CHILD_WF node which waits for a specified WfRun to complete and
+     * returns its output. As of 0.15 the SpawnedChildWf must come from the same ThreadSpec.
+     * @param childWfRun is a handle to the child WfRun to wait for.
+     * @return a NodeOutput that logically represents the output of the child WfRun.
+     */
+    NodeOutput waitForChildWf(SpawnedChildWf childToWaitFor);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user

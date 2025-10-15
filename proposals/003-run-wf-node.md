@@ -2,9 +2,8 @@
 
 - [Child Workflow Nodes](#child-workflow-nodes)
   - [Example Behavior](#example-behavior)
-    - [Synchronously Running it](#synchronously-running-it)
+    - [Running and Waiting](#running-and-waiting)
       - [`ThreadRun` Outputs](#threadrun-outputs)
-    - [Waiting Later](#waiting-later)
     - [Waiting for Multiple Children](#waiting-for-multiple-children)
     - [Failure Propagation](#failure-propagation)
   - [The Details](#the-details)
@@ -15,7 +14,6 @@
     - [Protobuf Structure](#protobuf-structure)
       - [ThreadRun Output](#threadrun-output)
       - [`RunChildWfNode`](#runchildwfnode)
-      - [`StartChildWfNode`](#startchildwfnode)
       - [`WaitForChildWfNode`](#waitforchildwfnode)
   - [Disclaimers](#disclaimers)
     - [Compatibility and Testing](#compatibility-and-testing)
@@ -39,19 +37,22 @@ For example, perhaps the Payments Team is in charge of the workflow for requesti
 
 The behavior should be as follows, with equivalent functionality implemented in all four SDKs.
 
-### Synchronously Running it
+### Running and Waiting
 
-The most simple case is in which we have a single `NodeRun` which launches a child `WfRun` and completes once the child `WfRun` terminates:
+In many use-cases, you might want the Child `WfRun` to execute in parallel with the parent `WfRun`. We will allow that as follows:
 
 ```java
-WfRunVariable customerId = wf.declareStr("customer-id");
-WfRunVariable paymentMethodId = wf.declareStr("payment-method");
+SpawnedChildWf childHandle = wf.runChildAsync("some-wfspec", Map.of());
+WfRunVariable foo = wf.declareStr("foo");
+wf.execute("some-task");
 
-NodeOutput childOutput = wf.runChildWf("request-new-credit-card", Map.of("user-id", customerId));
-paymentMethod.assign(childOutput);
+NodeOutput childOutput = wf.waitForChildWf(childHandle);
+foo.assign(childOutput);
 ```
 
-As written above, there would be only one `Node` created for the child `WfRun`. The `ThreadRun` does not advance until the Child `WfRun` completes. The output of the entrypoint `ThreadRun` of the child `WfRun` is used as the Node Output.
+The `runChildWf()` call returns a `SpawnedChildWf` that can be used to wait for the `WfRun` to complete later on. The `NodeOutput` returned by the `wf.waitForChildWf()` call will be used to enable timeouts with `.timeoutSeconds()` in the future.
+
+Unlike `ThreadRun`s, if you do not explicitly wait for a child `WfRun` to complete, the parent can still complete. This is because a Java program waits for threads to finish but if you `fork()` a child process off, the parent can complete with or without waiting for the child to complete.
 
 #### `ThreadRun` Outputs
 
@@ -82,24 +83,6 @@ def actually_legal_python_function():
 
 The Server will reject `WfSpec`'s that have similar cognitive dissonance.
 
-### Waiting Later
-
-In another use-case, you might want the Child `WfRun` to execute in parallel with the parent `WfRun`. We will allow that as follows:
-
-```java
-ChildWorkflowNodeOutput childHandle = wf.runChildAsync("some-wfspec", Map.of());
-WfRunVariable foo = wf.declareStr("foo");
-wf.execute("some-task");
-
-NodeOutput childOutput = wf.waitForChildWf(childHandle);
-foo.assign(childOutput);
-```
-
-The `waitForChildWf()` call returns a regular `NodeOutput` that can be used to add `.timeoutSeconds()` or to mutate variables or to catch exceptions.
-
-Unlike `ThreadRun`s, if you do not explicitly wait for a child `WfRun` to complete, the parent can still complete.
-
-This is because a Java program waits for threads to finish but if you `fork()` a child process off, the parent can complete with or without waiting for the child to complete.
 
 ### Waiting for Multiple Children
 
@@ -212,7 +195,7 @@ message ExitNode {
 
 #### `RunChildWfNode`
 
-The output of the `RunChildWfNode` is the output of the entrypoint ThreadRun of the child. This nod
+The output of the `RunChildWfNode` is the `WfRunId` child.
 
 ```proto
 // This node spawns a child `WfRun` and waits for the child `WfRun` to terminate
@@ -222,7 +205,7 @@ The output of the `RunChildWfNode` is the output of the entrypoint ThreadRun of 
 // of the child `WfRun`.
 message RunChildWfNode {
   // The name of the WfSpec to spawn.
-  string thread_spec_name = 1;
+  string wf_spec_name = 1;
 
   // The major version of the WfSpec to spawn.
   int32 major_version = 2;
@@ -241,34 +224,6 @@ message RunChildWfNodeRun {
 }
 ```
 
-#### `StartChildWfNode`
-
-```proto
-// Much like the RunChildWfNode, this node spawns a child `WfRun`. However, rather
-// than waiting for the child `WfRun` and returning its ouptut, this Node returns a
-// handle to the resulting `WfRunId`.
-message StartChildWfNode {
-  // The name of the WfSpec to spawn.
-  string thread_spec_name = 1;
-
-  // The major version of the WfSpec to spawn.
-  int32 major_version = 2;
-
-  // The input variables to pass into the Child ThreadRun.
-  map<string, VariableAssignment> variables = 3;
-}
-
-// The StartWfNodeRun starts a Child `WfRun` and does not wait for its completion.
-// It returns a `VariableValue` containing the resulting `WfRunId`.
-message StartChildWfNodeRun {
-    // The id of the created `WfRun`.
-    WfRunId child_wf_run_id = 1;
-
-    // A record of the variables which were used to start the `WfRun`.
-    map<string, VariableValue> input_variables = 2;
-}
-```
-
 #### `WaitForChildWfNode`
 
 ```proto
@@ -278,6 +233,9 @@ message StartChildWfNodeRun {
 message WaitForChildWfNode {
     // Specifies the ID of the child `WfRun` to wait for.
     VariableAssignment child_wf_run_id = 1;
+
+    // The node that created the `WfRun`. Needed in order to validate the output type.
+    string child_wf_run_source_node = 2;
 }
 
 // The WaitForChildWfNodeRun waits for a `WfRun`.
