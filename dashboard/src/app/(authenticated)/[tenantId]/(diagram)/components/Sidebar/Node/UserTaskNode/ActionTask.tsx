@@ -1,26 +1,27 @@
-import { UTActionTrigger_UTATask } from 'littlehorse-client/proto'
+import { UTActionTrigger_UTATask, VariableMutation } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { TaskNode as TaskNodeComponent } from '../TaskNode'
-import { MutationModal } from '../../../Modals/MutationModal'
 import { useModal } from '../../../../hooks/useModal'
+import { TaskNode as TaskNodeComponent } from '../TaskNode'
 
-export const ActionTask: FC<{ node: UTActionTrigger_UTATask }> = ({ node }) => {
-  const { task, mutations } = node
+export const ActionTask: FC< UTActionTrigger_UTATask> = ({ task, mutations }) => {
+  const { setShowModal, setModal } = useModal()
 
-  const { setShowModal } = useModal()
-  const onClick = () => {
+  const onClick = (data: VariableMutation) => {
+    setModal({ type: 'mutation', data })
     setShowModal(true)
   }
+
   return (
     <div className="mt-2">
-      {mutations && mutations.length > 0 && (
+      {mutations.length > 0 && (
         <div>
           <small className="node-title">Mutations</small>
           <div className="my-2 ">
             {mutations.map((mutation, i) => (
               <div key={`mutation-content-${i}`}>
-                <MutationModal data={mutation} type={'edge'}></MutationModal>
-                <span className='text-blue-500 py2 font-mono rounded  cursor-pointer' onClick={onClick}>{mutation.lhsName}</span>
+                <span className="py2 cursor-pointer rounded font-mono  text-blue-500" onClick={() => onClick(mutation)}>
+                  {mutation.lhsName}
+                </span>
               </div>
             ))}
           </div>

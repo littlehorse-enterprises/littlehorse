@@ -1,3 +1,4 @@
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import {
   TaskDefId,
   UserTaskNode as UserTaskNodeProto,
@@ -5,12 +6,11 @@ import {
   UTActionTrigger_UTAReassign,
   UTActionTrigger_UTATask,
 } from 'littlehorse-client/proto'
+import { InfoIcon } from 'lucide-react'
 import { FC } from 'react'
 import { VariableAssignment } from '../../Components'
 import '../node.css'
-import { InfoIcon } from 'lucide-react'
 import { ActionTask } from './ActionTask'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
   const { userTaskDefName, userGroup, userId, notes, onCancellationExceptionName, userTaskDefVersion, actions } = node
   if (!node) return
@@ -22,7 +22,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <p>{userTaskDefName}</p>
         </div>
         {userGroup && (
-          <div >
+          <div>
             <div className="flex items-center gap-1">
               <small className="node-title">User Group </small>
               {/* <InfoIcon size={16} color="gray" />   TODO: add information about the variable*/}
@@ -71,26 +71,28 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <small className="node-title"> Actions</small>
           <div>
             {actions.map((action, index) => {
-              const nodeType = action.action?.$case ?? ''
+              const { action: trigger, delaySeconds, hook } = action
+              if (!trigger) return
+              const { value, $case } = trigger
               return (
                 <div className="border-t-2 border-slate-100 ">
                   <Accordion type="single" collapsible>
                     <AccordionItem value={`action-${index}`}>
                       <AccordionTrigger>
-                        <NodeTitleComponent title={nodeType} action={action.action?.value} />
+                        <NodeTitleComponent title={$case} action={value} />
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="mt-2 flex" key={`hook-content-${index}`}>
                           <p className="flex-none truncate bg-blue-500 px-2 font-mono text-gray-200">Hook</p>
-                          <p className=" flex-grow truncate bg-black pl-2 font-mono text-gray-200">{action.hook}</p>
+                          <p className=" flex-grow truncate bg-black pl-2 font-mono text-gray-200">{hook}</p>
                         </div>
-                        {action.delaySeconds && (
+                        {delaySeconds && (
                           <div className="mt-2 flex" key={`action-content-${index}`}>
                             <p className="flex-none truncate bg-blue-500 px-2 font-mono text-gray-200">Delay</p>
-                            <VariableAssignment variableAssigment={action.delaySeconds} />
+                            <VariableAssignment variableAssigment={delaySeconds} />
                           </div>
                         )}
-                        {nodeType === 'task' && <ActionTask node={action.action?.value as UTActionTrigger_UTATask} />}
+                        {$case === 'task' && <ActionTask {...value} />}
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
