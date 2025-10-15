@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -180,28 +180,61 @@ public class LHTaskWorker implements Closeable {
     public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
         if (tdb.getStructDefDependencies().isEmpty()) return;
 
-        List<String> invalidStructDefs = new ArrayList<>();
-        List<StructDef> structDefDependencies = tdb.getStructDefDependencies().stream()
-                .map(classType -> classType.toStructDef())
-                .collect(Collectors.toList());
+        for (LHStructDefType lhStructDefType : tdb.getStructDefDependencies()) {
+            validateStructDef(lhStructDefType, compatibilityType);
+        }
+    }
 
-        for (StructDef structDef : structDefDependencies) {
-            ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
-                    ValidateStructDefEvolutionRequest.newBuilder();
-            validateStructDefRequest.setStructDefId(structDef.getId());
-            validateStructDefRequest.setStructDef(structDef.getStructDef());
-            validateStructDefRequest.setCompatibilityType(compatibilityType);
+    public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
 
-            ValidateStructDefEvolutionResponse resp =
-                    grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
+        for (LHStructDefType structDefDependency : lhStructDefType.getDependencyClasses()) {
+            validateStructDef(structDefDependency, compatibilityType);
+        }
+    }
 
-            if (!resp.getIsValid()) {
-                invalidStructDefs.add(structDef.getId().getName());
-            }
+    private void validateStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
+
+        ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
+                ValidateStructDefEvolutionRequest.newBuilder();
+        validateStructDefRequest.setStructDefId(structDef.getId());
+        validateStructDefRequest.setStructDef(structDef.getStructDef());
+        validateStructDefRequest.setCompatibilityType(compatibilityType);
+
+        ValidateStructDefEvolutionResponse resp =
+                grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
+
+        if (!resp.getIsValid()) {
+            throw new IllegalArgumentException(String.format(
+                    "Unable to evolve StructDef %s using StructDefCompatibilityType %s",
+                    structDef.getId().getName(), compatibilityType));
+        }
+    }
+
+    private void registerStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
+        PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
+        putStructDefRequest.setName(structDef.getId().getName());
+        putStructDefRequest.setDescription(structDef.getDescription());
+        putStructDefRequest.setStructDef(structDef.getStructDef());
+        putStructDefRequest.setAllowedUpdates(compatibilityType);
+
+        grpcClient.putStructDef(putStructDefRequest.build());
+    }
+
+    public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHClassType lhClassType = LHClassType.fromJavaClass(structClass);
+
+        if (!(lhClassType instanceof LHStructDefType)) {
+            throw new IllegalArgumentException(
+                    "Provided class is missing @LHStructDef annotation: " + structClass.getName());
         }
 
-        if (!invalidStructDefs.isEmpty()) {
-            throw new RuntimeException("Invalid StructDefs: " + invalidStructDefs.toString());
+        LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
+
+        for (LHStructDefType structDefDependency : lhStructDefType.getDependencyClasses()) {
+            registerStructDef(structDefDependency, compatibilityType);
         }
     }
 
@@ -210,15 +243,8 @@ public class LHTaskWorker implements Closeable {
 
         if (lhStructDefTypes.isEmpty()) return;
 
-        for (LHStructDefType lhClassType : lhStructDefTypes) {
-            StructDef structDef = lhClassType.toStructDef();
-            PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
-            putStructDefRequest.setName(structDef.getId().getName());
-            putStructDefRequest.setDescription(structDef.getDescription());
-            putStructDefRequest.setStructDef(structDef.getStructDef());
-            putStructDefRequest.setAllowedUpdates(compatibilityType);
-
-            grpcClient.putStructDef(putStructDefRequest.build());
+        for (LHStructDefType lhStructDefType : lhStructDefTypes) {
+            registerStructDef(lhStructDefType, compatibilityType);
         }
     }
 
