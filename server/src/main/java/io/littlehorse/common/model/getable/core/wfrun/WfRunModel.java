@@ -697,7 +697,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         .castOnSupport(CoreProcessorContext.class)
                         .getableManager()
                         .get(id.getParentWfRunId());
-                parent.advance(time);
+                if (parent != null) parent.advance(time);
             }
         }
 
