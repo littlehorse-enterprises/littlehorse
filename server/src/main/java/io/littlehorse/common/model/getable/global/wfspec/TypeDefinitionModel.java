@@ -237,8 +237,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                             structDef.getStructDef().getFields();
 
                     if (!fieldDefs.containsKey(selector.getKey())) {
-                        throw new InvalidExpressionException(
-                                String.format("could not find field '%s' on type %s", selector.getKey(), currentTypeDef));
+                        throw new InvalidExpressionException(String.format(
+                                "could not find field '%s' on type %s", selector.getKey(), currentTypeDef));
                     }
 
                     currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
