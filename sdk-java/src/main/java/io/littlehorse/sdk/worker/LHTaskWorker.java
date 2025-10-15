@@ -14,7 +14,6 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -185,12 +184,17 @@ public class LHTaskWorker implements Closeable {
         }
     }
 
+    /**
+     * Validates whether or not you can evolve your StructDef with the selected compatibility type
+     *
+     * @param structClass       the class for your StructDef
+     * @param compatibilityType The server will validate the given StructDef schemas against
+     *                          their existing StructDef schemas based on this compatibility type.
+     */
     public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
         LHStructDefType lhStructDefType = new LHStructDefType(structClass);
 
-        for (LHStructDefType structDefDependency : lhStructDefType.getDependencyClasses()) {
-            validateStructDef(structDefDependency, compatibilityType);
-        }
+        validateStructDef(lhStructDefType, compatibilityType);
     }
 
     private void validateStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
@@ -223,21 +227,28 @@ public class LHTaskWorker implements Closeable {
         grpcClient.putStructDef(putStructDefRequest.build());
     }
 
+    /**
+     * Registers a single StructDef based on the StructDef class
+     *
+     * Note: If your StructDef depends on other StructDefs, ensure you register them
+     * in the right order. This method does not handle registering StructDef dependencies.
+     *
+     * @param structClass       the class for your StructDef
+     * @param compatibilityType The server will try to register the given StructDef
+     *                          according to this compatibility type.
+     */
     public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-        LHClassType lhClassType = LHClassType.fromJavaClass(structClass);
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
 
-        if (!(lhClassType instanceof LHStructDefType)) {
-            throw new IllegalArgumentException(
-                    "Provided class is missing @LHStructDef annotation: " + structClass.getName());
-        }
-
-        LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
-
-        for (LHStructDefType structDefDependency : lhStructDefType.getDependencyClasses()) {
-            registerStructDef(structDefDependency, compatibilityType);
-        }
+        registerStructDef(lhStructDefType, compatibilityType);
     }
 
+    /**
+     * Validates StructDef classes used in your Task Definitions against StructDefs on the server.
+     *
+     * @param compatibilityType The server will try to register the given StructDefs
+     *                          according to this compatibility type.
+     */
     public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
         List<LHStructDefType> lhStructDefTypes = tdb.getStructDefDependencies();
 
