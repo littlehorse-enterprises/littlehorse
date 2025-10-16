@@ -91,15 +91,6 @@ protobuf {
     }
 }
 
-// Make protobuf work
-sourceSets {
-    main {
-        java {
-            srcDirs += ["$buildDir/generated/sources/proto/main/java"]
-        }
-    }
-}
-
 checkstyle {
     configFile = file("${rootDir}/canary/checkstyle.xml")
     checkstyleTest.enabled = false
