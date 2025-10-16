@@ -85,6 +85,7 @@ jobs:
           sdk-java:publishToSonatype
           test-utils:publishToSonatype
           test-utils-container:publishToSonatype
+          closeSonatypeStagingRepository
 
   publish-java-server:
     runs-on: ubuntu-latest
@@ -133,6 +134,7 @@ jobs:
           ./gradlew
           server:publishToSonatype
           canary:publishToSonatype
+          closeSonatypeStagingRepository
 
   publish-sdk-python:
     runs-on: ubuntu-latest
