@@ -1,4 +1,4 @@
-name: release
+name: weekly-snapshot
 run-name: Snaptshot ${{ github.ref_name }}
 on:
   schedule:
