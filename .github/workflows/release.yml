@@ -227,6 +227,7 @@ jobs:
 
   create-release:
     needs:
+      - prepare
       - build-lhctl
       - publish-java-libraries
       - publish-java-server
@@ -239,6 +240,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Check if tag is prerelease
+        id: is_prerelease
+        run: |
+          if [[ "${{ needs.prepare.outputs.tag }}" == *"-RC"* ]]; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Generate a changelog
         uses: orhun/git-cliff-action@v4
@@ -256,7 +266,15 @@ jobs:
           merge-multiple: true
 
       - name: Create Release
+        if: steps.is_prerelease.outputs.prerelease == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
           gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_*
+
+      - name: Create Pre Release
+        if: steps.is_prerelease.outputs.prerelease == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_* --prerelease
