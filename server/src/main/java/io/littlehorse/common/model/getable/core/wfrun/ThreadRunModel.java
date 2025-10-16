@@ -854,8 +854,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
         }
 
-        if (assn.getJsonPath() != null) {
-            val = val.jsonPath(assn.getJsonPath());
+        switch (assn.getPathCase()) {
+            case JSON_PATH:
+                val = val.jsonPath(assn.getJsonPath());
+                break;
+            case LH_PATH:
+                val = val.get(assn.getLhPath());
+                break;
+            case PATH_NOT_SET:
         }
 
         val = assn.applyCast(val);

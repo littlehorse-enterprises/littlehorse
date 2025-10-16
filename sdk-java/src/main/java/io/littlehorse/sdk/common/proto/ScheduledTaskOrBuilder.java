@@ -166,4 +166,14 @@ public interface ScheduledTaskOrBuilder extends
    * <code>.littlehorse.TaskRunSource source = 6;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder getSourceOrBuilder();
+
+  /**
+   * <pre>
+   * The total number of checkpoints previously created by prior `TaskAttempt`s.
+   * </pre>
+   *
+   * <code>int32 total_observed_checkpoints = 7;</code>
+   * @return The totalObservedCheckpoints.
+   */
+  int getTotalObservedCheckpoints();
 }

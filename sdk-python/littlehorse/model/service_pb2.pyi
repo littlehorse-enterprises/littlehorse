@@ -753,21 +753,49 @@ class PollTaskRequest(_message.Message):
     task_worker_version: str
     def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., client_id: _Optional[str] = ..., task_worker_version: _Optional[str] = ...) -> None: ...
 
+class PutCheckpointRequest(_message.Message):
+    __slots__ = ("task_run_id", "task_attempt", "value", "logs")
+    TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    TASK_ATTEMPT_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    LOGS_FIELD_NUMBER: _ClassVar[int]
+    task_run_id: _object_id_pb2.TaskRunId
+    task_attempt: int
+    value: _variable_pb2.VariableValue
+    logs: str
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_attempt: _Optional[int] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ...) -> None: ...
+
+class PutCheckpointResponse(_message.Message):
+    __slots__ = ("flow_control_continue_type", "created_checkpoint")
+    class FlowControlContinue(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = ()
+        CONTINUE_TASK: _ClassVar[PutCheckpointResponse.FlowControlContinue]
+        STOP_TASK: _ClassVar[PutCheckpointResponse.FlowControlContinue]
+    CONTINUE_TASK: PutCheckpointResponse.FlowControlContinue
+    STOP_TASK: PutCheckpointResponse.FlowControlContinue
+    FLOW_CONTROL_CONTINUE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    CREATED_CHECKPOINT_FIELD_NUMBER: _ClassVar[int]
+    flow_control_continue_type: PutCheckpointResponse.FlowControlContinue
+    created_checkpoint: _task_run_pb2.Checkpoint
+    def __init__(self, flow_control_continue_type: _Optional[_Union[PutCheckpointResponse.FlowControlContinue, str]] = ..., created_checkpoint: _Optional[_Union[_task_run_pb2.Checkpoint, _Mapping]] = ...) -> None: ...
+
 class ScheduledTask(_message.Message):
-    __slots__ = ("task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source")
+    __slots__ = ("task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source", "total_observed_checkpoints")
     TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     ATTEMPT_NUMBER_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     SOURCE_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_OBSERVED_CHECKPOINTS_FIELD_NUMBER: _ClassVar[int]
     task_run_id: _object_id_pb2.TaskRunId
     task_def_id: _object_id_pb2.TaskDefId
     attempt_number: int
     variables: _containers.RepeatedCompositeFieldContainer[_task_run_pb2.VarNameAndVal]
     created_at: _timestamp_pb2.Timestamp
     source: _task_run_pb2.TaskRunSource
-    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempt_number: _Optional[int] = ..., variables: _Optional[_Iterable[_Union[_task_run_pb2.VarNameAndVal, _Mapping]]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., source: _Optional[_Union[_task_run_pb2.TaskRunSource, _Mapping]] = ...) -> None: ...
+    total_observed_checkpoints: int
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempt_number: _Optional[int] = ..., variables: _Optional[_Iterable[_Union[_task_run_pb2.VarNameAndVal, _Mapping]]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., source: _Optional[_Union[_task_run_pb2.TaskRunSource, _Mapping]] = ..., total_observed_checkpoints: _Optional[int] = ...) -> None: ...
 
 class PollTaskResponse(_message.Message):
     __slots__ = ("result",)
@@ -776,7 +804,7 @@ class PollTaskResponse(_message.Message):
     def __init__(self, result: _Optional[_Union[ScheduledTask, _Mapping]] = ...) -> None: ...
 
 class ReportTaskRun(_message.Message):
-    __slots__ = ("task_run_id", "time", "status", "log_output", "attempt_number", "output", "error", "exception")
+    __slots__ = ("task_run_id", "time", "status", "log_output", "attempt_number", "output", "error", "exception", "total_checkpoints")
     TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     TIME_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
@@ -785,6 +813,7 @@ class ReportTaskRun(_message.Message):
     OUTPUT_FIELD_NUMBER: _ClassVar[int]
     ERROR_FIELD_NUMBER: _ClassVar[int]
     EXCEPTION_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_CHECKPOINTS_FIELD_NUMBER: _ClassVar[int]
     task_run_id: _object_id_pb2.TaskRunId
     time: _timestamp_pb2.Timestamp
     status: _common_enums_pb2.TaskStatus
@@ -793,7 +822,8 @@ class ReportTaskRun(_message.Message):
     output: _variable_pb2.VariableValue
     error: _task_run_pb2.LHTaskError
     exception: _task_run_pb2.LHTaskException
-    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[_task_run_pb2.LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[_task_run_pb2.LHTaskException, _Mapping]] = ...) -> None: ...
+    total_checkpoints: int
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[_task_run_pb2.LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[_task_run_pb2.LHTaskException, _Mapping]] = ..., total_checkpoints: _Optional[int] = ...) -> None: ...
 
 class StopWfRunRequest(_message.Message):
     __slots__ = ("wf_run_id", "thread_run_number")

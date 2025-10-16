@@ -752,7 +752,7 @@ func TestJsonPath(t *testing.T) {
 	putWf, _ := wf.Compile()
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	node := entrypoint.Nodes["1-some-task-TASK"]
-	assert.Equal(t, *(node.GetTask().Variables[0].JsonPath), "$.foo")
+	assert.Equal(t, node.GetTask().Variables[0].GetJsonPath(), "$.foo")
 }
 
 func TestVariableAccessLevel(t *testing.T) {

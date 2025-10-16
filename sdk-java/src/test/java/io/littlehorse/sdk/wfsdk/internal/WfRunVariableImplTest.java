@@ -18,7 +18,7 @@ public class WfRunVariableImplTest {
     };
 
     @Test
-    void validateVariableAllowJsonPah() {
+    void validateVariableAllowJsonPath() {
         WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
         WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
         WfRunVariableImpl variable = WfRunVariableImpl.createPrimitiveVar("my-var", VariableType.STR, wfThread);

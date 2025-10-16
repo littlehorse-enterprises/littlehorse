@@ -377,6 +377,22 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
   }
 
+  public static final int TOTAL_CHECKPOINTS_FIELD_NUMBER = 9;
+  private int totalCheckpoints_ = 0;
+  /**
+   * <pre>
+   * The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+   * each checkpoint.
+   * </pre>
+   *
+   * <code>int32 total_checkpoints = 9;</code>
+   * @return The totalCheckpoints.
+   */
+  @java.lang.Override
+  public int getTotalCheckpoints() {
+    return totalCheckpoints_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -414,6 +430,9 @@ private static final long serialVersionUID = 0L;
     }
     if (resultCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.sdk.common.proto.LHTaskException) result_);
+    }
+    if (totalCheckpoints_ != 0) {
+      output.writeInt32(9, totalCheckpoints_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -456,6 +475,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (io.littlehorse.sdk.common.proto.LHTaskException) result_);
     }
+    if (totalCheckpoints_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(9, totalCheckpoints_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -489,6 +512,8 @@ private static final long serialVersionUID = 0L;
     }
     if (getAttemptNumber()
         != other.getAttemptNumber()) return false;
+    if (getTotalCheckpoints()
+        != other.getTotalCheckpoints()) return false;
     if (!getResultCase().equals(other.getResultCase())) return false;
     switch (resultCase_) {
       case 4:
@@ -533,6 +558,8 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + ATTEMPT_NUMBER_FIELD_NUMBER;
     hash = (53 * hash) + getAttemptNumber();
+    hash = (37 * hash) + TOTAL_CHECKPOINTS_FIELD_NUMBER;
+    hash = (53 * hash) + getTotalCheckpoints();
     switch (resultCase_) {
       case 4:
         hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
@@ -718,6 +745,7 @@ private static final long serialVersionUID = 0L;
       if (exceptionBuilder_ != null) {
         exceptionBuilder_.clear();
       }
+      totalCheckpoints_ = 0;
       resultCase_ = 0;
       result_ = null;
       return this;
@@ -779,6 +807,9 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000010) != 0)) {
         result.attemptNumber_ = attemptNumber_;
       }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
+        result.totalCheckpoints_ = totalCheckpoints_;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -825,6 +856,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getAttemptNumber() != 0) {
         setAttemptNumber(other.getAttemptNumber());
+      }
+      if (other.getTotalCheckpoints() != 0) {
+        setTotalCheckpoints(other.getTotalCheckpoints());
       }
       switch (other.getResultCase()) {
         case OUTPUT: {
@@ -921,6 +955,11 @@ private static final long serialVersionUID = 0L;
               resultCase_ = 8;
               break;
             } // case 66
+            case 72: {
+              totalCheckpoints_ = input.readInt32();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 72
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2071,6 +2110,53 @@ private static final long serialVersionUID = 0L;
       resultCase_ = 8;
       onChanged();
       return exceptionBuilder_;
+    }
+
+    private int totalCheckpoints_ ;
+    /**
+     * <pre>
+     * The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+     * each checkpoint.
+     * </pre>
+     *
+     * <code>int32 total_checkpoints = 9;</code>
+     * @return The totalCheckpoints.
+     */
+    @java.lang.Override
+    public int getTotalCheckpoints() {
+      return totalCheckpoints_;
+    }
+    /**
+     * <pre>
+     * The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+     * each checkpoint.
+     * </pre>
+     *
+     * <code>int32 total_checkpoints = 9;</code>
+     * @param value The totalCheckpoints to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTotalCheckpoints(int value) {
+
+      totalCheckpoints_ = value;
+      bitField0_ |= 0x00000100;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+     * each checkpoint.
+     * </pre>
+     *
+     * <code>int32 total_checkpoints = 9;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTotalCheckpoints() {
+      bitField0_ = (bitField0_ & ~0x00000100);
+      totalCheckpoints_ = 0;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.ReportTaskRun)

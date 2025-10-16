@@ -87,20 +87,24 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         }
     }
 
-    public void validateAgainst(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager) {
+    public void validateAgainst(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
             // If InlineStruct is missing required field...
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = entry.getValue();
 
             if (fieldDef.isRequired() && !inlineStruct.getFields().containsKey(fieldName)) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "Struct does not match StructDef, missing required field %s".formatted(fieldName));
+                throw new StructValidationException("Missing required field %s".formatted(fieldName));
             } else if (inlineStruct.getFields().containsKey(fieldName)) {
                 StructFieldModel fieldValue = inlineStruct.getFields().get(fieldName);
 
-                fieldDef.validateAgainst(fieldValue, metadataManager);
+                try {
+                    fieldDef.validateAgainst(fieldValue, metadataManager);
+                } catch (StructValidationException e) {
+                    throw new StructValidationException(
+                            String.format("Field '%s' is invalid: %s", fieldName, e.getMessage()));
+                }
             }
         }
 
@@ -109,8 +113,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
             String fieldName = entry.getKey();
 
             if (!this.fields.containsKey(fieldName)) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
+                throw new StructValidationException(
                         "Struct does not match StructDef, includes unrecognized field %s".formatted(fieldName));
             }
         }

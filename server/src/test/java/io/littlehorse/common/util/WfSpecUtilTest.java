@@ -178,7 +178,7 @@ public class WfSpecUtilTest {
             WfSpecModel original = WfSpecModel.fromProto(originalSpec, null);
             WfSpecModel copy = WfSpecModel.fromProto(copySpec, null);
 
-            assertThat(WfSpecUtil.hasBreakingChanges(original, copy)).isFalse();
+            assertThat(WfSpecUtil.hasBreakingChanges(original, copy, null)).isFalse();
         }
     }
 
@@ -212,6 +212,6 @@ public class WfSpecUtilTest {
         WfSpecModel original = WfSpecModel.fromProto(originalSpec, null);
         WfSpecModel copy = WfSpecModel.fromProto(copySpec, null);
 
-        assertThat(WfSpecUtil.hasBreakingChanges(original, copy)).isTrue();
+        assertThat(WfSpecUtil.hasBreakingChanges(original, copy, null)).isTrue();
     }
 }
