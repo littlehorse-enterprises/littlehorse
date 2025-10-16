@@ -24,9 +24,16 @@ export const Fields: FC<Props> = ({ fields }) => {
           <div key={name} className="mb-1 flex items-center gap-1">
             <span className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{name}</span>
             <span className="rounded bg-yellow-100 p-1 text-xs">
-              {fieldType?.$case === 'structDefId'
-                ? <LinkWithTenant className="underline flex" href={`/structDef/${fieldType.value.name}/${fieldType.value.version}`}>Struct</LinkWithTenant>
-                : VARIABLE_TYPES[getVariableCaseFromType(fieldType?.value)]}
+              {fieldType?.$case === 'structDefId' ? (
+                <LinkWithTenant
+                  className="flex underline"
+                  href={`/structDef/${fieldType.value.name}/${fieldType.value.version}`}
+                >
+                  Struct
+                </LinkWithTenant>
+              ) : (
+                VARIABLE_TYPES[getVariableCaseFromType(fieldType?.value)]
+              )}
             </span>
             {isRequired && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
             {fieldDef.fieldType.masked && <span className="rounded bg-red-100 p-1 text-xs">Masked</span>}

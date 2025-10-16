@@ -22,9 +22,16 @@ export const Variables: FC<VariablesProps> = ({ variableDefs }) => {
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
           <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
           <span className="rounded bg-yellow-100 p-1 text-xs">
-            {variable.varDef?.typeDef?.definedType?.$case === "structDefId"
-              ? <LinkWithTenant className="underline flex" href={`/structDef/${variable.varDef.typeDef.definedType.value.name}/${variable.varDef.typeDef.definedType.value.version}`}>Struct</LinkWithTenant>
-              : VARIABLE_TYPES[getVariableDefType(variable.varDef!)]}
+            {variable.varDef?.typeDef?.definedType?.$case === 'structDefId' ? (
+              <LinkWithTenant
+                className="flex underline"
+                href={`/structDef/${variable.varDef.typeDef.definedType.value.name}/${variable.varDef.typeDef.definedType.value.version}`}
+              >
+                Struct
+              </LinkWithTenant>
+            ) : (
+              VARIABLE_TYPES[getVariableDefType(variable.varDef!)]
+            )}
           </span>
           {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
           {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
