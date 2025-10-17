@@ -204,18 +204,9 @@ const getValueFromVariableName = (
 ): string => {
   if (!value) return ''
 
-  let valueStr = (() => {
-    switch (path?.$case) {
-        case 'jsonPath':
-          return path.value.replace('$', value);
-        case 'lhPath':
-          return lhPathToString(path.value).replace('$', value);
-        default:
-          return value;
-    }
-  })()
-
-  return `{${valueStr}}`
+  if (path?.$case == 'jsonPath') return `{${path.value.replace('$', value)}}`
+  if (path?.$case == 'lhPath') return `{${lhPathToString(path.value).replace('$', value)}}`
+  return `{${value}}`
 }
 
 const getValueFromFormatString = ({
