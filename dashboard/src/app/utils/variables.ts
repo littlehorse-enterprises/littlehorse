@@ -1,6 +1,4 @@
 import {
-  LHPath,
-  LHPath_Selector,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
