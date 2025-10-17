@@ -8,19 +8,15 @@ public class MyWorker {
 
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
 
-    @LHTaskMethod("get-car-owner")
-    public Person getCarOwner(ParkingTicketReport report) {
-        return lookupCarOwnerInDb(report.getLicensePlateNumber());
+    @LHTaskMethod("greet")
+    public String greet(String name) {
+        log.debug("Executing greet");
+        return "hello " + name;
     }
 
-    @LHTaskMethod("mail-ticket")
-    public String mailTicket(Person person) {
-        log.debug("Notifying %s of parking ticket.".formatted(person.toString()));
-        return "Ticket sent to %s at %s".formatted(person, person.getHomeAddress());
-    }
-
-    // Simulates a database lookup...
-    private Person lookupCarOwnerInDb(String licensePlateNumber) {
-        return new Person("Obi-Wan", "Kenobi", new Address(124, "Sand Dune Lane", "Anchorhead", "Tattooine", 97412));
+    @LHTaskMethod("describe-car")
+    public String describeCar(Car car) {
+        log.debug("Executing describe-car. {}", car);
+        return "You drive a " + car.getBrand() + " " + car.getModel();
     }
 }

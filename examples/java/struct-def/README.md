@@ -43,7 +43,7 @@ Let's run the `StructDefExample.java` application to:
 In another terminal, call the following command to verify that the `Person` StructDef was created on the server:
 
 ```
-lhctl get structdef person 0
+lhctl get structDef person 0
 ```
 
 > [!NOTE]

@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -27,14 +28,14 @@ public class StructDefExample {
     private static final Logger log = LoggerFactory.getLogger(StructDefExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl("issue-parking-ticket", wf -> {
-            WfRunVariable carInput =
-                    wf.declareStruct("car-input", ParkingTicketReport.class).required();
-            WfRunVariable carOwner = wf.declareStruct("car-owner", Person.class);
+        return new WorkflowImpl("example-struct-def", wf -> {
+            WfRunVariable person = wf.declareStruct(
+                "person",
+                Person.class
+            );
 
-            carOwner.assign(wf.execute("get-car-owner", carInput));
-
-            wf.execute("mail-ticket", carOwner);
+            wf.execute("greet", person.get("name"));
+            wf.execute("describe-car", person.get("car"));
         });
     }
 
@@ -88,9 +89,11 @@ public class StructDefExample {
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
+        workers.get(0).registerStructDef(Person.class, StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+        workers.get(0).registerStructDef(Car.class, StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+
         // Register tasks if they don't exist
         for (LHTaskWorker worker : workers) {
-            worker.registerStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
             worker.registerTaskDef();
         }
 
@@ -111,18 +114,11 @@ public class StructDefExample {
 
         System.out.println("Running the workflow...");
 
-        String vehicleMake = args[0];
-        String vehicleModel = args[1];
-        String licensePlateNumber = args[2];
-
-        ParkingTicketReport parkingTicketReport =
-                new ParkingTicketReport(vehicleMake, vehicleModel, licensePlateNumber, new Date());
-
-        System.out.println("Generated parking ticket report from arguments: \n" + parkingTicketReport);
+        Person person = new Person("Obi-Wan Kenobi", new Car("Ford", "Escape"));
 
         client.runWf(RunWfRequest.newBuilder()
-                .setWfSpecName("issue-parking-ticket")
-                .putVariables("car-input", LHLibUtil.objToVarVal(parkingTicketReport))
+                .setWfSpecName("example-struct-def")
+                .putVariables("person", LHLibUtil.objToVarVal(person))
                 .build());
     }
 }

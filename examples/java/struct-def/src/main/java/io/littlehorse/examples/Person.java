@@ -8,20 +8,13 @@ import lombok.Setter;
 @Setter
 @LHStructDef(name = "person")
 public class Person {
-    private String firstName;
-    private String lastName;
-    private Address homeAddress;
+    private String name;
+    private Car car;
 
     public Person() {}
 
-    public Person(String firstName, String lastName, Address homeAddress) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.homeAddress = homeAddress;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s", firstName, lastName);
+    public Person(String name, Car car) {
+        this.name = name;
+        this.car = car;
     }
 }
