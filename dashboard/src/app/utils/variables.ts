@@ -1,5 +1,6 @@
 import {
   LHPath,
+  LHPath_Selector,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
@@ -199,21 +200,18 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
 
 const getValueFromVariableName = (
   { value }: Extract<VariableAssignment['source'], { $case: 'variableName' }>,
-  path?:
-    | {
-        $case: 'jsonPath'
-        value: string
-      }
-    | {
-        $case: 'lhPath'
-        value: LHPath
-      }
-    | undefined
+  path?: Extract<VariableAssignment['path'], {}>
 ): string => {
   if (!value) return ''
-  if (path?.$case == 'jsonPath') return `{${path.value.replace('$', value)}}`
-  if (path?.$case == 'lhPath') return lhPathToString(path.value).replace('$', value)
-  return `{${value}}`
+
+  switch (path?.$case) {
+    case 'jsonPath':
+      return path.value
+    case 'lhPath':
+      return lhPathToString(path.value)
+    default:
+      return `{${value}}`
+  }
 }
 
 const getValueFromFormatString = ({
