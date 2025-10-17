@@ -1,4 +1,4 @@
-import { LHStatus, VariableValue } from 'littlehorse-client/proto'
+import { LHStatus } from 'littlehorse-client/proto'
 
 export const SEARCH_LIMITS = [10, 20, 30, 60, 100] as const
 export type SearchLimit = (typeof SEARCH_LIMITS)[number]
@@ -15,11 +15,18 @@ export const VARIABLE_TYPES = {
   wfRunId: 'WfRunId',
   struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
-} as const satisfies { [key in NonNullable<VariableValue['value']>['$case']]: string }
+} as const
 
 export const VARIABLE_TYPE_ENTRIES = Object.entries(VARIABLE_TYPES)
 
-export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
+export const SEARCH_ENTITIES = [
+  'WfSpec',
+  'TaskDef',
+  'UserTaskDef',
+  'ExternalEventDef',
+  'WorkflowEventDef',
+  'StructDef',
+] as const
 export const WF_RUN_STATUSES = Object.values(LHStatus).filter(status => status !== 'UNRECOGNIZED')
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 
