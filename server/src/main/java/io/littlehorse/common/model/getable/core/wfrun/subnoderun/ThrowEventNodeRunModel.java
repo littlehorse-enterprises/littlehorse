@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -18,6 +19,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import lombok.Setter;
 
@@ -96,7 +98,7 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     }
 
     @Override
-    public Optional<WorkflowEventIdModel> getCreatedSubGetableId() {
-        return Optional.ofNullable(workflowEventId);
+    public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
+        return List.of(workflowEventId);
     }
 }
