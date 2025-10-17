@@ -1,4 +1,5 @@
 import {
+  LHPath,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
@@ -8,6 +9,7 @@ import {
 } from 'littlehorse-client/proto'
 import { structFromJSONString, structToJSONString } from './struct'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
+import { lhPathToString } from './lhPath'
 
 export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
   switch (typeDef.definedType?.$case) {
@@ -58,11 +60,7 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
     case 'nodeOutput':
       return variable.source.value.nodeName
     case 'variableName':
-      // TODO: Support `LHPath` case
-      if (variable.path?.$case == 'lhPath') {
-        throw new Error('Unsupported path type.')
-      }
-      return getValueFromVariableName(variable.source, variable.path?.value)
+      return getValueFromVariableName(variable.source, variable.path)
     default:
       return ''
   }
@@ -201,10 +199,20 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
 
 const getValueFromVariableName = (
   { value }: Extract<VariableAssignment['source'], { $case: 'variableName' }>,
-  jsonPath?: string
+  path?:
+    | {
+        $case: 'jsonPath'
+        value: string
+      }
+    | {
+        $case: 'lhPath'
+        value: LHPath
+      }
+    | undefined
 ): string => {
   if (!value) return ''
-  if (jsonPath) return `{${jsonPath.replace('$', value)}}`
+  if (path?.$case == 'jsonPath') return `{${path.value.replace('$', value)}}`
+  if (path?.$case == 'lhPath') return lhPathToString(path.value).replace('$', value)
   return `{${value}}`
 }
 
