@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
@@ -105,7 +106,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * Returns the created sub-Getable for this NodeRunModel. For example, a TaskNodeRunModel would
      * return the associated TaskRunModel.
      */
-    public Optional<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableId() {
-        return Optional.empty();
+    public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
+        return List.of();
     }
 }

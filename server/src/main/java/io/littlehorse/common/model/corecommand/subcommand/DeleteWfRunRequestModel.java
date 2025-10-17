@@ -19,7 +19,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Optional;
+import java.util.List;
 
 public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> {
 
@@ -57,10 +57,11 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
                 NodeRunModel nodeRun = thread.getNodeRun(i);
 
                 // Delete things created by the NodeRun, eg TaskRun / UserTaskRun / WorkflowEvent
-                Optional<? extends CoreObjectId<?, ?, ?>> createdGetable =
-                        nodeRun.getSubNodeRun().getCreatedSubGetableId();
-                if (createdGetable.isPresent()) {
-                    manager.delete((CoreObjectId<?, ?, ?>) createdGetable.get());
+                List<? extends CoreObjectId<?, ?, ?>> createdGetables =
+                        nodeRun.getSubNodeRun().getCreatedSubGetableIds(executionContext);
+
+                for (CoreObjectId<?, ?, ?> createdGetable : createdGetables) {
+                    manager.delete((CoreObjectId<?, ?, ?>) createdGetable);
                 }
 
                 // ExternalEventNodeRun's can create correlation markers. Deleting those are tricky.
