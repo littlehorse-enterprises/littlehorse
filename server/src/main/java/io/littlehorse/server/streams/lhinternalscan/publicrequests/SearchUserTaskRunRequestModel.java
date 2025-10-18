@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
@@ -130,6 +131,11 @@ public class SearchUserTaskRunRequestModel
 
         if (userGroup != null) {
             attributes.add(new Attribute("userGroup", this.userGroup));
+        }
+        if (attributes.isEmpty()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Must provide at least one search criteria: status,user_id,user_group,user_task_def_name");
         }
         return attributes;
     }
