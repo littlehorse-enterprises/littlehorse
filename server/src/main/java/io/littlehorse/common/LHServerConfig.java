@@ -979,6 +979,9 @@ public class LHServerConfig extends ConfigBase {
         props.put(
                 StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
 
+        // Reduce the chattiness of the logs to once every 15 minutes (Streams default 2 minutes).
+        props.put(StreamsConfig.LOG_SUMMARY_INTERVAL_MS_CONFIG, 1000 * 60 * 15);
+
         // Due to bug in Kafka Streams, the only way to get the server to leave the group on shutdown is to use this
         // internal flag. We actually want to leave the group when we close() so that tasks can be reassigned during
         // a rolling restart. Our optimization in this ticket #497 relies on leaving the group during a rolling bounce.

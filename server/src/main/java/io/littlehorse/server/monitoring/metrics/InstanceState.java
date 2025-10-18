@@ -84,7 +84,7 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
                 log.warn("Failed to handle async waiters reassignment: " + toIgnore.getMessage());
             }
         }
-        log.info("New state for core topology: {}", newState);
+        log.debug("New state for core topology: {}", newState);
     }
 
     @Override
