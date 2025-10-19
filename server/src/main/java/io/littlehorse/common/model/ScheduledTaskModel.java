@@ -3,6 +3,7 @@ package io.littlehorse.common.model;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
 import io.littlehorse.common.model.getable.core.taskrun.UserTaskTriggerReferenceModel;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
@@ -59,13 +60,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     }
 
     @Override
-    public String getStoreKey() {
-        // Note: only one ScheduledTask can be active at once for a
-        // TaskRun, so we don't need to worry about the attemptNumber.
-        return taskRunId.toString();
-    }
-
-    @Override
     public ScheduledTask.Builder toProto() {
         ScheduledTask.Builder out = ScheduledTask.newBuilder()
                 .setTaskRunId(taskRunId.toProto())
@@ -84,12 +78,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     @Override
     public Class<ScheduledTask> getProtoBaseClass() {
         return ScheduledTask.class;
-    }
-
-    public static ScheduledTaskModel fromProto(ScheduledTask p, ExecutionContext context) {
-        ScheduledTaskModel out = new ScheduledTaskModel();
-        out.initFrom(p, context);
-        return out;
     }
 
     @Override
@@ -114,5 +102,34 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     @Override
     public StoreableType getType() {
         return StoreableType.SCHEDULED_TASK;
+    }
+
+    @Override
+    public String getStoreKey() {
+        return ScheduledTaskModel.getScheduledTaskKey(taskRunId, createdAt);
+    }
+
+    public static ScheduledTaskModel fromProto(ScheduledTask p, ExecutionContext context) {
+        ScheduledTaskModel out = new ScheduledTaskModel();
+        out.initFrom(p, context);
+        return out;
+    }
+
+    public static String getLegacyKey(TaskRunModel taskRun) {
+        return taskRun.getId().toString();
+    }
+
+    public static String getScheduledTaskKey(TaskRunModel taskRun) {
+        return getScheduledTaskKey(taskRun.getId(), taskRun.getLatestAttempt().getScheduleTime());
+    }
+
+    public static String getScheduledTaskKey(TaskRunIdModel taskRunId, Date taskAttemptCreatedAt) {
+        // Note: only one ScheduledTask can be active at once for a
+        // TaskRun, so we don't need to worry about the attemptNumber.
+        //
+        // For compatibility we use "a" as a prefix since it is the first ASCII
+        // character. This guarantees that the start of the iteration doesn't ignore
+        // any previous keys.
+        return "a/" + LHUtil.toLhDbFormat(taskAttemptCreatedAt) + "/" + taskRunId.toString();
     }
 }

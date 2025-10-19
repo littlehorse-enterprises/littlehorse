@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -143,7 +144,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void rehydrateTenant(TenantModel tenant) {
         TenantScopedStore coreDefaultStore =
                 TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
-        try (LHKeyValueIterator<ScheduledTaskModel> iter = coreDefaultStore.prefixScan("", ScheduledTaskModel.class)) {
+
+        TaskQueueHintModel hint =
+                coreDefaultStore.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
+        String startKey = hint == null ? "" : hint.getKeyToResumeFrom();
+        String endKey = "~";
+        try (LHKeyValueIterator<ScheduledTaskModel> iter =
+                coreDefaultStore.range(startKey, endKey, ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();
