@@ -156,9 +156,8 @@ public class OneTaskQueue {
 
     private class QueueItem {
         private final TaskId taskId;
-
-        @Getter
         private final ScheduledTaskModel scheduledTask;
+        private final String scheduledTaskStoreKey;
 
         public QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {
             this.taskId = streamsTaskId;
@@ -168,24 +167,28 @@ public class OneTaskQueue {
                 this.scheduledTask = scheduledTask;
                 numberOfInMemoryTasks.incrementAndGet();
             }
+            this.scheduledTaskStoreKey = scheduledTask.getStoreKey();
         }
 
         private Optional<ScheduledTaskModel> resolveTask(RequestExecutionContext context) {
-            numberOfInMemoryTasks.decrementAndGet();
-            return Optional.of(scheduledTask);
+            if (scheduledTask != null) {
+                numberOfInMemoryTasks.decrementAndGet();
+                return Optional.of(scheduledTask);
+            } else {
+                return Optional.ofNullable(context.getableManager(taskId).getScheduledTask(scheduledTaskStoreKey));
+            }
         }
 
         @Override
         public boolean equals(Object o) {
             if (o == null || getClass() != o.getClass()) return false;
             QueueItem queueItem = (QueueItem) o;
-            return Objects.equals(
-                    scheduledTask.getStoreKey(), queueItem.getScheduledTask().getStoreKey());
+            return Objects.equals(scheduledTaskStoreKey, queueItem.scheduledTaskStoreKey);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(scheduledTask.getStoreKey());
+            return Objects.hashCode(scheduledTaskStoreKey);
         }
     }
 

@@ -9,7 +9,6 @@ import io.littlehorse.common.proto.TaskQueueHint;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 
 /**
  * See the description in the PR (TODO put PR number).
@@ -27,7 +26,6 @@ public class TaskQueueHintModel extends Storeable<TaskQueueHint> {
      */
     public static final String TASK_QUEUE_HINT_KEY = "tqh";
 
-    @Getter
     private Timestamp lastProcessedTimestamp;
 
     public TaskQueueHintModel() {}

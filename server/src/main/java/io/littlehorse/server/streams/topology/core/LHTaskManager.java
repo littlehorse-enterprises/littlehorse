@@ -72,7 +72,7 @@ public class LHTaskManager {
         timersToSchedule.add(timer);
     }
 
-    public ScheduledTaskModel markTaskAsClaimed(TaskRunModel taskRun) {
+    public ScheduledTaskModel markTaskAsScheduled(TaskRunModel taskRun) {
         boolean isLegacy = false;
         ScheduledTaskModel scheduledTask =
                 this.coreStore.get(ScheduledTaskModel.getScheduledTaskKey(taskRun), ScheduledTaskModel.class);

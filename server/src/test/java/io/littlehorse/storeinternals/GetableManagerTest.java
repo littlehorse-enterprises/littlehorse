@@ -435,6 +435,15 @@ public class GetableManagerTest {
     }
 
     @Test
+    public void findScheduledTask() {
+        ScheduledTaskModel task1 = TestUtil.scheduledTaskModel("wf-1");
+        task1.setCreatedAt(new Date(new Date().getTime() + 2000L));
+        localStoreWrapper.put(task1);
+        ScheduledTaskModel result = getableManager.getScheduledTask(task1.getStoreKey());
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     public void findScheduledTaskByTaskRun() {
         ScheduledTaskModel scheduledTask = TestUtil.scheduledTaskModel("wf-1");
         scheduledTask.setCreatedAt(new Date(new Date().getTime() + 2000L));
