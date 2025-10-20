@@ -149,7 +149,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
         TaskQueueHintModel hint =
                 coreDefaultStore.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
-        
+
         if (hint == null) {
             log.error("Got a null hint");
         } else {
