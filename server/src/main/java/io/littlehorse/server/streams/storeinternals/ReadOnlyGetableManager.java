@@ -133,7 +133,8 @@ public class ReadOnlyGetableManager {
     }
 
     public ScheduledTaskModel getScheduledTask(TaskRunModel taskRun) {
-        ScheduledTaskModel result = store.get(ScheduledTaskModel.getScheduledTaskKey(taskRun), ScheduledTaskModel.class);
+        ScheduledTaskModel result =
+                store.get(ScheduledTaskModel.getScheduledTaskKey(taskRun), ScheduledTaskModel.class);
         if (result != null) return result;
         return store.get(ScheduledTaskModel.getLegacyKey(taskRun), ScheduledTaskModel.class);
     }

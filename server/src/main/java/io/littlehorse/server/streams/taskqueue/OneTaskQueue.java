@@ -179,7 +179,8 @@ public class OneTaskQueue {
         public boolean equals(Object o) {
             if (o == null || getClass() != o.getClass()) return false;
             QueueItem queueItem = (QueueItem) o;
-            return Objects.equals(scheduledTask.getStoreKey(), queueItem.getScheduledTask().getStoreKey());
+            return Objects.equals(
+                    scheduledTask.getStoreKey(), queueItem.getScheduledTask().getStoreKey());
         }
 
         @Override
