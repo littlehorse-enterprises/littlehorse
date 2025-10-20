@@ -1,16 +1,14 @@
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
 import { UserTaskDef } from './components/UserTaskDef'
 import { getUserTaskDef } from './getUserTaskDef'
 
-type Props = { params: { props: string[] } }
+type Props = { params: { props: string[]; tenantId: string } }
 
-export default async function Page({ params: { props } }: Props) {
+export default async function Page({ params: { props, tenantId } }: Props) {
   const name = props[0]
   const version = props[1]
-  const { tenantId } = useWhoAmI()
   try {
     const spec = await getUserTaskDef({ name, version, tenantId })
     return <UserTaskDef spec={spec} />
