@@ -78,11 +78,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     @Override
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
+        log.error("Starting the init() process on partition {}", ctx.taskId().partition());
         this.ctx = ctx;
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
+        log.error("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
     @Override
@@ -147,6 +149,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
         TaskQueueHintModel hint =
                 coreDefaultStore.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
+        
+        if (hint == null) {
+            log.error("Got a null hint");
+        } else {
+            log.error("found the hint!");
+        }
         String startKey = hint == null ? "" : hint.getKeyToResumeFrom();
         String endKey = "~";
         try (LHKeyValueIterator<ScheduledTaskModel> iter =
