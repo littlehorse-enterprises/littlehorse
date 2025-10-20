@@ -131,7 +131,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         partitionIsClaimed = true;
         server.drainPartitionTaskQueue(ctx.taskId());
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
-        rehydrateTenant(new TenantModel(LHConstants.DEFAULT_TENANT));
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
                 GetableClassEnum.TENANT.getNumber() + "/",
                 GetableClassEnum.TENANT.getNumber() + "/~",
