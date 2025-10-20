@@ -15,6 +15,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Aggr
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
@@ -153,7 +154,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         if (hint == null) {
             log.error("Got a null hint");
         } else {
-            log.error("found the hint!");
+            log.error("found the hint: {}", LHUtil.fromProtoTs(hint.getLastProcessedTimestamp()));
         }
         String startKey = hint == null ? "" : hint.getKeyToResumeFrom();
         String endKey = "~";
