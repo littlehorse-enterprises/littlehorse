@@ -26,6 +26,11 @@ import lombok.Setter;
 @Setter
 public class ScheduledTaskModel extends Storeable<ScheduledTask> {
 
+    // For compatibility we use "a" as a prefix since it is the first ASCII
+    // character. This guarantees that the start of the iteration doesn't ignore
+    // any previous keys.
+    public static final String STORE_KEY_PREFIX_FOR_COMPATIBILITY = "a/";
+
     private TaskRunIdModel taskRunId;
     private TaskDefIdModel taskDefId;
     private int attemptNumber;
@@ -126,10 +131,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     public static String getScheduledTaskKey(TaskRunIdModel taskRunId, Date taskAttemptCreatedAt) {
         // Note: only one ScheduledTask can be active at once for a
         // TaskRun, so we don't need to worry about the attemptNumber.
-        //
-        // For compatibility we use "a" as a prefix since it is the first ASCII
-        // character. This guarantees that the start of the iteration doesn't ignore
-        // any previous keys.
-        return "a/" + LHUtil.toLhDbFormat(taskAttemptCreatedAt) + "/" + taskRunId.toString();
+        return STORE_KEY_PREFIX_FOR_COMPATIBILITY + LHUtil.toLhDbFormat(taskAttemptCreatedAt) + "/"
+                + taskRunId.toString();
     }
 }

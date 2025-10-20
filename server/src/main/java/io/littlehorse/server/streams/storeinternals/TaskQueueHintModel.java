@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.storeinternals;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.TaskQueueHint;
 import io.littlehorse.common.util.LHUtil;
@@ -60,6 +61,7 @@ public class TaskQueueHintModel extends Storeable<TaskQueueHint> {
     }
 
     public String getKeyToResumeFrom() {
-        return "a/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(lastProcessedTimestamp));
+        return ScheduledTaskModel.STORE_KEY_PREFIX_FOR_COMPATIBILITY
+                + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(lastProcessedTimestamp));
     }
 }
