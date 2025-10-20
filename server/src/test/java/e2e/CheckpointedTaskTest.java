@@ -1,8 +1,18 @@
 package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
+import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.proto.CheckpointId;
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -15,6 +25,7 @@ import org.junit.jupiter.api.Test;
 @LHTest
 public class CheckpointedTaskTest {
 
+    private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
 
     private int executionsAtLocation0;
@@ -28,7 +39,7 @@ public class CheckpointedTaskTest {
     @Test
     public void checkpointedTasksTest() {
         workflowVerifier
-                .prepareRun(workflow)
+                .prepareRun(workflow, Arg.of("update-executions", true))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyWfRun(wfRun -> {
                     assertThat(wfRun.getThreadRuns(0).getOutput().getStr())
@@ -43,27 +54,54 @@ public class CheckpointedTaskTest {
         assertThat(executionsInCheckpoint2).isEqualTo(1);
     }
 
+    @Test
+    public void shouldDeleteCheckpoints() {
+        WfRunId result = workflowVerifier
+                .prepareRun(workflow, Arg.of("update-executions", false))
+                .waitForStatus(LHStatus.COMPLETED)
+                .start();
+
+        TaskRunId taskRun = client.listTaskRuns(
+                        ListTaskRunsRequest.newBuilder().setWfRunId(result).build())
+                .getResults(0)
+                .getId();
+        CheckpointId checkpointId = CheckpointId.newBuilder()
+                .setTaskRun(taskRun)
+                .setCheckpointNumber(0)
+                .build();
+
+        client.getCheckpoint(checkpointId);
+        client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(result).build());
+
+        // Checkopint should be gone
+        assertThrows(StatusRuntimeException.class, () -> {
+            client.getCheckpoint(checkpointId);
+        });
+    }
+
     @LHWorkflow("checkpointed-task-test")
     public Workflow buildWorkflow() {
         return new WorkflowImpl("checkpointed-task-test", thread -> {
-            thread.complete(thread.execute("task-with-checkpoint").withRetries(1));
+            WfRunVariable updateExecutions = thread.declareBool("update-executions");
+            thread.complete(
+                    thread.execute("task-with-checkpoint", updateExecutions).withRetries(1));
         });
     }
 
     @LHTaskMethod("task-with-checkpoint")
-    public String obiWan(WorkerContext context) {
+    public String obiWan(boolean updateExecutions, WorkerContext context) {
         int attemptNumber = context.getAttemptNumber();
 
-        executionsAtLocation0++;
+        if (updateExecutions) executionsAtLocation0++;
 
         String result = context.executeAndCheckpoint(
                 () -> {
-                    executionsInCheckpoint1++;
+                    if (updateExecutions) executionsInCheckpoint1++;
                     return "hello from first checkpoint";
                 },
                 String.class);
 
-        executionsAtLocation2++;
+        if (updateExecutions) executionsAtLocation2++;
 
         if (attemptNumber == 0) {
             throw new RuntimeException("Throwing a failure in the second checkpoint to show how the checkpoint works");
@@ -71,7 +109,7 @@ public class CheckpointedTaskTest {
 
         result += context.executeAndCheckpoint(
                 () -> {
-                    executionsInCheckpoint2++;
+                    if (updateExecutions) executionsInCheckpoint2++;
                     return " and the second checkpoint";
                 },
                 String.class);
