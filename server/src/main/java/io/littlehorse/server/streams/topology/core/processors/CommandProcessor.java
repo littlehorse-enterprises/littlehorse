@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -77,11 +78,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     @Override
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
+        log.info("Starting the init() process on partition {}", ctx.taskId().partition());
         this.ctx = ctx;
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
+        log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
     @Override
@@ -128,7 +131,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         partitionIsClaimed = true;
         server.drainPartitionTaskQueue(ctx.taskId());
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
-        rehydrateTenant(new TenantModel(LHConstants.DEFAULT_TENANT));
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
                 GetableClassEnum.TENANT.getNumber() + "/",
                 GetableClassEnum.TENANT.getNumber() + "/~",
@@ -143,7 +145,17 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void rehydrateTenant(TenantModel tenant) {
         TenantScopedStore coreDefaultStore =
                 TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
-        try (LHKeyValueIterator<ScheduledTaskModel> iter = coreDefaultStore.prefixScan("", ScheduledTaskModel.class)) {
+
+        TaskQueueHintModel hint =
+                coreDefaultStore.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
+
+        if (hint == null) {
+            log.warn("Could not find task queue hint, may need to iterate over many tombstones");
+        }
+        String startKey = hint == null ? "" : hint.getKeyToResumeFrom();
+        String endKey = "~";
+        try (LHKeyValueIterator<ScheduledTaskModel> iter =
+                coreDefaultStore.range(startKey, endKey, ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();

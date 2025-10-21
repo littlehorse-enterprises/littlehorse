@@ -55,6 +55,10 @@ public enum StoreableType
    * <code>CORRELATION_MARKER = 10;</code>
    */
   CORRELATION_MARKER(10),
+  /**
+   * <code>TASK_QUEUE_HINT = 11;</code>
+   */
+  TASK_QUEUE_HINT(11),
   UNRECOGNIZED(-1),
   ;
 
@@ -111,6 +115,10 @@ public enum StoreableType
    * <code>CORRELATION_MARKER = 10;</code>
    */
   public static final int CORRELATION_MARKER_VALUE = 10;
+  /**
+   * <code>TASK_QUEUE_HINT = 11;</code>
+   */
+  public static final int TASK_QUEUE_HINT_VALUE = 11;
 
 
   public final int getNumber() {
@@ -148,6 +156,7 @@ public enum StoreableType
       case 8: return INITIALIZATION_LOG;
       case 9: return WFRUN_STORED_INVENTORY;
       case 10: return CORRELATION_MARKER;
+      case 11: return TASK_QUEUE_HINT;
       default: return null;
     }
   }

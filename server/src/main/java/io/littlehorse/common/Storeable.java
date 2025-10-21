@@ -56,6 +56,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.WFRUN_STORED_INVENTORY;
             case "EventCorrelationMarkerModel":
                 return StoreableType.CORRELATION_MARKER;
+            case "TaskQueueHintModel":
+                return StoreableType.TASK_QUEUE_HINT;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }

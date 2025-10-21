@@ -3,12 +3,14 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,8 @@ public class LHTaskManager {
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final TaskQueueManager taskQueueManager;
     private final TenantScopedStore coreStore;
+
+    private Date latestClearedTask;
 
     public LHTaskManager(
             String timerTopicName,
@@ -68,11 +72,21 @@ public class LHTaskManager {
         timersToSchedule.add(timer);
     }
 
-    public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId) {
-        ScheduledTaskModel scheduledTask = this.coreStore.get(taskRunId.toString(), ScheduledTaskModel.class);
+    public ScheduledTaskModel markTaskAsScheduled(TaskRunModel taskRun) {
+        boolean isLegacy = false;
+        ScheduledTaskModel scheduledTask =
+                this.coreStore.get(ScheduledTaskModel.getScheduledTaskKey(taskRun), ScheduledTaskModel.class);
+
+        if (scheduledTask == null) {
+            isLegacy = true;
+            scheduledTask = coreStore.get(ScheduledTaskModel.getLegacyKey(taskRun), ScheduledTaskModel.class);
+        }
 
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
+            if (!isLegacy && (latestClearedTask == null || latestClearedTask.compareTo(taskRun.getCreatedAt()) < 0)) {
+                latestClearedTask = taskRun.getCreatedAt();
+            }
         }
 
         return scheduledTask;
@@ -96,6 +110,15 @@ public class LHTaskManager {
             } else {
                 this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }
+        }
+
+        if (latestClearedTask != null) {
+            // TODO: Refactor the LHTaskManager so that we can do this every 1,000 TaskRun's rather than
+            // every single TaskRun. In the grand scheme of things, most of these writes will go to the
+            // Write Buffer, but it will still be slightly better for performance to do it less
+            // frequently.
+
+            coreStore.put(new TaskQueueHintModel(latestClearedTask));
         }
     }
 
