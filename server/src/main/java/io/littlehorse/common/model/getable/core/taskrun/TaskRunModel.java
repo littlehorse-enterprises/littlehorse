@@ -380,7 +380,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
         scheduledTask.setVariables(inputVariables);
         scheduledTask.setAttemptNumber(attempts.size() - 1);
-        scheduledTask.setCreatedAt(new Date());
+        scheduledTask.setCreatedAt(attempt.getScheduleTime());
         scheduledTask.setSource(taskRunSource);
         scheduledTask.setTaskDefId(taskDefId);
         scheduledTask.setTaskRunId(id);

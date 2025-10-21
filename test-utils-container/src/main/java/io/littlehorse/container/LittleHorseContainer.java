@@ -41,7 +41,7 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     private static final String LHS_INSTANCE_ID = "LHS_INSTANCE_ID";
     private static final String LHS_CORE_STREAM_THREADS = "LHS_CORE_STREAM_THREADS";
     private static final String LHS_KAFKA_BOOTSTRAP_SERVERS = "LHS_KAFKA_BOOTSTRAP_SERVERS";
-    private static final String LOG_REGEX = ".*New state for (core|timer) topology: RUNNING.*";
+    private static final String LOG_REGEX = ".*State transition from REBALANCING to RUNNING.*";
     private static final long DEFAULT_LH_MEMORY = 1024L * 1024L * 1024L;
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
     private static final DockerImageName DEFAULT_IMAGE_NAME =

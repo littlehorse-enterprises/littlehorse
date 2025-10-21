@@ -167,7 +167,7 @@ public class OneTaskQueue {
                 this.scheduledTask = scheduledTask;
                 numberOfInMemoryTasks.incrementAndGet();
             }
-            this.scheduledTaskStoreKey = scheduledTask.getTaskRunId().toString();
+            this.scheduledTaskStoreKey = scheduledTask.getStoreKey();
         }
 
         private Optional<ScheduledTaskModel> resolveTask(RequestExecutionContext context) {

@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -125,14 +126,16 @@ public class ReadOnlyGetableManager {
         return store.range(start, end, Tag.class);
     }
 
-    /**
-     * Only use this method if you need to retrieve a Storeable
-     * @param storeKey Storeable's storekey
-     * @param cls Storeable's class
-     * @return Null if not found
-     */
-    public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
-        return getScheduledTask(scheduledTaskId.toString());
+    public ScheduledTaskModel getScheduledTask(TaskRunIdModel taskRunId) {
+        TaskRunModel taskRun = get(taskRunId);
+        if (taskRun == null) return null;
+        return getScheduledTask(taskRun);
+    }
+
+    public ScheduledTaskModel getScheduledTask(TaskRunModel taskRun) {
+        ScheduledTaskModel result = getScheduledTask(ScheduledTaskModel.getScheduledTaskKey(taskRun));
+        if (result != null) return result;
+        return getScheduledTask(ScheduledTaskModel.getLegacyKey(taskRun));
     }
 
     public ScheduledTaskModel getScheduledTask(String scheduledTaskId) {
