@@ -105,7 +105,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     @Override
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
-        this.masked = p.getMasked();    
+        this.masked = p.getMasked();
 
         this.definedTypeCase = p.getDefinedTypeCase();
 
