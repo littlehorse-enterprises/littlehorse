@@ -20,6 +20,7 @@ import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
@@ -110,13 +111,14 @@ public class CommandSender {
 
     public void doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         CommandModel taskClaim = new CommandModel(new TaskClaimEvent(scheduledTask, client));
-        BiFunction<Message, Throwable, TaskClaimEvent> completeTaskClaim = (taskClaimResponse, exception) -> {
+        taskClaim.setCommandId(LHUtil.generateGuid());
+        BiFunction<Message, Throwable, PollTaskResponse> completeTaskClaim = (taskClaimResponse, exception) -> {
             if (exception != null) {
                 client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
-            } else {
-                client.sendResponse(scheduledTask);
             }
-            return (TaskClaimEvent) taskClaimResponse;
+            PollTaskResponse result = (PollTaskResponse) taskClaimResponse;
+            client.getResponseObserver().onNext(result);
+            return result;
         };
         doSend(
                         taskClaimProducer,
