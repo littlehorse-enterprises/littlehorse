@@ -1420,7 +1420,7 @@ export const TypeDefinition = {
         writer.uint32(8).int32(variableTypeToNumber(message.definedType.value));
         break;
       case "structDefId":
-        StructDefId.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
+        StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
         break;
     }
     if (message.masked !== false) {
@@ -1443,8 +1443,8 @@ export const TypeDefinition = {
 
           message.definedType = { $case: "primitiveType", value: variableTypeFromJSON(reader.int32()) };
           continue;
-        case 6:
-          if (tag !== 50) {
+        case 5:
+          if (tag !== 42) {
             break;
           }
 

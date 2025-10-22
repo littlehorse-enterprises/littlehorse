@@ -194,7 +194,7 @@ message TypeDefinition {
   oneof defined_type {
     VariableType primitive_type = 1;
 
-    StructDefId struct_def_id = 6;
+    StructDefId struct_def_id = 5;
   }
 
   // For compatibility purposes.

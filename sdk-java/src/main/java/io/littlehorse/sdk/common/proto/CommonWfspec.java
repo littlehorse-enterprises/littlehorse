@@ -176,7 +176,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "t_valueB\017\n\r_masked_valueB\013\n\t_type_def\"\244\001" +
       "\n\016TypeDefinition\0223\n\016primitive_type\030\001 \001(\016" +
       "2\031.littlehorse.VariableTypeH\000\0221\n\rstruct_" +
-      "def_id\030\006 \001(\0132\030.littlehorse.StructDefIdH\000" +
+      "def_id\030\005 \001(\0132\030.littlehorse.StructDefIdH\000" +
       "\022\016\n\006masked\030\004 \001(\010B\016\n\014defined_typeJ\004\010\002\020\003J\004" +
       "\010\003\020\004\"S\n\nReturnType\0225\n\013return_type\030\001 \001(\0132" +
       "\033.littlehorse.TypeDefinitionH\000\210\001\001B\016\n\014_re" +

@@ -27,17 +27,17 @@ public interface TypeDefinitionOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
 
   /**
-   * <code>.littlehorse.StructDefId struct_def_id = 6;</code>
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    * @return Whether the structDefId field is set.
    */
   boolean hasStructDefId();
   /**
-   * <code>.littlehorse.StructDefId struct_def_id = 6;</code>
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    * @return The structDefId.
    */
   io.littlehorse.sdk.common.proto.StructDefId getStructDefId();
   /**
-   * <code>.littlehorse.StructDefId struct_def_id = 6;</code>
+   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    */
   io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();
 
