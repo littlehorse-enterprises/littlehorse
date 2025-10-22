@@ -376,21 +376,12 @@ export interface VariableDef {
  * Task return types, External Event types, ThreadSpec variables, etc.
  */
 export interface TypeDefinition {
-  /**
-   * The old primitive type field used by 0.14.1 and older clients
-   *
-   * Must be preserved due to wire incompatiblity issues with moving
-   * a VariableType enum field into a oneof
-   *
-   * @deprecated
-   */
-  oldPrimitiveType: VariableType;
-  /** Set to true if values of this type contain sensitive information and must be masked. */
-  masked: boolean;
   definedType?:
     | { $case: "primitiveType"; value: VariableType }
     | { $case: "structDefId"; value: StructDefId }
     | undefined;
+  /** Set to true if values of this type contain sensitive information and must be masked. */
+  masked: boolean;
 }
 
 /**
@@ -1419,24 +1410,21 @@ export const VariableDef = {
 };
 
 function createBaseTypeDefinition(): TypeDefinition {
-  return { oldPrimitiveType: VariableType.JSON_OBJ, masked: false, definedType: undefined };
+  return { definedType: undefined, masked: false };
 }
 
 export const TypeDefinition = {
   encode(message: TypeDefinition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.oldPrimitiveType !== VariableType.JSON_OBJ) {
-      writer.uint32(8).int32(variableTypeToNumber(message.oldPrimitiveType));
-    }
-    if (message.masked !== false) {
-      writer.uint32(32).bool(message.masked);
-    }
     switch (message.definedType?.$case) {
       case "primitiveType":
-        writer.uint32(40).int32(variableTypeToNumber(message.definedType.value));
+        writer.uint32(8).int32(variableTypeToNumber(message.definedType.value));
         break;
       case "structDefId":
         StructDefId.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
         break;
+    }
+    if (message.masked !== false) {
+      writer.uint32(32).bool(message.masked);
     }
     return writer;
   },
@@ -1453,20 +1441,6 @@ export const TypeDefinition = {
             break;
           }
 
-          message.oldPrimitiveType = variableTypeFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.masked = reader.bool();
-          continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
           message.definedType = { $case: "primitiveType", value: variableTypeFromJSON(reader.int32()) };
           continue;
         case 6:
@@ -1475,6 +1449,13 @@ export const TypeDefinition = {
           }
 
           message.definedType = { $case: "structDefId", value: StructDefId.decode(reader, reader.uint32()) };
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.masked = reader.bool();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1487,31 +1468,25 @@ export const TypeDefinition = {
 
   fromJSON(object: any): TypeDefinition {
     return {
-      oldPrimitiveType: isSet(object.oldPrimitiveType)
-        ? variableTypeFromJSON(object.oldPrimitiveType)
-        : VariableType.JSON_OBJ,
-      masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
       definedType: isSet(object.primitiveType)
         ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
         : isSet(object.structDefId)
         ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
         : undefined,
+      masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
     };
   },
 
   toJSON(message: TypeDefinition): unknown {
     const obj: any = {};
-    if (message.oldPrimitiveType !== VariableType.JSON_OBJ) {
-      obj.oldPrimitiveType = variableTypeToJSON(message.oldPrimitiveType);
-    }
-    if (message.masked !== false) {
-      obj.masked = message.masked;
-    }
     if (message.definedType?.$case === "primitiveType") {
       obj.primitiveType = variableTypeToJSON(message.definedType.value);
     }
     if (message.definedType?.$case === "structDefId") {
       obj.structDefId = StructDefId.toJSON(message.definedType.value);
+    }
+    if (message.masked !== false) {
+      obj.masked = message.masked;
     }
     return obj;
   },
@@ -1521,8 +1496,6 @@ export const TypeDefinition = {
   },
   fromPartial(object: DeepPartial<TypeDefinition>): TypeDefinition {
     const message = createBaseTypeDefinition();
-    message.oldPrimitiveType = object.oldPrimitiveType ?? VariableType.JSON_OBJ;
-    message.masked = object.masked ?? false;
     if (
       object.definedType?.$case === "primitiveType" &&
       object.definedType?.value !== undefined &&
@@ -1537,6 +1510,7 @@ export const TypeDefinition = {
     ) {
       message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
     }
+    message.masked = object.masked ?? false;
     return message;
   },
 };

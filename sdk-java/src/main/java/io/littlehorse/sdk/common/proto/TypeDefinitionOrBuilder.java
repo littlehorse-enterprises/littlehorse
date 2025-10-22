@@ -11,56 +11,17 @@ public interface TypeDefinitionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The old primitive type field used by 0.14.1 and older clients
-   *
-   * Must be preserved due to wire incompatiblity issues with moving
-   * a VariableType enum field into a oneof
-   * </pre>
-   *
-   * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-   * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-   *     See common_wfspec.proto;l=193
-   * @return The enum numeric value on the wire for oldPrimitiveType.
-   */
-  @java.lang.Deprecated int getOldPrimitiveTypeValue();
-  /**
-   * <pre>
-   * The old primitive type field used by 0.14.1 and older clients
-   *
-   * Must be preserved due to wire incompatiblity issues with moving
-   * a VariableType enum field into a oneof
-   * </pre>
-   *
-   * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-   * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-   *     See common_wfspec.proto;l=193
-   * @return The oldPrimitiveType.
-   */
-  @java.lang.Deprecated io.littlehorse.sdk.common.proto.VariableType getOldPrimitiveType();
-
-  /**
-   * <pre>
-   * Set to true if values of this type contain sensitive information and must be masked.
-   * </pre>
-   *
-   * <code>bool masked = 4;</code>
-   * @return The masked.
-   */
-  boolean getMasked();
-
-  /**
-   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return Whether the primitiveType field is set.
    */
   boolean hasPrimitiveType();
   /**
-   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The enum numeric value on the wire for primitiveType.
    */
   int getPrimitiveTypeValue();
   /**
-   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The primitiveType.
    */
   io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
@@ -79,6 +40,16 @@ public interface TypeDefinitionOrBuilder extends
    * <code>.littlehorse.StructDefId struct_def_id = 6;</code>
    */
   io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();
+
+  /**
+   * <pre>
+   * Set to true if values of this type contain sensitive information and must be masked.
+   * </pre>
+   *
+   * <code>bool masked = 4;</code>
+   * @return The masked.
+   */
+  boolean getMasked();
 
   io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase getDefinedTypeCase();
 }

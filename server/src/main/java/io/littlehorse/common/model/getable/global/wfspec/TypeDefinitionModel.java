@@ -118,7 +118,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case DEFINEDTYPE_NOT_SET:
                 this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
-                this.primitiveType = p.getOldPrimitiveType();
+                this.primitiveType = VariableType.JSON_OBJ;
                 break;
         }
     }

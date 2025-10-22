@@ -33,7 +33,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TypeDefinition() {
-    oldPrimitiveType_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -55,7 +54,7 @@ private static final long serialVersionUID = 0L;
   public enum DefinedTypeCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    PRIMITIVE_TYPE(5),
+    PRIMITIVE_TYPE(1),
     STRUCT_DEF_ID(6),
     DEFINEDTYPE_NOT_SET(0);
     private final int value;
@@ -74,7 +73,7 @@ private static final long serialVersionUID = 0L;
 
     public static DefinedTypeCase forNumber(int value) {
       switch (value) {
-        case 5: return PRIMITIVE_TYPE;
+        case 1: return PRIMITIVE_TYPE;
         case 6: return STRUCT_DEF_ID;
         case 0: return DEFINEDTYPE_NOT_SET;
         default: return null;
@@ -91,81 +90,30 @@ private static final long serialVersionUID = 0L;
         definedTypeCase_);
   }
 
-  public static final int OLD_PRIMITIVE_TYPE_FIELD_NUMBER = 1;
-  private int oldPrimitiveType_ = 0;
+  public static final int PRIMITIVE_TYPE_FIELD_NUMBER = 1;
   /**
-   * <pre>
-   * The old primitive type field used by 0.14.1 and older clients
-   *
-   * Must be preserved due to wire incompatiblity issues with moving
-   * a VariableType enum field into a oneof
-   * </pre>
-   *
-   * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-   * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-   *     See common_wfspec.proto;l=193
-   * @return The enum numeric value on the wire for oldPrimitiveType.
-   */
-  @java.lang.Override @java.lang.Deprecated public int getOldPrimitiveTypeValue() {
-    return oldPrimitiveType_;
-  }
-  /**
-   * <pre>
-   * The old primitive type field used by 0.14.1 and older clients
-   *
-   * Must be preserved due to wire incompatiblity issues with moving
-   * a VariableType enum field into a oneof
-   * </pre>
-   *
-   * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-   * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-   *     See common_wfspec.proto;l=193
-   * @return The oldPrimitiveType.
-   */
-  @java.lang.Override @java.lang.Deprecated public io.littlehorse.sdk.common.proto.VariableType getOldPrimitiveType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(oldPrimitiveType_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
-  }
-
-  public static final int MASKED_FIELD_NUMBER = 4;
-  private boolean masked_ = false;
-  /**
-   * <pre>
-   * Set to true if values of this type contain sensitive information and must be masked.
-   * </pre>
-   *
-   * <code>bool masked = 4;</code>
-   * @return The masked.
-   */
-  @java.lang.Override
-  public boolean getMasked() {
-    return masked_;
-  }
-
-  public static final int PRIMITIVE_TYPE_FIELD_NUMBER = 5;
-  /**
-   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return Whether the primitiveType field is set.
    */
   public boolean hasPrimitiveType() {
-    return definedTypeCase_ == 5;
+    return definedTypeCase_ == 1;
   }
   /**
-   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The enum numeric value on the wire for primitiveType.
    */
   public int getPrimitiveTypeValue() {
-    if (definedTypeCase_ == 5) {
+    if (definedTypeCase_ == 1) {
       return (java.lang.Integer) definedType_;
     }
     return 0;
   }
   /**
-   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The primitiveType.
    */
   public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
-    if (definedTypeCase_ == 5) {
+    if (definedTypeCase_ == 1) {
       io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(
           (java.lang.Integer) definedType_);
       return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
@@ -204,6 +152,21 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
   }
 
+  public static final int MASKED_FIELD_NUMBER = 4;
+  private boolean masked_ = false;
+  /**
+   * <pre>
+   * Set to true if values of this type contain sensitive information and must be masked.
+   * </pre>
+   *
+   * <code>bool masked = 4;</code>
+   * @return The masked.
+   */
+  @java.lang.Override
+  public boolean getMasked() {
+    return masked_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -218,14 +181,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (oldPrimitiveType_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
-      output.writeEnum(1, oldPrimitiveType_);
+    if (definedTypeCase_ == 1) {
+      output.writeEnum(1, ((java.lang.Integer) definedType_));
     }
     if (masked_ != false) {
       output.writeBool(4, masked_);
-    }
-    if (definedTypeCase_ == 5) {
-      output.writeEnum(5, ((java.lang.Integer) definedType_));
     }
     if (definedTypeCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.StructDefId) definedType_);
@@ -239,17 +199,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (oldPrimitiveType_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (definedTypeCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, oldPrimitiveType_);
+        .computeEnumSize(1, ((java.lang.Integer) definedType_));
     }
     if (masked_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(4, masked_);
-    }
-    if (definedTypeCase_ == 5) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(5, ((java.lang.Integer) definedType_));
     }
     if (definedTypeCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
@@ -270,12 +226,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.TypeDefinition other = (io.littlehorse.sdk.common.proto.TypeDefinition) obj;
 
-    if (oldPrimitiveType_ != other.oldPrimitiveType_) return false;
     if (getMasked()
         != other.getMasked()) return false;
     if (!getDefinedTypeCase().equals(other.getDefinedTypeCase())) return false;
     switch (definedTypeCase_) {
-      case 5:
+      case 1:
         if (getPrimitiveTypeValue()
             != other.getPrimitiveTypeValue()) return false;
         break;
@@ -297,13 +252,11 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + OLD_PRIMITIVE_TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + oldPrimitiveType_;
     hash = (37 * hash) + MASKED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getMasked());
     switch (definedTypeCase_) {
-      case 5:
+      case 1:
         hash = (37 * hash) + PRIMITIVE_TYPE_FIELD_NUMBER;
         hash = (53 * hash) + getPrimitiveTypeValue();
         break;
@@ -450,11 +403,10 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      oldPrimitiveType_ = 0;
-      masked_ = false;
       if (structDefIdBuilder_ != null) {
         structDefIdBuilder_.clear();
       }
+      masked_ = false;
       definedTypeCase_ = 0;
       definedType_ = null;
       return this;
@@ -491,10 +443,7 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.TypeDefinition result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.oldPrimitiveType_ = oldPrimitiveType_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.masked_ = masked_;
       }
     }
@@ -520,9 +469,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.TypeDefinition other) {
       if (other == io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) return this;
-      if (other.oldPrimitiveType_ != 0) {
-        setOldPrimitiveTypeValue(other.getOldPrimitiveTypeValue());
-      }
       if (other.getMasked() != false) {
         setMasked(other.getMasked());
       }
@@ -566,21 +512,16 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              oldPrimitiveType_ = input.readEnum();
-              bitField0_ |= 0x00000001;
+              int rawValue = input.readEnum();
+              definedTypeCase_ = 1;
+              definedType_ = rawValue;
               break;
             } // case 8
             case 32: {
               masked_ = input.readBool();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
             } // case 32
-            case 40: {
-              int rawValue = input.readEnum();
-              definedTypeCase_ = 5;
-              definedType_ = rawValue;
-              break;
-            } // case 40
             case 50: {
               input.readMessage(
                   internalGetStructDefIdFieldBuilder().getBuilder(),
@@ -620,183 +561,43 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    private int oldPrimitiveType_ = 0;
     /**
-     * <pre>
-     * The old primitive type field used by 0.14.1 and older clients
-     *
-     * Must be preserved due to wire incompatiblity issues with moving
-     * a VariableType enum field into a oneof
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-     * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-     *     See common_wfspec.proto;l=193
-     * @return The enum numeric value on the wire for oldPrimitiveType.
-     */
-    @java.lang.Override @java.lang.Deprecated public int getOldPrimitiveTypeValue() {
-      return oldPrimitiveType_;
-    }
-    /**
-     * <pre>
-     * The old primitive type field used by 0.14.1 and older clients
-     *
-     * Must be preserved due to wire incompatiblity issues with moving
-     * a VariableType enum field into a oneof
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-     * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-     *     See common_wfspec.proto;l=193
-     * @param value The enum numeric value on the wire for oldPrimitiveType to set.
-     * @return This builder for chaining.
-     */
-    @java.lang.Deprecated public Builder setOldPrimitiveTypeValue(int value) {
-      oldPrimitiveType_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The old primitive type field used by 0.14.1 and older clients
-     *
-     * Must be preserved due to wire incompatiblity issues with moving
-     * a VariableType enum field into a oneof
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-     * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-     *     See common_wfspec.proto;l=193
-     * @return The oldPrimitiveType.
-     */
-    @java.lang.Override
-    @java.lang.Deprecated public io.littlehorse.sdk.common.proto.VariableType getOldPrimitiveType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(oldPrimitiveType_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * The old primitive type field used by 0.14.1 and older clients
-     *
-     * Must be preserved due to wire incompatiblity issues with moving
-     * a VariableType enum field into a oneof
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-     * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-     *     See common_wfspec.proto;l=193
-     * @param value The oldPrimitiveType to set.
-     * @return This builder for chaining.
-     */
-    @java.lang.Deprecated public Builder setOldPrimitiveType(io.littlehorse.sdk.common.proto.VariableType value) {
-      if (value == null) { throw new NullPointerException(); }
-      bitField0_ |= 0x00000001;
-      oldPrimitiveType_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The old primitive type field used by 0.14.1 and older clients
-     *
-     * Must be preserved due to wire incompatiblity issues with moving
-     * a VariableType enum field into a oneof
-     * </pre>
-     *
-     * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
-     * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
-     *     See common_wfspec.proto;l=193
-     * @return This builder for chaining.
-     */
-    @java.lang.Deprecated public Builder clearOldPrimitiveType() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      oldPrimitiveType_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private boolean masked_ ;
-    /**
-     * <pre>
-     * Set to true if values of this type contain sensitive information and must be masked.
-     * </pre>
-     *
-     * <code>bool masked = 4;</code>
-     * @return The masked.
-     */
-    @java.lang.Override
-    public boolean getMasked() {
-      return masked_;
-    }
-    /**
-     * <pre>
-     * Set to true if values of this type contain sensitive information and must be masked.
-     * </pre>
-     *
-     * <code>bool masked = 4;</code>
-     * @param value The masked to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMasked(boolean value) {
-
-      masked_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Set to true if values of this type contain sensitive information and must be masked.
-     * </pre>
-     *
-     * <code>bool masked = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMasked() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      masked_ = false;
-      onChanged();
-      return this;
-    }
-
-    /**
-     * <code>.littlehorse.VariableType primitive_type = 5;</code>
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return Whether the primitiveType field is set.
      */
     @java.lang.Override
     public boolean hasPrimitiveType() {
-      return definedTypeCase_ == 5;
+      return definedTypeCase_ == 1;
     }
     /**
-     * <code>.littlehorse.VariableType primitive_type = 5;</code>
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return The enum numeric value on the wire for primitiveType.
      */
     @java.lang.Override
     public int getPrimitiveTypeValue() {
-      if (definedTypeCase_ == 5) {
+      if (definedTypeCase_ == 1) {
         return ((java.lang.Integer) definedType_).intValue();
       }
       return 0;
     }
     /**
-     * <code>.littlehorse.VariableType primitive_type = 5;</code>
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @param value The enum numeric value on the wire for primitiveType to set.
      * @return This builder for chaining.
      */
     public Builder setPrimitiveTypeValue(int value) {
-      definedTypeCase_ = 5;
+      definedTypeCase_ = 1;
       definedType_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableType primitive_type = 5;</code>
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return The primitiveType.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
-      if (definedTypeCase_ == 5) {
+      if (definedTypeCase_ == 1) {
         io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(
             (java.lang.Integer) definedType_);
         return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
@@ -804,23 +605,23 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ;
     }
     /**
-     * <code>.littlehorse.VariableType primitive_type = 5;</code>
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @param value The primitiveType to set.
      * @return This builder for chaining.
      */
     public Builder setPrimitiveType(io.littlehorse.sdk.common.proto.VariableType value) {
       if (value == null) { throw new NullPointerException(); }
-      definedTypeCase_ = 5;
+      definedTypeCase_ = 1;
       definedType_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableType primitive_type = 5;</code>
+     * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearPrimitiveType() {
-      if (definedTypeCase_ == 5) {
+      if (definedTypeCase_ == 1) {
         definedTypeCase_ = 0;
         definedType_ = null;
         onChanged();
@@ -968,6 +769,50 @@ private static final long serialVersionUID = 0L;
       definedTypeCase_ = 6;
       onChanged();
       return structDefIdBuilder_;
+    }
+
+    private boolean masked_ ;
+    /**
+     * <pre>
+     * Set to true if values of this type contain sensitive information and must be masked.
+     * </pre>
+     *
+     * <code>bool masked = 4;</code>
+     * @return The masked.
+     */
+    @java.lang.Override
+    public boolean getMasked() {
+      return masked_;
+    }
+    /**
+     * <pre>
+     * Set to true if values of this type contain sensitive information and must be masked.
+     * </pre>
+     *
+     * <code>bool masked = 4;</code>
+     * @param value The masked to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMasked(boolean value) {
+
+      masked_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Set to true if values of this type contain sensitive information and must be masked.
+     * </pre>
+     *
+     * <code>bool masked = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMasked() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      masked_ = false;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.TypeDefinition)
