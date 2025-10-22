@@ -129,14 +129,16 @@ class VariableDef(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
-    __slots__ = ("primitive_type", "struct_def_id", "masked")
+    __slots__ = ("old_primitive_type", "masked", "primitive_type", "struct_def_id")
+    OLD_PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    MASKED_FIELD_NUMBER: _ClassVar[int]
     PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    MASKED_FIELD_NUMBER: _ClassVar[int]
+    old_primitive_type: _common_enums_pb2.VariableType
+    masked: bool
     primitive_type: _common_enums_pb2.VariableType
     struct_def_id: _object_id_pb2.StructDefId
-    masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
+    def __init__(self, old_primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., masked: _Optional[bool] = ..., primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ...) -> None: ...
 
 class ReturnType(_message.Message):
     __slots__ = ("return_type",)

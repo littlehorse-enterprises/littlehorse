@@ -187,18 +187,24 @@ message VariableDef {
 // Defines the type of a value in LittleHorse. Can be used for Task Parameters,
 // Task return types, External Event types, ThreadSpec variables, etc.
 message TypeDefinition {
-  // The type of this definition. One of the following will be set.
-  oneof defined_type {
-    VariableType primitive_type = 1;
-
-    StructDefId struct_def_id = 5;
-  }
+  // The old primitive type field used by 0.14.1 and older clients
+  //
+  // Must be preserved due to wire incompatiblity issues with moving
+  // a VariableType enum field into a oneof
+  VariableType old_primitive_type = 1 [deprecated = true];
 
   // For compatibility purposes.
   reserved 2, 3;
 
   // Set to true if values of this type contain sensitive information and must be masked.
   bool masked = 4;
+
+  // The type of this definition. One of the following will be set.
+  oneof defined_type {
+    VariableType primitive_type = 5;
+
+    StructDefId struct_def_id = 6;
+  }
 }
 
 // Utility used among metadata objects to define their output type. For example, used in

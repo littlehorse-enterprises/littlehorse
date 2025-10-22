@@ -173,60 +173,61 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "se.VariableValueH\001\210\001\001\022\031\n\014masked_value\030\004 " +
       "\001(\010H\002\210\001\001\0222\n\010type_def\030\005 \001(\0132\033.littlehorse" +
       ".TypeDefinitionH\003\210\001\001B\007\n\005_typeB\020\n\016_defaul" +
-      "t_valueB\017\n\r_masked_valueB\013\n\t_type_def\"\244\001" +
-      "\n\016TypeDefinition\0223\n\016primitive_type\030\001 \001(\016" +
-      "2\031.littlehorse.VariableTypeH\000\0221\n\rstruct_" +
-      "def_id\030\005 \001(\0132\030.littlehorse.StructDefIdH\000" +
-      "\022\016\n\006masked\030\004 \001(\010B\016\n\014defined_typeJ\004\010\002\020\003J\004" +
-      "\010\003\020\004\"S\n\nReturnType\0225\n\013return_type\030\001 \001(\0132" +
-      "\033.littlehorse.TypeDefinitionH\000\210\001\001B\016\n\014_re" +
-      "turn_type\"\357\004\n\017UTActionTrigger\0224\n\004task\030\001 " +
-      "\001(\0132$.littlehorse.UTActionTrigger.UTATas" +
-      "kH\000\0228\n\006cancel\030\002 \001(\0132&.littlehorse.UTActi" +
-      "onTrigger.UTACancelH\000\022<\n\010reassign\030\003 \001(\0132" +
-      "(.littlehorse.UTActionTrigger.UTAReassig" +
-      "nH\000\0226\n\rdelay_seconds\030\005 \001(\0132\037.littlehorse" +
-      ".VariableAssignment\0221\n\004hook\030\006 \001(\0162#.litt" +
-      "lehorse.UTActionTrigger.UTHook\032\013\n\tUTACan" +
-      "cel\032`\n\007UTATask\022#\n\004task\030\001 \001(\0132\025.littlehor" +
-      "se.TaskNode\0220\n\tmutations\030\002 \003(\0132\035.littleh" +
-      "orse.VariableMutation\032\231\001\n\013UTAReassign\0225\n" +
-      "\007user_id\030\001 \001(\0132\037.littlehorse.VariableAss" +
-      "ignmentH\000\210\001\001\0228\n\nuser_group\030\002 \001(\0132\037.littl" +
-      "ehorse.VariableAssignmentH\001\210\001\001B\n\n\010_user_" +
-      "idB\r\n\013_user_group\".\n\006UTHook\022\016\n\nON_ARRIVA" +
-      "L\020\000\022\024\n\020ON_TASK_ASSIGNED\020\001B\010\n\006action\"c\n\035E" +
-      "xponentialBackoffRetryPolicy\022\030\n\020base_int" +
-      "erval_ms\030\001 \001(\005\022\024\n\014max_delay_ms\030\002 \001(\003\022\022\n\n" +
-      "multiplier\030\003 \001(\002\"\311\002\n\010TaskNode\022-\n\013task_de" +
-      "f_id\030\001 \001(\0132\026.littlehorse.TaskDefIdH\000\0227\n\014" +
-      "dynamic_task\030\006 \001(\0132\037.littlehorse.Variabl" +
-      "eAssignmentH\000\022\027\n\017timeout_seconds\030\002 \001(\005\022\017" +
-      "\n\007retries\030\003 \001(\005\022L\n\023exponential_backoff\030\005" +
-      " \001(\0132*.littlehorse.ExponentialBackoffRet" +
-      "ryPolicyH\001\210\001\001\0222\n\tvariables\030\004 \003(\0132\037.littl" +
-      "ehorse.VariableAssignmentB\021\n\017task_to_exe" +
-      "cuteB\026\n\024_exponential_backoff\"\227\001\n\017InlineS" +
-      "tructDef\0228\n\006fields\030\001 \003(\0132(.littlehorse.I" +
-      "nlineStructDef.FieldsEntry\032J\n\013FieldsEntr" +
-      "y\022\013\n\003key\030\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.littleho" +
-      "rse.StructFieldDef:\0028\001\"\213\001\n\016StructFieldDe" +
-      "f\022/\n\nfield_type\030\001 \001(\0132\033.littlehorse.Type" +
-      "Definition\0226\n\rdefault_value\030\002 \001(\0132\032.litt" +
-      "lehorse.VariableValueH\000\210\001\001B\020\n\016_default_v" +
-      "alue\"q\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.littlehor" +
-      "se.LHPath.Selector\032;\n\010Selector\022\r\n\003key\030\001 " +
-      "\001(\tH\000\022\017\n\005index\030\002 \001(\005H\000B\017\n\rselector_type*" +
-      "\230\001\n\024VariableMutationType\022\n\n\006ASSIGN\020\000\022\007\n\003" +
-      "ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTI" +
-      "PLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006" +
-      "\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010*\204\001\n\nC" +
-      "omparator\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN" +
-      "\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020" +
-      "\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n" +
-      "\006NOT_IN\020\007BM\n\037io.littlehorse.sdk.common.p" +
-      "rotoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Comm" +
-      "on.Protob\006proto3"
+      "t_valueB\017\n\r_masked_valueB\013\n\t_type_def\"\337\001" +
+      "\n\016TypeDefinition\0229\n\022old_primitive_type\030\001" +
+      " \001(\0162\031.littlehorse.VariableTypeB\002\030\001\022\016\n\006m" +
+      "asked\030\004 \001(\010\0223\n\016primitive_type\030\005 \001(\0162\031.li" +
+      "ttlehorse.VariableTypeH\000\0221\n\rstruct_def_i" +
+      "d\030\006 \001(\0132\030.littlehorse.StructDefIdH\000B\016\n\014d" +
+      "efined_typeJ\004\010\002\020\003J\004\010\003\020\004\"S\n\nReturnType\0225\n" +
+      "\013return_type\030\001 \001(\0132\033.littlehorse.TypeDef" +
+      "initionH\000\210\001\001B\016\n\014_return_type\"\357\004\n\017UTActio" +
+      "nTrigger\0224\n\004task\030\001 \001(\0132$.littlehorse.UTA" +
+      "ctionTrigger.UTATaskH\000\0228\n\006cancel\030\002 \001(\0132&" +
+      ".littlehorse.UTActionTrigger.UTACancelH\000" +
+      "\022<\n\010reassign\030\003 \001(\0132(.littlehorse.UTActio" +
+      "nTrigger.UTAReassignH\000\0226\n\rdelay_seconds\030" +
+      "\005 \001(\0132\037.littlehorse.VariableAssignment\0221" +
+      "\n\004hook\030\006 \001(\0162#.littlehorse.UTActionTrigg" +
+      "er.UTHook\032\013\n\tUTACancel\032`\n\007UTATask\022#\n\004tas" +
+      "k\030\001 \001(\0132\025.littlehorse.TaskNode\0220\n\tmutati" +
+      "ons\030\002 \003(\0132\035.littlehorse.VariableMutation" +
+      "\032\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(\0132\037.litt" +
+      "lehorse.VariableAssignmentH\000\210\001\001\0228\n\nuser_" +
+      "group\030\002 \001(\0132\037.littlehorse.VariableAssign" +
+      "mentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group\".\n\006" +
+      "UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TASK_ASSIGN" +
+      "ED\020\001B\010\n\006action\"c\n\035ExponentialBackoffRetr" +
+      "yPolicy\022\030\n\020base_interval_ms\030\001 \001(\005\022\024\n\014max" +
+      "_delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 \001(\002\"\311\002\n\010" +
+      "TaskNode\022-\n\013task_def_id\030\001 \001(\0132\026.littleho" +
+      "rse.TaskDefIdH\000\0227\n\014dynamic_task\030\006 \001(\0132\037." +
+      "littlehorse.VariableAssignmentH\000\022\027\n\017time" +
+      "out_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L\n\023ex" +
+      "ponential_backoff\030\005 \001(\0132*.littlehorse.Ex" +
+      "ponentialBackoffRetryPolicyH\001\210\001\001\0222\n\tvari" +
+      "ables\030\004 \003(\0132\037.littlehorse.VariableAssign" +
+      "mentB\021\n\017task_to_executeB\026\n\024_exponential_" +
+      "backoff\"\227\001\n\017InlineStructDef\0228\n\006fields\030\001 " +
+      "\003(\0132(.littlehorse.InlineStructDef.Fields" +
+      "Entry\032J\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\022*\n\005val" +
+      "ue\030\002 \001(\0132\033.littlehorse.StructFieldDef:\0028" +
+      "\001\"\213\001\n\016StructFieldDef\022/\n\nfield_type\030\001 \001(\013" +
+      "2\033.littlehorse.TypeDefinition\0226\n\rdefault" +
+      "_value\030\002 \001(\0132\032.littlehorse.VariableValue" +
+      "H\000\210\001\001B\020\n\016_default_value\"q\n\006LHPath\022*\n\004pat" +
+      "h\030\001 \003(\0132\034.littlehorse.LHPath.Selector\032;\n" +
+      "\010Selector\022\r\n\003key\030\001 \001(\tH\000\022\017\n\005index\030\002 \001(\005H" +
+      "\000B\017\n\rselector_type*\230\001\n\024VariableMutationT" +
+      "ype\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010" +
+      "SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021" +
+      "REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n" +
+      "\nREMOVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_THA" +
+      "N\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022" +
+      "\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_" +
+      "EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.littl" +
+      "ehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034L" +
+      "ittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -282,7 +283,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_TypeDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TypeDefinition_descriptor,
-        new java.lang.String[] { "PrimitiveType", "StructDefId", "Masked", "DefinedType", });
+        new java.lang.String[] { "OldPrimitiveType", "Masked", "PrimitiveType", "StructDefId", "DefinedType", });
     internal_static_littlehorse_ReturnType_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_ReturnType_fieldAccessorTable = new

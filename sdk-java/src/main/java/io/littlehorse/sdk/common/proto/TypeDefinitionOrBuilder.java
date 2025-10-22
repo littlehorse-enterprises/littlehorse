@@ -11,35 +11,33 @@ public interface TypeDefinitionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.VariableType primitive_type = 1;</code>
-   * @return Whether the primitiveType field is set.
+   * <pre>
+   * The old primitive type field used by 0.14.1 and older clients
+   *
+   * Must be preserved due to wire incompatiblity issues with moving
+   * a VariableType enum field into a oneof
+   * </pre>
+   *
+   * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
+   * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
+   *     See common_wfspec.proto;l=193
+   * @return The enum numeric value on the wire for oldPrimitiveType.
    */
-  boolean hasPrimitiveType();
+  @java.lang.Deprecated int getOldPrimitiveTypeValue();
   /**
-   * <code>.littlehorse.VariableType primitive_type = 1;</code>
-   * @return The enum numeric value on the wire for primitiveType.
+   * <pre>
+   * The old primitive type field used by 0.14.1 and older clients
+   *
+   * Must be preserved due to wire incompatiblity issues with moving
+   * a VariableType enum field into a oneof
+   * </pre>
+   *
+   * <code>.littlehorse.VariableType old_primitive_type = 1 [deprecated = true];</code>
+   * @deprecated littlehorse.TypeDefinition.old_primitive_type is deprecated.
+   *     See common_wfspec.proto;l=193
+   * @return The oldPrimitiveType.
    */
-  int getPrimitiveTypeValue();
-  /**
-   * <code>.littlehorse.VariableType primitive_type = 1;</code>
-   * @return The primitiveType.
-   */
-  io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
-
-  /**
-   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
-   * @return Whether the structDefId field is set.
-   */
-  boolean hasStructDefId();
-  /**
-   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
-   * @return The structDefId.
-   */
-  io.littlehorse.sdk.common.proto.StructDefId getStructDefId();
-  /**
-   * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.VariableType getOldPrimitiveType();
 
   /**
    * <pre>
@@ -50,6 +48,37 @@ public interface TypeDefinitionOrBuilder extends
    * @return The masked.
    */
   boolean getMasked();
+
+  /**
+   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * @return Whether the primitiveType field is set.
+   */
+  boolean hasPrimitiveType();
+  /**
+   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * @return The enum numeric value on the wire for primitiveType.
+   */
+  int getPrimitiveTypeValue();
+  /**
+   * <code>.littlehorse.VariableType primitive_type = 5;</code>
+   * @return The primitiveType.
+   */
+  io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
+
+  /**
+   * <code>.littlehorse.StructDefId struct_def_id = 6;</code>
+   * @return Whether the structDefId field is set.
+   */
+  boolean hasStructDefId();
+  /**
+   * <code>.littlehorse.StructDefId struct_def_id = 6;</code>
+   * @return The structDefId.
+   */
+  io.littlehorse.sdk.common.proto.StructDefId getStructDefId();
+  /**
+   * <code>.littlehorse.StructDefId struct_def_id = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();
 
   io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase getDefinedTypeCase();
 }
