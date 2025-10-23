@@ -15,6 +15,7 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -149,15 +150,15 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     }
 
     public String dumpStore() {
-        String result = "";
+        ArrayList<String> result = new ArrayList<>();
         ReadOnlyKeyValueStore<String, Bytes> store = coreStreams.store(
                 StoreQueryParameters.fromNameAndType("core-store", QueryableStoreTypes.keyValueStore()));
         var iterator = store.all();
         while (iterator.hasNext()) {
-            result += iterator.next().key;
-            result += "\n";
+            result.add(iterator.next().key);
         }
-        return result;
+        result.sort((a, b) -> a.compareTo(b));
+        return String.join("\n", result);
     }
 
     private String getLiveness() {
