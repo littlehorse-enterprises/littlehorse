@@ -106,6 +106,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
+
         this.definedTypeCase = p.getDefinedTypeCase();
 
         switch (definedTypeCase) {
@@ -116,7 +117,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
                 break;
             case DEFINEDTYPE_NOT_SET:
-            default:
+                this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
+                this.primitiveType = VariableType.JSON_OBJ;
                 break;
         }
     }

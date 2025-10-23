@@ -676,6 +676,9 @@ type TypeDefinition struct {
 
 	// The type of this definition. One of the following will be set.
 	//
+	// Note: if no `defined_type` is set, defaults to a `primitive_type` of `JSON_OBJ`
+	// to support old clients from 0.14.1 or lower.
+	//
 	// Types that are assignable to DefinedType:
 	//
 	//	*TypeDefinition_PrimitiveType
