@@ -30,6 +30,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -240,7 +241,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
 
         if (oldVersion.isPresent()) {
-            checkCompatibilityAndSetVersion(oldVersion.get());
+            checkCompatibilityAndSetVersion(oldVersion.get(), ctx.metadataManager());
         }
 
         if (parentWfSpec != null) {
@@ -371,6 +372,10 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
     }
 
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        return getEntrypointThread().getOutputType(manager);
+    }
+
     /**
      * Returns a ThreadVarDef for every PUBLIC_VAR variable in the WfSpec (all threads).
      */
@@ -380,7 +385,8 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 .toList();
     }
 
-    private void checkCompatibilityAndSetVersion(WfSpecModel old) throws InvalidWfSpecException {
+    private void checkCompatibilityAndSetVersion(WfSpecModel old, ReadOnlyMetadataManager manager)
+            throws InvalidWfSpecException {
         // First, for every previously-frozen variable, we need to check that either:
         // - the variable isn't included, or
         // - the variable has the same type.
@@ -409,7 +415,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             }
         }
 
-        if (WfSpecUtil.hasBreakingChanges(this, old)) {
+        if (WfSpecUtil.hasBreakingChanges(this, old, manager)) {
             id.setMajorVersion(old.getId().getMajorVersion() + 1);
             id.setRevision(0);
         } else {

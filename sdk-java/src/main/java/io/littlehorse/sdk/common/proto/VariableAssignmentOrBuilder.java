@@ -12,38 +12,65 @@ public interface VariableAssignmentOrBuilder extends
 
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return Whether the jsonPath field is set.
    */
   boolean hasJsonPath();
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return The jsonPath.
    */
   java.lang.String getJsonPath();
   /**
    * <pre>
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
+   * DEPRECATED: A String path formatted in the `JSONPath` format.
+   * Supported on JSON_OBJ and JSON_ARR.
    * </pre>
    *
-   * <code>optional string json_path = 1;</code>
+   * <code>string json_path = 1;</code>
    * @return The bytes for jsonPath.
    */
   com.google.protobuf.ByteString
       getJsonPathBytes();
+
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   * @return Whether the lhPath field is set.
+   */
+  boolean hasLhPath();
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   * @return The lhPath.
+   */
+  io.littlehorse.sdk.common.proto.LHPath getLhPath();
+  /**
+   * <pre>
+   * A path resolving to a field in your object.
+   * Supported on Struct and JSON_OBJ.
+   * </pre>
+   *
+   * <code>.littlehorse.LHPath lh_path = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhPathOrBuilder();
 
   /**
    * <pre>
@@ -181,6 +208,44 @@ public interface VariableAssignmentOrBuilder extends
    * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder getExpressionOrBuilder();
+
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return Whether the targetType field is set.
+   */
+  boolean hasTargetType();
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   * @return The targetType.
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinition getTargetType();
+  /**
+   * <pre>
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getTargetTypeOrBuilder();
+
+  io.littlehorse.sdk.common.proto.VariableAssignment.PathCase getPathCase();
 
   io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }

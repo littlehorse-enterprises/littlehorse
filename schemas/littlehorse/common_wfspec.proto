@@ -49,10 +49,17 @@ message VariableAssignment {
     VariableAssignment rhs = 3;
   }
 
-  // If you provide a `variable_name` and the specified variable is JSON_OBJ or
-  // JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-  // resolve to the specified field.
-  optional string json_path = 1;
+  // If you provide a `variable_name` and the specified variable is a JSON_OBJ, JSON_ARR, or
+  // StructDef type, then you may provide a `path` for querying data within your object.
+  oneof path {
+    // DEPRECATED: A String path formatted in the `JSONPath` format.
+    // Supported on JSON_OBJ and JSON_ARR.
+    string json_path = 1;
+
+    // A path resolving to a field in your object.
+    // Supported on Struct and JSON_OBJ.
+    LHPath lh_path = 8;
+  }
 
   // The oneof determines where the value is resolved to.
   oneof source {
@@ -67,6 +74,12 @@ message VariableAssignment {
     // Assign the value of an Expression.
     Expression expression = 6;
   }
+
+  // If specified, the resolved value will be cast to this type before being used.
+  // This allows explicit type conversions anywhere VariableAssignment is used.
+  // The cast operation is non-mutating: original values remain unchanged.
+  // Note: Only primitive type conversions are supported.
+  optional TypeDefinition target_type = 7;
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.
@@ -100,8 +113,16 @@ enum VariableMutationType {
 message VariableMutation {
   // Specifies to use the output of a NodeRun as the RHS.
   message NodeOutputSource {
-    // Use this specific field from a JSON output
-    optional string jsonpath = 10;
+    // Use this specific field from a Struct, JSON_OBJ, or JSON_ARR output
+    oneof path {
+      // DEPRECATED: A String path formatted in the `JSONPath` format.
+      // Supported on JSON_OBJ and JSON_ARR.
+      string jsonpath = 10;
+
+      // A path resolving to a field in your object.
+      // Supported on Struct and JSON_OBJ.
+      LHPath lh_path = 11;
+    }
   }
 
   // The name of the variable to mutate
@@ -167,13 +188,13 @@ message VariableDef {
 // Task return types, External Event types, ThreadSpec variables, etc.
 message TypeDefinition {
   // The type of this definition. One of the following will be set.
+  //
+  // Note: if no `defined_type` is set, defaults to a `primitive_type` of `JSON_OBJ`
+  // to support old clients from 0.14.1 or lower.
   oneof defined_type {
     VariableType primitive_type = 1;
 
     StructDefId struct_def_id = 5;
-
-    // Array Def
-    InlineArrayDef inline_array_def = 6;
   }
 
   // For compatibility purposes.
@@ -348,10 +369,6 @@ message InlineStructDef {
   map<string, StructFieldDef> fields = 1;
 }
 
-message InlineArrayDef {
-  TypeDefinition element_type = 1;
-}
-
 // A `SchemaFieldDef` defines a field inside a `StructDef`.
 message StructFieldDef {
   // The type of the field.
@@ -360,4 +377,19 @@ message StructFieldDef {
   // The default value of the field, which should match the Field Type. If not
    // provided, then the field is treated as required.
   optional VariableValue default_value = 2;
+}
+
+// A path of repeated Selectors resolving to a nested field in an object.
+message LHPath {
+  message Selector {
+    oneof selector_type {
+      // The name of the field you want to access from a JSON_OBJ or Struct
+      string key = 1;
+
+      // The index of the item you want to access from a JSON_ARR or Array
+      int32 index = 2;
+    }
+  }
+
+  repeated Selector path = 1;
 }

@@ -8,6 +8,7 @@ import {
 } from 'littlehorse-client/proto'
 import { structFromJSONString, structToJSONString } from './struct'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
+import { lhPathToString } from './lhPath'
 
 export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
   switch (typeDef.definedType?.$case) {
@@ -15,8 +16,6 @@ export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable
       return getVariableCaseFromType(typeDef.definedType.value)
     case 'structDefId':
       return 'struct'
-    case 'inlineArrayDef':
-      return 'jsonArr'
     default:
       throw new Error('Unknown variable type.')
   }
@@ -60,7 +59,7 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
     case 'nodeOutput':
       return variable.source.value.nodeName
     case 'variableName':
-      return getValueFromVariableName(variable.source, variable.jsonPath)
+      return getValueFromVariableName(variable.source, variable.path)
     default:
       return ''
   }
@@ -150,14 +149,12 @@ export const getTypedVariableValue = (
  */
 export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
   if (varDef.typeDef && varDef.typeDef.definedType) {
-    const {$case, value} = varDef.typeDef.definedType
+    const { $case, value } = varDef.typeDef.definedType
     switch ($case) {
       case 'primitiveType':
         return getVariableCaseFromType(value)
       case 'structDefId':
         return 'struct'
-      case 'inlineArrayDef':
-        return 'jsonArr'
       default:
         throw new Error('Unknown variable type.')
     }
@@ -201,10 +198,12 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
 
 const getValueFromVariableName = (
   { value }: Extract<VariableAssignment['source'], { $case: 'variableName' }>,
-  jsonPath?: string
+  path?: Extract<VariableAssignment['path'], {}>
 ): string => {
   if (!value) return ''
-  if (jsonPath) return `{${jsonPath.replace('$', value)}}`
+
+  if (path?.$case == 'jsonPath') return `{${path.value.replace('$', value)}}`
+  if (path?.$case == 'lhPath') return `{${lhPathToString(path.value).replace('$', value)}}`
   return `{${value}}`
 }
 

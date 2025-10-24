@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.getable.core.variable;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -38,14 +37,19 @@ public class StructModel extends LHSerializable<Struct> {
         return out;
     }
 
-    public void validateAgainstStructDefId(ReadOnlyMetadataManager metadataManager) {
+    public void validateAgainstStructDefId(ReadOnlyMetadataManager metadataManager) throws StructValidationException {
         StructDefModel structDef = new WfService(metadataManager).getStructDef(structDefId.getName(), null);
 
         if (structDef == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "StructDef %s does not exist.".formatted(structDefId));
+            throw new StructValidationException("StructDef %s does not exist.".formatted(structDefId));
         }
 
-        structDef.validateAgainst(this, metadataManager);
+        try {
+            structDef.validateAgainst(this, metadataManager);
+        } catch (StructValidationException e) {
+            throw new StructValidationException(String.format(
+                    "Struct incompatible with StructDef %s: %s", structDef.getObjectId(), e.getMessage()));
+        }
     }
 
     @Override

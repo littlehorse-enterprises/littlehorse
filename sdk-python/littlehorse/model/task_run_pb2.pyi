@@ -15,7 +15,7 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class TaskRun(_message.Message):
-    __slots__ = ("id", "task_def_id", "attempts", "input_variables", "source", "scheduled_at", "status", "timeout_seconds", "total_attempts", "exponential_backoff")
+    __slots__ = ("id", "task_def_id", "attempts", "input_variables", "source", "scheduled_at", "status", "timeout_seconds", "total_attempts", "exponential_backoff", "total_checkpoints")
     ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     ATTEMPTS_FIELD_NUMBER: _ClassVar[int]
@@ -26,6 +26,7 @@ class TaskRun(_message.Message):
     TIMEOUT_SECONDS_FIELD_NUMBER: _ClassVar[int]
     TOTAL_ATTEMPTS_FIELD_NUMBER: _ClassVar[int]
     EXPONENTIAL_BACKOFF_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_CHECKPOINTS_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.TaskRunId
     task_def_id: _object_id_pb2.TaskDefId
     attempts: _containers.RepeatedCompositeFieldContainer[TaskAttempt]
@@ -36,7 +37,8 @@ class TaskRun(_message.Message):
     timeout_seconds: int
     total_attempts: int
     exponential_backoff: _common_wfspec_pb2.ExponentialBackoffRetryPolicy
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempts: _Optional[_Iterable[_Union[TaskAttempt, _Mapping]]] = ..., input_variables: _Optional[_Iterable[_Union[VarNameAndVal, _Mapping]]] = ..., source: _Optional[_Union[TaskRunSource, _Mapping]] = ..., scheduled_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., timeout_seconds: _Optional[int] = ..., total_attempts: _Optional[int] = ..., exponential_backoff: _Optional[_Union[_common_wfspec_pb2.ExponentialBackoffRetryPolicy, _Mapping]] = ...) -> None: ...
+    total_checkpoints: int
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempts: _Optional[_Iterable[_Union[TaskAttempt, _Mapping]]] = ..., input_variables: _Optional[_Iterable[_Union[VarNameAndVal, _Mapping]]] = ..., source: _Optional[_Union[TaskRunSource, _Mapping]] = ..., scheduled_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., timeout_seconds: _Optional[int] = ..., total_attempts: _Optional[int] = ..., exponential_backoff: _Optional[_Union[_common_wfspec_pb2.ExponentialBackoffRetryPolicy, _Mapping]] = ..., total_checkpoints: _Optional[int] = ...) -> None: ...
 
 class VarNameAndVal(_message.Message):
     __slots__ = ("var_name", "value", "masked")
@@ -107,3 +109,15 @@ class LHTaskException(_message.Message):
     message: str
     content: _variable_pb2.VariableValue
     def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+
+class Checkpoint(_message.Message):
+    __slots__ = ("id", "value", "logs", "created_at")
+    ID_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    LOGS_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.CheckpointId
+    value: _variable_pb2.VariableValue
+    logs: str
+    created_at: _timestamp_pb2.Timestamp
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.CheckpointId, _Mapping]] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

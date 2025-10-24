@@ -594,5 +594,65 @@ public interface NodeRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForConditionRunOrBuilder getWaitForConditionOrBuilder();
 
+  /**
+   * <pre>
+   * A RUN_CHILD_WF_NODE starts a WfRun as a child and blocks the ThreadRun until
+   * the started WfRun completes or fails.
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNodeRun run_child_wf = 24;</code>
+   * @return Whether the runChildWf field is set.
+   */
+  boolean hasRunChildWf();
+  /**
+   * <pre>
+   * A RUN_CHILD_WF_NODE starts a WfRun as a child and blocks the ThreadRun until
+   * the started WfRun completes or fails.
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNodeRun run_child_wf = 24;</code>
+   * @return The runChildWf.
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNodeRun getRunChildWf();
+  /**
+   * <pre>
+   * A RUN_CHILD_WF_NODE starts a WfRun as a child and blocks the ThreadRun until
+   * the started WfRun completes or fails.
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNodeRun run_child_wf = 24;</code>
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNodeRunOrBuilder getRunChildWfOrBuilder();
+
+  /**
+   * <pre>
+   * A WAIT_FOR_CHILD_WF_NODE waits for a specified child WfRun to complete and
+   * returns its output or throws its EXCEPTION.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForChildWfNodeRun wait_for_child_wf = 25;</code>
+   * @return Whether the waitForChildWf field is set.
+   */
+  boolean hasWaitForChildWf();
+  /**
+   * <pre>
+   * A WAIT_FOR_CHILD_WF_NODE waits for a specified child WfRun to complete and
+   * returns its output or throws its EXCEPTION.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForChildWfNodeRun wait_for_child_wf = 25;</code>
+   * @return The waitForChildWf.
+   */
+  io.littlehorse.sdk.common.proto.WaitForChildWfNodeRun getWaitForChildWf();
+  /**
+   * <pre>
+   * A WAIT_FOR_CHILD_WF_NODE waits for a specified child WfRun to complete and
+   * returns its output or throws its EXCEPTION.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForChildWfNodeRun wait_for_child_wf = 25;</code>
+   */
+  io.littlehorse.sdk.common.proto.WaitForChildWfNodeRunOrBuilder getWaitForChildWfOrBuilder();
+
   io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase getNodeTypeCase();
 }

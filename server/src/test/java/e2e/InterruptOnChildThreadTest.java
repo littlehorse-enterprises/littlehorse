@@ -8,7 +8,9 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -36,6 +38,9 @@ public class InterruptOnChildThreadTest {
 
     @LHWorkflow("interrupt-and-child-thread")
     public Workflow interruptAndChildThreadWf;
+
+    @LHWorkflow("handle-failure-on-interrupt")
+    public Workflow handleFailureOnInterruptThreadWf;
 
     private WorkflowVerifier verifier;
 
@@ -213,6 +218,26 @@ public class InterruptOnChildThreadTest {
                 .start();
     }
 
+    @Test // handle-failure-on-interrupt
+    public void shouldHandleFailureOnInterruptThreads() {
+        verifier.prepareRun(handleFailureOnInterruptThreadWf)
+                .waitForStatus(LHStatus.RUNNING)
+                .thenSendExternalEventWithContent(CHILD_INTERRUPT_TRIGGER, null)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyWfRun(wfRun -> {
+                    Assertions.assertThat(wfRun.getThreadRunsList()).hasSize(4);
+                    ThreadRun entrypointThread = wfRun.getThreadRunsList().get(0);
+                    ThreadRun childThread = wfRun.getThreadRunsList().get(1);
+                    ThreadRun interruptThread = wfRun.getThreadRunsList().get(2);
+                    Assertions.assertThat(entrypointThread.getStatus()).isEqualTo(LHStatus.COMPLETED);
+                    Assertions.assertThat(childThread.getStatus()).isEqualTo(LHStatus.EXCEPTION);
+                    Assertions.assertThat(childThread.getErrorMessage())
+                            .isEqualTo("Interrupt thread with id 2 failed!");
+                    Assertions.assertThat(interruptThread.getStatus()).isEqualTo(LHStatus.EXCEPTION);
+                })
+                .start();
+    }
+
     @LHWorkflow("interrupt-and-child-thread")
     public Workflow getInterruptAndChildThreadWf() {
         return Workflow.newWorkflow("interrupt-and-child-thread", parent -> {
@@ -233,6 +258,26 @@ public class InterruptOnChildThreadTest {
             parent.registerInterruptHandler(PARENT_INTERRUPT_TRIGGER, parentInterrupt -> {
                 parentInterrupt.execute("iact-dummy");
             });
+        });
+    }
+
+    @LHWorkflow("handle-failure-on-interrupt")
+    public Workflow getHandleFailureOnInterruptThreadWf() {
+        return Workflow.newWorkflow("handle-failure-on-interrupt", parent -> {
+            SpawnedThread childHandle = parent.spawnThread(
+                    child -> {
+                        child.sleepSeconds(1);
+
+                        child.registerInterruptHandler(CHILD_INTERRUPT_TRIGGER, childInterrupt -> {
+                            childInterrupt.fail("i-fail", "failed");
+                        });
+                    },
+                    "child-thread",
+                    Map.of());
+
+            WaitForThreadsNodeOutput waitForThreads = parent.waitForThreads(SpawnedThreads.of(childHandle));
+
+            parent.handleAnyFailure(waitForThreads, WorkflowThread::complete);
         });
     }
 

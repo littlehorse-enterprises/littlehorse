@@ -29,6 +29,8 @@ const nodeTypes: Record<NodeType, ComponentType<any>> = {
   userTask: UserTask,
   waitForCondition: WaitForCondition,
   waitForThreads: WaitForThreads,
+  runChildWf: Nop,
+  waitForChildWf: Nop,
 }
 
 export type NodeProps<C extends NonNullable<NodeRun['nodeType']>['$case'] = 'entrypoint', T = unknown> = NodeFlow<

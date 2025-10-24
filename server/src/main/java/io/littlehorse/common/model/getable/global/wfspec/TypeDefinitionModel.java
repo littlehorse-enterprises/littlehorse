@@ -1,11 +1,15 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
+import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
@@ -19,6 +23,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Str
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
+import io.littlehorse.common.util.TypeCastingUtils;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -26,6 +32,8 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -41,7 +49,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private VariableType primitiveType;
     private StructDefIdModel structDefId;
-    private InlineArrayDefModel inlineArrayDef;
 
     public TypeDefinitionModel() {
         this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
@@ -71,18 +78,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.masked = masked;
     }
 
-    public TypeDefinitionModel(InlineArrayDefModel inlineArrayDef) {
-        this.definedTypeCase = DefinedTypeCase.INLINE_ARRAY_DEF;
-        this.inlineArrayDef = Objects.requireNonNull(inlineArrayDef);
-        this.masked = false;
-    }
-
-    public TypeDefinitionModel(InlineArrayDefModel inlineArrayDef, boolean masked) {
-        this.definedTypeCase = DefinedTypeCase.INLINE_ARRAY_DEF;
-        this.inlineArrayDef = Objects.requireNonNull(inlineArrayDef);
-        this.masked = masked;
-    }
-
     @Override
     public Class<TypeDefinition> getProtoBaseClass() {
         return TypeDefinition.class;
@@ -99,9 +94,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case STRUCT_DEF_ID:
                 out.setStructDefId(structDefId.toProto());
                 break;
-            case INLINE_ARRAY_DEF:
-                out.setInlineArrayDef(inlineArrayDef.toProto());
-                break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -114,6 +106,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
+
         this.definedTypeCase = p.getDefinedTypeCase();
 
         switch (definedTypeCase) {
@@ -123,11 +116,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case STRUCT_DEF_ID:
                 this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
                 break;
-            case INLINE_ARRAY_DEF:
-                this.inlineArrayDef = InlineArrayDefModel.fromProto(p.getInlineArrayDef(), ctx);
-                break;
             case DEFINEDTYPE_NOT_SET:
-            default:
+                this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
+                this.primitiveType = VariableType.JSON_OBJ;
                 break;
         }
     }
@@ -173,8 +164,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 return new StructReturnTypeStrategy(this.structDefId);
-            case INLINE_ARRAY_DEF:
-                return new ArrayReturnTypeStrategy(this.inlineArrayDef);
             default:
         }
         throw new IllegalStateException();
@@ -216,11 +205,67 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
+     * Gets the nested type in this TypeDefinition according to an LHPath
+     * @param lhPath an LHPath to a nested type
+     * @param metadataManager a metadata manager for fetching additional StructDefs
+     * @return an Optional with you
+     * @throws InvalidExpressionException
+     */
+    public Optional<TypeDefinitionModel> getNestedType(LHPathModel lhPath, ReadOnlyMetadataManager metadataManager)
+            throws InvalidExpressionException {
+        TypeDefinitionModel currentTypeDef = this;
+
+        for (Selector selector : lhPath.getPath()) {
+            switch (currentTypeDef.getDefinedTypeCase()) {
+                case PRIMITIVE_TYPE:
+                    switch (currentTypeDef.getPrimitiveType()) {
+                        case JSON_ARR:
+                        case JSON_OBJ:
+                            return Optional.empty();
+                        default:
+                            throw new InvalidExpressionException(String.format(
+                                    "Failed fetching LHPath to '%s' on Type '%s'",
+                                    lhPath.toJsonPathStr(), currentTypeDef));
+                    }
+                case STRUCT_DEF_ID:
+                    StructDefModel structDef =
+                            new WfService(metadataManager).getStructDef(currentTypeDef.getStructDefId());
+
+                    if (structDef == null) {
+                        throw new InvalidExpressionException("StructDef not found: " + currentTypeDef);
+                    }
+
+                    Map<String, StructFieldDefModel> fieldDefs =
+                            structDef.getStructDef().getFields();
+
+                    if (!fieldDefs.containsKey(selector.getKey())) {
+                        throw new InvalidExpressionException(String.format(
+                                "could not find field '%s' on type %s", selector.getKey(), currentTypeDef));
+                    }
+
+                    currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
+                    break;
+                case DEFINEDTYPE_NOT_SET:
+                    break;
+            }
+        }
+
+        return Optional.of(currentTypeDef);
+    }
+
+    /**
      * Returns true if the VariableValueModel matches this type.
+     * @throws StructValidationException
      */
     public boolean isCompatibleWith(VariableValueModel value, ReadOnlyMetadataManager readOnlyMetadataManager) {
         if (value.getValueType() == ValueCase.STRUCT) {
-            value.getStruct().validateAgainstStructDefId(readOnlyMetadataManager);
+            try {
+                value.getStruct().validateAgainstStructDefId(readOnlyMetadataManager);
+            } catch (StructValidationException e) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        String.format("Provided Struct incompatible with type %s: %s", this, e.getMessage()));
+            }
         }
 
         TypeDefinitionModel other = value.getTypeDefinition();
@@ -231,11 +276,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                return this.primitiveType.equals(other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.primitiveType);
             case STRUCT_DEF_ID:
                 return this.structDefId.equals(other.getStructDefId());
-            case INLINE_ARRAY_DEF:
-                return this.inlineArrayDef.equals(other.getInlineArrayDef());
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -245,8 +288,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the other type is compatible with this type. Note that it requires
-     * exact match for now. In the future we'll support casting.
+     * Returns true if this type can be assigned from the other type, without casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
         if (this.isNull() || other.isNull()) {
@@ -259,15 +301,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                if (this.primitiveType == VariableType.INT || this.primitiveType == VariableType.DOUBLE) {
-                    return other.getPrimitiveType() == VariableType.INT
-                            || other.getPrimitiveType() == VariableType.DOUBLE;
-                }
-                return this.getPrimitiveType().equals(other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(this.primitiveType, other.getPrimitiveType());
             case STRUCT_DEF_ID:
                 return this.getStructDefId().equals(other.getStructDefId());
-            case INLINE_ARRAY_DEF:
-                return this.inlineArrayDef.equals(other.getInlineArrayDef());
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -287,9 +323,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case STRUCT_DEF_ID:
                 result = String.format("Struct<%s,v%d>", structDefId.getName(), structDefId.getVersion());
                 break;
-            case INLINE_ARRAY_DEF:
-                result = String.format("Array<%s>", inlineArrayDef.getElementType());
-                break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 result = this.definedTypeCase.toString();
@@ -297,5 +330,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         }
         if (masked) result += " MASKED";
         return result;
+    }
+
+    /**
+     * Performs casting of a VariableValueModel to this type.
+     *
+     * @param sourceValue The value to cast
+     * @return A new VariableValueModel with the target type, or the original if no casting is needed
+     * @throws IllegalArgumentException if casting is not supported for this type combination
+     */
+    public VariableValueModel applyCast(VariableValueModel sourceValue) {
+        return TypeCastingUtils.applyCast(sourceValue, this.primitiveType);
     }
 }

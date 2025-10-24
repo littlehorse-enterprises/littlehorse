@@ -19,4 +19,9 @@ public class Car {
         this.model = model;
         this.mileage = mileage;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s, Mileage: %d", brand, model, mileage);
+    }
 }

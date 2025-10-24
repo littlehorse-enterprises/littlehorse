@@ -69,13 +69,13 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
     public PollTaskResponse process(CoreProcessorContext executionContext, LHServerConfig config) {
         TaskRunModel taskRun = executionContext.getableManager().get(taskRunId);
         if (taskRun == null) {
-            log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
+            log.debug("Got claimTask for non-existent taskRun {}", taskRunId);
             throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
         }
 
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
-        ScheduledTaskModel scheduledTask = executionContext.getTaskManager().markTaskAsScheduled(taskRunId);
+        ScheduledTaskModel scheduledTask = executionContext.getTaskManager().markTaskAsScheduled(taskRun);
 
         // It's totally fine for the scheduledTask to be null. That happens when someone already
         // claimed that task. This happens when a server is recovering from a crash. The fact that it
@@ -83,7 +83,7 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
         //
         // We shouldn't throw an error on this, we just return an empty optional.
         if (scheduledTask == null) {
-            log.warn("Processing pollTaskRequest for task {} that was already claimed", taskRunId);
+            log.debug("Processing pollTaskRequest for task {} that was already claimed", taskRunId);
             return PollTaskResponse.newBuilder().build();
         } else {
             taskRun.onTaskAttemptStarted(this);

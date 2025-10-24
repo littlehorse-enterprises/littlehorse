@@ -201,5 +201,16 @@ public interface ReportTaskRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder getExceptionOrBuilder();
 
+  /**
+   * <pre>
+   * The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+   * each checkpoint.
+   * </pre>
+   *
+   * <code>int32 total_checkpoints = 9;</code>
+   * @return The totalCheckpoints.
+   */
+  int getTotalCheckpoints();
+
   io.littlehorse.sdk.common.proto.ReportTaskRun.ResultCase getResultCase();
 }

@@ -21,7 +21,7 @@ public class WorkerContextTest {
                 .build();
 
         WorkerContext context =
-                new WorkerContext(ScheduledTask.newBuilder().setSource(source).build(), null);
+                new WorkerContext(ScheduledTask.newBuilder().setSource(source).build(), null, null);
 
         assertEquals(context.getWfRunId().getId(), "hi");
     }
@@ -35,21 +35,21 @@ public class WorkerContextTest {
                 .build();
 
         WorkerContext context =
-                new WorkerContext(ScheduledTask.newBuilder().setSource(source).build(), null);
+                new WorkerContext(ScheduledTask.newBuilder().setSource(source).build(), null, null);
 
         assertEquals(context.getWfRunId().getId(), "hi");
     }
 
     @Test
     void checkWorkerContextLogOutput() {
-        WorkerContext context = new WorkerContext(ScheduledTask.newBuilder().build(), null);
+        WorkerContext context = new WorkerContext(ScheduledTask.newBuilder().build(), null, null);
         context.log("test log");
         assertEquals(context.getLogOutput(), "test log");
     }
 
     @Test
     void checkWorkerContextLogOutputWNullValue() {
-        WorkerContext context = new WorkerContext(ScheduledTask.newBuilder().build(), null);
+        WorkerContext context = new WorkerContext(ScheduledTask.newBuilder().build(), null, null);
         context.log(null);
         assertEquals(context.getLogOutput(), "null");
     }

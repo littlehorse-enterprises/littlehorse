@@ -3,16 +3,24 @@ package io.littlehorse.common.model.wfrun;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.LHPath;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
+import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -76,7 +84,7 @@ public class VariableValueModelTest {
         VariableValueModel doubleVarval = new VariableValueModel("not a double");
         LHVarSubError varSubError = (LHVarSubError) Assertions.catchThrowable(doubleVarval::asDouble);
         Assertions.assertThat(varSubError).isNotNull();
-        Assertions.assertThat(varSubError.getMessage()).isEqualTo("Couldn't convert STR to DOUBLE");
+        Assertions.assertThat(varSubError.getMessage()).isEqualTo("Couldn't convert STR 'not a double' to DOUBLE");
     }
 
     @Test
@@ -149,5 +157,141 @@ public class VariableValueModelTest {
         VariableValueModel strVarVal = valueWfRunId.asStr();
         assertThat(strVarVal.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(strVarVal.getStrVal()).isEqualTo("parent_child");
+    }
+
+    @Test
+    void shouldThrowErrorWhenGetOnPrimitive() throws LHVarSubError {
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("make"))
+                .build();
+
+        VariableValueModel strVarVal = new VariableValueModel("myStr");
+
+        assertThrows(LHVarSubError.class, () -> {
+            strVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+        });
+    }
+
+    @Test
+    void shouldGetPathOnJsonObj() throws LHVarSubError {
+        Map<String, Object> jsonObj = new HashMap<>();
+        jsonObj.put("make", "Ford");
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("make"))
+                .build();
+
+        VariableValueModel structVarVal = new VariableValueModel(jsonObj);
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Ford");
+    }
+
+    @Test
+    void shouldGetPathOnJsonArr() throws LHVarSubError {
+        List<Object> jsonArr = List.of("apple", "banana", "orange");
+
+        LHPath lhPath =
+                LHPath.newBuilder().addPath(Selector.newBuilder().setIndex(1)).build();
+
+        VariableValueModel structVarVal = new VariableValueModel(jsonArr);
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("banana");
+    }
+
+    @Test
+    void shouldGetPathOnJsonArrWithNegativeIndex() throws LHVarSubError {
+        List<Object> jsonArr = List.of("apple", "banana", "orange");
+
+        LHPath lhPath =
+                LHPath.newBuilder().addPath(Selector.newBuilder().setIndex(-1)).build();
+
+        VariableValueModel structVarVal = new VariableValueModel(jsonArr);
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("orange");
+    }
+
+    @Test
+    void shouldGetPathOnStruct() throws LHVarSubError {
+        Struct struct = Struct.newBuilder()
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "make",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Ford"))
+                                        .build()))
+                .build();
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("make"))
+                .build();
+
+        VariableValueModel structVarVal =
+                new VariableValueModel(StructModel.fromProto(struct, StructModel.class, mock()));
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Ford");
+    }
+
+    @Test
+    void shouldGetPathOnNestedStruct() throws LHVarSubError {
+        Struct struct = Struct.newBuilder()
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "owner",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder()
+                                                .setStruct(Struct.newBuilder()
+                                                        .setStruct(InlineStruct.newBuilder()
+                                                                .putFields(
+                                                                        "firstName",
+                                                                        StructField.newBuilder()
+                                                                                .setValue(VariableValue.newBuilder()
+                                                                                        .setStr("Obi-Wan"))
+                                                                                .build()))))
+                                        .build()))
+                .build();
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("owner"))
+                .addPath(Selector.newBuilder().setKey("firstName"))
+                .build();
+
+        VariableValueModel structVarVal =
+                new VariableValueModel(StructModel.fromProto(struct, StructModel.class, mock()));
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Obi-Wan");
+    }
+
+    @Test
+    void shouldGetPathOnJsonObjNestedInStruct() throws LHVarSubError {
+        Struct struct = Struct.newBuilder()
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "owner",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setJsonObj("{\"firstName\":\"Obi-Wan\"}"))
+                                        .build()))
+                .build();
+
+        LHPath lhPath = LHPath.newBuilder()
+                .addPath(Selector.newBuilder().setKey("owner"))
+                .addPath(Selector.newBuilder().setKey("firstName"))
+                .build();
+
+        VariableValueModel structVarVal =
+                new VariableValueModel(StructModel.fromProto(struct, StructModel.class, mock()));
+
+        VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
+
+        assertThat(strVarVal.getStrVal()).isEqualTo("Obi-Wan");
     }
 }

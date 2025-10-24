@@ -246,12 +246,7 @@ export function comparatorToNumber(object: Comparator): number {
  * have to worry about this in daily LittleHorse usage.
  */
 export interface VariableAssignment {
-  /**
-   * If you provide a `variable_name` and the specified variable is JSON_OBJ or
-   * JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
-   * resolve to the specified field.
-   */
-  jsonPath?: string | undefined;
+  path?: { $case: "jsonPath"; value: string } | { $case: "lhPath"; value: LHPath } | undefined;
   source?:
     | { $case: "variableName"; value: string }
     | { $case: "literalValue"; value: VariableValue }
@@ -259,6 +254,13 @@ export interface VariableAssignment {
     | { $case: "nodeOutput"; value: VariableAssignment_NodeOutputReference }
     | { $case: "expression"; value: VariableAssignment_Expression }
     | undefined;
+  /**
+   * If specified, the resolved value will be cast to this type before being used.
+   * This allows explicit type conversions anywhere VariableAssignment is used.
+   * The cast operation is non-mutating: original values remain unchanged.
+   * Note: Only primitive type conversions are supported.
+   */
+  targetType?: TypeDefinition | undefined;
 }
 
 /** A FormatString formats a template String with values from the WfRun. */
@@ -325,8 +327,7 @@ export interface VariableMutation {
 
 /** Specifies to use the output of a NodeRun as the RHS. */
 export interface VariableMutation_NodeOutputSource {
-  /** Use this specific field from a JSON output */
-  jsonpath?: string | undefined;
+  path?: { $case: "jsonpath"; value: string } | { $case: "lhPath"; value: LHPath } | undefined;
 }
 
 /** Declares a Variable; used in a ThreadSpec and a TaskDef. */
@@ -378,7 +379,6 @@ export interface TypeDefinition {
   definedType?:
     | { $case: "primitiveType"; value: VariableType }
     | { $case: "structDefId"; value: StructDefId }
-    | { $case: "inlineArrayDef"; value: InlineArrayDef }
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
   masked: boolean;
@@ -579,10 +579,6 @@ export interface InlineStructDef_FieldsEntry {
   value: StructFieldDef | undefined;
 }
 
-export interface InlineArrayDef {
-  elementType: TypeDefinition | undefined;
-}
-
 /** A `SchemaFieldDef` defines a field inside a `StructDef`. */
 export interface StructFieldDef {
   /** The type of the field. */
@@ -596,14 +592,28 @@ export interface StructFieldDef {
   defaultValue?: VariableValue | undefined;
 }
 
+/** A path of repeated Selectors resolving to a nested field in an object. */
+export interface LHPath {
+  path: LHPath_Selector[];
+}
+
+export interface LHPath_Selector {
+  selectorType?: { $case: "key"; value: string } | { $case: "index"; value: number } | undefined;
+}
+
 function createBaseVariableAssignment(): VariableAssignment {
-  return { jsonPath: undefined, source: undefined };
+  return { path: undefined, source: undefined, targetType: undefined };
 }
 
 export const VariableAssignment = {
   encode(message: VariableAssignment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.jsonPath !== undefined) {
-      writer.uint32(10).string(message.jsonPath);
+    switch (message.path?.$case) {
+      case "jsonPath":
+        writer.uint32(10).string(message.path.value);
+        break;
+      case "lhPath":
+        LHPath.encode(message.path.value, writer.uint32(66).fork()).ldelim();
+        break;
     }
     switch (message.source?.$case) {
       case "variableName":
@@ -622,6 +632,9 @@ export const VariableAssignment = {
         VariableAssignment_Expression.encode(message.source.value, writer.uint32(50).fork()).ldelim();
         break;
     }
+    if (message.targetType !== undefined) {
+      TypeDefinition.encode(message.targetType, writer.uint32(58).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -637,7 +650,14 @@ export const VariableAssignment = {
             break;
           }
 
-          message.jsonPath = reader.string();
+          message.path = { $case: "jsonPath", value: reader.string() };
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.path = { $case: "lhPath", value: LHPath.decode(reader, reader.uint32()) };
           continue;
         case 2:
           if (tag !== 18) {
@@ -683,6 +703,13 @@ export const VariableAssignment = {
             value: VariableAssignment_Expression.decode(reader, reader.uint32()),
           };
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.targetType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -694,7 +721,11 @@ export const VariableAssignment = {
 
   fromJSON(object: any): VariableAssignment {
     return {
-      jsonPath: isSet(object.jsonPath) ? globalThis.String(object.jsonPath) : undefined,
+      path: isSet(object.jsonPath)
+        ? { $case: "jsonPath", value: globalThis.String(object.jsonPath) }
+        : isSet(object.lhPath)
+        ? { $case: "lhPath", value: LHPath.fromJSON(object.lhPath) }
+        : undefined,
       source: isSet(object.variableName)
         ? { $case: "variableName", value: globalThis.String(object.variableName) }
         : isSet(object.literalValue)
@@ -706,13 +737,17 @@ export const VariableAssignment = {
         : isSet(object.expression)
         ? { $case: "expression", value: VariableAssignment_Expression.fromJSON(object.expression) }
         : undefined,
+      targetType: isSet(object.targetType) ? TypeDefinition.fromJSON(object.targetType) : undefined,
     };
   },
 
   toJSON(message: VariableAssignment): unknown {
     const obj: any = {};
-    if (message.jsonPath !== undefined) {
-      obj.jsonPath = message.jsonPath;
+    if (message.path?.$case === "jsonPath") {
+      obj.jsonPath = message.path.value;
+    }
+    if (message.path?.$case === "lhPath") {
+      obj.lhPath = LHPath.toJSON(message.path.value);
     }
     if (message.source?.$case === "variableName") {
       obj.variableName = message.source.value;
@@ -729,6 +764,9 @@ export const VariableAssignment = {
     if (message.source?.$case === "expression") {
       obj.expression = VariableAssignment_Expression.toJSON(message.source.value);
     }
+    if (message.targetType !== undefined) {
+      obj.targetType = TypeDefinition.toJSON(message.targetType);
+    }
     return obj;
   },
 
@@ -737,7 +775,12 @@ export const VariableAssignment = {
   },
   fromPartial(object: DeepPartial<VariableAssignment>): VariableAssignment {
     const message = createBaseVariableAssignment();
-    message.jsonPath = object.jsonPath ?? undefined;
+    if (object.path?.$case === "jsonPath" && object.path?.value !== undefined && object.path?.value !== null) {
+      message.path = { $case: "jsonPath", value: object.path.value };
+    }
+    if (object.path?.$case === "lhPath" && object.path?.value !== undefined && object.path?.value !== null) {
+      message.path = { $case: "lhPath", value: LHPath.fromPartial(object.path.value) };
+    }
     if (
       object.source?.$case === "variableName" && object.source?.value !== undefined && object.source?.value !== null
     ) {
@@ -765,6 +808,9 @@ export const VariableAssignment = {
     if (object.source?.$case === "expression" && object.source?.value !== undefined && object.source?.value !== null) {
       message.source = { $case: "expression", value: VariableAssignment_Expression.fromPartial(object.source.value) };
     }
+    message.targetType = (object.targetType !== undefined && object.targetType !== null)
+      ? TypeDefinition.fromPartial(object.targetType)
+      : undefined;
     return message;
   },
 };
@@ -1158,13 +1204,18 @@ export const VariableMutation = {
 };
 
 function createBaseVariableMutation_NodeOutputSource(): VariableMutation_NodeOutputSource {
-  return { jsonpath: undefined };
+  return { path: undefined };
 }
 
 export const VariableMutation_NodeOutputSource = {
   encode(message: VariableMutation_NodeOutputSource, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.jsonpath !== undefined) {
-      writer.uint32(82).string(message.jsonpath);
+    switch (message.path?.$case) {
+      case "jsonpath":
+        writer.uint32(82).string(message.path.value);
+        break;
+      case "lhPath":
+        LHPath.encode(message.path.value, writer.uint32(90).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -1181,7 +1232,14 @@ export const VariableMutation_NodeOutputSource = {
             break;
           }
 
-          message.jsonpath = reader.string();
+          message.path = { $case: "jsonpath", value: reader.string() };
+          continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.path = { $case: "lhPath", value: LHPath.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1193,13 +1251,22 @@ export const VariableMutation_NodeOutputSource = {
   },
 
   fromJSON(object: any): VariableMutation_NodeOutputSource {
-    return { jsonpath: isSet(object.jsonpath) ? globalThis.String(object.jsonpath) : undefined };
+    return {
+      path: isSet(object.jsonpath)
+        ? { $case: "jsonpath", value: globalThis.String(object.jsonpath) }
+        : isSet(object.lhPath)
+        ? { $case: "lhPath", value: LHPath.fromJSON(object.lhPath) }
+        : undefined,
+    };
   },
 
   toJSON(message: VariableMutation_NodeOutputSource): unknown {
     const obj: any = {};
-    if (message.jsonpath !== undefined) {
-      obj.jsonpath = message.jsonpath;
+    if (message.path?.$case === "jsonpath") {
+      obj.jsonpath = message.path.value;
+    }
+    if (message.path?.$case === "lhPath") {
+      obj.lhPath = LHPath.toJSON(message.path.value);
     }
     return obj;
   },
@@ -1209,7 +1276,12 @@ export const VariableMutation_NodeOutputSource = {
   },
   fromPartial(object: DeepPartial<VariableMutation_NodeOutputSource>): VariableMutation_NodeOutputSource {
     const message = createBaseVariableMutation_NodeOutputSource();
-    message.jsonpath = object.jsonpath ?? undefined;
+    if (object.path?.$case === "jsonpath" && object.path?.value !== undefined && object.path?.value !== null) {
+      message.path = { $case: "jsonpath", value: object.path.value };
+    }
+    if (object.path?.$case === "lhPath" && object.path?.value !== undefined && object.path?.value !== null) {
+      message.path = { $case: "lhPath", value: LHPath.fromPartial(object.path.value) };
+    }
     return message;
   },
 };
@@ -1350,9 +1422,6 @@ export const TypeDefinition = {
       case "structDefId":
         StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
         break;
-      case "inlineArrayDef":
-        InlineArrayDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
-        break;
     }
     if (message.masked !== false) {
       writer.uint32(32).bool(message.masked);
@@ -1381,13 +1450,6 @@ export const TypeDefinition = {
 
           message.definedType = { $case: "structDefId", value: StructDefId.decode(reader, reader.uint32()) };
           continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.decode(reader, reader.uint32()) };
-          continue;
         case 4:
           if (tag !== 32) {
             break;
@@ -1410,8 +1472,6 @@ export const TypeDefinition = {
         ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
         : isSet(object.structDefId)
         ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
-        : isSet(object.inlineArrayDef)
-        ? { $case: "inlineArrayDef", value: InlineArrayDef.fromJSON(object.inlineArrayDef) }
         : undefined,
       masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
     };
@@ -1424,9 +1484,6 @@ export const TypeDefinition = {
     }
     if (message.definedType?.$case === "structDefId") {
       obj.structDefId = StructDefId.toJSON(message.definedType.value);
-    }
-    if (message.definedType?.$case === "inlineArrayDef") {
-      obj.inlineArrayDef = InlineArrayDef.toJSON(message.definedType.value);
     }
     if (message.masked !== false) {
       obj.masked = message.masked;
@@ -1452,13 +1509,6 @@ export const TypeDefinition = {
       object.definedType?.value !== null
     ) {
       message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
-    }
-    if (
-      object.definedType?.$case === "inlineArrayDef" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.fromPartial(object.definedType.value) };
     }
     message.masked = object.masked ?? false;
     return message;
@@ -2260,65 +2310,6 @@ export const InlineStructDef_FieldsEntry = {
   },
 };
 
-function createBaseInlineArrayDef(): InlineArrayDef {
-  return { elementType: undefined };
-}
-
-export const InlineArrayDef = {
-  encode(message: InlineArrayDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.elementType !== undefined) {
-      TypeDefinition.encode(message.elementType, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): InlineArrayDef {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseInlineArrayDef();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.elementType = TypeDefinition.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): InlineArrayDef {
-    return { elementType: isSet(object.elementType) ? TypeDefinition.fromJSON(object.elementType) : undefined };
-  },
-
-  toJSON(message: InlineArrayDef): unknown {
-    const obj: any = {};
-    if (message.elementType !== undefined) {
-      obj.elementType = TypeDefinition.toJSON(message.elementType);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<InlineArrayDef>): InlineArrayDef {
-    return InlineArrayDef.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<InlineArrayDef>): InlineArrayDef {
-    const message = createBaseInlineArrayDef();
-    message.elementType = (object.elementType !== undefined && object.elementType !== null)
-      ? TypeDefinition.fromPartial(object.elementType)
-      : undefined;
-    return message;
-  },
-};
-
 function createBaseStructFieldDef(): StructFieldDef {
   return { fieldType: undefined, defaultValue: undefined };
 }
@@ -2393,6 +2384,156 @@ export const StructFieldDef = {
     message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
       ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseLHPath(): LHPath {
+  return { path: [] };
+}
+
+export const LHPath = {
+  encode(message: LHPath, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.path) {
+      LHPath_Selector.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LHPath {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLHPath();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.path.push(LHPath_Selector.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LHPath {
+    return {
+      path: globalThis.Array.isArray(object?.path) ? object.path.map((e: any) => LHPath_Selector.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: LHPath): unknown {
+    const obj: any = {};
+    if (message.path?.length) {
+      obj.path = message.path.map((e) => LHPath_Selector.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<LHPath>): LHPath {
+    return LHPath.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<LHPath>): LHPath {
+    const message = createBaseLHPath();
+    message.path = object.path?.map((e) => LHPath_Selector.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseLHPath_Selector(): LHPath_Selector {
+  return { selectorType: undefined };
+}
+
+export const LHPath_Selector = {
+  encode(message: LHPath_Selector, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.selectorType?.$case) {
+      case "key":
+        writer.uint32(10).string(message.selectorType.value);
+        break;
+      case "index":
+        writer.uint32(16).int32(message.selectorType.value);
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LHPath_Selector {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLHPath_Selector();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.selectorType = { $case: "key", value: reader.string() };
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.selectorType = { $case: "index", value: reader.int32() };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LHPath_Selector {
+    return {
+      selectorType: isSet(object.key)
+        ? { $case: "key", value: globalThis.String(object.key) }
+        : isSet(object.index)
+        ? { $case: "index", value: globalThis.Number(object.index) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: LHPath_Selector): unknown {
+    const obj: any = {};
+    if (message.selectorType?.$case === "key") {
+      obj.key = message.selectorType.value;
+    }
+    if (message.selectorType?.$case === "index") {
+      obj.index = Math.round(message.selectorType.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<LHPath_Selector>): LHPath_Selector {
+    return LHPath_Selector.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<LHPath_Selector>): LHPath_Selector {
+    const message = createBaseLHPath_Selector();
+    if (
+      object.selectorType?.$case === "key" &&
+      object.selectorType?.value !== undefined &&
+      object.selectorType?.value !== null
+    ) {
+      message.selectorType = { $case: "key", value: object.selectorType.value };
+    }
+    if (
+      object.selectorType?.$case === "index" &&
+      object.selectorType?.value !== undefined &&
+      object.selectorType?.value !== null
+    ) {
+      message.selectorType = { $case: "index", value: object.selectorType.value };
+    }
     return message;
   },
 };

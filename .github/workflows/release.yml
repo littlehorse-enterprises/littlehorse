@@ -6,18 +6,28 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+*"
 
 permissions:
-      packages: write
-      contents: write
+  packages: write
+  contents: write
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.set_tag.outputs.tag }}
+      prerelease: ${{ steps.is_prerelease.outputs.prerelease }}
     steps:
       - name: Set Tag
         id: set_tag
         run: |
           echo "tag=$(echo $GITHUB_REF | sed -n 's/refs\/tags\/v//p')" >> $GITHUB_OUTPUT
+
+      - name: Is prerelease
+        id: is_prerelease
+        run: |
+          if [[ "${{ steps.set_tag.outputs.tag }}" == *"-RC"* ]]; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
   publish-docker:
     uses: ./.github/workflows/publish-docker.yml
@@ -50,6 +60,7 @@ jobs:
         run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
 
       - name: Publish
+        if: ${{ needs.prepare.outputs.prerelease == 'false' }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
@@ -61,6 +72,20 @@ jobs:
           test-utils:publishToSonatype
           test-utils-container:publishToSonatype
           closeAndReleaseSonatypeStagingRepository
+
+      - name: Publish (prerelease)
+        if: ${{ needs.prepare.outputs.prerelease == 'true' }}
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: >
+          ./gradlew
+          sdk-java:publishToSonatype
+          test-utils:publishToSonatype
+          test-utils-container:publishToSonatype
+          closeSonatypeStagingRepository
 
   publish-java-server:
     runs-on: ubuntu-latest
@@ -86,6 +111,7 @@ jobs:
         run: ./gradlew server:test canary:test
 
       - name: Publish
+        if: ${{needs.prepare.outputs.prerelease == 'false'}}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
@@ -96,6 +122,19 @@ jobs:
           server:publishToSonatype
           canary:publishToSonatype
           closeAndReleaseSonatypeStagingRepository
+
+      - name: Publish (prerelease)
+        if: ${{needs.prepare.outputs.prerelease == 'true'}}
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: >
+          ./gradlew
+          server:publishToSonatype
+          canary:publishToSonatype
+          closeSonatypeStagingRepository
 
   publish-sdk-python:
     runs-on: ubuntu-latest
@@ -109,7 +148,7 @@ jobs:
       - name: Dump version
         env:
           TAG: ${{ needs.prepare.outputs.tag }}
-        run: sed -i "s/version = \".*\"/version = \"${TAG}\"/g" sdk-python/pyproject.toml
+        run: sed -i "s/version = \".*\"/version = \"${TAG,,}\"/g" sdk-python/pyproject.toml
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -150,8 +189,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
           cache-dependency-path: ${{env.working-directory}}
 
       - name: Install dependencies
@@ -189,7 +228,7 @@ jobs:
       - name: Setup Dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6'
+          dotnet-version: "6"
       - name: Bump version
         env:
           TAG: ${{ needs.prepare.outputs.tag }}
@@ -227,6 +266,7 @@ jobs:
 
   create-release:
     needs:
+      - prepare
       - build-lhctl
       - publish-java-libraries
       - publish-java-server
@@ -256,7 +296,13 @@ jobs:
           merge-multiple: true
 
       - name: Create Release
+        if: ${{ needs.prepare.outputs.prerelease == 'false' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run:
-          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_*
+        run: gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_*
+
+      - name: Create Pre Release
+        if: ${{ needs.prepare.outputs.prerelease == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_* --prerelease

@@ -18,6 +18,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.sdk.common.proto.RunChildWfNode;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
@@ -31,11 +32,13 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WaitForChildWfNode;
 import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
@@ -43,6 +46,7 @@ import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
+import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -51,7 +55,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -336,6 +339,36 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new TaskNodeOutputImpl(nodeName, this);
     }
 
+    @Override
+    public SpawnedChildWfImpl runWf(String wfSpecName, Map<String, Serializable> inputs) {
+        checkIfIsActive();
+        // TODO: handle workflow versioning
+        RunChildWfNode.Builder node =
+                RunChildWfNode.newBuilder().setMajorVersion(-1).setWfSpecName(wfSpecName);
+        for (Map.Entry<String, Serializable> input : inputs.entrySet()) {
+            node.putInputs(input.getKey(), assignVariable(input.getValue()));
+        }
+        String nodeName = addNode("run-" + wfSpecName, NodeCase.RUN_CHILD_WF, node.build());
+        return new SpawnedChildWfImpl(nodeName, this);
+    }
+
+    @Override
+    public NodeOutput waitForChildWf(SpawnedChildWf childWf) {
+        checkIfIsActive();
+        SpawnedChildWfImpl scwf = (SpawnedChildWfImpl) childWf;
+        if (scwf.getThread() != this) {
+            throw new IllegalArgumentException("Currently cannot wait for WfRun started in other thread");
+        }
+
+        WaitForChildWfNode.Builder node = WaitForChildWfNode.newBuilder()
+                .setChildWfRunId(VariableAssignment.newBuilder()
+                        .setNodeOutput(NodeOutputReference.newBuilder().setNodeName(scwf.getSourceNodeName())))
+                .setChildWfRunSourceNode(scwf.getSourceNodeName());
+
+        String nodeName = addNode("wait", NodeCase.WAIT_FOR_CHILD_WF, node.build());
+        return new NodeOutputImpl(nodeName, this);
+    }
+
     private TaskNode createTaskNode(TaskNode.Builder taskNode, Serializable... args) {
 
         for (Object var : args) {
@@ -369,10 +402,10 @@ final class WorkflowThreadImpl implements WorkflowThread {
             if (WfRunVariableImpl.class.isAssignableFrom(arg.getClass())) {
                 WfRunVariableImpl wfVar = ((WfRunVariableImpl) arg);
 
-                if (wfVar.getDefinedType() == DefinedTypeCase.PRIMITIVE_TYPE
+                if (wfVar.typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
                         && (wfVar.typeDef.getPrimitiveType() == VariableType.JSON_ARR
                                 || wfVar.typeDef.getPrimitiveType() == VariableType.JSON_OBJ)
-                        && wfVar.jsonPath != null) {
+                        && wfVar.getJsonPath() != null) {
                     log.info("There is a jsonpath, so not checking value because Json schema isn't"
                             + " yet implemented");
                     continue;
@@ -446,14 +479,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         checkIfIsActive();
 
         WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, clazz, this);
-        wfRunVariables.add(wfRunVariable);
-        return wfRunVariable;
-    }
-
-    private WfRunVariableImpl addArrayVariable(String name, LHArrayDefType elementType) {
-        checkIfIsActive();
-
-        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createArrayDefVar(name, elementType, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
@@ -819,8 +844,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         VariableMutation.Builder mutation =
                 VariableMutation.newBuilder().setLhsName(lhs.name).setOperation(type);
 
-        if (lhs.jsonPath != null) {
-            mutation.setLhsJsonPath(lhs.jsonPath);
+        if (lhs.getJsonPath() != null) {
+            mutation.setLhsJsonPath(lhs.getJsonPath());
         }
 
         mutation.setRhsAssignment(assignVariable(rhs));
@@ -1052,7 +1077,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
             case WAIT_FOR_CONDITION:
                 node.setWaitForCondition((WaitForConditionNode) subNode);
                 break;
+            case RUN_CHILD_WF:
+                node.setRunChildWf((RunChildWfNode) subNode);
+                break;
+            case WAIT_FOR_CHILD_WF:
+                node.setWaitForChildWf((WaitForChildWfNode) subNode);
+                break;
             case NODE_NOT_SET:
+            default:
                 // not possible
                 throw new RuntimeException("Not possible");
         }
