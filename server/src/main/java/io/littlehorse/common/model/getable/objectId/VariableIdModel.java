@@ -63,6 +63,11 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
     }
 
     @Override
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.of(wfRunId);
+    }
+
+    @Override
     public void initFromString(String storeKey) {
         String[] split = storeKey.split("/");
         wfRunId = (WfRunIdModel) ObjectIdModel.fromString(split[0], WfRunIdModel.class);

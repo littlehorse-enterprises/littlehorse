@@ -74,7 +74,14 @@ public class TenantScopedStoreTest {
         storeForTenantA.put(getableToSave);
         storeForTenantB.put(getableToSave);
 
-        String expectedKey = "%s/%s/%s/%s".formatted(tenantA, storedGetableTypeIndex, objectTypeIndex, testId);
+        String expectedKey = "%s/%s/%s/%s/%s/%s/"
+                .formatted(
+                        tenantA,
+                        storedGetableTypeIndex,
+                        Storeable.GROUPED_WF_RUN_PREFIX,
+                        testId,
+                        storedGetableTypeIndex,
+                        objectTypeIndex);
         List<KeyValue<String, Bytes>> allElementsInStore = ImmutableList.copyOf(nativeInMemoryStore.all());
         assertThat(allElementsInStore).hasSize(2);
         Bytes storedBytes = nativeInMemoryStore.get(expectedKey);

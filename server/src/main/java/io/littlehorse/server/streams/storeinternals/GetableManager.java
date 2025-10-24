@@ -114,7 +114,8 @@ public class GetableManager extends ReadOnlyGetableManager {
     }
 
     private WfRunStoredInventoryModel getOrCreateStoredInventory(WfRunIdModel wfRunId) {
-        WfRunStoredInventoryModel result = store.get(wfRunId.getStoreableKey(), WfRunStoredInventoryModel.class);
+        WfRunStoredInventoryModel result = store.get(
+                wfRunId.getStoreableKey(StoreableType.WFRUN_STORED_INVENTORY), WfRunStoredInventoryModel.class);
         if (result == null) {
             result = new WfRunStoredInventoryModel();
             result.setWfRunId(wfRunId);

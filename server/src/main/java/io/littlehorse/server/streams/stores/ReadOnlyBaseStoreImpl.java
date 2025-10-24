@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -56,17 +57,25 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
-        String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+        String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+
         if (metadataCache != null) {
-            return getMetadataObject(keyToLookFor, cls);
-        } else {
-            // time to get things from the store
-            GeneratedMessage stored = getFromNativeStore(keyToLookFor, cls);
-            if (stored == null) {
-                return null;
-            }
+            return getMetadataObject(fullKey, cls);
+        }
+        GeneratedMessage stored = getFromNativeStore(fullKey, cls);
+        if (stored != null) {
             return LHSerializable.fromProto(stored, cls, executionContext);
         }
+
+        String legacyKey = LHUtil.toLegacyFormat(fullKey);
+        if (legacyKey != null) {
+            stored = getFromNativeStore(legacyKey, cls);
+            if (stored != null) {
+                return LHSerializable.fromProto(stored, cls, executionContext);
+            }
+        }
+
+        return null;
     }
 
     private <U extends Message, T extends Storeable<U>> T getMetadataObject(String keyToLookFor, Class<T> clazz) {

@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -43,7 +44,11 @@ public class ExternalEventExample {
                     name,
                     VariableMutationType.ASSIGN,
                     wf.waitForEvent("name-event")
-                );
+                    );
+                    wf.execute("greet", name);
+                    wf.waitForEvent("name-event");
+                    wf.execute("greet", name);
+                    wf.waitForEvent("name-event");
 
                 wf.execute("greet", name);
             }
@@ -90,7 +95,9 @@ public class ExternalEventExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow().withRetentionPolicy(WorkflowRetentionPolicy.newBuilder()
+                        .setSecondsAfterWfTermination(10)
+                        .build());
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);
