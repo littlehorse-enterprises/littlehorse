@@ -58,10 +58,8 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
     @Override
     public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager getableManager = executionContext.getableManager();
-        ReadOnlyMetadataManager metadataManager = executionContext.metadataManager();
         WfService service = executionContext.service();
-        WfRunModel wfRunModel =
-                getableManager.get(new WfRunIdModel(nodeRunId.getWfRunId().getId()));
+        WfRunModel wfRunModel = getableManager.get(nodeRunId.getWfRunId());
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
