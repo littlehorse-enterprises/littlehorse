@@ -13,6 +13,8 @@ export default async function Page({ params: { props, tenantId } }: Props) {
   const name = props[0]
   const version = props[1]
 
+
+
   try {
     const wfSpec = await getWfSpec({ tenantId, name, version })
     return <WfSpec spec={wfSpec} />

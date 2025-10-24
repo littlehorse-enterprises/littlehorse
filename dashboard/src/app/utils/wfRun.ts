@@ -18,6 +18,17 @@ export const wfRunIdToPath = (wfRunId: WfRunId) => {
 }
 
 /**
+ * Converts a list of strings into a WfRunId
+ * @param ids list of strings
+ * @returns WfRunId or error
+ */
+export const wfRunIdFromList = (ids: string[]): WfRunId => {
+  if (ids.length === 0) throw new Error('ids are empty')
+
+  return ids.reverse().reduce<WfRunId | undefined>((parentWfRunId, id) => ({ id, parentWfRunId }), undefined) as WfRunId
+}
+
+/**
  * Flattens a WfRunId into a string by concatenating its IDs with underscores.
  * This is useful for creating unique identifiers for WfRunIds in a flat structure.
  *
