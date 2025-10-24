@@ -37,6 +37,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     private static final String LH_HOSTNAME = "littlehorse";
     private static final String KAFKA_HOSTNAME = "kafka";
     private static final String KAFKA_BOOTSTRAP_SERVERS = KAFKA_HOSTNAME + ":19092";
+    private static final String LHCTL_CONTAINER_COMMAND = "version";
 
     private static final String DEFAULT_KAFKA_IMAGE = "apache/kafka-native:latest";
     private static final String DEFAULT_LH_IMAGE = "ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest";
@@ -90,7 +91,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 .collect(Collectors.toList());
 
         this.withNetwork(network)
-                .withCommand("version")
+                .withCommand(LHCTL_CONTAINER_COMMAND)
                 .withEnv(LHC_API_HOST, clusterInstances.getFirst().getInternalApiHost())
                 .withEnv(
                         LHC_API_PORT, String.valueOf(clusterInstances.getFirst().getInternalApiPort()))
