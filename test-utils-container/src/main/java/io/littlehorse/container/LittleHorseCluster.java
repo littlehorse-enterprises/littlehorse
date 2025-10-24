@@ -45,6 +45,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     private static final Network DEFAULT_NETWORK = Network.newNetwork();
     private static final Consumer<CreateContainerCmd> DEFAULT_KAFKA_MODIFIER = cmd -> {};
     private static final Consumer<CreateContainerCmd> DEFAULT_LH_MODIFIER = cmd -> {};
+    private static final boolean DEFAULT_REUSE = false;
 
     private final KafkaContainer kafka;
     private final List<LittleHorseContainer> clusterInstances;
@@ -58,6 +59,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
      * @param network                Internal Network.
      * @param kafkaContainerModifier Kafka Customization.
      * @param lhContainerModifier    Kafka Customization.
+     * @param reuse                  Is reusable.
      */
     private LittleHorseCluster(
             final DockerImageName kafkaImage,
@@ -65,7 +67,8 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
             final int instances,
             final Network network,
             final Consumer<CreateContainerCmd> kafkaContainerModifier,
-            final Consumer<CreateContainerCmd> lhContainerModifier) {
+            final Consumer<CreateContainerCmd> lhContainerModifier,
+            final boolean reuse) {
         super(DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lhctl")
                 .withTag(littlehorseImage.getVersionPart()));
 
@@ -77,6 +80,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 .withNetwork(network)
                 .withNetworkAliases(KAFKA_HOSTNAME)
                 .withListener(KAFKA_BOOTSTRAP_SERVERS)
+                .withReuse(reuse)
                 .withCreateContainerCmdModifier(kafkaContainerModifier);
 
         clusterInstances = IntStream.rangeClosed(DEFAULT_LH_CLUSTER_SIZE, instances)
@@ -87,6 +91,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                                 String.format("%s%d", LH_HOSTNAME, instanceId)) // unique hostname for each instance
                         .withNetwork(network)
                         .dependsOn(kafka)
+                        .withReuse(reuse)
                         .withCreateContainerCmdModifier(lhContainerModifier))
                 .collect(Collectors.toList());
 
@@ -97,6 +102,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 .withCreateContainerCmdModifier(cmd -> Objects.requireNonNull(cmd.getHostConfig())
                         .withRestartPolicy(RestartPolicy.onFailureRestart(5))) // waiting for LH to run
                 .withStartupCheckStrategy(new OneShotStartupCheckStrategy()) // related to the RestartPolicy
+                .withReuse(reuse)
                 .dependsOn(kafka)
                 .dependsOn(clusterInstances);
     }
@@ -180,6 +186,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
         private Network network = DEFAULT_NETWORK;
         private Consumer<CreateContainerCmd> kafkaContainerModifier = DEFAULT_KAFKA_MODIFIER;
         private Consumer<CreateContainerCmd> lhContainerModifier = DEFAULT_LH_MODIFIER;
+        private boolean reuse = DEFAULT_REUSE;
 
         /**
          * Build LH cluster.
@@ -193,7 +200,8 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                     instances,
                     network,
                     kafkaContainerModifier,
-                    lhContainerModifier);
+                    lhContainerModifier,
+                    reuse);
         }
 
         /**
@@ -272,6 +280,16 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 throw new NullPointerException("Network shouldn't be null");
             }
             this.network = network;
+            return this;
+        }
+
+        /**
+         * Enable reuse containers. More at <a href="https://java.testcontainers.org/features/reuse/">...</a>.
+         * @param reuse If reuse or not.
+         * @return This builder.
+         */
+        public LittleHorseClusterBuilder withReuse(final boolean reuse) {
+            this.reuse = reuse;
             return this;
         }
     }
