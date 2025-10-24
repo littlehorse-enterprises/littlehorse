@@ -13,38 +13,38 @@ include(
         'test-utils-container',
         'canary'
 )
-
-[
-        'await-workflow-event',
-        'basic',
-        'checkpoint-tasks',
-        'child-thread',
-        'hierarchical-workflow',
-        'run-child-workflow',
-        'conditionals-while',
-        'conditionals',
-        'correlated-event',
-        'exception-handler',
-        'expressions',
-        'external-event',
-        'hundred-tasks',
-        'interrupt-handler',
-        'json',
-        'mutation',
-        'output-topic',
-        'parallel-approval',
-        'run-wf',
-        'saga',
-        'workflow-events',
-        'casting',
-        'spawn-thread-foreach',
-        'struct-def',
-        'timestamp',
-        'user-tasks',
-        'variables',
-        'wait-for-condition',
-        'worker-context',
-].each { example ->
-    include "example-$example"
-    project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/java/$example")
-}
+//
+//[
+//        'await-workflow-event',
+//        'basic',
+//        'checkpoint-tasks',
+//        'child-thread',
+//        'hierarchical-workflow',
+//        'run-child-workflow',
+//        'conditionals-while',
+//        'conditionals',
+//        'correlated-event',
+//        'exception-handler',
+//        'expressions',
+//        'external-event',
+//        'hundred-tasks',
+//        'interrupt-handler',
+//        'json',
+//        'mutation',
+//        'output-topic',
+//        'parallel-approval',
+//        'run-wf',
+//        'saga',
+//        'workflow-events',
+//        'casting',
+//        'spawn-thread-foreach',
+//        'struct-def',
+//        'timestamp',
+//        'user-tasks',
+//        'variables',
+//        'wait-for-condition',
+//        'worker-context',
+//].each { example ->
+//    include "example-$example"
+//    project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/java/$example")
+//}
