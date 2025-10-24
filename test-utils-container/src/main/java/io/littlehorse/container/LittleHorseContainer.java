@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Properties;
+import org.testcontainers.containers.ContainerLaunchException;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.Transferable;
@@ -48,15 +49,16 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
 
     private static final String CONTAINER_COMMAND = "server";
     private static final String CONTAINER_CONFIG_PATH = "/lh/config.properties";
-    private static final String CONTAINER_LOG_REGEX = ".*State transition from REBALANCING to RUNNING.*";
 
     private static final int DEFAULT_INTERNAL_PORT = 2023;
+    private static final int DEFAULT_HEALTHCHECK_PORT = 1822;
     private static final DockerImageName DEFAULT_IMAGE_NAME =
             DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server");
     private static final String DEFAULT_KAFKA_BOOTSTRAP_SERVERS = "kafka:19092";
     private static final String DEFAULT_CORE_STREAM_THREADS = "2";
     private static final String DEFAULT_INTERNAL_ADVERTISED_HOST = "littlehorse";
     private static final int DEFAULT_INSTANCE_ID = 1;
+    private static final String DEFAULT_READINESS_CHECK_PATH = "/readiness";
 
     private int instanceId;
     private String kafkaBootstrapServers;
@@ -80,12 +82,11 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
         super(littlehorseImage);
         littlehorseImage.assertCompatibleWith(DEFAULT_IMAGE_NAME);
         this.withCommand(CONTAINER_COMMAND, CONTAINER_CONFIG_PATH)
-                .withExposedPorts(DEFAULT_INTERNAL_PORT)
+                .withExposedPorts(DEFAULT_INTERNAL_PORT, DEFAULT_HEALTHCHECK_PORT)
                 .withInstanceId(DEFAULT_INSTANCE_ID)
                 .withKafkaBootstrapServers(DEFAULT_KAFKA_BOOTSTRAP_SERVERS)
                 .withInternalAdvertisedHost(DEFAULT_INTERNAL_ADVERTISED_HOST)
-                // TODO: try to use http
-                .waitingFor(Wait.forLogMessage(CONTAINER_LOG_REGEX, 2));
+                .waitingFor(Wait.forHttp(DEFAULT_READINESS_CHECK_PATH).forPort(DEFAULT_HEALTHCHECK_PORT));
     }
 
     @Override
@@ -94,7 +95,7 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
         try {
             getServerProperties().store(writer, null);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ContainerLaunchException("Error generating LH configuration file", e);
         }
         this.copyFileToContainer(Transferable.of(writer.toString(), 777), CONTAINER_CONFIG_PATH);
     }
@@ -135,15 +136,6 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     }
 
     /**
-     * Get LH host.
-     *
-     * @return Hostname: localhost.
-     */
-    public String getApiHost() {
-        return getHost();
-    }
-
-    /**
      * Get docker internal network hostname.
      *
      * @return Internal docker hostname.
@@ -162,12 +154,39 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     }
 
     /**
+     * Get LH host.
+     *
+     * @return Hostname: localhost.
+     */
+    public String getApiHost() {
+        return getHost();
+    }
+
+    /**
      * Get external port.
      *
      * @return External port. Example: 32023.
      */
     public int getApiPort() {
         return getMappedPort(DEFAULT_INTERNAL_PORT);
+    }
+
+    /**
+     * Get LH host.
+     *
+     * @return Hostname: localhost.
+     */
+    public String getHealthCheckHost() {
+        return getHost();
+    }
+
+    /**
+     * Get external port for healthcheck.
+     *
+     * @return External port.
+     */
+    public int getHealthCheckPort() {
+        return getMappedPort(DEFAULT_HEALTHCHECK_PORT);
     }
 
     /**
