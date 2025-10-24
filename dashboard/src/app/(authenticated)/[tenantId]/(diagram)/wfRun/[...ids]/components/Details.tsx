@@ -1,22 +1,13 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
-import { WfRun, WfRunId } from 'littlehorse-client/proto'
+import { WfRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
+import { wfRunStatusColor } from '../../../StatusColor'
 
 type DetailsProps = WfRun
 
-export const statusColors: { [key in WfRun['status']]: string } = {
-  STARTING: 'bg-teal-200',
-  RUNNING: 'bg-blue-200',
-  COMPLETED: 'bg-green-200',
-  HALTING: 'bg-orange-200',
-  HALTED: 'bg-gray-200',
-  ERROR: 'bg-yellow-200',
-  EXCEPTION: 'bg-red-200',
-  UNRECOGNIZED: 'bg-gray-200',
-}
 
 export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) => {
   if (!id || !wfSpecId) return null
@@ -47,7 +38,7 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
           </LinkWithTenant>
         </div>
         <div className="flex items-center">
-          Status: <span className={`ml-2 rounded px-2 ${statusColors[status]}`}>{`${status}`}</span>
+          Status: <span className={`ml-2 rounded px-2 ${wfRunStatusColor[status]}`}>{`${status}`}</span>
         </div>
         <div className="flex items-center">
           Started: <span className={` ml-2`}>{`${formatDate(Date.parse(startTime || ''))}`}</span>

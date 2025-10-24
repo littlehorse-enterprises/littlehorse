@@ -3,7 +3,6 @@ import { useDiagram } from '../../../hooks/useDiagram'
 import { OutgoingEdges } from './OutgoingEdges'
 import { LabelContent } from '../Components'
 import { FailureHandler } from './FailureHandler'
-import { FailureHandlerDef } from 'littlehorse-client/proto'
 
 export const NodeInfo: FC = () => {
   const { selectedNode } = useDiagram()
