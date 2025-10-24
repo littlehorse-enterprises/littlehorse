@@ -16,7 +16,7 @@ public class LittleHorseContainerTest {
     @Container
     public LittleHorseCluster littleHorseCluster = LittleHorseCluster.newBuilder()
             .withInstances(2)
-            .withKafkaImage("apache/kafka-native:4.0.1")
+            .withKafkaImage("apache/kafka-native:4.1.0")
             .withLittlehorseImage("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master")
             .build();
 
