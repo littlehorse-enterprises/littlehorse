@@ -3,6 +3,11 @@ plugins {
     id 'com.diffplug.spotless'
 }
 
+java {
+    sourceCompatibility=JavaVersion.VERSION_25
+    targetCompatibility=JavaVersion.VERSION_25
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
