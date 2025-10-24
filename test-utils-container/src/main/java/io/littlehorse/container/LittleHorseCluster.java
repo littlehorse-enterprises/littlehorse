@@ -52,12 +52,12 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     /**
      * It creates a KafkaContainer and a list of LittleHorseContainer
      *
-     * @param kafkaImage       Example: {@code DockerImageName.parse("apache/kafka-native:latest")}.
-     * @param littlehorseImage Example: {@code DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")}.
-     * @param instances        LH cluster size.
-     * @param network          Internal Network.
+     * @param kafkaImage             Example: {@code DockerImageName.parse("apache/kafka-native:latest")}.
+     * @param littlehorseImage       Example: {@code DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")}.
+     * @param instances              LH cluster size.
+     * @param network                Internal Network.
      * @param kafkaContainerModifier Kafka Customization.
-     * @param lhContainerModifier Kafka Customization.
+     * @param lhContainerModifier    Kafka Customization.
      */
     private LittleHorseCluster(
             final DockerImageName kafkaImage,
@@ -127,6 +127,15 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
      */
     public List<LittleHorseContainer> getClusterInstances() {
         return clusterInstances;
+    }
+
+    /**
+     * Gets cluster size.
+     *
+     * @return cluster size.
+     */
+    public int getSize() {
+        return clusterInstances.size();
     }
 
     /**
