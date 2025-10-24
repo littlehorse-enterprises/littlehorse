@@ -92,9 +92,8 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
 
         this.withNetwork(network)
                 .withCommand(LHCTL_CONTAINER_COMMAND)
-                .withEnv(LHC_API_HOST, clusterInstances.getFirst().getInternalApiHost())
-                .withEnv(
-                        LHC_API_PORT, String.valueOf(clusterInstances.getFirst().getInternalApiPort()))
+                .withEnv(LHC_API_HOST, clusterInstances.get(0).getInternalApiHost())
+                .withEnv(LHC_API_PORT, String.valueOf(clusterInstances.get(0).getInternalApiPort()))
                 .withCreateContainerCmdModifier(cmd -> Objects.requireNonNull(cmd.getHostConfig())
                         .withRestartPolicy(RestartPolicy.onFailureRestart(5))) // waiting for LH to run
                 .withStartupCheckStrategy(new OneShotStartupCheckStrategy()) // related to the RestartPolicy
@@ -147,7 +146,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
      * @return Properties with the container configurations.
      */
     public Properties getClientProperties() {
-        return clusterInstances.getFirst().getClientProperties();
+        return clusterInstances.get(0).getClientProperties();
     }
 
     /**
@@ -159,7 +158,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
      * @return Map with the container configurations.
      */
     public Map<String, String> getClientConfig() {
-        return clusterInstances.getFirst().getClientConfig();
+        return clusterInstances.get(0).getClientConfig();
     }
 
     /**
