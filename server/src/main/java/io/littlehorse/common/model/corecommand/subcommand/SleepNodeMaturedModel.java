@@ -9,10 +9,8 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
@@ -58,10 +56,8 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
     @Override
     public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager getableManager = executionContext.getableManager();
-        ReadOnlyMetadataManager metadataManager = executionContext.metadataManager();
         WfService service = executionContext.service();
-        WfRunModel wfRunModel =
-                getableManager.get(new WfRunIdModel(nodeRunId.getWfRunId().getId()));
+        WfRunModel wfRunModel = getableManager.get(nodeRunId.getWfRunId());
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
