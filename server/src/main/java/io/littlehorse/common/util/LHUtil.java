@@ -352,10 +352,17 @@ public class LHUtil {
             return null;
         }
         final String[] parts = fullStoreKey.split("/");
+        if (parts.length < 6) {
+            return null;
+        }
+        final String prefix = parts[2];
+        if (!prefix.equals(Storeable.GROUPED_WF_RUN_PREFIX)) {
+            return null;
+        }
 
         final String tenantId = parts[0];
-        final String storeableType = parts[1];
         final String wfRunId = parts[3];
+        final String storeableType = parts[4];
         final String getableType = parts[5];
 
         StringBuilder legacyKey = new StringBuilder()

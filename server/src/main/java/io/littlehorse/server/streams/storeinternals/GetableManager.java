@@ -159,9 +159,9 @@ public class GetableManager extends ReadOnlyGetableManager {
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> bufferEntry = (GetableToStore<U, T>) uncommittedChanges.get(id.getStoreableKey());
 
-        // if (bufferEntry == null) {
-        //     throw new IllegalStateException("Impossible to get null buffer entry after successfull this#get()");
-        // }
+        if (bufferEntry == null) {
+            throw new IllegalStateException("Impossible to get null buffer entry after successfull this#get()");
+        }
         // Mark it for deletion
         bufferEntry.setObjectToStore(null);
 

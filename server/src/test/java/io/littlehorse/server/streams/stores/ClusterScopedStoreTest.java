@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import com.google.common.collect.ImmutableList;
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -57,11 +58,13 @@ public class ClusterScopedStoreTest {
         assertThat(keyValues).hasSize(1);
         KeyValue<String, Bytes> storedRecord = keyValues.get(0);
         assertThat(storedRecord.key)
-                .isEqualTo("%s/%s/%s"
+                .isEqualTo("%s/%s/%s/%s/%s/"
                         .formatted(
                                 storedGetableType,
-                                objectTypeNumber,
-                                getableToSave.getStoredObject().getId()));
+                                Storeable.GROUPED_WF_RUN_PREFIX,
+                                getableToSave.getStoredObject().getId(),
+                                storedGetableType,
+                                objectTypeNumber));
         store.delete(getableToSave);
         assertThat(ImmutableList.copyOf(nativeInMemoryStore.all())).isEmpty();
     }
