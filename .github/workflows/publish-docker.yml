@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 24
+          java-version: 25
 
       - name: Dump version
         if: inputs.tag != ''
@@ -69,7 +69,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 24
+          java-version: 25
 
       - name: Tests and Build
         run: ./gradlew canary:installDist

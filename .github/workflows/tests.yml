@@ -96,7 +96,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 24
+          java-version: 25
 
       - name: Tests
         run: ./gradlew canary:spotlessCheck canary:test canary:build
@@ -112,7 +112,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 24
+          java-version: 25
 
       - name: Validate Indentations
         run: ./gradlew server:spotlessCheck
