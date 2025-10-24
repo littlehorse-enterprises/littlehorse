@@ -1,31 +1,31 @@
 package io.littlehorse.container;
 
-import static io.littlehorse.container.LittleHorseCluster.LHC_API_HOST;
-import static io.littlehorse.container.LittleHorseCluster.LHC_API_PORT;
-
-import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.command.InspectContainerResponse;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.utility.DockerImageName;
 
 /**
  * <p>
  * LH Testcontainers implementation
  * </p>
+ *
  * Example of using:
  * <blockquote><pre>
  * public LittleHorseContainer littleHorseInstance = new LittleHorseContainer(littlehorseImage)
  *             .withKafkaBootstrapServers(kafkaBootstrapServers)
- *             .withAdvertisedPort(externalPort)
  *             .withInstanceId(instanceId)
  *             .withInternalAdvertisedHost(internalHostname) // unique hostname for each instance
  *             .withNetwork(dockerNetwork)
  *             .dependsOn(kafka);
  * </pre></blockquote>
- * Example of using with LittleHorseCluster (@see {@link LittleHorseCluster#newBuilder()}):
+ *
+ * Example of using through LittleHorseCluster (@see {@link LittleHorseCluster#newBuilder()}):
  * <blockquote><pre>
  * {@code @Container}
  * public LittleHorseCluster littleHorseCluster = LittleHorseCluster.newBuilder()
@@ -41,17 +41,29 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     private static final String LHS_INSTANCE_ID = "LHS_INSTANCE_ID";
     private static final String LHS_CORE_STREAM_THREADS = "LHS_CORE_STREAM_THREADS";
     private static final String LHS_KAFKA_BOOTSTRAP_SERVERS = "LHS_KAFKA_BOOTSTRAP_SERVERS";
-    private static final String LOG_REGEX = ".*State transition from REBALANCING to RUNNING.*";
-    private static final long DEFAULT_LH_MEMORY = 1024L * 1024L * 1024L;
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
+
+    private static final String LHC_API_HOST = "LHC_API_HOST";
+    private static final String LHC_API_PORT = "LHC_API_PORT";
+
+    private static final String CONTAINER_COMMAND = "server";
+    private static final String CONTAINER_CONFIG_PATH = "/lh/config.properties";
+    private static final String CONTAINER_LOG_REGEX = ".*State transition from REBALANCING to RUNNING.*";
+
+    private static final int DEFAULT_INTERNAL_PORT = 2023;
     private static final DockerImageName DEFAULT_IMAGE_NAME =
             DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server");
-    private static final int DEFAULT_INTERNAL_PORT = 2023;
-    private static final int DEFAULT_ADVERTISED_PORT = 32023;
     private static final String DEFAULT_KAFKA_BOOTSTRAP_SERVERS = "kafka:19092";
+    private static final String DEFAULT_CORE_STREAM_THREADS = "2";
+    private static final String DEFAULT_INTERNAL_ADVERTISED_HOST = "littlehorse";
+    private static final int DEFAULT_INSTANCE_ID = 1;
+
+    private int instanceId;
+    private String kafkaBootstrapServers;
+    private String internalAdvertisedHost;
 
     /**
-     * Create LittleHorse Testcontainers Wrapper
+     * Create LittleHorse Testcontainers Wrapper.
      *
      * @param littlehorseImage Example: "ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest"
      */
@@ -60,114 +72,125 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     }
 
     /**
-     * Create LittleHorse Testcontainers Wrapper
+     * Create LittleHorse Testcontainers Wrapper.
      *
      * @param littlehorseImage Example: {@code DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")}
      */
     public LittleHorseContainer(final DockerImageName littlehorseImage) {
         super(littlehorseImage);
         littlehorseImage.assertCompatibleWith(DEFAULT_IMAGE_NAME);
-        this.withExposedPorts(DEFAULT_INTERNAL_PORT)
+        this.withCommand(CONTAINER_COMMAND, CONTAINER_CONFIG_PATH)
+                .withExposedPorts(DEFAULT_INTERNAL_PORT)
+                .withInstanceId(DEFAULT_INSTANCE_ID)
                 .withKafkaBootstrapServers(DEFAULT_KAFKA_BOOTSTRAP_SERVERS)
-                .withAdvertisedPort(DEFAULT_ADVERTISED_PORT)
-                .withInstanceId(1)
-                .withEnv(LHS_CORE_STREAM_THREADS, "2")
-                .withCreateContainerCmdModifier(
-                        cmd -> Objects.requireNonNull(cmd.getHostConfig()).withMemory(DEFAULT_LH_MEMORY))
-                .waitingFor(Wait.forLogMessage(LOG_REGEX, 2));
+                .withInternalAdvertisedHost(DEFAULT_INTERNAL_ADVERTISED_HOST)
+                // TODO: try to use http
+                .waitingFor(Wait.forLogMessage(CONTAINER_LOG_REGEX, 2));
+    }
+
+    @Override
+    protected void containerIsStarting(InspectContainerResponse containerInfo) {
+        StringWriter writer = new StringWriter();
+        try {
+            getServerProperties().store(writer, null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.copyFileToContainer(Transferable.of(writer.toString(), 777), CONTAINER_CONFIG_PATH);
     }
 
     /**
-     * Kafka bootstrap servers. Configures the {@code LHS_KAFKA_BOOTSTRAP_SERVERS} env variable.
+     * Kafka bootstrap servers.
      *
      * @param bootstrapServers Example: kafka:19092
-     * @return This testcontainer
+     * @return This testcontainer.
      * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_kafka_bootstrap_servers">Server Documentation.</a>
      */
     public LittleHorseContainer withKafkaBootstrapServers(final String bootstrapServers) {
-        return this.withEnv(LHS_KAFKA_BOOTSTRAP_SERVERS, bootstrapServers);
+        this.kafkaBootstrapServers = bootstrapServers;
+        return this;
     }
 
     /**
-     * External port for connection. It configures the {@code LHS_ADVERTISED_LISTENERS} env variable.
+     * Instance number.
      *
-     * @param port Example: 32023
-     * @return This testcontainer
-     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_advertised_listeners">Server Documentation.</a>
-     */
-    public LittleHorseContainer withAdvertisedPort(final int port) {
-        return this.withEnv(LHS_ADVERTISED_LISTENERS, String.format("PLAIN://localhost:%d", port))
-                .withCreateContainerCmdModifier(cmd -> Objects.requireNonNull(cmd.getHostConfig())
-                        .withPortBindings(PortBinding.parse(String.format("%d:%d", port, DEFAULT_INTERNAL_PORT))));
-    }
-
-    /**
-     * Instance number
-     *
-     * @param id Instance id
-     * @return This testcontainer
+     * @param id Instance id.
+     * @return This testcontainer.
      */
     public LittleHorseContainer withInstanceId(final int id) {
-        return this.withEnv(LHS_INSTANCE_ID, String.valueOf(id));
+        this.instanceId = id;
+        return this;
     }
 
     /**
-     * For docker network. It configures the {@code LHS_INTERNAL_ADVERTISED_HOST} env variable.
+     * For docker network.
      *
-     * @param hostname Example: server1
-     * @return This testcontainer
+     * @param hostname Example: server1.
+     * @return This testcontainer.
      * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_internal_advertised_host">Server Documentation.</a>
      */
     public LittleHorseContainer withInternalAdvertisedHost(final String hostname) {
-        return this.withEnv(LHS_INTERNAL_ADVERTISED_HOST, hostname).withNetworkAliases(hostname);
+        this.internalAdvertisedHost = hostname;
+        return this.withNetworkAliases(hostname);
     }
 
     /**
-     * Get LH host
+     * Get LH host.
      *
-     * @return Hostname: localhost
+     * @return Hostname: localhost.
      */
     public String getApiHost() {
         return getHost();
     }
 
     /**
-     * Get docker internal network hostname
+     * Get docker internal network hostname.
      *
-     * @return Internal docker hostname
+     * @return Internal docker hostname.
      */
     public String getInternalApiHost() {
-        if (getNetworkAliases().isEmpty()) {
-            return getApiHost();
-        }
-        return getNetworkAliases().get(0);
+        return internalAdvertisedHost;
     }
 
     /**
-     * Get docker internal network port
+     * Get docker internal network port.
      *
-     * @return Internal docket network port
+     * @return Internal docket network port. Example: 2023.
      */
     public int getInternalApiPort() {
         return DEFAULT_INTERNAL_PORT;
     }
 
     /**
-     * Get external port
+     * Get external port.
      *
-     * @return External port: 32023
+     * @return External port. Example: 32023.
      */
     public int getApiPort() {
         return getMappedPort(DEFAULT_INTERNAL_PORT);
     }
 
     /**
-     *  Return a properties object with the client configuration for connections.
+     * Return a map object with the client configuration.
+     * <p>
+     * Use: {@code LHConfig.newBuilder().loadFromMap(littlehorseContainer.getClientConfig()).build()}
+     * </p>
+     *
+     * @return Map with the client configurations.
+     */
+    public Map<String, String> getClientConfig() {
+        return Map.of(
+                LHC_API_HOST, getApiHost(),
+                LHC_API_PORT, String.valueOf(getApiPort()));
+    }
+
+    /**
+     * Return a properties object with the client configuration.
      * <p>
      * Use: {@code new LHConfig(littlehorseContainer.getClientProperties())}
      * </p>
      *
-     * @return Properties with the container configurations.
+     * @return Properties with the client configurations.
      */
     public Properties getClientProperties() {
         Properties properties = new Properties();
@@ -176,14 +199,27 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     }
 
     /**
-     * Return a map object with the client configuration for connections.
-     * <p>
-     * Use: {@code LHConfig.newBuilder().loadFromMap(littlehorseContainer.getClientConfig()).build()}
-     * </p>
+     * Return a map object with the container configuration.
      *
      * @return Map with the container configurations.
      */
-    public Map<String, String> getClientConfig() {
-        return Map.of(LHC_API_HOST, getApiHost(), LHC_API_PORT, String.valueOf(getApiPort()));
+    public Map<String, String> getServerConfig() {
+        return Map.of(
+                LHS_CORE_STREAM_THREADS, DEFAULT_CORE_STREAM_THREADS,
+                LHS_INSTANCE_ID, String.valueOf(instanceId),
+                LHS_KAFKA_BOOTSTRAP_SERVERS, kafkaBootstrapServers,
+                LHS_ADVERTISED_LISTENERS, "PLAIN://%s:%d".formatted(getApiHost(), getApiPort()),
+                LHS_INTERNAL_ADVERTISED_HOST, internalAdvertisedHost);
+    }
+
+    /**
+     * Return the properties that the LH container is using to run.
+     *
+     * @return Properties with the container configurations.
+     */
+    public Properties getServerProperties() {
+        Properties properties = new Properties();
+        properties.putAll(getServerConfig());
+        return properties;
     }
 }
