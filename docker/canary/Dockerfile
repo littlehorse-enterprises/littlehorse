@@ -1,4 +1,4 @@
-FROM amazoncorretto:24-alpine
+FROM amazoncorretto:25-alpine3.22
 WORKDIR /lh
 COPY ./docker/canary/docker-entrypoint.sh /lh
 COPY ./canary/build/install/canary/lib /lh/lib

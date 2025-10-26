@@ -35,7 +35,6 @@ include(
         'parallel-approval',
         'run-wf',
         'saga',
-        'workflow-events',
         'casting',
         'spawn-thread-foreach',
         'struct-def',
