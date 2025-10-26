@@ -13,10 +13,13 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
+import lombok.Getter;
 
 public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunModel> {
 
+    @Getter
     public WfRunIdModel wfRunId;
+
     public String taskGuid;
 
     public TaskRunIdModel() {}

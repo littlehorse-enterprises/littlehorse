@@ -106,7 +106,7 @@ public class LHTaskManager {
             if (scheduledTask != null) {
                 this.coreStore.put(scheduledTask);
                 taskQueueManager.onTaskScheduled(
-                        taskId, scheduledTask.getTaskDefId(), scheduledTask, authContext.tenantId());
+                        taskId, scheduledTask.getTaskDefId(), scheduledTask.getTaskRunId(), authContext.tenantId());
             } else {
                 this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }

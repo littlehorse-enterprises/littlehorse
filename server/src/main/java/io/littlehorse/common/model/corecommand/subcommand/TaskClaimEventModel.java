@@ -31,17 +31,17 @@ import lombok.extern.slf4j.Slf4j;
  * one will receive the `ScheduledTask`, and therefore the second will be
  * ignored.
  */
-public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
+public class TaskClaimEventModel extends CoreSubCommand<TaskClaimEventPb> {
 
     private TaskRunIdModel taskRunId;
     private Date time;
     private String taskWorkerVersion;
     private String taskWorkerId;
 
-    public TaskClaimEvent() {}
+    public TaskClaimEventModel() {}
 
-    public TaskClaimEvent(ScheduledTaskModel task, PollTaskRequestObserver taskClaimer) {
-        this.taskRunId = task.getTaskRunId();
+    public TaskClaimEventModel(TaskRunIdModel task, PollTaskRequestObserver taskClaimer) {
+        this.taskRunId = task;
         this.time = new Date();
         this.taskWorkerId = taskClaimer.getClientId();
         this.taskWorkerVersion = taskClaimer.getTaskWorkerVersion();
@@ -94,8 +94,8 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
         }
     }
 
-    public static TaskClaimEvent fromProto(TaskClaimEventPb proto, ExecutionContext context) {
-        TaskClaimEvent out = new TaskClaimEvent();
+    public static TaskClaimEventModel fromProto(TaskClaimEventPb proto, ExecutionContext context) {
+        TaskClaimEventModel out = new TaskClaimEventModel();
         out.initFrom(proto, context);
         return out;
     }
