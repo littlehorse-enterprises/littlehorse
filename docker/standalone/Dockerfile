@@ -1,4 +1,4 @@
-FROM amazoncorretto:24-alpine
+FROM amazoncorretto:25-alpine3.22
 
 LABEL maintainer="engineering@littlehorse.io"
 
