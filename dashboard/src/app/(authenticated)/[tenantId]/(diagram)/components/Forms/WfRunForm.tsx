@@ -5,6 +5,7 @@ import { forwardRef } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { VariableLabel } from './components/BaseFormField'
 import { FormFields } from './components/FormFields'
+import { StructDefFormFields } from './components/StructDefFormFields'
 
 export type FormValues = {
   [key: string]: unknown
@@ -17,8 +18,6 @@ type Prop = {
 }
 
 export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, wfSpec, onSubmit }, ref) => {
-  console.log('wfSpecVariables', wfSpecVariables)
-  console.log('wfSpec', wfSpec)
   const methods = useForm<FormValues>()
   const { register, handleSubmit, formState } = methods
 
@@ -59,6 +58,7 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, w
         )}
         {!!sortedVariables.length &&
           sortedVariables.map((variable: ThreadVarDef) =>
+            variable.varDef?.typeDef?.definedType?.$case === "structDefId" ? <StructDefFormFields key={JSON.stringify(variable)} structDefId={variable.varDef?.typeDef?.definedType?.value} threadVarDef={variable} /> :
             variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR ? (
               <VariableLabel key={JSON.stringify(variable)} {...variable} />
             ) : (
