@@ -8,7 +8,10 @@ import useSWR from 'swr'
 import { FormValues } from '../WfRunForm'
 import { FormComponent } from './formType'
 
-export const StructDefFormFields: FC<{ structDefId: StructDefId, threadVarDef: ThreadVarDef }> = ({ structDefId, threadVarDef }) => {
+export const StructDefFormFields: FC<{ structDefId: StructDefId; threadVarDef: ThreadVarDef }> = ({
+  structDefId,
+  threadVarDef,
+}) => {
   const tenantId = useParams().tenantId as string
   const methods = useForm<FormValues>()
   const { register, handleSubmit, formState } = methods
@@ -27,16 +30,18 @@ export const StructDefFormFields: FC<{ structDefId: StructDefId, threadVarDef: T
       })),
     [data]
   )
-  fields.forEach(field => {
+  fields.forEach(field => {})
 
-  })
+  return (
+    <div>
+      {fields.map(field => {
+        if (field?.fieldType?.$case !== 'primitiveType') return
+        const type = getVariableCaseFromType(field.fieldType?.value)
+        const Component = FormComponent[type]
 
-  return <div>{fields.map(field => {
-    if (field?.fieldType?.$case !== 'primitiveType') return
-    const type = getVariableCaseFromType(field.fieldType?.value)
-    const Component = FormComponent[type]
-
-    // todo : make formcomponents compatible w/ this usecase
-    return <Component key={field.name} variables={threadVarDef} formState={formState} register={register} />
-  })}</div>
+        // todo : make formcomponents compatible w/ this usecase
+        return <Component key={field.name} variables={threadVarDef} formState={formState} register={register} />
+      })}
+    </div>
+  )
 }
