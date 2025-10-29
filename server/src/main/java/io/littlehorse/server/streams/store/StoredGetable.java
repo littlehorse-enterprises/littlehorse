@@ -90,7 +90,6 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     public static String getRocksDBKey(String key, GetableClassEnum objType) {
-        // System.out.println("Getting RocksDB key for " + key + " with type " + objType);
-        return Storeable.getGroupedPrefixKey(key, StoreableType.STORED_GETABLE, objType);
+        return Storeable.getGroupedGetableStorePrefix(key, StoreableType.STORED_GETABLE, objType);
     }
 }

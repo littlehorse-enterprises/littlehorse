@@ -44,7 +44,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 + storeKey;
     }
 
-    public static String getGroupedPrefixKey(String wfRunId, StoreableType type, GetableClassEnum getableType) {
+    public static String getGroupedGetableStorePrefix(String wfRunId, StoreableType type, GetableClassEnum getableType) {
         return GROUPED_WF_RUN_PREFIX + "/" + wfRunId +  type.getNumber() + "/" + getableType.getNumber() + "/";
     }
 

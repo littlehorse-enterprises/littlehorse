@@ -591,13 +591,13 @@ public class BackendInternalComms implements Closeable {
     private Pair<List<ByteString>, PartitionBookmarkPb> objectIdPrefixScanGlobalStore(
             BoundedObjectIdScanPb objectIdScan, PartitionBookmarkPb bookmark, int limit, GetableClassEnum objectType) {
 
-        String endKey = StoredGetable.getRocksDBKey(objectIdScan.getEndObjectId() + "~", objectType);
-        String startKey;
-        if (bookmark == null) {
-            startKey = StoredGetable.getRocksDBKey(objectIdScan.getStartObjectId(), objectType);
-        } else {
-            startKey = bookmark.getLastKey();
-        }
+                String startKey;
+                if (bookmark == null) {
+                    startKey = StoredGetable.getRocksDBKey(objectIdScan.getStartObjectId(), objectType);
+                } else {
+                    startKey = bookmark.getLastKey();
+                }
+                String endKey = StoredGetable.getRocksDBKey(objectIdScan.getEndObjectId() + "~", objectType);
 
         String bookmarkKey = null;
         List<ByteString> results = new ArrayList<>();
