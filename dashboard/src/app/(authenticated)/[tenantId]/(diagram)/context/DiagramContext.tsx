@@ -1,14 +1,23 @@
-import { Node as NodeProto } from 'littlehorse-client/proto'
+import { Node as NodeProto, NodeRun, WfRun } from 'littlehorse-client/proto'
 import { Dispatch, SetStateAction, createContext } from 'react'
 import { Node } from 'reactflow'
 import { NodeType } from '../components/NodeTypes/extractNodes'
+import { NodeRunCase } from '../components/Modals/NodeRun/AccordionContent'
+import { NodeProps as NodeFlow } from 'reactflow'
 
 export type ThreadType = {
   name: string
   number: number
 }
-export type NodeInContext = Node<NodeProto, NodeType> | undefined
+export type NodeRunType = Node<NodeProto & { nodeRunsList: NodeRun[] }, NodeType>
 
+export type NodeInContext =
+  | Node<NodeProto, NodeType>
+  | Node<NodeProto & { nodeRunsList: NodeRun[] }, NodeType>
+  | undefined
+
+
+// export type NodeRunType = WfRun
 type DiagramContextType = {
   thread: ThreadType
   setThread: Dispatch<SetStateAction<ThreadType>>
