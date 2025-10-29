@@ -8,6 +8,7 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.TestStreamObserver;
@@ -23,6 +24,7 @@ import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -80,12 +82,14 @@ class CommandSenderTest {
         PollTaskRequestObserver client = mock(PollTaskRequestObserver.class);
         when(client.getTenantId()).thenReturn(new TenantIdModel("test-tenant"));
         when(client.getPrincipalId()).thenReturn(new PrincipalIdModel("test-principal"));
+        StreamObserver<PollTaskResponse> responseObserver = mock(StreamObserver.class);
+        when(client.getResponseObserver()).thenReturn(responseObserver);
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
         producerWithResult(taskClaimProducer, producerResult);
         sender.doSend(scheduledTask, client);
         threadPool.shutdown();
         threadPool.awaitTermination(10, TimeUnit.SECONDS);
-        verify(client).sendResponse(scheduledTask);
+        verify(responseObserver).onNext(any());
     }
 
     @Test

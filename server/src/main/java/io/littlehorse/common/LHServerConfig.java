@@ -405,7 +405,7 @@ public class LHServerConfig extends ConfigBase {
 
         return Pair.of(
                 new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
-                new NewTopic(executionTopicName, getClusterPartitions(), getReplicationFactor()));
+                new NewTopic(executionTopicName, getOutputToppicPartitions(), getReplicationFactor()));
     }
 
     public String getKafkaGroupId(String component) {
@@ -978,6 +978,9 @@ public class LHServerConfig extends ConfigBase {
                 "rebootstrap");
         props.put(
                 StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
+
+        // Reduce the chattiness of the logs to once every 15 minutes (Streams default 2 minutes).
+        props.put(StreamsConfig.LOG_SUMMARY_INTERVAL_MS_CONFIG, 1000 * 60 * 15);
 
         // Due to bug in Kafka Streams, the only way to get the server to leave the group on shutdown is to use this
         // internal flag. We actually want to leave the group when we close() so that tasks can be reassigned during

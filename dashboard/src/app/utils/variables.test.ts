@@ -4,8 +4,15 @@ import {
   VariableDef,
   VariableMutationType,
   VariableType,
+  VariableValue,
 } from 'littlehorse-client/proto'
-import { getTypedVariableValue, getVariable, getVariableCaseFromTypeDef, getVariableDefType } from './variables'
+import {
+  getTypedVariableValue,
+  getVariable,
+  getVariableCaseFromTypeDef,
+  getVariableDefType,
+  getVariableValue,
+} from './variables'
 
 describe('getVariable', () => {
   it('should return from literalValue str', () => {
@@ -50,7 +57,10 @@ describe('getVariable', () => {
 
   it('should return variableName with jsonPath', () => {
     const variable: VariableAssignment = {
-      jsonPath: '$.path',
+      path: {
+        $case: 'jsonPath',
+        value: '$.path',
+      },
       source: {
         $case: 'variableName',
         value: 'variable',
@@ -289,7 +299,7 @@ describe('getVariable', () => {
         value: {},
       },
     }
-    expect(getVariable(variable)).toEqual('null')
+    expect(getVariable(variable)).toEqual('NULL')
   })
 })
 
@@ -410,22 +420,14 @@ describe('getVariableCaseFromTypeDef', () => {
     expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
   })
 
-  it('should return jsonArr for inlineArrayDef', () => {
-    const typeDef: TypeDefinition = {
-      definedType: {
-        $case: 'inlineArrayDef',
-        value: {
-          // minimal stub; fields are not used by the function
-        } as any,
-      },
-      masked: false,
-    }
-
-    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('jsonArr')
-  })
-
   it('should throw on unknown type', () => {
     const typeDef = {} as TypeDefinition
     expect(() => getVariableCaseFromTypeDef(typeDef)).toThrow('Unknown variable type.')
+  })
+})
+
+describe('getVariableValue', () => {
+  it('should return NULL for empty value', () => {
+    expect(getVariableValue({ value: {} } as VariableValue)).toEqual('NULL')
   })
 })

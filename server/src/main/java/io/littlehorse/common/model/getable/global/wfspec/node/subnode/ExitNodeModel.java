@@ -88,8 +88,11 @@ public class ExitNodeModel extends SubNode<ExitNode> {
 
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) throws InvalidExpressionException {
-        // turns out that exit nodes do not return anything.
-        return Optional.of(new ReturnTypeModel());
+        if (returnContent == null) {
+            return Optional.of(new ReturnTypeModel());
+        }
+        return Optional.of(new ReturnTypeModel(returnContent.resolveType(
+                manager, node.getThreadSpec().getWfSpec(), node.getThreadSpec().getName())));
     }
 
     public Optional<ReturnTypeModel> getThreadReturnType(ReadOnlyMetadataManager manager)

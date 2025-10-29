@@ -442,5 +442,59 @@ public interface NodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder getWaitForConditionOrBuilder();
 
+  /**
+   * <pre>
+   * Runs a child workflow and returns the resulting WfRunId
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   * @return Whether the runChildWf field is set.
+   */
+  boolean hasRunChildWf();
+  /**
+   * <pre>
+   * Runs a child workflow and returns the resulting WfRunId
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   * @return The runChildWf.
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNode getRunChildWf();
+  /**
+   * <pre>
+   * Runs a child workflow and returns the resulting WfRunId
+   * </pre>
+   *
+   * <code>.littlehorse.RunChildWfNode run_child_wf = 18;</code>
+   */
+  io.littlehorse.sdk.common.proto.RunChildWfNodeOrBuilder getRunChildWfOrBuilder();
+
+  /**
+   * <pre>
+   * Waits for a specified Child WfRun to complete
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForChildWfNode wait_for_child_wf = 19;</code>
+   * @return Whether the waitForChildWf field is set.
+   */
+  boolean hasWaitForChildWf();
+  /**
+   * <pre>
+   * Waits for a specified Child WfRun to complete
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForChildWfNode wait_for_child_wf = 19;</code>
+   * @return The waitForChildWf.
+   */
+  io.littlehorse.sdk.common.proto.WaitForChildWfNode getWaitForChildWf();
+  /**
+   * <pre>
+   * Waits for a specified Child WfRun to complete
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForChildWfNode wait_for_child_wf = 19;</code>
+   */
+  io.littlehorse.sdk.common.proto.WaitForChildWfNodeOrBuilder getWaitForChildWfOrBuilder();
+
   io.littlehorse.sdk.common.proto.Node.NodeCase getNodeCase();
 }

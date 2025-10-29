@@ -17,8 +17,10 @@ include(
 [
         'await-workflow-event',
         'basic',
+        'checkpoint-tasks',
         'child-thread',
-        'child-workflow',
+        'hierarchical-workflow',
+        'run-child-workflow',
         'conditionals-while',
         'conditionals',
         'correlated-event',
@@ -33,13 +35,14 @@ include(
         'parallel-approval',
         'run-wf',
         'saga',
+        'casting',
         'spawn-thread-foreach',
         'struct-def',
+        'timestamp',
         'user-tasks',
         'variables',
+        'wait-for-condition',
         'worker-context',
-        "timestamp"
-
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/java/$example")

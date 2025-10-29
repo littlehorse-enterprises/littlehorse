@@ -16,8 +16,6 @@ public abstract class LHClassType {
             return new LHPrimitiveType(classType);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
             return new LHStructDefType(classType);
-        } else if (classType.isArray()) {
-            return new LHArrayDefType(classType);
         }
         return new LHPrimitiveType(classType);
     }

@@ -90,7 +90,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
         coreStreams.setStateListener(coreState);
         timerStreams.setStateListener((newState, oldState) -> {
-            log.info("New state for timer topology: {}", newState);
+            log.debug("New state for timer topology: {}", newState);
             timerState = newState;
         });
     }
@@ -106,7 +106,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     @Override
     public void onRestoreStart(TopicPartition tp, String storeName, long startingOffset, long endingOffset) {
-        log.info("Starting restoration for store {} partition {}", storeName, tp.partition());
+        log.debug("Starting restoration for store {} partition {}", storeName, tp.partition());
         restorations.put(tp, new InProgressRestoration(tp, storeName, startingOffset, endingOffset, config));
     }
 
@@ -117,14 +117,14 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     @Override
     public void onRestoreEnd(TopicPartition tp, String storeName, long totalRestored) {
-        log.info("Completed restoration for store {} partition {}", storeName, tp.partition());
+        log.debug("Completed restoration for store {} partition {}", storeName, tp.partition());
         restorations.remove(tp);
     }
 
     @Override
     public void onRestoreSuspended(TopicPartition tp, String storeName, long totalRestored) {
         // This is harmless; it means the Task was migrated to another instance.
-        log.info("Suspending restoration for store {} partition {}", storeName, tp.partition());
+        log.debug("Suspending restoration for store {} partition {}", storeName, tp.partition());
         restorations.remove(tp);
     }
 

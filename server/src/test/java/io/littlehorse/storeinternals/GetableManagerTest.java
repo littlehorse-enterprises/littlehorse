@@ -11,6 +11,7 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -25,6 +26,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -437,9 +439,23 @@ public class GetableManagerTest {
     public void findScheduledTask() {
         ScheduledTaskModel task1 = TestUtil.scheduledTaskModel("wf-1");
         task1.setCreatedAt(new Date(new Date().getTime() + 2000L));
-        TaskRunModel taskRun1 = TestUtil.taskRun(task1.getTaskRunId(), task1.getTaskDefId());
         localStoreWrapper.put(task1);
-        ScheduledTaskModel result = getableManager.getScheduledTask(taskRun1.getObjectId());
+        ScheduledTaskModel result = getableManager.getScheduledTask(task1.getStoreKey());
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void findScheduledTaskByTaskRun() {
+        ScheduledTaskModel scheduledTask = TestUtil.scheduledTaskModel("wf-1");
+        scheduledTask.setCreatedAt(new Date(new Date().getTime() + 2000L));
+        TaskRunModel taskRun = TestUtil.taskRun(scheduledTask.getTaskRunId(), new TaskDefIdModel("asdf"));
+        getableManager.put(taskRun);
+        taskRun.setAttempts(List.of(new TaskAttemptModel()));
+        Date taskCreatedAt = new Date();
+        taskRun.getAttempts().get(0).setScheduleTime(taskCreatedAt);
+        scheduledTask.setCreatedAt(taskCreatedAt);
+        localStoreWrapper.put(scheduledTask);
+        ScheduledTaskModel result = getableManager.getScheduledTask(taskRun.getId());
         assertThat(result).isNotNull();
     }
 

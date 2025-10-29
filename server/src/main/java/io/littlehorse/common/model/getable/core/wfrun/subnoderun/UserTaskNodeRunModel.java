@@ -3,22 +3,28 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
@@ -121,7 +127,27 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public Optional<UserTaskRunIdModel> getCreatedSubGetableId() {
-        return Optional.ofNullable(userTaskRunId);
+    public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
+        List<CoreObjectId<?, ?, ?>> out = new ArrayList<>();
+        out.add(userTaskRunId);
+
+        UserTaskRunModel userTaskRun = context.getableManager().get(userTaskRunId);
+        if (userTaskRun == null) return out;
+
+        for (int i = 0; i < userTaskRun.getEvents().size(); i++) {
+            UserTaskEventModel event = userTaskRun.getEvents().get(i);
+            if (event.getExecuted() != null) {
+                TaskRunModel taskRun =
+                        context.getableManager().get(event.getExecuted().getTaskRunId());
+                if (taskRun != null) {
+                    out.add(event.getExecuted().getTaskRunId());
+                    for (int j = 0; j < taskRun.getTotalCheckpoints(); j++) {
+                        out.add(new CheckpointIdModel(taskRun.getId(), j));
+                    }
+                }
+            }
+        }
+
+        return out;
     }
 }

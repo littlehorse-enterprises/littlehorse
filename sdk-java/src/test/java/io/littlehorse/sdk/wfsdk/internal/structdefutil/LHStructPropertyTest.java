@@ -3,7 +3,6 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -90,8 +89,7 @@ public class LHStructPropertyTest {
         StructFieldDef actualStructFieldDef = lhStructProperty.toStructFieldDef();
         StructFieldDef expectedStructFieldDef = StructFieldDef.newBuilder()
                 .setFieldType(TypeDefinition.newBuilder()
-                        .setInlineArrayDef(InlineArrayDef.newBuilder()
-                                .setElementType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR)))
+                        .setPrimitiveType(VariableType.JSON_ARR)
                         .build())
                 .build();
 
