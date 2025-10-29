@@ -647,7 +647,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
         TenantIdModel tenantId = requestContext().authorization().tenantId();
         PrincipalIdModel principalId = requestContext().authorization().principalId();
-        commandSender.doSend(reqModel, ctx, principalId, tenantId);
+        commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
     }
 
     @Override

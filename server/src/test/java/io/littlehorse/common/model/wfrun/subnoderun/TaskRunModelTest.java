@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -48,7 +48,7 @@ public class TaskRunModelTest {
         taskRun.dispatchTaskToQueue();
         verify(processorContext.getTaskManager()).scheduleTask(any());
 
-        TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
+        TaskClaimEventModel taskClaimEvent = new TaskClaimEventModel();
         // act
         taskRun.onTaskAttemptStarted(taskClaimEvent);
 
