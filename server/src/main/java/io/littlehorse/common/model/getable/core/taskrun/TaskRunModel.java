@@ -13,7 +13,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
@@ -256,7 +256,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         return attempts.get(attempts.size() - 1);
     }
 
-    public void onTaskAttemptStarted(TaskClaimEvent se) {
+    public void onTaskAttemptStarted(TaskClaimEventModel se) {
         transitionTo(TaskStatus.TASK_RUNNING);
 
         // create a timer to mark the task is timeout if it does not finish

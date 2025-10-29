@@ -161,7 +161,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 ScheduledTaskModel scheduledTask = next.getValue();
                 log.debug("Rehydration: scheduling task: {}", scheduledTask.getStoreKey());
                 // This will break task rehydration for tenant specific test. this will be addressed in Issue #554
-                server.onTaskScheduled(ctx.taskId(), scheduledTask.getTaskDefId(), scheduledTask, tenant.getId());
+                server.onTaskScheduled(
+                        ctx.taskId(), scheduledTask.getTaskDefId(), scheduledTask.getTaskRunId(), tenant.getId());
             }
         }
     }
