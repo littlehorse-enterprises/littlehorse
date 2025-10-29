@@ -6,6 +6,8 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -16,52 +18,48 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
- * This example demonstrates the asynchronous ExternalEvent functionality.
- * We will use "thread.waitForEvent" to wait for an external event, then when it arrives
- * it executes the task "greet".
+ * This example demonstrates the asynchronous ExternalEvent functionality. We will use
+ * "thread.waitForEvent" to wait for an external event, then when it arrives it executes the task
+ * "greet".
  */
 public class ExternalEventExample {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ExternalEventExample.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ExternalEventExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-external-event",
-            wf -> {
-                WfRunVariable name = wf.addVariable("name", VariableType.STR).searchable();
+        return new WorkflowImpl("example-external-event", wf -> {
+            WfRunVariable name = wf.addVariable("name", VariableType.STR).searchable();
 
-                wf.execute("ask-for-name");
+            wf.execute("ask-for-name");
 
-                wf.mutate(
-                    name,
-                    VariableMutationType.ASSIGN,
-                    wf.waitForEvent("name-event")
-                    );
-                    wf.execute("greet", name);
-                    wf.waitForEvent("name-event");
-                    wf.execute("greet", name);
-                    wf.waitForEvent("name-event");
+            wf.mutate(name, VariableMutationType.ASSIGN, wf.waitForEvent("name-event"));
+            wf.execute("greet", name);
+            wf.waitForEvent("name-event");
+            wf.execute("greet", name);
+            SpawnedThread childThread = wf.spawnThread(child -> { // this is the child workflow
+                                                                  // thread
+                WfRunVariable childVar = child.addVariable("child-var", VariableType.STR);
+                child.execute("greet", childVar);
+            }, "spawned-thread", Map.of("child-var", name));
+            wf.waitForThreads(SpawnedThreads.of(childThread));
 
-                wf.execute("greet", name);
-            }
-        );
+            wf.waitForEvent("name-event");
+            wf.execute("greet", name);
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath =
+                Path.of(System.getProperty("user.home"), ".config/littlehorse.config").toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -69,22 +67,14 @@ public class ExternalEventExample {
 
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         WaitForExternalEventWorker executable = new WaitForExternalEventWorker();
-        List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "ask-for-name", config),
-            new LHTaskWorker(executable, "greet", config)
-        );
+        List<LHTaskWorker> workers = List.of(new LHTaskWorker(executable, "ask-for-name", config),
+                new LHTaskWorker(executable, "greet", config));
 
         // Gracefully shutdown
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() ->
-                    workers.forEach(worker -> {
-                        log.debug("Closing {}", worker.getTaskDefName());
-                        worker.close();
-                    })
-                )
-            );
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+            log.debug("Closing {}", worker.getTaskDefName());
+            worker.close();
+        })));
         return workers;
     }
 
@@ -95,9 +85,8 @@ public class ExternalEventExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow().withRetentionPolicy(WorkflowRetentionPolicy.newBuilder()
-                        .setSecondsAfterWfTermination(10)
-                        .build());
+        Workflow workflow = getWorkflow().withRetentionPolicy(
+                WorkflowRetentionPolicy.newBuilder().setSecondsAfterWfTermination(10).build());
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);
@@ -112,12 +101,8 @@ public class ExternalEventExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-                client.putExternalEventDef(
-                    PutExternalEventDefRequest
-                        .newBuilder()
-                        .setName(externalEventName)
-                        .build()
-                );
+            client.putExternalEventDef(
+                    PutExternalEventDefRequest.newBuilder().setName(externalEventName).build());
         }
 
         // Register a workflow if it does not exist

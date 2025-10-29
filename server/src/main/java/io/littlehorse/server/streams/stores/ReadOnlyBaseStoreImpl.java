@@ -8,14 +8,17 @@ import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.server.streams.store.CompositeKeyValueIterator;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.List;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 /**
@@ -163,8 +166,16 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, start));
         end = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, end));
-        System.out.println("Range scan from " + start + " to " + end);
-        return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
+        KeyValueIterator<String, Bytes> iterator = nativeStore.range(start, end);
+        String legacyStart = LHUtil.toLegacyFormat(start);
+        if (legacyStart == null) {
+            return new LHKeyValueIterator<>(iterator, cls, executionContext);
+        }
+        System.out.println("Legacy range scan from " + legacyStart + ", Original range: " + start + " to " + end);
+        String legacyEnd = LHUtil.toLegacyFormat(end);
+        KeyValueIterator<String, Bytes> legacyIterator = nativeStore.range(legacyStart, legacyEnd);
+        KeyValueIterator<String, Bytes> composite = new CompositeKeyValueIterator(List.of(legacyIterator, iterator));
+        return new LHKeyValueIterator<>(composite, cls, executionContext);
     }
 
     @Override
