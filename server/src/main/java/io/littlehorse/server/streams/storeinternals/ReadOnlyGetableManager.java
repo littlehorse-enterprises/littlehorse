@@ -133,13 +133,10 @@ public class ReadOnlyGetableManager {
     }
 
     public ScheduledTaskModel getScheduledTask(TaskRunModel taskRun) {
-        ScheduledTaskModel result = getScheduledTask(ScheduledTaskModel.getScheduledTaskKey(taskRun));
+        ScheduledTaskModel result =
+                store.get(ScheduledTaskModel.getScheduledTaskKey(taskRun), ScheduledTaskModel.class);
         if (result != null) return result;
-        return getScheduledTask(ScheduledTaskModel.getLegacyKey(taskRun));
-    }
-
-    public ScheduledTaskModel getScheduledTask(String scheduledTaskId) {
-        return store.get(scheduledTaskId, ScheduledTaskModel.class);
+        return store.get(ScheduledTaskModel.getLegacyKey(taskRun), ScheduledTaskModel.class);
     }
 
     public ExternalEventModel getUnclaimedEvent(NodeRunIdModel nodeRunId, ExternalEventDefIdModel externalEventDefId) {

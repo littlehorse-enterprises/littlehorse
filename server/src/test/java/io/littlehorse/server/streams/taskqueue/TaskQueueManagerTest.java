@@ -17,7 +17,9 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -40,7 +42,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TaskQueueManagerTest {
 
     private final LHServer mockServer = Mockito.mock();
-    private final TaskQueueManager queueManager = new TaskQueueManager(mockServer, Integer.MAX_VALUE);
+    private final TaskQueueManager queueManager = new TaskQueueManager(mockServer);
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();
     private final TaskId streamsTaskId = TaskId.parse("0_1");
@@ -78,21 +80,21 @@ public class TaskQueueManagerTest {
 
     @Test
     public void shouldSchedulePendingTask() {
-        queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId);
+        queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule.getTaskRunId(), tenantId);
         // Task was scheduled, now we need to verify only one task is returned to the client
         trackableObserver.onNext(pollTask);
-        verify(mockServer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockServer, times(1)).tryToReturnTaskToClient(taskToSchedule.getTaskRunId(), trackableObserver);
         Mockito.reset(mockServer);
         trackableObserver.onNext(pollTask);
-        verify(mockServer, never()).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockServer, never()).tryToReturnTaskToClient(taskToSchedule.getTaskRunId(), trackableObserver);
     }
 
     @Test
     public void shouldFeedHungryClientWhenATaskIsScheduled() {
         trackableObserver.onNext(pollTask);
-        verify(mockServer, never()).returnTaskToClient(taskToSchedule, trackableObserver);
-        queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId);
-        verify(mockServer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockServer, never()).tryToReturnTaskToClient(taskToSchedule.getTaskRunId(), trackableObserver);
+        queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule.getTaskRunId(), tenantId);
+        verify(mockServer, times(1)).tryToReturnTaskToClient(taskToSchedule.getTaskRunId(), trackableObserver);
     }
 
     @Test
@@ -101,8 +103,9 @@ public class TaskQueueManagerTest {
         int numberOfTaskToSchedule = 100_000;
         try {
             for (int i = 0; i < numberOfTaskToSchedule; i++) {
-                service.submit(Executors.callable(() ->
-                        queueManager.onTaskScheduled(streamsTaskId, taskId, TestUtil.scheduledTaskModel(), tenantId)));
+                String wfId = "wf-" + i;
+                service.submit(Executors.callable(() -> queueManager.onTaskScheduled(
+                        streamsTaskId, taskId, new TaskRunIdModel(new WfRunIdModel(wfId), "asdf"), tenantId)));
             }
         } finally {
             service.shutdown();
@@ -111,6 +114,6 @@ public class TaskQueueManagerTest {
         for (int i = 0; i < numberOfTaskToSchedule; i++) {
             trackableObserver.onNext(pollTask);
         }
-        verify(mockServer, times(numberOfTaskToSchedule)).returnTaskToClient(any(), same(trackableObserver));
+        verify(mockServer, times(numberOfTaskToSchedule)).tryToReturnTaskToClient(any(), same(trackableObserver));
     }
 }

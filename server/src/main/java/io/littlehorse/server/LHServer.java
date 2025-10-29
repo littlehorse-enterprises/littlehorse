@@ -1,12 +1,11 @@
 package io.littlehorse.server;
 
 import io.grpc.Context;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
@@ -70,7 +69,7 @@ public class LHServer {
         this.metadataCache = new MetadataCache();
         this.config = config;
         this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
-        this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
+        this.taskQueueManager = new TaskQueueManager(this);
         this.lhInternalClient = new LHInternalClient(config.getInternalClientCreds(), this.networkThreadpool);
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
@@ -139,12 +138,12 @@ public class LHServer {
      * that asynchronously waits for the command to be processed. It infers the request context from
      * the GRPC Context.
      */
-    public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        commandSender.doSend(scheduledTask, client);
+    public void tryToReturnTaskToClient(TaskRunIdModel taskToClaim, PollTaskRequestObserver client) {
+        commandSender.tryToClaimTaskAndReturnToClient(taskToClaim, client);
     }
 
     public void onTaskScheduled(
-            TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
+            TaskId streamsTaskId, TaskDefIdModel taskDef, TaskRunIdModel scheduledTask, TenantIdModel tenantId) {
         taskQueueManager.onTaskScheduled(streamsTaskId, taskDef, scheduledTask, tenantId);
     }
 

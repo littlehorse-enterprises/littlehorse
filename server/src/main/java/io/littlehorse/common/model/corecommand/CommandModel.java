@@ -26,7 +26,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarkerModel;
@@ -51,7 +51,7 @@ public class CommandModel extends AbstractCommand<Command> {
 
     public CommandCase type;
     public ReportTaskRunModel reportTaskRun;
-    public TaskClaimEvent taskClaimEvent;
+    public TaskClaimEventModel taskClaimEvent;
     public PutExternalEventRequestModel putExternalEventRequest;
     public RunWfRequestModel runWf;
     public StopWfRunRequestModel stopWfRun;
@@ -221,7 +221,7 @@ public class CommandModel extends AbstractCommand<Command> {
                 reportTaskRun = ReportTaskRunModel.fromProto(p.getReportTaskRun(), context);
                 break;
             case TASK_CLAIM_EVENT:
-                taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent(), context);
+                taskClaimEvent = TaskClaimEventModel.fromProto(p.getTaskClaimEvent(), context);
                 break;
             case PUT_EXTERNAL_EVENT:
                 putExternalEventRequest = PutExternalEventRequestModel.fromProto(p.getPutExternalEvent(), context);
@@ -413,9 +413,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(ReportTaskRunModel.class)) {
             type = CommandCase.REPORT_TASK_RUN;
             reportTaskRun = (ReportTaskRunModel) cmd;
-        } else if (cls.equals(TaskClaimEvent.class)) {
+        } else if (cls.equals(TaskClaimEventModel.class)) {
             type = CommandCase.TASK_CLAIM_EVENT;
-            taskClaimEvent = (TaskClaimEvent) cmd;
+            taskClaimEvent = (TaskClaimEventModel) cmd;
         } else if (cls.equals(StopWfRunRequestModel.class)) {
             type = CommandCase.STOP_WF_RUN;
             stopWfRun = (StopWfRunRequestModel) cmd;
