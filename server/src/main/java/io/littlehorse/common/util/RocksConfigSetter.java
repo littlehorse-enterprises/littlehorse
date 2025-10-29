@@ -108,6 +108,10 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
         }
 
+        // Open the DB faster
+        options.setSkipCheckingSstFileSizesOnDbOpen(true);
+        options.setSkipStatsUpdateOnDbOpen(true);
+
         options.setTableFormatConfig(tableConfig);
     }
 
