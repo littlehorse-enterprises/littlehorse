@@ -1,8 +1,15 @@
-import { Loader } from "lucide-react"
+import { SleepNodeRun } from 'littlehorse-client/proto'
+import { FC } from 'react'
+import { LabelContent } from '../Components'
+import { utcToLocalDateTime } from '@/app/utils'
 
-export const SleepRunNode = ()=>{
-    return <div>
-        <Loader />
-        SleepRunNode
+export const SleepRunNode: FC<{ node: SleepNodeRun }> = ({ node }) => {
+  console.log('node', node)
+  return (
+    <div>
+      <LabelContent label="Node Type" content="Sleep"></LabelContent>
+      <LabelContent label="Maturation Time" content={utcToLocalDateTime(`${node.maturationTime}`)}></LabelContent>
+      <LabelContent label="Maturation status" content={node.matured? "Ready": "No ready yet"}></LabelContent>
     </div>
+  )
 }

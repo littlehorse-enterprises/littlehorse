@@ -1,17 +1,12 @@
-import { TaskRunId } from 'littlehorse-client/proto';
-import { ClipboardList } from 'lucide-react'
+import { TaskNodeRun } from 'littlehorse-client/proto'
+import { LabelContent } from '../Components'
+import { FC } from 'react'
 
-export const TaskRunNode = (node: any) => {
+export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
   return (
     <div>
-      <div className="flex items-center ml-1">
-        <ClipboardList  size={18} />
-        <div className='ml-2'>task run node</div>
-      </div>
-      <div className="ml-1 mt-1 grid grid-cols-2 items-center">
-        <label className=" text-bold   text-sm font-bold"> Task Run identifier:</label>
-        <span className="text-xs text-slate-400">{node.node.taskRunId.taskGuid}</span>
-      </div>
+      <LabelContent label="Node Type" content="Task"></LabelContent>
+      <LabelContent label="Task Run identifier" content={node.taskRunId?.taskGuid}></LabelContent>
     </div>
   )
 }

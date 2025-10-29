@@ -18,7 +18,7 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
 
   const { $case, value } = nodeRun.nodeType!
   if ($case === 'task') return <TaskRunNode node={value} />
-  if ($case  === 'sleep') return <SleepRunNode/>
+  if ($case  === 'sleep') return <SleepRunNode node={value} />
 
 
   return <></>
