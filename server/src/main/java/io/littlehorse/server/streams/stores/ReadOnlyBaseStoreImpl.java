@@ -171,7 +171,6 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         if (legacyStart == null) {
             return new LHKeyValueIterator<>(iterator, cls, executionContext);
         }
-        System.out.println("Legacy range scan from " + legacyStart + ", Original range: " + start + " to " + end);
         String legacyEnd = LHUtil.toLegacyFormat(end);
         KeyValueIterator<String, Bytes> legacyIterator = nativeStore.range(legacyStart, legacyEnd);
         KeyValueIterator<String, Bytes> composite = new CompositeKeyValueIterator(List.of(legacyIterator, iterator));

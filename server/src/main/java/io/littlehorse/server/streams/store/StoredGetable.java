@@ -93,7 +93,6 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
         // Weird but needed for the new format
         var parts = key.split("/");
         String wfRun = parts[0];
-        System.out.println("Getting rocksdbKey for wfRun: " + wfRun + ", key: " + key);
         if (parts.length > 1) {
             String restOfPrefix = parts[1];
             return Storeable.getGroupedGetableStorePrefix(wfRun, StoreableType.STORED_GETABLE, objType, restOfPrefix);
