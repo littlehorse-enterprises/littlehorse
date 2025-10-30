@@ -22,7 +22,7 @@ public class MutationExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-mutation", wf -> {
-            WfRunVariable theName = wf.addVariable("name", VariableType.STR);
+            WfRunVariable theName = wf.declareStr("name");
             // We pass the name of the person and receive if it is spider-man or not
             NodeOutput output = wf.execute("spider-bite", theName);
 

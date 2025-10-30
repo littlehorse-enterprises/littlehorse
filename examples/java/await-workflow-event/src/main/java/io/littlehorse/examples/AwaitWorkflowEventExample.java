@@ -30,7 +30,7 @@ public class AwaitWorkflowEventExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl("await-wf-event", wf -> {
             WfRunVariable sleepTime =
-                    wf.addVariable("sleep-time", VariableType.INT).required();
+                    wf.declareInt("sleep-time").required();
             wf.sleepSeconds(sleepTime);
             wf.throwEvent("sleep-done", "hello there!");
         });

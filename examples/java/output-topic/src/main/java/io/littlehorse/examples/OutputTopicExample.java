@@ -35,7 +35,7 @@ public class OutputTopicExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl("output-topic", wf -> {
             WfRunVariable theName =
-                    wf.addVariable("input-name", VariableType.STR).searchable().asPublic();
+                    wf.declareStr("input-name").searchable().asPublic();
             WfRunVariable ignoredGreeting = wf.declareStr("ignored");
             WfRunVariable publicGreeting = wf.declareStr("public-greeting").asPublic();
 

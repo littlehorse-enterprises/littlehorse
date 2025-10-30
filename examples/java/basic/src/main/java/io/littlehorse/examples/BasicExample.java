@@ -22,7 +22,7 @@ public class BasicExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-basic", wf -> {
             WfRunVariable theName =
-                    wf.addVariable("input-name", VariableType.STR).searchable();
+                    wf.declareStr("input-name").searchable();
             wf.execute("greet", theName);
         });
     }

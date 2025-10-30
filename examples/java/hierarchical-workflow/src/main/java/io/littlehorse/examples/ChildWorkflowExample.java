@@ -28,7 +28,7 @@ public class ChildWorkflowExample {
     public static Workflow getChild() {
         WorkflowImpl out = new WorkflowImpl("child", wf -> {
             WfRunVariable theName =
-                    wf.addVariable("name", VariableType.STR).withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+                    wf.declareStr("name").withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
 
             wf.execute("greet", theName);
 
@@ -42,7 +42,7 @@ public class ChildWorkflowExample {
     public static Workflow getParent() {
         WorkflowImpl out = new WorkflowImpl("parent", wf -> {
             WfRunVariable theName =
-                    wf.addVariable("name", VariableType.STR).withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
+                    wf.declareStr("name").withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
 
             wf.execute("greet", theName);
         });

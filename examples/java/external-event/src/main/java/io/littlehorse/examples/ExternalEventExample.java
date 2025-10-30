@@ -30,7 +30,7 @@ public class ExternalEventExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-external-event", wf -> {
-            WfRunVariable name = wf.addVariable("name", VariableType.STR).searchable();
+            WfRunVariable name = wf.declareStr("name").searchable();
 
             wf.execute("ask-for-name");
 

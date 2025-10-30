@@ -21,7 +21,7 @@ public class WorkerContextExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-worker-context", wf -> {
-            WfRunVariable theName = wf.addVariable("request-time", VariableType.INT);
+            WfRunVariable theName = wf.declareInt("request-time");
             wf.execute("task", theName);
         });
     }

@@ -25,7 +25,7 @@ public class ConditionalsWhileExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-conditionals-while", wf -> {
             WfRunVariable numDonuts =
-                    wf.addVariable("number-of-donuts", VariableType.INT).required();
+                    wf.declareInt("number-of-donuts").required();
 
             wf.doWhile(wf.condition(numDonuts, Comparator.GREATER_THAN, 0), handler -> {
                 handler.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);

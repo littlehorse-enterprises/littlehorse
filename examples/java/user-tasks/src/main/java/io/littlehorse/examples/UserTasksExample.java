@@ -28,9 +28,9 @@ public class UserTasksExample {
     }
 
     public void wf(WorkflowThread wf) {
-        WfRunVariable userId = wf.addVariable("user-id", VariableType.STR);
-        WfRunVariable itRequest = wf.addVariable("it-request", VariableType.JSON_OBJ);
-        WfRunVariable isApproved = wf.addVariable("is-approved", VariableType.BOOL);
+        WfRunVariable userId = wf.declareStr("user-id");
+        WfRunVariable itRequest = wf.declareJsonObj("it-request");
+        WfRunVariable isApproved = wf.declareBool("is-approved");
 
         // Get the IT Request
         UserTaskOutput formOutput = wf.assignUserTask(IT_REQUEST_FORM, userId, "testGroup");

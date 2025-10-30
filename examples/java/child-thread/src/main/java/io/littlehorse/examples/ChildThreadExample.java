@@ -31,13 +31,13 @@ public class ChildThreadExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-child-thread", wf -> {
-            WfRunVariable parentVar = wf.addVariable("parent-var", VariableType.INT);
+            WfRunVariable parentVar = wf.declareInt("parent-var");
 
             wf.mutate(parentVar, VariableMutationType.ASSIGN, wf.execute("parent-task-1", parentVar));
 
             SpawnedThread childThread = wf.spawnThread(
                     child -> { // this is the child workflow thread
-                        WfRunVariable childVar = child.addVariable("child-var", VariableType.INT);
+                        WfRunVariable childVar = child.declareInt("child-var");
                         child.execute("child-task", childVar);
                     },
                     "spawned-thread",

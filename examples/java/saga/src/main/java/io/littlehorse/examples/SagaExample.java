@@ -31,8 +31,8 @@ public class SagaExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-saga", wf -> {
-            WfRunVariable flightConfirmationNumber = wf.addVariable("flight-confirmation-number", VariableType.STR);
-            WfRunVariable hotelConfirmationNumber = wf.addVariable("hotel-confirmation-number", VariableType.STR);
+            WfRunVariable flightConfirmationNumber = wf.declareStr("flight-confirmation-number");
+            WfRunVariable hotelConfirmationNumber = wf.declareStr("hotel-confirmation-number");
 
             SpawnedThread sagaThread = wf.spawnThread(
                     bookFlightAndHotel(flightConfirmationNumber, hotelConfirmationNumber), "example-saga", null);

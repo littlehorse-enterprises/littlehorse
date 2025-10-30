@@ -22,7 +22,7 @@ public class CheckpointTaskExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-checkpointed-tasks", wf -> {
             WfRunVariable theName =
-                    wf.addVariable("input-name", VariableType.STR).searchable();
+                    wf.declareStr("input-name").searchable();
             wf.execute("greet", theName).withRetries(2);
         });
     }
