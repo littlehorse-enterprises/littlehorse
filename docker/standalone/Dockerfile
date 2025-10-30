@@ -1,4 +1,4 @@
-FROM amazoncorretto:25-alpine3.22
+FROM amazoncorretto:25
 
 LABEL maintainer="engineering@littlehorse.io"
 
@@ -12,7 +12,9 @@ ENV NODE_ENV=production
 
 RUN mkdir /kafka /lh
 
-RUN apk add --no-cache bash tar gzip wget curl ca-certificates gnupg nodejs
+RUN yum install -y bash wget tar gzip nodejs findutils  && \
+  yum clean all && \
+  rm -rf /var/cache/yum
 
 RUN wget -q https://dlcdn.apache.org/kafka/${KAFKA_VERSION}/kafka_2.13-${KAFKA_VERSION}.tgz -O /tmp/kafka.tgz \
     && tar -xzf /tmp/kafka.tgz --strip-components 1 -C /kafka \
