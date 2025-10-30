@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ExceptionHandlerWorker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ExceptionHandlerWorker.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ExceptionHandlerWorker.class);
 
     @LHTaskMethod("fail")
     public String fail() {

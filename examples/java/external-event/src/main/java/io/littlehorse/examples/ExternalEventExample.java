@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -12,7 +13,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -67,14 +67,15 @@ public class ExternalEventExample {
 
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         WaitForExternalEventWorker executable = new WaitForExternalEventWorker();
-        List<LHTaskWorker> workers = List.of(new LHTaskWorker(executable, "ask-for-name", config),
-                new LHTaskWorker(executable, "greet", config));
+        List<LHTaskWorker> workers = List.of(
+                new LHTaskWorker(executable, "ask-for-name", config), new LHTaskWorker(executable, "greet", config));
 
         // Gracefully shutdown
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.forEach(worker -> {
-            log.debug("Closing {}", worker.getTaskDefName());
-            worker.close();
-        })));
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 
@@ -101,8 +102,9 @@ public class ExternalEventExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            client.putExternalEventDef(
-                    PutExternalEventDefRequest.newBuilder().setName(externalEventName).build());
+            client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
+                    .setName(externalEventName)
+                    .build());
         }
 
         // Register a workflow if it does not exist

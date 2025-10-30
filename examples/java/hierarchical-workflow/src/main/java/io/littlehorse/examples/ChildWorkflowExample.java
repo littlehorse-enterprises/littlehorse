@@ -8,7 +8,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,57 +17,43 @@ import java.util.Properties;
 public class ChildWorkflowExample {
 
     public static Workflow getGrandChild() {
-        WorkflowImpl out = new WorkflowImpl(
-            "grand-child",
-            wf -> {
-               wf.waitForEvent("some-event").registeredAs(String.class);
-            }
-        );
+        WorkflowImpl out = new WorkflowImpl("grand-child", wf -> {
+            wf.waitForEvent("some-event").registeredAs(String.class);
+        });
         out.setParent("child");
 
         return out;
     }
+
     public static Workflow getChild() {
-        WorkflowImpl out = new WorkflowImpl(
-            "child",
-            wf -> {
-                WfRunVariable theName = wf.addVariable(
-                    "name",
-                    VariableType.STR
-                ).withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+        WorkflowImpl out = new WorkflowImpl("child", wf -> {
+            WfRunVariable theName =
+                    wf.addVariable("name", VariableType.STR).withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
 
-                wf.execute("greet", theName);
+            wf.execute("greet", theName);
 
-                wf.mutate(theName, VariableMutationType.ASSIGN, "yoda");
-            }
-        );
+            wf.mutate(theName, VariableMutationType.ASSIGN, "yoda");
+        });
         out.setParent("parent");
 
         return out;
     }
 
     public static Workflow getParent() {
-        WorkflowImpl out = new WorkflowImpl(
-            "parent",
-            wf -> {
-                WfRunVariable theName = wf.addVariable(
-                    "name",
-                    VariableType.STR
-                ).withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
+        WorkflowImpl out = new WorkflowImpl("parent", wf -> {
+            WfRunVariable theName =
+                    wf.addVariable("name", VariableType.STR).withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
 
-                wf.execute("greet", theName);
-            }
-        );
+            wf.execute("greet", theName);
+        });
         return out;
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;

@@ -23,7 +23,7 @@ public class Notifier {
     }
 
     @LHTaskMethod("exc-handler")
-    public String handler(){
+    public String handler() {
         System.out.println("Ok, handler was called by exception handler");
         return "Ok?";
     }

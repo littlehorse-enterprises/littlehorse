@@ -66,11 +66,6 @@ public class InMemoryGetableManager extends GetableManager {
     }
 
     @Override
-    public ScheduledTaskModel getScheduledTask(String scheduledTaskId) {
-        return scheduledTasks.get(scheduledTaskId);
-    }
-
-    @Override
     public Optional<TaskId> getSpecificTask() {
         return Optional.of(TaskId.parse("0_0"));
     }

@@ -10,11 +10,11 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
@@ -109,8 +109,8 @@ public class CommandSender {
         }
     }
 
-    public void doSend(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        CommandModel taskClaim = new CommandModel(new TaskClaimEvent(scheduledTask, client));
+    public void tryToClaimTaskAndReturnToClient(TaskRunIdModel taskToClaim, PollTaskRequestObserver client) {
+        CommandModel taskClaim = new CommandModel(new TaskClaimEventModel(taskToClaim, client));
         taskClaim.setCommandId(LHUtil.generateGuid());
         BiFunction<Message, Throwable, PollTaskResponse> completeTaskClaim = (taskClaimResponse, exception) -> {
             if (exception != null) {
@@ -130,7 +130,7 @@ public class CommandSender {
                 .handleAsync(completeTaskClaim, networkThreadpool);
     }
 
-    public CompletableFuture<RecordMetadata> doSend(
+    public CompletableFuture<RecordMetadata> reportTaskAndDontWaitForResponse(
             ReportTaskRunModel reportTaskRun,
             StreamObserver<Empty> client,
             PrincipalIdModel principalId,

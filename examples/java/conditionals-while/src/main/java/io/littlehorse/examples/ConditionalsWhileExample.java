@@ -2,14 +2,13 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,32 +23,22 @@ import java.util.Properties;
 public class ConditionalsWhileExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-conditionals-while",
-            wf -> {
-                WfRunVariable numDonuts = wf.addVariable(
-                    "number-of-donuts",
-                    VariableType.INT
-                ).required();
+        return new WorkflowImpl("example-conditionals-while", wf -> {
+            WfRunVariable numDonuts =
+                    wf.addVariable("number-of-donuts", VariableType.INT).required();
 
-                wf.doWhile(
-                        wf.condition(numDonuts, Comparator.GREATER_THAN, 0),
-                    handler -> {
-                        handler.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);
-                        handler.execute("eating-donut", numDonuts);
-                    }
-                );
-            }
-        );
+            wf.doWhile(wf.condition(numDonuts, Comparator.GREATER_THAN, 0), handler -> {
+                handler.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);
+                handler.execute("eating-donut", numDonuts);
+            });
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
