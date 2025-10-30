@@ -21,7 +21,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
         if (!('nodeRunsList' in selectedNode.data)) {
           return false
         }
-        return selectedNode.data.nodeRunsList.length > 0
+        return selectedNode.data.nodeRunsList?.length > 0
       } else {
         return true
       }

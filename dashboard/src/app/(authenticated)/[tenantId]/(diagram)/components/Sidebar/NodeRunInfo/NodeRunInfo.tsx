@@ -2,7 +2,6 @@ import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { NodeStatus } from './NodeStatus'
 import { NodeVariable } from './NodeVariable'
-import { NodeErrorMessage } from './NodeErrorMessage'
 
 export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   const { selectedNode } = useDiagram()
@@ -25,7 +24,6 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
       <NodeVariable label="Threat name :" text={nodeRun.threadSpecName} />
       <NodeVariable label="Started :" text={nodeRun.arrivalTime} type={'date'} />
       <NodeVariable label="Finished :" text={nodeRun.endTime} type={'date'} />
-      {nodeRun.errorMessage && <NodeErrorMessage message={nodeRun.errorMessage} />}
     </div>
   )
 }
