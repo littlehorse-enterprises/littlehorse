@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +14,13 @@ public class CheckpointTaskWorker {
         int attemptNumber = context.getAttemptNumber();
         System.out.println("Hello from task worker on attempt " + attemptNumber + " before the checkpoint");
 
-        String result = context.executeAndCheckpoint(() -> {
-            System.out.println("Hello from task worker on attempt " + attemptNumber + " in the first checkpoint");
-            return "hello " + name + " from first checkpoint";
-        }, String.class);
+        String result = context.executeAndCheckpoint(
+                () -> {
+                    System.out.println(
+                            "Hello from task worker on attempt " + attemptNumber + " in the first checkpoint");
+                    return "hello " + name + " from first checkpoint";
+                },
+                String.class);
 
         System.out.println("Hello from after the first checkpoint");
 
@@ -26,14 +28,15 @@ public class CheckpointTaskWorker {
             throw new RuntimeException("Throwing a failure in the second checkpoint to show how the checkpoint works");
         }
 
-        result += context.executeAndCheckpoint(() -> {
-            System.out.println("Hi from inside the second checkpoint");
-            return " and the second checkpoint";
-        }, String.class);
+        result += context.executeAndCheckpoint(
+                () -> {
+                    System.out.println("Hi from inside the second checkpoint");
+                    return " and the second checkpoint";
+                },
+                String.class);
 
         System.out.println("Hi from after the checkpoints on attemptNumber " + attemptNumber);
 
         return result + " and after the second checkpoint";
     }
-
 }

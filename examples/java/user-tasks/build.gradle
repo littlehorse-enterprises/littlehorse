@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'com.diffplug.spotless'
 }
 
 java {
@@ -9,6 +10,14 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
 }
 
 dependencies {

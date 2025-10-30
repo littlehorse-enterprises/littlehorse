@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class InterruptHandlerWorker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        InterruptHandlerWorker.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(InterruptHandlerWorker.class);
 
     @LHTaskMethod("some-task")
     public void someTask() {

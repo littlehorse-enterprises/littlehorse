@@ -6,7 +6,6 @@ import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,36 +22,27 @@ import org.slf4j.LoggerFactory;
  */
 public class ExceptionHandlerExample {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ExceptionHandlerExample.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ExceptionHandlerExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-exception-handler",
-            wf -> {
-                NodeOutput node = wf.execute("fail");
+        return new WorkflowImpl("example-exception-handler", wf -> {
+            NodeOutput node = wf.execute("fail");
 
-                wf.handleError( // Handle technical failure
-                    node,
-                    handler -> {
+            wf.handleError( // Handle technical failure
+                    node, handler -> {
                         handler.execute("my-task");
-                    }
-                );
+                    });
 
-                // Execution resumes after handling exception.
-                wf.execute("my-task");
-            }
-        );
+            // Execution resumes after handling exception.
+            wf.execute("my-task");
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -60,22 +50,15 @@ public class ExceptionHandlerExample {
 
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         ExceptionHandlerWorker executable = new ExceptionHandlerWorker();
-        List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "fail", config),
-            new LHTaskWorker(executable, "my-task", config)
-        );
+        List<LHTaskWorker> workers =
+                List.of(new LHTaskWorker(executable, "fail", config), new LHTaskWorker(executable, "my-task", config));
 
         // Gracefully shutdown
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() ->
-                    workers.forEach(worker -> {
-                        log.debug("Closing {}", worker.getTaskDefName());
-                        worker.close();
-                    })
-                )
-            );
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 

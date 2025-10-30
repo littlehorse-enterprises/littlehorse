@@ -9,7 +9,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,60 +28,35 @@ public class VariablesExample {
     private static final Logger log = LoggerFactory.getLogger(VariablesExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-variables",
-            wf -> {
-                WfRunVariable inputText = wf.addVariable("input-text", VariableType.STR).searchable().masked();
+        return new WorkflowImpl("example-variables", wf -> {
+            WfRunVariable inputText =
+                    wf.addVariable("input-text", VariableType.STR).searchable().masked();
 
-                WfRunVariable addLength = wf.addVariable(
-                    "add-length",
-                    VariableType.BOOL
-                ).searchable();
+            WfRunVariable addLength =
+                    wf.addVariable("add-length", VariableType.BOOL).searchable();
 
-                WfRunVariable userId = wf
-                    .addVariable("user-id", VariableType.INT).searchable();
+            WfRunVariable userId = wf.addVariable("user-id", VariableType.INT).searchable();
 
-                WfRunVariable sentimentScore = wf
-                    .addVariable("sentiment-score", VariableType.DOUBLE).searchable();
+            WfRunVariable sentimentScore =
+                    wf.addVariable("sentiment-score", VariableType.DOUBLE).searchable();
 
-                WfRunVariable processedResult = wf
-                    .addVariable("processed-result", VariableType.JSON_OBJ)
+            WfRunVariable processedResult = wf.addVariable("processed-result", VariableType.JSON_OBJ)
                     .searchableOn("$.sentimentScore", VariableType.DOUBLE)
                     .masked();
 
-                NodeOutput sentimentAnalysisOutput = wf.execute(
-                    "sentiment-analysis",
-                    inputText
-                );
-                wf.mutate(
-                    sentimentScore,
-                    VariableMutationType.ASSIGN,
-                    sentimentAnalysisOutput
-                );
-                NodeOutput processedTextOutput = wf.execute(
-                    "process-text",
-                    inputText,
-                    sentimentScore,
-                    addLength,
-                    userId
-                );
-                wf.mutate(
-                    processedResult,
-                    VariableMutationType.ASSIGN,
-                    processedTextOutput
-                );
-                wf.execute("send", processedResult);
-            }
-        );
+            NodeOutput sentimentAnalysisOutput = wf.execute("sentiment-analysis", inputText);
+            wf.mutate(sentimentScore, VariableMutationType.ASSIGN, sentimentAnalysisOutput);
+            NodeOutput processedTextOutput = wf.execute("process-text", inputText, sentimentScore, addLength, userId);
+            wf.mutate(processedResult, VariableMutationType.ASSIGN, processedTextOutput);
+            wf.execute("send", processedResult);
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -91,21 +65,15 @@ public class VariablesExample {
     public static List<LHTaskWorker> getTaskWorker(LHConfig config) {
         MyWorker executable = new MyWorker();
         List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "sentiment-analysis", config),
-            new LHTaskWorker(executable, "process-text", config),
-            new LHTaskWorker(executable, "send", config)
-        );
+                new LHTaskWorker(executable, "sentiment-analysis", config),
+                new LHTaskWorker(executable, "process-text", config),
+                new LHTaskWorker(executable, "send", config));
         // Gracefully shutdown
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() ->
-                    workers.forEach(worker -> {
-                        log.debug("Closing {}", worker.getTaskDefName());
-                        worker.close();
-                    })
-                )
-            );
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 

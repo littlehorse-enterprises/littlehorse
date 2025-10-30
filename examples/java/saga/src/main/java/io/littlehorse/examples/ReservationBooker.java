@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class ReservationBooker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ReservationBooker.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ReservationBooker.class);
 
     @LHTaskMethod("book-flight")
     public String bookFlight() {
@@ -21,10 +19,7 @@ public class ReservationBooker {
 
     @LHTaskMethod("cancel-flight")
     public void cancelFlight(String confirmationNumber) {
-        log.debug(
-            "Cancelling the fake flight with confirmation: {}",
-            confirmationNumber
-        );
+        log.debug("Cancelling the fake flight with confirmation: {}", confirmationNumber);
     }
 
     @LHTaskMethod("book-hotel")

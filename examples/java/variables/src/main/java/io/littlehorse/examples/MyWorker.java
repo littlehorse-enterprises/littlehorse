@@ -19,19 +19,9 @@ public class MyWorker {
     @LHTaskMethod("process-text")
     @LHType(masked = true)
     public ProcessedText result(
-        @LHType(masked = true) String text,
-        Double sentimentScore,
-        Boolean addLength,
-        Integer userId
-    ) {
-        log.debug(
-            "Executing task sentiment-analysis vars (%s, %s, %s, %s)".formatted(
-                    text,
-                    sentimentScore,
-                    addLength,
-                    userId
-                )
-        );
+            @LHType(masked = true) String text, Double sentimentScore, Boolean addLength, Integer userId) {
+        log.debug("Executing task sentiment-analysis vars (%s, %s, %s, %s)"
+                .formatted(text, sentimentScore, addLength, userId));
         ProcessedText processedText = new ProcessedText();
         processedText.text = text;
         processedText.addLength = addLength;
@@ -42,11 +32,10 @@ public class MyWorker {
 
     @LHTaskMethod("send")
     public String result(@LHType(masked = true) ProcessedText processedText) {
-        log.debug(
-                "Executing task sentiment-analysis vars (%s)".formatted(processedText));
+        log.debug("Executing task sentiment-analysis vars (%s)".formatted(processedText));
         return "";
     }
-    
+
     @LHTaskMethod("expr-add-one")
     public int addOne(int input) {
         return input + 1;
