@@ -13,6 +13,13 @@ repositories {
     mavenLocal()
 }
 
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
+}
+
 dependencies {
     implementation project(':sdk-java')
     implementation 'org.slf4j:slf4j-api:2.0.7'
@@ -21,11 +28,4 @@ dependencies {
 
 application {
     mainClass = 'io.littlehorse.examples.WaitForConditionExample'
-}
-
-spotless {
-    java {
-        target('**/*.java')
-        palantirJavaFormat()
-    }
 }

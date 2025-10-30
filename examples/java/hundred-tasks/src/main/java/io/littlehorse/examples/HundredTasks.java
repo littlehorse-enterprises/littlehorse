@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,26 +21,21 @@ import java.util.Properties;
 public class HundredTasks {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "hundred-tasks",
-            wf -> {
-                for (int i = 0; i < 25; i++) {
-                    wf.execute("task-1");
-                    wf.execute("task-2");
-                    wf.execute("task-3");
-                    wf.execute("task-4");
-                }
+        return new WorkflowImpl("hundred-tasks", wf -> {
+            for (int i = 0; i < 25; i++) {
+                wf.execute("task-1");
+                wf.execute("task-2");
+                wf.execute("task-3");
+                wf.execute("task-4");
             }
-        );
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -58,13 +52,9 @@ public class HundredTasks {
 
         // Gracefully shutdown
         for (LHTaskWorker w : out) {
-            Runtime
-                .getRuntime()
-                .addShutdownHook(
-                    new Thread(() -> {
-                        w.close();
-                    })
-                );
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                w.close();
+            }));
         }
         return out;
     }

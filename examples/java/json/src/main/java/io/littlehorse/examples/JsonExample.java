@@ -7,7 +7,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,27 +29,19 @@ public class JsonExample {
     private static final Logger log = LoggerFactory.getLogger(JsonExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-json",
-            wf -> {
-                WfRunVariable person = wf.addVariable(
-                    "person",
-                    VariableType.JSON_OBJ
-                );
+        return new WorkflowImpl("example-json", wf -> {
+            WfRunVariable person = wf.addVariable("person", VariableType.JSON_OBJ);
 
-                wf.execute("greet", person.jsonPath("$.name"));
-                wf.execute("describe-car", person.jsonPath("$.car"));
-            }
-        );
+            wf.execute("greet", person.jsonPath("$.name"));
+            wf.execute("describe-car", person.jsonPath("$.car"));
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -59,21 +50,14 @@ public class JsonExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         CarTaskWorker executable = new CarTaskWorker();
         List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "greet", config),
-            new LHTaskWorker(executable, "describe-car", config)
-        );
+                new LHTaskWorker(executable, "greet", config), new LHTaskWorker(executable, "describe-car", config));
 
         // Gracefully shutdown
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() ->
-                    workers.forEach(worker -> {
-                        log.debug("Closing {}", worker.getTaskDefName());
-                        worker.close();
-                    })
-                )
-            );
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 

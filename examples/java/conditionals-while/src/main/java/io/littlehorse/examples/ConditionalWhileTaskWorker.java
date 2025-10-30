@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConditionalWhileTaskWorker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ConditionalWhileTaskWorker.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ConditionalWhileTaskWorker.class);
 
     @LHTaskMethod("eating-donut")
     public String eatingDonut(int donutsLeft) {

@@ -1,5 +1,14 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,41 +32,36 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 public class SpawnThreadForEachExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-                "spawn-parallel-threads-from-json-arr-variable",
-                wf -> {
-                    WfRunVariable approvalChain = wf.addVariable(
-                            "approval-chain",
-                            VariableType.JSON_OBJ);
-                    SpawnedThreads spawnedThreads = wf.spawnThreadForEach(approvalChain.jsonPath("$.approvals"),
-                            "spawn-threads", innerThread -> {
-                                // It is mandatory to use ThreadBuilder.HANDLER_INPUT_VAR at the moment.
-                                innerThread.addVariable("not-used-variable", VariableType.INT);
-                                WfRunVariable inputVariable = innerThread.addVariable(WorkflowThread.HANDLER_INPUT_VAR,
-                                        VariableType.JSON_OBJ);
-                                innerThread.execute("task-executor", inputVariable.jsonPath("$.user"));
-                            },
-                            Map.of("not-used-variable", 1234));
+        return new WorkflowImpl("spawn-parallel-threads-from-json-arr-variable", wf -> {
+            WfRunVariable approvalChain = wf.addVariable("approval-chain", VariableType.JSON_OBJ);
+            SpawnedThreads spawnedThreads = wf.spawnThreadForEach(
+                    approvalChain.jsonPath("$.approvals"),
+                    "spawn-threads",
+                    innerThread -> {
+                        // It is mandatory to use ThreadBuilder.HANDLER_INPUT_VAR at the moment.
+                        innerThread.addVariable("not-used-variable", VariableType.INT);
+                        WfRunVariable inputVariable =
+                                innerThread.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
+                        innerThread.execute("task-executor", inputVariable.jsonPath("$.user"));
+                    },
+                    Map.of("not-used-variable", 1234));
+            wf.waitForThreads(spawnedThreads);
 
-                    wf.waitForThreads(spawnedThreads).handleExceptionOnChild("sample", handler -> {
-                        handler.sleepSeconds(100);
-                    });
-
-                    wf.execute("task-executor", approvalChain.jsonPath("$.description"));
-                });
+            wf.execute("task-executor", approvalChain.jsonPath("$.description"));
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-                System.getProperty("user.home"),
-                ".config/littlehorse.config").toFile();
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
         if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
     }
 
+    public static LHTaskWorker getTaskWorker(LHConfig config) {
     public static LHTaskWorker getTaskWorker(LHConfig config) {
         SpawnThreadForEachWorker executable = new SpawnThreadForEachWorker();
         LHTaskWorker worker = new LHTaskWorker(executable, "task-executor", config);

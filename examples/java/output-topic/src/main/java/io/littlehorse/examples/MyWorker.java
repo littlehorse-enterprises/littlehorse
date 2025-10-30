@@ -13,5 +13,4 @@ public class MyWorker {
         log.debug("Executing task greet");
         return "hello there, " + name;
     }
-
 }

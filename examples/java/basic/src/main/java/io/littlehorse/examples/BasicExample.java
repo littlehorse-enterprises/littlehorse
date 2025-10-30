@@ -7,12 +7,12 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
+
 /*
  * This is a simple example, which does two things:
  * 1. Declare an "input-name" variable of type String
@@ -21,22 +21,18 @@ import java.util.Properties;
 public class BasicExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-basic",
-            wf -> {
-                WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
-                wf.execute("greet", theName);
-            }
-        );
+        return new WorkflowImpl("example-basic", wf -> {
+            WfRunVariable theName =
+                    wf.addVariable("input-name", VariableType.STR).searchable();
+            wf.execute("greet", theName);
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;

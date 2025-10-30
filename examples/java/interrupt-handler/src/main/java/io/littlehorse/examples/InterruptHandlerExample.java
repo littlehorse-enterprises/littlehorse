@@ -1,15 +1,14 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.config.LHConfig;
-import java.io.IOException;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
@@ -23,36 +22,26 @@ import org.slf4j.LoggerFactory;
  */
 public class InterruptHandlerExample {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        InterruptHandlerExample.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(InterruptHandlerExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-interrupt-handler",
-            wf -> {
-                // Register an interrupt handler
-                wf.registerInterruptHandler(
-                    "interruption-event",
-                    handler -> {
-                        handler.execute("some-task");
-                    }
-                );
+        return new WorkflowImpl("example-interrupt-handler", wf -> {
+            // Register an interrupt handler
+            wf.registerInterruptHandler("interruption-event", handler -> {
+                handler.execute("some-task");
+            });
 
-                // Do some work that takes a while
-                wf.sleepSeconds(30);
-                wf.execute("my-task");
-            }
-        );
+            // Do some work that takes a while
+            wf.sleepSeconds(30);
+            wf.execute("my-task");
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -61,21 +50,14 @@ public class InterruptHandlerExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         InterruptHandlerWorker executable = new InterruptHandlerWorker();
         List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "my-task", config),
-            new LHTaskWorker(executable, "some-task", config)
-        );
+                new LHTaskWorker(executable, "my-task", config), new LHTaskWorker(executable, "some-task", config));
 
         // Gracefully shutdown
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() ->
-                    workers.forEach(worker -> {
-                        log.debug("Closing {}", worker.getTaskDefName());
-                        worker.close();
-                    })
-                )
-            );
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 
@@ -102,17 +84,13 @@ public class InterruptHandlerExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-                client.putExternalEventDef(
-                    PutExternalEventDefRequest
-                            .newBuilder()
-                            .setName(externalEventName)
-                            .build()
-                );
+            client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
+                    .setName(externalEventName)
+                    .build());
         }
 
         // Register a workflow
         workflow.registerWfSpec(client);
-
 
         // Run the workers
         for (LHTaskWorker worker : workers) {

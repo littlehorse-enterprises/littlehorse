@@ -7,8 +7,7 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 
 public class SpawnThreadForEachWorker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-            SpawnThreadForEachWorker.class);
+    private static final Logger log = LoggerFactory.getLogger(SpawnThreadForEachWorker.class);
 
     @LHTaskMethod("task-executor")
     public String taskExecutor(String taskInput) {
