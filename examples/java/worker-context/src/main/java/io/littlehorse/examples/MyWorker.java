@@ -21,10 +21,9 @@ public class MyWorker {
         log.debug("Epochs: start {} end {}", requestTime, end.toEpochMilli());
         log.debug("Started {}, Finished {}. Lag in millis: {}", start, end, lag);
         log.debug(
-            "Wf run id '{}'. Task global id '{}'. Attempt number '{}'",
-            ctx.getWfRunId(),
-            ctx.getTaskRunId().getTaskGuid(),
-            ctx.getAttemptNumber()
-        );
+                "Wf run id '{}'. Task global id '{}'. Attempt number '{}'",
+                ctx.getWfRunId(),
+                ctx.getTaskRunId().getTaskGuid(),
+                ctx.getAttemptNumber());
     }
 }

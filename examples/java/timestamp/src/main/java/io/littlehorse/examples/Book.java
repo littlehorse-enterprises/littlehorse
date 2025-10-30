@@ -1,9 +1,9 @@
 package io.littlehorse.examples;
 
+import com.google.protobuf.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
-import com.google.protobuf.Timestamp;
 
 public class Book {
 
@@ -17,24 +17,19 @@ public class Book {
 
     @Override
     public String toString() {
-        return (
-            "Book{" +
-            "name='" +
-            name +
-            '\'' +
-            ", publishAt=" +
-            publishDate.toString() +
-            ", publishInstant=" +
-            publishInstant.toString() +
-            ", publishTimestamp=" +
-            publishTimestamp.toString() +
-            ", publishSqlTimestamp=" +
-            publishSqlTimestamp.toString() +
-            ", publishLocalDateTime=" +
-            publishLocalDateTime.toString() +
-            '}'
-        );
+        return ("Book{" + "name='"
+                + name
+                + '\''
+                + ", publishAt="
+                + publishDate.toString()
+                + ", publishInstant="
+                + publishInstant.toString()
+                + ", publishTimestamp="
+                + publishTimestamp.toString()
+                + ", publishSqlTimestamp="
+                + publishSqlTimestamp.toString()
+                + ", publishLocalDateTime="
+                + publishLocalDateTime.toString()
+                + '}');
     }
-
 }
-

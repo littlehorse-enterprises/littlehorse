@@ -10,7 +10,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,171 +27,128 @@ import org.slf4j.LoggerFactory;
  */
 public class ParallelApprovalExample {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ParallelApprovalExample.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ParallelApprovalExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "parallel-approval",
-            wf -> {
-                // Initialize variables.
-                WfRunVariable person1Approved = wf.addVariable(
-                    "person-1-approved",
-                    VariableType.BOOL
-                );
-                WfRunVariable person2Approved = wf.addVariable(
-                    "person-2-approved",
-                    VariableType.BOOL
-                );
-                WfRunVariable person3Approved = wf.addVariable(
-                    "person-3-approved",
-                    VariableType.BOOL
-                );
-                WfRunVariable allApproved = wf.addVariable(
-                    "all-approved",
-                    VariableType.BOOL
-                );
+        return new WorkflowImpl("parallel-approval", wf -> {
+            // Initialize variables.
+            WfRunVariable person1Approved = wf.addVariable("person-1-approved", VariableType.BOOL);
+            WfRunVariable person2Approved = wf.addVariable("person-2-approved", VariableType.BOOL);
+            WfRunVariable person3Approved = wf.addVariable("person-3-approved", VariableType.BOOL);
+            WfRunVariable allApproved = wf.addVariable("all-approved", VariableType.BOOL);
 
-                // Variables are initialized to NULL. Need to set to a real value.
-                wf.mutate(allApproved, VariableMutationType.ASSIGN, false);
-                wf.mutate(person1Approved, VariableMutationType.ASSIGN, false);
-                wf.mutate(person2Approved, VariableMutationType.ASSIGN, false);
-                wf.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+            // Variables are initialized to NULL. Need to set to a real value.
+            wf.mutate(allApproved, VariableMutationType.ASSIGN, false);
+            wf.mutate(person1Approved, VariableMutationType.ASSIGN, false);
+            wf.mutate(person2Approved, VariableMutationType.ASSIGN, false);
+            wf.mutate(person3Approved, VariableMutationType.ASSIGN, false);
 
-                // Kick off the reminder workflow
-                wf.spawnThread(
-                    sendReminders(allApproved),
-                    "send-reminders",
-                    null
-                );
+            // Kick off the reminder workflow
+            wf.spawnThread(sendReminders(allApproved), "send-reminders", null);
 
-                // Wait for all users to approve the transaction
-                SpawnedThread p1Thread = wf.spawnThread(
-                    waitForPerson1(person1Approved),
-                    "person-1",
-                    null
-                );
-                SpawnedThread p2Thread = wf.spawnThread(
-                    waitForPerson2(person2Approved),
-                    "person-2",
-                    null
-                );
-                SpawnedThread p3Thread = wf.spawnThread(
-                    waitForPerson3(person3Approved),
-                    "person-3",
-                    null
-                );
+            // Wait for all users to approve the transaction
+            SpawnedThread p1Thread = wf.spawnThread(waitForPerson1(person1Approved), "person-1", null);
+            SpawnedThread p2Thread = wf.spawnThread(waitForPerson2(person2Approved), "person-2", null);
+            SpawnedThread p3Thread = wf.spawnThread(waitForPerson3(person3Approved), "person-3", null);
 
-                NodeOutput nodeOutput = wf.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
+            NodeOutput nodeOutput = wf.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
-                wf.handleException(nodeOutput, "denied-by-user", xnHandler -> {
-                    // HANDLE FAILED APPROVALS HERE.
-                    // If you want, you can execute additional business logic.
+            wf.handleException(nodeOutput, "denied-by-user", xnHandler -> {
+                // HANDLE FAILED APPROVALS HERE.
+                // If you want, you can execute additional business logic.
 
-                    xnHandler.fail("denied-by-user", "The workflow was not approved!");
-                });
+                xnHandler.fail("denied-by-user", "The workflow was not approved!");
+            });
 
-                // Tell the reminder workflow to stop
-                wf.mutate(allApproved, VariableMutationType.ASSIGN, true);
-            }
-        );
+            // Tell the reminder workflow to stop
+            wf.mutate(allApproved, VariableMutationType.ASSIGN, true);
+        });
     }
 
     private static ThreadFunc waitForPerson3(WfRunVariable person3Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-3-response", VariableType.JSON_OBJ);
-            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-3-approves"));
-            approvalThread.doIf(
-                approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                ifHandler -> {
-                    approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
-                }
-            ).doElse(
-                elseHandler -> {
-                    approvalThread.fail("denied-by-user", "message here");
-                }
-            );
+            approvalThread.mutate(
+                    jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-3-approves"));
+            approvalThread
+                    .doIf(
+                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                            ifHandler -> {
+                                approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
+                            })
+                    .doElse(elseHandler -> {
+                        approvalThread.fail("denied-by-user", "message here");
+                    });
         };
     }
 
     private static ThreadFunc waitForPerson2(WfRunVariable person2Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-2-response", VariableType.JSON_OBJ);
-            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-2-approves"));
-            approvalThread.doIf(
-                approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                ifHandler -> {
-                    approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
-                }
-            ).doElse(
-                elseHandler -> {
-                    approvalThread.fail("denied-by-user", "message here");
-                }
-            );
+            approvalThread.mutate(
+                    jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-2-approves"));
+            approvalThread
+                    .doIf(
+                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                            ifHandler -> {
+                                approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+                            })
+                    .doElse(elseHandler -> {
+                        approvalThread.fail("denied-by-user", "message here");
+                    });
         };
     }
 
     private static ThreadFunc waitForPerson1(WfRunVariable person1Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.addVariable("person-1-response", VariableType.JSON_OBJ);
-            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-1-approves"));
-            approvalThread.doIf(
-                approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                ifHandler -> {
-                    approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
-                }
-            ).doElse(
-                elseHandler -> {
-                    approvalThread.fail("denied-by-user", "message here");
-                }
-            );
+            approvalThread.mutate(
+                    jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-1-approves"));
+            approvalThread
+                    .doIf(
+                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                            ifHandler -> {
+                                approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
+                            })
+                    .doElse(elseHandler -> {
+                        approvalThread.fail("denied-by-user", "message here");
+                    });
         };
     }
 
     private static ThreadFunc sendReminders(WfRunVariable allApproved) {
         return reminderThread -> {
-            WfRunVariable nextReminderTime = reminderThread.addVariable(
-                "next-reminder",
-                VariableType.INT
-            );
+            WfRunVariable nextReminderTime = reminderThread.addVariable("next-reminder", VariableType.INT);
 
             // Calculate next time to send notification
             reminderThread.mutate(
-                nextReminderTime,
-                VariableMutationType.ASSIGN,
-                reminderThread.execute("calculate-next-notification")
-            );
+                    nextReminderTime,
+                    VariableMutationType.ASSIGN,
+                    reminderThread.execute("calculate-next-notification"));
 
             reminderThread.sleepUntil(nextReminderTime);
 
             // So long as all things haven't been approved yet, continue to send reminders.
-            reminderThread.doWhile(
-                reminderThread.condition(allApproved, Comparator.EQUALS, false),
-                loop -> {
-                    reminderThread.execute("reminder-task");
+            reminderThread.doWhile(reminderThread.condition(allApproved, Comparator.EQUALS, false), loop -> {
+                reminderThread.execute("reminder-task");
 
-                    // Calculate next reminder
-                    reminderThread.mutate(
+                // Calculate next reminder
+                reminderThread.mutate(
                         nextReminderTime,
                         VariableMutationType.ASSIGN,
-                        reminderThread.execute("calculate-next-notification")
-                    );
+                        reminderThread.execute("calculate-next-notification"));
 
-                    // Wait until next reminder
-                    reminderThread.sleepUntil(nextReminderTime);
-                }
-            );
+                // Wait until next reminder
+                reminderThread.sleepUntil(nextReminderTime);
+            });
         };
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -201,22 +157,16 @@ public class ParallelApprovalExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         Notifier executable = new Notifier();
         List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "calculate-next-notification", config),
-            new LHTaskWorker(executable, "reminder-task", config),
-            new LHTaskWorker(executable, "exc-handler", config)
-        );
+                new LHTaskWorker(executable, "calculate-next-notification", config),
+                new LHTaskWorker(executable, "reminder-task", config),
+                new LHTaskWorker(executable, "exc-handler", config));
 
         // Gracefully shutdown
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() ->
-                    workers.forEach(worker -> {
-                        log.debug("Closing {}", worker.getTaskDefName());
-                        worker.close();
-                    })
-                )
-            );
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 
@@ -242,12 +192,9 @@ public class ParallelApprovalExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            client.putExternalEventDef(
-                        PutExternalEventDefRequest
-                                .newBuilder()
-                                .setName(externalEventName)
-                                .build()
-                );
+            client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
+                    .setName(externalEventName)
+                    .build());
         }
 
         // Register a workflow

@@ -7,7 +7,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +33,9 @@ public class TimestampExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-timestamp", wf -> {
-            WfRunVariable publishDate = wf
-                    .declareTimestamp("publish-date")
-                    .withDefault(Instant.parse("1997-06-26T12:12:12Z"));
-            WfRunVariable bookName = wf
-                    .declareStr("book-name")
-                    .withDefault("Harry Potter and the Philosopher's Stone");
+            WfRunVariable publishDate =
+                    wf.declareTimestamp("publish-date").withDefault(Instant.parse("1997-06-26T12:12:12Z"));
+            WfRunVariable bookName = wf.declareStr("book-name").withDefault("Harry Potter and the Philosopher's Stone");
             NodeOutput publishBook = wf.execute("publish-book", bookName, publishDate);
             NodeOutput currentDate = wf.execute("get-current-date");
             wf.execute("print-book-details", publishBook, currentDate);
@@ -49,8 +44,8 @@ public class TimestampExample {
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath =
-                Path.of(System.getProperty("user.home"), ".config/littlehorse.config").toFile();
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
         if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
@@ -59,15 +54,15 @@ public class TimestampExample {
 
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         Worker executable = new Worker();
-        List<LHTaskWorker> workers =List.of(
-                        new LHTaskWorker(executable, "get-current-date", config),
-                        new LHTaskWorker(executable, "publish-book", config),
-                        new LHTaskWorker(executable, "print-book-details", config)
-                );
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.forEach(worker -> {
-            log.debug("Closing {}", worker.getTaskDefName());
-            worker.close();
-        })));
+        List<LHTaskWorker> workers = List.of(
+                new LHTaskWorker(executable, "get-current-date", config),
+                new LHTaskWorker(executable, "publish-book", config),
+                new LHTaskWorker(executable, "print-book-details", config));
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 

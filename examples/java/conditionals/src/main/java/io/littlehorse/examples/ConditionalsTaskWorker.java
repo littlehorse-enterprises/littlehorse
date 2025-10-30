@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConditionalsTaskWorker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ConditionalsTaskWorker.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ConditionalsTaskWorker.class);
 
     @LHTaskMethod("task-a")
     public String taskA() {
