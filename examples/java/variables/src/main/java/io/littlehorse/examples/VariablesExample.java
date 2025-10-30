@@ -29,16 +29,13 @@ public class VariablesExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-variables", wf -> {
-            WfRunVariable inputText =
-                    wf.declareStr("input-text").searchable().masked();
+            WfRunVariable inputText = wf.declareStr("input-text").searchable().masked();
 
-            WfRunVariable addLength =
-                    wf.declareBool("add-length").searchable();
+            WfRunVariable addLength = wf.declareBool("add-length").searchable();
 
             WfRunVariable userId = wf.declareInt("user-id").searchable();
 
-            WfRunVariable sentimentScore =
-                    wf.declareDouble("sentiment-score").searchable();
+            WfRunVariable sentimentScore = wf.declareDouble("sentiment-score").searchable();
 
             WfRunVariable processedResult = wf.declareJsonObj("processed-result")
                     .searchableOn("$.sentimentScore", VariableType.DOUBLE)

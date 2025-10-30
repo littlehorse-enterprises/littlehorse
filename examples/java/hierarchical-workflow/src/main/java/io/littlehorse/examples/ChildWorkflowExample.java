@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -27,8 +26,7 @@ public class ChildWorkflowExample {
 
     public static Workflow getChild() {
         WorkflowImpl out = new WorkflowImpl("child", wf -> {
-            WfRunVariable theName =
-                    wf.declareStr("name").withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+            WfRunVariable theName = wf.declareStr("name").withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
 
             wf.execute("greet", theName);
 
@@ -41,8 +39,7 @@ public class ChildWorkflowExample {
 
     public static Workflow getParent() {
         WorkflowImpl out = new WorkflowImpl("parent", wf -> {
-            WfRunVariable theName =
-                    wf.declareStr("name").withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
+            WfRunVariable theName = wf.declareStr("name").withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
 
             wf.execute("greet", theName);
         });

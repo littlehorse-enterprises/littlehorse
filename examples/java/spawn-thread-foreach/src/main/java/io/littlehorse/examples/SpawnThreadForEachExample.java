@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -30,8 +29,7 @@ public class SpawnThreadForEachExample {
                     innerThread -> {
                         // It is mandatory to use ThreadBuilder.HANDLER_INPUT_VAR at the moment.
                         innerThread.declareInt("not-used-variable");
-                        WfRunVariable inputVariable =
-                                innerThread.declareJsonObj(WorkflowThread.HANDLER_INPUT_VAR);
+                        WfRunVariable inputVariable = innerThread.declareJsonObj(WorkflowThread.HANDLER_INPUT_VAR);
                         innerThread.execute("task-executor", inputVariable.jsonPath("$.user"));
                     },
                     Map.of("not-used-variable", 1234));

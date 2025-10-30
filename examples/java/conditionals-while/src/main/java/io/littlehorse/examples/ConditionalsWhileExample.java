@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -24,8 +23,7 @@ public class ConditionalsWhileExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-conditionals-while", wf -> {
-            WfRunVariable numDonuts =
-                    wf.declareInt("number-of-donuts").required();
+            WfRunVariable numDonuts = wf.declareInt("number-of-donuts").required();
 
             wf.doWhile(wf.condition(numDonuts, Comparator.GREATER_THAN, 0), handler -> {
                 handler.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);

@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -21,8 +20,7 @@ public class CheckpointTaskExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-checkpointed-tasks", wf -> {
-            WfRunVariable theName =
-                    wf.declareStr("input-name").searchable();
+            WfRunVariable theName = wf.declareStr("input-name").searchable();
             wf.execute("greet", theName).withRetries(2);
         });
     }
