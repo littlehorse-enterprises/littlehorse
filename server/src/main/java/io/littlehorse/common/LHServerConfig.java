@@ -1041,6 +1041,8 @@ public class LHServerConfig extends ConfigBase {
 
         props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
 
+        props.put(StreamsConfig.restoreConsumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), 100);
+
         // The delay before the state cleanup thread runs. This is used to clean up state stores
         props.put("state.cleanup.delay.ms", getStreamsStateCleanupDelayMs());
 
