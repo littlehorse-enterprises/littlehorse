@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -30,7 +29,7 @@ public class JsonExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-json", wf -> {
-            WfRunVariable person = wf.addVariable("person", VariableType.JSON_OBJ);
+            WfRunVariable person = wf.declareJsonObj("person");
 
             wf.execute("greet", person.jsonPath("$.name"));
             wf.execute("describe-car", person.jsonPath("$.car"));

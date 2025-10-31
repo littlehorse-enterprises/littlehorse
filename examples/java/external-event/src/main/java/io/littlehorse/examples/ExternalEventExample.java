@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -35,7 +34,7 @@ public class ExternalEventExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-external-event", wf -> {
-            WfRunVariable name = wf.addVariable("name", VariableType.STR).searchable();
+            WfRunVariable name = wf.declareStr("name").searchable();
 
             wf.execute("ask-for-name");
 
