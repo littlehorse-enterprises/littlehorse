@@ -6,6 +6,7 @@ import { Node } from './Node'
 import { NodeRunInfo } from './NodeRunInfo/NodeRunInfo'
 import { SelectedNodeRun } from './NodeInfo/SelectNodeRun'
 import { NodeRunComponent } from './NodeRunInfo/NodeRunComponent'
+import { Failures } from './NodeRunInfo/Failures'
 
 export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
   const { selectedNode } = useDiagram()
@@ -27,16 +28,19 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
       }
     }
   }, [selectedNode, showNodeRun])
+
   return (
     <aside className="flex max-w-full flex-col pl-4">
       {isValidNode && selectedNode && (
         <>
-          {showNodeRun &&<SelectedNodeRun
-            nodeName={selectedNode.id}
-            nodeRunIndex={nodeRunIndex}
-            setNodeRunIndex={setNodeRunIndex}
-            arrayRunNodeLength={selectedNode.data.nodeRunsList.length} /// fix types any is not a right one
-          />}
+          {showNodeRun && (
+            <SelectedNodeRun
+              nodeName={selectedNode.id}
+              nodeRunIndex={nodeRunIndex}
+              setNodeRunIndex={setNodeRunIndex}
+              arrayRunNodeLength={selectedNode.data.nodeRunsList.length} /// fix types any is not a right one
+            />
+          )}
           <Tabs value={currentTab} onValueChange={value => setCurrentTab(value)} className="w-full">
             <TabsList className="w-full">
               <TabsTrigger className="flex-1" value="overview">
@@ -45,11 +49,19 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
               <TabsTrigger className="flex-1" value="node">
                 Node
               </TabsTrigger>
+              {showNodeRun && <TabsTrigger className="flex-1" value="failures">
+                Failures
+              </TabsTrigger>}
             </TabsList>
             <TabsContent value="overview">
               {showNodeRun ? <NodeRunInfo nodeRunIndex={nodeRunIndex} /> : <NodeInfo />}
             </TabsContent>
-            <TabsContent value="node">{showNodeRun ? <NodeRunComponent nodeRunIndex={nodeRunIndex}/> : <Node />}</TabsContent>
+            <TabsContent value="node">
+              {showNodeRun ? <NodeRunComponent nodeRunIndex={nodeRunIndex} /> : <Node />}
+            </TabsContent>
+            <TabsContent value="failures">
+              {showNodeRun && <Failures nodeRunIndex={nodeRunIndex}  />}
+            </TabsContent>
           </Tabs>
         </>
       )}

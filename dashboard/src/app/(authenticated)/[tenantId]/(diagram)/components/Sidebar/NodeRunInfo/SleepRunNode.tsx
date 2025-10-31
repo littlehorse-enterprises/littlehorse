@@ -4,7 +4,6 @@ import { LabelContent } from '../Components'
 import { utcToLocalDateTime } from '@/app/utils'
 
 export const SleepRunNode: FC<{ node: SleepNodeRun }> = ({ node }) => {
-  console.log('node', node)
   return (
     <div>
       <LabelContent label="Node Type" content="Sleep"></LabelContent>
