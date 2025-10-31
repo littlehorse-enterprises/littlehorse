@@ -7,7 +7,7 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
-import org.rocksdb.CompactionPriority;
+import org.rocksdb.CompactionOptionsUniversal;
 import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionType;
 import org.rocksdb.Env;
@@ -83,16 +83,40 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
         }
 
-        // Level compaction has higher write amplification and lower read amplification.
-        // Therefore, we use other configs to attempt to reduce WA.
-        // Configurations to avoid the "many small L0 files" problem
-        options.setCompactionStyle(CompactionStyle.LEVEL);
+        // Compaction configs
+        if (storeName.contains("timer")) {
+            // Timer stores rely on range scans a lot and have less data which is more short-lived,
+            // so we rely on the Level compaction style.
+            options.setCompactionStyle(CompactionStyle.LEVEL);
+            options.setMaxBytesForLevelBase(128 * MB * 12);
+
+            // Default 4. Higher means less write amp at the cost of slower reads. In Level compaction
+            // that's a good tradeoff.
+            options.setLevel0FileNumCompactionTrigger(12);
+
+        } else {
+            // Core stores are very write-heavy and have fewer range scans, so we use Universal.
+            options.setCompactionStyle(CompactionStyle.UNIVERSAL);
+            options.setCompressionType(CompressionType.LZ4_COMPRESSION);
+
+            // In Universal compaction this is not so much "files" as it is "sorted runs" which are actually
+            // partitioned into many files. But the point remains, we need to open every single sorted run
+            // when doing a range scan, which is expensive...and universal is good enough at write amp anyways
+            // so using the default (4) is fine.
+            options.setLevel0FileNumCompactionTrigger(4);
+
+            CompactionOptionsUniversal cou = new CompactionOptionsUniversal();
+            cou.setAllowTrivialMove(true);
+            cou.setMinMergeWidth(2); // Default
+            cou.setMaxSizeAmplificationPercent(35); // Decreases read amp, encourages more aggressive compaction
+            options.setCompactionOptionsUniversal(cou);
+            cou.close();
+
+            // See: https://github.com/facebook/rocksdb/wiki/universal-compaction#db-column-family-size-if-num_levels
+            // options.setNumLevels(10);
+        }
+        options.setTargetFileSizeBase(128 * MB);
         options.setMaxWriteBufferNumber(3);
-        options.setTargetFileSizeBase(128 * MB); // 64MB is default. We merge write buffers, so this is needed.
-        options.setLevel0FileNumCompactionTrigger(12); // Default 4, higher means lower WA especially before KIP-1035
-        options.setMaxBytesForLevelBase(128 * MB * 4); // Same as the compaction trigger
-        options.setCompactionPriority(CompactionPriority.ByCompensatedSize); // Good for deletes / overwrites
-        options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
 
         // I/O Configurations
         options.setAdviseRandomOnOpen(true);
