@@ -25,7 +25,7 @@ public class WaitForConditionExample {
     public static Workflow getWorkflow() {
 
         return new WorkflowImpl("example-wait-for-condition", wf -> {
-            WfRunVariable counter = wf.addVariable("counter", 2);
+            WfRunVariable counter = wf.declareInt("counter").withDefault(2);
 
             wf.waitForCondition(wf.condition(counter, Comparator.EQUALS, 0));
 

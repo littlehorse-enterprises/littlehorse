@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -29,8 +28,7 @@ public class AwaitWorkflowEventExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("await-wf-event", wf -> {
-            WfRunVariable sleepTime =
-                    wf.addVariable("sleep-time", VariableType.INT).required();
+            WfRunVariable sleepTime = wf.declareInt("sleep-time").required();
             wf.sleepSeconds(sleepTime);
             wf.throwEvent("sleep-done", "hello there!");
         });

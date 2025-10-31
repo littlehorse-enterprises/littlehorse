@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -36,7 +35,7 @@ public class RunWfExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-run-wf", wf -> {
-            WfRunVariable n = wf.addVariable("n", VariableType.INT);
+            WfRunVariable n = wf.declareInt("n");
             wf.execute("execution-number", n);
         });
     }
